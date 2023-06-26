@@ -1,0 +1,89 @@
+import React, {
+  type Dispatch,
+  type SetStateAction,
+  Suspense,
+  useState,
+} from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper";
+import { ConvertToBase64 } from "~/utility/fileHelpers";
+
+type ImageUploadSliderProps = {
+  images: Image[] | undefined;
+  onUpdateImages: Dispatch<SetStateAction<Image[] | undefined>>;
+};
+
+const ImageUploadSlider: React.FC<ImageUploadSliderProps> = ({
+  images,
+  onUpdateImages,
+}) => {
+  const [activeSlide, setActiveSlide] = useState(0);
+
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      {images && images?.some((image) => image) ? (
+        <Swiper
+          modules={[Navigation]}
+          onSlideChange={(swiper) => setActiveSlide(swiper.activeIndex)}
+          className="mx-auto mt-10 block h-max w-full"
+          spaceBetween={12}
+          slidesPerView={1}
+          centeredSlides={true}
+          navigation
+        >
+          {images?.map((image, index) => {
+            if (image?.url) {
+              return (
+                <SwiperSlide key={index}>
+                  <img
+                    src={image.url}
+                    alt={image.altText}
+                    className="mx-auto block max-w-[320px] rounded-lg object-cover"
+                  />
+                </SwiperSlide>
+              );
+            }
+            return null; // Skip undefined elements
+          })}
+        </Swiper>
+      ) : null}
+
+      <div className="form-control my-6 w-[495px] max-w-[95vw] items-center gap-3 self-center sm:items-start">
+        <div className="flex w-full flex-row justify-center gap-6">
+          {Array.from({ length: 3 }).map((_, index) => {
+            const image = images?.[index] || null;
+            return (
+              <React.Fragment key={index}>
+                <input
+                  type="file"
+                  id={`image${index + 1}`}
+                  accept="image/*"
+                  className="file-input-bordered file-input hidden w-full"
+                  onChange={async (e) => {
+                    const convertedImage = await ConvertToBase64(e);
+                    if (convertedImage) {
+                      const updatedImages = [...(images || [])];
+                      updatedImages[index] = convertedImage;
+                      onUpdateImages(updatedImages);
+                    }
+                  }}
+                />
+                <label
+                  htmlFor={`image${index + 1}`}
+                  className={`btn ${image && "btn-success"} ${
+                    activeSlide === index &&
+                    "border-none outline outline-[4px] outline-success"
+                  }`}
+                >
+                  Image {index + 1}
+                </label>
+              </React.Fragment>
+            );
+          })}
+        </div>
+      </div>
+    </Suspense>
+  );
+};
+
+export default ImageUploadSlider;

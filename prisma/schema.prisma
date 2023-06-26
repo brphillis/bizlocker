@@ -1,0 +1,251 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                   String       @id @unique @default(cuid())
+  email                String       @unique
+  password             String?
+  isActive             Boolean      @default(true)
+  doubleAuthentication Boolean      @default(false)
+  avatar               Image?       @relation("AvatarImage")
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+  role                 Role         @default(USER)
+  cart                 Cart?
+  cartId               Int?         @unique
+  address              Address?
+  addressId            String?      @unique
+  orders               Order[]
+  userDetails          UserDetails?
+  userDetailsId        String?      @unique
+  googleLogin          Boolean      @default(false)
+  googleEmail          String?
+  microsoftLogin       Boolean      @default(false)
+  microsoftEmail       String?
+}
+
+model UserDetails {
+  id          String    @id @unique @default(cuid())
+  firstName   String?
+  lastName    String?
+  phoneNumber String?
+  dateOfBirth DateTime?
+  gender      Gender?
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String    @unique
+}
+
+model Address {
+  id           String  @id @unique @default(cuid())
+  addressLine1 String?
+  addressLine2 String?
+  postcode     String?
+  suburb       String?
+  state        String?
+  country      String?
+  userId       String  @unique
+  user         User    @relation(fields: [userId], references: [id])
+}
+
+model Cart {
+  id        Int        @id @default(autoincrement())
+  user      User       @relation(fields: [userId], references: [id])
+  userId    String     @unique
+  cartItems CartItem[]
+}
+
+model CartItem {
+  id        Int            @id @default(autoincrement())
+  quantity  Int            @default(1)
+  cart      Cart           @relation(fields: [cartId], references: [id])
+  cartId    Int
+  variant   ProductVariant @relation(fields: [variantId], references: [id])
+  variantId Int
+}
+
+model Order {
+  orderId       String      @id @unique @default(cuid())
+  status        OrderStatus
+  totalPrice    Float
+  paymentCode   String
+  paymentUrl    String
+  paymentLinkId String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  items         OrderItem[]
+  userId        String
+  user          User        @relation(fields: [userId], references: [id])
+}
+
+model OrderItem {
+  id        Int            @id @default(autoincrement())
+  quantity  Int
+  unitPrice Int
+  variant   ProductVariant @relation(fields: [variantId], references: [id])
+  variantId Int
+  order     Order          @relation(fields: [orderId], references: [orderId])
+  orderId   String
+}
+
+model Image {
+  id                Int              @id @default(autoincrement())
+  url               String
+  altText           String?
+  user              User?            @relation("AvatarImage", fields: [userId], references: [id])
+  userId            String?          @unique
+  article           Article?         @relation(fields: [articleId], references: [id])
+  articleId         Int?
+  product           Product?         @relation(fields: [productId], references: [id])
+  productId         Int?
+  productCategory   ProductCategory? @relation("ProductCategoryImage", fields: [productCategoryId], references: [id])
+  productCategoryId Int?             @unique
+  brand             Brand?           @relation("BrandImage", fields: [brandId], references: [id])
+  brandId           Int?             @unique
+}
+
+model Department {
+  id             Int            @id @default(autoincrement())
+  name           String         @unique
+  rootCategories RootCategory[] @relation("DepartmentToRootCategory")
+}
+
+model RootCategory {
+  id                Int               @id @default(autoincrement())
+  name              String
+  department        Department        @relation("DepartmentToRootCategory", fields: [departmentId], references: [id])
+  departmentId      Int
+  articleCategories ArticleCategory[] @relation("RootCategoryToArticleCategory")
+  productCategories ProductCategory[] @relation("RootCategoryToProductCategory")
+}
+
+model ArticleCategory {
+  id             Int           @id @default(autoincrement())
+  name           String        @unique
+  rootCategory   RootCategory? @relation("RootCategoryToArticleCategory", fields: [rootCategoryId], references: [id])
+  rootCategoryId Int?
+  articles       Article[]     @relation("ArticleCategoryToArticle")
+}
+
+model ProductCategory {
+  id             Int           @id @default(autoincrement())
+  name           String        @unique
+  rootCategory   RootCategory? @relation("RootCategoryToProductCategory", fields: [rootCategoryId], references: [id])
+  rootCategoryId Int?
+  products       Product[]     @relation("ProductCategoryToProduct")
+  image          Image?        @relation("ProductCategoryImage")
+  imageId        Int?
+}
+
+model Article {
+  id         Int               @id @default(autoincrement())
+  title      String
+  content    String
+  published  Boolean           @default(true)
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+  isActive   Boolean           @default(true)
+  categories ArticleCategory[] @relation("ArticleCategoryToArticle")
+  images     Image[]
+}
+
+model Product {
+  id          Int               @id @default(autoincrement())
+  name        String
+  description String
+  images      Image[]
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  categories  ProductCategory[] @relation("ProductCategoryToProduct")
+  brand       Brand?            @relation("BrandToProduct", fields: [brandId], references: [id])
+  brandId     Int?
+  variants    ProductVariant[]  @relation("ProductVariants")
+  totalSold   Int               @default(0)
+  isActive    Boolean           @default(true)
+  gender      Gender?
+}
+
+model Brand {
+  id       Int       @id @unique @default(autoincrement())
+  name     String    @unique
+  products Product[] @relation("BrandToProduct")
+  image    Image?    @relation("BrandImage")
+  imageId  Int?
+}
+
+model ProductVariant {
+  id         Int         @id @default(autoincrement())
+  name       String
+  sku        String      @unique
+  price      Float
+  salePrice  Float?
+  isOnSale   Boolean     @default(false)
+  stock      Int?
+  productId  Int
+  product    Product     @relation("ProductVariants", fields: [productId], references: [id])
+  color      Color?
+  size       Size?
+  cartItems  CartItem[]
+  orderItems OrderItem[]
+  orderId    String?
+  isActive   Boolean     @default(true)
+}
+
+enum Role {
+  DEVELOPER
+  ADMIN
+  STAFF
+  USER
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  KIDS
+  UNISEX
+}
+
+enum OrderStatus {
+  created
+  cancelled
+  paid
+  shipped
+  complete
+}
+
+enum Color {
+  RED
+  BLUE
+  GREEN
+  YELLOW
+  ORANGE
+  PURPLE
+  PINK
+  BLACK
+  WHITE
+  GRAY
+  BROWN
+  SILVER
+  GOLD
+  NAVY
+  TEAL
+  MAROON
+  LIME
+  OLIVE
+  AQUA
+  INDIGO
+}
+
+enum Size {
+  XS
+  S
+  M
+  L
+  XL
+  XXL
+}

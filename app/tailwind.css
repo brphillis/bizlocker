@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.btn {
+  @apply rounded-none;
+  @apply border-white/20;
+}
+
+.input {
+  @apply rounded-none;
+}
+
+.select {
+  @apply rounded-none;
+}
