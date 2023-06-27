@@ -13,18 +13,18 @@ import {
 import { useState } from "react";
 import { IoIosCloseCircle, IoMdTrash } from "react-icons/io";
 import { tokenAuth } from "~/auth.server";
-import { deleteBrand, getBrands, upsertBrand } from "~/models/brands.server";
+import { deleteBrand, getBrand, upsertBrand } from "~/models/brands.server";
 import { ConvertToBase64 } from "~/utility/fileHelpers";
 import { capitalizeFirst } from "~/utility/stringHelpers";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const id = params?.id;
 
-  if (id === "add") {
-    return null;
-  } else {
-    const brand = await getBrands(id);
+  if (id && id !== "add") {
+    const brand = await getBrand(id);
     return json({ brand });
+  } else {
+    return null;
   }
 };
 

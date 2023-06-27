@@ -7,7 +7,7 @@ import {
   useNavigate,
 } from "@remix-run/react";
 import { useEffect } from "react";
-import { verifyLogin } from "~/models/user.server";
+import { verifyLogin } from "~/models/login.server";
 import { createUserSession } from "~/session.server";
 import { safeRedirect } from "~/utils";
 import background from "../assets/images/banner-login.jpg";

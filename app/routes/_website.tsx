@@ -12,7 +12,6 @@ import { IoHomeSharp, IoMenu, IoSearchOutline } from "react-icons/io5";
 import {
   Outlet,
   useLoaderData,
-  useLocation,
   useNavigate,
   useSubmit,
   useRouteLoaderData,
@@ -33,7 +32,6 @@ export const loader = async () => {
 
 const App = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const submit = useSubmit();
 
   const { rootCategories, brands } =
@@ -105,16 +103,10 @@ const App = () => {
           <div className="relative hidden flex-none lg:absolute lg:left-1/2 lg:block lg:translate-x-[-50%]">
             <ul className="menu menu-horizontal">
               {rootCategories?.map(({ name }: RootCategory) => {
-                // const onPage = location.search.includes(
-                //   `?rootCategory=${name}`
-                // );
                 return (
                   <li
                     key={"menu_rootCategory_" + name}
                     className={`cursor-pointer border-b-2 border-primary-content/0 px-3 py-3 text-sm font-bold tracking-wide hover:bg-primary-content/10 `}
-                    // style={{
-                    //   borderColor: onPage ? "hsl(var(--pc))" : "",
-                    // }}
                     onClick={() =>
                       navigate({
                         pathname: "/products",
@@ -128,19 +120,19 @@ const App = () => {
               })}
             </ul>
           </div>
-          {user && (
-            <div className="hidden gap-6 lg:absolute lg:right-2 lg:flex">
-              <AccountButton {...user} />
-              {cart && <CartButton {...cart} />}
-              <div className="cursor-pointer">
-                <IoSearchOutline
-                  size={24}
-                  onClick={() => setSearchActive(!searchActive)}
-                />
-              </div>
-              <div>{LogoutButton()}</div>
+
+          <div className="hidden gap-6 lg:absolute lg:right-2 lg:flex">
+            {user && <AccountButton {...user} />}
+            {cart && <CartButton {...cart} />}
+            <div className="cursor-pointer">
+              <IoSearchOutline
+                size={24}
+                onClick={() => setSearchActive(!searchActive)}
+              />
             </div>
-          )}
+            <div>{LogoutButton()}</div>
+          </div>
+
           {!user && <>{LoginButton()}</>}
         </div>
 
@@ -156,12 +148,10 @@ const App = () => {
         <label htmlFor="my-drawer-3" className="drawer-overlay"></label>
         <ul className="menu w-80 bg-base-100 p-4">
           {rootCategories?.map(({ name }: RootCategory) => {
-            // const onPage = location.search.includes(`?rootCategory=${name}`);
             return (
               <li
                 key={"menu_rootCategory_" + name}
                 className={`cursor-pointer border-b-2 border-primary-content/0 px-3 py-3 text-sm font-bold tracking-wide hover:bg-primary-content/10 `}
-                // style={{ borderColor: onPage ? "primary-content" : "" }}
                 onClick={() =>
                   navigate({
                     pathname: "/products",

@@ -1,17 +1,18 @@
 /// <reference types="@remix-run/dev" />
 /// <reference types="@remix-run/node" />
 
-interface Route {
-  id: string;
-  title: string;
-  path: string;
-  errorElement?: ReactElement;
-  element?: ReactElement;
-  children?: Route[];
-  loader?: LoaderFunction;
-  action?: ActionFunction;
-  icon?: IconType;
-}
+type GoogleAuthResponse = {
+  iss: string;
+  nbf: number;
+  aud: string;
+  sub: string;
+  email: string;
+  email_verified: boolean;
+  azp: string;
+  name: string;
+  picture: string;
+  given_name: string;
+};
 
 type Image = {
   url: string;

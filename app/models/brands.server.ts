@@ -1,20 +1,20 @@
 import { prisma } from "~/db.server";
 export type { Brand } from "@prisma/client";
 
-export function getBrands(id?: string) {
-  if (!id) {
-    return prisma.brand.findMany();
-  } else {
-    return prisma.brand.findUnique({
-      where: {
-        id: parseInt(id),
-      },
-      include: {
-        image: true,
-      },
-    });
-  }
+export function getBrands() {
+  return prisma.brand.findMany();
 }
+
+export const getBrand = async (id: string) => {
+  return prisma.brand.findUnique({
+    where: {
+      id: parseInt(id),
+    },
+    include: {
+      image: true,
+    },
+  });
+};
 
 export const upsertBrand = async (name: string, image?: Image, id?: string) => {
   let updatedBrand;

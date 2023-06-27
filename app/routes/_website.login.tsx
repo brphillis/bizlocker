@@ -7,27 +7,34 @@ import {
   useNavigate,
 } from "@remix-run/react";
 import { useEffect } from "react";
-import { verifyLogin } from "~/models/user.server";
+import { googleLogin, verifyLogin } from "~/models/login.server";
 import { createUserSession } from "~/session.server";
-import { safeRedirect } from "~/utils";
 import background from "../assets/images/banner-login.jpg";
+import LoginGoogle from "~/components/auth/LoginGoogle";
 
 export const action = async ({ request }: ActionArgs) => {
-  const formData = await request.formData();
-  const email = formData.get("email");
-  const password = formData.get("password");
-  const redirectTo = safeRedirect(formData.get("redirectTo"), "/");
-  const remember = formData.get("remember");
+  const form = Object.fromEntries(await request.formData());
 
-  const user = await verifyLogin(email as string, password as string);
-  if (user) {
-    return createUserSession({
-      request,
-      user: JSON.stringify(user),
-      remember: remember === "on" ? true : false,
-      redirectTo,
-    });
-  } else return null;
+  switch (form._action) {
+    case "login":
+      const { email, password, remember } = form;
+
+      const user = await verifyLogin(email as string, password as string);
+      if (user) {
+        return createUserSession({
+          request,
+          user: JSON.stringify(user),
+          remember: remember === "on" ? true : false,
+          redirectTo: "/",
+        });
+      } else return null;
+
+    case "googleLogin":
+      const { credential } = form;
+      if (credential) {
+        return await googleLogin(request, credential);
+      }
+  }
 };
 
 export const meta: V2_MetaFunction = () => [{ title: "Login" }];
@@ -89,14 +96,19 @@ export default function LoginPage() {
           </label>
         </div>
         <div className="form-control mt-6 gap-3">
-          <button type="submit" className="btn-primary btn">
+          <button
+            type="submit"
+            name="_action"
+            value="login"
+            className="btn-primary btn"
+          >
             Login
           </button>
           <NavLink to="/register" type="button" className="btn-primary btn">
             Create Account
           </NavLink>
           <div className="divider !my-[0.1rem] w-full" />
-          {/* <LoginGoogle /> */}
+          <LoginGoogle />
         </div>
       </Form>
     </div>

@@ -15,7 +15,7 @@ import {
 } from "@remix-run/react";
 import {
   deleteProduct,
-  getProducts,
+  getProduct,
   upsertProduct,
 } from "~/models/products.server";
 import {
@@ -28,10 +28,8 @@ import {
 export const loader = async ({ params }: LoaderArgs) => {
   const id = params?.id;
 
-  if (id === "add") {
-    return null;
-  } else {
-    const product = await getProducts(id);
+  if (id && id !== "add") {
+    const product = await getProduct(id);
     const productCategories = await getProductCategories();
     const brands = await getBrands();
     const availableColors = await getAvailableColors();
@@ -43,6 +41,8 @@ export const loader = async ({ params }: LoaderArgs) => {
       availableColors,
       availableSizes,
     });
+  } else {
+    return null;
   }
 };
 

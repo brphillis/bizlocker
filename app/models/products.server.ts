@@ -1,20 +1,6 @@
 import { prisma } from "~/db.server";
 
-export const getProducts = async (id?: string, count?: string) => {
-  if (!id) {
-    return await prisma.product.findMany({
-      include: {
-        categories: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        brand: true,
-        variants: true,
-      },
-    });
-  }
+export const getProducts = async (count?: string) => {
   if (count) {
     return await prisma.product.findMany({
       include: {
@@ -30,10 +16,7 @@ export const getProducts = async (id?: string, count?: string) => {
       take: parseInt(count as string),
     });
   } else {
-    return await prisma.product.findUnique({
-      where: {
-        id: parseInt(id),
-      },
+    return await prisma.product.findMany({
       include: {
         categories: {
           select: {
@@ -41,12 +24,30 @@ export const getProducts = async (id?: string, count?: string) => {
             name: true,
           },
         },
-        images: true,
         brand: true,
         variants: true,
       },
     });
   }
+};
+
+export const getProduct = async (id: string) => {
+  return await prisma.product.findUnique({
+    where: {
+      id: parseInt(id),
+    },
+    include: {
+      categories: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+      images: true,
+      brand: true,
+      variants: true,
+    },
+  });
 };
 
 export const upsertProduct = async (productData: any) => {
