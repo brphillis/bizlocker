@@ -7,12 +7,41 @@ import {
   sessionStorage,
 } from "~/session.server";
 
+export const getCart = async (request: Request) => {
+  const userData = (await getUserObject(request)) as User;
+  const cartId = userData?.cart?.id;
+
+  if (!cartId) return null;
+
+  return await prisma.cart.findUnique({
+    where: {
+      id: cartId,
+    },
+    include: {
+      cartItems: {
+        include: {
+          variant: {
+            include: {
+              product: {
+                include: {
+                  images: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+};
+
 export const addToCart = async (
-  req: Request,
+  request: Request,
   variantId: string,
   quantity: string
 ) => {
-  const userData = await getUserObject(req);
+  const referer = request.headers.get("referer");
+  const userData = await getUserObject(request);
   const userId = userData?.id;
 
   let userCart = await prisma.cart.findFirst({
@@ -22,7 +51,9 @@ export const addToCart = async (
     include: {
       cartItems: {
         include: {
-          variant: true,
+          variant: {
+            select: { id: true },
+          },
         },
       },
       user: {
@@ -41,7 +72,9 @@ export const addToCart = async (
       include: {
         cartItems: {
           include: {
-            variant: true,
+            variant: {
+              select: { id: true },
+            },
           },
         },
         user: {
@@ -85,11 +118,18 @@ export const addToCart = async (
         });
 
         //remove the cart from current user cookie
+        const userNoCart = {
+          ...userData,
+          cart: null,
+        };
 
-        // req.cookies.current_user.cart = null;
-        // res.cookie("current_user", req.cookies.current_user, {
-        //   expires: new Date(Date.now() + 1000 * 60 * 60 * 24), //TODO
-        // });
+        const session = await getSession(request);
+        session.set(USER_SESSION_KEY, userNoCart);
+        return redirect(referer || "/products", {
+          headers: {
+            "Set-Cookie": await sessionStorage.commitSession(session),
+          },
+        });
       }
     } else {
       // Otherwise, update the quantity of the cart item
@@ -101,7 +141,9 @@ export const addToCart = async (
           quantity: newQuantity,
         },
         include: {
-          variant: true,
+          variant: {
+            select: { id: true },
+          },
         },
       });
     }
@@ -114,7 +156,7 @@ export const addToCart = async (
     });
 
     if (!productVariant) {
-      console.log("NO VARIANT");
+      throw new Error("Variant not found");
     }
 
     await prisma.cartItem.create({
@@ -132,7 +174,9 @@ export const addToCart = async (
         },
       },
       include: {
-        variant: true,
+        variant: {
+          select: { id: true },
+        },
       },
     });
   }
@@ -169,10 +213,9 @@ export const addToCart = async (
     cart: updatedCart,
   };
 
-  const session = await getSession(req);
+  const session = await getSession(request);
   session.set(USER_SESSION_KEY, updatedUser);
-
-  return redirect(req.referrer, {
+  return redirect(referer || "/products", {
     headers: { "Set-Cookie": await sessionStorage.commitSession(session) },
   });
 };

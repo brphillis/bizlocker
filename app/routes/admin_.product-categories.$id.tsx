@@ -1,8 +1,12 @@
+import { useState } from "react";
+import { ConvertToBase64 } from "~/utility/fileHelpers";
+import { capitalizeFirst } from "~/utility/stringHelpers";
+import { IoIosCloseCircle } from "react-icons/io";
 import {
-  type ActionArgs,
   json,
-  type LoaderArgs,
   redirect,
+  type ActionArgs,
+  type LoaderArgs,
 } from "@remix-run/node";
 import {
   Form,
@@ -10,34 +14,19 @@ import {
   useLoaderData,
   useNavigate,
 } from "@remix-run/react";
-import { useState } from "react";
-import { IoIosCloseCircle, IoMdTrash } from "react-icons/io";
-import { tokenAuth } from "~/auth.server";
 import {
   deleteProductCategory,
-  getProductCategories,
+  getProductCategory,
   upsertProductCategory,
 } from "~/models/productCategories.server";
-import { ConvertToBase64 } from "~/utility/fileHelpers";
-import { capitalizeFirst } from "~/utility/stringHelpers";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const id = params?.id;
-
-  if (id === "add") {
-    return null;
-  } else {
-    const productCategory = await getProductCategories(id);
-    return json({ productCategory });
-  }
+  const productCategory = id && id !== "add" && (await getProductCategory(id));
+  return json(productCategory);
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
-  const authenticated = await tokenAuth(request);
-  if (!authenticated.valid) {
-    return redirect("/login");
-  }
-
   const id = params.id === "add" ? undefined : params.id;
   const form = Object.fromEntries(await request.formData());
   const { name, image } = form;
@@ -53,7 +42,7 @@ export const action = async ({ request, params }: ActionArgs) => {
         ? (JSON.parse(image?.toString()) as Image)
         : undefined;
 
-      upsertProductCategory(name as string, parsedImage, id);
+      await upsertProductCategory(name as string, parsedImage, id);
 
       return redirect("/admin/product-categories");
 
@@ -65,15 +54,14 @@ export const action = async ({ request, params }: ActionArgs) => {
 
 const ModifyProductCategory = () => {
   const navigate = useNavigate();
-  const { productCategory } =
-    (useLoaderData() as {
-      productCategory: ProductCategory;
-    }) || {};
+  const productCategory = useLoaderData() as ProductCategory;
   const { validationError } =
     (useActionData() as { validationError: string }) || {};
   const mode = productCategory ? "edit" : "add";
 
   const [image, setImage] = useState<Image | undefined>(productCategory?.image);
+
+  console.log("PRODCAT", productCategory);
 
   return (
     <div className="absolute inset-0 flex h-[100vh] w-[100vw] flex-col items-center justify-center bg-black/80">
@@ -81,18 +69,9 @@ const ModifyProductCategory = () => {
         method="POST"
         className="relative max-h-[calc(100vh-64px)] max-w-[99vw] rounded-lg border-t-4 border-primary bg-base-300 p-6"
       >
-        <Form method="POST" className="flex flex-row justify-between">
+        <div className="flex flex-row justify-between">
           <h1>{mode && capitalizeFirst(mode)} Product Category</h1>
-
-          <button
-            type="submit"
-            name="_action"
-            value="delete"
-            className="relative w-max rounded-full bg-red-500 p-1 text-white"
-          >
-            <IoMdTrash size={18} />
-          </button>
-        </Form>
+        </div>
 
         <div className="divider w-full" />
 

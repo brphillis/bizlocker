@@ -103,7 +103,7 @@ export const deleteBrand = async (id: string) => {
   if (!brand) {
     return false;
   }
-  // Delete the brand
+
   return await prisma.brand.delete({
     where: {
       id: parseInt(id),

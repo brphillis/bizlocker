@@ -21,13 +21,20 @@ export async function verifyLogin(email: string, password: string) {
     where: {
       email,
     },
-    include: {
+    select: {
+      id: true,
+      email: true,
+      password: true,
       cart: {
-        include: {
+        select: {
+          id: true,
           cartItems: {
             include: {
               variant: {
-                include: {
+                select: {
+                  id: true,
+                  price: true,
+                  salePrice: true,
                   product: {
                     select: {
                       name: true,

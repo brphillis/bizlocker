@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { IoAdd, IoCartOutline, IoRemove } from "react-icons/io5";
-import { Form, useLocation } from "react-router-dom";
+import { Form } from "react-router-dom";
 
 const ProductCard = ({ name, images, variants, brand }: Product) => {
-  const { pathname, search } = useLocation();
   const [quantity, setQuantity] = useState<number>(1);
   const { price } = variants[0] || {};
   const displayImage = images[0]?.url;
@@ -16,11 +15,11 @@ const ProductCard = ({ name, images, variants, brand }: Product) => {
       setQuantity(quantity - 1);
     }
   };
-  // {pathname + search}
+
   return (
     <Form
       method="POST"
-      action={pathname + search}
+      action="/products"
       className="w-48 rounded-none bg-primary-content shadow lg:w-72"
     >
       <div
@@ -70,8 +69,6 @@ const ProductCard = ({ name, images, variants, brand }: Product) => {
         <input hidden readOnly name="quantity" value={quantity || ""} />
         <button
           type="submit"
-          name="_action"
-          value="addToCart"
           className="btn-primary btn mt-4 flex w-full  items-center justify-center rounded disabled:opacity-50"
         >
           Add to order

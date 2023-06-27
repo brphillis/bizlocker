@@ -1,24 +1,18 @@
 import { prisma } from "~/db.server";
 
 export const getProductCategories = async (id?: string) => {
-  if (!id) {
-    return await prisma.productCategory.findMany({
-      include: {
-        rootCategory: {
-          include: {
-            articleCategories: true,
-            productCategories: true,
-          },
-        },
-      },
-    });
-  } else {
-    return await prisma.productCategory.findUnique({
-      where: {
-        id: parseInt(id),
-      },
-    });
-  }
+  return await prisma.productCategory.findMany();
+};
+
+export const getProductCategory = async (id: string) => {
+  return await prisma.productCategory.findUnique({
+    where: {
+      id: parseInt(id),
+    },
+    include: {
+      image: true,
+    },
+  });
 };
 
 export const upsertProductCategory = async (

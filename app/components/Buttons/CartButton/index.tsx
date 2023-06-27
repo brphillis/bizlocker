@@ -1,7 +1,7 @@
 import { IoCartOutline } from "react-icons/io5";
 import { useEffect, useState } from "react";
 import { Form, useNavigate } from "react-router-dom";
-// import CartAddSubtractButton from "./CartAddSubtractButton";
+import CartAddSubtractButton from "./CartAddSubtractButton";
 
 const CartButton = ({ id: cartId, cartItems }: Cart) => {
   const navigate = useNavigate();
@@ -37,11 +37,7 @@ const CartButton = ({ id: cartId, cartItems }: Cart) => {
         tabIndex={0}
         className="dropdown-content mr-3 mt-3 w-max min-w-[300px] overflow-hidden rounded-none border border-white/20 bg-base-100 shadow"
       >
-        <Form
-          method="POST"
-          // action="orders/create"
-          className="mb-6 flex flex-col gap-3"
-        >
+        <Form method="POST" className="mb-6 flex flex-col gap-3">
           <div className="mt-3 text-center font-bold">Your Cart</div>
           <ul className="mb-12">
             {cartItems
@@ -64,13 +60,13 @@ const CartButton = ({ id: cartId, cartItems }: Cart) => {
                     key={"cartButton_item_" + variant + "_" + index}
                     className="relative mb-1 flex w-full flex-col items-center justify-center gap-1 bg-base-300/50 px-3 py-3"
                   >
-                    {/* {variantId && (
+                    {variantId && (
                       <CartAddSubtractButton
                         mode="subtract"
                         variantId={variantId?.toString()}
-                        style="absolute left-8 cursor-pointer text-white/20"
+                        extendStyle="absolute left-8 cursor-pointer text-white/20"
                       />
-                    )} */}
+                    )}
 
                     <div>{product?.name}</div>
 
@@ -79,13 +75,13 @@ const CartButton = ({ id: cartId, cartItems }: Cart) => {
                       <div> x {quantity}</div>
                     </div>
 
-                    {/* {variantId && (
+                    {variantId && (
                       <CartAddSubtractButton
                         mode="add"
                         variantId={variantId?.toString()}
-                        style="absolute right-8 cursor-pointer text-white/20"
+                        extendStyle="absolute right-8 cursor-pointer text-white/20"
                       />
-                    )} */}
+                    )}
                   </div>
                 );
               })}
@@ -104,7 +100,7 @@ const CartButton = ({ id: cartId, cartItems }: Cart) => {
             <button
               type="button"
               className="lg btn-success btn-md relative bottom-[-1px] pr-4 font-bold tracking-wide !text-white"
-              onClick={() => navigate(`/cart/${cartId}`)}
+              onClick={() => navigate(`/cart`)}
             >
               Buy Now
             </button>

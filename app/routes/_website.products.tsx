@@ -16,8 +16,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   const searchQuery = {
     name: url.searchParams.get("name")?.toString() || undefined,
     rootCategory: url.searchParams.get("rootCategory")?.toString() || undefined,
-    categories:
-      url.searchParams.get("productCategory")?.toString() || undefined,
+    category: url.searchParams.get("productCategory")?.toString() || undefined,
     brand: url.searchParams.get("brand")?.toString() || undefined,
     page: Number(url.searchParams.get("pageNumber")) || 1,
     perPage: Number(url.searchParams.get("itemsPerPage")) || 10,
@@ -34,14 +33,9 @@ export const action = async ({ request }: ActionArgs) => {
   }
   const form = Object.fromEntries(await request.formData());
   const { variantId, quantity } = form;
-
   switch (form._action) {
-    case "addToCart":
+    default:
       return await addToCart(request, variantId as string, quantity as string);
-
-    case "delete":
-      // await deleteBrand(id as string);
-      return null;
   }
 };
 

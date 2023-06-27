@@ -31,10 +31,6 @@ export const loader = async ({ params }: LoaderArgs) => {
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
-  const authenticated = await tokenAuth(request);
-  if (!authenticated.valid) {
-    return redirect("/login");
-  }
   const id = params.id === "add" ? undefined : params.id;
   const form = Object.fromEntries(await request.formData());
   const { name } = form;
@@ -70,24 +66,17 @@ const ModifyArticleCategory = () => {
     (useActionData() as { validationError: string }) || {};
   const mode = articleCategory ? "edit" : "add";
 
+  console.log("ART", articleCategory);
+
   return (
     <div className="absolute inset-0 flex h-[100vh] w-[100vw] flex-col items-center justify-center bg-black/80">
       <Form
         method="POST"
         className="relative max-h-[calc(100vh-64px)] max-w-[99vw] rounded-lg border-t-4 border-primary bg-base-300 p-6"
       >
-        <Form method="POST" className="flex flex-row justify-between">
+        <div className="flex flex-row justify-between">
           <h1>{mode && capitalizeFirst(mode)} Category</h1>
-
-          <button
-            type="submit"
-            name="_action"
-            value="delete"
-            className="relative w-max rounded-full bg-red-500 p-1 text-white"
-          >
-            <IoMdTrash size={18} />
-          </button>
-        </Form>
+        </div>
 
         <div className="divider w-full" />
 

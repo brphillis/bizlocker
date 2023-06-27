@@ -112,7 +112,40 @@ const Admin = () => {
           </div>
           <div className="relative hidden flex-none lg:absolute lg:left-1/2 lg:block lg:translate-x-[-50%]">
             <ul className="menu menu-horizontal">
-              {/* {user && renderRoutes(adminRoutes)} */}
+              <li onClick={() => navigate("/admin/users")}>
+                <div>
+                  {/* {Icon && <Icon className="h-6 w-auto text-primary-content" />} */}
+                  <span>Users</span>
+                </div>
+              </li>
+
+              <li onClick={() => navigate("/admin/root-categories")}>
+                <div>
+                  {/* {Icon && <Icon className="h-6 w-auto text-primary-content" />} */}
+                  <span>Categories</span>
+                </div>
+              </li>
+
+              <li onClick={() => navigate("/admin/products")}>
+                <div>
+                  {/* {Icon && <Icon className="h-6 w-auto text-primary-content" />} */}
+                  <span>Products</span>
+                </div>
+              </li>
+
+              <li onClick={() => navigate("/admin/orders")}>
+                <div>
+                  {/* {Icon && <Icon className="h-6 w-auto text-primary-content" />} */}
+                  <span>Orders</span>
+                </div>
+              </li>
+
+              <li onClick={() => navigate("/admin/articles")}>
+                <div>
+                  {/* {Icon && <Icon className="h-6 w-auto text-primary-content" />} */}
+                  <span>Articles</span>
+                </div>
+              </li>
             </ul>
           </div>
           {user && (

@@ -251,18 +251,18 @@ export const deleteProduct = async (id: string) => {
 export const searchProducts = async (searchArgs: BasicSearchArgs) => {
   const { name, rootCategory, category, brand, page, perPage } = searchArgs;
 
-  let products;
-  let totalProducts;
-
   const skip = (page - 1) * perPage;
   const take = perPage;
 
-  let filter: any = {
-    name: {
+  // Construct a filter based on the search parameters provided
+  const filter: { [key: string]: any } = {};
+
+  if (name) {
+    filter.name = {
       contains: name,
       mode: "insensitive",
-    },
-  };
+    };
+  }
 
   if (rootCategory && !category) {
     const productCategories = await prisma.productCategory.findMany({
@@ -301,44 +301,42 @@ export const searchProducts = async (searchArgs: BasicSearchArgs) => {
 
   if (brand) {
     filter.brand = {
-      is: {
-        name: {
-          equals: brand,
-          mode: "insensitive",
-        },
+      name: {
+        equals: brand,
+        mode: "insensitive",
       },
     };
   }
 
-  // Retrieve articles based on the filter
-  products = await prisma.product.findMany({
-    where: filter,
-    include: {
-      categories: {
-        select: {
-          id: true,
-          name: true,
+  // Find and count the products
+  const [products, totalProducts] = await Promise.all([
+    prisma.product.findMany({
+      where: filter,
+      include: {
+        categories: {
+          select: {
+            id: true,
+            name: true,
+          },
         },
-      },
-      brand: {
-        select: {
-          id: true,
-          name: true,
+        brand: {
+          select: {
+            id: true,
+            name: true,
+          },
         },
+        images: true,
+        variants: true,
       },
-      images: true,
-      variants: true,
-    },
-    skip,
-    take,
-  });
+      skip,
+      take,
+    }),
+    prisma.product.count({
+      where: filter,
+    }),
+  ]);
 
-  // Count total articles matching the filter
-  totalProducts = await prisma.product.count({
-    where: filter,
-  });
-
-  const totalPages = Math.ceil(totalProducts / (Number(perPage) || 10));
+  const totalPages = Math.ceil(totalProducts / (Number(perPage) || 1));
 
   return { products, totalPages };
 };

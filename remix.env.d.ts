@@ -102,6 +102,16 @@ type OrderItem = {
   orderId: string;
 };
 
+type NewOrderItem = {
+  id?: number;
+  quantity: number;
+  unitPrice: number;
+  variant?: ProductVariant;
+  variantId: number;
+  order?: Order;
+  orderId?: string;
+};
+
 type Cart = {
   id?: number;
   user?: User;
@@ -115,7 +125,7 @@ type CartItem = {
   cart: Cart;
   cartid: number;
   variant: ProductVariant;
-  variantid: number;
+  variantId: number;
 };
 
 type Department = {
@@ -217,6 +227,12 @@ type BasicSearchArgs = {
   id?: string;
   title?: string;
   name?: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  status?: string;
+  startDate?: string;
+  endDate?: string;
   productcategoryname?: string;
   articlecategoryname?: string;
   brand?: string;

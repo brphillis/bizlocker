@@ -159,7 +159,7 @@ const ManageRootCategories = () => {
                     <tr
                       className="hover cursor-pointer"
                       key={id}
-                      onClick={() => navigate(`/admin/categories/${id}`)}
+                      onClick={() => navigate(`/admin/root-categories/${id}`)}
                     >
                       {currentPage && (
                         <td>

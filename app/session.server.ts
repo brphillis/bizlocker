@@ -50,6 +50,7 @@ export async function createUserSession({
   redirectTo: string;
 }) {
   const session = await getSession(request);
+
   // Generate tokens using the payload
   const accessToken = generateAccessToken(user);
   const refreshToken = generateRefreshToken(user);

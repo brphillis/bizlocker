@@ -2,9 +2,9 @@ type Props = { shippingDetails: SquareShippingDetails };
 
 const index = ({ shippingDetails }: Props) => {
   return (
-    <div className="collapse-arrow collapse bg-base-300">
+    <div className="collapse-arrow collapse rounded-none bg-base-300">
       <input type="checkbox" />
-      <div className="collapse-title w-full bg-base-300 py-3 text-center">
+      <div className="collapse-title !ml-[12px] !mr-[-12px] w-full bg-base-300 pt-4 text-center">
         Shipping Details
       </div>
       <div className="collapse-content">

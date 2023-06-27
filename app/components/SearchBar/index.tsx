@@ -126,7 +126,7 @@ const SearchBar = ({ rootCategories, brands }: Props) => {
 
         <button
           type="button"
-          className="btn-primary btn-square !ml-[85%] flex w-full items-center justify-center sm:!ml-0"
+          className="btn-primary btn-square !ml-[85%] flex w-12 items-center justify-center sm:!ml-0"
           onClick={() => {
             searchParams.delete("name");
             searchParams.delete("rootCategory");
