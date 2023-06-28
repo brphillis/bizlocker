@@ -8,31 +8,28 @@ import {
   useSearchParams,
 } from "@remix-run/react";
 import Pagination from "~/components/Pagination";
-import { searchUsers } from "~/models/users.server";
-import { placeholderAvatar } from "~/utility/placeholderAvatar";
-import { capitalizeFirst } from "~/utility/stringHelpers";
+import { searchCampaigns } from "~/models/campaigns.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
 
   const searchQuery = {
-    firstName: url.searchParams.get("firstName") as string,
-    lastName: url.searchParams.get("lastName") as string,
-    email: url.searchParams.get("email") as string,
+    title: url.searchParams.get("title")?.toString() || undefined,
     page: Number(url.searchParams.get("pageNumber")) || 1,
-    perPage: 10,
+    perPage: Number(url.searchParams.get("itemsPerPage")) || 10,
   };
 
-  const { users, totalPages } = await searchUsers(searchQuery);
+  const { campaigns, totalPages } = await searchCampaigns(searchQuery);
 
-  return json({ users, totalPages });
+  return json({ campaigns, totalPages });
 };
 
-const Articles = () => {
+const Campaigns = () => {
   const navigate = useNavigate();
-  const { users, totalPages } = useLoaderData() as {
-    users: User[];
+  const { campaigns, totalPages } = useLoaderData() as {
+    campaigns: Campaign[];
     totalPages: number;
+    articleCategories: ArticleCategory[];
   };
 
   const [searchParams] = useSearchParams();
@@ -44,47 +41,23 @@ const Articles = () => {
         method="GET"
         className="relative mt-3 max-w-[99vw] rounded-lg border-t-4 border-primary bg-base-300 p-6"
       >
-        <h1>Manage Users</h1>
+        <h1>Manage Campaigns</h1>
         <div className="mt-3 flex flex-col">
-          <div className="flex flex-row flex-wrap gap-6">
+          <div className="flex flex-row gap-6">
             <div className="form-control w-full max-w-xs">
               <label className="label">
-                <span className="label-text">First Name</span>
+                <span className="label-text">Name</span>
               </label>
               <input
-                name="firstName"
-                type="text"
-                placeholder="First Name"
+                name="name"
                 className="input-bordered input w-full max-w-xs"
-              />
-            </div>
-
-            <div className="form-control w-full max-w-xs">
-              <label className="label">
-                <span className="label-text">Last Name</span>
-              </label>
-              <input
-                name="lastName"
+                placeholder="Name"
                 type="text"
-                placeholder="Last Name"
-                className="input-bordered input w-full max-w-xs"
-              />
-            </div>
-
-            <div className="form-control w-full max-w-xs">
-              <label className="label">
-                <span className="label-text">Email Address</span>
-              </label>
-              <input
-                name="email"
-                type="text"
-                placeholder="Email Address"
-                className="input-bordered input w-full max-w-xs"
               />
             </div>
           </div>
-          <div className="flex flex-row justify-between">
-            <div className="flex flex-row gap-2">
+          <div className="flex flex-row flex-wrap justify-between">
+            <div className="mr-10 flex flex-row flex-wrap gap-2">
               <button type="submit" className="btn-primary btn mt-6 w-max">
                 Search
               </button>
@@ -108,46 +81,48 @@ const Articles = () => {
               <thead className="sticky top-0">
                 <tr>
                   {currentPage && <th>#</th>}
-                  <th></th>
-                  <th>Firstname</th>
-                  <th>Lastname</th>
-                  <th>Email</th>
+                  <th>Name</th>
+                  <th>Updated</th>
+                  <th>Created</th>
                   <th>Active</th>
                 </tr>
               </thead>
               <tbody>
-                {users &&
-                  users.map(
+                {campaigns &&
+                  campaigns.map(
                     (
-                      { id, email, avatar, userDetails, isActive }: User,
+                      { id, name, updatedAt, createdAt, isActive }: Campaign,
                       index
                     ) => {
-                      const { firstName, lastName } = userDetails || {};
-
                       return (
                         <tr
                           className="hover cursor-pointer"
                           key={id}
-                          onClick={() => navigate(`/admin/users/${id}`)}
+                          onClick={() => navigate(`/admin/campaigns/${id}`)}
                         >
                           {currentPage && (
                             <td>
-                              {index + 1 + (currentPage - 1) * users?.length}
+                              {index +
+                                1 +
+                                (currentPage - 1) * campaigns?.length}
                             </td>
                           )}
-                          <td className="flex items-center justify-center">
-                            <div className="avatar mx-[-10px]">
-                              <div className="w-8 rounded-full">
-                                <img
-                                  src={avatar?.url || placeholderAvatar.url}
-                                  alt="user_avatar"
-                                />
-                              </div>
-                            </div>
+                          <td>{name}</td>
+                          <td>
+                            {new Date(updatedAt).toLocaleDateString("en-US", {
+                              day: "numeric",
+                              month: "long",
+                              year: "numeric",
+                            })}
                           </td>
-                          <td>{firstName && capitalizeFirst(firstName)}</td>
-                          <td>{lastName && capitalizeFirst(lastName)}</td>
-                          <td>{email}</td>
+                          <td>
+                            {new Date(createdAt).toLocaleDateString("en-US", {
+                              day: "numeric",
+                              month: "long",
+                              year: "numeric",
+                            })}
+                          </td>
+
                           <td>
                             {!isActive && (
                               <div className="ml-4 h-3 w-3 rounded-full bg-red-500" />
@@ -172,4 +147,4 @@ const Articles = () => {
   );
 };
 
-export default Articles;
+export default Campaigns;

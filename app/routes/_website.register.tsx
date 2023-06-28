@@ -1,12 +1,5 @@
 import type { ActionArgs, V2_MetaFunction } from "@remix-run/node";
-import {
-  Form,
-  NavLink,
-  useActionData,
-  useLocation,
-  useNavigate,
-} from "@remix-run/react";
-import { useEffect } from "react";
+import { Form, NavLink, useActionData } from "@remix-run/react";
 import background from "../assets/images/banner-login.jpg";
 import { registerUser } from "~/models/register.server";
 import { isValidEmail, isValidPassword } from "~/utility/validate";
@@ -14,19 +7,21 @@ import { isValidEmail, isValidPassword } from "~/utility/validate";
 export const action = async ({ request }: ActionArgs) => {
   const form = Object.fromEntries(await request.formData());
   const { email, password, confirmPassword } = form;
+  let validationError: string[] = [];
 
   if (password !== confirmPassword) {
-    const validationError = "Passwords Do Not Match";
-    return { validationError };
+    validationError.push("Passwords Do Not Match");
   }
 
   if (!isValidEmail(email as string)) {
-    const validationError = "Invalid Email Address";
-    return { validationError };
+    validationError.push("Invalid Email Address");
   }
 
   if (!isValidPassword(password as string)) {
-    const validationError = "Password Does Not Meet Requirements";
+    validationError.push("Password Does Not Meet Requirements");
+  }
+
+  if (validationError.length > 0) {
     return { validationError };
   }
 
@@ -40,17 +35,9 @@ export const action = async ({ request }: ActionArgs) => {
 
 export const meta: V2_MetaFunction = () => [{ title: "Register" }];
 
-export default function LoginPage() {
-  const { user, validationError } =
-    (useActionData() as { user: User; validationError: string }) || {};
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  useEffect(() => {
-    if (user) {
-      navigate("/");
-    }
-  }, [user, navigate, location]);
+export const RegisterPage = () => {
+  const { validationError } =
+    (useActionData() as { validationError: string[] }) || {};
 
   return (
     <div className="relative flex h-full min-h-[calc(100vh-64px)] w-full items-center justify-center">
@@ -104,11 +91,17 @@ export default function LoginPage() {
           />
         </div>
 
-        {validationError && (
-          <p className="my-2 text-center text-sm text-red-500/75">
-            {validationError}
-          </p>
-        )}
+        {validationError?.length > 0 &&
+          validationError.map((error: string, index) => {
+            return (
+              <p
+                key={error + index}
+                className="mt-1 text-center text-xs text-red-500/75"
+              >
+                {error}
+              </p>
+            );
+          })}
 
         {validationError?.includes("Password" && "Requirements") && (
           <div className="flex flex-col items-start text-[10px] text-red-500/75">
@@ -136,4 +129,6 @@ export default function LoginPage() {
       </Form>
     </div>
   );
-}
+};
+
+export default RegisterPage;

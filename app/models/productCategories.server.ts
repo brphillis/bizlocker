@@ -1,7 +1,17 @@
 import { prisma } from "~/db.server";
 
-export const getProductCategories = async (id?: string) => {
-  return await prisma.productCategory.findMany();
+export const getProductCategories = async (inDetail?: boolean) => {
+  if (inDetail) {
+    return await prisma.productCategory.findMany({
+      include: {
+        rootCategory: {
+          include: {
+            productCategories: true,
+          },
+        },
+      },
+    });
+  } else return await prisma.productCategory.findMany();
 };
 
 export const getProductCategory = async (id: string) => {

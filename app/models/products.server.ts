@@ -4,7 +4,7 @@ export const getProducts = async (count?: string) => {
   if (count) {
     return await prisma.product.findMany({
       include: {
-        categories: {
+        productCategories: {
           select: {
             id: true,
             name: true,
@@ -18,7 +18,7 @@ export const getProducts = async (count?: string) => {
   } else {
     return await prisma.product.findMany({
       include: {
-        categories: {
+        productCategories: {
           select: {
             id: true,
             name: true,
@@ -37,7 +37,7 @@ export const getProduct = async (id: string) => {
       id: parseInt(id),
     },
     include: {
-      categories: {
+      productCategories: {
         select: {
           id: true,
           name: true,
@@ -76,7 +76,7 @@ export const upsertProduct = async (productData: any) => {
         brand: {
           connect: { name: brand },
         },
-        categories: {
+        productCategories: {
           connect: categories.map((category: ProductCategory) => ({
             name: category,
           })),
@@ -98,14 +98,14 @@ export const upsertProduct = async (productData: any) => {
             salePrice: variant.salePrice,
             isOnSale: variant.isOnSale,
             stock: variant.stock,
-            color: variant.color,
-            size: variant.size,
+            ...(variant.color && { color: variant.color }),
+            ...(variant.size && { size: variant.size }),
           })),
         },
       },
       include: {
         brand: true,
-        categories: true,
+        productCategories: true,
         images: true,
         variants: true,
       },
@@ -115,7 +115,7 @@ export const upsertProduct = async (productData: any) => {
       where: { id: parseInt(id) },
       include: {
         brand: true,
-        categories: true,
+        productCategories: true,
         images: true,
         variants: true,
       },
@@ -136,8 +136,8 @@ export const upsertProduct = async (productData: any) => {
     await prisma.product.update({
       where: { id: parseInt(id) },
       data: {
-        categories: {
-          disconnect: existingProduct.categories.map((category) => ({
+        productCategories: {
+          disconnect: existingProduct.productCategories.map((category) => ({
             name: category.name,
           })),
         },
@@ -155,7 +155,7 @@ export const upsertProduct = async (productData: any) => {
         brand: {
           connect: { name: brand },
         },
-        categories: {
+        productCategories: {
           connect: categories.map((category: ProductCategory) => ({
             name: category,
           })),
@@ -172,7 +172,7 @@ export const upsertProduct = async (productData: any) => {
       },
       include: {
         brand: true,
-        categories: true,
+        productCategories: true,
         images: true,
       },
     });
@@ -194,8 +194,12 @@ export const upsertProduct = async (productData: any) => {
             salePrice: variant.salePrice,
             isOnSale: variant.isOnSale,
             stock: variant.stock,
-            color: variant.color,
-            size: variant.size,
+            ...(variant.color === undefined || variant.color === ""
+              ? { color: null }
+              : { color: variant.color }),
+            ...(variant.size === undefined || variant.size === ""
+              ? { size: null }
+              : { size: variant.size }),
           },
         });
       } else {
@@ -208,8 +212,8 @@ export const upsertProduct = async (productData: any) => {
             salePrice: variant.salePrice,
             isOnSale: variant.isOnSale,
             stock: variant.stock,
-            color: variant.color,
-            size: variant.size,
+            ...(variant.color && { color: variant.color }),
+            ...(variant.size && { size: variant.size }),
             product: { connect: { id: parseInt(id) } }, // connect it to the product being updated
           },
         });
@@ -280,7 +284,7 @@ export const searchProducts = async (searchArgs: BasicSearchArgs) => {
       },
     });
 
-    filter.categories = {
+    filter.productCategories = {
       some: {
         id: {
           in: productCategories.map((category) => category.id),
@@ -290,7 +294,7 @@ export const searchProducts = async (searchArgs: BasicSearchArgs) => {
   }
 
   if (category) {
-    filter.categories = {
+    filter.productCategories = {
       some: {
         name: {
           equals: category,
@@ -314,7 +318,7 @@ export const searchProducts = async (searchArgs: BasicSearchArgs) => {
     prisma.product.findMany({
       where: filter,
       include: {
-        categories: {
+        productCategories: {
           select: {
             id: true,
             name: true,

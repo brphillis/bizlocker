@@ -14,12 +14,13 @@ import {
   getRootCategory,
   upsertRootCategory,
 } from "~/models/rootCategories.server";
+import SelectDepartment from "~/components/Forms/SelectDepartment";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const id = params.id;
   const rootCategory = id && id !== "add" && (await getRootCategory(id));
   const departments = await getDepartments();
-  const productCategories = await getProductCategories();
+  const productCategories = await getProductCategories(true);
   const articleCategories = await getArticleCategories();
 
   return {
@@ -118,32 +119,11 @@ const ModifyRootCategory = () => {
               />
             </div>
 
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Department</span>
-              </label>
-              <select
-                name="department"
-                className="select-bordered select w-[95vw] sm:w-[215px]"
-                defaultValue={rootCategory?.department?.name}
-                onChange={(e) =>
-                  (rootCategory.department.name = e.target.value)
-                }
-              >
-                {!departments && (
-                  <option disabled value="">
-                    No Departments
-                  </option>
-                )}
-                {departments?.map(({ id, name }: Department) => {
-                  return (
-                    <option key={"department-" + id} value={name}>
-                      {name}
-                    </option>
-                  );
-                })}
-              </select>
-            </div>
+            <SelectDepartment
+              departments={departments}
+              defaultValue={rootCategory?.department?.name}
+              valueToChange={rootCategory}
+            />
           </div>
 
           <div className="flex flex-wrap justify-evenly gap-3">

@@ -1,16 +1,11 @@
 import type { ActionArgs, V2_MetaFunction } from "@remix-run/node";
-import {
-  Form,
-  NavLink,
-  useActionData,
-  useLocation,
-  useNavigate,
-} from "@remix-run/react";
-import { useEffect } from "react";
+import { Form, NavLink, useActionData } from "@remix-run/react";
 import { googleLogin, verifyLogin } from "~/models/login.server";
 import { createUserSession } from "~/session.server";
 import background from "../assets/images/banner-login.jpg";
 import LoginGoogle from "~/components/auth/LoginGoogle";
+import { isValidEmail, isValidPassword } from "~/utility/validate";
+import { useEffect } from "react";
 
 export const action = async ({ request }: ActionArgs) => {
   const form = Object.fromEntries(await request.formData());
@@ -18,6 +13,19 @@ export const action = async ({ request }: ActionArgs) => {
   switch (form._action) {
     case "login":
       const { email, password, remember } = form;
+      let validationError: string[] = [];
+
+      if (!isValidEmail(email as string)) {
+        validationError.push("Invalid Email Address");
+      }
+
+      if (!isValidPassword(password as string)) {
+        validationError.push("Password Does Not Meet Requirements");
+      }
+
+      if (validationError.length > 0) {
+        return { validationError };
+      }
 
       const user = await verifyLogin(email as string, password as string);
       if (user) {
@@ -27,7 +35,10 @@ export const action = async ({ request }: ActionArgs) => {
           remember: remember === "on" ? true : false,
           redirectTo: "/",
         });
-      } else return null;
+      } else {
+        const validationError = ["Incorrect Credentials"];
+        return { validationError };
+      }
 
     case "googleLogin":
       const { credential } = form;
@@ -40,19 +51,19 @@ export const action = async ({ request }: ActionArgs) => {
 export const meta: V2_MetaFunction = () => [{ title: "Login" }];
 
 export default function LoginPage() {
-  const user = useActionData();
-  const navigate = useNavigate();
-  const location = useLocation();
+  const { validationError } =
+    (useActionData() as { validationError: string[] }) || {};
 
-  useEffect(() => {
-    if (user) {
-      if (location.pathname.includes("admin")) {
-        navigate("/admin");
-      } else {
-        navigate("/");
-      }
-    }
-  }, [user, navigate, location]);
+  // useEffect(() => {
+  //   if (user) {
+  //     if (location.pathname.includes("admin")) {
+  //       navigate("/admin");
+  //     } else {
+  //       navigate("/");
+  //     }
+  //   }
+  // }, [user, navigate, location]);
+
   return (
     <div className="relative flex h-full min-h-[calc(100vh-64px)] w-full items-center justify-center">
       <div
@@ -95,6 +106,19 @@ export default function LoginPage() {
             </div>
           </label>
         </div>
+
+        {validationError?.length > 0 &&
+          validationError.map((error: string, index) => {
+            return (
+              <p
+                key={error + index}
+                className="my-2 text-center text-xs text-red-500/75"
+              >
+                {error}
+              </p>
+            );
+          })}
+
         <div className="form-control mt-6 gap-3">
           <button
             type="submit"

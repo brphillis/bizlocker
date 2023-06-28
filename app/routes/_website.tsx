@@ -130,10 +130,9 @@ const App = () => {
                 onClick={() => setSearchActive(!searchActive)}
               />
             </div>
-            <div>{LogoutButton()}</div>
+            {user && <div>{LogoutButton()}</div>}
+            {!user && <div>{LoginButton()}</div>}
           </div>
-
-          {!user && <>{LoginButton()}</>}
         </div>
 
         {searchActive && (

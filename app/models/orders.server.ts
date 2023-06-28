@@ -73,7 +73,7 @@ export const getOrderShippingDetails = async (orderId: string) => {
 
 export const createOrder = async (request: Request) => {
   const userData = (await getUserObject(request)) as User;
-  console.log("USER DATA", userData);
+
   const cartId = userData?.cart?.id;
 
   //retrieve the cart from the database based on the provided cartId

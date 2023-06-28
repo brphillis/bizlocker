@@ -119,6 +119,20 @@ const Admin = () => {
                 </div>
               </li>
 
+              <li onClick={() => navigate("/admin/orders")}>
+                <div>
+                  {/* {Icon && <Icon className="h-6 w-auto text-primary-content" />} */}
+                  <span>Orders</span>
+                </div>
+              </li>
+
+              <li onClick={() => navigate("/admin/campaigns")}>
+                <div>
+                  {/* {Icon && <Icon className="h-6 w-auto text-primary-content" />} */}
+                  <span>Campaigns</span>
+                </div>
+              </li>
+
               <li onClick={() => navigate("/admin/root-categories")}>
                 <div>
                   {/* {Icon && <Icon className="h-6 w-auto text-primary-content" />} */}
@@ -130,13 +144,6 @@ const Admin = () => {
                 <div>
                   {/* {Icon && <Icon className="h-6 w-auto text-primary-content" />} */}
                   <span>Products</span>
-                </div>
-              </li>
-
-              <li onClick={() => navigate("/admin/orders")}>
-                <div>
-                  {/* {Icon && <Icon className="h-6 w-auto text-primary-content" />} */}
-                  <span>Orders</span>
                 </div>
               </li>
 

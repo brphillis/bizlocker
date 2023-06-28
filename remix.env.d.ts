@@ -199,7 +199,7 @@ type Product = {
   images: Image[];
   createdAt: Date;
   updatedAt: Date;
-  categories: ProductCategory[];
+  productCategories: ProductCategory[];
   brand?: Brand | null;
   variants: ProductVariant[];
   totalSold?: number;
@@ -224,6 +224,26 @@ type Brand = {
   imageId?: number;
 };
 
+type Campaign = {
+  id: string;
+  name: string;
+  excludedProducts: Product[];
+  minSaleRange: number;
+  maxSaleRange: number;
+  targetGender: Gender;
+  isActive: boolean;
+  tileImage: Image;
+  tileImageId: number;
+  bannerImage: Image;
+  bannerImageId: number;
+  department: Department;
+  departmentId: number;
+  createdAt: Date;
+  updatedAt?: Date;
+  productCategories: ProductCategory[];
+  brands: Brand[];
+};
+
 type BasicSearchArgs = {
   id?: string;
   title?: string;
@@ -236,6 +256,7 @@ type BasicSearchArgs = {
   endDate?: string;
   productcategoryname?: string;
   articlecategoryname?: string;
+  departmentName?: string;
   brand?: string;
   rootCategory?: string;
   category?: string;

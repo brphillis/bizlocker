@@ -107,12 +107,15 @@ model Image {
   productCategoryId Int?             @unique
   brand             Brand?           @relation("BrandImage", fields: [brandId], references: [id])
   brandId           Int?             @unique
+  campaignTile      Campaign?        @relation("TileImageToCampaign")
+  campaignBanner    Campaign?        @relation("BannerImageToCampaign")
 }
 
 model Department {
   id             Int            @id @default(autoincrement())
   name           String         @unique
   rootCategories RootCategory[] @relation("DepartmentToRootCategory")
+  campaigns      Campaign[]
 }
 
 model RootCategory {
@@ -140,6 +143,7 @@ model ProductCategory {
   products       Product[]     @relation("ProductCategoryToProduct")
   image          Image?        @relation("ProductCategoryImage")
   imageId        Int?
+  campaigns      Campaign[]    @relation("ProductCategoryToCampaign")
 }
 
 model Article {
@@ -154,28 +158,50 @@ model Article {
   images     Image[]
 }
 
+model Campaign {
+  id                String            @id @unique @default(cuid())
+  name              String
+  excludedProducts  Product[]
+  minSaleRange      Float
+  maxSaleRange      Float
+  targetGender      Gender?
+  isActive          Boolean           @default(false)
+  tileImage         Image             @relation("TileImageToCampaign", fields: [tileImageId], references: [id])
+  tileImageId       Int               @unique
+  bannerImage       Image             @relation("BannerImageToCampaign", fields: [bannerImageId], references: [id])
+  bannerImageId     Int               @unique
+  department        Department        @relation(fields: [departmentId], references: [id])
+  departmentId      Int
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime?         @default(now()) @updatedAt
+  productCategories ProductCategory[] @relation("ProductCategoryToCampaign")
+  brands            Brand[]           @relation("BrandToCampaign")
+}
+
 model Product {
-  id          Int               @id @default(autoincrement())
-  name        String
-  description String
-  images      Image[]
-  createdAt   DateTime          @default(now())
-  updatedAt   DateTime          @updatedAt
-  categories  ProductCategory[] @relation("ProductCategoryToProduct")
-  brand       Brand?            @relation("BrandToProduct", fields: [brandId], references: [id])
-  brandId     Int?
-  variants    ProductVariant[]  @relation("ProductVariants")
-  totalSold   Int               @default(0)
-  isActive    Boolean           @default(true)
-  gender      Gender?
+  id                Int               @id @default(autoincrement())
+  name              String
+  description       String
+  images            Image[]
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  productCategories ProductCategory[] @relation("ProductCategoryToProduct")
+  brand             Brand?            @relation("BrandToProduct", fields: [brandId], references: [id])
+  brandId           Int?
+  variants          ProductVariant[]  @relation("ProductVariants")
+  totalSold         Int               @default(0)
+  isActive          Boolean           @default(true)
+  gender            Gender?
+  campaigns         Campaign[]
 }
 
 model Brand {
-  id       Int       @id @unique @default(autoincrement())
-  name     String    @unique
-  products Product[] @relation("BrandToProduct")
-  image    Image?    @relation("BrandImage")
-  imageId  Int?
+  id        Int        @id @unique @default(autoincrement())
+  name      String     @unique
+  products  Product[]  @relation("BrandToProduct")
+  image     Image?     @relation("BrandImage")
+  imageId   Int?
+  campaigns Campaign[] @relation("BrandToCampaign")
 }
 
 model ProductVariant {

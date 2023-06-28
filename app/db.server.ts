@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import invariant from "tiny-invariant";
+import { createInitialDeveloper, createSeedData } from "./utility/initialize";
 
 let prisma: PrismaClient;
 
@@ -58,6 +59,9 @@ function getClient() {
   });
   // connect eagerly
   client.$connect();
+
+  createInitialDeveloper();
+  createSeedData();
 
   return client;
 }

@@ -19,6 +19,7 @@ const ArticleCard = ({ article, hasDescription }: Props) => {
         <img
           className="h-full w-full object-cover object-top"
           src={image || ""}
+          alt={article.title + "_image"}
         />
         <div className="absolute bottom-0 flex w-full justify-between rounded bg-black bg-opacity-20 px-4 py-3 text-white drop-shadow-lg backdrop-blur-lg">
           <div>

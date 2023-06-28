@@ -61,8 +61,6 @@ const ModifyProductCategory = () => {
 
   const [image, setImage] = useState<Image | undefined>(productCategory?.image);
 
-  console.log("PRODCAT", productCategory);
-
   return (
     <div className="absolute inset-0 flex h-[100vh] w-[100vw] flex-col items-center justify-center bg-black/80">
       <Form
