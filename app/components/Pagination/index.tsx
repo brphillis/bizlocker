@@ -11,7 +11,7 @@ const Pagination = ({ totalPages }: Props) => {
   const submit = useSubmit();
 
   return (
-    <div className="flex items-start justify-center pb-6">
+    <div className="flex items-start justify-center pb-6 pt-3">
       <div className="btn-group">
         {Array.from({ length: totalPages }).map((_, i) => {
           const pageNumber = i + 1;

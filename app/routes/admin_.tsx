@@ -126,6 +126,13 @@ const Admin = () => {
                 </div>
               </li>
 
+              <li onClick={() => navigate("/admin/promotions")}>
+                <div>
+                  {/* {Icon && <Icon className="h-6 w-auto text-primary-content" />} */}
+                  <span>Promotions</span>
+                </div>
+              </li>
+
               <li onClick={() => navigate("/admin/campaigns")}>
                 <div>
                   {/* {Icon && <Icon className="h-6 w-auto text-primary-content" />} */}

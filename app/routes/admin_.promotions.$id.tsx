@@ -12,29 +12,23 @@ import {
 } from "@remix-run/react";
 import { useState } from "react";
 import { IoIosCloseCircle, IoMdTrash } from "react-icons/io";
-import SelectBrands from "~/components/Forms/SelectBrands";
 import SelectDepartment from "~/components/Forms/SelectDepartment";
 import SelectGender from "~/components/Forms/SelectGender";
-import SelectProductCategories from "~/components/Forms/SelectProductCategories";
-import { getBrands } from "~/models/brands.server";
-import { getCampaign, upsertCampaign } from "~/models/campaigns.server";
 import { getDepartments } from "~/models/departments.server";
-import { getProductCategories } from "~/models/productCategories.server";
+import { getPromotion, upsertPromotion } from "~/models/promotions.server";
 import { ConvertToBase64 } from "~/utility/fileHelpers";
 import { capitalizeFirst } from "~/utility/stringHelpers";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const id = params?.id;
   const departments = await getDepartments();
-  const productCategories = await getProductCategories();
-  const brands = await getBrands();
-  let campaign;
+  let promotion;
 
   if (id && id !== "add") {
-    campaign = await getCampaign(id);
+    promotion = await getPromotion(id);
   }
 
-  return json({ campaign, departments, productCategories, brands });
+  return json({ promotion, departments });
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
@@ -43,10 +37,8 @@ export const action = async ({ request, params }: ActionArgs) => {
   const {
     name,
     department,
-    productCategories,
-    brands,
-    minSaleRange,
-    maxSaleRange,
+    products,
+    discountPercentage,
     gender,
     bannerImage,
     tileImage,
@@ -69,61 +61,61 @@ export const action = async ({ request, params }: ActionArgs) => {
         : undefined;
 
       const updateData = {
-        name: name as string,
-        department: department as string,
-        productCategories:
-          productCategories && JSON.parse(productCategories as string),
-        brands: brands && JSON.parse(brands as string),
-        minSaleRange: minSaleRange as string,
-        maxSaleRange: maxSaleRange as string,
-        gender: gender as string,
         parsedBanner: parsedBanner,
         parsedTile: parsedTile,
+        name: name as string,
+        department: department as string,
+        products: products && JSON.parse(products as string),
+        discountPercentage: discountPercentage as string,
+        gender: gender as string,
         isActive: isActive ? true : false,
         id: id,
       };
 
-      upsertCampaign(updateData);
+      upsertPromotion(updateData);
 
-      return redirect("/admin/campaigns");
+      console.log("UPDATE", products);
+
+      return redirect("/admin/promotions");
 
     case "delete":
       // await deleteBrand(id as string);
-      return redirect("/admin/campaigns");
+      return redirect("/admin/promotions");
   }
 };
 
-const ModifyCampaign = () => {
+const ModifyPromotion = () => {
   const navigate = useNavigate();
-  const { campaign, departments, productCategories, brands } =
+  const { promotion, departments } =
     (useLoaderData() as {
-      campaign: Campaign;
+      promotion: Promotion;
       departments: Department[];
-      productCategories: ProductCategory[];
-      brands: Brand[];
     }) || {};
+
+  const { products } = (promotion as { products: Product[] }) || {};
+
   const { validationError } =
     (useActionData() as { validationError: string }) || {};
-  const mode = campaign ? "edit" : "add";
+  const mode = promotion ? "edit" : "add";
 
   const [bannerImage, setBannerImage] = useState<Image | undefined>(
-    campaign?.bannerImage
+    promotion?.bannerImage
   );
   const [tileImage, setTileImage] = useState<Image | undefined>(
-    campaign?.tileImage
+    promotion?.tileImage
   );
   const [isActive, setisActive] = useState<string | undefined>(
-    mode === "add" ? " " : campaign?.isActive ? " " : ""
+    mode === "add" ? " " : promotion?.isActive ? " " : ""
   );
 
   return (
-    <div className="absolute inset-0 flex h-max max-w-[100vw] flex-col items-center justify-start bg-black/80 py-3">
+    <div className="absolute inset-0 flex h-max min-h-screen max-w-[100vw] flex-col items-center justify-start bg-black/80 py-3">
       <Form
         method="POST"
         className="relative w-[600px] max-w-[99vw] rounded-lg border-t-4 border-primary bg-base-300 p-6"
       >
         <div className="flex flex-row justify-between">
-          <h1>{mode && capitalizeFirst(mode)} Campaign</h1>
+          <h1>{mode && capitalizeFirst(mode)} Promotion</h1>
 
           <label className="label absolute right-16 mt-[6px] h-1 cursor-pointer">
             <input
@@ -162,71 +154,86 @@ const ModifyCampaign = () => {
                   type="text"
                   placeholder="Name"
                   className="input-bordered input w-[95vw] sm:w-[215px]"
-                  defaultValue={campaign?.name || undefined}
+                  defaultValue={promotion?.name || undefined}
                 />
               </div>
 
               <SelectDepartment
                 departments={departments}
-                defaultValue={campaign?.department?.name}
-                valueToChange={campaign}
+                defaultValue={promotion?.department?.name}
+                valueToChange={promotion}
               />
             </div>
 
             <div className="divider w-full pt-4" />
 
-            <div className="text-center">Campaign Filters</div>
-
-            <div className="flex flex-wrap justify-evenly gap-3">
-              <SelectProductCategories
-                productCategories={productCategories}
-                valueToChange={campaign}
-                title="Targets Categories?"
-              />
-
-              <SelectBrands
-                brands={brands}
-                valueToChange={campaign}
-                title="Targets Brands?"
-              />
-            </div>
+            <div className="text-center">Promotion Paramters</div>
 
             <div className="flex flex-wrap justify-evenly gap-3">
               <div className="form-control">
                 <label className="label">
-                  <span className="label-text">Min Discount Range %</span>
+                  <span className="label-text">Discount %</span>
                 </label>
                 <input
-                  name="minSaleRange"
+                  name="discountPercentage"
                   type="number"
                   placeholder="Discount %"
                   className="input-bordered input w-[95vw] sm:w-[215px]"
-                  defaultValue={campaign?.minSaleRange || ""}
+                  defaultValue={promotion?.discountPercentage || ""}
                 />
               </div>
 
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text">Max Discount Range %</span>
-                </label>
-                <input
-                  name="maxSaleRange"
-                  type="number"
-                  placeholder="Discount %"
-                  className="input-bordered input w-[95vw] sm:w-[215px]"
-                  defaultValue={campaign?.maxSaleRange || ""}
-                />
-              </div>
-            </div>
-
-            <div className="flex flex-wrap justify-evenly gap-3">
               <SelectGender
-                defaultValue={campaign?.targetGender}
+                defaultValue={promotion?.targetGender}
                 label="Has Target Gender?"
               />
-
-              <div className="w-[95vw] sm:w-[215px]" />
             </div>
+          </div>
+
+          <div className="divider w-full pt-8" />
+
+          <div className="max-w-full overflow-x-auto sm:max-w-none">
+            <table className="table-md table">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Name</th>
+                  <th>Gender</th>
+                  <th>Active</th>
+                </tr>
+              </thead>
+              <tbody>
+                {products?.map((product: Product, index) => {
+                  const { id, name, gender, isActive } = product || {};
+
+                  return (
+                    <tr
+                      key={"product_" + (name || index)}
+                      className="hover cursor-pointer"
+                      onClick={() => navigate(`/admin/products/${id}`)}
+                    >
+                      <th>{index + 1}</th>
+                      <td>{name}</td>
+                      <td>{gender}</td>
+
+                      <td>
+                        {!isActive && (
+                          <div className="ml-4 h-3 w-3 rounded-full bg-red-500" />
+                        )}
+                        {isActive && (
+                          <div className="ml-4 h-3 w-3 self-center rounded-full bg-success" />
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+            <input
+              type="hidden"
+              name="products"
+              value={JSON.stringify(products) || ""}
+            />
           </div>
 
           <div className="divider w-full pt-8" />
@@ -358,4 +365,4 @@ const ModifyCampaign = () => {
   );
 };
 
-export default ModifyCampaign;
+export default ModifyPromotion;

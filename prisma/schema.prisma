@@ -109,6 +109,8 @@ model Image {
   brandId           Int?             @unique
   campaignTile      Campaign?        @relation("TileImageToCampaign")
   campaignBanner    Campaign?        @relation("BannerImageToCampaign")
+  promotionTile     Promotion?       @relation("TileImageToPromotion")
+  promotionBanner   Promotion?       @relation("BannerImageToPromotion")
 }
 
 model Department {
@@ -116,6 +118,7 @@ model Department {
   name           String         @unique
   rootCategories RootCategory[] @relation("DepartmentToRootCategory")
   campaigns      Campaign[]
+  promotions     Promotion[]
 }
 
 model RootCategory {
@@ -178,6 +181,23 @@ model Campaign {
   brands            Brand[]           @relation("BrandToCampaign")
 }
 
+model Promotion {
+  id                 String     @id @unique @default(cuid())
+  name               String
+  products           Product[]  @relation("PromotionToProduct")
+  discountPercentage Int
+  targetGender       Gender?
+  isActive           Boolean    @default(false)
+  tileImage          Image      @relation("TileImageToPromotion", fields: [tileImageId], references: [id])
+  tileImageId        Int        @unique
+  bannerImage        Image      @relation("BannerImageToPromotion", fields: [bannerImageId], references: [id])
+  bannerImageId      Int        @unique
+  department         Department @relation(fields: [departmentId], references: [id])
+  departmentId       Int
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime?  @default(now()) @updatedAt
+}
+
 model Product {
   id                Int               @id @default(autoincrement())
   name              String
@@ -193,15 +213,8 @@ model Product {
   isActive          Boolean           @default(true)
   gender            Gender?
   campaigns         Campaign[]
-}
-
-model Brand {
-  id        Int        @id @unique @default(autoincrement())
-  name      String     @unique
-  products  Product[]  @relation("BrandToProduct")
-  image     Image?     @relation("BrandImage")
-  imageId   Int?
-  campaigns Campaign[] @relation("BrandToCampaign")
+  promotion         Promotion?        @relation("PromotionToProduct", fields: [promotionId], references: [id])
+  promotionId       String?
 }
 
 model ProductVariant {
@@ -216,10 +229,21 @@ model ProductVariant {
   product    Product     @relation("ProductVariants", fields: [productId], references: [id])
   color      Color?
   size       Size?
+  totalSold  Int         @default(0)
   cartItems  CartItem[]
   orderItems OrderItem[]
   orderId    String?
   isActive   Boolean     @default(true)
+  isPromoted Boolean     @default(false)
+}
+
+model Brand {
+  id        Int        @id @unique @default(autoincrement())
+  name      String     @unique
+  products  Product[]  @relation("BrandToProduct")
+  image     Image?     @relation("BrandImage")
+  imageId   Int?
+  campaigns Campaign[] @relation("BrandToCampaign")
 }
 
 enum Role {

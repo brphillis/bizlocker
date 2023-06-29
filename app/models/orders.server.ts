@@ -221,6 +221,7 @@ export const confirmPayment = async (paymentCode: string) => {
   });
 
   // Go through each item in the order and decrement the stock of the associated variant
+  // And then increase the totalSold amount on the variant and total for the product
   for (const item of order.items) {
     await prisma.productVariant.update({
       where: {
@@ -229,6 +230,16 @@ export const confirmPayment = async (paymentCode: string) => {
       data: {
         stock: {
           decrement: item.quantity,
+        },
+        totalSold: {
+          increment: item.quantity,
+        },
+        product: {
+          update: {
+            totalSold: {
+              increment: item.quantity,
+            },
+          },
         },
       },
     });

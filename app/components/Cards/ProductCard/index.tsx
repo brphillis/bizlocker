@@ -69,7 +69,7 @@ const ProductCard = ({ name, images, variants, brand }: Product) => {
         <input hidden readOnly name="quantity" value={quantity || ""} />
         <button
           type="submit"
-          className="btn-primary btn mt-4 flex w-full  items-center justify-center rounded disabled:opacity-50"
+          className="btn-primary btn mt-4 flex w-full items-center justify-center rounded disabled:opacity-50"
         >
           Add to order
           <IoCartOutline size={24} className="ml-3 hidden lg:block" />

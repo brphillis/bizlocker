@@ -46,6 +46,7 @@ export const getProduct = async (id: string) => {
       images: true,
       brand: true,
       variants: true,
+      promotion: true,
     },
   });
 };
@@ -54,11 +55,12 @@ export const upsertProduct = async (productData: any) => {
   const {
     name,
     description,
-    categories,
+    productCategories,
     gender,
     isActive,
     images,
     brand,
+    promotion,
     variants,
     id,
   } = productData;
@@ -76,8 +78,14 @@ export const upsertProduct = async (productData: any) => {
         brand: {
           connect: { name: brand },
         },
+        ...(promotion && {
+          // Connect the promotion if provided
+          promotion: {
+            connect: { id: promotion },
+          },
+        }),
         productCategories: {
-          connect: categories.map((category: ProductCategory) => ({
+          connect: productCategories.map((category: ProductCategory) => ({
             name: category,
           })),
         },
@@ -97,6 +105,7 @@ export const upsertProduct = async (productData: any) => {
             price: variant.price,
             salePrice: variant.salePrice,
             isOnSale: variant.isOnSale,
+            isPromoted: variant.isPromoted,
             stock: variant.stock,
             ...(variant.color && { color: variant.color }),
             ...(variant.size && { size: variant.size }),
@@ -105,6 +114,7 @@ export const upsertProduct = async (productData: any) => {
       },
       include: {
         brand: true,
+        promotion: true,
         productCategories: true,
         images: true,
         variants: true,
@@ -115,6 +125,7 @@ export const upsertProduct = async (productData: any) => {
       where: { id: parseInt(id) },
       include: {
         brand: true,
+        promotion: true,
         productCategories: true,
         images: true,
         variants: true,
@@ -141,6 +152,12 @@ export const upsertProduct = async (productData: any) => {
             name: category.name,
           })),
         },
+        ...(promotion === undefined && {
+          // Disconnect the existing promotion if promotion is undefined
+          promotion: {
+            disconnect: true,
+          },
+        }),
       },
     });
 
@@ -155,8 +172,14 @@ export const upsertProduct = async (productData: any) => {
         brand: {
           connect: { name: brand },
         },
+        ...(promotion && {
+          // Connect the new promotion if provided
+          promotion: {
+            connect: { id: promotion },
+          },
+        }),
         productCategories: {
-          connect: categories.map((category: ProductCategory) => ({
+          connect: productCategories.map((category: ProductCategory) => ({
             name: category,
           })),
         },
@@ -172,8 +195,10 @@ export const upsertProduct = async (productData: any) => {
       },
       include: {
         brand: true,
+        promotion: true,
         productCategories: true,
         images: true,
+        variants: true,
       },
     });
 
@@ -193,6 +218,7 @@ export const upsertProduct = async (productData: any) => {
             price: variant.price,
             salePrice: variant.salePrice,
             isOnSale: variant.isOnSale,
+            isPromoted: variant.isPromoted,
             stock: variant.stock,
             ...(variant.color === undefined || variant.color === ""
               ? { color: null }
@@ -211,6 +237,7 @@ export const upsertProduct = async (productData: any) => {
             price: variant.price,
             salePrice: variant.salePrice,
             isOnSale: variant.isOnSale,
+            isPromoted: variant.isPromoted,
             stock: variant.stock,
             ...(variant.color && { color: variant.color }),
             ...(variant.size && { size: variant.size }),
@@ -254,7 +281,18 @@ export const deleteProduct = async (id: string) => {
 };
 
 export const searchProducts = async (searchArgs: BasicSearchArgs) => {
-  const { name, rootCategory, category, brand, page, perPage } = searchArgs;
+  const {
+    name,
+    rootCategory,
+    category,
+    brand,
+    promotion,
+    gender,
+    page,
+    perPage,
+    sortBy,
+    sortOrder,
+  } = searchArgs;
 
   const skip = (page - 1) * perPage;
   const take = perPage;
@@ -313,8 +351,22 @@ export const searchProducts = async (searchArgs: BasicSearchArgs) => {
     };
   }
 
+  if (promotion) {
+    filter.promotion = {
+      isActive: true,
+      name: {
+        contains: promotion,
+        mode: "insensitive",
+      },
+    };
+  }
+
+  if (gender) {
+    filter.gender = gender;
+  }
+
   // Find and count the products
-  const [products, totalProducts] = await Promise.all([
+  const [fetchedProducts, totalProducts] = await Promise.all([
     prisma.product.findMany({
       where: filter,
       include: {
@@ -335,13 +387,52 @@ export const searchProducts = async (searchArgs: BasicSearchArgs) => {
       },
       skip,
       take,
+      orderBy: getOrderBy(sortBy as SortBy, sortOrder as SortOrder),
     }),
     prisma.product.count({
       where: filter,
     }),
   ]);
 
+  let products;
+
+  // If sorting by price is required, sort the products array after fetching
+  if (sortBy === "price" && sortOrder) {
+    products = fetchedProducts.sort((a, b) => {
+      // Assume each product has at least one variant
+      const aPrice = a.variants[0].price;
+      const bPrice = b.variants[0].price;
+
+      // If the price is the same, sort by totalSold
+      if (aPrice === bPrice) {
+        return sortOrder === "asc"
+          ? a.totalSold - b.totalSold
+          : b.totalSold - a.totalSold;
+      }
+
+      return sortOrder === "asc" ? aPrice - bPrice : bPrice - aPrice;
+    });
+  } else {
+    products = fetchedProducts;
+  }
+
   const totalPages = Math.ceil(totalProducts / (Number(perPage) || 1));
 
   return { products, totalPages };
+};
+
+const getOrderBy = (sortBy?: SortBy, sortOrder?: SortOrder) => {
+  if (sortBy && sortOrder) {
+    switch (sortBy) {
+      case "createdAt":
+        return { createdAt: sortOrder };
+      case "totalSold":
+        return { totalSold: sortOrder };
+      case "name":
+        return { name: sortOrder };
+      default:
+        return undefined;
+    }
+  }
+  return undefined;
 };

@@ -175,6 +175,7 @@ type ProductVariant = {
   size?: Size;
   orders?: Order[];
   isActive: boolean;
+  isPromoted?: boolean;
 };
 
 type NewProductVariant = {
@@ -190,6 +191,7 @@ type NewProductVariant = {
   size?: Size;
   orders?: Order[];
   isActive?: boolean;
+  isPromoted?: boolean;
 };
 
 type Product = {
@@ -205,6 +207,7 @@ type Product = {
   totalSold?: number;
   isActive?: boolean;
   gender?: Gender | null;
+  promotion?: Promotion;
 };
 
 type ProductCategory = {
@@ -224,6 +227,23 @@ type Brand = {
   imageId?: number;
 };
 
+type Promotion = {
+  id: string;
+  name: string;
+  products: Product[];
+  discountPercentage: number;
+  targetGender?: Gender;
+  isActive: boolean;
+  tileImage: Image;
+  tileImageId: number;
+  bannerImage: Image;
+  bannerImageId: number;
+  department: Department;
+  departmentId: number;
+  createdAt: Date;
+  updatedAt?: Date;
+};
+
 type Campaign = {
   id: string;
   name: string;
@@ -239,7 +259,7 @@ type Campaign = {
   department: Department;
   departmentId: number;
   createdAt: Date;
-  updatedAt?: Date;
+  updatedAt: Date;
   productCategories: ProductCategory[];
   brands: Brand[];
 };
@@ -251,6 +271,7 @@ type BasicSearchArgs = {
   firstName?: string;
   lastName?: string;
   email?: string;
+  gender?: string;
   status?: string;
   startDate?: string;
   endDate?: string;
@@ -258,11 +279,18 @@ type BasicSearchArgs = {
   articlecategoryname?: string;
   departmentName?: string;
   brand?: string;
+  promotion?: string;
   rootCategory?: string;
   category?: string;
   page: number;
   perPage: number;
+  sortBy?: string;
+  sortOrder?: string;
 };
+
+type SortBy = "createdAt" | "totalSold" | "price" | "name";
+
+type SortOrder = "asc" | "desc";
 
 interface Money {
   amount: number;

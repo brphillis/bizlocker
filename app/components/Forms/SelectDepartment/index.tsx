@@ -1,7 +1,7 @@
 type Props = {
   departments: Department[];
   defaultValue: string;
-  valueToChange: Campaign | RootCategory;
+  valueToChange: Promotion | Campaign | RootCategory;
 };
 
 const SelectDepartment = ({ departments, valueToChange }: Props) => {

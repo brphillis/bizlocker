@@ -162,7 +162,7 @@ const ManageProducts = () => {
                         id,
                         name,
                         description,
-                        categories,
+                        productCategories,
                         brand,
                         isActive,
                       }: Product,
@@ -182,7 +182,7 @@ const ManageProducts = () => {
                           <td>{name}</td>
                           <td>{parse(description.substring(0, 50))}</td>
                           <td>
-                            {categories?.map(
+                            {productCategories?.map(
                               ({ id, name }: ProductCategory) => (
                                 <p key={"category" + id + name}>{name}</p>
                               )

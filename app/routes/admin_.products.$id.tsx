@@ -27,11 +27,14 @@ import SelectGender from "~/components/Forms/SelectGender";
 import SelectProductCategories from "~/components/Forms/SelectProductCategories";
 import SelectBrand from "~/components/Forms/SelectBrand";
 import ProductVariantFormModule from "~/components/Forms/ProductVariantFormModule";
+import SelectPromotion from "~/components/Forms/SelectPromotion";
+import { getPromotions } from "~/models/promotions.server";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const id = params?.id;
   const productCategories = await getProductCategories();
   const brands = await getBrands();
+  const promotions = await getPromotions();
   const availableColors = await getAvailableColors();
   const availableSizes = await getAvailableSizes();
   let product;
@@ -44,6 +47,7 @@ export const loader = async ({ params }: LoaderArgs) => {
     product,
     productCategories,
     brands,
+    promotions,
     availableColors,
     availableSizes,
   });
@@ -58,13 +62,14 @@ export const action = async ({ request, params }: ActionArgs) => {
   const form = Object.fromEntries(await request.formData());
   const {
     name,
-    categories,
+    productCategories,
     description,
     gender,
     isActive,
     variants,
     images,
     brand,
+    promotion,
   } = form;
 
   //if single variant we set it to base
@@ -82,17 +87,21 @@ export const action = async ({ request, params }: ActionArgs) => {
       }
 
       const updateData = {
-        name: name.toString(),
-        categories: categories && JSON.parse(categories?.toString()),
+        name: name as string,
+        productCategories:
+          productCategories && JSON.parse(productCategories as string),
         variants: variantData,
-        description: description.toString(),
-        gender: gender.toString(),
+        description: description as string,
+        gender: gender as string,
         isActive: isActive ? true : false,
         images:
-          images && (JSON.parse(images?.toString()).filter(Boolean) as Image[]),
-        brand: brand.toString() || "Generic",
+          images && (JSON.parse(images as string).filter(Boolean) as Image[]),
+        brand: (brand as string) || "Generic",
+        promotion: promotion as string,
         id: id,
       };
+
+      console.log("PROMOS", promotion);
 
       await upsertProduct(updateData);
 
@@ -110,6 +119,7 @@ const Product = () => {
     product,
     productCategories,
     brands,
+    promotions,
     availableColors,
     availableSizes,
   } =
@@ -117,6 +127,7 @@ const Product = () => {
       product: Product;
       productCategories: ProductCategory[];
       brands: Brand[];
+      promotions: Promotion[];
       availableColors: string[];
       availableSizes: string[];
     }) || {};
@@ -183,15 +194,24 @@ const Product = () => {
             </div>
 
             <div className="flex flex-wrap justify-evenly gap-3">
+              <SelectGender
+                defaultValue={product?.gender}
+                label="Product is Gendered?"
+              />
+
+              <SelectPromotion
+                promotions={promotions}
+                valueToChange={product}
+              />
+            </div>
+
+            <div className="flex flex-wrap justify-evenly gap-3">
               <SelectProductCategories
                 productCategories={productCategories}
                 valueToChange={product}
               />
 
-              <SelectGender
-                defaultValue={product?.gender}
-                label="Product is Gendered?"
-              />
+              <div className="w-[95vw] sm:w-[215px]" />
             </div>
           </div>
 

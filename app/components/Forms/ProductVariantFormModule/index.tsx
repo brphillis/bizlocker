@@ -255,13 +255,50 @@ const ProductVariantFormModule = ({
                     className="toggle-success toggle ml-3"
                     checked={activeVariant?.isOnSale || false}
                     onChange={(e) => {
-                      setActiveVariant({
-                        ...activeVariant,
-                        isOnSale: e.target.checked,
-                      });
+                      const isChecked = e.target.checked;
+                      if (isChecked) {
+                        setActiveVariant((prevVariant) => ({
+                          ...prevVariant,
+                          isOnSale: true,
+                          isPromoted: false,
+                        }));
+                      } else {
+                        setActiveVariant((prevVariant) => ({
+                          ...prevVariant,
+                          isOnSale: false,
+                        }));
+                      }
                     }}
                   />
                   <span className="label-text ml-3">On Sale</span>
+                </label>
+              </div>
+            </div>
+
+            <div className="mt-3 flex flex-wrap justify-evenly gap-3 self-start">
+              <div className="form-control pl-0 sm:pl-6">
+                <label className="label cursor-pointer !pb-0">
+                  <input
+                    type="checkbox"
+                    className="toggle-success toggle ml-3"
+                    checked={activeVariant?.isPromoted || false}
+                    onChange={(e) => {
+                      const isChecked = e.target.checked;
+                      if (isChecked) {
+                        setActiveVariant((prevVariant) => ({
+                          ...prevVariant,
+                          isPromoted: true,
+                          isOnSale: false,
+                        }));
+                      } else {
+                        setActiveVariant((prevVariant) => ({
+                          ...prevVariant,
+                          isPromoted: false,
+                        }));
+                      }
+                    }}
+                  />
+                  <span className="label-text ml-3">Promo Item</span>
                 </label>
               </div>
             </div>
@@ -306,6 +343,7 @@ const ProductVariantFormModule = ({
                   <th>Size</th>
                   <th>Sale Discount</th>
                   <th>On Sale</th>
+                  <th>Promo</th>
                   <th>Active</th>
                 </tr>
               </thead>
@@ -317,6 +355,7 @@ const ProductVariantFormModule = ({
                     size,
                     isActive,
                     isOnSale,
+                    isPromoted,
                     price,
                     salePrice,
                   } = variant || {};
@@ -340,6 +379,14 @@ const ProductVariantFormModule = ({
                           <div className="ml-4 h-3 w-3 rounded-full bg-red-500" />
                         )}
                         {isOnSale && (
+                          <div className="ml-4 h-3 w-3 self-center rounded-full bg-success" />
+                        )}
+                      </td>
+                      <td>
+                        {!isPromoted && (
+                          <div className="ml-4 h-3 w-3 rounded-full bg-red-500" />
+                        )}
+                        {isPromoted && (
                           <div className="ml-4 h-3 w-3 self-center rounded-full bg-success" />
                         )}
                       </td>
