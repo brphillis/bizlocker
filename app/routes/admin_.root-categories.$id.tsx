@@ -1,20 +1,17 @@
 import { useState } from "react";
-import { capitalizeFirst } from "~/utility/stringHelpers";
 import { getDepartments } from "~/models/departments.server";
 import { getArticleCategories } from "~/models/articleCategories.server";
 import { getProductCategories } from "~/models/productCategories.server";
 import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node";
-import {
-  Form,
-  useActionData,
-  useLoaderData,
-  useNavigate,
-} from "@remix-run/react";
+import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import {
   getRootCategory,
   upsertRootCategory,
 } from "~/models/rootCategories.server";
-import SelectDepartment from "~/components/Forms/SelectDepartment";
+import SelectDepartment from "~/components/Forms/Select/SelectDepartment";
+import FormHeader from "~/components/Forms/Headers/FormHeader";
+import DarkOverlay from "~/components/Layout/DarkOverlay";
+import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const id = params.id;
@@ -56,7 +53,6 @@ export const action = async ({ request, params }: ActionArgs) => {
 };
 
 const ModifyRootCategory = () => {
-  const navigate = useNavigate();
   const { rootCategory, departments, productCategories, articleCategories } =
     (useLoaderData() as {
       rootCategory: RootCategory;
@@ -95,15 +91,19 @@ const ModifyRootCategory = () => {
   };
 
   return (
-    <div className="absolute inset-0 flex h-[100vh] w-[100vw] flex-col items-center justify-center bg-black/80">
+    <DarkOverlay>
       <Form
         method="POST"
-        className="relative max-h-[calc(100vh-64px)] max-w-[99vw] rounded-lg border-t-4 border-primary bg-base-300 p-6"
+        className="relative max-w-full bg-base-300 px-0 py-6 sm:px-6"
       >
-        <div className="flex flex-row justify-between">
-          <h1>{mode && capitalizeFirst(mode)} Category</h1>
-        </div>
-        <div className="divider w-full" />
+        <FormHeader
+          hasDelete={false}
+          hasIsActive={false}
+          mode={mode}
+          type="Category"
+          valueToChange={rootCategory}
+        />
+
         <div className="form-control gap-3">
           <div className="flex flex-wrap justify-evenly gap-3">
             <div className="form-control">
@@ -245,25 +245,9 @@ const ModifyRootCategory = () => {
           </p>
         )}
 
-        <div className="flex flex-row items-center justify-center gap-2">
-          <button
-            type="button"
-            className="btn-primary btn mt-6 w-max"
-            onClick={() => navigate("..")}
-          >
-            Back
-          </button>
-          <button
-            type="submit"
-            name="_action"
-            value="upsert"
-            className="btn-primary btn mt-6 w-max"
-          >
-            Submit
-          </button>
-        </div>
+        <BackSubmitButtons />
       </Form>
-    </div>
+    </DarkOverlay>
   );
 };
 

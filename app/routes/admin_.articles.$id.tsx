@@ -4,15 +4,13 @@ import {
   type LoaderArgs,
   redirect,
 } from "@remix-run/node";
-import {
-  Form,
-  useActionData,
-  useLoaderData,
-  useNavigate,
-} from "@remix-run/react";
+import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { useState } from "react";
-import { IoMdTrash } from "react-icons/io";
+import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
+import FormHeader from "~/components/Forms/Headers/FormHeader";
+import SelectArticleCategories from "~/components/Forms/Select/SelectArticleCategories";
 import ImageUploadSlider from "~/components/ImageUploadSlider.client";
+import DarkOverlay from "~/components/Layout/DarkOverlay";
 import RichTextEditor from "~/components/RichTextEditor.client";
 import { getArticleCategories } from "~/models/articleCategories.server";
 import {
@@ -20,7 +18,6 @@ import {
   getArticle,
   upsertArticle,
 } from "~/models/articles.server";
-import { capitalizeFirst } from "~/utility/stringHelpers";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const id = params?.id;
@@ -38,10 +35,10 @@ export const action = async ({ request, params }: ActionArgs) => {
 
   switch (form._action) {
     case "upsert":
-      const { title, categories, content, images, isActive } = form;
+      const { title, articleCategories, content, images, isActive } = form;
       const articleData = {
         title: title.toString(),
-        categories: JSON.parse(categories?.toString()),
+        articleCategories: JSON.parse(articleCategories?.toString()),
         content: content.toString(),
         isActive: isActive ? true : false,
         images: images
@@ -61,7 +58,6 @@ export const action = async ({ request, params }: ActionArgs) => {
 };
 
 const ModifyArticle = () => {
-  const navigate = useNavigate();
   const { article, articleCategories } =
     (useLoaderData() as {
       article: Article;
@@ -73,61 +69,22 @@ const ModifyArticle = () => {
   const [currentImages, setCurrentImages] = useState<Image[] | undefined>(
     article?.images
   );
-  const [selectedCategories, setSelectedCategories] = useState<string[]>(
-    article?.categories.map((e) => e?.name) || [""]
-  );
 
-  const [isActive, setisActive] = useState<string | undefined>(
-    mode === "add" ? " " : article?.isActive ? " " : ""
-  );
   const [richText, setRichText] = useState<string>(article?.content);
 
-  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedOptions = Array.from(
-      e.target.selectedOptions,
-      (option: HTMLOptionElement) => option.value
-    );
-    setSelectedCategories(selectedOptions);
-  };
-
   return (
-    <div
-      className="
-      absolute inset-0 flex h-max min-h-[100vh] w-[100vw] flex-col items-center justify-center bg-black/80 py-3"
-    >
+    <DarkOverlay>
       <Form
         method="POST"
-        className="
-          relative w-[600px] max-w-[99vw] rounded-lg border-t-4 border-primary bg-base-300 p-6"
+        className="max-w-screen scrollbar-hide relative w-[800px] !max-w-[100vw] overflow-y-auto bg-base-300 px-3 py-6 sm:px-6"
       >
-        <Form method="POST" className="flex flex-row justify-between">
-          <h1>{mode && capitalizeFirst(mode)} Article</h1>
-
-          <label className="label absolute right-16 top-[1.1rem] cursor-pointer">
-            <input
-              type="checkbox"
-              className="toggle-success toggle ml-3"
-              checked={isActive ? true : false}
-              onChange={(e) =>
-                setisActive(e.target.checked ? "true" : undefined)
-              }
-            />
-            <span className="label-text ml-3">Active</span>
-            <input name="isActive" value={isActive || ""} readOnly hidden />
-          </label>
-
-          <button
-            type="submit"
-            name="_action"
-            value="delete"
-            className="relative w-max rounded-full bg-red-500 p-1 text-white"
-          >
-            <IoMdTrash size={18} />
-          </button>
-        </Form>
-        <input name="isActive" value={isActive || ""} readOnly hidden />
-
-        <div className="divider w-full" />
+        <FormHeader
+          valueToChange={article}
+          type="Article"
+          mode={mode}
+          hasIsActive={true}
+          hasDelete={true}
+        />
 
         <div className="form-control">
           <div className="flex flex-row flex-wrap justify-around gap-3">
@@ -144,34 +101,10 @@ const ModifyArticle = () => {
               />
             </div>
 
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Category</span>
-              </label>
-              <select
-                className="select-bordered select w-[95vw] sm:w-[215px]"
-                onChange={handleCategoryChange}
-                value={selectedCategories}
-                multiple
-              >
-                <option disabled value="">
-                  Select a Category
-                </option>
-                {articleCategories?.map(({ id, name }: ArticleCategory) => {
-                  return (
-                    <option key={id} value={name}>
-                      {name}
-                    </option>
-                  );
-                })}
-              </select>
-              <input
-                hidden
-                readOnly
-                name="categories"
-                value={JSON.stringify(selectedCategories) || ""}
-              />
-            </div>
+            <SelectArticleCategories
+              articleCategories={articleCategories}
+              valueToChange={article}
+            />
           </div>
 
           <div className="form-control mt-3 w-[495px] max-w-[95vw] self-center">
@@ -210,27 +143,10 @@ const ModifyArticle = () => {
             </p>
           )}
 
-          <div className="flex flex-row justify-center gap-6">
-            <button
-              type="button"
-              className="btn-primary btn mt-6 w-max"
-              onClick={() => navigate("..")}
-            >
-              Back
-            </button>
-
-            <button
-              type="submit"
-              name="_action"
-              value="upsert"
-              className="btn-primary btn mt-6 w-max"
-            >
-              Submit
-            </button>
-          </div>
+          <BackSubmitButtons />
         </div>
       </Form>
-    </div>
+    </DarkOverlay>
   );
 };
 

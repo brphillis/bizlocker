@@ -10,8 +10,6 @@ import {
   useLoaderData,
   useNavigate,
 } from "@remix-run/react";
-import { IoMdTrash } from "react-icons/io";
-import { tokenAuth } from "~/auth.server";
 import {
   deleteArticleCategory,
   getArticleCategories,

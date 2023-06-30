@@ -6,7 +6,7 @@ export const getArticle = async (id: string) => {
       id: parseInt(id),
     },
     include: {
-      categories: {
+      articleCategories: {
         select: {
           id: true,
           name: true,
@@ -18,7 +18,8 @@ export const getArticle = async (id: string) => {
 };
 
 export const upsertArticle = async (articleData: any) => {
-  const { title, content, categories, isActive, images, id } = articleData;
+  const { title, content, articleCategories, isActive, images, id } =
+    articleData;
 
   if (!id) {
     return await prisma.article.create({
@@ -26,8 +27,8 @@ export const upsertArticle = async (articleData: any) => {
         title,
         content,
         isActive,
-        categories: {
-          connect: categories.map((category: string) => ({
+        articleCategories: {
+          connect: articleCategories.map((category: string) => ({
             name: category,
           })),
         },
@@ -50,7 +51,7 @@ export const upsertArticle = async (articleData: any) => {
     const existingArticle = await prisma.article.findUnique({
       where: { id: parseInt(id) },
       include: {
-        categories: true,
+        articleCategories: true,
         images: true,
       },
     });
@@ -66,7 +67,7 @@ export const upsertArticle = async (articleData: any) => {
     await prisma.article.update({
       where: { id: parseInt(id) },
       data: {
-        categories: { set: [] },
+        articleCategories: { set: [] },
       },
     });
 
@@ -77,9 +78,9 @@ export const upsertArticle = async (articleData: any) => {
         title,
         content,
         isActive,
-        categories: {
-          connect: categories.map((category: string) => ({
-            name: category,
+        articleCategories: {
+          connect: articleCategories.map((articleCategory: string) => ({
+            name: articleCategory,
           })),
         },
         images:
@@ -149,7 +150,7 @@ export const searchArticles = async (searchArgs: BasicSearchArgs) => {
     prisma.article.findMany({
       where: filter,
       include: {
-        categories: {
+        articleCategories: {
           select: {
             id: true,
             name: true,

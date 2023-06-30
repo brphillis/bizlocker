@@ -6,6 +6,8 @@ import {
   useSearchParams,
 } from "@remix-run/react";
 import { json, type LoaderArgs } from "@remix-run/server-runtime";
+import AdminPageHeader from "~/components/Layout/AdminPageHeader";
+import AdminPageWrapper from "~/components/Layout/AdminPageWrapper";
 import Pagination from "~/components/Pagination";
 import { getArticleCategories } from "~/models/articleCategories.server";
 import { getProductCategories } from "~/models/productCategories.server";
@@ -52,28 +54,29 @@ const ManageRootCategories = () => {
   const currentPage = Number(searchParams.get("pageNumber")) || 1;
 
   return (
-    <>
-      <Form
-        method="GET"
-        className="relative mt-3 max-w-[99vw] rounded-lg border-t-4 border-primary bg-base-300 p-6"
-      >
-        <h1>Manage Categories</h1>
+    <AdminPageWrapper>
+      <Form method="GET" className="relative h-full w-full bg-base-300 p-6">
+        <AdminPageHeader
+          title="Manage Categories"
+          addButtonText="Add Category"
+        />
+
         <div className="mt-3 flex flex-col">
           <div className="flex flex-row gap-6">
-            <div className="form-control w-full max-w-xs">
+            <div className="form-control w-full">
               <label className="label">
                 <span className="label-text">Category Name</span>
               </label>
               <input
                 name="rootCategory"
-                className="input-bordered input w-full max-w-xs"
-                placeholder="Title"
+                className="input-bordered input w-full sm:w-[215px]"
+                placeholder="Name"
                 type="text"
               />
             </div>
           </div>
 
-          <div className="collapse-arrow collapse mt-6 bg-base-200">
+          <div className="collapse-arrow collapse mt-6 w-full max-w-[800px] rounded-none bg-base-200 sm:w-[800px]">
             <input type="checkbox" />
             <div className="collapse-title h-max text-sm font-medium">
               Search by sub-category
@@ -125,62 +128,47 @@ const ManageRootCategories = () => {
             </div>
           </div>
 
-          <div className="flex flex-row flex-wrap justify-between">
-            <div className="mr-10 flex flex-row flex-wrap gap-2">
-              <button type="submit" className="btn-primary btn mt-6 w-max">
-                Search
-              </button>
-
-              <button
-                type="button"
-                className="btn-primary btn mt-6 w-max"
-                onClick={() => navigate("add")}
-              >
-                +
-              </button>
-            </div>
+          <div className="flex flex-row justify-end sm:justify-start">
+            <button type="submit" className="btn-primary btn mt-6 w-max">
+              Search
+            </button>
           </div>
         </div>
 
         <div className="divider w-full" />
 
-        <div className="my-6 flex justify-center">
-          <div className="max-h-[55vh] max-w-[98vw] overflow-x-auto rounded-2xl">
-            <table className="table w-[720px] rounded-xl">
-              <thead className="sticky top-0">
-                <tr>
-                  {currentPage && <th>#</th>}
-                  <th>Title</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rootCategories?.map(({ id, name }: RootCategory, index) => {
-                  return (
-                    <tr
-                      className="hover cursor-pointer"
-                      key={id}
-                      onClick={() => navigate(`/admin/root-categories/${id}`)}
-                    >
-                      {currentPage && (
-                        <td>
-                          {index +
-                            1 +
-                            (currentPage - 1) * rootCategories?.length}
-                        </td>
-                      )}
-                      <td>{name}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+        <div className="w-full max-w-[89vw] overflow-x-auto">
+          <table className="table-sm my-3 table">
+            <thead className="sticky top-0">
+              <tr>
+                {currentPage && <th>#</th>}
+                <th>Title</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rootCategories?.map(({ id, name }: RootCategory, index) => {
+                return (
+                  <tr
+                    className="hover cursor-pointer"
+                    key={id}
+                    onClick={() => navigate(`/admin/root-categories/${id}`)}
+                  >
+                    {currentPage && (
+                      <td>
+                        {index + 1 + (currentPage - 1) * rootCategories?.length}
+                      </td>
+                    )}
+                    <td>{name}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+          <Pagination totalPages={totalPages} />
         </div>
-
-        <Pagination totalPages={totalPages} />
       </Form>
       <Outlet />
-    </>
+    </AdminPageWrapper>
   );
 };
 

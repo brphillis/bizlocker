@@ -1,17 +1,11 @@
 import { useState } from "react";
 import { tokenAuth } from "~/auth.server";
 import { getBrands } from "~/models/brands.server";
-import { capitalizeFirst } from "~/utility/stringHelpers";
 import RichTextEditor from "~/components/RichTextEditor.client";
 import ImageUploadSlider from "~/components/ImageUploadSlider.client";
 import { getProductCategories } from "~/models/productCategories.server";
 import { getAvailableColors, getAvailableSizes } from "~/models/enums.server";
-import {
-  Form,
-  useActionData,
-  useLoaderData,
-  useNavigate,
-} from "@remix-run/react";
+import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import {
   deleteProduct,
   getProduct,
@@ -23,12 +17,15 @@ import {
   type ActionArgs,
   type LoaderArgs,
 } from "@remix-run/server-runtime";
-import SelectGender from "~/components/Forms/SelectGender";
-import SelectProductCategories from "~/components/Forms/SelectProductCategories";
-import SelectBrand from "~/components/Forms/SelectBrand";
+import SelectGender from "~/components/Forms/Select/SelectGender";
+import SelectProductCategories from "~/components/Forms/Select/SelectProductCategories";
+import SelectBrand from "~/components/Forms/Select/SelectBrand";
 import ProductVariantFormModule from "~/components/Forms/ProductVariantFormModule";
-import SelectPromotion from "~/components/Forms/SelectPromotion";
+import SelectPromotion from "~/components/Forms/Select/SelectPromotion";
 import { getPromotions } from "~/models/promotions.server";
+import FormHeader from "~/components/Forms/Headers/FormHeader";
+import DarkOverlay from "~/components/Layout/DarkOverlay";
+import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const id = params?.id;
@@ -114,7 +111,6 @@ export const action = async ({ request, params }: ActionArgs) => {
 };
 
 const Product = () => {
-  const navigate = useNavigate();
   const {
     product,
     productCategories,
@@ -139,40 +135,21 @@ const Product = () => {
     product?.images
   );
 
-  const [isActive, setisActive] = useState<string | undefined>(
-    mode === "add" ? " " : product?.isActive ? " " : ""
-  );
-
   const [richText, setRichText] = useState<string>(product?.description);
 
   return (
-    <div
-      className="
-    absolute inset-0 flex h-max max-w-[100vw] flex-col items-center justify-start bg-black/80 py-3"
-    >
+    <DarkOverlay>
       <Form
         method="POST"
-        className="
-        relative w-[600px] max-w-[99vw] rounded-lg border-t-4 border-primary bg-base-300 p-6"
+        className="max-w-screen scrollbar-hide relative w-[800px] !max-w-[100vw] overflow-y-auto bg-base-300 px-3 py-6 sm:px-6"
       >
-        <div className="flex flex-row justify-between">
-          <h1>{mode && capitalizeFirst(mode)} Product</h1>
-
-          <label className="label mt-1 h-1 cursor-pointer">
-            <input
-              type="checkbox"
-              className="toggle-success toggle ml-3"
-              checked={isActive ? true : false}
-              onChange={(e) =>
-                setisActive(e.target.checked ? "true" : undefined)
-              }
-            />
-            <span className="label-text ml-3">Active</span>
-          </label>
-        </div>
-        <input name="isActive" value={isActive || ""} readOnly hidden />
-
-        <div className="divider w-full" />
+        <FormHeader
+          valueToChange={product}
+          type="Product"
+          mode={mode}
+          hasIsActive={true}
+          hasDelete={false}
+        />
 
         <div className="form-control">
           <div className="form-control gap-3">
@@ -239,7 +216,7 @@ const Product = () => {
 
           <div className="divider w-full pt-4" />
 
-          <div className="form-control mt-3 w-[495px] max-w-[95vw] self-center">
+          <div className="form-control my-3 w-[495px] max-w-[95vw] self-center">
             <label className="label">
               <span className="label-text">Description</span>
             </label>
@@ -258,35 +235,16 @@ const Product = () => {
             />
           </div>
 
-          <div className="divider w-full pt-12" />
-
           {statusText && (
             <p className="my-2 text-center text-sm text-red-500/75">
               {statusText}
             </p>
           )}
 
-          <div className="flex flex-row justify-center gap-6">
-            <button
-              type="button"
-              className="btn-primary btn mt-6 w-max"
-              onClick={() => navigate("..")}
-            >
-              Back
-            </button>
-
-            <button
-              type="submit"
-              name="_action"
-              value="upsert"
-              className="btn-primary btn mt-6 w-max"
-            >
-              Submit
-            </button>
-          </div>
+          <BackSubmitButtons />
         </div>
       </Form>
-    </div>
+    </DarkOverlay>
   );
 };
 

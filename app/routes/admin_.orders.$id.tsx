@@ -7,7 +7,9 @@ import {
   useNavigate,
 } from "@remix-run/react";
 import { useState } from "react";
+import { IoClose } from "react-icons/io5";
 import OrderStatusSteps from "~/components/Indicators/OrderStatusSteps";
+import DarkOverlay from "~/components/Layout/DarkOverlay";
 import Spinner from "~/components/Spinner";
 import {
   getOrder,
@@ -76,14 +78,11 @@ const ModifyOrder = () => {
     useState<boolean>(false);
 
   return (
-    <div
-      className="
-      absolute inset-0 flex h-max min-h-[160%] max-w-[100vw] flex-col items-center justify-start bg-black/80 py-3"
-    >
-      <div
-        className="
-          relative w-[600px] max-w-[99vw] rounded-lg border-t-4 border-primary bg-base-300 p-6"
-      >
+    <DarkOverlay>
+      <div className="max-w-screen scrollbar-hide relative w-[800px] !max-w-[100vw] overflow-y-auto bg-base-300 px-3 py-6 sm:px-6">
+        <button className="absolute right-3 top-3 cursor-pointer">
+          <IoClose onClick={() => navigate("..")} />
+        </button>
         <div className="mb-3 flex w-[100%] flex-row justify-between">
           <h1>
             Manage Order -&nbsp;
@@ -376,7 +375,7 @@ const ModifyOrder = () => {
           </div>
         </div>
       </div>
-    </div>
+    </DarkOverlay>
   );
 };
 

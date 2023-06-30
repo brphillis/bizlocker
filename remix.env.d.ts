@@ -151,7 +151,7 @@ type Article = {
   createdAt: Date;
   updatedAt: Date;
   isActive?: boolean;
-  categories: ArticleCategory[];
+  articleCategories: ArticleCategory[];
   images: Image[];
 };
 

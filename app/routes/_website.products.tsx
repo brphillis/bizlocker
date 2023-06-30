@@ -18,6 +18,8 @@ export const loader = async ({ request }: LoaderArgs) => {
     rootCategory: url.searchParams.get("rootCategory")?.toString() || undefined,
     category: url.searchParams.get("productCategory")?.toString() || undefined,
     brand: url.searchParams.get("brand")?.toString() || undefined,
+    sortBy: (url.searchParams.get("sortBy") as SortBy) || undefined,
+    sortOrder: (url.searchParams.get("sortOrder") as SortOrder) || undefined,
     page: Number(url.searchParams.get("pageNumber")) || 1,
     perPage: Number(url.searchParams.get("itemsPerPage")) || 10,
   };

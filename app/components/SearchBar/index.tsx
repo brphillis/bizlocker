@@ -140,10 +140,6 @@ const SearchBar = ({ rootCategories, brands }: Props) => {
         >
           <IoRefreshOutline />
         </button>
-
-        {/* <button className="btn-outline btn" type="submit">
-            search
-          </button> */}
       </div>
     </Form>
   );

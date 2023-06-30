@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { IoHomeSharp } from "react-icons/io5";
 import {
   Outlet,
   useLocation,
@@ -7,6 +6,7 @@ import {
   useRouteLoaderData,
   useSubmit,
 } from "@remix-run/react";
+import { IoMenu } from "react-icons/io5";
 
 const Admin = () => {
   const user = useRouteLoaderData("root") as User | undefined;
@@ -21,7 +21,7 @@ const Admin = () => {
         className={"btn-primary btn-md " + style}
         onClick={() => submit(null, { method: "post", action: "/logout" })}
       >
-        LogOut
+        Log Out
       </button>
     );
   };
@@ -37,34 +37,6 @@ const Admin = () => {
     );
   };
 
-  //   const adminRoutes: Route[] = Routes.reduce(
-  //     (results: Route[], { id, children }: Route) => {
-  //       if (id === "admin-root" && children) {
-  //         return results.concat(children);
-  //       }
-  //       return results;
-  //     },
-  //     []
-  //   );
-
-  //   const renderRoutes = (routes: Route[]) => {
-  //     return routes.map(({ id, title, path, icon }: Route) => {
-  //       if (title !== "login" && !title?.includes("home")) {
-  //         const Icon = icon as IconType;
-  //         return (
-  //           <li key={id + path} onClick={() => navigate(path)}>
-  //             <div>
-  //               {Icon && <Icon className="h-6 w-auto text-primary-content" />}
-  //               <span>{capitalizeFirst(title)}</span>
-  //             </div>
-  //           </li>
-  //         );
-  //       } else {
-  //         return null;
-  //       }
-  //     });
-  //   };
-
   useEffect(() => {
     if (!user && !isLoginPage) {
       navigate("/admin/login");
@@ -72,113 +44,123 @@ const Admin = () => {
   }, [isLoginPage, user, navigate]);
 
   return (
-    <div className="drawer" data-theme="dark">
-      <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
-      <div className="!max-w-screen min-w-screen drawer-content relative flex min-h-[calc(100vh-64px)] flex-col  items-center  justify-start">
-        <div className="navbar relative w-full bg-base-300">
-          {user && (
-            <div className="flex-none lg:hidden">
-              <label htmlFor="my-drawer-3" className="btn-ghost btn-square btn">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  className="inline-block h-6 w-6 stroke-current"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M4 6h16M4 12h16M4 18h16"
-                  ></path>
-                </svg>
-              </label>
-            </div>
-          )}
-          <div className="mx-2 flex flex-1 flex-row gap-4 px-2 font-bold">
-            <IoHomeSharp
-              size={34}
-              className="cursor-pointer rounded-full bg-primary p-[0.4rem] text-primary-content transition-all duration-200 hover:scale-105"
-              onClick={() => navigate("/admin")}
-            />
-            {/* <img src={image} className="h-5 select-none" /> */}
-
-            <button
-              className={"btn-primary btn-md absolute right-2 sm:relative"}
-              onClick={() => navigate("/")}
-            >
-              Website
-            </button>
-          </div>
-          <div className="relative hidden flex-none lg:absolute lg:left-1/2 lg:block lg:translate-x-[-50%]">
-            <ul className="menu menu-horizontal">
-              <li onClick={() => navigate("/admin/users")}>
-                <div>
-                  {/* {Icon && <Icon className="h-6 w-auto text-primary-content" />} */}
-                  <span>Users</span>
-                </div>
-              </li>
-
-              <li onClick={() => navigate("/admin/orders")}>
-                <div>
-                  {/* {Icon && <Icon className="h-6 w-auto text-primary-content" />} */}
-                  <span>Orders</span>
-                </div>
-              </li>
-
-              <li onClick={() => navigate("/admin/promotions")}>
-                <div>
-                  {/* {Icon && <Icon className="h-6 w-auto text-primary-content" />} */}
-                  <span>Promotions</span>
-                </div>
-              </li>
-
-              <li onClick={() => navigate("/admin/campaigns")}>
-                <div>
-                  {/* {Icon && <Icon className="h-6 w-auto text-primary-content" />} */}
-                  <span>Campaigns</span>
-                </div>
-              </li>
-
-              <li onClick={() => navigate("/admin/root-categories")}>
-                <div>
-                  {/* {Icon && <Icon className="h-6 w-auto text-primary-content" />} */}
-                  <span>Categories</span>
-                </div>
-              </li>
-
-              <li onClick={() => navigate("/admin/products")}>
-                <div>
-                  {/* {Icon && <Icon className="h-6 w-auto text-primary-content" />} */}
-                  <span>Products</span>
-                </div>
-              </li>
-
-              <li onClick={() => navigate("/admin/articles")}>
-                <div>
-                  {/* {Icon && <Icon className="h-6 w-auto text-primary-content" />} */}
-                  <span>Articles</span>
-                </div>
-              </li>
-            </ul>
-          </div>
-          {user && (
-            <li className="hidden lg:absolute lg:right-2 lg:block">
-              {LogoutButton()}
-            </li>
-          )}
-          {!user && <>{LoginButton()}</>}
+    <div className="drawer !max-h-[calc(100vh+64px)] lg:drawer-open">
+      <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
+      <div className="drawer-content flex flex-col items-center justify-start">
+        <div className="flex h-[64px] w-screen flex-row items-center gap-6 bg-base-300 p-3 lg:hidden">
+          <label htmlFor="my-drawer-2" className="btn-ghost btn-square btn">
+            <IoMenu size={26} />
+          </label>
+          <h1 className="select-none text-center text-2xl font-bold tracking-wide text-white/90">
+            CLUTCH.
+          </h1>
         </div>
-
         <Outlet />
       </div>
       <div className="drawer-side">
-        <label htmlFor="my-drawer-3" className="drawer-overlay" />
-        <ul className="menu w-80 bg-base-100 p-4">
-          {/* <img src={image} className="mb-3 mt-6 h-6 select-none" /> */}
+        <label htmlFor="my-drawer-2" className="drawer-overlay"></label>
+        <ul className="menu h-full w-80 bg-base-200 p-4 text-base-content">
+          <h1 className="select-none pt-3 text-center text-2xl font-bold tracking-wide text-white/90">
+            CLUTCH.
+          </h1>
+          <p className="pt-3 text-center text-[12px]">Welcome, {user?.email}</p>
           <div className="divider w-full" />
-          {/* {user && renderRoutes(adminRoutes)} */}
-          {user && <>{LogoutButton("absolute bottom-4 right-4")}</>}
+
+          <details className="collapse">
+            <summary className="text-md collapse-title -mb-3 !pb-0 font-medium tracking-wide text-primary-content">
+              User Management
+            </summary>
+            <div className="collapse-content">
+              <ul>
+                <li onClick={() => navigate("/admin/users")}>
+                  <div>
+                    <span>Users</span>
+                  </div>
+                </li>
+
+                <li onClick={() => navigate("/admin/orders")}>
+                  <div>
+                    <span>Orders</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </details>
+
+          <details className="collapse">
+            <summary className="text-md collapse-title -mb-3 !pb-0 font-medium tracking-wide text-primary-content">
+              Website
+            </summary>
+            <div className="collapse-content">
+              <ul>
+                <li onClick={() => navigate("/admin/root-categories")}>
+                  <div>
+                    <span>Root Categories</span>
+                  </div>
+                </li>
+                <li onClick={() => navigate("/admin/articles")}>
+                  <div>
+                    <span>Articles</span>
+                  </div>
+                </li>
+                <li onClick={() => navigate("/admin/article-categories")}>
+                  <div>
+                    <span>Article Categories</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </details>
+
+          <details className="collapse">
+            <summary className="text-md collapse-title -mb-3 !pb-0 font-medium tracking-wide text-primary-content">
+              Product
+            </summary>
+            <div className="collapse-content">
+              <ul>
+                <li onClick={() => navigate("/admin/products")}>
+                  <div>
+                    <span>Products</span>
+                  </div>
+                </li>
+                <li onClick={() => navigate("/admin/product-categories")}>
+                  <div>
+                    <span>Product Categories</span>
+                  </div>
+                </li>
+                <li onClick={() => navigate("/admin/brands")}>
+                  <div>
+                    <span>Brands</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </details>
+
+          <details className="collapse">
+            <summary className="text-md collapse-title -mb-3 !pb-0 font-medium tracking-wide text-primary-content">
+              Marketing
+            </summary>
+            <div className="collapse-content">
+              <ul>
+                <li onClick={() => navigate("/admin/promotions")}>
+                  <div>
+                    <span>Promotions</span>
+                  </div>
+                </li>
+                <li onClick={() => navigate("/admin/campaigns")}>
+                  <div>
+                    <span>Campaigns</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </details>
+
+          <div className="absolute bottom-3 right-3">
+            {user && <>{LogoutButton()}</>}
+            {!user && <>{LoginButton()}</>}
+          </div>
         </ul>
       </div>
     </div>

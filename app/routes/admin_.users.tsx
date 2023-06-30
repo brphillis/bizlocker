@@ -7,6 +7,8 @@ import {
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
+import AdminPageHeader from "~/components/Layout/AdminPageHeader";
+import AdminPageWrapper from "~/components/Layout/AdminPageWrapper";
 import Pagination from "~/components/Pagination";
 import { searchUsers } from "~/models/users.server";
 import { placeholderAvatar } from "~/utility/placeholderAvatar";
@@ -39,12 +41,10 @@ const Articles = () => {
   const currentPage = Number(searchParams.get("pageNumber")) || 1;
 
   return (
-    <>
-      <Form
-        method="GET"
-        className="relative mt-3 max-w-[99vw] rounded-lg border-t-4 border-primary bg-base-300 p-6"
-      >
-        <h1>Manage Users</h1>
+    <AdminPageWrapper>
+      <Form method="GET" className="relative h-full w-full bg-base-300 p-6">
+        <AdminPageHeader title="Manage Users" addButtonText="Add User" />
+
         <div className="mt-3 flex flex-col">
           <div className="flex flex-row flex-wrap gap-6">
             <div className="form-control w-full max-w-xs">
@@ -83,92 +83,81 @@ const Articles = () => {
               />
             </div>
           </div>
-          <div className="flex flex-row justify-between">
-            <div className="flex flex-row gap-2">
-              <button type="submit" className="btn-primary btn mt-6 w-max">
-                Search
-              </button>
 
-              <button
-                type="button"
-                className="btn-primary btn mt-6 w-max"
-                onClick={() => navigate("add")}
-              >
-                +
-              </button>
-            </div>
+          <div className="flex flex-row justify-end sm:justify-start">
+            <button type="submit" className="btn-primary btn mt-6 w-max">
+              Search
+            </button>
           </div>
         </div>
 
         <div className="divider w-full" />
 
-        <div className="my-6 flex justify-center">
-          <div className="max-h-[55vh] max-w-[98vw] overflow-x-auto rounded-2xl">
-            <table className="table w-[720px] rounded-xl">
-              <thead className="sticky top-0">
-                <tr>
-                  {currentPage && <th>#</th>}
-                  <th></th>
-                  <th>Firstname</th>
-                  <th>Lastname</th>
-                  <th>Email</th>
-                  <th>Active</th>
-                </tr>
-              </thead>
-              <tbody>
-                {users &&
-                  users.map(
-                    (
-                      { id, email, avatar, userDetails, isActive }: User,
-                      index
-                    ) => {
-                      const { firstName, lastName } = userDetails || {};
+        <div className="w-full max-w-[80vw] overflow-x-auto">
+          <table className="table-sm my-3 table">
+            <thead className="sticky top-0">
+              <tr>
+                {currentPage && <th>#</th>}
+                <th></th>
+                <th>Firstname</th>
+                <th>Lastname</th>
+                <th>Email</th>
+                <th>Active</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users &&
+                users.map(
+                  (
+                    { id, email, avatar, userDetails, isActive }: User,
+                    index
+                  ) => {
+                    const { firstName, lastName } = userDetails || {};
 
-                      return (
-                        <tr
-                          className="hover cursor-pointer"
-                          key={id}
-                          onClick={() => navigate(`/admin/users/${id}`)}
-                        >
-                          {currentPage && (
-                            <td>
-                              {index + 1 + (currentPage - 1) * users?.length}
-                            </td>
-                          )}
-                          <td className="flex items-center justify-center">
-                            <div className="avatar mx-[-10px]">
-                              <div className="w-8 rounded-full">
-                                <img
-                                  src={avatar?.url || placeholderAvatar.url}
-                                  alt="user_avatar"
-                                />
-                              </div>
-                            </div>
-                          </td>
-                          <td>{firstName && capitalizeFirst(firstName)}</td>
-                          <td>{lastName && capitalizeFirst(lastName)}</td>
-                          <td>{email}</td>
+                    return (
+                      <tr
+                        className="hover cursor-pointer"
+                        key={id}
+                        onClick={() => navigate(`/admin/users/${id}`)}
+                      >
+                        {currentPage && (
                           <td>
-                            {!isActive && (
-                              <div className="ml-4 h-3 w-3 rounded-full bg-red-500" />
-                            )}
-                            {isActive && (
-                              <div className="ml-4 h-3 w-3 self-center rounded-full bg-success" />
-                            )}
+                            {index + 1 + (currentPage - 1) * users?.length}
                           </td>
-                        </tr>
-                      );
-                    }
-                  )}
-              </tbody>
-            </table>
-          </div>
+                        )}
+                        <td className="flex items-center justify-center">
+                          <div className="avatar mx-[-10px]">
+                            <div className="w-8 rounded-full">
+                              <img
+                                src={avatar?.url || placeholderAvatar.url}
+                                alt="user_avatar"
+                              />
+                            </div>
+                          </div>
+                        </td>
+                        <td>{firstName && capitalizeFirst(firstName)}</td>
+                        <td>{lastName && capitalizeFirst(lastName)}</td>
+                        <td>{email}</td>
+                        <td>
+                          {!isActive && (
+                            <div className="ml-4 h-3 w-3 rounded-full bg-red-500" />
+                          )}
+                          {isActive && (
+                            <div className="ml-4 h-3 w-3 self-center rounded-full bg-success" />
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  }
+                )}
+            </tbody>
+          </table>
         </div>
 
         <Pagination totalPages={totalPages} />
       </Form>
       <Outlet />
-    </>
+    </AdminPageWrapper>
   );
 };
 

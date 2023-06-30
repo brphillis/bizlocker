@@ -1,15 +1,10 @@
 import {
-  useLocation,
-  useNavigate,
-  useSearchParams,
-  useSubmit,
-} from "@remix-run/react";
-import {
   type LoaderArgs,
   type ActionArgs,
   redirect,
 } from "@remix-run/server-runtime";
 import { useLoaderData } from "react-router-dom";
+import PromotionBanner from "~/components/Banners/PromotionBanner";
 import ProductGrid from "~/components/Blocks/ProductGrid";
 import PageWrapper from "~/components/Layout/PageWrapper";
 import Pagination from "~/components/Pagination";
@@ -53,11 +48,6 @@ export const action = async ({ request }: ActionArgs) => {
 };
 
 const Promotion = () => {
-  const [searchParams] = useSearchParams();
-  const { pathname } = useLocation();
-  const submit = useSubmit();
-  const navigate = useNavigate();
-
   const { promotion, products, totalPages } =
     (useLoaderData() as {
       promotion: Promotion;
@@ -65,67 +55,9 @@ const Promotion = () => {
       totalPages: number;
     }) || {};
 
-  const { bannerImage, targetGender } =
-    (promotion as {
-      bannerImage: Image;
-      targetGender: boolean;
-    }) || {};
-
   return (
     <PageWrapper>
-      <div className="max-w-screen w-screen sm:w-[1280px]">
-        <img
-          src={bannerImage?.url}
-          alt={promotion?.name + "_bannerImage"}
-          className="max-w-screen w-full object-cover"
-        />
-        {!targetGender && (
-          <div className="flex w-full justify-center gap-3 bg-base-300 py-1">
-            <button
-              className="sm:text-md px-6 py-2 text-sm tracking-wide hover:bg-primary-content/10"
-              onClick={() => navigate(pathname)}
-            >
-              All Deals
-            </button>
-            <button
-              className="sm:text-md px-6 py-2 text-sm tracking-wide hover:bg-primary-content/10"
-              onClick={() => {
-                searchParams.set("gender", "MALE");
-                submit(searchParams, {
-                  method: "GET",
-                  action: pathname,
-                });
-              }}
-            >
-              Mens
-            </button>
-            <button
-              className="sm:text-md px-6 py-2 text-sm tracking-wide hover:bg-primary-content/10"
-              onClick={() => {
-                searchParams.set("gender", "FEMALE");
-                submit(searchParams, {
-                  method: "GET",
-                  action: pathname,
-                });
-              }}
-            >
-              Womans
-            </button>
-            <button
-              className="sm:text-md px-6 py-2 text-sm tracking-wide hover:bg-primary-content/10"
-              onClick={() => {
-                searchParams.set("gender", "KIDS");
-                submit(searchParams, {
-                  method: "GET",
-                  action: pathname,
-                });
-              }}
-            >
-              Kids
-            </button>
-          </div>
-        )}
-      </div>
+      <PromotionBanner promotion={promotion} />
 
       <div className="divider !mb-0 hidden w-[1280px] self-center sm:flex" />
 

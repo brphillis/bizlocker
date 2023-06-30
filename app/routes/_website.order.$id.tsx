@@ -3,7 +3,7 @@ import { Link, useLoaderData, useLocation } from "@remix-run/react";
 import { getOrderShippingDetails } from "~/models/orders.server";
 import PageWrapper from "~/components/Layout/PageWrapper";
 import OrderStatusSteps from "~/components/Indicators/OrderStatusSteps";
-import ShippingDetailsCollapse from "~/components/Forms/ShippingDetailsCollapse";
+import ShippingDetailsCollapse from "~/components/Forms/Misc/ShippingDetailsCollapse";
 
 export const loader = async ({ request, params }: ActionArgs) => {
   const url = new URL(request.url);

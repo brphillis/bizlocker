@@ -11,27 +11,33 @@ const Pagination = ({ totalPages }: Props) => {
   const submit = useSubmit();
 
   return (
-    <div className="flex items-start justify-center pb-6 pt-3">
-      <div className="btn-group">
-        {Array.from({ length: totalPages }).map((_, i) => {
-          const pageNumber = i + 1;
-          return (
-            <button
-              type="button"
-              key={"pagination" + i}
-              className={`btn ${currentPage === pageNumber && "btn-active"}`}
-              onClick={() => {
-                searchParams.set("pageNumber", pageNumber.toString());
-                submit(searchParams, { method: "GET" });
-                setCurrentPage(pageNumber);
-              }}
-            >
-              {pageNumber}
-            </button>
-          );
-        })}
-      </div>
-    </div>
+    <>
+      {totalPages > 0 && (
+        <div className="flex items-start justify-center py-3">
+          <div className="btn-group">
+            {Array.from({ length: totalPages }).map((_, i) => {
+              const pageNumber = i + 1;
+              return (
+                <button
+                  type="button"
+                  key={"pagination" + i}
+                  className={`btn ${
+                    currentPage === pageNumber && "btn-active"
+                  }`}
+                  onClick={() => {
+                    searchParams.set("pageNumber", pageNumber.toString());
+                    submit(searchParams, { method: "GET" });
+                    setCurrentPage(pageNumber);
+                  }}
+                >
+                  {pageNumber}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
