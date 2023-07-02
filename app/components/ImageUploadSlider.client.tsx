@@ -1,24 +1,19 @@
-import React, {
-  type Dispatch,
-  type SetStateAction,
-  Suspense,
-  useState,
-} from "react";
+import React, { Suspense, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper";
 import { ConvertToBase64 } from "~/utility/fileHelpers";
 
 type ImageUploadSliderProps = {
-  images: Image[] | undefined;
-  onUpdateImages: Dispatch<SetStateAction<Image[] | undefined>>;
+  defaultImages: Image[] | undefined;
 };
 
 const ImageUploadSlider: React.FC<ImageUploadSliderProps> = ({
-  images,
-  onUpdateImages,
+  defaultImages,
 }) => {
   const [activeSlide, setActiveSlide] = useState(0);
-
+  const [images, setCurrentImages] = useState<Image[] | undefined>(
+    defaultImages
+  );
   return (
     <Suspense fallback={<div>Loading...</div>}>
       {images && images?.some((image) => image) ? (
@@ -64,7 +59,7 @@ const ImageUploadSlider: React.FC<ImageUploadSliderProps> = ({
                     if (convertedImage) {
                       const updatedImages = [...(images || [])];
                       updatedImages[index] = convertedImage;
-                      onUpdateImages(updatedImages);
+                      setCurrentImages(updatedImages);
                     }
                   }}
                 />
@@ -82,6 +77,13 @@ const ImageUploadSlider: React.FC<ImageUploadSliderProps> = ({
           })}
         </div>
       </div>
+
+      <input
+        hidden
+        readOnly
+        name="images"
+        value={JSON.stringify(images) || ""}
+      />
     </Suspense>
   );
 };

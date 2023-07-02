@@ -23,8 +23,8 @@ const ProductSort = () => {
           });
         }}
       >
-        <option value="createdAt">Popular</option>
-        <option value="totalSold">New</option>
+        <option value="totalSold">Popular</option>
+        <option value="createdAt">New</option>
         <option value="price">Price</option>
         <option value="name">Name</option>
       </select>

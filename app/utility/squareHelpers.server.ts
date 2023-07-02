@@ -49,8 +49,6 @@ export const createSquarePaymentLink = async (
   });
   const { email, address, userDetails } = user || {};
 
-  console.log("ADDRESS", address);
-
   // Create the Square API order request object
   const orderRequest: CreatePaymentLinkRequest = {
     idempotencyKey: randomUUID(),

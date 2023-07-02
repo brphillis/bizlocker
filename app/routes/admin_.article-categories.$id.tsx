@@ -1,21 +1,18 @@
+import DarkOverlay from "~/components/Layout/DarkOverlay";
+import FormHeader from "~/components/Forms/Headers/FormHeader";
+import { Form, useActionData, useLoaderData } from "@remix-run/react";
+import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
 import {
-  type ActionArgs,
   json,
-  type LoaderArgs,
   redirect,
+  type ActionArgs,
+  type LoaderArgs,
 } from "@remix-run/node";
-import {
-  Form,
-  useActionData,
-  useLoaderData,
-  useNavigate,
-} from "@remix-run/react";
 import {
   deleteArticleCategory,
   getArticleCategories,
   upsertArticleCategories,
 } from "~/models/articleCategories.server";
-import { capitalizeFirst } from "~/utility/stringHelpers";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const id = params?.id;
@@ -55,7 +52,6 @@ export const action = async ({ request, params }: ActionArgs) => {
 };
 
 const ModifyArticleCategory = () => {
-  const navigate = useNavigate();
   const { articleCategory } =
     (useLoaderData() as {
       articleCategory: ArticleCategory;
@@ -65,16 +61,18 @@ const ModifyArticleCategory = () => {
   const mode = articleCategory ? "edit" : "add";
 
   return (
-    <div className="absolute inset-0 flex h-[100vh] w-[100vw] flex-col items-center justify-center bg-black/80">
+    <DarkOverlay>
       <Form
         method="POST"
-        className="relative max-h-[calc(100vh-64px)] max-w-[99vw] rounded-lg border-t-4 border-primary bg-base-300 p-6"
+        className="max-w-screen scrollbar-hide relative w-[360px] !max-w-[100vw] overflow-y-auto bg-base-300 px-3 py-6 sm:px-6"
       >
-        <div className="flex flex-row justify-between">
-          <h1>{mode && capitalizeFirst(mode)} Category</h1>
-        </div>
-
-        <div className="divider w-full" />
+        <FormHeader
+          valueToChange={articleCategory}
+          type="Category"
+          mode={mode}
+          hasIsActive={true}
+          hasDelete={true}
+        />
 
         <div className="form-control mt-6 w-full max-w-xs">
           <input
@@ -91,26 +89,10 @@ const ModifyArticleCategory = () => {
             </p>
           )}
 
-          <div className="flex flex-row justify-around">
-            <button
-              type="button"
-              className="btn-primary btn mt-6 w-max"
-              onClick={() => navigate("..")}
-            >
-              Back
-            </button>
-            <button
-              type="submit"
-              name="_action"
-              value="upsert"
-              className="btn-primary btn mt-6 w-max"
-            >
-              Submit
-            </button>
-          </div>
+          <BackSubmitButtons />
         </div>
       </Form>
-    </div>
+    </DarkOverlay>
   );
 };
 

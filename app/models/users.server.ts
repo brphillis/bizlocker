@@ -169,7 +169,10 @@ export const upsertUser = async (userData: any) => {
   }
 };
 
-export const searchUsers = async (searchArgs: BasicSearchArgs) => {
+export const searchUsers = async (
+  searchArgs: BasicSearchArgs,
+  includeAvatar?: boolean
+) => {
   const { firstName, lastName, email, page, perPage } = searchArgs;
 
   const skip = (page - 1) * perPage;
@@ -215,6 +218,7 @@ export const searchUsers = async (searchArgs: BasicSearchArgs) => {
       take,
       include: {
         userDetails: true,
+        avatar: includeAvatar,
       },
     }),
     prisma.user.count({

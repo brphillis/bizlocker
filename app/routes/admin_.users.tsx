@@ -25,7 +25,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     perPage: 10,
   };
 
-  const { users, totalPages } = await searchUsers(searchQuery);
+  const { users, totalPages } = await searchUsers(searchQuery, true);
 
   return json({ users, totalPages });
 };

@@ -7,6 +7,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model HomePage {
+  id              Int    @id @default(autoincrement())
+  campaignBanner  String
+  promotionTiles  String
+  campaignTileRow String
+  promotionBanner String
+}
+
 model User {
   id                   String       @id @unique @default(cuid())
   email                String       @unique
@@ -199,22 +207,24 @@ model Promotion {
 }
 
 model Product {
-  id                Int               @id @default(autoincrement())
-  name              String
-  description       String
-  images            Image[]
-  createdAt         DateTime          @default(now())
-  updatedAt         DateTime          @updatedAt
-  productCategories ProductCategory[] @relation("ProductCategoryToProduct")
-  brand             Brand?            @relation("BrandToProduct", fields: [brandId], references: [id])
-  brandId           Int?
-  variants          ProductVariant[]  @relation("ProductVariants")
-  totalSold         Int               @default(0)
-  isActive          Boolean           @default(true)
-  gender            Gender?
-  campaigns         Campaign[]
-  promotion         Promotion?        @relation("PromotionToProduct", fields: [promotionId], references: [id])
-  promotionId       String?
+  id                     Int               @id @default(autoincrement())
+  name                   String
+  description            String
+  images                 Image[]
+  createdAt              DateTime          @default(now())
+  updatedAt              DateTime          @updatedAt
+  productCategories      ProductCategory[] @relation("ProductCategoryToProduct")
+  brand                  Brand?            @relation("BrandToProduct", fields: [brandId], references: [id])
+  brandId                Int?
+  variants               ProductVariant[]  @relation("ProductVariants")
+  DiscountPercentageHigh Int               @default(0)
+  DiscountPercentageLow  Int               @default(0)
+  totalSold              Int               @default(0)
+  isActive               Boolean           @default(true)
+  gender                 Gender?
+  campaigns              Campaign[]
+  promotion              Promotion?        @relation("PromotionToProduct", fields: [promotionId], references: [id])
+  promotionId            String?
 }
 
 model ProductVariant {

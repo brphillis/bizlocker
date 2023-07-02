@@ -8,7 +8,7 @@ type Props = {
 
 const UploadBannerImage = ({ valueToChange }: Props) => {
   const [bannerImage, setBannerImage] = useState<Image | undefined>(
-    valueToChange?.bannerImage
+    valueToChange?.bannerImage || undefined
   );
 
   return (
@@ -25,7 +25,7 @@ const UploadBannerImage = ({ valueToChange }: Props) => {
             <div className="relative mt-3 flex flex-col items-center">
               <div className="relative h-max w-max">
                 <img
-                  src={valueToChange.bannerImage.url}
+                  src={bannerImage.url}
                   className="my-3 h-36 max-w-[280px] rounded-lg object-contain sm:max-w-[30rem]"
                   alt="brandImageEditor"
                 />
@@ -38,7 +38,6 @@ const UploadBannerImage = ({ valueToChange }: Props) => {
               </div>
             </div>
           )}
-
           <input
             name="bannerImageUpload"
             type="file"

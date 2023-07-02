@@ -3,6 +3,7 @@ import {
   json,
   type LoaderArgs,
   redirect,
+  type LinksFunction,
 } from "@remix-run/node";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { useState } from "react";
@@ -18,6 +19,14 @@ import {
   getArticle,
   upsertArticle,
 } from "~/models/articles.server";
+
+import swiper from "../../node_modules/swiper/swiper.css";
+import swiperNav from "../../node_modules/swiper/modules/navigation/navigation.min.css";
+
+export const links: LinksFunction = () => [
+  { rel: "stylesheet", href: swiper },
+  { rel: "stylesheet", href: swiperNav },
+];
 
 export const loader = async ({ params }: LoaderArgs) => {
   const id = params?.id;
@@ -65,10 +74,6 @@ const ModifyArticle = () => {
     }) || {};
   const { statusText } = (useActionData() as { statusText: string }) || {};
   const mode = article ? "edit" : "add";
-
-  const [currentImages, setCurrentImages] = useState<Image[] | undefined>(
-    article?.images
-  );
 
   const [richText, setRichText] = useState<string>(article?.content);
 
@@ -126,16 +131,7 @@ const ModifyArticle = () => {
             />
           </div>
 
-          <ImageUploadSlider
-            images={currentImages}
-            onUpdateImages={setCurrentImages}
-          />
-          <input
-            hidden
-            readOnly
-            name="images"
-            value={JSON.stringify(currentImages) || ""}
-          />
+          <ImageUploadSlider defaultImages={article?.images} />
 
           {statusText && (
             <p className="my-2 text-center text-sm text-red-500/75">

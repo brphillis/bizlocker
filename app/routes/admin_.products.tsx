@@ -10,6 +10,7 @@ import parse from "html-react-parser";
 import AdminPageHeader from "~/components/Layout/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/AdminPageWrapper";
 import Pagination from "~/components/Pagination";
+import ProductSort from "~/components/Sorting/ProductSort";
 import { getBrands } from "~/models/brands.server";
 import { getProductCategories } from "~/models/productCategories.server";
 import { searchProducts } from "~/models/products.server";
@@ -21,6 +22,8 @@ export const loader = async ({ request }: LoaderArgs) => {
     name: url.searchParams.get("name")?.toString() || undefined,
     category: url.searchParams.get("productCategory")?.toString() || undefined,
     brand: url.searchParams.get("brand")?.toString() || undefined,
+    sortBy: (url.searchParams.get("sortBy") as SortBy) || undefined,
+    sortOrder: (url.searchParams.get("sortOrder") as SortOrder) || undefined,
     page: Number(url.searchParams.get("pageNumber")) || 1,
     perPage: Number(url.searchParams.get("itemsPerPage")) || 10,
   };
@@ -115,10 +118,12 @@ const ManageProducts = () => {
           </div>
         </div>
 
-        <div className="divider w-full" />
+        <div className="divider mb-0 w-full" />
+
+        <ProductSort />
 
         <div className="w-full max-w-[80vw] overflow-x-auto">
-          <table className="table-sm my-3 table">
+          <table className="table-zebra table-sm my-3 table">
             <thead className="sticky top-0">
               <tr>
                 {currentPage && <th>#</th>}
@@ -126,6 +131,7 @@ const ManageProducts = () => {
                 <th>Description</th>
                 <th>Category</th>
                 <th>Brand</th>
+                <th>Sold</th>
                 <th>Active</th>
               </tr>
             </thead>
@@ -139,6 +145,7 @@ const ManageProducts = () => {
                       description,
                       productCategories,
                       brand,
+                      totalSold,
                       isActive,
                     }: Product,
                     index
@@ -164,6 +171,7 @@ const ManageProducts = () => {
                           )}
                         </td>
                         <td>{brand?.name}</td>
+                        <td>{totalSold}</td>
                         <td>
                           {!isActive && (
                             <div className="ml-4 h-3 w-3 rounded-full bg-red-500" />

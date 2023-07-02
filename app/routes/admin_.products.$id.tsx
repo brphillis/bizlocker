@@ -1,31 +1,40 @@
 import { useState } from "react";
-import { tokenAuth } from "~/auth.server";
+
 import { getBrands } from "~/models/brands.server";
+import DarkOverlay from "~/components/Layout/DarkOverlay";
+import { getPromotions } from "~/models/promotions.server";
+import FormHeader from "~/components/Forms/Headers/FormHeader";
 import RichTextEditor from "~/components/RichTextEditor.client";
+import SelectBrand from "~/components/Forms/Select/SelectBrand";
+import SelectGender from "~/components/Forms/Select/SelectGender";
 import ImageUploadSlider from "~/components/ImageUploadSlider.client";
-import { getProductCategories } from "~/models/productCategories.server";
-import { getAvailableColors, getAvailableSizes } from "~/models/enums.server";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
+import SelectPromotion from "~/components/Forms/Select/SelectPromotion";
+import { getProductCategories } from "~/models/productCategories.server";
+import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
+import { getAvailableColors, getAvailableSizes } from "~/models/enums.server";
+import ProductVariantFormModule from "~/components/Forms/ProductVariantFormModule";
 import {
   deleteProduct,
   getProduct,
   upsertProduct,
 } from "~/models/products.server";
+import SelectProductCategories from "~/components/Forms/Select/SelectProductCategories";
 import {
   json,
   redirect,
   type ActionArgs,
+  type LinksFunction,
   type LoaderArgs,
 } from "@remix-run/server-runtime";
-import SelectGender from "~/components/Forms/Select/SelectGender";
-import SelectProductCategories from "~/components/Forms/Select/SelectProductCategories";
-import SelectBrand from "~/components/Forms/Select/SelectBrand";
-import ProductVariantFormModule from "~/components/Forms/ProductVariantFormModule";
-import SelectPromotion from "~/components/Forms/Select/SelectPromotion";
-import { getPromotions } from "~/models/promotions.server";
-import FormHeader from "~/components/Forms/Headers/FormHeader";
-import DarkOverlay from "~/components/Layout/DarkOverlay";
-import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
+
+import swiper from "../../node_modules/swiper/swiper.css";
+import swiperNav from "../../node_modules/swiper/modules/navigation/navigation.min.css";
+
+export const links: LinksFunction = () => [
+  { rel: "stylesheet", href: swiper },
+  { rel: "stylesheet", href: swiperNav },
+];
 
 export const loader = async ({ params }: LoaderArgs) => {
   const id = params?.id;
@@ -51,10 +60,6 @@ export const loader = async ({ params }: LoaderArgs) => {
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
-  const authenticated = await tokenAuth(request);
-  if (!authenticated.valid) {
-    return redirect("/login");
-  }
   const id = params.id === "add" ? undefined : params.id;
   const form = Object.fromEntries(await request.formData());
   const {
@@ -98,7 +103,7 @@ export const action = async ({ request, params }: ActionArgs) => {
         id: id,
       };
 
-      console.log("PROMOS", promotion);
+      console.log("IMG", images);
 
       await upsertProduct(updateData);
 
@@ -130,10 +135,6 @@ const Product = () => {
   const { statusText } = (useActionData() as { statusText: string }) || {};
 
   const mode = product ? "edit" : "add";
-
-  const [currentImages, setCurrentImages] = useState<Image[] | undefined>(
-    product?.images
-  );
 
   const [richText, setRichText] = useState<string>(product?.description);
 
@@ -194,17 +195,7 @@ const Product = () => {
 
           <div className="divider w-full pt-4" />
 
-          <ImageUploadSlider
-            images={currentImages}
-            onUpdateImages={setCurrentImages}
-          />
-
-          <input
-            hidden
-            readOnly
-            name="images"
-            value={JSON.stringify(currentImages) || ""}
-          />
+          <ImageUploadSlider defaultImages={product?.images} />
 
           <div className="divider w-full pt-4" />
 

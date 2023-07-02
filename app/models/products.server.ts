@@ -51,6 +51,20 @@ export const getProduct = async (id: string) => {
   });
 };
 
+// Function to calculate discount percentage
+const calculateDiscountPercentage = (price: number, salePrice: number) => {
+  if (
+    !price ||
+    !salePrice ||
+    price <= 0 ||
+    salePrice <= 0 ||
+    salePrice >= price
+  ) {
+    return 0;
+  }
+  return ((price - salePrice) / price) * 100;
+};
+
 export const upsertProduct = async (productData: any) => {
   const {
     name,
@@ -67,6 +81,19 @@ export const upsertProduct = async (productData: any) => {
 
   let product;
 
+  // Compute the discountPercentageHigh and discountPercentageLow for the product from the variants
+
+  const activeVariants = variants.filter(
+    (variant: ProductVariant) => variant.isActive
+  );
+  const discountPercentages = activeVariants.map((variant: ProductVariant) =>
+    calculateDiscountPercentage(variant.price, variant.salePrice)
+  );
+  const discountPercentageHigh =
+    discountPercentages.length > 0 ? Math.max(...discountPercentages) : 0;
+  const discountPercentageLow =
+    discountPercentages.length > 0 ? Math.min(...discountPercentages) : 0;
+
   if (!id) {
     // Create a new product with variants
     product = await prisma.product.create({
@@ -78,6 +105,8 @@ export const upsertProduct = async (productData: any) => {
         brand: {
           connect: { name: brand },
         },
+        discountPercentageHigh,
+        discountPercentageLow,
         ...(promotion && {
           // Connect the promotion if provided
           promotion: {
@@ -169,6 +198,8 @@ export const upsertProduct = async (productData: any) => {
         description,
         gender,
         isActive,
+        discountPercentageHigh,
+        discountPercentageLow,
         brand: {
           connect: { name: brand },
         },

@@ -1,19 +1,14 @@
-import { useState } from "react";
-import { ConvertToBase64 } from "~/utility/fileHelpers";
-import { capitalizeFirst } from "~/utility/stringHelpers";
-import { IoIosCloseCircle } from "react-icons/io";
+import DarkOverlay from "~/components/Layout/DarkOverlay";
+import FormHeader from "~/components/Forms/Headers/FormHeader";
+import UploadImage from "~/components/Forms/Upload/UploadImage";
+import { Form, useActionData, useLoaderData } from "@remix-run/react";
+import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
 import {
   json,
   redirect,
   type ActionArgs,
   type LoaderArgs,
 } from "@remix-run/node";
-import {
-  Form,
-  useActionData,
-  useLoaderData,
-  useNavigate,
-} from "@remix-run/react";
 import {
   deleteProductCategory,
   getProductCategory,
@@ -53,25 +48,24 @@ export const action = async ({ request, params }: ActionArgs) => {
 };
 
 const ModifyProductCategory = () => {
-  const navigate = useNavigate();
   const productCategory = useLoaderData() as ProductCategory;
   const { validationError } =
     (useActionData() as { validationError: string }) || {};
   const mode = productCategory ? "edit" : "add";
 
-  const [image, setImage] = useState<Image | undefined>(productCategory?.image);
-
   return (
-    <div className="absolute inset-0 flex h-[100vh] w-[100vw] flex-col items-center justify-center bg-black/80">
+    <DarkOverlay>
       <Form
         method="POST"
-        className="relative max-h-[calc(100vh-64px)] max-w-[99vw] rounded-lg border-t-4 border-primary bg-base-300 p-6"
+        className="max-w-screen scrollbar-hide relative w-[360px] !max-w-[100vw] overflow-y-auto bg-base-300 px-3 py-6 sm:px-6"
       >
-        <div className="flex flex-row justify-between">
-          <h1>{mode && capitalizeFirst(mode)} Product Category</h1>
-        </div>
-
-        <div className="divider w-full" />
+        <FormHeader
+          valueToChange={productCategory}
+          type="Category"
+          mode={mode}
+          hasIsActive={true}
+          hasDelete={true}
+        />
 
         <div className="form-control w-full max-w-xs gap-3">
           <div className="form-control w-full max-w-xs ">
@@ -87,43 +81,7 @@ const ModifyProductCategory = () => {
             />
           </div>
 
-          {image && (
-            <div className="relative my-6 flex flex-col items-center">
-              <div className="relative h-max w-max">
-                <img
-                  src={image.url}
-                  className="h-36 w-36 rounded-lg object-cover"
-                  alt="brandImageEditor"
-                />
-
-                <IoIosCloseCircle
-                  onClick={() => setImage(undefined)}
-                  size={28}
-                  className="
-                  absolute right-0 top-0
-                  -mr-2 -mt-2 cursor-pointer
-                  rounded-full bg-white text-primary
-                "
-                />
-              </div>
-            </div>
-          )}
-
-          <input
-            name="imageUpload"
-            type="file"
-            accept="image/*"
-            className="file-input-bordered file-input w-full"
-            onChange={async (e) => {
-              const convertedImage = await ConvertToBase64(e);
-              convertedImage && setImage(convertedImage);
-            }}
-          />
-          <input
-            type="hidden"
-            name="image"
-            value={JSON.stringify(image) || ""}
-          />
+          <UploadImage defaultValue={productCategory?.image} />
 
           {validationError && (
             <p className="h-0 py-3 text-center text-sm text-red-500/75">
@@ -132,25 +90,9 @@ const ModifyProductCategory = () => {
           )}
         </div>
 
-        <div className="flex flex-row justify-center gap-3">
-          <button
-            type="button"
-            className="btn-primary btn mt-6 w-max"
-            onClick={() => navigate("..")}
-          >
-            Back
-          </button>
-          <button
-            type="submit"
-            name="_action"
-            value="upsert"
-            className="btn-primary btn mt-6 w-max"
-          >
-            Submit
-          </button>
-        </div>
+        <BackSubmitButtons />
       </Form>
-    </div>
+    </DarkOverlay>
   );
 };
 

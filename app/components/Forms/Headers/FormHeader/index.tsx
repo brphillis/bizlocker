@@ -5,8 +5,24 @@ import { IoClose } from "react-icons/io5";
 import { capitalizeFirst } from "~/utility/stringHelpers";
 
 type Props = {
-  valueToChange: Promotion | Product | Article | RootCategory | User | Campaign;
-  type: "Promotion" | "Product" | "Article" | "Category" | "User" | "Campaign";
+  valueToChange:
+    | Promotion
+    | Product
+    | ProductCategory
+    | Brand
+    | Article
+    | ArticleCategory
+    | RootCategory
+    | User
+    | Campaign;
+  type:
+    | "Promotion"
+    | "Product"
+    | "Brand"
+    | "Article"
+    | "Category"
+    | "User"
+    | "Campaign";
   mode: "add" | "edit";
   hasIsActive: boolean;
   hasDelete: boolean;
@@ -57,7 +73,7 @@ const FormHeader = ({
               <IoMdTrash />
             </button>
           )}
-          <button className="cursor-pointer">
+          <button type="button" className="cursor-pointer">
             <IoClose onClick={() => navigate("..")} />
           </button>
         </div>

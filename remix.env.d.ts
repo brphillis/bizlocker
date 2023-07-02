@@ -241,7 +241,7 @@ type Promotion = {
   department: Department;
   departmentId: number;
   createdAt: Date;
-  updatedAt?: Date;
+  updatedAt: Date;
 };
 
 type Campaign = {

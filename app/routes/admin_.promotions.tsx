@@ -29,7 +29,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 const Promotions = () => {
   const navigate = useNavigate();
   const { promotions, totalPages } = useLoaderData() as {
-    promotions: Campaign[];
+    promotions: Promotion[];
     totalPages: number;
   };
 
@@ -74,6 +74,7 @@ const Promotions = () => {
               <tr>
                 {currentPage && <th>#</th>}
                 <th>Name</th>
+                <th>Discount</th>
                 <th>Updated</th>
                 <th>Created</th>
                 <th>Active</th>
@@ -82,7 +83,14 @@ const Promotions = () => {
             <tbody>
               {promotions?.map(
                 (
-                  { id, name, updatedAt, createdAt, isActive }: Campaign,
+                  {
+                    id,
+                    name,
+                    discountPercentage,
+                    updatedAt,
+                    createdAt,
+                    isActive,
+                  }: Promotion,
                   index
                 ) => {
                   return (
@@ -97,6 +105,7 @@ const Promotions = () => {
                         </td>
                       )}
                       <td>{name}</td>
+                      <td>{discountPercentage}%</td>
                       <td>
                         {new Date(updatedAt).toLocaleDateString("en-US", {
                           day: "numeric",
