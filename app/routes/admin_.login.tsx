@@ -57,7 +57,7 @@ const AdminLogin = () => {
           <h1 className="select-none pb-6 pt-3 text-center text-6xl font-bold tracking-wide text-white/90">
             CLUTCH.
           </h1>
-          <p className="mt-[-20px] select-none text-xs">Staff Login</p>
+          <p className="mt-[-20px] select-none text-xs">Admin Login</p>
         </div>
         {/* <img src={image} className="mb-1 mt-1 h-[80px] select-none p-2" /> */}
         <div className="form-control">
@@ -95,6 +95,10 @@ const AdminLogin = () => {
           <NavLink to="/register" type="button" className="btn-primary btn">
             Create Account
           </NavLink>
+          <div className="divider !my-[0.1rem] w-full" />
+          <p className="select-none text-center text-xs">
+            Powered by BizLocker v0.1
+          </p>
         </div>
       </Form>
     </div>

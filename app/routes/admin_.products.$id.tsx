@@ -13,7 +13,7 @@ import SelectPromotion from "~/components/Forms/Select/SelectPromotion";
 import { getProductCategories } from "~/models/productCategories.server";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
 import { getAvailableColors, getAvailableSizes } from "~/models/enums.server";
-import ProductVariantFormModule from "~/components/Forms/ProductVariantFormModule";
+import ProductVariantFormModule from "~/components/Forms/Modules/ProductVariantFormModule";
 import {
   deleteProduct,
   getProduct,
@@ -142,7 +142,7 @@ const Product = () => {
     <DarkOverlay>
       <Form
         method="POST"
-        className="max-w-screen scrollbar-hide relative w-[800px] !max-w-[100vw] overflow-y-auto bg-base-300 px-3 py-6 sm:px-6"
+        className="max-w-screen scrollbar-hide relative w-[600px] !max-w-[100vw] overflow-y-auto bg-base-300 px-3 py-6 sm:px-6"
       >
         <FormHeader
           valueToChange={product}

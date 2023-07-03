@@ -58,6 +58,10 @@ const ProductVariantFormModule = ({
     setVariants(variants?.filter((e) => e?.name !== name));
   };
 
+  const handleNewVariant = () => {
+    setActiveVariant({});
+  };
+
   useEffect(() => {
     if (!product?.variants) {
       setActiveVariant({});
@@ -403,6 +407,13 @@ const ProductVariantFormModule = ({
                 })}
               </tbody>
             </table>
+
+            <button
+              className="btn-primary btn-md mx-auto mt-6 block"
+              onClick={() => handleNewVariant()}
+            >
+              Add Variant
+            </button>
           </div>
         )}
       </div>

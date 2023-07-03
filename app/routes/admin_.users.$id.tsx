@@ -65,7 +65,7 @@ const ModifyUser = () => {
     <DarkOverlay>
       <Form
         method="POST"
-        className="max-w-screen relative w-[720px] bg-base-300 py-6 sm:px-6"
+        className="max-w-screen relative w-[600px] bg-base-300 py-6 sm:px-6"
       >
         <FormHeader
           hasDelete={false}
@@ -141,7 +141,7 @@ const ModifyUser = () => {
                     name="dateofbirth"
                     type="date"
                     placeholder="Date of Birth"
-                    className="input-bordered input w-[95vw] min-w-[235px] cursor-pointer sm:w-full"
+                    className="input-bordered input w-[95vw] min-w-[215px] cursor-pointer sm:w-full"
                     defaultValue={
                       user?.userDetails?.dateOfBirth
                         ? new Date(user?.userDetails?.dateOfBirth)

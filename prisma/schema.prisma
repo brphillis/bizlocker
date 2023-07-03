@@ -193,7 +193,7 @@ model Promotion {
   id                 String     @id @unique @default(cuid())
   name               String
   products           Product[]  @relation("PromotionToProduct")
-  discountPercentage Int
+  discountPercentage Float      @default(0)
   targetGender       Gender?
   isActive           Boolean    @default(false)
   tileImage          Image      @relation("TileImageToPromotion", fields: [tileImageId], references: [id])
@@ -217,8 +217,8 @@ model Product {
   brand                  Brand?            @relation("BrandToProduct", fields: [brandId], references: [id])
   brandId                Int?
   variants               ProductVariant[]  @relation("ProductVariants")
-  DiscountPercentageHigh Int               @default(0)
-  DiscountPercentageLow  Int               @default(0)
+  discountPercentageHigh Float             @default(0)
+  discountPercentageLow  Float             @default(0)
   totalSold              Int               @default(0)
   isActive               Boolean           @default(true)
   gender                 Gender?
