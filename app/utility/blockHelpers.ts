@@ -1,6 +1,6 @@
 export const getBlockContent = (PageItem: { [key: string]: any }) => {
   //returns the block that is being used in the pageitem
-  let firstObject: AdvertBannerBlock | AdvertTileBlock | undefined = undefined;
+  let firstObject: any = undefined;
 
   for (let key in PageItem) {
     if (

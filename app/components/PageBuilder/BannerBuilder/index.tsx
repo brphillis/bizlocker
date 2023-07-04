@@ -23,8 +23,6 @@ const HomePageBannerBuilder = ({ homePage, searchResults }: Props) => {
 
   const [editingBanner, setEditingBanner] = useState<boolean>(false);
 
-  console.log(pageItems);
-
   return (
     <>
       {!editingBanner && (

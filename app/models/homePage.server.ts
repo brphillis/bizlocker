@@ -27,8 +27,6 @@ export const getHomePage = async () => {
 };
 
 export const removePageItem = async (pageId: number, itemIndex: number) => {
-  console.log("WOOPYYY", pageId, itemIndex);
-
   if (itemIndex === 0) {
     throw new Error("Cannot remove item at index 0");
   }
@@ -64,10 +62,6 @@ export const updatePage = async (
   contentType: BlockData,
   updateData: Promotion | Campaign
 ) => {
-  console.log("PAGEID", pageId);
-  console.log("ITEMINDEX", itemIndex);
-  console.log("BLOCKTYPE", blockType);
-
   // Retrieve the page by pageId
   const page = await prisma.page.findUnique({
     where: {
