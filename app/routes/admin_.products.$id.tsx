@@ -103,8 +103,6 @@ export const action = async ({ request, params }: ActionArgs) => {
         id: id,
       };
 
-      console.log("IMG", images);
-
       await upsertProduct(updateData);
 
       return redirect("/admin/products");

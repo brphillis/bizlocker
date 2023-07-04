@@ -1,16 +1,99 @@
-import type { LoaderArgs } from "@remix-run/node";
-import { Form, Outlet } from "@remix-run/react";
+import type { ActionArgs, LoaderArgs } from "@remix-run/node";
+import { Outlet, useLoaderData } from "@remix-run/react";
+
 import AdminPageHeader from "~/components/Layout/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/AdminPageWrapper";
+import ContentBuilder from "~/components/PageBuilder/ContentBuilder";
+import HomePageBannerBuilder from "~/components/PageBuilder/BannerBuilder";
+import { searchCampaigns } from "~/models/campaigns.server";
+import {
+  getHomePage,
+  removePageItem,
+  updatePage,
+} from "~/models/homePage.server";
+import { searchPromotions } from "~/models/promotions.server";
 
-// export const loader = async ({ request }: LoaderArgs) => {};
+export const loader = async ({ request }: LoaderArgs) => {
+  const homePage = await getHomePage();
+  const url = new URL(request.url);
+  const contentType = url.searchParams.get("contentType") as string;
+
+  const searchQuery = {
+    name: url.searchParams.get("name")?.toString() as string,
+    page: Number(url.searchParams.get("pageNumber")) || 1,
+    perPage: Number(url.searchParams.get("itemsPerPage")) || 10,
+  };
+
+  let searchResults;
+
+  switch (contentType) {
+    case "promotion":
+      const { promotions } = await searchPromotions(searchQuery);
+      searchResults = promotions;
+      return { searchResults, homePage };
+    case "campaign":
+      const { campaigns } = await searchCampaigns(searchQuery);
+      searchResults = campaigns;
+      return { searchResults, homePage };
+
+    default:
+      return { searchResults, homePage };
+  }
+};
+
+export const action = async ({ request }: ActionArgs) => {
+  const form = Object.fromEntries(await request.formData());
+  const { pageId, itemIndex, blockType, contentType, contentData } = form;
+
+  switch (form._action) {
+    case "updateBanner":
+      const updateData = JSON.parse(contentData as string) as
+        | Campaign
+        | Promotion;
+      return await updatePage(
+        parseInt(pageId as string),
+        parseInt(itemIndex as string),
+        blockType as BlockType,
+        contentType as BlockData,
+        updateData
+      );
+
+    case "delete":
+      return await removePageItem(
+        parseInt(pageId as string),
+        parseInt(itemIndex as string)
+      );
+  }
+};
 
 const ManageHomePage = () => {
+  const { searchResults, homePage } =
+    (useLoaderData() as {
+      searchResults: Promotion[] | Campaign[];
+      homePage: Page;
+    }) || {};
+
   return (
     <AdminPageWrapper>
-      <Form method="GET" className="relative h-full w-full bg-base-300 p-6">
+      <div className="relative h-full w-full bg-base-300 p-6">
         <AdminPageHeader title="Manage Home Page" />
-      </Form>
+        <div className="flex flex-col gap-12">
+          <div>
+            <p className="text-2xl font-bold">Banner</p>
+
+            <HomePageBannerBuilder
+              homePage={homePage}
+              searchResults={searchResults}
+            />
+          </div>
+
+          <div>
+            <p className="text-2xl font-bold">Content</p>
+
+            <ContentBuilder page={homePage} searchResults={searchResults} />
+          </div>
+        </div>
+      </div>
       <Outlet />
     </AdminPageWrapper>
   );

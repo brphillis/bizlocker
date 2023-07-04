@@ -32,12 +32,7 @@ export default {
         },
       },
       "dark",
-      "cupcake",
-      "bumblebee",
-      "night",
-      "pastel",
-      "black",
-      "coffee",
+      "light",
     ],
   },
 } satisfies Config;

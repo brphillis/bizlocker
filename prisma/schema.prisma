@@ -7,12 +7,46 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model HomePage {
-  id              Int    @id @default(autoincrement())
-  campaignBanner  String
-  promotionTiles  String
-  campaignTileRow String
-  promotionBanner String
+model Page {
+  id         Int        @id @default(autoincrement())
+  pageItems  PageItem[] @relation("PagesToPageItems")
+  isHomePage Boolean    @default(false)
+}
+
+model PageItem {
+  id                  String             @id @unique @default(cuid())
+  order               Int
+  page                Page               @relation("PagesToPageItems", fields: [pageId], references: [id])
+  pageId              Int
+  advertBannerBlock   AdvertBannerBlock? @relation("PageItemToAdvertBannerBlock", fields: [advertBannerBlockId], references: [id])
+  advertBannerBlockId String?            @unique
+  advertTileBlock     AdvertTileBlock?   @relation("PageItemToAdvertTileBlock", fields: [advertTileBlockId], references: [id])
+  advertTileBlockId   String?            @unique
+}
+
+model AdvertBannerBlock {
+  id                  String     @id @unique @default(cuid())
+  name                String     @default("banner")
+  type                String
+  campaign            Campaign?  @relation(fields: [campaignId], references: [id])
+  campaignId          String?
+  promotion           Promotion? @relation(fields: [promotionId], references: [id])
+  promotionId         String?
+  pageItem            PageItem?  @relation("PageItemToAdvertBannerBlock")
+  advertBannerBlockId String?
+}
+
+model AdvertTileBlock {
+  id                String     @id @unique @default(cuid())
+  name              String     @default("tile")
+  type              String
+  campaign          Campaign?  @relation(fields: [campaignId], references: [id])
+  campaignId        String?
+  promotion         Promotion? @relation(fields: [promotionId], references: [id])
+  promotionId       String?
+  tileSize          String     @default("MEDIUM")
+  pageItem          PageItem?  @relation("PageItemToAdvertTileBlock")
+  advertTileBlockId String?
 }
 
 model User {
@@ -187,6 +221,9 @@ model Campaign {
   updatedAt         DateTime?         @default(now()) @updatedAt
   productCategories ProductCategory[] @relation("ProductCategoryToCampaign")
   brands            Brand[]           @relation("BrandToCampaign")
+
+  bannerBlocks AdvertBannerBlock[]
+  tileBlocks   AdvertTileBlock[]
 }
 
 model Promotion {
@@ -204,6 +241,9 @@ model Promotion {
   departmentId       Int
   createdAt          DateTime   @default(now())
   updatedAt          DateTime?  @default(now()) @updatedAt
+
+  bannerBlocks AdvertBannerBlock[]
+  tileBlocks   AdvertTileBlock[]
 }
 
 model Product {

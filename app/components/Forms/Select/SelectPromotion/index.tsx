@@ -10,8 +10,6 @@ const SelectPromotion = ({ promotions, valueToChange }: Props) => {
     string | undefined
   >(valueToChange?.promotion?.discountPercentage.toString());
 
-  console.log(valueToChange);
-
   return (
     <div className="form-control">
       <label className="label">

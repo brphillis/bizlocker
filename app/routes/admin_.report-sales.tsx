@@ -38,13 +38,14 @@ const ManageHomePage = () => {
     productCountToday,
     topProductCategoriesToday,
     topBrandsToday,
-  } = useLoaderData() as {
-    totalSalesToday: number;
-    totalSalesYesterday: number;
-    productCountToday: number;
-    topProductCategoriesToday: ReportData[];
-    topBrandsToday: ReportData[];
-  };
+  } =
+    (useLoaderData() as {
+      totalSalesToday: number;
+      totalSalesYesterday: number;
+      productCountToday: number;
+      topProductCategoriesToday: ReportData[];
+      topBrandsToday: ReportData[];
+    }) || {};
 
   let categoryPieData = topProductCategoriesToday
     .filter((item: any) => item.totalSales !== 0)
@@ -74,7 +75,7 @@ const ManageHomePage = () => {
           <div className="stats rounded-none">
             <div className="stat place-items-center">
               <div className="stat-title">Sales</div>
-              <div className="stat-value">${totalSalesToday.toFixed(2)}</div>
+              <div className="stat-value">${totalSalesToday?.toFixed(2)}</div>
             </div>
 
             <div className="stat place-items-center">
@@ -88,7 +89,7 @@ const ManageHomePage = () => {
                 {calculatePercentageChange(
                   totalSalesToday,
                   totalSalesYesterday
-                ).toFixed(0) + "%"}
+                )?.toFixed(0) + "%"}
               </div>
             </div>
           </div>

@@ -289,8 +289,52 @@ type BasicSearchArgs = {
 };
 
 type SortBy = "createdAt" | "totalSold" | "price" | "name";
-
 type SortOrder = "asc" | "desc";
+
+type BlockType = "banner" | "tile";
+type BlockData = "campaign" | "promotion";
+
+interface Page {
+  id: number;
+  pageItems: PageItem[];
+  isHomePage: boolean;
+}
+
+interface PageItem {
+  id: string;
+  order: number;
+  page: Page;
+  pageId: number;
+  advertBannerBlock?: AdvertBannerBlock;
+  advertBannerBlockId?: string;
+  advertTileBlock?: AdvertTileBlock;
+  advertTileBlockId?: string;
+}
+
+interface AdvertBannerBlock {
+  id: string;
+  name: string;
+  type: string;
+  campaign?: Campaign;
+  campaignId?: string;
+  promotion?: Promotion;
+  promotionId?: string;
+  pageItem?: PageItem;
+  advertBannerBlockId?: string;
+}
+
+interface AdvertTileBlock {
+  id: string;
+  name: string;
+  type: string;
+  campaign?: Campaign;
+  campaignId?: string;
+  promotion?: Promotion;
+  promotionId?: string;
+  tileSize: string;
+  pageItem?: PageItem;
+  advertTileBlockId?: string;
+}
 
 interface Money {
   amount: number;
@@ -353,23 +397,6 @@ interface CurbsideDetails {
   curbside_details?: string;
   buyer_arrived_at?: string;
 }
-
-//   interface Address {
-//     address_line_1: string;
-//     address_line_2?: string;
-//     administrative_district_level_1?: string;
-//     administrative_district_level_2?: string;
-//     administrative_district_level_3?: string;
-//     country: string;
-//     first_name?: string;
-//     last_name?: string;
-//     locality: string;
-//     postal_code: string;
-//     sublocality?: string;
-//     sublocality_level_1?: string;
-//     sublocality_level_2?: string;
-//     sublocality_level_3?: string;
-//   }
 
 interface OrderServiceCharge {
   uid?: string;

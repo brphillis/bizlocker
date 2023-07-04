@@ -51,7 +51,10 @@ const Admin = () => {
   }, [isLoginPage, user, navigate]);
 
   return (
-    <div className="drawer !max-h-[calc(100vh+64px)] lg:drawer-open">
+    <div
+      data-theme="dark"
+      className="drawer !max-h-[calc(100vh+64px)] lg:drawer-open"
+    >
       <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content flex min-h-screen flex-col items-center justify-start">
         <div className="flex h-[64px] w-screen flex-row items-center gap-6 bg-base-300 p-3 lg:hidden">

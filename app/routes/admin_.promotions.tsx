@@ -16,7 +16,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
 
   const searchQuery = {
-    title: url.searchParams.get("title")?.toString() || undefined,
+    name: url.searchParams.get("name")?.toString() || undefined,
     page: Number(url.searchParams.get("pageNumber")) || 1,
     perPage: Number(url.searchParams.get("itemsPerPage")) || 10,
   };

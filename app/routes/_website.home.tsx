@@ -21,8 +21,6 @@ const Home = () => {
     ({ tileImage }: Promotion) => tileImage
   );
 
-  console.log(promotionTiles);
-
   return (
     <PageWrapper>
       <div className="max-w-screen flex w-screen flex-col gap-3 sm:w-[1280px]">
