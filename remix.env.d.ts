@@ -296,22 +296,21 @@ type BlockData = "campaign" | "promotion";
 
 interface Page {
   id: number;
-  pageItems: PageItem[];
+  blocks: Block[];
   isHomePage: boolean;
 }
 
-interface PageItem {
+interface Block extends AdvertBannerBlock, AdvertTileBlock {
   id: string;
   order: number;
   page: Page;
   pageId: number;
+  content: Content;
   advertBannerBlock?: AdvertBannerBlock;
   advertBannerBlockId?: string;
   advertTileBlock?: AdvertTileBlock;
   advertTileBlockId?: string;
 }
-
-type Block = AdvertBannerBlock | AdvertTileBlock;
 
 interface AdvertBannerBlock {
   id: string;
@@ -321,7 +320,7 @@ interface AdvertBannerBlock {
   campaignId?: string;
   promotion?: Promotion;
   promotionId?: string;
-  pageItem?: PageItem;
+  block?: Block;
   advertBannerBlockId?: string;
 }
 
@@ -334,7 +333,7 @@ interface AdvertTileBlock {
   promotion: Promotion[];
   promotionId?: string;
   tileSize: string;
-  pageItem?: PageItem;
+  block?: Block;
   advertTileBlockId?: string;
 }
 

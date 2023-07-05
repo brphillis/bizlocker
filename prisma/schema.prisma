@@ -8,19 +8,19 @@ datasource db {
 }
 
 model Page {
-  id         Int        @id @default(autoincrement())
-  pageItems  PageItem[] @relation("PagesToPageItems")
-  isHomePage Boolean    @default(false)
+  id         Int     @id @default(autoincrement())
+  blocks     Block[] @relation("PagesToBlocks")
+  isHomePage Boolean @default(false)
 }
 
-model PageItem {
+model Block {
   id                  String             @id @unique @default(cuid())
   order               Int
-  page                Page               @relation("PagesToPageItems", fields: [pageId], references: [id])
+  page                Page               @relation("PagesToBlocks", fields: [pageId], references: [id])
   pageId              Int
-  advertBannerBlock   AdvertBannerBlock? @relation("PageItemToAdvertBannerBlock", fields: [advertBannerBlockId], references: [id])
+  advertBannerBlock   AdvertBannerBlock? @relation("BlockToAdvertBannerBlock", fields: [advertBannerBlockId], references: [id])
   advertBannerBlockId String?            @unique
-  advertTileBlock     AdvertTileBlock?   @relation("PageItemToAdvertTileBlock", fields: [advertTileBlockId], references: [id])
+  advertTileBlock     AdvertTileBlock?   @relation("BlockToAdvertTileBlock", fields: [advertTileBlockId], references: [id])
   advertTileBlockId   String?            @unique
 }
 
@@ -32,7 +32,7 @@ model AdvertBannerBlock {
   campaignId          String?
   promotion           Promotion? @relation(fields: [promotionId], references: [id])
   promotionId         String?
-  pageItem            PageItem?  @relation("PageItemToAdvertBannerBlock")
+  block               Block?     @relation("BlockToAdvertBannerBlock")
   advertBannerBlockId String?
 }
 
@@ -43,7 +43,7 @@ model AdvertTileBlock {
   campaigns         Campaign[]
   promotions        Promotion[]
   tileSize          String      @default("MEDIUM")
-  pageItem          PageItem?   @relation("PageItemToAdvertTileBlock")
+  block             Block?      @relation("BlockToAdvertTileBlock")
   advertTileBlockId String?
 }
 

@@ -1,6 +1,6 @@
 import { prisma } from "~/db.server";
 
-export const removePageItem = async (pageId: number, itemIndex: number) => {
+export const removeBlock = async (pageId: number, itemIndex: number) => {
   if (itemIndex === 0) {
     throw new Error("Cannot remove item at index 0");
   }
@@ -11,48 +11,48 @@ export const removePageItem = async (pageId: number, itemIndex: number) => {
     throw new Error(`Page not found for pageId: ${pageId}`);
   }
 
-  const pageItems = await prisma.pageItem.findMany({
+  const blocks = await prisma.block.findMany({
     where: { pageId: page.id },
     orderBy: { order: "asc" },
   });
 
-  const isValidItemIndex = itemIndex >= 0 && itemIndex < pageItems.length;
+  const isValidItemIndex = itemIndex >= 0 && itemIndex < blocks.length;
 
   if (!isValidItemIndex) {
     throw new Error(`Invalid itemIndex: ${itemIndex}`);
   }
 
-  const pageItemToRemove = pageItems[itemIndex];
+  const blockToRemove = blocks[itemIndex];
 
   let transation = [];
 
-  if (pageItemToRemove.advertBannerBlockId) {
+  if (blockToRemove.advertBannerBlockId) {
     const deleteAdvertBannerBlockPromise = prisma.advertBannerBlock.delete({
-      where: { id: pageItemToRemove.advertBannerBlockId },
+      where: { id: blockToRemove.advertBannerBlockId },
     });
     transation.push(deleteAdvertBannerBlockPromise);
   }
 
-  if (pageItemToRemove.advertTileBlockId) {
+  if (blockToRemove.advertTileBlockId) {
     const deleteAdvertTileBlockPromise = prisma.advertTileBlock.delete({
-      where: { id: pageItemToRemove.advertTileBlockId },
+      where: { id: blockToRemove.advertTileBlockId },
     });
     transation.push(deleteAdvertTileBlockPromise);
   }
 
-  const deletePageItemPromise = prisma.pageItem.delete({
-    where: { id: pageItemToRemove.id },
+  const deleteBlockPromise = prisma.block.delete({
+    where: { id: blockToRemove.id },
   });
 
-  transation.push(deletePageItemPromise);
+  transation.push(deleteBlockPromise);
 
   await prisma.$transaction(transation);
 
-  // Only update 'order' property of pageItems that come after the removed one
-  const itemsToUpdate = pageItems.slice(itemIndex + 1);
+  // Only update 'order' property of blocks that come after the removed one
+  const itemsToUpdate = blocks.slice(itemIndex + 1);
 
   const updatePromises = itemsToUpdate.map((item, i) =>
-    prisma.pageItem.update({
+    prisma.block.update({
       where: { id: item.id },
       data: { order: item.order - 1 },
     })
@@ -81,8 +81,8 @@ export const updatePage = async (
     throw new Error(`Page not found for pageId: ${pageId}`);
   }
 
-  // Retrieve the pageItems associated with the page
-  const pageItems = await prisma.pageItem.findMany({
+  // Retrieve the blocks associated with the page
+  const blocks = await prisma.block.findMany({
     where: {
       pageId: page.id,
     },
@@ -95,19 +95,19 @@ export const updatePage = async (
     },
   });
 
-  // Check if the itemIndex is within the range of available pageItems or one position after the last item
-  const isValidItemIndex = itemIndex >= 0 && itemIndex <= pageItems.length;
+  // Check if the itemIndex is within the range of available blocks or one position after the last item
+  const isValidItemIndex = itemIndex >= 0 && itemIndex <= blocks.length;
 
   if (!isValidItemIndex) {
     throw new Error(`Invalid itemIndex: ${itemIndex}`);
   }
 
-  const pageItemToUpdate = pageItems.find((e) => e.order === itemIndex);
+  const blockToUpdate = blocks.find((e) => e.order === itemIndex);
 
-  if (pageItemToUpdate) {
+  if (blockToUpdate) {
     if (blockType === "banner") {
       // Retrieve the existing AdvertBannerBlock
-      const advertBannerBlock = pageItemToUpdate.advertBannerBlock;
+      const advertBannerBlock = blockToUpdate.advertBannerBlock;
 
       if (advertBannerBlock) {
         // Disconnect all existing data from the AdvertBannerBlock
@@ -142,10 +142,10 @@ export const updatePage = async (
               },
             });
 
-          // Update the PageItem with the updated AdvertBannerBlock and itemOrder
-          await prisma.pageItem.update({
+          // Update the blocks with the updated AdvertBannerBlock and itemOrder
+          await prisma.block.update({
             where: {
-              id: pageItemToUpdate.id,
+              id: blockToUpdate.id,
             },
             data: {
               order: itemIndex === 0 ? 0 : itemIndex,
@@ -176,10 +176,10 @@ export const updatePage = async (
               },
             });
 
-          // Update the PageItem with the updated AdvertBannerBlock and itemOrder
-          await prisma.pageItem.update({
+          // Update the block with the updated AdvertBannerBlock and itemOrder
+          await prisma.block.update({
             where: {
-              id: pageItemToUpdate.id,
+              id: blockToUpdate.id,
             },
             data: {
               order: itemIndex === 0 ? 0 : itemIndex,
@@ -197,7 +197,7 @@ export const updatePage = async (
       }
     } else if (blockType === "tile") {
       // Retrieve the existing AdvertTileBlock
-      const advertTileBlock = pageItemToUpdate.advertTileBlock;
+      const advertTileBlock = blockToUpdate.advertTileBlock;
 
       if (advertTileBlock) {
         // Disconnect all existing data from the AdvertTileBlock
@@ -225,10 +225,10 @@ export const updatePage = async (
             },
           });
 
-          // Update the PageItem with the updated AdvertTileBlock and itemOrder
-          await prisma.pageItem.update({
+          // Update the block with the updated AdvertTileBlock and itemOrder
+          await prisma.block.update({
             where: {
-              id: pageItemToUpdate.id,
+              id: blockToUpdate.id,
             },
             data: {
               order: itemIndex === 0 ? 0 : itemIndex,
@@ -256,10 +256,10 @@ export const updatePage = async (
             },
           });
 
-          // Update the PageItem with the updated AdvertTileBlock and itemOrder
-          await prisma.pageItem.update({
+          // Update the block with the updated AdvertTileBlock and itemOrder
+          await prisma.block.update({
             where: {
-              id: pageItemToUpdate.id,
+              id: blockToUpdate.id,
             },
             data: {
               order: itemIndex === 0 ? 0 : itemIndex,
@@ -279,8 +279,8 @@ export const updatePage = async (
       throw new Error(`Invalid type: ${blockType}`);
     }
   } else {
-    // Create a new PageItem
-    const newPageItem = await prisma.pageItem.create({
+    // Create a new block
+    const newBlock = await prisma.block.create({
       data: {
         order: itemIndex === 0 ? 0 : itemIndex,
         page: {
@@ -302,9 +302,9 @@ export const updatePage = async (
                 id: updateData[0].id,
               },
             },
-            pageItem: {
+            block: {
               connect: {
-                id: newPageItem.id,
+                id: newBlock.id,
               },
             },
           },
@@ -319,9 +319,9 @@ export const updatePage = async (
                 id: updateData[0].id,
               },
             },
-            pageItem: {
+            block: {
               connect: {
-                id: newPageItem.id,
+                id: newBlock.id,
               },
             },
           },
@@ -339,9 +339,9 @@ export const updatePage = async (
               connect: updateData.map((promotion) => ({ id: promotion.id })),
             },
             tileSize: "large", // Change this to the desired tile size
-            pageItem: {
+            block: {
               connect: {
-                id: newPageItem.id,
+                id: newBlock.id,
               },
             },
           },
@@ -355,9 +355,9 @@ export const updatePage = async (
               connect: updateData.map((campaign) => ({ id: campaign.id })),
             },
             tileSize: "large", // Change this to the desired tile size
-            pageItem: {
+            block: {
               connect: {
-                id: newPageItem.id,
+                id: newBlock.id,
               },
             },
           },

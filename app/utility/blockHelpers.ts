@@ -1,22 +1,20 @@
-export const getPageData = (
-  page: Page
-): { blocks: Block[]; content: Array<Promotion[] | Campaign[]> } => {
+export const getBlocks = (page: Page) => {
   const blocks = getPageBlocks(page);
-  const content = getBlockContent(blocks);
-
-  return { blocks, content };
+  const activeBlocks = getActiveBlocks(blocks);
+  return activeBlocks;
 };
 
 export const getPageBlocks = (page: Page, getFirst?: boolean): Block[] => {
   let firstPopulatedObjects: Block[] = [];
 
-  // Sort PageItems in ascending order based on 'order' property
-  page.pageItems.sort((a: PageItem, b: PageItem) =>
+  // Sort blocks in ascending order based on 'order' property
+  page.blocks.sort((a: Block, b: Block) =>
     a.order > b.order ? 1 : b.order > a.order ? -1 : 0
   );
 
-  for (let i = 0; i < page.pageItems.length; i++) {
-    let object = page.pageItems[i];
+  for (let i = 0; i < page.blocks.length; i++) {
+    let object = page.blocks[i];
+    let order = page.blocks[i].order;
 
     // Find the first populated object within the current object
     let firstPopulatedObject = Object.values(object).find((value) => {
@@ -28,7 +26,10 @@ export const getPageBlocks = (page: Page, getFirst?: boolean): Block[] => {
     });
 
     if (firstPopulatedObject) {
-      firstPopulatedObjects.push(firstPopulatedObject as Block);
+      firstPopulatedObjects.push({
+        ...firstPopulatedObject,
+        order: order,
+      } as Block);
     }
   }
 
@@ -39,9 +40,7 @@ export const getPageBlocks = (page: Page, getFirst?: boolean): Block[] => {
   return firstPopulatedObjects;
 };
 
-export const getBlockContent = (
-  blocks: Block[]
-): Array<Promotion[] | Campaign[]> => {
+export const getActiveBlocks = (blocks: Block[]): Block[] => {
   let firstPopulatedItems: any[] = [];
 
   for (let item of blocks) {
@@ -55,14 +54,27 @@ export const getBlockContent = (
       );
     });
 
-    // If the first populated value is found, check its type
+    // If the first populated value is found, create a new object with specific properties and merge the rest of the properties
     if (firstPopulated) {
+      const { name, type, id, order } = item;
       if (Array.isArray(firstPopulated)) {
-        // If it's an array, add it as it is
-        firstPopulatedItems.push(firstPopulated);
+        // If it's an array, merge it with the specific properties and add it as it is
+        firstPopulatedItems.push({
+          content: firstPopulated,
+          name,
+          type,
+          id,
+          order,
+        });
       } else {
-        // If it's an object, convert it into an array and then add
-        firstPopulatedItems.push([firstPopulated]);
+        // If it's an object, merge it with the specific properties and add
+        firstPopulatedItems.push({
+          content: [{ ...firstPopulated }],
+          name,
+          type,
+          id,
+          order,
+        });
       }
     }
   }
@@ -70,17 +82,17 @@ export const getBlockContent = (
   return firstPopulatedItems;
 };
 
-export const getBlockContentType = (PageItem: { [key: string]: any }) => {
+export const getBlockContentType = (Block: { [key: string]: any }) => {
   let firstObject: AdvertBannerBlock | AdvertTileBlock | undefined = undefined;
 
-  for (let key in PageItem) {
+  for (let key in Block) {
     if (
-      PageItem.hasOwnProperty(key) &&
-      typeof PageItem[key] === "object" &&
-      PageItem[key] !== null &&
-      !Array.isArray(PageItem[key])
+      Block.hasOwnProperty(key) &&
+      typeof Block[key] === "object" &&
+      Block[key] !== null &&
+      !Array.isArray(Block[key])
     ) {
-      firstObject = PageItem[key];
+      firstObject = Block[key];
       break;
     }
   }
@@ -96,12 +108,3 @@ export const getBlockName = (obj: Record<string, any>): string | null => {
   }
   return null;
 };
-
-// export const getPageBanner = (
-//   pageItems: PageItem[]
-// ): Campaign[] | Promotion[] => {
-//   return (
-//     getBlockContent(pageItems?.find((e) => e.order === 0) as PageItem) ||
-//     ({} as Campaign[] | Promotion[])
-//   );
-// };

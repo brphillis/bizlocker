@@ -6,7 +6,7 @@ import { searchPromotions } from "~/models/promotions.server";
 import AdminPageHeader from "~/components/Layout/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/AdminPageWrapper";
 import ContentBuilder from "~/components/PageBuilder/ContentBuilder";
-import { removePageItem, updatePage } from "~/models/pageBuilder.server";
+import { removeBlock, updatePage } from "~/models/pageBuilder.server";
 import HomePageBannerBuilder from "~/components/PageBuilder/BannerBuilder";
 
 export const loader = async ({ request }: LoaderArgs) => {
@@ -58,7 +58,7 @@ export const action = async ({ request }: ActionArgs) => {
       );
 
     case "delete":
-      return await removePageItem(
+      return await removeBlock(
         parseInt(pageId as string),
         parseInt(itemIndex as string)
       );

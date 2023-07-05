@@ -2,7 +2,7 @@ import { useState } from "react";
 import { capitalizeFirst } from "~/utility/stringHelpers";
 import { IoCaretForwardCircleSharp } from "react-icons/io5";
 import SearchInput from "~/components/Forms/Input/SearchInput";
-import { getPageData } from "~/utility/blockHelpers";
+import { getBlocks } from "~/utility/blockHelpers";
 import {
   Form,
   useLocation,
@@ -22,11 +22,10 @@ const HomePageBannerBuilder = ({ homePage, searchResults }: Props) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
-  const { blocks, content } = getPageData(homePage);
-  const banner = content[0][0];
+  const blocks = getBlocks(homePage);
+  const banner = blocks[0];
 
   const [editingBanner, setEditingBanner] = useState<boolean>(false);
-
   const [selectedItem, setSelectedItem] = useState<Campaign | Promotion>();
 
   return (
@@ -50,7 +49,7 @@ const HomePageBannerBuilder = ({ homePage, searchResults }: Props) => {
                     type="submit"
                     className="btn-primary btn-md"
                     onClick={() => {
-                      setSelectedItem(content[0][0]);
+                      setSelectedItem(blocks[0].content[0]);
                       setEditingBanner(true);
                     }}
                   >

@@ -8,11 +8,7 @@ import {
   useSubmit,
 } from "@remix-run/react";
 import SearchInput from "~/components/Forms/Input/SearchInput";
-import {
-  getBlockContentType,
-  getBlockName,
-  getPageData,
-} from "~/utility/blockHelpers";
+import { getBlocks } from "~/utility/blockHelpers";
 
 type Props = {
   page: Page;
@@ -25,14 +21,13 @@ const ContentBuilder = ({ page, searchResults }: Props) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
-  const { pageItems } = page || {};
   const [editingContent, setEditingContent] = useState<boolean>(false);
   const [editingIndex, setEditingIndex] = useState<number>(1);
   const [selectedItems, setSelectedItems] = useState<(Campaign | Promotion)[]>(
     []
   );
 
-  const { blocks, content } = getPageData(page);
+  const blocks = getBlocks(page);
 
   const selectItem = (item: Campaign | Promotion) => {
     const blockType = searchParams.get("blockType");
@@ -67,33 +62,36 @@ const ContentBuilder = ({ page, searchResults }: Props) => {
               </tr>
             </thead>
             <tbody>
-              {pageItems
-                ?.sort((a: PageItem, b: PageItem) => a.order - b.order)
-                .map((e: PageItem, index) => {
-                  const type = getBlockContentType(e);
-                  const name = getBlockName(e);
-
+              {blocks
+                ?.sort((a: Block, b: Block) => a.order - b.order)
+                .map((e: Block, index) => {
                   if (index !== 0 && e.order !== 0) {
                     return (
                       <tr
                         key={
-                          "pageItem_" +
+                          "block_" +
                           blocks?.[index]?.name +
                           blocks?.[index]?.id +
                           index
                         }
                       >
-                        <td>{e?.order}</td>
-                        <td>{name && capitalizeFirst(name)}</td>
+                        <td>{blocks?.[index]?.order}</td>
+                        <td>
+                          {blocks?.[index]?.name &&
+                            capitalizeFirst(blocks?.[index]?.name)}
+                        </td>
 
-                        <td>{type}</td>
+                        <td>
+                          {blocks?.[index]?.type &&
+                            capitalizeFirst(blocks?.[index]?.type)}
+                        </td>
                         <td>
                           <div className="flex h-full flex-row items-center justify-center gap-3">
                             <button
                               type="button"
                               className="btn-primary btn-md"
                               onClick={() => {
-                                setSelectedItems(content[index]);
+                                setSelectedItems(blocks[index].content);
                                 setEditingContent(true);
                                 setEditingIndex(index);
                               }}
@@ -139,7 +137,7 @@ const ContentBuilder = ({ page, searchResults }: Props) => {
             type="button"
             className="btn-primary btn-md mx-auto mt-3 block"
             onClick={() => {
-              setEditingIndex(pageItems.length);
+              setEditingIndex(blocks.length);
               setEditingContent(true);
             }}
           >
@@ -312,6 +310,7 @@ const ContentBuilder = ({ page, searchResults }: Props) => {
                   className="btn-primary btn-md"
                   onClick={() => {
                     setEditingContent(false);
+                    setSelectedItems([]);
                     navigate(pathname);
                   }}
                 >

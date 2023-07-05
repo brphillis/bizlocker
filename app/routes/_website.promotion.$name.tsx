@@ -5,7 +5,7 @@ import {
 } from "@remix-run/server-runtime";
 import { useLoaderData } from "react-router-dom";
 import PromotionBanner from "~/components/Banners/PromotionBanner";
-import ProductGrid from "~/components/Blocks/ProductGrid";
+import ProductGrid from "~/components/Grids/ProductGrid";
 import PageWrapper from "~/components/Layout/PageWrapper";
 import Pagination from "~/components/Pagination";
 import { addToCart } from "~/models/cart.server";

@@ -6,7 +6,7 @@ export const getHomePage = async () => {
       isHomePage: true,
     },
     include: {
-      pageItems: {
+      blocks: {
         include: {
           advertBannerBlock: {
             include: {
