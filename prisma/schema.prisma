@@ -37,15 +37,13 @@ model AdvertBannerBlock {
 }
 
 model AdvertTileBlock {
-  id                String     @id @unique @default(cuid())
-  name              String     @default("tile")
+  id                String      @id @unique @default(cuid())
+  name              String      @default("tile")
   type              String
-  campaign          Campaign?  @relation(fields: [campaignId], references: [id])
-  campaignId        String?
-  promotion         Promotion? @relation(fields: [promotionId], references: [id])
-  promotionId       String?
-  tileSize          String     @default("MEDIUM")
-  pageItem          PageItem?  @relation("PageItemToAdvertTileBlock")
+  campaigns         Campaign[]
+  promotions        Promotion[]
+  tileSize          String      @default("MEDIUM")
+  pageItem          PageItem?   @relation("PageItemToAdvertTileBlock")
   advertTileBlockId String?
 }
 
@@ -222,8 +220,8 @@ model Campaign {
   productCategories ProductCategory[] @relation("ProductCategoryToCampaign")
   brands            Brand[]           @relation("BrandToCampaign")
 
-  bannerBlocks AdvertBannerBlock[]
-  tileBlocks   AdvertTileBlock[]
+  bannerBlocks     AdvertBannerBlock[]
+  advertTileBlocks AdvertTileBlock[]
 }
 
 model Promotion {
@@ -242,8 +240,8 @@ model Promotion {
   createdAt          DateTime   @default(now())
   updatedAt          DateTime?  @default(now()) @updatedAt
 
-  bannerBlocks AdvertBannerBlock[]
-  tileBlocks   AdvertTileBlock[]
+  bannerBlocks     AdvertBannerBlock[]
+  advertTileBlocks AdvertTileBlock[]
 }
 
 model Product {

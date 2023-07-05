@@ -1,9 +1,15 @@
-import { Form, useSearchParams, useSubmit } from "@remix-run/react";
-import React, { useState } from "react";
+import { useState } from "react";
+import { capitalizeFirst } from "~/utility/stringHelpers";
 import { IoCaretForwardCircleSharp } from "react-icons/io5";
 import SearchInput from "~/components/Forms/Input/SearchInput";
-import { getBlockContent, getBlockContentType } from "~/utility/blockHelpers";
-import { capitalizeFirst } from "~/utility/stringHelpers";
+import { getPageData } from "~/utility/blockHelpers";
+import {
+  Form,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+  useSubmit,
+} from "@remix-run/react";
 
 type Props = {
   homePage: Page;
@@ -13,15 +19,15 @@ type Props = {
 const HomePageBannerBuilder = ({ homePage, searchResults }: Props) => {
   const [searchParams] = useSearchParams();
   const submit = useSubmit();
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
 
-  const { pageItems } = homePage || {};
-
-  //return the page item that has an order of 0, 0 is the banner for the homepage Always
-  const banner =
-    getBlockContent(pageItems?.find((e) => e.order === 0) as PageItem) ||
-    ({} as Campaign | Promotion);
+  const { blocks, content } = getPageData(homePage);
+  const banner = content[0][0];
 
   const [editingBanner, setEditingBanner] = useState<boolean>(false);
+
+  const [selectedItem, setSelectedItem] = useState<Campaign | Promotion>();
 
   return (
     <>
@@ -38,14 +44,15 @@ const HomePageBannerBuilder = ({ homePage, searchResults }: Props) => {
             <tbody>
               <tr>
                 <td>{banner?.name}</td>
-                <td>
-                  {capitalizeFirst(getBlockContentType(pageItems[0]) ?? "")}
-                </td>
+                <td>{capitalizeFirst(blocks[0]?.type)}</td>
                 <td>
                   <button
                     type="submit"
                     className="btn-primary btn-md"
-                    onClick={() => setEditingBanner(true)}
+                    onClick={() => {
+                      setSelectedItem(content[0][0]);
+                      setEditingBanner(true);
+                    }}
                   >
                     Edit
                   </button>
@@ -92,6 +99,47 @@ const HomePageBannerBuilder = ({ homePage, searchResults }: Props) => {
               </div>
             </div>
 
+            {selectedItem && (
+              <>
+                <p className="mt-3 text-xs">Selected Item</p>
+
+                <div className="max-w-3xl overflow-x-auto">
+                  <table className="table-xs table">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Created</th>
+                        <th>Delete</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr className="hover cursor-pointer">
+                        <td>{selectedItem.name}</td>
+                        <td>
+                          {new Date(selectedItem.createdAt).toLocaleDateString(
+                            "en-US",
+                            {
+                              day: "numeric",
+                              month: "long",
+                              year: "numeric",
+                            }
+                          )}
+                        </td>
+                        <td>
+                          <div
+                            className="ml-2"
+                            onClick={() => setSelectedItem(undefined)}
+                          >
+                            <IoCaretForwardCircleSharp />
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </>
+            )}
+
             <p className="mt-3 text-xs">Select an Item</p>
 
             <div className="max-w-3xl overflow-x-auto">
@@ -111,30 +159,7 @@ const HomePageBannerBuilder = ({ homePage, searchResults }: Props) => {
                         <tr
                           key={"promotionOrCampaign_" + name + index}
                           className="hover cursor-pointer"
-                          onClick={() => {
-                            const formData = new FormData();
-                            formData.set("_action", "updateBanner");
-                            formData.set(
-                              "pageId",
-                              homePage.id.toString() || ""
-                            );
-                            formData.set("itemIndex", "0");
-                            formData.set("blockType", "banner");
-                            formData.set(
-                              "contentType",
-                              searchParams.get("contentType") as string
-                            );
-                            formData.set(
-                              "contentData",
-                              JSON.stringify(searchResults[index]) as string
-                            );
-
-                            submit(formData, {
-                              method: "POST",
-                            });
-
-                            setEditingBanner(false);
-                          }}
+                          onClick={() => setSelectedItem(searchResults[index])}
                         >
                           <th>{index + 1}</th>
                           <td>{name}</td>
@@ -156,15 +181,49 @@ const HomePageBannerBuilder = ({ homePage, searchResults }: Props) => {
                   )}
                 </tbody>
               </table>
+
+              <div className="mt-6 flex flex-row justify-center gap-3">
+                <button
+                  type="button"
+                  className="btn-primary btn-md"
+                  onClick={() => {
+                    navigate(pathname);
+                    setEditingBanner(false);
+                  }}
+                >
+                  Back
+                </button>
+
+                <button
+                  type="button"
+                  className="btn-primary btn-md"
+                  onClick={() => {
+                    const formData = new FormData();
+                    formData.set("_action", "updateBanner");
+                    formData.set("pageId", homePage.id.toString() || "");
+                    formData.set("itemIndex", "0");
+                    formData.set("blockType", "banner");
+                    formData.set(
+                      "contentType",
+                      searchParams.get("contentType") as string
+                    );
+                    formData.set(
+                      "contentData",
+                      JSON.stringify(selectedItem) as string
+                    );
+
+                    submit(formData, {
+                      method: "POST",
+                    });
+
+                    setEditingBanner(false);
+                  }}
+                >
+                  Submit
+                </button>
+              </div>
             </div>
           </Form>
-          <button
-            type="button"
-            className="btn-primary btn-md mt-3"
-            onClick={() => setEditingBanner(false)}
-          >
-            Back
-          </button>
         </>
       )}
     </>

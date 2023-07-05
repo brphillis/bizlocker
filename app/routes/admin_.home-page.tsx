@@ -1,17 +1,13 @@
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
+import { getHomePage } from "~/models/homePage.server";
 import { Outlet, useLoaderData } from "@remix-run/react";
-
+import { searchCampaigns } from "~/models/campaigns.server";
+import { searchPromotions } from "~/models/promotions.server";
 import AdminPageHeader from "~/components/Layout/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/AdminPageWrapper";
 import ContentBuilder from "~/components/PageBuilder/ContentBuilder";
+import { removePageItem, updatePage } from "~/models/pageBuilder.server";
 import HomePageBannerBuilder from "~/components/PageBuilder/BannerBuilder";
-import { searchCampaigns } from "~/models/campaigns.server";
-import {
-  getHomePage,
-  removePageItem,
-  updatePage,
-} from "~/models/homePage.server";
-import { searchPromotions } from "~/models/promotions.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const homePage = await getHomePage();
@@ -47,9 +43,12 @@ export const action = async ({ request }: ActionArgs) => {
 
   switch (form._action) {
     case "updateBanner":
-      const updateData = JSON.parse(contentData as string) as
-        | Campaign
-        | Promotion;
+      let updateData = JSON.parse(contentData as string) as
+        | Campaign[]
+        | Promotion[];
+
+      updateData = Array.isArray(updateData) ? updateData : [updateData];
+
       return await updatePage(
         parseInt(pageId as string),
         parseInt(itemIndex as string),

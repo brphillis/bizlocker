@@ -311,6 +311,8 @@ interface PageItem {
   advertTileBlockId?: string;
 }
 
+type Block = AdvertBannerBlock | AdvertTileBlock;
+
 interface AdvertBannerBlock {
   id: string;
   name: string;
@@ -327,9 +329,9 @@ interface AdvertTileBlock {
   id: string;
   name: string;
   type: string;
-  campaign?: Campaign;
+  campaign?: Campaign[];
   campaignId?: string;
-  promotion?: Promotion;
+  promotion: Promotion[];
   promotionId?: string;
   tileSize: string;
   pageItem?: PageItem;
