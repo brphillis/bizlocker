@@ -1,9 +1,10 @@
 import { useRef, useState } from "react";
 import { capitalizeFirst } from "~/utility/stringHelpers";
-import { IoCaretForwardCircleSharp } from "react-icons/io5";
+import { IoCaretForwardCircleSharp, IoCloseCircle } from "react-icons/io5";
 import { Form, useSearchParams, useSubmit } from "@remix-run/react";
 import SearchInput from "~/components/Forms/Input/SearchInput";
 import { getBlocks } from "~/utility/blockHelpers";
+import BlockIcon from "~/components/Blocks/BlockIcon";
 
 type Props = {
   page: Page;
@@ -76,107 +77,119 @@ const ContentBuilder = ({ page, searchResults }: Props) => {
   return (
     <>
       {!editingContent && (
-        <div className="scrollbar-hide w-[600px] overflow-x-auto">
-          <table className="table">
-            <thead>
-              <tr>
-                <th className="w-1/4"></th>
-                <th className="w-1/4">Block</th>
-                <th className="w-1/4">Type</th>
-                <th className="w-1/4"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {blocks
-                ?.sort((a: Block, b: Block) => a.order - b.order)
-                .map((e: Block, index) => {
-                  if (index !== 0 && e.order !== 0) {
-                    return (
-                      <tr
-                        key={
-                          "block_" +
-                          blocks?.[index]?.name +
-                          blocks?.[index]?.id +
-                          index
-                        }
-                      >
-                        <td>{blocks?.[index]?.order}</td>
-                        <td>
-                          {blocks?.[index]?.name &&
-                            capitalizeFirst(blocks?.[index]?.name)}
-                        </td>
+        <div className="flex w-full max-w-full flex-col items-center overflow-x-hidden">
+          <div className="divider w-full" />
+          <div className="scrollbar-hide w-full overflow-x-auto">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th className="w-1/4">#</th>
+                  <th className="w-1/4">Block</th>
+                  <th className="w-1/4">Type</th>
+                  <th className="w-1/4"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {blocks
+                  ?.sort((a: Block, b: Block) => a.order - b.order)
+                  .map((e: Block, index) => {
+                    if (index !== 0 && e.order !== 0) {
+                      return (
+                        <tr
+                          key={
+                            "block_" +
+                            blocks?.[index]?.name +
+                            blocks?.[index]?.id +
+                            index
+                          }
+                        >
+                          <td>{blocks?.[index]?.order}</td>
+                          <td>
+                            <div className="flex gap-3">
+                              <BlockIcon
+                                blockName={blocks[index].name}
+                                size={18}
+                                styles={"mt-[1px]"}
+                              />
 
-                        <td>
-                          {blocks?.[index]?.type &&
-                            capitalizeFirst(blocks?.[index]?.type)}
-                        </td>
-                        <td>
-                          <div className="flex h-full flex-row items-center justify-center gap-3">
-                            <button
-                              type="button"
-                              className="btn-primary btn-md"
-                              onClick={() => {
-                                setSelectedItems(blocks[index].content);
-                                setEditingContent(true);
-                                setEditingIndex(index);
-                              }}
-                            >
-                              Edit
-                            </button>
-                            <button
-                              type="button"
-                              name="_action"
-                              value="delete"
-                              className="btn-primary btn-md"
-                              onClick={() => {
-                                const formData = new FormData();
+                              <p>{capitalizeFirst(blocks[index].name)}</p>
+                            </div>
+                          </td>
 
-                                formData.set("_action", "delete");
-                                formData.set(
-                                  "pageId",
-                                  page.id.toString() || ""
-                                );
-                                formData.set(
-                                  "itemIndex",
-                                  index.toString() || ""
-                                );
+                          <td>
+                            {blocks?.[index]?.type &&
+                              capitalizeFirst(blocks?.[index]?.type)}
+                          </td>
+                          <td>
+                            <div className="flex h-full flex-row items-center justify-center gap-3">
+                              <button
+                                type="button"
+                                className="btn-primary btn-md"
+                                onClick={() => {
+                                  setSelectedItems(blocks[index].content);
+                                  setEditingContent(true);
+                                  setEditingIndex(index);
+                                }}
+                              >
+                                Edit
+                              </button>
+                              <button
+                                type="button"
+                                name="_action"
+                                value="delete"
+                                className="btn-primary btn-md"
+                                onClick={() => {
+                                  const formData = new FormData();
 
-                                submit(formData, {
-                                  method: "POST",
-                                });
+                                  formData.set("_action", "delete");
+                                  formData.set(
+                                    "pageId",
+                                    page.id.toString() || ""
+                                  );
+                                  formData.set(
+                                    "itemIndex",
+                                    index.toString() || ""
+                                  );
 
-                                setEditingContent(false);
-                              }}
-                            >
-                              Remove
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  } else return null;
-                })}
-            </tbody>
-          </table>
+                                  submit(formData, {
+                                    method: "POST",
+                                  });
+
+                                  setEditingContent(false);
+                                }}
+                              >
+                                Remove
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    } else return null;
+                  })}
+              </tbody>
+            </table>
+          </div>
+          <div className="divider w-full" />
+
           <button
             type="button"
-            className="btn-primary btn-md mx-auto mt-3 block"
+            className="btn-primary btn-md"
             onClick={() => {
               setEditingIndex(blocks.length);
               setEditingContent(true);
             }}
           >
-            Add
+            Add Block +
           </button>
         </div>
       )}
 
       {editingContent && (
-        <div className="max-w-screen my-3 flex w-[720px] flex-col gap-6">
+        <div className="my-3 flex w-full flex-col gap-6">
           <Form
             method="POST"
             ref={searchFormRef}
-            className="flex w-full flex-row flex-wrap justify-start gap-3"
+            className="flex w-full flex-row flex-wrap justify-center gap-3 sm:justify-start"
           >
             <div className="form-control">
               <label className="label">
@@ -184,7 +197,7 @@ const ContentBuilder = ({ page, searchResults }: Props) => {
               </label>
               <select
                 name="blockName"
-                className="select-bordered select w-[95vw] sm:w-[215px]"
+                className="select-bordered select w-[95vw] max-w-full sm:w-[215px]"
                 defaultValue="Select Block"
                 placeholder="Select Block"
                 onChange={handleSearchSubmit}
@@ -202,7 +215,7 @@ const ContentBuilder = ({ page, searchResults }: Props) => {
               </label>
               <select
                 name="contentType"
-                className="select-bordered select w-[95vw] sm:w-[215px]"
+                className="select-bordered select w-[95vw] max-w-full sm:w-[215px]"
                 defaultValue="Select Content Type"
                 placeholder="Select a Type"
                 onChange={handleSearchSubmit}
@@ -214,7 +227,7 @@ const ContentBuilder = ({ page, searchResults }: Props) => {
             </div>
 
             <div className="flex flex-row gap-6">
-              <div className="form-control w-full max-w-xs">
+              <div className="form-control w-[95vw] sm:w-[215px]">
                 <label className="label">
                   <span className="label-text">Search Content</span>
                 </label>
@@ -224,9 +237,9 @@ const ContentBuilder = ({ page, searchResults }: Props) => {
           </Form>
 
           {searchResults && (
-            <div className="max-w-3xl overflow-x-auto">
+            <div className="w-full overflow-x-auto">
               <div className="divider my-0 w-full py-0" />
-              <p className="mt-3 text-xs">Select an Item</p>
+              <p className="my-3 text-sm font-bold">Select an Item</p>
               <table className="table-sm table">
                 <thead>
                   <tr>
@@ -248,7 +261,7 @@ const ContentBuilder = ({ page, searchResults }: Props) => {
                           }}
                         >
                           <td className="w-1/4">{index + 1}</td>
-                          <td className="w-1/4">{name}</td>
+                          <td className="w-1/4">{capitalizeFirst(name)}</td>
                           <td className="w-1/4">
                             {new Date(createdAt).toLocaleDateString("en-US", {
                               day: "numeric",
@@ -258,7 +271,7 @@ const ContentBuilder = ({ page, searchResults }: Props) => {
                           </td>
                           <td className="w-1/4">
                             <div className="ml-2">
-                              <IoCaretForwardCircleSharp />
+                              <IoCaretForwardCircleSharp size={18} />
                             </div>
                           </td>
                         </tr>
@@ -271,22 +284,25 @@ const ContentBuilder = ({ page, searchResults }: Props) => {
           )}
 
           {selectedItems.length === 0 && (
-            <button
-              type="button"
-              className="btn-primary btn-md w-max"
-              onClick={() => {
-                setEditingContent(false);
-                setSelectedItems([]);
-              }}
-            >
-              Back
-            </button>
+            <>
+              <div className="divider my-0 w-full py-0" />
+              <button
+                type="button"
+                className="btn-primary btn-md w-max"
+                onClick={() => {
+                  setEditingContent(false);
+                  setSelectedItems([]);
+                }}
+              >
+                Back
+              </button>
+            </>
           )}
 
           {selectedItems && selectedItems.length > 0 && (
             <div className="max-w-3xl overflow-x-auto">
               <div className="divider my-0 w-full py-0" />
-              <p className="mt-3 text-xs">Selected Items</p>
+              <p className="my-3 text-sm font-bold">Selected Items</p>
               <table className="table-sm table">
                 <thead>
                   <tr>
@@ -322,7 +338,7 @@ const ContentBuilder = ({ page, searchResults }: Props) => {
                                 )
                               }
                             >
-                              <IoCaretForwardCircleSharp />
+                              <IoCloseCircle size={18} />
                             </div>
                           </td>
                         </tr>
@@ -332,7 +348,9 @@ const ContentBuilder = ({ page, searchResults }: Props) => {
                 </tbody>
               </table>
 
-              <div className="mt-12 flex flex-row justify-center gap-3">
+              <div className="divider w-full" />
+
+              <div className="flex flex-row justify-center gap-3">
                 <button
                   type="button"
                   className="btn-primary btn-md"

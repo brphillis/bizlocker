@@ -52,43 +52,46 @@ const HomePageBannerBuilder = ({ homePage, searchResults }: Props) => {
   return (
     <>
       {!editingBanner && (
-        <div className="scrollbar-hide w-[600px] overflow-x-auto">
-          <table className="table">
-            <thead>
-              <tr>
-                <th className="w-1/3">Name</th>
-                <th className="w-1/3">Type</th>
-                <th className="w-1/3"></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>{banner?.name}</td>
-                <td>{capitalizeFirst(blocks[0]?.type)}</td>
-                <td>
-                  <button
-                    type="submit"
-                    className="btn-primary btn-md"
-                    onClick={() => {
-                      setSelectedItem(blocks[0].content[0]);
-                      setEditingBanner(true);
-                    }}
-                  >
-                    Edit
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <div className="flex w-full flex-col items-center">
+          <div className="divider w-full" />
+          <div className="scrollbar-hide w-full overflow-x-auto">
+            <table className="table max-w-full">
+              <thead>
+                <tr>
+                  <th className="w-1/3">Name</th>
+                  <th className="w-1/3">Type</th>
+                  <th className="w-1/3"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>{capitalizeFirst(banner?.name)}</td>
+                  <td>{capitalizeFirst(blocks[0]?.type)}</td>
+                  <td className="flex justify-center">
+                    <button
+                      type="submit"
+                      className="btn-primary btn-md"
+                      onClick={() => {
+                        setSelectedItem(blocks[0].content[0]);
+                        setEditingBanner(true);
+                      }}
+                    >
+                      Edit
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 
       {editingBanner && (
-        <div className="max-w-screen my-3 flex w-[720px] flex-col gap-6">
+        <div className="max-w-screen my-3 flex w-full flex-col gap-6">
           <Form
             method="POST"
             ref={searchFormRef}
-            className="flex w-full flex-row flex-wrap justify-start gap-3"
+            className="flex w-full flex-row flex-wrap justify-center gap-3 sm:justify-start"
           >
             <div className="form-control">
               <label className="label">
@@ -108,7 +111,7 @@ const HomePageBannerBuilder = ({ homePage, searchResults }: Props) => {
             </div>
 
             <div className="flex flex-row gap-6">
-              <div className="form-control w-full max-w-xs">
+              <div className="form-control w-[95vw] sm:w-[215px]">
                 <label className="label">
                   <span className="label-text">Search Content</span>
                 </label>
@@ -118,10 +121,10 @@ const HomePageBannerBuilder = ({ homePage, searchResults }: Props) => {
           </Form>
 
           {searchResults && (
-            <div className="max-w-3xl overflow-x-auto">
+            <div className="w-full overflow-x-auto">
               <div className="divider my-0 w-full py-0" />
-              <p className="mt-3 text-xs">Select an Item</p>
-              <table className="table-sm table">
+              <p className="my-3 text-sm font-bold">Select an Item</p>
+              <table className="table-sm table max-w-full">
                 <thead>
                   <tr>
                     <th className="w-1/4"></th>
@@ -140,7 +143,7 @@ const HomePageBannerBuilder = ({ homePage, searchResults }: Props) => {
                           onClick={() => setSelectedItem(searchResults[index])}
                         >
                           <td className="w-1/4">{index + 1}</td>
-                          <td className="w-1/4">{name}</td>
+                          <td className="w-1/4">{capitalizeFirst(name)}</td>
                           <td className="w-1/4">
                             {new Date(createdAt).toLocaleDateString("en-US", {
                               day: "numeric",
@@ -164,9 +167,9 @@ const HomePageBannerBuilder = ({ homePage, searchResults }: Props) => {
 
           {selectedItem && (
             <div className="max-w-3xl overflow-x-auto">
-              <div className="divider my-0 w-full py-0" />
-              <p className="mt-3 text-xs">Selected Item</p>
-              <table className="table-sm table">
+              <div className="divider mt-0 w-full pt-0" />
+              <p className="my-3 text-sm font-bold">Selected Item</p>
+              <table className="table-sm table max-w-full">
                 <thead>
                   <tr>
                     <th className="w-1/4"></th>
@@ -177,7 +180,7 @@ const HomePageBannerBuilder = ({ homePage, searchResults }: Props) => {
                 </thead>
                 <tbody>
                   <tr className="hover cursor-pointer">
-                    <tr className="w-1/4">1</tr>
+                    <td className="w-1/4">1</td>
                     <td className="w-1/4">{selectedItem.name}</td>
                     <td className="w-1/4">
                       {new Date(selectedItem.createdAt).toLocaleDateString(
@@ -203,7 +206,9 @@ const HomePageBannerBuilder = ({ homePage, searchResults }: Props) => {
             </div>
           )}
 
-          <div className="mt-12 flex flex-row justify-center gap-3">
+          <div className="divider my-0 w-full py-0" />
+
+          <div className="flex flex-row justify-center gap-3">
             <button
               type="button"
               className="btn-primary btn-md"

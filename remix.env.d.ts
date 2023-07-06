@@ -305,7 +305,7 @@ interface Block extends AdvertBannerBlock, AdvertTileBlock {
   order: number;
   page: Page;
   pageId: number;
-  content: Content;
+  content: Campaign[] | Promotion[];
   advertBannerBlock?: AdvertBannerBlock;
   advertBannerBlockId?: string;
   advertTileBlock?: AdvertTileBlock;

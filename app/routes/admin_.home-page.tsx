@@ -8,6 +8,9 @@ import AdminPageWrapper from "~/components/Layout/AdminPageWrapper";
 import ContentBuilder from "~/components/PageBuilder/ContentBuilder";
 import { removeBlock, updatePage } from "~/models/pageBuilder.server";
 import HomePageBannerBuilder from "~/components/PageBuilder/BannerBuilder";
+import { useState } from "react";
+import { IoReorderFour, IoTabletLandscape } from "react-icons/io5";
+import Icon from "~/components/Icon";
 
 export const loader = async () => {
   const homePage = await getHomePage();
@@ -78,32 +81,79 @@ const ManageHomePage = () => {
       searchResults: Promotion[] | Campaign[];
     }) || {};
 
+  const [editingBanner, setEditingBanner] = useState<boolean>(false);
+  const [editingContent, setEditingContent] = useState<boolean>(false);
+
   return (
     <AdminPageWrapper>
-      <div className="relative h-full w-full bg-base-300 p-6">
+      <div className="relative h-full w-screen bg-base-300 p-6 sm:w-full">
         <AdminPageHeader title="Manage Home Page" />
 
-        <div className="flex flex-col gap-6">
-          <div className="collapse-plus collapse w-[800px] rounded-none bg-base-200 py-3 pr-3">
-            <input type="checkbox" />
-            <div className="collapse-title ml-3 text-xl font-medium">
-              Banner
+        <div className="flex w-full justify-center">
+          <div className="flex flex-col gap-6">
+            <div className="flex justify-center gap-3 text-center text-2xl font-bold">
+              <Icon iconName="IoHomeSharp" size={24} styles="mt-[5px]" />
+              Home Page Editor
             </div>
-            <div className=" collapse-content flex justify-center">
-              <HomePageBannerBuilder
-                homePage={homePage}
-                searchResults={searchResults}
-              />
-            </div>
-          </div>
 
-          <div className="collapse-plus collapse w-[800px] rounded-none bg-base-200 py-3 pr-3">
-            <input type="checkbox" />
-            <div className="collapse-title ml-3 text-xl font-medium">
-              Page Content
+            <div className="max-w-screen collapse-plus collapse w-screen rounded-none bg-base-200 py-3 sm:w-[800px]">
+              <input
+                type="checkbox"
+                readOnly
+                checked={editingBanner}
+                onClick={() => {
+                  if (editingBanner && !editingContent) {
+                    setEditingBanner(false);
+                  } else {
+                    setEditingBanner(true);
+                    setEditingContent(false);
+                  }
+                }}
+              />
+              <div className="collapse-title text-xl font-medium">
+                <div className="ml-3 flex items-center gap-3">
+                  <IoTabletLandscape className="mt-1" />
+                  <p>Banner</p>
+                </div>
+              </div>
+              <div className="collapse-content w-screen sm:w-full">
+                <div className="flex justify-center">
+                  <HomePageBannerBuilder
+                    homePage={homePage}
+                    searchResults={searchResults}
+                  />
+                </div>
+              </div>
             </div>
-            <div className="collapse-content flex justify-center">
-              <ContentBuilder page={homePage} searchResults={searchResults} />
+
+            <div className="max-w-screen collapse-plus collapse w-screen rounded-none bg-base-200 py-3 sm:w-[800px]">
+              <input
+                type="checkbox"
+                readOnly
+                checked={editingContent}
+                onClick={() => {
+                  if (editingContent && !editingBanner) {
+                    setEditingContent(false);
+                  } else {
+                    setEditingContent(true);
+                    setEditingBanner(false);
+                  }
+                }}
+              />
+              <div className="collapse-title text-xl font-medium">
+                <div className="ml-3 flex items-center gap-3">
+                  <IoReorderFour className="mt-1" />
+                  <p>Page Content</p>
+                </div>
+              </div>
+              <div className="collapse-content w-screen sm:w-full">
+                <div className="flex justify-center">
+                  <ContentBuilder
+                    page={homePage}
+                    searchResults={searchResults}
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>
