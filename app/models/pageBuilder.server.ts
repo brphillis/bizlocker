@@ -66,8 +66,8 @@ export const removeBlock = async (pageId: number, itemIndex: number) => {
 export const updatePage = async (
   pageId: number,
   itemIndex: number,
-  blockType: BlockType,
-  contentType: BlockData,
+  blockName: BlockName,
+  contentType: BlockContentType,
   updateData: Promotion[] | Campaign[]
 ) => {
   // Retrieve the page by pageId
@@ -105,7 +105,7 @@ export const updatePage = async (
   const blockToUpdate = blocks.find((e) => e.order === itemIndex);
 
   if (blockToUpdate) {
-    if (blockType === "banner") {
+    if (blockName === "banner") {
       // Retrieve the existing AdvertBannerBlock
       const advertBannerBlock = blockToUpdate.advertBannerBlock;
 
@@ -195,7 +195,7 @@ export const updatePage = async (
           });
         }
       }
-    } else if (blockType === "tile") {
+    } else if (blockName === "tile") {
       // Retrieve the existing AdvertTileBlock
       const advertTileBlock = blockToUpdate.advertTileBlock;
 
@@ -276,7 +276,7 @@ export const updatePage = async (
         }
       }
     } else {
-      throw new Error(`Invalid type: ${blockType}`);
+      throw new Error(`Invalid type: ${blockName}`);
     }
   } else {
     // Create a new block
@@ -291,7 +291,7 @@ export const updatePage = async (
       },
     });
 
-    if (blockType === "banner") {
+    if (blockName === "banner") {
       if (contentType === "promotion") {
         // Create a new AdvertBannerBlock with the promotion
         await prisma.advertBannerBlock.create({
@@ -329,7 +329,7 @@ export const updatePage = async (
       } else {
         throw new Error(`Invalid data type: ${contentType}`);
       }
-    } else if (blockType === "tile") {
+    } else if (blockName === "tile") {
       if (contentType === "promotion") {
         // Create a new AdvertTileBlock with the promotion
         await prisma.advertTileBlock.create({
@@ -366,7 +366,7 @@ export const updatePage = async (
         throw new Error(`Invalid data type: ${contentType}`);
       }
     } else {
-      throw new Error(`Invalid type: ${blockType}`);
+      throw new Error(`Invalid type: ${blockName}`);
     }
   }
 

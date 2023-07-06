@@ -291,8 +291,8 @@ type BasicSearchArgs = {
 type SortBy = "createdAt" | "totalSold" | "price" | "name";
 type SortOrder = "asc" | "desc";
 
-type BlockType = "banner" | "tile";
-type BlockData = "campaign" | "promotion";
+type BlockName = "banner" | "tile";
+type BlockContentType = "campaign" | "promotion";
 
 interface Page {
   id: number;
@@ -310,6 +310,14 @@ interface Block extends AdvertBannerBlock, AdvertTileBlock {
   advertBannerBlockId?: string;
   advertTileBlock?: AdvertTileBlock;
   advertTileBlockId?: string;
+}
+
+interface BlockOptions {
+  columns: number;
+  rows: number;
+  size: "SMALL" | "MEDIUM" | "LARGE";
+  sortBy: SortBy;
+  sortOrder: SortOrder;
 }
 
 interface AdvertBannerBlock {

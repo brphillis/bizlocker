@@ -1,15 +1,9 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { capitalizeFirst } from "~/utility/stringHelpers";
 import { IoCaretForwardCircleSharp } from "react-icons/io5";
 import SearchInput from "~/components/Forms/Input/SearchInput";
 import { getBlocks } from "~/utility/blockHelpers";
-import {
-  Form,
-  useLocation,
-  useNavigate,
-  useSearchParams,
-  useSubmit,
-} from "@remix-run/react";
+import { Form, useSubmit } from "@remix-run/react";
 
 type Props = {
   homePage: Page;
@@ -17,21 +11,48 @@ type Props = {
 };
 
 const HomePageBannerBuilder = ({ homePage, searchResults }: Props) => {
-  const [searchParams] = useSearchParams();
   const submit = useSubmit();
-  const { pathname } = useLocation();
-  const navigate = useNavigate();
 
   const blocks = getBlocks(homePage);
   const banner = blocks[0];
 
+  const searchFormRef = useRef<HTMLFormElement>(null);
   const [editingBanner, setEditingBanner] = useState<boolean>(false);
   const [selectedItem, setSelectedItem] = useState<Campaign | Promotion>();
+
+  const handleSearchSubmit = () => {
+    if (searchFormRef.current) {
+      const searchForm = new FormData(searchFormRef.current);
+      searchForm.set("_action", "search");
+      submit(searchForm, { method: "POST" });
+    }
+  };
+
+  const handleUpdateSubmit = () => {
+    if (searchFormRef.current) {
+      const searchForm = new FormData(searchFormRef.current);
+      const contentType = searchForm.get("contentType");
+
+      const updateForm = new FormData();
+      updateForm.set("_action", "update");
+      updateForm.set("pageId", homePage.id.toString() || "");
+      updateForm.set("itemIndex", "0");
+      updateForm.set("blockName", "banner");
+      updateForm.set("contentType", contentType as string);
+      updateForm.set("contentData", JSON.stringify(selectedItem) as string);
+
+      submit(updateForm, {
+        method: "POST",
+      });
+
+      setEditingBanner(false);
+    }
+  };
 
   return (
     <>
       {!editingBanner && (
-        <div className="w-[600px] overflow-x-auto">
+        <div className="scrollbar-hide w-[600px] overflow-x-auto">
           <table className="table">
             <thead>
               <tr>
@@ -63,92 +84,50 @@ const HomePageBannerBuilder = ({ homePage, searchResults }: Props) => {
       )}
 
       {editingBanner && (
-        <>
-          <Form className="my-3 flex flex-col gap-3">
-            <div className="flex w-max flex-row gap-3">
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text">Content Type</span>
-                </label>
-                <select
-                  name="contentType"
-                  className="select-bordered select w-[95vw] sm:w-[215px]"
-                  defaultValue="Select Content Type"
-                  placeholder="Select a Type"
-                  onChange={(e) => {
-                    searchParams.set("contentType", e.target.value);
-                    submit(searchParams, {
-                      method: "GET",
-                    });
-                  }}
-                >
-                  <option value="">Select Content Type</option>
-                  <option value="promotion">Promotion</option>
-                  <option value="campaign">Campaign</option>
-                </select>
-              </div>
-
-              <div className="flex flex-row gap-6">
-                <div className="form-control w-full max-w-xs">
-                  <label className="label">
-                    <span className="label-text">Search By Name</span>
-                  </label>
-                  <SearchInput name="name" placeholder="Name" />
-                </div>
-              </div>
+        <div className="max-w-screen my-3 flex w-[720px] flex-col gap-6">
+          <Form
+            method="POST"
+            ref={searchFormRef}
+            className="flex w-full flex-row flex-wrap justify-start gap-3"
+          >
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">Content Type</span>
+              </label>
+              <select
+                name="contentType"
+                className="select-bordered select w-[95vw] sm:w-[215px]"
+                defaultValue="Select Content Type"
+                placeholder="Select a Type"
+                onChange={handleSearchSubmit}
+              >
+                <option value="">Select Content Type</option>
+                <option value="promotion">Promotion</option>
+                <option value="campaign">Campaign</option>
+              </select>
             </div>
 
-            {selectedItem && (
-              <>
-                <p className="mt-3 text-xs">Selected Item</p>
+            <div className="flex flex-row gap-6">
+              <div className="form-control w-full max-w-xs">
+                <label className="label">
+                  <span className="label-text">Search Content</span>
+                </label>
+                <SearchInput name="name" placeholder="Name" />
+              </div>
+            </div>
+          </Form>
 
-                <div className="max-w-3xl overflow-x-auto">
-                  <table className="table-xs table">
-                    <thead>
-                      <tr>
-                        <th>Name</th>
-                        <th>Created</th>
-                        <th>Delete</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr className="hover cursor-pointer">
-                        <td>{selectedItem.name}</td>
-                        <td>
-                          {new Date(selectedItem.createdAt).toLocaleDateString(
-                            "en-US",
-                            {
-                              day: "numeric",
-                              month: "long",
-                              year: "numeric",
-                            }
-                          )}
-                        </td>
-                        <td>
-                          <div
-                            className="ml-2"
-                            onClick={() => setSelectedItem(undefined)}
-                          >
-                            <IoCaretForwardCircleSharp />
-                          </div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </>
-            )}
-
-            <p className="mt-3 text-xs">Select an Item</p>
-
+          {searchResults && (
             <div className="max-w-3xl overflow-x-auto">
-              <table className="table-xs table">
+              <div className="divider my-0 w-full py-0" />
+              <p className="mt-3 text-xs">Select an Item</p>
+              <table className="table-sm table">
                 <thead>
                   <tr>
-                    <th></th>
-                    <th>Name</th>
-                    <th>Created</th>
-                    <th>Go To</th>
+                    <th className="w-1/4"></th>
+                    <th className="w-1/4">Name</th>
+                    <th className="w-1/4">Created</th>
+                    <th className="w-1/4">Go To</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -160,16 +139,16 @@ const HomePageBannerBuilder = ({ homePage, searchResults }: Props) => {
                           className="hover cursor-pointer"
                           onClick={() => setSelectedItem(searchResults[index])}
                         >
-                          <th>{index + 1}</th>
-                          <td>{name}</td>
-                          <td>
+                          <td className="w-1/4">{index + 1}</td>
+                          <td className="w-1/4">{name}</td>
+                          <td className="w-1/4">
                             {new Date(createdAt).toLocaleDateString("en-US", {
                               day: "numeric",
                               month: "long",
                               year: "numeric",
                             })}
                           </td>
-                          <td>
+                          <td className="w-1/4">
                             <div className="ml-2">
                               <IoCaretForwardCircleSharp />
                             </div>
@@ -180,50 +159,70 @@ const HomePageBannerBuilder = ({ homePage, searchResults }: Props) => {
                   )}
                 </tbody>
               </table>
-
-              <div className="mt-6 flex flex-row justify-center gap-3">
-                <button
-                  type="button"
-                  className="btn-primary btn-md"
-                  onClick={() => {
-                    navigate(pathname);
-                    setEditingBanner(false);
-                  }}
-                >
-                  Back
-                </button>
-
-                <button
-                  type="button"
-                  className="btn-primary btn-md"
-                  onClick={() => {
-                    const formData = new FormData();
-                    formData.set("_action", "updateBanner");
-                    formData.set("pageId", homePage.id.toString() || "");
-                    formData.set("itemIndex", "0");
-                    formData.set("blockType", "banner");
-                    formData.set(
-                      "contentType",
-                      searchParams.get("contentType") as string
-                    );
-                    formData.set(
-                      "contentData",
-                      JSON.stringify(selectedItem) as string
-                    );
-
-                    submit(formData, {
-                      method: "POST",
-                    });
-
-                    setEditingBanner(false);
-                  }}
-                >
-                  Submit
-                </button>
-              </div>
             </div>
-          </Form>
-        </>
+          )}
+
+          {selectedItem && (
+            <div className="max-w-3xl overflow-x-auto">
+              <div className="divider my-0 w-full py-0" />
+              <p className="mt-3 text-xs">Selected Item</p>
+              <table className="table-sm table">
+                <thead>
+                  <tr>
+                    <th className="w-1/4"></th>
+                    <th className="w-1/4">Name</th>
+                    <th className="w-1/4">Created</th>
+                    <th className="w-1/4">Delete</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="hover cursor-pointer">
+                    <tr className="w-1/4">1</tr>
+                    <td className="w-1/4">{selectedItem.name}</td>
+                    <td className="w-1/4">
+                      {new Date(selectedItem.createdAt).toLocaleDateString(
+                        "en-US",
+                        {
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                        }
+                      )}
+                    </td>
+                    <td className="w-1/4">
+                      <div
+                        className="ml-2"
+                        onClick={() => setSelectedItem(undefined)}
+                      >
+                        <IoCaretForwardCircleSharp />
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          <div className="mt-12 flex flex-row justify-center gap-3">
+            <button
+              type="button"
+              className="btn-primary btn-md"
+              onClick={() => {
+                setEditingBanner(false);
+              }}
+            >
+              Back
+            </button>
+
+            <button
+              type="button"
+              className="btn-primary btn-md"
+              onClick={handleUpdateSubmit}
+            >
+              Submit
+            </button>
+          </div>
+        </div>
       )}
     </>
   );

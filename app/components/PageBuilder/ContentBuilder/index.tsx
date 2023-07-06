@@ -1,12 +1,7 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { capitalizeFirst } from "~/utility/stringHelpers";
 import { IoCaretForwardCircleSharp } from "react-icons/io5";
-import {
-  useLocation,
-  useNavigate,
-  useSearchParams,
-  useSubmit,
-} from "@remix-run/react";
+import { Form, useSearchParams, useSubmit } from "@remix-run/react";
 import SearchInput from "~/components/Forms/Input/SearchInput";
 import { getBlocks } from "~/utility/blockHelpers";
 
@@ -18,8 +13,7 @@ type Props = {
 const ContentBuilder = ({ page, searchResults }: Props) => {
   const [searchParams] = useSearchParams();
   const submit = useSubmit();
-  const { pathname } = useLocation();
-  const navigate = useNavigate();
+  const searchFormRef = useRef<HTMLFormElement>(null);
 
   const [editingContent, setEditingContent] = useState<boolean>(false);
   const [editingIndex, setEditingIndex] = useState<number>(1);
@@ -30,14 +24,14 @@ const ContentBuilder = ({ page, searchResults }: Props) => {
   const blocks = getBlocks(page);
 
   const selectItem = (item: Campaign | Promotion) => {
-    const blockType = searchParams.get("blockType");
+    const blockName = searchParams.get("blockName");
 
-    if (blockType === "banner" && selectedItems.length >= 1) {
+    if (blockName === "banner" && selectedItems.length >= 1) {
       // BANNER BLOCK CAN ONLY HAVE 1 ITEM
       return;
     }
 
-    if (blockType === "tile" && selectedItems.length >= 4) {
+    if (blockName === "tile" && selectedItems.length >= 4) {
       // TILE BLOCK CAN HAVE MAX OF 4 ITEMS
       return;
     }
@@ -48,10 +42,41 @@ const ContentBuilder = ({ page, searchResults }: Props) => {
     ]);
   };
 
+  const handleSearchSubmit = () => {
+    if (searchFormRef.current) {
+      const searchForm = new FormData(searchFormRef.current);
+      searchForm.set("_action", "search");
+      submit(searchForm, { method: "POST" });
+    }
+  };
+
+  const handleUpdateSubmit = () => {
+    if (searchFormRef.current) {
+      const searchForm = new FormData(searchFormRef.current);
+      const blockName = searchForm.get("blockName");
+      const contentType = searchForm.get("contentType");
+
+      const updateForm = new FormData();
+      updateForm.set("_action", "update");
+      updateForm.set("pageId", page.id.toString() || "");
+      updateForm.set("itemIndex", editingIndex.toString());
+      updateForm.set("blockName", blockName as string);
+      updateForm.set("contentType", contentType as string);
+      updateForm.set("contentData", JSON.stringify(selectedItems) as string);
+
+      submit(updateForm, {
+        method: "POST",
+      });
+
+      setEditingContent(false);
+      setSelectedItems([]);
+    }
+  };
+
   return (
     <>
       {!editingContent && (
-        <div className="w-[600px] overflow-x-auto">
+        <div className="scrollbar-hide w-[600px] overflow-x-auto">
           <table className="table">
             <thead>
               <tr>
@@ -147,130 +172,68 @@ const ContentBuilder = ({ page, searchResults }: Props) => {
       )}
 
       {editingContent && (
-        <>
-          <div className="my-3 flex flex-col gap-3">
-            <div className="flex w-max flex-row gap-3">
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text">Block Type</span>
-                </label>
-                <select
-                  name="banner"
-                  className="select-bordered select w-[95vw] sm:w-[215px]"
-                  defaultValue="Select Block Type"
-                  placeholder="Select a Type"
-                  onChange={(e) => {
-                    searchParams.set("blockType", e.target.value);
-                    submit(searchParams, {
-                      method: "GET",
-                    });
-                  }}
-                >
-                  <option value="">Select Block Type</option>
-                  <option value="banner">Banner</option>
-                  <option value="tile">Tile</option>
-                  <option value="products">Products</option>
-                </select>
-              </div>
-
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text">Content Type</span>
-                </label>
-                <select
-                  name="banner"
-                  className="select-bordered select w-[95vw] sm:w-[215px]"
-                  defaultValue="Select Content Type"
-                  placeholder="Select a Type"
-                  onChange={(e) => {
-                    searchParams.set("contentType", e.target.value);
-                    submit(searchParams, {
-                      method: "GET",
-                    });
-                  }}
-                >
-                  <option value="">Select Content Type</option>
-                  <option value="promotion">Promotion</option>
-                  <option value="campaign">Campaign</option>
-                </select>
-              </div>
-
-              <div className="flex flex-row gap-6">
-                <div className="form-control w-full max-w-xs">
-                  <label className="label">
-                    <span className="label-text">Search Content</span>
-                  </label>
-                  <SearchInput name="name" placeholder="Name" />
-                </div>
-              </div>
+        <div className="max-w-screen my-3 flex w-[720px] flex-col gap-6">
+          <Form
+            method="POST"
+            ref={searchFormRef}
+            className="flex w-full flex-row flex-wrap justify-start gap-3"
+          >
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">Block</span>
+              </label>
+              <select
+                name="blockName"
+                className="select-bordered select w-[95vw] sm:w-[215px]"
+                defaultValue="Select Block"
+                placeholder="Select Block"
+                onChange={handleSearchSubmit}
+              >
+                <option value="">Select Block</option>
+                <option value="banner">Banner</option>
+                <option value="tile">Tile</option>
+                <option value="products">Products</option>
+              </select>
             </div>
 
-            {selectedItems && selectedItems.length > 0 && (
-              <>
-                <p className="mt-3 text-xs">Selected Items</p>
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">Content Type</span>
+              </label>
+              <select
+                name="contentType"
+                className="select-bordered select w-[95vw] sm:w-[215px]"
+                defaultValue="Select Content Type"
+                placeholder="Select a Type"
+                onChange={handleSearchSubmit}
+              >
+                <option value="">Select Content Type</option>
+                <option value="promotion">Promotion</option>
+                <option value="campaign">Campaign</option>
+              </select>
+            </div>
 
-                <div className="max-w-3xl overflow-x-auto">
-                  <table className="table-xs table">
-                    <thead>
-                      <tr>
-                        <th></th>
-                        <th>Name</th>
-                        <th>Created</th>
-                        <th>Delete</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {selectedItems?.map(
-                        ({ name, createdAt }: Promotion | Campaign, index) => {
-                          return (
-                            <tr
-                              key={"promotionOrCampaign_" + name + index}
-                              className="hover cursor-pointer"
-                            >
-                              <th>{index + 1}</th>
-                              <td>{name}</td>
-                              <td>
-                                {new Date(createdAt).toLocaleDateString(
-                                  "en-US",
-                                  {
-                                    day: "numeric",
-                                    month: "long",
-                                    year: "numeric",
-                                  }
-                                )}
-                              </td>
-                              <td>
-                                <div
-                                  className="ml-2"
-                                  onClick={() =>
-                                    setSelectedItems((products) =>
-                                      products.filter((_, index) => index !== 0)
-                                    )
-                                  }
-                                >
-                                  <IoCaretForwardCircleSharp />
-                                </div>
-                              </td>
-                            </tr>
-                          );
-                        }
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </>
-            )}
+            <div className="flex flex-row gap-6">
+              <div className="form-control w-full max-w-xs">
+                <label className="label">
+                  <span className="label-text">Search Content</span>
+                </label>
+                <SearchInput name="name" placeholder="Name" />
+              </div>
+            </div>
+          </Form>
 
-            <p className="mt-3 text-xs">Select an Item</p>
-
+          {searchResults && (
             <div className="max-w-3xl overflow-x-auto">
-              <table className="table-xs table">
+              <div className="divider my-0 w-full py-0" />
+              <p className="mt-3 text-xs">Select an Item</p>
+              <table className="table-sm table">
                 <thead>
                   <tr>
-                    <th></th>
-                    <th>Name</th>
-                    <th>Created</th>
-                    <th>Go To</th>
+                    <th className="w-1/4"></th>
+                    <th className="w-1/4">Name</th>
+                    <th className="w-1/4">Created</th>
+                    <th className="w-1/4">Go To</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -284,16 +247,16 @@ const ContentBuilder = ({ page, searchResults }: Props) => {
                             selectItem(searchResults[index]);
                           }}
                         >
-                          <th>{index + 1}</th>
-                          <td>{name}</td>
-                          <td>
+                          <td className="w-1/4">{index + 1}</td>
+                          <td className="w-1/4">{name}</td>
+                          <td className="w-1/4">
                             {new Date(createdAt).toLocaleDateString("en-US", {
                               day: "numeric",
                               month: "long",
                               year: "numeric",
                             })}
                           </td>
-                          <td>
+                          <td className="w-1/4">
                             <div className="ml-2">
                               <IoCaretForwardCircleSharp />
                             </div>
@@ -304,14 +267,78 @@ const ContentBuilder = ({ page, searchResults }: Props) => {
                   )}
                 </tbody>
               </table>
-              <div className="mt-6 flex flex-row justify-center gap-3">
+            </div>
+          )}
+
+          {selectedItems.length === 0 && (
+            <button
+              type="button"
+              className="btn-primary btn-md w-max"
+              onClick={() => {
+                setEditingContent(false);
+                setSelectedItems([]);
+              }}
+            >
+              Back
+            </button>
+          )}
+
+          {selectedItems && selectedItems.length > 0 && (
+            <div className="max-w-3xl overflow-x-auto">
+              <div className="divider my-0 w-full py-0" />
+              <p className="mt-3 text-xs">Selected Items</p>
+              <table className="table-sm table">
+                <thead>
+                  <tr>
+                    <th className="w-1/4"></th>
+                    <th className="w-1/4">Name</th>
+                    <th className="w-1/4">Created</th>
+                    <th className="w-1/4">Delete</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {selectedItems?.map(
+                    ({ name, createdAt }: Promotion | Campaign, index) => {
+                      return (
+                        <tr
+                          key={"promotionOrCampaign_" + name + index}
+                          className="hover cursor-pointer"
+                        >
+                          <td className="w-1/4">{index + 1}</td>
+                          <td className="w-1/4">{name}</td>
+                          <td className="w-1/4">
+                            {new Date(createdAt).toLocaleDateString("en-US", {
+                              day: "numeric",
+                              month: "long",
+                              year: "numeric",
+                            })}
+                          </td>
+                          <td className="w-1/4">
+                            <div
+                              className="ml-2"
+                              onClick={() =>
+                                setSelectedItems((products) =>
+                                  products.filter((_, index) => index !== 0)
+                                )
+                              }
+                            >
+                              <IoCaretForwardCircleSharp />
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    }
+                  )}
+                </tbody>
+              </table>
+
+              <div className="mt-12 flex flex-row justify-center gap-3">
                 <button
                   type="button"
                   className="btn-primary btn-md"
                   onClick={() => {
                     setEditingContent(false);
                     setSelectedItems([]);
-                    navigate(pathname);
                   }}
                 >
                   Back
@@ -320,37 +347,14 @@ const ContentBuilder = ({ page, searchResults }: Props) => {
                 <button
                   type="button"
                   className="btn-primary btn-md"
-                  onClick={() => {
-                    const formData = new FormData();
-                    const blockType = searchParams.get("blockType");
-
-                    formData.set("_action", "updateBanner");
-                    formData.set("pageId", page.id.toString() || "");
-                    formData.set("itemIndex", editingIndex.toString());
-                    formData.set("blockType", blockType as string);
-                    formData.set(
-                      "contentType",
-                      searchParams.get("contentType") as string
-                    );
-                    formData.set(
-                      "contentData",
-                      JSON.stringify(selectedItems) as string
-                    );
-
-                    submit(formData, {
-                      method: "POST",
-                    });
-
-                    setEditingContent(false);
-                    setSelectedItems([]);
-                  }}
+                  onClick={handleUpdateSubmit}
                 >
                   Submit
                 </button>
               </div>
             </div>
-          </div>
-        </>
+          )}
+        </div>
       )}
     </>
   );

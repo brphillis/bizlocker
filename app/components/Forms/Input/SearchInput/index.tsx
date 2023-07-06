@@ -4,10 +4,11 @@ import React, { useEffect, useRef, useState } from "react";
 type Props = {
   name: string;
   placeholder: string;
+  auto?: boolean;
   delay?: number;
 };
 
-const SearchInput = ({ name, placeholder, delay }: Props) => {
+const SearchInput = ({ name, placeholder, auto, delay }: Props) => {
   const [searchParams] = useSearchParams();
   const submit = useSubmit();
   const [searchTerm, setSearchTerm] = useState("");
@@ -46,7 +47,7 @@ const SearchInput = ({ name, placeholder, delay }: Props) => {
       className="input-bordered input w-full max-w-xs"
       placeholder={placeholder}
       type="text"
-      onChange={handleChange}
+      onChange={() => auto && handleChange}
     />
   );
 };
