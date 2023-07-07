@@ -15,29 +15,31 @@ const BlockRenderer = ({ blocks }: Props) => {
       {blocks.map((_, index: number) => {
         const { content } = blocks[index];
 
-        if (blocks[index].name === "banner") {
-          return (
-            <React.Fragment key={"bannerBlock_" + randomId()}>
-              <BannerBlock content={content as Campaign[] | Promotion[]} />
-            </React.Fragment>
-          );
-        }
+        switch (blocks[index].name) {
+          case "banner":
+            return (
+              <React.Fragment key={"bannerBlock_" + randomId()}>
+                <BannerBlock content={content as Campaign[] | Promotion[]} />
+              </React.Fragment>
+            );
 
-        if (blocks[index].name === "tile") {
-          return (
-            <React.Fragment key={"tileBlock_" + randomId()}>
-              <TileBlock content={content as Campaign[] | Promotion[]} />
-            </React.Fragment>
-          );
-        }
+          case "tile":
+            return (
+              <React.Fragment key={"tileBlock_" + randomId()}>
+                <TileBlock content={content as Campaign[] | Promotion[]} />
+              </React.Fragment>
+            );
 
-        if (blocks[index].name === "text") {
-          return (
-            <React.Fragment key={"textBlock_" + randomId()}>
-              <TextBlock content={content as string[]} />
-            </React.Fragment>
-          );
-        } else return null;
+          case "text":
+            return (
+              <React.Fragment key={"textBlock_" + randomId()}>
+                <TextBlock content={content as string[]} />
+              </React.Fragment>
+            );
+
+          default:
+            return null;
+        }
       })}
     </>
   );

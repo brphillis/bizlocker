@@ -17,12 +17,14 @@ export const removeBlock = async (pageId: number, itemIndex: number) => {
     blocks = await prisma.block.findMany({
       where: { homePageId: page.id },
       orderBy: { order: "asc" },
+      include: { bannerBlock: true, tileBlock: true, textBlock: true },
     });
   } else if (isArticlePage) {
     page = isArticlePage;
     blocks = await prisma.block.findMany({
       where: { articleId: page.id },
       orderBy: { order: "asc" },
+      include: { bannerBlock: true, tileBlock: true, textBlock: true },
     });
   } else {
     throw new Error(`Page not found for pageId: ${pageId}`);
@@ -42,18 +44,25 @@ export const removeBlock = async (pageId: number, itemIndex: number) => {
 
   const transaction = [];
 
-  if (blockToRemove.bannerBlockId) {
+  if (blockToRemove.bannerBlock) {
     const deleteBannerBlockPromise = prisma.bannerBlock.delete({
-      where: { id: blockToRemove.bannerBlockId },
+      where: { id: blockToRemove.bannerBlock.id },
     });
     transaction.push(deleteBannerBlockPromise);
   }
 
-  if (blockToRemove.tileBlockId) {
+  if (blockToRemove.tileBlock) {
     const deleteTileBlockPromise = prisma.tileBlock.delete({
-      where: { id: blockToRemove.tileBlockId },
+      where: { id: blockToRemove.tileBlock.id },
     });
     transaction.push(deleteTileBlockPromise);
+  }
+
+  if (blockToRemove.textBlock) {
+    const deleteTextBlockPromise = prisma.textBlock.delete({
+      where: { id: blockToRemove.textBlock.id },
+    });
+    transaction.push(deleteTextBlockPromise);
   }
 
   const deleteBlockPromise = prisma.block.delete({

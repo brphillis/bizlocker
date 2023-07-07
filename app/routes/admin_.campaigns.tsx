@@ -56,20 +56,11 @@ const Campaigns = () => {
               />
             </div>
           </div>
-          <div className="flex flex-row flex-wrap justify-between">
-            <div className="mr-10 flex flex-row flex-wrap gap-2">
-              <button type="submit" className="btn-primary btn mt-6 w-max">
-                Search
-              </button>
 
-              <button
-                type="button"
-                className="btn-primary btn mt-6 w-max"
-                onClick={() => navigate("add")}
-              >
-                +
-              </button>
-            </div>
+          <div className="flex flex-row justify-end sm:justify-start">
+            <button type="submit" className="btn-primary btn mt-6 w-max">
+              Search
+            </button>
           </div>
         </div>
 

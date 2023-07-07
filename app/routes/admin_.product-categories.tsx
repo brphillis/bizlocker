@@ -68,7 +68,7 @@ const ProductCategories = () => {
         <div className="divider w-full" />
 
         <div className="w-full max-w-[80vw] overflow-x-auto">
-          <table className="table-zebra table-sm my-3 table">
+          <table className="table-sm my-3 table">
             <thead className="sticky top-0">
               <tr>
                 {currentPage && <th>#</th>}

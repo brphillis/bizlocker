@@ -146,7 +146,7 @@ const ModifyArticle = () => {
           <div className="flex flex-col gap-6">
             <div className="flex justify-center gap-3 text-center text-2xl font-bold">
               <Icon iconName="IoNewspaper" size={24} styles="mt-[5px]" />
-              Article {article ? "Editor" : "Creator"}
+              {article ? article.title : "Create Article"}
             </div>
 
             <LargeCollapse
