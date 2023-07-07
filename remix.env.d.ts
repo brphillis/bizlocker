@@ -290,7 +290,7 @@ type BasicSearchArgs = {
 type SortBy = "createdAt" | "totalSold" | "price" | "name";
 type SortOrder = "asc" | "desc";
 
-type BlockName = "banner" | "tile";
+type BlockName = "banner" | "tile" | "text" | "product";
 type BlockContentType = "campaign" | "promotion";
 
 interface HomePage {
@@ -301,12 +301,12 @@ interface HomePage {
   updatedAt: Date;
 }
 
-interface Block extends BannerBlock, TileBlock {
+interface Block extends BannerBlock, TileBlock, TextBlock {
   id: string;
   order: number;
   page: Page;
   pageId: number;
-  content: Campaign[] | Promotion[];
+  content: Campaign[] | Promotion[] | string[];
   bannerBlock?: BannerBlock;
   bannerBlockId?: string;
   tileBlock?: TileBlock;
@@ -325,25 +325,29 @@ interface BannerBlock {
   id: string;
   name: string;
   type: string;
+  block?: Block;
   campaign?: Campaign;
   campaignId?: string;
   promotion?: Promotion;
   promotionId?: string;
-  block?: Block;
-  bannerBlockId?: string;
 }
 
 interface TileBlock {
   id: string;
   name: string;
   type: string;
+  block?: Block;
   campaign?: Campaign[];
   campaignId?: string;
   promotion: Promotion[];
   promotionId?: string;
-  tileSize: string;
+}
+
+interface TextBlock {
+  id: string;
+  name: string;
   block?: Block;
-  tileBlockId?: string;
+  content: string[];
 }
 
 interface Money {

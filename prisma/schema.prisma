@@ -27,35 +27,59 @@ model Block {
   bannerBlockId String?      @unique
   tileBlock     TileBlock?   @relation("BlockToTileBlock", fields: [tileBlockId], references: [id])
   tileBlockId   String?      @unique
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  textBlock     TextBlock?   @relation("BlockToTextBlock", fields: [textBlockId], references: [id])
+  textBlockId   String?      @unique
+
+  blockOptions   BlockOptions?
+  blockOptionsId String?       @unique
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+model BlockOptions {
+  id             String     @id @unique @default(cuid())
+  columns        Int?
+  rows           Int?
+  size           String?
+  sortBy         SortBy?
+  sortOrder      SortOrder?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  block          Block?     @relation(fields: [blockOptionsId], references: [id])
+  blockOptionsId String     @unique
 }
 
 model BannerBlock {
-  id            String     @id @unique @default(cuid())
-  name          String     @default("banner")
-  type          String
-  campaign      Campaign?  @relation(fields: [campaignId], references: [id])
-  campaignId    String?
-  promotion     Promotion? @relation(fields: [promotionId], references: [id])
-  promotionId   String?
-  block         Block?     @relation("BlockToBannerBlock")
-  bannerBlockId String?
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
+  id          String     @id @unique @default(cuid())
+  name        String     @default("banner")
+  type        String
+  block       Block?     @relation("BlockToBannerBlock")
+  campaign    Campaign?  @relation(fields: [campaignId], references: [id])
+  campaignId  String?
+  promotion   Promotion? @relation(fields: [promotionId], references: [id])
+  promotionId String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
 }
 
 model TileBlock {
-  id          String      @id @unique @default(cuid())
-  name        String      @default("tile")
-  type        String
-  campaigns   Campaign[]
-  promotions  Promotion[]
-  tileSize    String      @default("medium")
-  block       Block?      @relation("BlockToTileBlock")
-  tileBlockId String?
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  id         String      @id @unique @default(cuid())
+  name       String      @default("tile")
+  type       String
+  block      Block?      @relation("BlockToTileBlock")
+  campaigns  Campaign[]
+  promotions Promotion[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+}
+
+model TextBlock {
+  id        String   @id @unique @default(cuid())
+  name      String   @default("text")
+  block     Block?   @relation("BlockToTextBlock")
+  content   String[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model User {
@@ -214,7 +238,7 @@ model ProductCategory {
 
 model Article {
   id                Int               @id @default(autoincrement())
-  title             String
+  title             String            @unique
   blocks            Block[]           @relation("ArticlesToBlocks")
   thumbnail         Image?            @relation("ArticleImage")
   isActive          Boolean           @default(true)
@@ -340,6 +364,18 @@ enum OrderStatus {
   paid
   shipped
   complete
+}
+
+enum SortBy {
+  createdAt
+  totalSold
+  price
+  name
+}
+
+enum SortOrder {
+  asc
+  desc
 }
 
 enum Color {

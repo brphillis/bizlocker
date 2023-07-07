@@ -7,7 +7,7 @@ type IconProps = {
   styles: string;
 };
 
-const Icon: React.FC<IconProps> = ({ iconName, size, styles }) => {
+const Icon = ({ iconName, size, styles }: IconProps) => {
   let IconComponent = IconsIO5[iconName] as IconType;
 
   return IconComponent ? (

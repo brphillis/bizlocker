@@ -5,6 +5,7 @@ import { Form, useSearchParams, useSubmit } from "@remix-run/react";
 import SearchInput from "~/components/Forms/Input/SearchInput";
 import { getBlocks } from "~/utility/blockHelpers";
 import BlockIcon from "~/components/Blocks/BlockIcon";
+import RichTextEditor from "~/components/RichTextEditor.client";
 
 type Props = {
   page: HomePage | Article;
@@ -16,11 +17,13 @@ const ContentBuilder = ({ page, searchResults }: Props) => {
   const submit = useSubmit();
   const searchFormRef = useRef<HTMLFormElement>(null);
 
+  const [selectedBlock, setSelectedBlock] = useState<BlockName | undefined>();
   const [editingContent, setEditingContent] = useState<boolean>(false);
   const [editingIndex, setEditingIndex] = useState<number>(1);
   const [selectedItems, setSelectedItems] = useState<(Campaign | Promotion)[]>(
     []
   );
+  const [stringData, setStringData] = useState<string>();
 
   const blocks = getBlocks(page);
 
@@ -58,15 +61,22 @@ const ContentBuilder = ({ page, searchResults }: Props) => {
       const contentType = searchForm.get("contentType");
 
       const updateForm = new FormData();
+      updateForm.set("_action", "update");
       if (page) {
         updateForm.set("pageId", page.id.toString() || "");
       }
-      updateForm.set("_action", "update");
+      if (contentType) {
+        updateForm.set("contentType", contentType as string);
+      }
+      if (selectedItems) {
+        updateForm.set("contentData", JSON.stringify(selectedItems) as string);
+      }
+      if (stringData) {
+        updateForm.set("stringData", stringData as string);
+      }
       updateForm.set("itemIndex", editingIndex.toString());
       updateForm.set("blockName", blockName as string);
-      updateForm.set("contentType", contentType as string);
-      updateForm.set("contentData", JSON.stringify(selectedItems) as string);
-      console.log("triggered");
+
       submit(updateForm, {
         method: "POST",
       });
@@ -74,6 +84,13 @@ const ContentBuilder = ({ page, searchResults }: Props) => {
       setEditingContent(false);
       setSelectedItems([]);
     }
+  };
+
+  const reset = () => {
+    setStringData(undefined);
+    setEditingContent(false);
+    setSelectedBlock(undefined);
+    setSelectedItems([]);
   };
 
   return (
@@ -127,7 +144,24 @@ const ContentBuilder = ({ page, searchResults }: Props) => {
                               type="button"
                               className="btn-primary btn-md"
                               onClick={() => {
-                                setSelectedItems(blocks[index].content);
+                                console.log(blocks[0].content[0]);
+                                if (blocks[index].name === "banner" || "tile") {
+                                  setSelectedBlock(
+                                    (blocks[index].name as "banner") || "tile"
+                                  );
+                                  setSelectedItems(
+                                    blocks[index].content as
+                                      | Campaign[]
+                                      | Promotion[]
+                                  );
+                                }
+                                if (blocks[index].name === "text") {
+                                  setSelectedBlock("text");
+                                  setStringData(
+                                    blocks[index].content[0] as string
+                                  );
+                                  setSelectedItems([]);
+                                }
                                 setEditingContent(true);
                                 setEditingIndex(index);
                               }}
@@ -202,43 +236,59 @@ const ContentBuilder = ({ page, searchResults }: Props) => {
               <select
                 name="blockName"
                 className="select-bordered select w-[95vw] max-w-full sm:w-[215px]"
-                defaultValue="Select Block"
+                defaultValue={selectedBlock}
                 placeholder="Select Block"
-                onChange={handleSearchSubmit}
+                onChange={(e) => setSelectedBlock(e.target.value as BlockName)}
               >
                 <option value="">Select Block</option>
                 <option value="banner">Banner</option>
                 <option value="tile">Tile</option>
-                <option value="products">Products</option>
+                <option value="text">Text</option>
+                <option value="product">Product</option>
               </select>
             </div>
 
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Content Type</span>
-              </label>
-              <select
-                name="contentType"
-                className="select-bordered select w-[95vw] max-w-full sm:w-[215px]"
-                defaultValue="Select Content Type"
-                placeholder="Select a Type"
-                onChange={handleSearchSubmit}
-              >
-                <option value="">Select Content Type</option>
-                <option value="promotion">Promotion</option>
-                <option value="campaign">Campaign</option>
-              </select>
-            </div>
-
-            <div className="flex flex-row gap-6">
-              <div className="form-control w-[95vw] sm:w-[215px]">
+            {(selectedBlock === "banner" || selectedBlock === "tile") && (
+              <div className="form-control">
                 <label className="label">
-                  <span className="label-text">Search Content</span>
+                  <span className="label-text">Content Type</span>
                 </label>
-                <SearchInput name="name" placeholder="Name" />
+                <select
+                  name="contentType"
+                  className="select-bordered select w-[95vw] max-w-full sm:w-[215px]"
+                  defaultValue="Select Content Type"
+                  placeholder="Select a Type"
+                  onChange={handleSearchSubmit}
+                >
+                  <option value="">Select Content Type</option>
+                  <option value="promotion">Promotion</option>
+                  <option value="campaign">Campaign</option>
+                </select>
               </div>
-            </div>
+            )}
+
+            {(selectedBlock === "banner" || selectedBlock === "tile") && (
+              <div className="flex flex-row gap-6">
+                <div className="form-control w-[95vw] sm:w-[215px]">
+                  <label className="label">
+                    <span className="label-text">Search Content</span>
+                  </label>
+                  <SearchInput name="name" placeholder="Name" />
+                </div>
+              </div>
+            )}
           </Form>
+
+          {selectedBlock === "text" && (
+            <div className="w-full overflow-x-auto">
+              <div className="divider my-0 w-full py-0" />
+              <RichTextEditor
+                value={stringData}
+                onChange={setStringData}
+                className="mb-12 mt-6 h-[320px]"
+              />
+            </div>
+          )}
 
           {searchResults && (
             <div className="w-full overflow-x-auto">
@@ -285,22 +335,6 @@ const ContentBuilder = ({ page, searchResults }: Props) => {
                 </tbody>
               </table>
             </div>
-          )}
-
-          {selectedItems.length === 0 && (
-            <>
-              <div className="divider my-0 w-full py-0" />
-              <button
-                type="button"
-                className="btn-primary btn-md w-max"
-                onClick={() => {
-                  setEditingContent(false);
-                  setSelectedItems([]);
-                }}
-              >
-                Back
-              </button>
-            </>
           )}
 
           {selectedItems && selectedItems.length > 0 && (
@@ -353,29 +387,25 @@ const ContentBuilder = ({ page, searchResults }: Props) => {
               </table>
 
               <div className="divider w-full" />
-
-              <div className="flex flex-row justify-center gap-3">
-                <button
-                  type="button"
-                  className="btn-primary btn-md"
-                  onClick={() => {
-                    setEditingContent(false);
-                    setSelectedItems([]);
-                  }}
-                >
-                  Back
-                </button>
-
-                <button
-                  type="button"
-                  className="btn-primary btn-md"
-                  onClick={handleUpdateSubmit}
-                >
-                  Submit
-                </button>
-              </div>
             </div>
           )}
+          <div className="flex flex-row justify-center gap-3">
+            <button
+              type="button"
+              className="btn-primary btn-md"
+              onClick={reset}
+            >
+              Back
+            </button>
+
+            <button
+              type="button"
+              className="btn-primary btn-md"
+              onClick={handleUpdateSubmit}
+            >
+              Submit
+            </button>
+          </div>
         </div>
       )}
     </>

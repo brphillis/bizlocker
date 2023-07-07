@@ -53,7 +53,7 @@ const Admin = () => {
   return (
     <div
       data-theme="dark"
-      className="drawer !max-h-[calc(100vh+64px)] lg:drawer-open"
+      className="max-w-screen drawer min-h-screen lg:drawer-open"
     >
       <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
       <div className="max-w-screen drawer-content flex min-h-screen w-full flex-col items-center justify-start">
@@ -69,8 +69,11 @@ const Admin = () => {
       </div>
 
       {user && (
-        <div className="drawer-side">
-          <label htmlFor="my-drawer-2" className="drawer-overlay"></label>
+        <div className="drawer-side min-h-screen">
+          <label
+            htmlFor="my-drawer-2"
+            className="drawer-overlay !min-h-screen"
+          ></label>
           <ul className="scrollbar-hide menu h-max min-h-full w-80 overflow-y-scroll bg-base-200 p-4 text-base-content">
             <h1 className="select-none pt-3 text-center text-2xl font-bold tracking-wide text-white/90">
               CLUTCH.

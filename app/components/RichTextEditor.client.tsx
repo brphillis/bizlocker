@@ -8,11 +8,11 @@ interface RichTextEditorProps {
   className?: string;
 }
 
-const RichTextEditor: React.FC<RichTextEditorProps> = ({
+const RichTextEditor = ({
   value,
   onChange,
   className,
-}) => {
+}: RichTextEditorProps) => {
   const [richText, setRichText] = useState(value || "");
 
   const handleEditorChange = (content: string) => {

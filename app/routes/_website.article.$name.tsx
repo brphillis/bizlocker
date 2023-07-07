@@ -1,24 +1,26 @@
-import { type V2_MetaFunction } from "@remix-run/node";
+import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import BlockRenderer from "~/components/BlockRenderer";
 import PageWrapper from "~/components/Layout/PageWrapper";
-import { getHomePage } from "~/models/homePage.server";
+import { getArticle } from "~/models/articles.server";
 import { getBlocks } from "~/utility/blockHelpers";
 
-export const meta: V2_MetaFunction = () => [{ title: "CLUTCH - clothing." }];
+export const meta: V2_MetaFunction = () => [{ title: "Article Name" }];
 
-export const loader = async () => {
-  const homePage = await getHomePage();
-  return { homePage };
+export const loader = async ({ params }: LoaderArgs) => {
+  const articleName = params.name;
+
+  const article = await getArticle(undefined, articleName);
+  return { article };
 };
 
 const Home = () => {
-  const { homePage } =
+  const { article } =
     (useLoaderData() as {
-      homePage: HomePage;
+      article: Article;
     }) || {};
 
-  const blocks: Block[] = getBlocks(homePage);
+  const blocks: Block[] = getBlocks(article);
 
   return (
     <PageWrapper>

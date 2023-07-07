@@ -7,9 +7,7 @@ type ImageUploadSliderProps = {
   defaultImages: Image[] | undefined;
 };
 
-const ImageUploadSlider: React.FC<ImageUploadSliderProps> = ({
-  defaultImages,
-}) => {
+const ImageUploadSlider = ({ defaultImages }: ImageUploadSliderProps) => {
   const [activeSlide, setActiveSlide] = useState(0);
   const [images, setCurrentImages] = useState<Image[] | undefined>(
     defaultImages
