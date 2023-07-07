@@ -49,12 +49,15 @@ const ArticleCategories = () => {
 
         <div className="mt-3 flex flex-col">
           <div className="flex flex-row">
-            <div className="form-control mt-6 w-full max-w-xs">
+            <div className="form-control w-full">
+              <label className="label">
+                <span className="label-text">Category Name</span>
+              </label>
               <input
                 name="name"
                 type="text"
                 placeholder="Name"
-                className="input-bordered input w-full max-w-xs"
+                className="input-bordered input w-full sm:w-[215px]"
               />
             </div>
           </div>

@@ -4,12 +4,14 @@ type Props = {
   articleCategories: ArticleCategory[];
   valueToChange: Article;
   title?: string;
+  styles?: string;
 };
 
 const SelectArticleCategories = ({
   articleCategories,
   valueToChange,
   title,
+  styles,
 }: Props) => {
   const [selectedArticleCategories, setSelectedArticleCategories] = useState<
     string[]
@@ -29,7 +31,9 @@ const SelectArticleCategories = ({
         <span className="label-text">{title ? title : "Categories"}</span>
       </label>
       <select
-        className="select-bordered select w-[95vw] sm:w-[215px]"
+        className={`select-bordered select ${
+          styles ? styles : "w-[95vw] sm:w-[215px]"
+        }`}
         onChange={handleOptionChange}
         value={selectedArticleCategories}
         multiple

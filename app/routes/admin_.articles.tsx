@@ -2,12 +2,11 @@ import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import {
   Form,
-  Outlet,
   useLoaderData,
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
-import parse from "html-react-parser";
+
 import AdminPageHeader from "~/components/Layout/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/AdminPageWrapper";
 import Pagination from "~/components/Pagination";
@@ -97,7 +96,7 @@ const Articles = () => {
               <tr>
                 {currentPage && <th>#</th>}
                 <th>Title</th>
-                <th>Description</th>
+
                 <th>Category</th>
                 <th>Active</th>
               </tr>
@@ -109,7 +108,7 @@ const Articles = () => {
                     {
                       id,
                       title,
-                      content,
+
                       articleCategories,
                       isActive,
                     }: Article,
@@ -127,7 +126,7 @@ const Articles = () => {
                           </td>
                         )}
                         <td>{title}</td>
-                        <td>{parse(content.substring(0, 50))}</td>
+
                         <td>
                           {articleCategories?.map(
                             ({ id, name }: ArticleCategory) => (
@@ -153,7 +152,7 @@ const Articles = () => {
 
         <Pagination totalPages={totalPages} />
       </Form>
-      <Outlet />
+      {/* <Outlet /> */}
     </AdminPageWrapper>
   );
 };

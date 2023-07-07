@@ -1,15 +1,13 @@
 import type { ActionArgs } from "@remix-run/node";
-import { getHomePage } from "~/models/homePage.server";
-import { Outlet, useActionData, useLoaderData } from "@remix-run/react";
+import { getHomePage, updateHomePage } from "~/models/homePage.server";
+import { useActionData, useLoaderData } from "@remix-run/react";
 import { searchCampaigns } from "~/models/campaigns.server";
 import { searchPromotions } from "~/models/promotions.server";
 import AdminPageHeader from "~/components/Layout/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/AdminPageWrapper";
 import ContentBuilder from "~/components/PageBuilder/ContentBuilder";
-import { removeBlock, updatePage } from "~/models/pageBuilder.server";
-import HomePageBannerBuilder from "~/components/PageBuilder/BannerBuilder";
-import { useState } from "react";
-import { IoReorderFour, IoTabletLandscape } from "react-icons/io5";
+import { removeBlock } from "~/models/pageBuilder.server";
+import { IoReorderFour } from "react-icons/io5";
 import Icon from "~/components/Icon";
 
 export const loader = async () => {
@@ -54,7 +52,7 @@ export const action = async ({ request }: ActionArgs) => {
 
       updateData = Array.isArray(updateData) ? updateData : [updateData];
 
-      return await updatePage(
+      return await updateHomePage(
         parseInt(pageId as string),
         parseInt(itemIndex as string),
         blockName as BlockName,
@@ -73,16 +71,13 @@ export const action = async ({ request }: ActionArgs) => {
 const ManageHomePage = () => {
   const { homePage } =
     (useLoaderData() as {
-      homePage: Page;
+      homePage: HomePage;
     }) || {};
 
   const { searchResults } =
     (useActionData() as {
       searchResults: Promotion[] | Campaign[];
     }) || {};
-
-  const [editingBanner, setEditingBanner] = useState<boolean>(false);
-  const [editingContent, setEditingContent] = useState<boolean>(false);
 
   return (
     <AdminPageWrapper>
@@ -97,49 +92,7 @@ const ManageHomePage = () => {
             </div>
 
             <div className="max-w-screen collapse-plus collapse w-screen rounded-none bg-base-200 py-3 sm:w-[800px]">
-              <input
-                type="checkbox"
-                readOnly
-                checked={editingBanner}
-                onClick={() => {
-                  if (editingBanner && !editingContent) {
-                    setEditingBanner(false);
-                  } else {
-                    setEditingBanner(true);
-                    setEditingContent(false);
-                  }
-                }}
-              />
-              <div className="collapse-title text-xl font-medium">
-                <div className="ml-3 flex items-center gap-3">
-                  <IoTabletLandscape className="mt-1" />
-                  <p>Banner</p>
-                </div>
-              </div>
-              <div className="collapse-content w-screen sm:w-full">
-                <div className="flex justify-center">
-                  <HomePageBannerBuilder
-                    homePage={homePage}
-                    searchResults={searchResults}
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="max-w-screen collapse-plus collapse w-screen rounded-none bg-base-200 py-3 sm:w-[800px]">
-              <input
-                type="checkbox"
-                readOnly
-                checked={editingContent}
-                onClick={() => {
-                  if (editingContent && !editingBanner) {
-                    setEditingContent(false);
-                  } else {
-                    setEditingContent(true);
-                    setEditingBanner(false);
-                  }
-                }}
-              />
+              <input type="checkbox" readOnly />
               <div className="collapse-title text-xl font-medium">
                 <div className="ml-3 flex items-center gap-3">
                   <IoReorderFour className="mt-1" />
@@ -158,7 +111,6 @@ const ManageHomePage = () => {
           </div>
         </div>
       </div>
-      <Outlet />
     </AdminPageWrapper>
   );
 };

@@ -1,20 +1,23 @@
-export const getBlocks = (page: Page) => {
+export const getBlocks = (page: HomePage) => {
   const blocks = getPageBlocks(page);
   const activeBlocks = getActiveBlocks(blocks);
   return activeBlocks;
 };
 
-export const getPageBlocks = (page: Page, getFirst?: boolean): Block[] => {
+export const getPageBlocks = (
+  page: HomePage | Article,
+  getFirst?: boolean
+): Block[] => {
   let firstPopulatedObjects: Block[] = [];
 
   // Sort blocks in ascending order based on 'order' property
-  page.blocks.sort((a: Block, b: Block) =>
+  page?.blocks?.sort((a: Block, b: Block) =>
     a.order > b.order ? 1 : b.order > a.order ? -1 : 0
   );
 
-  for (let i = 0; i < page.blocks.length; i++) {
-    let object = page.blocks[i];
-    let order = page.blocks[i].order;
+  for (let i = 0; i < page?.blocks?.length; i++) {
+    let object = page?.blocks[i];
+    let order = page?.blocks[i]?.order;
 
     // Find the first populated object within the current object
     let firstPopulatedObject = Object.values(object).find((value) => {
@@ -83,7 +86,7 @@ export const getActiveBlocks = (blocks: Block[]): Block[] => {
 };
 
 export const getBlockContentType = (Block: { [key: string]: any }) => {
-  let firstObject: AdvertBannerBlock | AdvertTileBlock | undefined = undefined;
+  let firstObject: BannerBlock | TileBlock | undefined = undefined;
 
   for (let key in Block) {
     if (

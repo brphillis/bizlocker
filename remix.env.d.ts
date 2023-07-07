@@ -146,13 +146,12 @@ type RootCategory = {
 type Article = {
   id: number;
   title: string;
-  content: string;
-  published: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+  blocks: Block[];
+  thumbnail?: Image;
   isActive?: boolean;
   articleCategories: ArticleCategory[];
-  images: Image[];
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 type ArticleCategory = {
@@ -294,22 +293,24 @@ type SortOrder = "asc" | "desc";
 type BlockName = "banner" | "tile";
 type BlockContentType = "campaign" | "promotion";
 
-interface Page {
+interface HomePage {
   id: number;
   blocks: Block[];
-  isHomePage: boolean;
+  title: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-interface Block extends AdvertBannerBlock, AdvertTileBlock {
+interface Block extends BannerBlock, TileBlock {
   id: string;
   order: number;
   page: Page;
   pageId: number;
   content: Campaign[] | Promotion[];
-  advertBannerBlock?: AdvertBannerBlock;
-  advertBannerBlockId?: string;
-  advertTileBlock?: AdvertTileBlock;
-  advertTileBlockId?: string;
+  bannerBlock?: BannerBlock;
+  bannerBlockId?: string;
+  tileBlock?: TileBlock;
+  tileBlockId?: string;
 }
 
 interface BlockOptions {
@@ -320,7 +321,7 @@ interface BlockOptions {
   sortOrder: SortOrder;
 }
 
-interface AdvertBannerBlock {
+interface BannerBlock {
   id: string;
   name: string;
   type: string;
@@ -329,10 +330,10 @@ interface AdvertBannerBlock {
   promotion?: Promotion;
   promotionId?: string;
   block?: Block;
-  advertBannerBlockId?: string;
+  bannerBlockId?: string;
 }
 
-interface AdvertTileBlock {
+interface TileBlock {
   id: string;
   name: string;
   type: string;
@@ -342,7 +343,7 @@ interface AdvertTileBlock {
   promotionId?: string;
   tileSize: string;
   block?: Block;
-  advertTileBlockId?: string;
+  tileBlockId?: string;
 }
 
 interface Money {

@@ -7,7 +7,7 @@ import { getBlocks } from "~/utility/blockHelpers";
 import BlockIcon from "~/components/Blocks/BlockIcon";
 
 type Props = {
-  page: Page;
+  page: HomePage | Article;
   searchResults: Campaign[] | Promotion[];
 };
 
@@ -58,13 +58,15 @@ const ContentBuilder = ({ page, searchResults }: Props) => {
       const contentType = searchForm.get("contentType");
 
       const updateForm = new FormData();
+      if (page) {
+        updateForm.set("pageId", page.id.toString() || "");
+      }
       updateForm.set("_action", "update");
-      updateForm.set("pageId", page.id.toString() || "");
       updateForm.set("itemIndex", editingIndex.toString());
       updateForm.set("blockName", blockName as string);
       updateForm.set("contentType", contentType as string);
       updateForm.set("contentData", JSON.stringify(selectedItems) as string);
-
+      console.log("triggered");
       submit(updateForm, {
         method: "POST",
       });
@@ -93,78 +95,80 @@ const ContentBuilder = ({ page, searchResults }: Props) => {
                 {blocks
                   ?.sort((a: Block, b: Block) => a.order - b.order)
                   .map((e: Block, index) => {
-                    if (index !== 0 && e.order !== 0) {
-                      return (
-                        <tr
-                          key={
-                            "block_" +
-                            blocks?.[index]?.name +
-                            blocks?.[index]?.id +
-                            index
-                          }
-                        >
-                          <td>{blocks?.[index]?.order}</td>
-                          <td>
-                            <div className="flex gap-3">
-                              <BlockIcon
-                                blockName={blocks[index].name}
-                                size={18}
-                                styles={"mt-[1px]"}
-                              />
+                    return (
+                      <tr
+                        key={
+                          "block_" +
+                          blocks?.[index]?.name +
+                          blocks?.[index]?.id +
+                          index
+                        }
+                      >
+                        <td>{blocks?.[index]?.order + 1}</td>
+                        <td>
+                          <div className="flex gap-3">
+                            <BlockIcon
+                              blockName={blocks[index].name}
+                              size={18}
+                              styles={"mt-[1px]"}
+                            />
 
-                              <p>{capitalizeFirst(blocks[index].name)}</p>
-                            </div>
-                          </td>
+                            <p>{capitalizeFirst(blocks[index].name)}</p>
+                          </div>
+                        </td>
 
-                          <td>
-                            {blocks?.[index]?.type &&
-                              capitalizeFirst(blocks?.[index]?.type)}
-                          </td>
-                          <td>
-                            <div className="flex h-full flex-row items-center justify-center gap-3">
-                              <button
-                                type="button"
-                                className="btn-primary btn-md"
-                                onClick={() => {
-                                  setSelectedItems(blocks[index].content);
-                                  setEditingContent(true);
-                                  setEditingIndex(index);
-                                }}
-                              >
-                                Edit
-                              </button>
-                              <button
-                                type="button"
-                                name="_action"
-                                value="delete"
-                                className="btn-primary btn-md"
-                                onClick={() => {
-                                  const formData = new FormData();
+                        <td>
+                          {blocks?.[index]?.type &&
+                            capitalizeFirst(blocks?.[index]?.type)}
+                        </td>
+                        <td>
+                          <div className="flex h-full flex-row items-center justify-center gap-3">
+                            <button
+                              type="button"
+                              className="btn-primary btn-md"
+                              onClick={() => {
+                                setSelectedItems(blocks[index].content);
+                                setEditingContent(true);
+                                setEditingIndex(index);
+                              }}
+                            >
+                              Edit
+                            </button>
 
-                                  formData.set("_action", "delete");
-                                  formData.set(
-                                    "pageId",
-                                    page.id.toString() || ""
-                                  );
-                                  formData.set(
-                                    "itemIndex",
-                                    index.toString() || ""
-                                  );
+                            <button
+                              disabled={index === 0}
+                              type="button"
+                              name="_action"
+                              value="delete"
+                              className={`btn-primary btn-md ${
+                                index === 0 && "grayscale"
+                              }`}
+                              onClick={() => {
+                                const formData = new FormData();
 
-                                  submit(formData, {
-                                    method: "POST",
-                                  });
+                                formData.set("_action", "delete");
+                                formData.set(
+                                  "pageId",
+                                  page.id.toString() || ""
+                                );
+                                formData.set(
+                                  "itemIndex",
+                                  index.toString() || ""
+                                );
 
-                                  setEditingContent(false);
-                                }}
-                              >
-                                Remove
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    } else return null;
+                                submit(formData, {
+                                  method: "POST",
+                                });
+
+                                setEditingContent(false);
+                              }}
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
                   })}
               </tbody>
             </table>
