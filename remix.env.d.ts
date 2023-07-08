@@ -301,7 +301,7 @@ interface HomePage {
   updatedAt: Date;
 }
 
-interface Block extends BannerBlock, TileBlock, TextBlock {
+interface Block extends BannerBlock, TileBlock, TextBlock, ProductBlock {
   id: string;
   order: number;
   page: Page;
@@ -314,11 +314,17 @@ interface Block extends BannerBlock, TileBlock, TextBlock {
 }
 
 interface BlockOptions {
-  columns: number;
-  rows: number;
+  id: string;
+  columns?: number | null;
+  rows?: number | null;
+  count?: number | null;
   size: "SMALL" | "MEDIUM" | "LARGE";
-  sortBy: SortBy;
-  sortOrder: SortOrder;
+  sortBy?: SortBy | null;
+  sortOrder?: SortOrder | null;
+  createdAt: DateTime;
+  updatedAt: DateTime;
+  block?: Block | null;
+  blockOptionsId: string;
 }
 
 interface BannerBlock {
@@ -348,6 +354,22 @@ interface TextBlock {
   name: string;
   block?: Block;
   content: string[];
+}
+
+interface ProductBlock {
+  id: string;
+  name: string;
+  block?: Block;
+  productBlockContent: ProductBlockContent;
+  createdAt: DateTime;
+  updatedAt: DateTime;
+}
+
+interface ProductBlockContent {
+  id: string;
+  rootCategory: RootCategory;
+  productCategory: ProductCategory;
+  brand: Brand;
 }
 
 interface Money {

@@ -23,10 +23,8 @@ const Home = () => {
   const blocks: Block[] = getBlocks(article);
 
   return (
-    <PageWrapper>
-      <div className="max-w-screen flex w-screen flex-col gap-6 sm:w-[1280px]">
-        <BlockRenderer blocks={blocks} />
-      </div>
+    <PageWrapper gap="medium">
+      <BlockRenderer blocks={blocks} />
     </PageWrapper>
   );
 };

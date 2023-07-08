@@ -118,7 +118,7 @@ const ManageProducts = () => {
           </div>
         </div>
 
-        <div className="divider mb-0 w-full" />
+        <div className="divider w-full" />
 
         <ProductSort />
 

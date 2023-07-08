@@ -59,9 +59,6 @@ const Promotion = () => {
   return (
     <PageWrapper>
       <PromotionBanner promotion={promotion} />
-
-      <div className="divider !mb-0 hidden w-[1280px] self-center sm:flex" />
-
       <ProductGrid products={products} />
       <Pagination totalPages={totalPages} />
     </PageWrapper>

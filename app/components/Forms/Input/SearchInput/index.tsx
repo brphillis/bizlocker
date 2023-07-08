@@ -6,9 +6,10 @@ type Props = {
   placeholder: string;
   auto?: boolean;
   delay?: number;
+  action?: string;
 };
 
-const SearchInput = ({ name, placeholder, auto, delay }: Props) => {
+const SearchInput = ({ name, placeholder, auto, delay, action }: Props) => {
   const [searchParams] = useSearchParams();
   const submit = useSubmit();
   const [searchTerm, setSearchTerm] = useState("");
@@ -23,6 +24,7 @@ const SearchInput = ({ name, placeholder, auto, delay }: Props) => {
       searchParams.set(name, searchTerm);
       submit(searchParams, {
         method: "GET",
+        action: action,
       });
     };
 
@@ -39,7 +41,7 @@ const SearchInput = ({ name, placeholder, auto, delay }: Props) => {
         clearTimeout(timeoutIdRef.current);
       }
     };
-  }, [searchTerm, name, searchParams, submit, delay]);
+  }, [searchTerm, name, searchParams, submit, delay, action]);
 
   return (
     <input
@@ -47,7 +49,11 @@ const SearchInput = ({ name, placeholder, auto, delay }: Props) => {
       className="input-bordered input w-[95vw] sm:w-[215px]"
       placeholder={placeholder}
       type="text"
-      onChange={() => auto && handleChange}
+      onChange={(e) => {
+        if (auto) {
+          handleChange(e);
+        }
+      }}
     />
   );
 };

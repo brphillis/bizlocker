@@ -28,6 +28,7 @@ const PaymentConfirm = () => {
 
           <p className="text-xs opacity-50"># - {order.orderId}</p>
         </div>
+
         <div className="divider w-full" />
 
         <div className="flex flex-col flex-wrap items-start justify-center gap-3">

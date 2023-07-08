@@ -1,23 +1,23 @@
 type Props = {
-  brands: Brand[];
-  valueToChange?: Product;
+  productCategories: ProductCategory[];
+  defaultValue?: string;
 };
 
-const SelectBrand = ({ brands, valueToChange }: Props) => {
+const SelectBrand = ({ productCategories, defaultValue }: Props) => {
   return (
     <div className="form-control">
       <label className="label">
-        <span className="label-text">Brand</span>
+        <span className="label-text">Product Category</span>
       </label>
       <select
-        name="brand"
+        name="productCategory"
         className="select-bordered select w-[95vw] sm:w-[215px]"
-        defaultValue={valueToChange?.brand?.name || "Generic"}
+        defaultValue={defaultValue}
       >
         <option value="">Select a Brand</option>
-        {brands?.map(({ id, name }: Brand) => {
+        {productCategories?.map(({ id, name }: Brand) => {
           return (
-            <option key={"brand_" + id} value={name}>
+            <option key={"productCategory_" + id} value={name}>
               {name}
             </option>
           );

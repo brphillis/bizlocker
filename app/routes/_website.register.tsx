@@ -54,7 +54,7 @@ export const RegisterPage = () => {
         <h1 className="select-none pb-6 pt-3 text-center text-6xl font-bold tracking-wide text-white/90">
           CLUTCH.
         </h1>
-        {/* <img src={image} className="mb-1 mt-1 h-[80px] select-none p-2" /> */}
+
         <div className="form-control">
           <label className="label">
             <span className="label-text">Email</span>

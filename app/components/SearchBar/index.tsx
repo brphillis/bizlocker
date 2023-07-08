@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { IoRefreshOutline } from "react-icons/io5";
 import { Form, useSearchParams, useSubmit } from "react-router-dom";
+import SearchInput from "../Forms/Input/SearchInput";
 
 type Props = {
   rootCategories: RootCategory[];
@@ -23,19 +24,11 @@ const SearchBar = ({ rootCategories, brands }: Props) => {
     >
       <div className="flex flex-row flex-wrap justify-center gap-3">
         <div className="flex flex-row gap-3">
-          <input
-            type="text"
-            placeholder="by name"
+          <SearchInput
             name="name"
-            className="input-bordered input w-[95vw] placeholder:text-sm placeholder:!font-normal placeholder:text-primary-content/50 sm:w-[215px]"
-            value={searchParams.get("name") || ""}
-            onChange={(e) => {
-              searchParams.set("name", e.target.value);
-              submit(searchParams, {
-                method: "GET",
-                action: "/products",
-              });
-            }}
+            placeholder="searches"
+            auto={true}
+            action="/products"
           />
         </div>
 

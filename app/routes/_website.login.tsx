@@ -5,7 +5,6 @@ import { createUserSession } from "~/session.server";
 import background from "../assets/images/banner-login.jpg";
 import LoginGoogle from "~/components/auth/LoginGoogle";
 import { isValidEmail, isValidPassword } from "~/utility/validate";
-import { useEffect } from "react";
 
 export const action = async ({ request }: ActionArgs) => {
   const form = Object.fromEntries(await request.formData());
@@ -53,16 +52,6 @@ export const meta: V2_MetaFunction = () => [{ title: "Login" }];
 export default function LoginPage() {
   const { validationError } =
     (useActionData() as { validationError: string[] }) || {};
-
-  // useEffect(() => {
-  //   if (user) {
-  //     if (location.pathname.includes("admin")) {
-  //       navigate("/admin");
-  //     } else {
-  //       navigate("/");
-  //     }
-  //   }
-  // }, [user, navigate, location]);
 
   return (
     <div className="relative flex h-full min-h-[calc(100vh-64px)] w-full items-center justify-center">

@@ -100,13 +100,13 @@ const App = () => {
               CLUTCH.
             </h1>
           </div>
-          <div className="relative hidden flex-none lg:absolute lg:left-1/2 lg:block lg:translate-x-[-50%]">
+          <div className="relative hidden flex-none lg:absolute lg:left-1/2 lg:translate-x-[-50%] xl:block">
             <ul className="menu menu-horizontal">
               {rootCategories?.map(({ name }: RootCategory) => {
                 return (
                   <li
                     key={"menu_rootCategory_" + name}
-                    className={`cursor-pointer border-b-2 border-primary-content/0 px-3 py-3 text-sm font-bold tracking-wide hover:bg-primary-content/10 `}
+                    className="cursor-pointer border-b-2 border-primary-content/0 px-3 py-3 text-sm font-bold tracking-wide hover:bg-primary-content/10"
                     onClick={() =>
                       navigate({
                         pathname: "/products",
@@ -150,7 +150,7 @@ const App = () => {
             return (
               <li
                 key={"menu_rootCategory_" + name}
-                className={`cursor-pointer border-b-2 border-primary-content/0 px-3 py-3 text-sm font-bold tracking-wide hover:bg-primary-content/10 `}
+                className="cursor-pointer border-b-2 border-primary-content/0 px-3 py-3 text-sm font-bold tracking-wide hover:bg-primary-content/10"
                 onClick={() =>
                   navigate({
                     pathname: "/products",

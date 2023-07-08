@@ -23,12 +23,14 @@ model Block {
   article    Article?  @relation("ArticlesToBlocks", fields: [articleId], references: [id])
   articleId  Int?
 
-  bannerBlock   BannerBlock? @relation("BlockToBannerBlock", fields: [bannerBlockId], references: [id])
-  bannerBlockId String?      @unique
-  tileBlock     TileBlock?   @relation("BlockToTileBlock", fields: [tileBlockId], references: [id])
-  tileBlockId   String?      @unique
-  textBlock     TextBlock?   @relation("BlockToTextBlock", fields: [textBlockId], references: [id])
-  textBlockId   String?      @unique
+  bannerBlock    BannerBlock?  @relation("BlockToBannerBlock", fields: [bannerBlockId], references: [id])
+  bannerBlockId  String?       @unique
+  tileBlock      TileBlock?    @relation("BlockToTileBlock", fields: [tileBlockId], references: [id])
+  tileBlockId    String?       @unique
+  textBlock      TextBlock?    @relation("BlockToTextBlock", fields: [textBlockId], references: [id])
+  textBlockId    String?       @unique
+  productBlock   ProductBlock? @relation("BlockToProductBlock", fields: [productBlockId], references: [id])
+  productBlockId String?       @unique
 
   blockOptions   BlockOptions?
   blockOptionsId String?       @unique
@@ -40,6 +42,7 @@ model BlockOptions {
   id             String     @id @unique @default(cuid())
   columns        Int?
   rows           Int?
+  count          Int?
   size           String?
   sortBy         SortBy?
   sortOrder      SortOrder?
@@ -80,6 +83,26 @@ model TextBlock {
   content   String[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model ProductBlock {
+  id        String               @id @unique @default(cuid())
+  name      String               @default("product")
+  block     Block?               @relation("BlockToProductBlock")
+  content   ProductBlockContent? @relation("ProductBlockContentToProductBlock")
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt
+}
+
+model ProductBlockContent {
+  id              String           @id @unique @default(cuid())
+  productBlock    ProductBlock?    @relation("ProductBlockContentToProductBlock", fields: [productBlockId], references: [id])
+  productBlockId  String?          @unique
+  rootCategory    RootCategory?    @relation("RootCategoryToProductBlock")
+  productCategory ProductCategory? @relation("ProductCategoryToProductBlock")
+  brand           Brand?           @relation("BrandToProductBlock")
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
 }
 
 model User {
@@ -209,12 +232,14 @@ model Department {
 }
 
 model RootCategory {
-  id                Int               @id @default(autoincrement())
+  id                Int                  @id @default(autoincrement())
   name              String
-  department        Department        @relation("DepartmentToRootCategory", fields: [departmentId], references: [id])
+  department        Department           @relation("DepartmentToRootCategory", fields: [departmentId], references: [id])
   departmentId      Int
-  articleCategories ArticleCategory[] @relation("RootCategoryToArticleCategory")
-  productCategories ProductCategory[] @relation("RootCategoryToProductCategory")
+  articleCategories ArticleCategory[]    @relation("RootCategoryToArticleCategory")
+  productCategories ProductCategory[]    @relation("RootCategoryToProductCategory")
+  productBlock      ProductBlockContent? @relation("RootCategoryToProductBlock", fields: [productBlockId], references: [id])
+  productBlockId    String?              @unique
 }
 
 model ArticleCategory {
@@ -226,14 +251,16 @@ model ArticleCategory {
 }
 
 model ProductCategory {
-  id             Int           @id @default(autoincrement())
-  name           String        @unique
-  rootCategory   RootCategory? @relation("RootCategoryToProductCategory", fields: [rootCategoryId], references: [id])
+  id             Int                  @id @default(autoincrement())
+  name           String               @unique
+  rootCategory   RootCategory?        @relation("RootCategoryToProductCategory", fields: [rootCategoryId], references: [id])
   rootCategoryId Int?
-  products       Product[]     @relation("ProductCategoryToProduct")
-  image          Image?        @relation("ProductCategoryImage")
+  products       Product[]            @relation("ProductCategoryToProduct")
+  productBlock   ProductBlockContent? @relation("ProductCategoryToProductBlock", fields: [productBlockId], references: [id])
+  productBlockId String?              @unique
+  image          Image?               @relation("ProductCategoryImage")
   imageId        Int?
-  campaigns      Campaign[]    @relation("ProductCategoryToCampaign")
+  campaigns      Campaign[]           @relation("ProductCategoryToCampaign")
 }
 
 model Article {
@@ -334,14 +361,16 @@ model ProductVariant {
 }
 
 model Brand {
-  id        Int        @id @unique @default(autoincrement())
-  name      String     @unique
-  products  Product[]  @relation("BrandToProduct")
-  image     Image?     @relation("BrandImage")
-  imageId   Int?
-  campaigns Campaign[] @relation("BrandToCampaign")
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  id             Int                  @id @unique @default(autoincrement())
+  name           String               @unique
+  products       Product[]            @relation("BrandToProduct")
+  productBlock   ProductBlockContent? @relation("BrandToProductBlock", fields: [productBlockId], references: [id])
+  productBlockId String?              @unique
+  image          Image?               @relation("BrandImage")
+  imageId        Int?
+  campaigns      Campaign[]           @relation("BrandToCampaign")
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
 }
 
 enum Role {

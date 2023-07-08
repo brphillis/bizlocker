@@ -9,11 +9,17 @@ import ContentBuilder from "~/components/PageBuilder/ContentBuilder";
 import { removeBlock } from "~/models/pageBuilder.server";
 import Icon from "~/components/Icon";
 import LargeCollapse from "~/components/Collapse/LargeCollapse";
+import { getBrands } from "~/models/brands.server";
+import { getRootCategories } from "~/models/rootCategories.server";
+import { getProductCategories } from "~/models/productCategories.server";
 
 export const loader = async () => {
   const homePage = await getHomePage();
+  const rootCategories = await getRootCategories();
+  const productCategories = await getProductCategories();
+  const brands = await getBrands();
 
-  return { homePage };
+  return { homePage, rootCategories, productCategories, brands };
 };
 
 export const action = async ({ request }: ActionArgs) => {
@@ -82,9 +88,12 @@ export const action = async ({ request }: ActionArgs) => {
 };
 
 const ManageHomePage = () => {
-  const { homePage } =
+  const { homePage, rootCategories, productCategories, brands } =
     (useLoaderData() as {
       homePage: HomePage;
+      rootCategories: RootCategory[];
+      productCategories: ProductCategory[];
+      brands: Brand[];
     }) || {};
 
   const { searchResults } =
@@ -107,7 +116,13 @@ const ManageHomePage = () => {
             <LargeCollapse
               title="Page Content"
               content={
-                <ContentBuilder page={homePage} searchResults={searchResults} />
+                <ContentBuilder
+                  page={homePage}
+                  searchResults={searchResults}
+                  rootCategories={rootCategories}
+                  productCategories={productCategories}
+                  brands={brands}
+                />
               }
             />
           </div>

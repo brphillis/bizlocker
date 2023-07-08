@@ -17,9 +17,10 @@ const BlockRenderer = ({ blocks }: Props) => {
 
         switch (blocks[index].name) {
           case "banner":
+            const { bannerImage } = content[0] as Campaign | Promotion;
             return (
               <React.Fragment key={"bannerBlock_" + randomId()}>
-                <BannerBlock content={content as Campaign[] | Promotion[]} />
+                <BannerBlock image={bannerImage} />
               </React.Fragment>
             );
 

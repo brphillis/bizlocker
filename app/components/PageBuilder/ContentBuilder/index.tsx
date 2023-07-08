@@ -6,17 +6,29 @@ import SearchInput from "~/components/Forms/Input/SearchInput";
 import { getBlocks } from "~/utility/blockHelpers";
 import BlockIcon from "~/components/Blocks/BlockIcon";
 import RichTextEditor from "~/components/RichTextEditor.client";
+import SelectBrand from "~/components/Forms/Select/SelectBrand";
+import SelectRootCategory from "~/components/Forms/Select/SelectRootCategory";
+import ProductCategories from "~/routes/admin_.product-categories";
+import SelectProductCategory from "~/components/Forms/Select/SelectProductCategory";
 
 type Props = {
   page: HomePage | Article;
   searchResults: Campaign[] | Promotion[];
+  rootCategories: RootCategory[];
+  productCategories: ProductCategory[];
+  brands: Brand[];
 };
 
-const ContentBuilder = ({ page, searchResults }: Props) => {
+const ContentBuilder = ({
+  page,
+  searchResults,
+  rootCategories,
+  productCategories,
+  brands,
+}: Props) => {
   const [searchParams] = useSearchParams();
   const submit = useSubmit();
   const searchFormRef = useRef<HTMLFormElement>(null);
-
   const [selectedBlock, setSelectedBlock] = useState<BlockName | undefined>();
   const [editingContent, setEditingContent] = useState<boolean>(false);
   const [editingIndex, setEditingIndex] = useState<number>(1);
@@ -227,57 +239,161 @@ const ContentBuilder = ({ page, searchResults }: Props) => {
           <Form
             method="POST"
             ref={searchFormRef}
-            className="flex w-full flex-row flex-wrap justify-center gap-3 sm:justify-start"
+            className="flex w-full flex-row flex-wrap justify-center sm:justify-start"
           >
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Block</span>
-              </label>
-              <select
-                name="blockName"
-                className="select-bordered select w-[95vw] max-w-full sm:w-[215px]"
-                defaultValue={selectedBlock}
-                placeholder="Select Block"
-                onChange={(e) => setSelectedBlock(e.target.value as BlockName)}
-              >
-                <option value="">Select Block</option>
-                <option value="banner">Banner</option>
-                <option value="tile">Tile</option>
-                <option value="text">Text</option>
-                <option value="product">Product</option>
-              </select>
-            </div>
-
-            {(selectedBlock === "banner" || selectedBlock === "tile") && (
+            <div className="flex w-full flex-wrap gap-3 bg-base-300 px-2 py-3">
               <div className="form-control">
                 <label className="label">
-                  <span className="label-text">Content Type</span>
+                  <span className="label-text">Block</span>
                 </label>
                 <select
-                  name="contentType"
+                  name="blockName"
                   className="select-bordered select w-[95vw] max-w-full sm:w-[215px]"
-                  defaultValue="Select Content Type"
-                  placeholder="Select a Type"
-                  onChange={handleSearchSubmit}
+                  defaultValue={selectedBlock}
+                  placeholder="Select Block"
+                  onChange={(e) => {
+                    setSelectedBlock(e.target.value as BlockName);
+                    setSelectedItems([]);
+                  }}
                 >
-                  <option value="">Select Content Type</option>
-                  <option value="promotion">Promotion</option>
-                  <option value="campaign">Campaign</option>
+                  <option value="">Select Block</option>
+                  <option value="banner">Banner</option>
+                  <option value="tile">Tile</option>
+                  <option value="text">Text</option>
+                  <option value="product">Product</option>
                 </select>
               </div>
-            )}
 
-            {(selectedBlock === "banner" || selectedBlock === "tile") && (
-              <div className="flex flex-row gap-6">
-                <div className="form-control w-[95vw] sm:w-[215px]">
+              {(selectedBlock === "banner" || selectedBlock === "tile") && (
+                <div className="form-control">
                   <label className="label">
-                    <span className="label-text">Search Content</span>
+                    <span className="label-text">Content Type</span>
                   </label>
-                  <SearchInput name="name" placeholder="Name" />
+                  <select
+                    name="contentType"
+                    className="select-bordered select w-[95vw] max-w-full sm:w-[215px]"
+                    defaultValue="Select Content Type"
+                    placeholder="Select a Type"
+                    onChange={handleSearchSubmit}
+                  >
+                    <option value="">Select Content Type</option>
+                    <option value="promotion">Promotion</option>
+                    <option value="campaign">Campaign</option>
+                  </select>
+                </div>
+              )}
+
+              {(selectedBlock === "banner" || selectedBlock === "tile") && (
+                <div className="flex flex-row gap-6">
+                  <div className="form-control w-[95vw] sm:w-[215px]">
+                    <label className="label">
+                      <span className="label-text">Search Content</span>
+                    </label>
+                    <SearchInput name="name" placeholder="Name" />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {selectedBlock === "product" && (
+              <div className=" w-full bg-base-300 px-2 py-3">
+                <p className="px-1 pb-3 font-bold">Product Block Filters</p>
+                <div className="flex flex-wrap gap-3">
+                  <SelectRootCategory rootCategories={rootCategories} />
+
+                  <SelectProductCategory
+                    productCategories={productCategories}
+                  />
+
+                  <SelectBrand brands={brands} />
                 </div>
               </div>
             )}
           </Form>
+
+          {/* BLOCK OPTIONS */}
+          <div className=" w-full bg-base-300 px-2 py-3">
+            <p className="px-1 pb-3 font-bold">Options</p>
+            <div className="flex flex-wrap gap-3">
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text">Sort By</span>
+                </label>
+                <select
+                  className="select-bordered select w-[95vw] max-w-full sm:w-[215px]"
+                  placeholder="Select a Type"
+                >
+                  <option value="">Select Order</option>
+                  <option value="name">Name</option>
+                  <option value="createdAt">Created</option>
+                  <option value="totalSold">Popularity</option>
+                  <option value="price">Price</option>
+                </select>
+              </div>
+
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text">Sort Order</span>
+                </label>
+                <select
+                  className="select-bordered select w-[95vw] max-w-full sm:w-[215px]"
+                  placeholder="Select a Type"
+                >
+                  <option value="">Select Order</option>
+                  <option value="asc">Ascending</option>
+                  <option value="desc">Descending</option>
+                </select>
+              </div>
+
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text">Size</span>
+                </label>
+                <select
+                  className="select-bordered select w-[95vw] max-w-full sm:w-[215px]"
+                  placeholder="Select a Type"
+                >
+                  <option value="">Select Size</option>
+                  <option value="small">Small</option>
+                  <option value="medium">Medium</option>
+                  <option value="large">Large</option>
+                </select>
+              </div>
+
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text">Count</span>
+                </label>
+                <input
+                  type="number"
+                  className="input-bordered input w-[95vw] max-w-full sm:w-[215px]"
+                  placeholder="Count"
+                />
+              </div>
+
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text">Rows</span>
+                </label>
+                <input
+                  type="number"
+                  className="input-bordered input w-[95vw] max-w-full sm:w-[215px]"
+                  placeholder="Rows"
+                />
+              </div>
+
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text">Columns</span>
+                </label>
+                <input
+                  type="number"
+                  className="input-bordered input w-[95vw] max-w-full sm:w-[215px]"
+                  placeholder="Columns"
+                />
+              </div>
+            </div>
+          </div>
 
           {selectedBlock === "text" && (
             <div className="w-full overflow-x-auto">
@@ -290,52 +406,53 @@ const ContentBuilder = ({ page, searchResults }: Props) => {
             </div>
           )}
 
-          {searchResults && (
-            <div className="w-full overflow-x-auto">
-              <div className="divider my-0 w-full py-0" />
-              <p className="my-3 text-sm font-bold">Select an Item</p>
-              <table className="table-sm table">
-                <thead>
-                  <tr>
-                    <th className="w-1/4"></th>
-                    <th className="w-1/4">Name</th>
-                    <th className="w-1/4">Created</th>
-                    <th className="w-1/4">Go To</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {searchResults?.map(
-                    ({ name, createdAt }: Promotion | Campaign, index) => {
-                      return (
-                        <tr
-                          key={"promotionOrCampaign_" + name + index}
-                          className="hover cursor-pointer"
-                          onClick={() => {
-                            selectItem(searchResults[index]);
-                          }}
-                        >
-                          <td className="w-1/4">{index + 1}</td>
-                          <td className="w-1/4">{capitalizeFirst(name)}</td>
-                          <td className="w-1/4">
-                            {new Date(createdAt).toLocaleDateString("en-US", {
-                              day: "numeric",
-                              month: "long",
-                              year: "numeric",
-                            })}
-                          </td>
-                          <td className="w-1/4">
-                            <div className="ml-2">
-                              <IoCaretForwardCircleSharp size={18} />
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    }
-                  )}
-                </tbody>
-              </table>
-            </div>
-          )}
+          {searchResults &&
+            (selectedBlock === "banner" || selectedBlock === "tile") && (
+              <div className="w-full overflow-x-auto">
+                <div className="divider my-0 w-full py-0" />
+                <p className="my-3 text-sm font-bold">Select an Item</p>
+                <table className="table-sm table">
+                  <thead>
+                    <tr>
+                      <th className="w-1/4"></th>
+                      <th className="w-1/4">Name</th>
+                      <th className="w-1/4">Created</th>
+                      <th className="w-1/4">Go To</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {searchResults?.map(
+                      ({ name, createdAt }: Promotion | Campaign, index) => {
+                        return (
+                          <tr
+                            key={"promotionOrCampaign_" + name + index}
+                            className="hover cursor-pointer"
+                            onClick={() => {
+                              selectItem(searchResults[index]);
+                            }}
+                          >
+                            <td className="w-1/4">{index + 1}</td>
+                            <td className="w-1/4">{capitalizeFirst(name)}</td>
+                            <td className="w-1/4">
+                              {new Date(createdAt).toLocaleDateString("en-US", {
+                                day: "numeric",
+                                month: "long",
+                                year: "numeric",
+                              })}
+                            </td>
+                            <td className="w-1/4">
+                              <div className="ml-2">
+                                <IoCaretForwardCircleSharp size={18} />
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      }
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
 
           {selectedItems && selectedItems.length > 0 && (
             <div className="max-w-3xl overflow-x-auto">

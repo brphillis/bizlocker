@@ -1,4 +1,3 @@
-import parse from "html-react-parser";
 import { IoArrowForward } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 
@@ -9,7 +8,7 @@ type Props = {
 
 const ArticleCard = ({ article, hasDescription }: Props) => {
   const navigate = useNavigate();
-  const image = article?.images?.[0]?.url;
+  const image = article?.thumbnail?.url;
   return (
     <article
       className="max-w-screen group flex min-h-[270px] w-[400px] max-w-full cursor-pointer flex-col"
@@ -35,16 +34,18 @@ const ArticleCard = ({ article, hasDescription }: Props) => {
 
           <div className="flex flex-col items-center gap-y-2 md:flex-row md:gap-x-2">
             <>
-              {article.categories?.map(({ id, name }: ArticleCategory) => {
-                return (
-                  <div
-                    key={id + name}
-                    className="rounded-full bg-primary px-3 py-1 text-center text-sm font-semibold text-white"
-                  >
-                    <p>{name}</p>
-                  </div>
-                );
-              })}
+              {article.articleCategories?.map(
+                ({ id, name }: ArticleCategory) => {
+                  return (
+                    <div
+                      key={id + name}
+                      className="rounded-full bg-primary px-3 py-1 text-center text-sm font-semibold text-white"
+                    >
+                      <p>{name}</p>
+                    </div>
+                  );
+                }
+              )}
             </>
           </div>
         </div>
@@ -52,7 +53,7 @@ const ArticleCard = ({ article, hasDescription }: Props) => {
       {hasDescription && (
         <div className="relative min-h-[112px] bg-base-300 px-4">
           <div className="mt-5 flex-1">
-            <div className="line-clamp-2">{parse(article.content)}</div>
+            <div className="line-clamp-2">DESCRIPTION</div>
           </div>
 
           <p className="absolute bottom-2 left-4 mt-5 flex items-center font-bold group-hover:underline">

@@ -237,3 +237,52 @@ export const searchCampaigns = async (searchArgs: BasicSearchArgs) => {
 
   return { campaigns, totalPages };
 };
+
+export const getRandomCampaign = async (productCategoryName?: string) => {
+  if (productCategoryName) {
+    const productCategory = await prisma.productCategory.findUnique({
+      where: { name: productCategoryName },
+      include: {
+        campaigns: {
+          include: {
+            bannerImage: true,
+            tileImage: true,
+          },
+        },
+      },
+    });
+
+    if (!productCategory) {
+      throw new Error(
+        `No ProductCategory found for the name: ${productCategoryName}`
+      );
+    }
+
+    const { campaigns } = productCategory;
+
+    if (campaigns.length === 0) {
+      return null;
+    }
+
+    const randomIndex = Math.floor(Math.random() * campaigns.length);
+    const randomCampaign = campaigns[randomIndex];
+
+    return randomCampaign;
+  } else {
+    const campaigns = await prisma.campaign.findMany({
+      include: {
+        bannerImage: true,
+        tileImage: true,
+      },
+    });
+
+    if (!campaigns || campaigns.length === 0) {
+      return null;
+    }
+
+    const randomIndex = Math.floor(Math.random() * campaigns.length);
+    const randomCampaign = campaigns[randomIndex];
+
+    return randomCampaign;
+  }
+};
