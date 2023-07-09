@@ -5,7 +5,7 @@ import { searchCampaigns } from "~/models/campaigns.server";
 import { searchPromotions } from "~/models/promotions.server";
 import AdminPageHeader from "~/components/Layout/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/AdminPageWrapper";
-import ContentBuilder from "~/components/PageBuilder/ContentBuilder";
+import PageBuilder, { parseContentData } from "~/components/PageBuilder";
 import { removeBlock } from "~/models/pageBuilder.server";
 import Icon from "~/components/Icon";
 import LargeCollapse from "~/components/Collapse/LargeCollapse";
@@ -61,15 +61,9 @@ export const action = async ({ request }: ActionArgs) => {
 
     case "update":
       if (blockName && pageId) {
-        let contentDataParsed = JSON.parse(contentData as string) as
-          | Campaign[]
-          | Promotion[];
+        const contentDataParsed = parseContentData(contentData);
 
-        contentDataParsed = Array.isArray(contentDataParsed)
-          ? contentDataParsed
-          : [contentDataParsed];
-
-        return await updateHomePage(
+        const updateSuccess = await updateHomePage(
           parseInt(itemIndex as string),
           blockName as BlockName,
           parseInt(pageId as string),
@@ -77,6 +71,8 @@ export const action = async ({ request }: ActionArgs) => {
           contentDataParsed,
           stringData as string
         );
+
+        return { updateSuccess };
       }
 
     case "delete":
@@ -96,9 +92,10 @@ const ManageHomePage = () => {
       brands: Brand[];
     }) || {};
 
-  const { searchResults } =
+  const { searchResults, updateSuccess } =
     (useActionData() as {
       searchResults: Promotion[] | Campaign[];
+      updateSuccess: boolean;
     }) || {};
 
   return (
@@ -116,9 +113,10 @@ const ManageHomePage = () => {
             <LargeCollapse
               title="Page Content"
               content={
-                <ContentBuilder
+                <PageBuilder
                   page={homePage}
                   searchResults={searchResults}
+                  updateSuccess={updateSuccess}
                   rootCategories={rootCategories}
                   productCategories={productCategories}
                   brands={brands}

@@ -9,7 +9,6 @@ type Props = {
 };
 
 const BlockRenderer = ({ blocks }: Props) => {
-  console.log("blox", blocks);
   return (
     <>
       {blocks.map((_, index: number) => {

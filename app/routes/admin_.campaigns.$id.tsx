@@ -134,7 +134,6 @@ const ModifyCampaign = () => {
               <SelectDepartment
                 departments={departments}
                 defaultValue={campaign?.department?.name}
-                valueToChange={campaign}
               />
             </div>
 

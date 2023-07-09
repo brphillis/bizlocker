@@ -19,13 +19,16 @@ import swiperNav from "../../node_modules/swiper/modules/navigation/navigation.m
 import AdminPageWrapper from "~/components/Layout/AdminPageWrapper";
 import AdminPageHeader from "~/components/Layout/AdminPageHeader";
 import Icon from "~/components/Icon";
-import ContentBuilder from "~/components/PageBuilder/ContentBuilder";
+import PageBuilder from "~/components/PageBuilder";
 import { searchPromotions } from "~/models/promotions.server";
 import { searchCampaigns } from "~/models/campaigns.server";
 import { removeBlock } from "~/models/pageBuilder.server";
 import UploadImage from "~/components/Forms/Upload/UploadImage";
 import SelectArticleCategories from "~/components/Forms/Select/SelectArticleCategories";
 import LargeCollapse from "~/components/Collapse/LargeCollapse";
+import { getRootCategories } from "~/models/rootCategories.server";
+import { getProductCategories } from "~/models/productCategories.server";
+import { getBrands } from "~/models/brands.server";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: swiper },
@@ -36,10 +39,19 @@ export const loader = async ({ params }: LoaderArgs) => {
   const id = params?.id;
 
   const articleCategories = await getArticleCategories();
+  const rootCategories = await getRootCategories();
+  const productCategories = await getProductCategories();
+  const brands = await getBrands();
 
   if (id && id !== "add") {
     const article = await getArticle(id);
-    return json({ article, articleCategories });
+    return json({
+      article,
+      articleCategories,
+      rootCategories,
+      productCategories,
+      brands,
+    });
   } else return json({ articleCategories });
 };
 
@@ -107,7 +119,7 @@ export const action = async ({ request, params }: ActionArgs) => {
           ? contentDataParsed
           : [contentDataParsed];
 
-        return await updateArticleBlocks(
+        const updateSuccess = await updateArticleBlocks(
           parseInt(itemIndex as string),
           blockName as BlockName,
           parseInt(id),
@@ -115,6 +127,7 @@ export const action = async ({ request, params }: ActionArgs) => {
           contentDataParsed,
           stringData as string
         );
+        return { updateSuccess };
       }
 
     case "delete":
@@ -126,15 +139,25 @@ export const action = async ({ request, params }: ActionArgs) => {
 };
 
 const ModifyArticle = () => {
-  const { article, articleCategories } =
+  const {
+    article,
+    rootCategories,
+    articleCategories,
+    productCategories,
+    brands,
+  } =
     (useLoaderData() as {
       article: Article;
       articleCategories: ArticleCategory[];
+      rootCategories: RootCategory[];
+      productCategories: ProductCategory[];
+      brands: Brand[];
     }) || {};
 
-  const { searchResults } =
+  const { searchResults, updateSuccess } =
     (useActionData() as {
       searchResults: Promotion[] | Campaign[];
+      updateSuccess: boolean;
     }) || {};
 
   return (
@@ -205,9 +228,13 @@ const ModifyArticle = () => {
               <LargeCollapse
                 title="Page Content"
                 content={
-                  <ContentBuilder
+                  <PageBuilder
                     page={article}
                     searchResults={searchResults}
+                    updateSuccess={updateSuccess}
+                    rootCategories={rootCategories}
+                    productCategories={productCategories}
+                    brands={brands}
                   />
                 }
               />

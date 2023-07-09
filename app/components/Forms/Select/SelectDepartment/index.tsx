@@ -1,10 +1,9 @@
 type Props = {
   departments: Department[];
-  defaultValue: string;
-  valueToChange: Promotion | Campaign | RootCategory;
+  defaultValue?: string;
 };
 
-const SelectDepartment = ({ departments, valueToChange }: Props) => {
+const SelectDepartment = ({ departments, defaultValue }: Props) => {
   return (
     <div className="form-control">
       <label className="label">
@@ -13,15 +12,10 @@ const SelectDepartment = ({ departments, valueToChange }: Props) => {
       <select
         name="department"
         className="select-bordered select w-[95vw] sm:w-[215px]"
-        defaultValue={valueToChange?.department?.name}
-        onChange={(e) => (valueToChange.department.name = e.target.value)}
+        defaultValue={defaultValue || ""}
       >
-        {!departments && (
-          <option disabled value="">
-            No Departments
-          </option>
-        )}
-        {departments?.map(({ id, name }: Department) => {
+        <option value="">Select a Department</option>
+        {departments?.map(({ id, name }: Brand) => {
           return (
             <option key={"department_" + id} value={name}>
               {name}

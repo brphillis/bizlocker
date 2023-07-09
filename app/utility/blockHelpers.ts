@@ -84,30 +84,3 @@ export const getActiveBlocks = (blocks: Block[]): Block[] => {
 
   return firstPopulatedItems;
 };
-
-export const getBlockContentType = (Block: { [key: string]: any }) => {
-  let firstObject: BannerBlock | TileBlock | undefined = undefined;
-
-  for (let key in Block) {
-    if (
-      Block.hasOwnProperty(key) &&
-      typeof Block[key] === "object" &&
-      Block[key] !== null &&
-      !Array.isArray(Block[key])
-    ) {
-      firstObject = Block[key];
-      break;
-    }
-  }
-
-  return firstObject?.type;
-};
-
-export const getBlockName = (obj: Record<string, any>): string | null => {
-  for (const key in obj) {
-    if (obj[key] && typeof obj[key] === "object" && obj[key].name) {
-      return obj[key].name;
-    }
-  }
-  return null;
-};

@@ -1,8 +1,8 @@
 import type { Gender } from "@prisma/client";
 
 type Props = {
-  defaultValue: Gender;
   label: string;
+  defaultValue: Gender;
 };
 
 const SelectGender = ({ defaultValue, label }: Props) => {
