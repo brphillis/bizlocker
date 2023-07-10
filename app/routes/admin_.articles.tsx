@@ -66,7 +66,7 @@ const Articles = () => {
               <select
                 title="category"
                 name="category"
-                className="select-bordered select w-full max-w-xs"
+                className=" select w-full max-w-xs"
                 placeholder="Select a Value"
               >
                 <option value="">Select a Category</option>

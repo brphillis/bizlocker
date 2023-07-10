@@ -29,7 +29,7 @@ const SelectProductCategories = ({
         <span className="label-text">{title ? title : "Categories"}</span>
       </label>
       <select
-        className="select-bordered select w-[95vw] sm:w-[215px]"
+        className=" select w-[95vw] sm:w-[215px]"
         onChange={handleCategoryChange}
         value={selectedCategories}
         multiple

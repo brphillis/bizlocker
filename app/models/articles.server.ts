@@ -1,3 +1,4 @@
+import { redirect } from "@remix-run/server-runtime";
 import { prisma } from "~/db.server";
 
 export const getArticle = async (id?: string, title?: string) => {
@@ -336,20 +337,34 @@ export const updateArticleBlocks = async (
   return article?.id;
 };
 
-export const deleteArticle = async (id: string) => {
+export const deleteArticle = async (id: number) => {
   const article = await prisma.article.findUnique({
     where: {
-      id: parseInt(id),
+      id,
     },
     include: {
       blocks: {
-        include: { bannerBlock: true, tileBlock: true, textBlock: true },
+        include: {
+          bannerBlock: true,
+          tileBlock: true,
+          textBlock: true,
+          blockOptions: true,
+        },
       },
     },
   });
 
   if (!article) {
     return false;
+  }
+
+  // Delete blockOptions associated with each block
+  for (const block of article.blocks) {
+    if (block.blockOptions) {
+      await prisma.blockOptions.delete({
+        where: { id: block.blockOptions.id },
+      });
+    }
   }
 
   // Delete bannerBlocks, tileBlocks, and textBlocks associated with each block
@@ -366,14 +381,16 @@ export const deleteArticle = async (id: string) => {
   }
 
   // Delete blocks associated with the article
-  await prisma.block.deleteMany({ where: { articleId: parseInt(id) } });
+  await prisma.block.deleteMany({ where: { articleId: id } });
 
   // Delete the article
-  return await prisma.article.delete({
+  await prisma.article.delete({
     where: {
-      id: parseInt(id),
+      id,
     },
   });
+
+  return redirect("/admin/articles");
 };
 
 export const searchArticles = async (searchArgs: BasicSearchArgs) => {

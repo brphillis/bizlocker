@@ -36,7 +36,7 @@ const SearchBar = ({ rootCategories, brands }: Props) => {
           <select
             name="rootCategory"
             title="category"
-            className="select-bordered select w-[95vw] !font-normal text-primary-content/50 sm:w-[215px]"
+            className=" select w-[95vw] !font-normal text-primary-content/50 sm:w-[215px]"
             placeholder="Select a Value"
             value={searchParams.get("rootCategory") || ""}
             onChange={(e) => {
@@ -68,7 +68,7 @@ const SearchBar = ({ rootCategories, brands }: Props) => {
             <select
               name="productCategory"
               title="Sub Category"
-              className="select-bordered select w-[95vw] !font-normal text-primary-content/50 sm:w-[215px]"
+              className=" select w-[95vw] !font-normal text-primary-content/50 sm:w-[215px]"
               placeholder="Select a Value"
               value={searchParams.get("productCategory") || ""}
               onChange={(e) => {
@@ -95,7 +95,7 @@ const SearchBar = ({ rootCategories, brands }: Props) => {
           <select
             name="brand"
             title="brand"
-            className="select-bordered select w-[95vw] !font-normal text-primary-content/50 sm:w-[215px]"
+            className=" select w-[95vw] !font-normal text-primary-content/50 sm:w-[215px]"
             placeholder="Select a Value"
             value={searchParams.get("brand") || ""}
             onChange={(e) => {

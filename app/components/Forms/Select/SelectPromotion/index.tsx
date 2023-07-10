@@ -22,7 +22,7 @@ const SelectPromotion = ({ promotions, valueToChange }: Props) => {
       </label>
       <select
         name="promotion"
-        className="select-bordered select w-[95vw] sm:w-[215px]"
+        className=" select w-[95vw] sm:w-[215px]"
         defaultValue={valueToChange?.promotion?.id || ""}
         onChange={(e) => {
           const selectedPromotionId = e.target.value;

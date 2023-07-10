@@ -11,7 +11,7 @@ const SelectBrand = ({ productCategories, defaultValue }: Props) => {
       </label>
       <select
         name="productCategory"
-        className="select-bordered select w-[95vw] sm:w-[215px]"
+        className=" select w-[95vw] sm:w-[215px]"
         defaultValue={defaultValue}
       >
         <option value="">Select a Brand</option>

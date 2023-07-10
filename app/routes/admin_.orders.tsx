@@ -60,7 +60,7 @@ const ManageOrders = () => {
               <select
                 name="status"
                 title="status"
-                className="select-bordered select w-full max-w-xs"
+                className=" select w-full max-w-xs"
                 placeholder="Select a Value"
               >
                 <option value="">Select a Status</option>

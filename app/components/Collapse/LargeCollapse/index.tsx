@@ -1,11 +1,18 @@
 type Props = {
   title: string;
   content: JSX.Element | JSX.Element[];
+  forceOpen?: boolean;
+  forceClose?: boolean;
 };
 
-const LargeCollapse = ({ content, title }: Props) => {
+const LargeCollapse = ({ content, title, forceOpen, forceClose }: Props) => {
   return (
-    <div className="max-w-screen collapse-plus collapse w-full rounded-none bg-base-200 py-3 md:w-[800px]">
+    <div
+      className={`max-w-screen collapse-plus collapse w-full rounded-none bg-base-200 py-3 md:w-[800px] 
+        ${forceOpen && " collapse-open "} 
+        ${forceClose && " collapse-close "}
+        `}
+    >
       <input type="checkbox" readOnly />
       <div className="collapse-title text-xl font-medium">
         <div className="ml-3 flex items-center gap-3">

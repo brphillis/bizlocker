@@ -5,12 +5,17 @@ import {
   type LinksFunction,
   redirect,
 } from "@remix-run/node";
-import { Form, useActionData, useLoaderData } from "@remix-run/react";
+import {
+  Form,
+  useActionData,
+  useLoaderData,
+  useSubmit,
+} from "@remix-run/react";
 
 import { getArticleCategories } from "~/models/articleCategories.server";
 import {
+  deleteArticle,
   getArticle,
-  updateArticleBlocks,
   upsertArticleInfo,
 } from "~/models/articles.server";
 
@@ -20,15 +25,23 @@ import AdminPageWrapper from "~/components/Layout/AdminPageWrapper";
 import AdminPageHeader from "~/components/Layout/AdminPageHeader";
 import Icon from "~/components/Icon";
 import PageBuilder from "~/components/PageBuilder";
-import { searchPromotions } from "~/models/promotions.server";
-import { searchCampaigns } from "~/models/campaigns.server";
-import { removeBlock } from "~/models/pageBuilder.server";
+import {
+  changeBlockOrder,
+  removeBlock,
+  updatePageBlock,
+} from "~/models/pageBuilder.server";
 import UploadImage from "~/components/Forms/Upload/UploadImage";
 import SelectArticleCategories from "~/components/Forms/Select/SelectArticleCategories";
 import LargeCollapse from "~/components/Collapse/LargeCollapse";
 import { getRootCategories } from "~/models/rootCategories.server";
 import { getProductCategories } from "~/models/productCategories.server";
 import { getBrands } from "~/models/brands.server";
+import {
+  getBlockOptions,
+  getBlockUpdateValues,
+  searchContentData,
+} from "~/utility/pageBuilder";
+import { HiTrash } from "react-icons/hi2";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: swiper },
@@ -58,42 +71,17 @@ export const loader = async ({ params }: LoaderArgs) => {
 export const action = async ({ request, params }: ActionArgs) => {
   const id = params.id === "add" ? undefined : params.id;
   const form = Object.fromEntries(await request.formData());
-  const {
-    title,
-    articleCategories,
-    thumbnail,
-    itemIndex,
-    blockName,
-    contentType,
-    contentData,
-    stringData,
-    name,
-  } = form;
+  const { title, articleCategories, thumbnail, itemIndex, contentType, name } =
+    form;
+
+  const blockOptions: NewBlockOptions = getBlockOptions(form);
 
   switch (form._action) {
     case "search":
-      const searchQuery = {
-        name: name as string,
-        page: 1,
-        perPage: 10,
-      };
-
-      let searchResults;
-
-      switch (contentType) {
-        case "promotion":
-          const { promotions } = await searchPromotions(searchQuery);
-          searchResults = promotions;
-          return { searchResults };
-        case "campaign":
-          const { campaigns } = await searchCampaigns(searchQuery);
-          searchResults = campaigns;
-
-          return { searchResults };
-
-        default:
-          return { searchResults };
-      }
+      return await searchContentData(
+        name as string,
+        contentType as BlockContentType
+      );
 
     case "update":
       //we create a new article if ID is not provided
@@ -110,35 +98,40 @@ export const action = async ({ request, params }: ActionArgs) => {
         } else return null;
       }
 
-      if (blockName && id) {
-        let contentDataParsed = JSON.parse(contentData as string) as
-          | Campaign[]
-          | Promotion[];
+      const newBlockData: NewBlockData = getBlockUpdateValues(form);
 
-        contentDataParsed = Array.isArray(contentDataParsed)
-          ? contentDataParsed
-          : [contentDataParsed];
+      const updateSuccess = await updatePageBlock(
+        "article",
+        parseInt(id as string),
+        newBlockData,
+        blockOptions
+      );
 
-        const updateSuccess = await updateArticleBlocks(
-          parseInt(itemIndex as string),
-          blockName as BlockName,
-          parseInt(id),
-          contentType as BlockContentType,
-          contentDataParsed,
-          stringData as string
-        );
-        return { updateSuccess };
-      }
+      return { updateSuccess };
+
+    case "rearrange":
+      const { direction } = form;
+
+      return await changeBlockOrder(
+        "article",
+        parseInt(id as string),
+        parseInt(itemIndex as string),
+        direction as "up" | "down"
+      );
 
     case "delete":
       return await removeBlock(
         parseInt(id as string),
         parseInt(itemIndex as string)
       );
+
+    case "deleteArticle":
+      return await deleteArticle(parseInt(id as string));
   }
 };
 
 const ModifyArticle = () => {
+  const submit = useSubmit();
   const {
     article,
     rootCategories,
@@ -163,17 +156,32 @@ const ModifyArticle = () => {
   return (
     <AdminPageWrapper>
       <div className="relative h-full w-screen bg-base-300 p-6 sm:w-full">
-        <AdminPageHeader title={article ? "Edit Article" : "Create Article"} />
+        <div className="hidden sm:block">
+          <AdminPageHeader
+            title={article ? "Edit Article" : "Create Article"}
+          />
+        </div>
 
         <div className="flex w-full justify-center">
           <div className="flex flex-col gap-6">
-            <div className="flex justify-center gap-3 text-center text-2xl font-bold">
+            <div className="relative flex justify-center gap-3 text-center text-2xl font-bold">
               <Icon iconName="IoNewspaper" size={24} styles="mt-[5px]" />
               {article ? article.title : "Create Article"}
+
+              <HiTrash
+                size={24}
+                className="absolute right-3 top-2 cursor-pointer rounded-full bg-neutral p-[0.3rem] text-neutral-content"
+                onClick={() => {
+                  const formData = new FormData();
+                  formData.set("_action", "deleteArticle");
+                  submit(formData, { method: "POST" });
+                }}
+              />
             </div>
 
             <LargeCollapse
               title="Information"
+              forceOpen={!article}
               content={
                 <Form
                   method="POST"
@@ -226,6 +234,7 @@ const ModifyArticle = () => {
 
             {article && (
               <LargeCollapse
+                forceOpen={article !== null}
                 title="Page Content"
                 content={
                   <PageBuilder

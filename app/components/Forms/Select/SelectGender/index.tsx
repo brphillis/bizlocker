@@ -14,7 +14,7 @@ const SelectGender = ({ defaultValue, label }: Props) => {
 
       <select
         name="gender"
-        className="select-bordered select w-[95vw] sm:w-[215px]"
+        className=" select w-[95vw] sm:w-[215px]"
         defaultValue={defaultValue}
         placeholder="Select a Gender"
       >

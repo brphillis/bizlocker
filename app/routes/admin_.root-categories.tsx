@@ -90,7 +90,7 @@ const ManageRootCategories = () => {
                   <select
                     name="productCategory"
                     title="productCategory"
-                    className="select-bordered select w-full max-w-xs"
+                    className=" select w-full max-w-xs"
                     placeholder="Select a Value"
                   >
                     <option value="">Select Product Categogry</option>
@@ -111,7 +111,7 @@ const ManageRootCategories = () => {
                   <select
                     name="articleCategory"
                     title="articleCategory"
-                    className="select-bordered select w-full max-w-xs"
+                    className=" select w-full max-w-xs"
                     placeholder="Select a Value"
                   >
                     <option value="">Select Article Categogry</option>

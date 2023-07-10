@@ -132,7 +132,7 @@ const ModifyRootCategory = () => {
                 <span className="label-text">Product Categories</span>
               </label>
               <select
-                className="select-bordered select !h-40 w-[95vw] sm:w-[215px]"
+                className=" select !h-40 w-[95vw] sm:w-[215px]"
                 onChange={handleProductCategoryChange}
                 value={selectedProductCategories}
                 multiple
@@ -187,7 +187,7 @@ const ModifyRootCategory = () => {
                 <span className="label-text">Article Categories</span>
               </label>
               <select
-                className="select-bordered select !h-40 w-[95vw] sm:w-[215px]"
+                className=" select !h-40 w-[95vw] sm:w-[215px]"
                 onChange={handleArticleCategoryChange}
                 value={selectedArticleCategories}
                 multiple

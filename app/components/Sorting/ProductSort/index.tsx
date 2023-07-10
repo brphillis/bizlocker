@@ -12,7 +12,7 @@ const ProductSort = () => {
   return (
     <div className="flex items-center justify-end gap-3">
       <select
-        className="select-bordered select select-xs w-full max-w-[10rem] bg-base-300"
+        className=" select select-xs w-full max-w-[10rem] bg-base-300"
         onChange={(e) => {
           searchParams.set("sortBy", e.target.value);
           const sortOrder = searchParams.get("sortOrder");

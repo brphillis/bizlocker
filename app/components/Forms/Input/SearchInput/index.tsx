@@ -20,28 +20,30 @@ const SearchInput = ({ name, placeholder, auto, delay, action }: Props) => {
   };
 
   useEffect(() => {
-    const handleSearch = () => {
-      searchParams.set(name, searchTerm);
-      submit(searchParams, {
-        method: "GET",
-        action: action,
-      });
-    };
+    if (auto && searchTerm) {
+      const handleSearch = () => {
+        searchParams.set(name, searchTerm);
+        submit(searchParams, {
+          method: "GET",
+          action: action,
+        });
+      };
 
-    if (timeoutIdRef.current) {
-      clearTimeout(timeoutIdRef.current);
+      if (timeoutIdRef.current) {
+        clearTimeout(timeoutIdRef.current);
+      }
+
+      timeoutIdRef.current = setTimeout(() => {
+        handleSearch();
+      }, delay || 1500);
     }
-
-    timeoutIdRef.current = setTimeout(() => {
-      handleSearch();
-    }, delay || 1500);
 
     return () => {
       if (timeoutIdRef.current) {
         clearTimeout(timeoutIdRef.current);
       }
     };
-  }, [searchTerm, name, searchParams, submit, delay, action]);
+  }, [searchTerm, auto, name, searchParams, submit, delay, action]);
 
   return (
     <input
@@ -49,11 +51,7 @@ const SearchInput = ({ name, placeholder, auto, delay, action }: Props) => {
       className="input-bordered input w-[95vw] sm:w-[215px]"
       placeholder={placeholder}
       type="text"
-      onChange={(e) => {
-        if (auto) {
-          handleChange(e);
-        }
-      }}
+      onChange={handleChange}
     />
   );
 };

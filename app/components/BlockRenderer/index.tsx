@@ -12,9 +12,10 @@ const BlockRenderer = ({ blocks }: Props) => {
   return (
     <>
       {blocks.map((_, index: number) => {
+        const blockName = blocks[index].name;
         const { content } = blocks[index];
 
-        switch (blocks[index].name) {
+        switch (blockName) {
           case "banner":
             const { bannerImage } = content[0] as Campaign | Promotion;
             return (

@@ -136,7 +136,7 @@ const Cart = () => {
             <select
               name="rootCategory"
               title="category"
-              className="select-bordered select mt-3 w-[215px] !font-normal text-white/50"
+              className=" select mt-3 w-[215px] !font-normal text-white/50"
               placeholder="Select a Value"
               defaultValue=""
             >

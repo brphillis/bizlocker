@@ -77,7 +77,7 @@ const ManageProducts = () => {
               </label>
               <select
                 name="productCategory"
-                className="select-bordered select w-full max-w-xs"
+                className=" select w-full max-w-xs"
                 placeholder="Select a Value"
               >
                 <option value="">Select a Category</option>
@@ -97,7 +97,7 @@ const ManageProducts = () => {
               </label>
               <select
                 name="brand"
-                className="select-bordered select w-full max-w-xs"
+                className=" select w-full max-w-xs"
                 placeholder="Select a Value"
               >
                 <option value="">Select a Brand</option>

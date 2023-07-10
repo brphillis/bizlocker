@@ -12,7 +12,7 @@ const index = ({ defaultValue }: Props) => {
       </label>
       <select
         name="country"
-        className="select-bordered select w-[95vw] sm:w-[215px]"
+        className=" select w-[95vw] sm:w-[215px]"
         defaultValue={defaultValue}
         placeholder="Select a Value"
       >

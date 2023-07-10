@@ -8,6 +8,12 @@ import ProductBlockOptions from "./ProductBlockOptions";
 import TextBlockOptions from "./TextBlockOptions";
 import BlockContentSearch from "./BlockContentSearch";
 import BlockContentResults from "./BlockContentResults";
+import {
+  HiMiniArrowDown,
+  HiMiniArrowUp,
+  HiPencil,
+  HiTrash,
+} from "react-icons/hi2";
 
 type Props = {
   page: HomePage | Article;
@@ -41,6 +47,46 @@ const PageBuilder = ({
     setEditingContent(false);
     setSelectedBlock(undefined);
     setSelectedItems([]);
+  };
+
+  const editBlock = (index: number) => {
+    if (blocks[index].name === "banner" || "tile") {
+      setSelectedBlock((blocks[index].name as "banner") || "tile");
+      setSelectedItems(blocks[index].content as Campaign[] | Promotion[]);
+    }
+    if (blocks[index].name === "text") {
+      setSelectedBlock("text");
+
+      setSelectedItems([]);
+    }
+    setEditingContent(true);
+    setEditingIndex(index);
+  };
+
+  const deleteBlock = (index: number) => {
+    const formData = new FormData();
+
+    formData.set("_action", "delete");
+    formData.set("pageId", page.id.toString() || "");
+    formData.set("itemIndex", index.toString() || "");
+
+    submit(formData, {
+      method: "POST",
+    });
+
+    setEditingContent(false);
+  };
+
+  const changeBlockOrder = (index: number, direction: "up" | "down") => {
+    const formData = new FormData();
+    formData.set("_action", "rearrange");
+    formData.set("pageId", page.id.toString() || "");
+    formData.set("itemIndex", index.toString() || "");
+    formData.set("direction", direction.toString() || "");
+
+    submit(formData, {
+      method: "POST",
+    });
   };
 
   useEffect(() => {
@@ -89,7 +135,7 @@ const PageBuilder = ({
                               styles={"mt-[1px]"}
                             />
 
-                            <p>{capitalizeFirst(blocks[index].name)}</p>
+                            <p>{capitalizeFirst(blocks[index]?.name)}</p>
                           </div>
                         </td>
 
@@ -99,62 +145,33 @@ const PageBuilder = ({
                         </td>
                         <td>
                           <div className="flex h-full flex-row items-center justify-center gap-3">
-                            <button
-                              type="button"
-                              className="btn-primary btn-md"
+                            <HiMiniArrowDown
+                              size={24}
+                              className="cursor-pointer rounded-full bg-primary p-[0.3rem] text-primary-content"
+                              onClick={() => changeBlockOrder(index, "down")}
+                            />
+
+                            <HiMiniArrowUp
+                              size={24}
+                              className="cursor-pointer rounded-full bg-primary p-[0.3rem] text-primary-content"
+                              onClick={() => changeBlockOrder(index, "up")}
+                            />
+
+                            <HiPencil
+                              size={24}
+                              className="cursor-pointer rounded-full bg-primary p-[0.3rem] text-primary-content"
                               onClick={() => {
-                                if (blocks[index].name === "banner" || "tile") {
-                                  setSelectedBlock(
-                                    (blocks[index].name as "banner") || "tile"
-                                  );
-                                  setSelectedItems(
-                                    blocks[index].content as
-                                      | Campaign[]
-                                      | Promotion[]
-                                  );
-                                }
-                                if (blocks[index].name === "text") {
-                                  setSelectedBlock("text");
-
-                                  setSelectedItems([]);
-                                }
-                                setEditingContent(true);
-                                setEditingIndex(index);
+                                editBlock(index);
                               }}
-                            >
-                              Edit
-                            </button>
+                            />
 
-                            <button
-                              disabled={index === 0}
-                              type="button"
-                              name="_action"
-                              value="delete"
-                              className={`btn-primary btn-md ${
-                                index === 0 && "grayscale"
-                              }`}
+                            <HiTrash
+                              size={24}
+                              className="cursor-pointer rounded-full bg-error p-[0.3rem] text-primary-content"
                               onClick={() => {
-                                const formData = new FormData();
-
-                                formData.set("_action", "delete");
-                                formData.set(
-                                  "pageId",
-                                  page.id.toString() || ""
-                                );
-                                formData.set(
-                                  "itemIndex",
-                                  index.toString() || ""
-                                );
-
-                                submit(formData, {
-                                  method: "POST",
-                                });
-
-                                setEditingContent(false);
+                                deleteBlock(index);
                               }}
-                            >
-                              Remove
-                            </button>
+                            />
                           </div>
                         </td>
                       </tr>
@@ -188,7 +205,7 @@ const PageBuilder = ({
                 </label>
                 <select
                   name="blockName"
-                  className="select-bordered select w-[95vw] max-w-full sm:w-[215px]"
+                  className=" select w-[95vw] max-w-full sm:w-[215px]"
                   defaultValue={selectedBlock}
                   placeholder="Select Block"
                   onChange={(e) => {
@@ -206,9 +223,15 @@ const PageBuilder = ({
             </div>
           </div>
 
-          <BlockOptions selectedBlock={selectedBlock} />
+          <BlockOptions
+            selectedBlock={selectedBlock}
+            defaultValues={blocks[editingIndex]?.blockOptions}
+          />
 
-          <BlockContentSearch selectedBlock={selectedBlock} />
+          <BlockContentSearch
+            selectedBlock={selectedBlock}
+            defaultValue={blocks[editingIndex]?.type}
+          />
 
           <ProductBlockOptions
             selectedBlock={selectedBlock}

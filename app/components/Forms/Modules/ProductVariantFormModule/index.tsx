@@ -178,7 +178,7 @@ const ProductVariantFormModule = ({
               </label>
               <select
                 name="color"
-                className="select-bordered select w-[95vw] sm:w-[215px]"
+                className=" select w-[95vw] sm:w-[215px]"
                 placeholder="Select a Color"
                 value={activeVariant?.color || ""}
                 onChange={(e) => {
@@ -205,7 +205,7 @@ const ProductVariantFormModule = ({
               </label>
               <select
                 name="size"
-                className="select-bordered select w-[95vw] sm:w-[215px]"
+                className=" select w-[95vw] sm:w-[215px]"
                 placeholder="Select a Size"
                 value={activeVariant?.size || ""}
                 onChange={(e) => {

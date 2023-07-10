@@ -7,7 +7,7 @@ type Props = {
 };
 
 const TextBlockOptions = ({ selectedBlock, defaultValue }: Props) => {
-  const [stringData, setStringData] = useState<string>(defaultValue);
+  const [stringData, setStringData] = useState<string>(defaultValue || "");
 
   return (
     <>
@@ -20,12 +20,7 @@ const TextBlockOptions = ({ selectedBlock, defaultValue }: Props) => {
             className="mb-12 mt-6 h-[320px]"
           />
 
-          <input
-            name="stringData"
-            value={stringData || undefined}
-            hidden
-            readOnly
-          />
+          <input name="stringData" value={stringData} hidden readOnly />
         </div>
       )}
     </>

@@ -131,7 +131,7 @@ const BlockContentResults = ({
                           className="ml-2"
                           onClick={() =>
                             setSelectedItems(
-                              searchResults.filter((_, index) => index !== 0)
+                              selectedItems.filter((_, i) => i !== index)
                             )
                           }
                         >

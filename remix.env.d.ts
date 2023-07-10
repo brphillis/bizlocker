@@ -301,26 +301,38 @@ interface HomePage {
   updatedAt: Date;
 }
 
+interface NewBlockData {
+  blockName: BlockName;
+  itemIndex: number;
+  contentType?: BlockContentType;
+  contentData?: Promotion[] | Campaign[];
+  stringData?: string;
+}
+
 interface Block extends BannerBlock, TileBlock, TextBlock, ProductBlock {
   id: string;
   order: number;
   page: Page;
   pageId: number;
   content: Campaign[] | Promotion[] | string[];
+  blockOptions: BlockOptions;
   bannerBlock?: BannerBlock;
   bannerBlockId?: string;
   tileBlock?: TileBlock;
   tileBlockId?: string;
 }
 
-interface BlockOptions {
-  id: string;
+interface NewBlockOptions {
   columns?: number | null;
   rows?: number | null;
   count?: number | null;
-  size: "SMALL" | "MEDIUM" | "LARGE";
+  size: "small" | "medium" | "large";
   sortBy?: SortBy | null;
   sortOrder?: SortOrder | null;
+}
+
+interface BlockOptions extends NewBlockOptions {
+  id: string;
   createdAt: DateTime;
   updatedAt: DateTime;
   block?: Block | null;

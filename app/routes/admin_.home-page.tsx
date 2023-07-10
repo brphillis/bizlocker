@@ -1,17 +1,24 @@
 import type { ActionArgs } from "@remix-run/node";
-import { getHomePage, updateHomePage } from "~/models/homePage.server";
+import { getHomePage } from "~/models/homePage.server";
 import { useActionData, useLoaderData } from "@remix-run/react";
-import { searchCampaigns } from "~/models/campaigns.server";
-import { searchPromotions } from "~/models/promotions.server";
 import AdminPageHeader from "~/components/Layout/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/AdminPageWrapper";
-import PageBuilder, { parseContentData } from "~/components/PageBuilder";
-import { removeBlock } from "~/models/pageBuilder.server";
+import PageBuilder from "~/components/PageBuilder";
+import {
+  changeBlockOrder,
+  removeBlock,
+  updatePageBlock,
+} from "~/models/pageBuilder.server";
 import Icon from "~/components/Icon";
 import LargeCollapse from "~/components/Collapse/LargeCollapse";
 import { getBrands } from "~/models/brands.server";
 import { getRootCategories } from "~/models/rootCategories.server";
 import { getProductCategories } from "~/models/productCategories.server";
+import {
+  getBlockOptions,
+  getBlockUpdateValues,
+  searchContentData,
+} from "~/utility/pageBuilder";
 
 export const loader = async () => {
   const homePage = await getHomePage();
@@ -24,56 +31,38 @@ export const loader = async () => {
 
 export const action = async ({ request }: ActionArgs) => {
   const form = Object.fromEntries(await request.formData());
-  const {
-    pageId,
-    itemIndex,
-    blockName,
-    contentType,
-    contentData,
-    stringData,
-    name,
-  } = form;
+  const { pageId, itemIndex, contentType, name } = form;
+
+  const blockOptions: NewBlockOptions = getBlockOptions(form);
 
   switch (form._action) {
     case "search":
-      const searchQuery = {
-        name: name as string,
-        page: 1,
-        perPage: 10,
-      };
-
-      let searchResults;
-
-      switch (contentType) {
-        case "promotion":
-          const { promotions } = await searchPromotions(searchQuery);
-          searchResults = promotions;
-          return { searchResults };
-        case "campaign":
-          const { campaigns } = await searchCampaigns(searchQuery);
-          searchResults = campaigns;
-
-          return { searchResults };
-
-        default:
-          return { searchResults };
-      }
+      return await searchContentData(
+        name as string,
+        contentType as BlockContentType
+      );
 
     case "update":
-      if (blockName && pageId) {
-        const contentDataParsed = parseContentData(contentData);
+      const newBlockData: NewBlockData = getBlockUpdateValues(form);
 
-        const updateSuccess = await updateHomePage(
-          parseInt(itemIndex as string),
-          blockName as BlockName,
-          parseInt(pageId as string),
-          contentType as BlockContentType,
-          contentDataParsed,
-          stringData as string
-        );
+      const updateSuccess = await updatePageBlock(
+        "homePage",
+        parseInt(pageId as string),
+        newBlockData,
+        blockOptions
+      );
 
-        return { updateSuccess };
-      }
+      return { updateSuccess };
+
+    case "rearrange":
+      const { direction } = form;
+
+      return await changeBlockOrder(
+        "homePage",
+        parseInt(pageId as string),
+        parseInt(itemIndex as string),
+        direction as "up" | "down"
+      );
 
     case "delete":
       return await removeBlock(
@@ -101,7 +90,9 @@ const ManageHomePage = () => {
   return (
     <AdminPageWrapper>
       <div className="relative h-full w-screen bg-base-300 p-6 sm:w-full">
-        <AdminPageHeader title="Manage Home Page" />
+        <div className="hidden sm:block">
+          <AdminPageHeader title="Manage Home Page" />
+        </div>
 
         <div className="flex w-full justify-center">
           <div className="flex flex-col gap-6">

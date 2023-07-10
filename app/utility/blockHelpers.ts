@@ -18,20 +18,29 @@ export const getPageBlocks = (
   for (let i = 0; i < page?.blocks?.length; i++) {
     let object = page?.blocks[i];
     let order = page?.blocks[i]?.order;
+    let blockOptions = page?.blocks[i]?.blockOptions;
 
-    // Find the first populated object within the current object
-    let firstPopulatedObject = Object.values(object).find((value) => {
-      return (
-        typeof value === "object" &&
-        value !== null &&
-        Object.keys(value).length > 0
-      );
-    });
+    // Find the first populated object or array within the current object
+    let firstPopulatedObject: any = null;
+
+    for (const [key, value] of Object.entries(object)) {
+      if (
+        key !== "blockOptions" &&
+        ((Array.isArray(value) && value.length > 0) ||
+          (typeof value === "object" &&
+            value !== null &&
+            Object.keys(value).length > 0))
+      ) {
+        firstPopulatedObject = Array.isArray(value) ? value : { ...value };
+        break;
+      }
+    }
 
     if (firstPopulatedObject) {
       firstPopulatedObjects.push({
         ...firstPopulatedObject,
         order: order,
+        blockOptions: blockOptions,
       } as Block);
     }
   }
@@ -45,25 +54,30 @@ export const getPageBlocks = (
 
 export const getActiveBlocks = (blocks: Block[]): Block[] => {
   let firstPopulatedItems: any[] = [];
-
   for (let item of blocks) {
     // Find the first populated object or array within the current object
-    let firstPopulated = Object.values(item).find((value: any) => {
-      return (
-        (Array.isArray(value) && value.length > 0) || // Check if value is a non-empty array
-        (typeof value === "object" &&
-          value !== null &&
-          Object.keys(value).length > 0) // Check if value is a non-empty object
-      );
-    });
+    let firstPopulated: any = null;
 
-    // If the first populated value is found, create a new object with specific properties and merge the rest of the properties
+    for (const [key, value] of Object.entries(item)) {
+      if (
+        key !== "blockOptions" &&
+        ((Array.isArray(value) && value.length > 0) ||
+          (typeof value === "object" &&
+            value !== null &&
+            Object.keys(value).length > 0))
+      ) {
+        firstPopulated = Array.isArray(value) ? value : { ...value };
+        break;
+      }
+    }
+
     if (firstPopulated) {
-      const { name, type, id, order } = item;
+      const { blockOptions, name, type, id, order } = item;
       if (Array.isArray(firstPopulated)) {
         // If it's an array, merge it with the specific properties and add it as it is
         firstPopulatedItems.push({
           content: firstPopulated,
+          blockOptions: blockOptions,
           name,
           type,
           id,
