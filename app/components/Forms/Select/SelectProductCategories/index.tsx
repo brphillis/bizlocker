@@ -12,7 +12,7 @@ const SelectProductCategories = ({
   title,
 }: Props) => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
-    valueToChange?.productCategories?.map((e) => e?.name) || [""]
+    valueToChange?.productCategories?.map((e) => e?.id.toString()) || [""]
   );
 
   const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -35,7 +35,7 @@ const SelectProductCategories = ({
         multiple
       >
         {productCategories?.map(({ id, name }: ProductCategory) => (
-          <option key={id} value={name}>
+          <option key={id} value={id}>
             {name}
           </option>
         ))}

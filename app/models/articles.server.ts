@@ -50,6 +50,17 @@ export const getArticle = async (id?: string, title?: string) => {
             },
           },
           textBlock: true,
+          productBlock: {
+            include: {
+              content: {
+                include: {
+                  rootCategory: true,
+                  productCategory: true,
+                  brand: true,
+                },
+              },
+            },
+          },
         },
       },
       articleCategories: {
@@ -78,7 +89,7 @@ export const upsertArticleInfo = async (
         title: title,
         articleCategories: {
           connect: articleCategories.map((category: string) => ({
-            name: category,
+            id: parseInt(category),
           })),
         },
         thumbnail: {
@@ -132,209 +143,6 @@ export const upsertArticleInfo = async (
   }
 
   return article.id;
-};
-
-export const updateArticleBlocks = async (
-  itemIndex: number,
-  blockName: BlockName,
-  articleId: number,
-  contentType?: BlockContentType,
-  contentData?: Promotion[] | Campaign[],
-  stringData?: string
-) => {
-  let article = articleId
-    ? await prisma.article.findUnique({
-        where: {
-          id: articleId,
-        },
-      })
-    : await prisma.article.create({
-        data: {
-          title: "Untitled",
-        },
-      });
-
-  const blocks = await prisma.block.findMany({
-    where: {
-      articleId: article?.id,
-    },
-    orderBy: {
-      order: "asc",
-    },
-    include: {
-      bannerBlock: true,
-      tileBlock: true,
-      textBlock: true,
-    },
-  });
-
-  const isValidItemIndex = itemIndex >= 0 && itemIndex <= blocks.length;
-  if (!isValidItemIndex) {
-    throw new Error(`Invalid itemIndex: ${itemIndex}`);
-  }
-
-  const blockToUpdate = blocks.find((e) => e.order === itemIndex);
-  if (blockToUpdate) {
-    if (blockName === "banner" && contentData) {
-      const bannerBlock = blockToUpdate.bannerBlock;
-      if (bannerBlock) {
-        await prisma.bannerBlock.update({
-          where: {
-            id: bannerBlock.id,
-          },
-          data: {
-            promotion: { disconnect: true },
-            campaign: { disconnect: true },
-          },
-        });
-
-        const updatedBannerBlock = await prisma.bannerBlock.update({
-          where: { id: bannerBlock.id },
-          data: {
-            type: contentType,
-            promotion:
-              contentType === "promotion"
-                ? { connect: { id: contentData[0].id } }
-                : undefined,
-            campaign:
-              contentType === "campaign"
-                ? { connect: { id: contentData[0].id } }
-                : undefined,
-          },
-        });
-
-        await prisma.block.update({
-          where: { id: blockToUpdate.id },
-          data: {
-            order: itemIndex === 0 ? 0 : itemIndex,
-            bannerBlock: { connect: { id: updatedBannerBlock.id } },
-            tileBlock: { disconnect: true },
-          },
-        });
-      }
-    } else if (blockName === "tile" && contentData) {
-      const tileBlock = blockToUpdate.tileBlock;
-      if (tileBlock) {
-        await prisma.tileBlock.update({
-          where: { id: tileBlock.id },
-          data: {
-            promotions:
-              contentType === "promotion"
-                ? { connect: contentData.map((p) => ({ id: p.id })) }
-                : undefined,
-            campaigns:
-              contentType === "campaign"
-                ? { connect: contentData.map((c) => ({ id: c.id })) }
-                : undefined,
-          },
-        });
-
-        const updatedTileBlock = await prisma.tileBlock.update({
-          where: { id: tileBlock.id },
-          data: {
-            type: contentType,
-            promotions:
-              contentType === "promotion"
-                ? { connect: contentData.map((p) => ({ id: p.id })) }
-                : undefined,
-            campaigns:
-              contentType === "campaign"
-                ? { connect: contentData.map((c) => ({ id: c.id })) }
-                : undefined,
-          },
-        });
-
-        await prisma.block.update({
-          where: { id: blockToUpdate.id },
-          data: {
-            order: itemIndex === 0 ? 0 : itemIndex,
-            tileBlock: { connect: { id: updatedTileBlock.id } },
-            bannerBlock: { disconnect: true },
-          },
-        });
-      }
-    } else if (blockName === "text" && stringData) {
-      const textBlock = blockToUpdate.textBlock;
-      if (textBlock) {
-        const updatedTextBlock = await prisma.textBlock.update({
-          where: { id: textBlock.id },
-          data: { content: [stringData] },
-        });
-
-        await prisma.block.update({
-          where: { id: blockToUpdate.id },
-          data: {
-            order: itemIndex === 0 ? 0 : itemIndex,
-            textBlock: { connect: { id: updatedTextBlock.id } },
-            bannerBlock: { disconnect: true },
-            tileBlock: { disconnect: true },
-          },
-        });
-      }
-    } else {
-      throw new Error(`Invalid type: ${blockName}`);
-    }
-  } else {
-    const newBlock = await prisma.block.create({
-      data: {
-        order: itemIndex === 0 ? 0 : itemIndex,
-        article: { connect: { id: article?.id } },
-      },
-    });
-
-    if (blockName === "banner" && contentType && contentData) {
-      const createData = {
-        type: contentType,
-        promotion:
-          contentType === "promotion"
-            ? { connect: { id: contentData[0].id } }
-            : undefined,
-        campaign:
-          contentType === "campaign"
-            ? { connect: { id: contentData[0].id } }
-            : undefined,
-        block: { connect: { id: newBlock.id } },
-      };
-
-      await prisma.bannerBlock.create({ data: createData });
-    } else if (blockName === "tile" && contentType && contentData) {
-      const createData = {
-        type: contentType,
-        promotions:
-          contentType === "promotion"
-            ? { connect: contentData.map((p) => ({ id: p.id })) }
-            : undefined,
-        campaigns:
-          contentType === "campaign"
-            ? { connect: contentData.map((c) => ({ id: c.id })) }
-            : undefined,
-        block: { connect: { id: newBlock.id } },
-      };
-
-      await prisma.tileBlock.create({ data: createData });
-    } else if (blockName === "text" && stringData) {
-      const newTextBlock = await prisma.textBlock.create({
-        data: {
-          content: [stringData],
-          block: { connect: { id: newBlock.id } },
-        },
-      });
-
-      await prisma.block.update({
-        where: { id: newBlock.id },
-        data: {
-          order: itemIndex === 0 ? 0 : itemIndex,
-          textBlock: { connect: { id: newTextBlock.id } },
-          bannerBlock: { disconnect: true },
-          tileBlock: { disconnect: true },
-        },
-      });
-    } else {
-      throw new Error(`Invalid type: ${blockName}`);
-    }
-  }
-
-  return article?.id;
 };
 
 export const deleteArticle = async (id: number) => {

@@ -20,7 +20,7 @@ export function getCampaigns(inDetail?: boolean) {
 export const getCampaign = async (id: string) => {
   return prisma.campaign.findUnique({
     where: {
-      id: id,
+      id: parseInt(id),
     },
     include: {
       bannerImage: true,
@@ -41,7 +41,7 @@ export const upsertCampaign = async (updateData: any) => {
     brands,
     minSaleRange,
     maxSaleRange,
-    gender = "", // Provide a default value for gender
+    gender = "",
     parsedBanner,
     parsedTile,
     isActive,
@@ -50,36 +50,34 @@ export const upsertCampaign = async (updateData: any) => {
 
   let updatedCampaign;
 
-  const brandData = brands.map((brandName: string) => ({
-    where: { name: brandName },
-    create: { name: brandName },
+  const brandData = brands.map((brandId: string) => ({
+    id: parseInt(brandId),
   }));
 
-  const productCategoryData = productCategories.map((categoryName: string) => ({
-    where: { name: categoryName },
-    create: { name: categoryName },
+  const productCategoryData = productCategories.map((categoryId: string) => ({
+    id: parseInt(categoryId),
   }));
 
   if (!id) {
+    // Create a new campaign
     updatedCampaign = await prisma.campaign.create({
       data: {
-        name: name,
+        name,
         department: {
-          connectOrCreate: {
-            where: { name: department },
-            create: { name: department },
+          connect: {
+            id: parseInt(department),
           },
         },
         productCategories: {
-          connectOrCreate: productCategoryData,
+          connect: productCategoryData,
         },
         brands: {
-          connectOrCreate: brandData,
+          connect: brandData,
         },
         minSaleRange: parseFloat(minSaleRange),
         maxSaleRange: parseFloat(maxSaleRange),
         targetGender: gender as Gender,
-        isActive: isActive,
+        isActive,
         tileImage: {
           create: {
             url: parsedTile.url,
@@ -95,10 +93,9 @@ export const upsertCampaign = async (updateData: any) => {
       },
     });
   } else {
+    // Update an existing campaign
     const existingCampaign = await prisma.campaign.findUnique({
-      where: {
-        id: id,
-      },
+      where: { id: parseInt(id) },
       include: {
         tileImage: true,
         bannerImage: true,
@@ -127,34 +124,31 @@ export const upsertCampaign = async (updateData: any) => {
 
     // Disconnect from old product categories and brands
     const oldProductCategoryData = existingCampaign.productCategories.map(
-      (category: any) => ({
-        name: category.name,
-      })
+      (category: any) => ({ id: category.id })
     );
     const oldBrandData = existingCampaign.brands.map((brand: any) => ({
-      name: brand.name,
+      id: brand.id,
     }));
 
     // Conditionally include targetGender based on the presence of gender
     const data: any = {
-      name: name,
+      name,
       department: {
-        connectOrCreate: {
-          where: { name: department },
-          create: { name: department },
+        connect: {
+          id: parseInt(department),
         },
       },
       productCategories: {
         disconnect: oldProductCategoryData,
-        connectOrCreate: productCategoryData,
+        connect: productCategoryData,
       },
       brands: {
         disconnect: oldBrandData,
-        connectOrCreate: brandData,
+        connect: brandData,
       },
       minSaleRange: parseFloat(minSaleRange),
       maxSaleRange: parseFloat(maxSaleRange),
-      isActive: isActive,
+      isActive,
       tileImage: tileImageData,
       bannerImage: bannerImageData,
     };
@@ -166,10 +160,8 @@ export const upsertCampaign = async (updateData: any) => {
     }
 
     updatedCampaign = await prisma.campaign.update({
-      where: {
-        id: id,
-      },
-      data: data,
+      where: { id: parseInt(id) },
+      data,
       include: {
         tileImage: true,
         bannerImage: true,

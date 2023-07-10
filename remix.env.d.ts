@@ -227,7 +227,7 @@ type Brand = {
 };
 
 type Promotion = {
-  id: string;
+  id: number;
   name: string;
   products: Product[];
   discountPercentage: number;
@@ -244,7 +244,7 @@ type Promotion = {
 };
 
 type Campaign = {
-  id: string;
+  id: number;
   name: string;
   excludedProducts: Product[];
   minSaleRange: number;
@@ -307,6 +307,7 @@ interface NewBlockData {
   contentType?: BlockContentType;
   contentData?: Promotion[] | Campaign[];
   stringData?: string;
+  objectData?: ProductBlockContent;
 }
 
 interface Block extends BannerBlock, TileBlock, TextBlock, ProductBlock {
@@ -379,10 +380,20 @@ interface ProductBlock {
 
 interface ProductBlockContent {
   id: string;
-  rootCategory: RootCategory;
-  productCategory: ProductCategory;
-  brand: Brand;
+  productBlock?: ProductBlock;
+  productBlockId?: string;
+  rootCategory?: RootCategory;
+  productCategory?: ProductCategory;
+  brand?: Brand;
+  createdAt: Date;
+  updatedAt: Date;
 }
+
+type NewProductBlockContent = {
+  rootCategory?: string;
+  productCategory?: string;
+  brand?: string;
+};
 
 interface Money {
   amount: number;

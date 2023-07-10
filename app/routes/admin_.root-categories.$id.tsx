@@ -32,15 +32,16 @@ export const action = async ({ request, params }: ActionArgs) => {
   const id = params.id === "add" ? undefined : params.id;
   const form = Object.fromEntries(await request.formData());
   const { name, department, articleCategories, productCategories } = form;
+
   switch (form._action) {
     case "upsert":
       const categoryData = {
-        name: name?.toString(),
-        departmentName: department?.toString(),
+        name: name as string,
+        department: department as string,
         productCategories:
-          productCategories && JSON.parse(productCategories.toString()),
+          productCategories && JSON.parse(productCategories as string),
         articleCategories:
-          articleCategories && JSON.parse(articleCategories.toString()),
+          articleCategories && JSON.parse(articleCategories as string),
         id: id,
       };
 
@@ -122,7 +123,6 @@ const ModifyRootCategory = () => {
             <SelectDepartment
               departments={departments}
               defaultValue={rootCategory?.department?.name}
-              valueToChange={rootCategory}
             />
           </div>
 
@@ -149,21 +149,19 @@ const ModifyRootCategory = () => {
                     rootCategory: parentRootCategory,
                   }: ProductCategory) => {
                     const isAssignedToThis =
-                      rootCategory?.productCategories?.some(
-                        (e) => e.name === name
-                      );
+                      rootCategory?.productCategories?.some((e) => e.id === id);
                     const isAssigned = parentRootCategory?.productCategories;
 
                     if (isAssignedToThis || !isAssigned) {
                       return (
-                        <option key={"productCategory-" + id} value={name}>
+                        <option key={"productCategory-" + name} value={id}>
                           {name}
                         </option>
                       );
                     } else {
                       return (
                         <option
-                          key={"productCategory-" + id + "disabled"}
+                          key={"productCategory-" + name + "disabled"}
                           value={name}
                           disabled
                         >
@@ -204,21 +202,19 @@ const ModifyRootCategory = () => {
                     rootCategory: parentRootCategory,
                   }: ArticleCategory) => {
                     const isAssignedToThis =
-                      rootCategory?.articleCategories?.some(
-                        (e) => e.name === name
-                      );
+                      rootCategory?.articleCategories?.some((e) => e.id === id);
                     const isAssigned = parentRootCategory?.articleCategories;
 
                     if (isAssignedToThis || !isAssigned) {
                       return (
-                        <option key={"articleCategory-" + id} value={name}>
+                        <option key={"articleCategory-" + name} value={id}>
                           {name}
                         </option>
                       );
                     } else {
                       return (
                         <option
-                          key={"articleCategory-" + id + "disabled"}
+                          key={"articleCategory-" + name + "disabled"}
                           value={name}
                           disabled
                         >

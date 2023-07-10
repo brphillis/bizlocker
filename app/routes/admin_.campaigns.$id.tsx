@@ -79,12 +79,11 @@ export const action = async ({ request, params }: ActionArgs) => {
         id: id,
       };
 
-      upsertCampaign(updateData);
+      await upsertCampaign(updateData);
 
       return redirect("/admin/campaigns");
 
     case "delete":
-      // await deleteBrand(id as string);
       return redirect("/admin/campaigns");
   }
 };

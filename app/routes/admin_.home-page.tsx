@@ -15,7 +15,7 @@ import { getBrands } from "~/models/brands.server";
 import { getRootCategories } from "~/models/rootCategories.server";
 import { getProductCategories } from "~/models/productCategories.server";
 import {
-  getBlockOptions,
+  getFormBlockOptions,
   getBlockUpdateValues,
   searchContentData,
 } from "~/utility/pageBuilder";
@@ -33,7 +33,7 @@ export const action = async ({ request }: ActionArgs) => {
   const form = Object.fromEntries(await request.formData());
   const { pageId, itemIndex, contentType, name } = form;
 
-  const blockOptions: NewBlockOptions = getBlockOptions(form);
+  const blockOptions: NewBlockOptions = getFormBlockOptions(form);
 
   switch (form._action) {
     case "search":

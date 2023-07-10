@@ -17,7 +17,7 @@ const SelectBrand = ({ rootCategories, defaultValue }: Props) => {
         <option value="">Select a Root Category</option>
         {rootCategories?.map(({ id, name }: Brand) => {
           return (
-            <option key={"rootCategory_" + id} value={name}>
+            <option key={"rootCategory_" + id} value={id}>
               {name}
             </option>
           );

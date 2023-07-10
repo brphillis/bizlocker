@@ -1,7 +1,7 @@
 import { searchCampaigns } from "~/models/campaigns.server";
 import { searchPromotions } from "~/models/promotions.server";
 
-export const getBlockOptions = (form: {
+export const getFormBlockOptions = (form: {
   [k: string]: FormDataEntryValue;
 }): NewBlockOptions => {
   const { sortBy, sortOrder, size, count, rows, columns } = form;
@@ -34,6 +34,7 @@ export const getBlockUpdateValues = (form: {
     form;
 
   const parsedContentData = parseContentData(contentData);
+  const parsedObjectData = parseObjectData(blockName as string, form);
 
   const blockUpdateValues = {
     pageId: parseInt(pageId as string),
@@ -42,6 +43,7 @@ export const getBlockUpdateValues = (form: {
     contentType: contentType as BlockContentType,
     contentData: parsedContentData,
     stringData: stringData as string,
+    objectData: parsedObjectData,
   } as NewBlockData;
 
   return blockUpdateValues;
@@ -61,6 +63,26 @@ export const parseContentData = (contentData: FormDataEntryValue) => {
 
     return contentDataParsed;
   }
+};
+
+export const parseObjectData = (
+  blockName: string,
+  form: {
+    [k: string]: FormDataEntryValue;
+  }
+) => {
+  let objectData;
+
+  if (blockName === "product") {
+    const { rootCategory, productCategory, brand } = form;
+    objectData = {
+      rootCategory: rootCategory,
+      productCategory: productCategory,
+      brand: brand,
+    };
+  }
+
+  return objectData;
 };
 
 export const searchContentData = async (

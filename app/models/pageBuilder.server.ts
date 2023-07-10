@@ -4,14 +4,16 @@ const updateOrCreateBlockOptions = async (
   blockId: string,
   blockOptions: NewBlockOptions
 ): Promise<void> => {
-  const existingBlockOptions = await prisma.blockOptions.findUnique({
-    where: { blockOptionsId: blockId },
+  let existingBlockOptions;
+
+  existingBlockOptions = await prisma.blockOptions.findFirst({
+    where: { block: { id: blockId } },
   });
 
   if (existingBlockOptions) {
     await prisma.blockOptions.update({
       where: { id: existingBlockOptions.id },
-      data: { block: { connect: { id: blockId } }, ...blockOptions },
+      data: blockOptions,
     });
   } else {
     await prisma.blockOptions.create({
@@ -26,8 +28,14 @@ export const updatePageBlock = async (
   blockData: NewBlockData,
   blockOptions?: NewBlockOptions
 ): Promise<string | number> => {
-  const { blockName, itemIndex, contentType, contentData, stringData } =
-    blockData;
+  const {
+    blockName,
+    itemIndex,
+    contentType,
+    contentData,
+    stringData,
+    objectData,
+  } = blockData;
 
   let page;
 
@@ -50,7 +58,12 @@ export const updatePageBlock = async (
   const blocks = await prisma.block.findMany({
     where: { [`${pageType}Id`]: page.id },
     orderBy: { order: "asc" },
-    include: { bannerBlock: true, tileBlock: true, textBlock: true },
+    include: {
+      bannerBlock: true,
+      tileBlock: true,
+      textBlock: true,
+      productBlock: true,
+    },
   });
 
   const isValidItemIndex = itemIndex >= 0 && itemIndex <= blocks.length;
@@ -96,7 +109,7 @@ export const updatePageBlock = async (
         });
 
         if (blockOptions) {
-          await updateOrCreateBlockOptions(updatedBannerBlock.id, blockOptions);
+          await updateOrCreateBlockOptions(blockToUpdate.id, blockOptions);
         }
       }
     } else if (blockName === "tile" && contentData) {
@@ -166,6 +179,56 @@ export const updatePageBlock = async (
           await updateOrCreateBlockOptions(updatedTextBlock.id, blockOptions);
         }
       }
+    } else if (blockName === "product" && objectData) {
+      const productBlock = blockToUpdate.productBlockId;
+
+      const productBlockContent = await prisma.productBlockContent.findFirst({
+        where: { productBlockId: blockToUpdate.productBlockId },
+      });
+
+      const { rootCategory, productCategory, brand } =
+        objectData as NewProductBlockContent;
+
+      if (productBlock && productBlockContent) {
+        const updatedProductBlockContent =
+          await prisma.productBlockContent.update({
+            where: { id: productBlockContent.id },
+            data: {
+              rootCategory: rootCategory
+                ? { connect: { id: parseInt(rootCategory) } }
+                : undefined,
+              productCategory: productCategory
+                ? { connect: { id: parseInt(productCategory) } }
+                : undefined,
+              brand: brand ? { connect: { id: parseInt(brand) } } : undefined,
+            },
+          });
+
+        const updatedProductBlock = await prisma.productBlock.update({
+          where: { id: productBlock },
+          data: {
+            content: { connect: { id: updatedProductBlockContent.id } },
+          },
+        });
+
+        await prisma.block.update({
+          where: { id: blockToUpdate.id },
+          data: {
+            order: itemIndex === 0 ? 0 : itemIndex,
+            productBlock: { connect: { id: updatedProductBlock.id } },
+            bannerBlock: { disconnect: true },
+            tileBlock: { disconnect: true },
+            textBlock: { disconnect: true },
+          },
+        });
+
+        if (blockOptions) {
+          await updateOrCreateBlockOptions(
+            updatedProductBlock.id,
+            blockOptions
+          );
+        }
+      }
     } else {
       await deleteBlockIfInvalid(blockToUpdate.id);
       throw new Error(`Invalid type: ${blockName}`);
@@ -208,7 +271,9 @@ export const updatePageBlock = async (
         await prisma.tileBlock.create({
           data: {
             type: contentType,
-            promotions: { connect: contentData.map((p) => ({ id: p.id })) },
+            promotions: {
+              connect: contentData.map((p) => ({ id: p.id })),
+            },
             block: { connect: { id: newBlock.id } },
           },
         });
@@ -216,7 +281,9 @@ export const updatePageBlock = async (
         await prisma.tileBlock.create({
           data: {
             type: contentType,
-            campaigns: { connect: contentData.map((c) => ({ id: c.id })) },
+            campaigns: {
+              connect: contentData.map((c) => ({ id: c.id })),
+            },
             block: { connect: { id: newBlock.id } },
           },
         });
@@ -239,6 +306,41 @@ export const updatePageBlock = async (
           textBlock: { connect: { id: newTextBlock.id } },
           bannerBlock: { disconnect: true },
           tileBlock: { disconnect: true },
+        },
+      });
+    } else if (blockName === "product" && objectData) {
+      const { rootCategory, productCategory, brand } =
+        objectData as NewProductBlockContent;
+
+      // Create a new ProductBlock with the new ProductBlockContent
+      const newProductBlockContent = await prisma.productBlockContent.create({
+        data: {
+          rootCategory: rootCategory
+            ? { connect: { id: parseInt(rootCategory) } }
+            : undefined,
+          productCategory: productCategory
+            ? { connect: { id: parseInt(productCategory) } }
+            : undefined,
+          brand: brand ? { connect: { id: parseInt(brand) } } : undefined,
+        },
+      });
+
+      const newProductBlock = await prisma.productBlock.create({
+        data: {
+          name: "product",
+          block: { connect: { id: newBlock.id } },
+          content: { connect: { id: newProductBlockContent.id } },
+        },
+      });
+
+      await prisma.block.update({
+        where: { id: newBlock.id },
+        data: {
+          order: itemIndex === 0 ? 0 : itemIndex,
+          productBlock: { connect: { id: newProductBlock.id } },
+          bannerBlock: { disconnect: true },
+          tileBlock: { disconnect: true },
+          textBlock: { disconnect: true },
         },
       });
     } else {
@@ -374,6 +476,11 @@ export const removeBlock = async (pageId: number, itemIndex: number) => {
         bannerBlock: true,
         tileBlock: true,
         textBlock: true,
+        productBlock: {
+          include: {
+            content: true,
+          },
+        },
         blockOptions: true,
       },
     });
@@ -386,6 +493,11 @@ export const removeBlock = async (pageId: number, itemIndex: number) => {
         bannerBlock: true,
         tileBlock: true,
         textBlock: true,
+        productBlock: {
+          include: {
+            content: true,
+          },
+        },
         blockOptions: true,
       },
     });
@@ -433,6 +545,21 @@ export const removeBlock = async (pageId: number, itemIndex: number) => {
       where: { id: blockToRemove.textBlock.id },
     });
     transaction.push(deleteTextBlockPromise);
+  }
+
+  if (blockToRemove.productBlock) {
+    const deleteProductBlockPromise = prisma.productBlock.delete({
+      where: { id: blockToRemove.productBlock.id },
+    });
+    transaction.push(deleteProductBlockPromise);
+
+    if (blockToRemove.productBlock.content) {
+      const deleteProductBlockContentPromise =
+        prisma.productBlockContent.delete({
+          where: { id: blockToRemove.productBlock.content.id },
+        });
+      transaction.push(deleteProductBlockContentPromise);
+    }
   }
 
   const deleteBlockPromise = prisma.block.delete({

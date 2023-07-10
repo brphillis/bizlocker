@@ -72,7 +72,7 @@ export const getActiveBlocks = (blocks: Block[]): Block[] => {
     }
 
     if (firstPopulated) {
-      const { blockOptions, name, type, id, order } = item;
+      const { blockOptions, order, name, type, id } = item;
       if (Array.isArray(firstPopulated)) {
         // If it's an array, merge it with the specific properties and add it as it is
         firstPopulatedItems.push({
@@ -87,6 +87,7 @@ export const getActiveBlocks = (blocks: Block[]): Block[] => {
         // If it's an object, merge it with the specific properties and add
         firstPopulatedItems.push({
           content: [{ ...firstPopulated }],
+          blockOptions: blockOptions,
           name,
           type,
           id,

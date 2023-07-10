@@ -37,7 +37,7 @@ import { getRootCategories } from "~/models/rootCategories.server";
 import { getProductCategories } from "~/models/productCategories.server";
 import { getBrands } from "~/models/brands.server";
 import {
-  getBlockOptions,
+  getFormBlockOptions,
   getBlockUpdateValues,
   searchContentData,
 } from "~/utility/pageBuilder";
@@ -74,7 +74,7 @@ export const action = async ({ request, params }: ActionArgs) => {
   const { title, articleCategories, thumbnail, itemIndex, contentType, name } =
     form;
 
-  const blockOptions: NewBlockOptions = getBlockOptions(form);
+  const blockOptions: NewBlockOptions = getFormBlockOptions(form);
 
   switch (form._action) {
     case "search":

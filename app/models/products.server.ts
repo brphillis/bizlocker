@@ -94,53 +94,58 @@ export const upsertProduct = async (productData: any) => {
   const discountPercentageLow =
     discountPercentages.length > 0 ? Math.min(...discountPercentages) : 0;
 
+  const data: any = {
+    name,
+    description,
+    gender,
+    isActive,
+    brand: {
+      connect: { id: parseInt(brand) },
+    },
+    discountPercentageHigh,
+    discountPercentageLow,
+    productCategories: {
+      connect: productCategories
+        .filter((categoryId: any) => !isNaN(parseInt(categoryId)))
+        .map((categoryId: any) => ({
+          id: parseInt(categoryId),
+        })),
+    },
+    images:
+      images && images.length > 0
+        ? {
+            create: images.map((image: Image) => ({
+              url: image.url,
+              altText: image.altText,
+            })),
+          }
+        : undefined,
+  };
+
+  if (promotion !== undefined) {
+    data.promotion = {
+      connect: { id: parseInt(promotion) },
+    };
+  }
+
   if (!id) {
     // Create a new product with variants
+    data.variants = {
+      create: variants.map((variant: ProductVariant) => ({
+        name: variant.name,
+        sku: variant.sku,
+        price: variant.price,
+        salePrice: variant.salePrice,
+        isOnSale: variant.isOnSale,
+        isPromoted: variant.isPromoted,
+        stock: variant.stock,
+        ...(variant.color && { color: variant.color }),
+        ...(variant.size && { size: variant.size }),
+      })),
+    };
+
     product = await prisma.product.create({
-      data: {
-        name,
-        description,
-        gender,
-        isActive,
-        brand: {
-          connect: { name: brand },
-        },
-        discountPercentageHigh,
-        discountPercentageLow,
-        ...(promotion && {
-          // Connect the promotion if provided
-          promotion: {
-            connect: { id: promotion },
-          },
-        }),
-        productCategories: {
-          connect: productCategories.map((category: ProductCategory) => ({
-            name: category,
-          })),
-        },
-        images:
-          images && images?.length > 0
-            ? {
-                create: images.map((image: Image) => ({
-                  url: image.url,
-                  altText: image.altText,
-                })),
-              }
-            : undefined,
-        variants: {
-          create: variants.map((variant: ProductVariant) => ({
-            name: variant.name,
-            sku: variant.sku,
-            price: variant.price,
-            salePrice: variant.salePrice,
-            isOnSale: variant.isOnSale,
-            isPromoted: variant.isPromoted,
-            stock: variant.stock,
-            ...(variant.color && { color: variant.color }),
-            ...(variant.size && { size: variant.size }),
-          })),
-        },
-      },
+      data,
       include: {
         brand: true,
         promotion: true,
@@ -165,84 +170,44 @@ export const upsertProduct = async (productData: any) => {
       throw new Error("Product not found");
     }
 
+    // Delete existing images
     if (images) {
-      // Delete existing images
       await prisma.image.deleteMany({
         where: { productId: parseInt(id) },
       });
     }
 
-    // Disconnect existing categories
+    // Disconnect existing productCategories
     await prisma.product.update({
       where: { id: parseInt(id) },
       data: {
         productCategories: {
           disconnect: existingProduct.productCategories.map((category) => ({
-            name: category.name,
+            id: category.id,
           })),
         },
-        ...(promotion === undefined && {
-          // Disconnect the existing promotion if promotion is undefined
-          promotion: {
-            disconnect: true,
-          },
-        }),
       },
     });
 
     // Update the product
-    product = await prisma.product.update({
-      where: { id: parseInt(id) },
-      data: {
-        name,
-        description,
-        gender,
-        isActive,
-        discountPercentageHigh,
-        discountPercentageLow,
-        brand: {
-          connect: { name: brand },
-        },
-        ...(promotion && {
-          // Connect the new promotion if provided
-          promotion: {
-            connect: { id: promotion },
-          },
-        }),
-        productCategories: {
-          connect: productCategories.map((category: ProductCategory) => ({
-            name: category,
-          })),
-        },
-        images:
-          images && images.length > 0
-            ? {
-                create: images.map((image: Image) => ({
-                  url: image.url,
-                  altText: image.altText,
-                })),
-              }
-            : undefined,
-      },
-      include: {
-        brand: true,
-        promotion: true,
-        productCategories: true,
-        images: true,
-        variants: true,
-      },
-    });
-
-    // Update existing variants and create new variants if they don't exist
-    for (let variant of variants) {
-      const existingVariant = await prisma.productVariant.findUnique({
-        where: { sku: variant.sku },
-      });
-
-      if (existingVariant) {
-        // If variant exists, update it
-        await prisma.productVariant.update({
-          where: { sku: variant.sku },
+    data.variants = {
+      create: variants
+        .filter((variant: ProductVariant) => !variant.id)
+        .map((variant: ProductVariant) => ({
+          name: variant.name,
+          sku: variant.sku,
+          price: variant.price,
+          salePrice: variant.salePrice,
+          isOnSale: variant.isOnSale,
+          isPromoted: variant.isPromoted,
+          stock: variant.stock,
+          ...(variant.color && { color: variant.color }),
+          ...(variant.size && { size: variant.size }),
+        })),
+      updateMany: variants
+        .filter((variant: ProductVariant) => !!variant.id)
+        .map((variant: ProductVariant) => ({
+          where: { id: variant.id },
           data: {
             name: variant.name,
             sku: variant.sku,
@@ -258,28 +223,20 @@ export const upsertProduct = async (productData: any) => {
               ? { size: null }
               : { size: variant.size }),
           },
-        });
-      } else {
-        // If variant doesn't exist, create it
-        await prisma.productVariant.create({
-          data: {
-            name: variant.name,
-            sku: variant.sku,
-            price: variant.price,
-            salePrice: variant.salePrice,
-            isOnSale: variant.isOnSale,
-            isPromoted: variant.isPromoted,
-            stock: variant.stock,
-            ...(variant.color && { color: variant.color }),
-            ...(variant.size && { size: variant.size }),
-            product: { connect: { id: parseInt(id) } }, // connect it to the product being updated
-          },
-        });
-      }
-    }
+        })),
+    };
 
-    // Include variants in the response
-    product = { ...product, variants };
+    product = await prisma.product.update({
+      where: { id: parseInt(id) },
+      data,
+      include: {
+        brand: true,
+        promotion: true,
+        productCategories: true,
+        images: true,
+        variants: true,
+      },
+    });
   }
 
   return product;

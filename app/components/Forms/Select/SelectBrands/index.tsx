@@ -31,7 +31,7 @@ const SelectBrands = ({ brands, valueToChange, title }: Props) => {
         multiple
       >
         {brands?.map(({ id, name }: Brand) => (
-          <option key={id} value={name}>
+          <option key={id} value={id}>
             {name}
           </option>
         ))}

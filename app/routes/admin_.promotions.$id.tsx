@@ -73,12 +73,11 @@ export const action = async ({ request, params }: ActionArgs) => {
         id: id,
       };
 
-      upsertPromotion(updateData);
+      await upsertPromotion(updateData);
 
       return redirect("/admin/promotions");
 
     case "delete":
-      // await deleteBrand(id as string);
       return redirect("/admin/promotions");
   }
 };
@@ -130,7 +129,6 @@ const ModifyPromotion = () => {
               <SelectDepartment
                 departments={departments}
                 defaultValue={promotion?.department?.name}
-                valueToChange={promotion}
               />
             </div>
 

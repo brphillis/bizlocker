@@ -17,6 +17,10 @@ const BlockIcon = ({ blockName, size, styles }: BlockIconProps) => {
 
   if (blockName === "text") {
     return <Icon iconName="IoText" size={size} styles={styles} />;
+  }
+
+  if (blockName === "product") {
+    return <Icon iconName="IoCart" size={size} styles={styles} />;
   } else {
     return <Icon iconName="IoSquare" size={size} styles={styles} />;
   }

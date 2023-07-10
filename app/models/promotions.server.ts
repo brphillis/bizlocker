@@ -22,7 +22,7 @@ export function getPromotions(
 export const getPromotion = async (id: string) => {
   return prisma.promotion.findUnique({
     where: {
-      id: id,
+      id: parseInt(id),
     },
     include: {
       bannerImage: true,
@@ -56,16 +56,15 @@ export const upsertPromotion = async (updateData: any) => {
   if (!id) {
     updatedPromotion = await prisma.promotion.create({
       data: {
-        name: name,
+        name,
         department: {
-          connectOrCreate: {
-            where: { name: department },
-            create: { name: department },
+          connect: {
+            id: parseInt(department),
           },
         },
         discountPercentage: parseFloat(discountPercentage),
         targetGender: gender as Gender,
-        isActive: isActive,
+        isActive,
         tileImage: {
           create: {
             url: parsedTile.url,
@@ -96,7 +95,7 @@ export const upsertPromotion = async (updateData: any) => {
   } else {
     const existingPromotion = await prisma.promotion.findUnique({
       where: {
-        id: id,
+        id: parseInt(id),
       },
       include: {
         tileImage: true,
@@ -111,15 +110,14 @@ export const upsertPromotion = async (updateData: any) => {
     }
 
     const data: any = {
-      name: name,
+      name,
       department: {
-        connectOrCreate: {
-          where: { name: department },
-          create: { name: department },
+        connect: {
+          id: parseInt(department),
         },
       },
       discountPercentage: parseFloat(discountPercentage),
-      isActive: isActive,
+      isActive,
       tileImage: {
         update: {
           url: parsedTile.url,
@@ -150,9 +148,9 @@ export const upsertPromotion = async (updateData: any) => {
 
     updatedPromotion = await prisma.promotion.update({
       where: {
-        id: id,
+        id: parseInt(id),
       },
-      data: data,
+      data,
       include: {
         tileImage: true,
         bannerImage: true,

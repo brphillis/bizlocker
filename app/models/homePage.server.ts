@@ -39,6 +39,17 @@ export const getHomePage = async () => {
             },
           },
           textBlock: true,
+          productBlock: {
+            include: {
+              content: {
+                include: {
+                  rootCategory: true,
+                  productCategory: true,
+                  brand: true,
+                },
+              },
+            },
+          },
         },
       },
     },
