@@ -1,5 +1,4 @@
 import { useNavigate } from "@remix-run/react";
-import { randomId } from "~/utility/stringHelpers";
 
 type Props = {
   content: Campaign[] | Promotion[];
@@ -13,7 +12,7 @@ const TileBlock = ({ content }: Props) => {
       {content?.map(({ tileImage, name }: Promotion | Campaign) => {
         return (
           <img
-            key={"tileImage_" + randomId()}
+            key={"tileImage_" + name}
             className="h-[12rem] w-[12rem] cursor-pointer transition duration-300 ease-in-out hover:scale-[1.01] sm:h-[39rem] sm:w-[39rem]"
             onClick={() => navigate(`/promotion/${name}`)}
             src={tileImage.url}

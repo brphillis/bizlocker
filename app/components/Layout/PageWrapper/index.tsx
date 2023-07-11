@@ -27,7 +27,9 @@ const PageWrapper = ({ children, gap }: Props) => {
     <div className="flex w-full flex-col items-center justify-center bg-base-100 py-0 lg:py-6">
       <div
         className={
-          "max-w-screen flex w-screen flex-col sm:w-[1280px] " + amount
+          "max-w-screen flex w-screen flex-col gap-3 sm:w-[1280px] " +
+          "sm:" +
+          amount
         }
       >
         {children}

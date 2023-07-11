@@ -40,7 +40,7 @@ const PageBuilder = ({
   const [editingContent, setEditingContent] = useState<boolean>(false);
   const [editingIndex, setEditingIndex] = useState<number>(1);
   const [selectedItems, setSelectedItems] = useState<(Campaign | Promotion)[]>(
-    []
+    blocks[editingIndex]?.content as Campaign[] | Promotion[]
   );
 
   const reset = () => {
@@ -50,17 +50,17 @@ const PageBuilder = ({
   };
 
   const editBlock = (index: number) => {
+    setEditingContent(true);
+    setEditingIndex(index);
+
     if (blocks[index].name === "banner" || "tile") {
       setSelectedBlock((blocks[index].name as "banner") || "tile");
       setSelectedItems(blocks[index].content as Campaign[] | Promotion[]);
     }
     if (blocks[index].name === "text") {
       setSelectedBlock("text");
-
       setSelectedItems([]);
     }
-    setEditingContent(true);
-    setEditingIndex(index);
   };
 
   const deleteBlock = (index: number) => {
@@ -90,9 +90,7 @@ const PageBuilder = ({
   };
 
   useEffect(() => {
-    if (updateSuccess) {
-      reset();
-    }
+    if (updateSuccess) reset();
   }, [updateSuccess]);
 
   return (
@@ -242,7 +240,7 @@ const PageBuilder = ({
 
           <TextBlockOptions
             selectedBlock={selectedBlock}
-            defaultValue={blocks[editingIndex]?.content[0] as string}
+            defaultValue={blocks[editingIndex]?.content as string[]}
           />
 
           <BlockContentResults

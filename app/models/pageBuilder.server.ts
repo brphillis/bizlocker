@@ -27,7 +27,7 @@ export const updatePageBlock = async (
   pageId: number,
   blockData: NewBlockData,
   blockOptions?: NewBlockOptions
-): Promise<string | number> => {
+): Promise<number | HomePage | Article> => {
   const {
     blockName,
     itemIndex,
@@ -107,10 +107,6 @@ export const updatePageBlock = async (
             tileBlock: { disconnect: true },
           },
         });
-
-        if (blockOptions) {
-          await updateOrCreateBlockOptions(blockToUpdate.id, blockOptions);
-        }
       }
     } else if (blockName === "tile" && contentData) {
       const tileBlock = blockToUpdate.tileBlock;
@@ -152,10 +148,6 @@ export const updatePageBlock = async (
             bannerBlock: { disconnect: true },
           },
         });
-
-        if (blockOptions) {
-          await updateOrCreateBlockOptions(updatedTileBlock.id, blockOptions);
-        }
       }
     } else if (blockName === "text" && stringData) {
       const textBlock = blockToUpdate.textBlock;
@@ -174,10 +166,6 @@ export const updatePageBlock = async (
             tileBlock: { disconnect: true },
           },
         });
-
-        if (blockOptions) {
-          await updateOrCreateBlockOptions(updatedTextBlock.id, blockOptions);
-        }
       }
     } else if (blockName === "product" && objectData) {
       const productBlock = blockToUpdate.productBlockId;
@@ -221,17 +209,15 @@ export const updatePageBlock = async (
             textBlock: { disconnect: true },
           },
         });
-
-        if (blockOptions) {
-          await updateOrCreateBlockOptions(
-            updatedProductBlock.id,
-            blockOptions
-          );
-        }
       }
     } else {
       await deleteBlockIfInvalid(blockToUpdate.id);
       throw new Error(`Invalid type: ${blockName}`);
+    }
+
+    // update with new block options
+    if (blockOptions) {
+      await updateOrCreateBlockOptions(blockToUpdate.id, blockOptions);
     }
   } else {
     const newBlock = await prisma.block.create({
@@ -241,6 +227,7 @@ export const updatePageBlock = async (
       },
     });
 
+    // create block options for new block
     if (blockOptions) {
       await updateOrCreateBlockOptions(newBlock.id, blockOptions);
     }
@@ -349,7 +336,9 @@ export const updatePageBlock = async (
     }
   }
 
-  return page.id;
+  if (pageType === "article") {
+    return page.id;
+  } else return page as HomePage;
 };
 
 export const changeBlockOrder = async (

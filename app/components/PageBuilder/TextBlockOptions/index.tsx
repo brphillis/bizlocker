@@ -3,11 +3,11 @@ import RichTextEditor from "~/components/RichTextEditor.client";
 
 type Props = {
   selectedBlock: BlockName | undefined;
-  defaultValue: string;
+  defaultValue: string[];
 };
 
 const TextBlockOptions = ({ selectedBlock, defaultValue }: Props) => {
-  const [stringData, setStringData] = useState<string>(defaultValue || "");
+  const [stringData, setStringData] = useState<string>(defaultValue[0] || "");
 
   return (
     <>

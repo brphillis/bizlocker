@@ -30,7 +30,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
     //we get the promotion related to the products fetched with the promotion name to ensure they match
     if (products && products[0]?.promotionId) {
-      const promotion = await getPromotion(products[0].promotionId);
+      const promotion = await getPromotion(products[0].promotionId.toString());
 
       if (promotion?.isActive) {
         return { promotion, products, totalPages };
