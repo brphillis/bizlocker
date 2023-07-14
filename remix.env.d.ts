@@ -315,7 +315,7 @@ interface Block extends BannerBlock, TileBlock, TextBlock, ProductBlock {
   order: number;
   page: Page;
   pageId: number;
-  content: Campaign[] | Promotion[] | string[] | ProductBlockContent;
+  content: Campaign[] | Promotion[] | string[] | ProductBlockContent[];
   blockOptions: BlockOptions;
   bannerBlock?: BannerBlock;
   bannerBlockId?: string;

@@ -45,7 +45,7 @@ const BlockRenderer = ({ blocks }: Props) => {
             return (
               <React.Fragment key={"productBlock_" + index}>
                 <ProductBlock
-                  content={content as ProductBlockContent}
+                  content={content as ProductBlockContent[]}
                   options={blockOptions as BlockOptions}
                 />
               </React.Fragment>

@@ -28,3 +28,20 @@ export const productSearchFormData = async (form?: {
 
   return { products, totalPages };
 };
+
+export const productSearchParams = async (url: URL) => {
+  const searchQuery = {
+    name: url.searchParams.get("name")?.toString() as string,
+    rootCategory: url.searchParams.get("rootCategory") as string,
+    category: url.searchParams.get("productCategory") as string,
+    brand: url.searchParams.get("brand") as string,
+    sortBy: url.searchParams.get("sortBy") as SortBy,
+    sortOrder: url.searchParams.get("sortOrder") as SortOrder,
+    page: Number(url.searchParams.get("pageNumber")) || 1,
+    perPage: Number(url.searchParams.get("itemsPerPage")) || 10,
+  };
+
+  const { products, totalPages } = await searchProducts(searchQuery);
+
+  return { products, totalPages };
+};

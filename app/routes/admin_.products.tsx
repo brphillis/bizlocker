@@ -13,22 +13,12 @@ import Pagination from "~/components/Pagination";
 import ProductSort from "~/components/Sorting/ProductSort";
 import { getBrands } from "~/models/brands.server";
 import { getProductCategories } from "~/models/productCategories.server";
-import { searchProducts } from "~/models/products.server";
+import { productSearchParams } from "~/utility/actionHelpers";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
 
-  const searchQuery = {
-    name: url.searchParams.get("name")?.toString() || undefined,
-    category: url.searchParams.get("productCategory")?.toString() || undefined,
-    brand: url.searchParams.get("brand")?.toString() || undefined,
-    sortBy: (url.searchParams.get("sortBy") as SortBy) || undefined,
-    sortOrder: (url.searchParams.get("sortOrder") as SortOrder) || undefined,
-    page: Number(url.searchParams.get("pageNumber")) || 1,
-    perPage: Number(url.searchParams.get("itemsPerPage")) || 10,
-  };
-
-  const { products, totalPages } = await searchProducts(searchQuery);
+  const { products, totalPages } = await productSearchParams(url);
   const brands = await getBrands();
   const productCategories = await getProductCategories();
 

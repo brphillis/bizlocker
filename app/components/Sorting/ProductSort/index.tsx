@@ -10,7 +10,7 @@ const ProductSort = () => {
   const [sortAsc, setSortAsc] = useState<boolean>(true);
 
   return (
-    <div className="flex items-center justify-end gap-3">
+    <div className="mb-3 flex items-center justify-end gap-3">
       <select
         className=" select select-xs w-full max-w-[10rem] bg-base-300"
         onChange={(e) => {

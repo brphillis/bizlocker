@@ -11,27 +11,15 @@ import PageWrapper from "~/components/Layout/PageWrapper";
 import Pagination from "~/components/Pagination";
 import { getRandomCampaign } from "~/models/campaigns.server";
 import { addToCart } from "~/models/cart.server";
-import { searchProducts } from "~/models/products.server";
+import { productSearchParams } from "~/utility/actionHelpers";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
 
   const productCategory = url.searchParams.get("productCategory")?.toString();
-
-  const searchQuery = {
-    name: url.searchParams.get("name")?.toString() || undefined,
-    rootCategory: url.searchParams.get("rootCategory")?.toString() || undefined,
-    category: productCategory || undefined,
-    brand: url.searchParams.get("brand")?.toString() || undefined,
-    sortBy: (url.searchParams.get("sortBy") as SortBy) || undefined,
-    sortOrder: (url.searchParams.get("sortOrder") as SortOrder) || undefined,
-    page: Number(url.searchParams.get("pageNumber")) || 1,
-    perPage: Number(url.searchParams.get("itemsPerPage")) || 10,
-  };
-
-  const { products, totalPages } = await searchProducts(searchQuery);
-
   const campaign = await getRandomCampaign(productCategory);
+
+  const { products, totalPages } = await productSearchParams(url);
 
   return { products, totalPages, campaign };
 };

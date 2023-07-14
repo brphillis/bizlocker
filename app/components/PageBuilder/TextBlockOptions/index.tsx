@@ -7,7 +7,7 @@ type Props = {
 };
 
 const TextBlockOptions = ({ selectedBlock, defaultValue }: Props) => {
-  const [stringData, setStringData] = useState<string>(defaultValue[0] || "");
+  const [stringData, setStringData] = useState<string>(defaultValue?.[0] || "");
 
   return (
     <>

@@ -9,24 +9,15 @@ import ProductGrid from "~/components/Grids/ProductGrid";
 import PageWrapper from "~/components/Layout/PageWrapper";
 import Pagination from "~/components/Pagination";
 import { addToCart } from "~/models/cart.server";
-import { searchProducts } from "~/models/products.server";
 import { getPromotion } from "~/models/promotions.server";
+import { productSearchParams } from "~/utility/actionHelpers";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const url = new URL(request?.url);
   const promotionName = params.name;
 
-  const searchQuery = {
-    promotion: promotionName,
-    gender: (url.searchParams.get("gender") as string) || undefined,
-    sortBy: (url.searchParams.get("sortBy") as SortBy) || undefined,
-    sortOrder: (url.searchParams.get("sortOrder") as SortOrder) || undefined,
-    page: Number(url?.searchParams.get("pageNumber")) || 1,
-    perPage: Number(url?.searchParams.get("itemsPerPage")) || 10,
-  };
-
   if (promotionName) {
-    const { products, totalPages } = await searchProducts(searchQuery);
+    const { products, totalPages } = await productSearchParams(url);
 
     //we get the promotion related to the products fetched with the promotion name to ensure they match
     if (products && products[0]?.promotionId) {
