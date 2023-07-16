@@ -16,7 +16,7 @@ const ProductBlock = ({ content, options }: Props) => {
   useEffect(() => {
     if (fetcher.state === "idle" && fetcher.data == null) {
       fetcher.load(
-        `/api/productSearch?rootCategory=${rootCategory}&productCategory=${productCategory}`
+        `/api/searchProducts?rootCategory=${rootCategory}&productCategory=${productCategory}`
       );
     }
     if (fetcher.data && !currentProducts) {

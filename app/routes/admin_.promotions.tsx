@@ -14,14 +14,9 @@ import { searchPromotions } from "~/models/promotions.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
+  console.log(url);
 
-  const searchQuery = {
-    name: url.searchParams.get("name")?.toString() || undefined,
-    page: Number(url.searchParams.get("pageNumber")) || 1,
-    perPage: Number(url.searchParams.get("itemsPerPage")) || 10,
-  };
-
-  const { promotions, totalPages } = await searchPromotions(searchQuery);
+  const { promotions, totalPages } = await searchPromotions(undefined, url);
 
   return json({ promotions, totalPages });
 };
@@ -91,7 +86,7 @@ const Promotions = () => {
                     createdAt,
                     isActive,
                   }: Promotion,
-                  index
+                  i
                 ) => {
                   return (
                     <tr
@@ -101,7 +96,7 @@ const Promotions = () => {
                     >
                       {currentPage && (
                         <td>
-                          {index + 1 + (currentPage - 1) * promotions?.length}
+                          {i + 1 + (currentPage - 1) * promotions?.length}
                         </td>
                       )}
                       <td>{name}</td>

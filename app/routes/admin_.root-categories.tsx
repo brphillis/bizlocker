@@ -146,7 +146,7 @@ const ManageRootCategories = () => {
               </tr>
             </thead>
             <tbody>
-              {rootCategories?.map(({ id, name }: RootCategory, index) => {
+              {rootCategories?.map(({ id, name }: RootCategory, i) => {
                 return (
                   <tr
                     className="hover cursor-pointer"
@@ -155,7 +155,7 @@ const ManageRootCategories = () => {
                   >
                     {currentPage && (
                       <td>
-                        {index + 1 + (currentPage - 1) * rootCategories?.length}
+                        {i + 1 + (currentPage - 1) * rootCategories?.length}
                       </td>
                     )}
                     <td>{name}</td>

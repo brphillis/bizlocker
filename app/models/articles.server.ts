@@ -201,10 +201,24 @@ export const deleteArticle = async (id: number) => {
   return redirect("/admin/articles");
 };
 
-export const searchArticles = async (searchArgs: BasicSearchArgs) => {
-  const { title, category, page = 1, perPage = 10 } = searchArgs;
+export const searchArticles = async (
+  formData?: { [k: string]: FormDataEntryValue },
+  url?: URL
+) => {
+  const title =
+    formData?.title || (url && url.searchParams.get("title")?.toString()) || "";
+  const articleCategory =
+    formData?.articleCategory || url?.searchParams.get("articleCategory") || "";
+  const pageNumber =
+    (formData?.pageNumber && parseInt(formData.pageNumber as string)) ||
+    (url && Number(url.searchParams.get("pageNumber"))) ||
+    1;
+  const perPage =
+    (formData?.perPage && parseInt(formData.perPage as string)) ||
+    (url && Number(url.searchParams.get("itemsPerPage"))) ||
+    10;
 
-  const skip = (page - 1) * perPage;
+  const skip = (pageNumber - 1) * perPage;
   const take = perPage;
 
   // Construct a filter based on the search parameters provided
@@ -217,11 +231,11 @@ export const searchArticles = async (searchArgs: BasicSearchArgs) => {
     };
   }
 
-  if (category) {
-    filter.categories = {
+  if (articleCategory) {
+    filter.articleCategories = {
       some: {
         name: {
-          equals: category,
+          equals: articleCategory,
           mode: "insensitive",
         },
       },

@@ -1,5 +1,5 @@
 import { type LoaderArgs, json } from "@remix-run/node";
-import { productSearchFormData } from "~/utility/actionHelpers";
+import { searchProducts } from "~/models/products.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
@@ -10,6 +10,6 @@ export const loader = async ({ request }: LoaderArgs) => {
     formData[key] = value;
   });
 
-  const products = await productSearchFormData(formData);
+  const products = await searchProducts(formData);
   return json(products);
 };

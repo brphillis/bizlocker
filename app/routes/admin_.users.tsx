@@ -108,10 +108,7 @@ const Articles = () => {
             <tbody>
               {users &&
                 users.map(
-                  (
-                    { id, email, avatar, userDetails, isActive }: User,
-                    index
-                  ) => {
+                  ({ id, email, avatar, userDetails, isActive }: User, i) => {
                     const { firstName, lastName } = userDetails || {};
 
                     return (
@@ -121,9 +118,7 @@ const Articles = () => {
                         onClick={() => navigate(`/admin/users/${id}`)}
                       >
                         {currentPage && (
-                          <td>
-                            {index + 1 + (currentPage - 1) * users?.length}
-                          </td>
+                          <td>{i + 1 + (currentPage - 1) * users?.length}</td>
                         )}
                         <td className="flex items-center justify-center">
                           <div className="avatar mx-[-10px]">

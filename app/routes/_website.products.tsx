@@ -11,7 +11,7 @@ import PageWrapper from "~/components/Layout/PageWrapper";
 import Pagination from "~/components/Pagination";
 import { getRandomCampaign } from "~/models/campaigns.server";
 import { addToCart } from "~/models/cart.server";
-import { productSearchParams } from "~/utility/actionHelpers";
+import { searchProducts } from "~/models/products.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
@@ -19,7 +19,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   const productCategory = url.searchParams.get("productCategory")?.toString();
   const campaign = await getRandomCampaign(productCategory);
 
-  const { products, totalPages } = await productSearchParams(url);
+  const { products, totalPages } = await searchProducts(undefined, url);
 
   return { products, totalPages, campaign };
 };

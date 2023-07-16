@@ -74,7 +74,7 @@ export const action = async ({ request, params }: ActionArgs) => {
     promotion,
   } = form;
 
-  //if single variant we set it to base
+  //if single variant we set its name to base
   let variantData = variants && JSON.parse(variants?.toString());
   if (!Array.isArray(variantData)) {
     variantData = [variantData];
@@ -98,7 +98,7 @@ export const action = async ({ request, params }: ActionArgs) => {
         isActive: isActive ? true : false,
         images:
           images && (JSON.parse(images as string).filter(Boolean) as Image[]),
-        brand: (brand as string) || "Generic",
+        brand: brand as string,
         promotion: promotion as string,
         id: id,
       };

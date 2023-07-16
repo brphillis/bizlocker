@@ -11,8 +11,8 @@ const SelectBrand = ({ brands, valueToChange }: Props) => {
       </label>
       <select
         name="brand"
-        className=" select w-[95vw] sm:w-[215px]"
-        defaultValue={valueToChange?.brand?.name || "Generic"}
+        className="select w-[95vw] sm:w-[215px]"
+        defaultValue={valueToChange?.brand?.id || ""}
       >
         <option value="">Select a Brand</option>
         {brands?.map(({ id, name }: Brand) => {

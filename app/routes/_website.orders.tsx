@@ -43,7 +43,7 @@ const Orders = () => {
               </thead>
 
               <tbody>
-                {orders?.map((order: Order, index) => {
+                {orders?.map((order: Order, i) => {
                   const { createdAt, items, totalPrice, status, orderId } =
                     order;
                   const itemNames: string[] = [];
@@ -71,7 +71,7 @@ const Orders = () => {
                         )
                       }
                     >
-                      <th className="!rounded-none">{index + 1}</th>
+                      <th className="!rounded-none">{i + 1}</th>
                       <td>
                         {new Date(createdAt).toLocaleDateString("en-US", {
                           day: "numeric",

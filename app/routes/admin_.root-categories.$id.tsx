@@ -122,7 +122,7 @@ const ModifyRootCategory = () => {
 
             <SelectDepartment
               departments={departments}
-              defaultValue={rootCategory?.department?.name}
+              defaultValue={rootCategory?.department?.id.toString()}
             />
           </div>
 

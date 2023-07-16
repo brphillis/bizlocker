@@ -13,12 +13,12 @@ import Pagination from "~/components/Pagination";
 import ProductSort from "~/components/Sorting/ProductSort";
 import { getBrands } from "~/models/brands.server";
 import { getProductCategories } from "~/models/productCategories.server";
-import { productSearchParams } from "~/utility/actionHelpers";
+import { searchProducts } from "~/models/products.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
 
-  const { products, totalPages } = await productSearchParams(url);
+  const { products, totalPages } = await searchProducts(undefined, url);
   const brands = await getBrands();
   const productCategories = await getProductCategories();
 
@@ -138,7 +138,7 @@ const ManageProducts = () => {
                       totalSold,
                       isActive,
                     }: Product,
-                    index
+                    i
                   ) => {
                     return (
                       <tr
@@ -148,7 +148,7 @@ const ManageProducts = () => {
                       >
                         {currentPage && (
                           <td>
-                            {index + 1 + (currentPage - 1) * products?.length}
+                            {i + 1 + (currentPage - 1) * products?.length}
                           </td>
                         )}
                         <td>{name}</td>

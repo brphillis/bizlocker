@@ -16,14 +16,7 @@ import { searchArticles } from "~/models/articles.server";
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
 
-  const searchQuery = {
-    title: url.searchParams.get("title")?.toString() || undefined,
-    category: url.searchParams.get("category")?.toString() || undefined,
-    page: Number(url.searchParams.get("pageNumber")) || 1,
-    perPage: Number(url.searchParams.get("itemsPerPage")) || 10,
-  };
-
-  const { articles, totalPages } = await searchArticles(searchQuery);
+  const { articles, totalPages } = await searchArticles(undefined, url);
   const articleCategories = await getArticleCategories();
 
   return json({ articles, totalPages, articleCategories });
@@ -64,8 +57,7 @@ const Articles = () => {
                 <span className="label-text">Category</span>
               </label>
               <select
-                title="category"
-                name="category"
+                name="articleCategory"
                 className=" select w-full max-w-xs"
                 placeholder="Select a Value"
               >
@@ -112,7 +104,7 @@ const Articles = () => {
                       articleCategories,
                       isActive,
                     }: Article,
-                    index
+                    i
                   ) => {
                     return (
                       <tr
@@ -122,7 +114,7 @@ const Articles = () => {
                       >
                         {currentPage && (
                           <td>
-                            {index + 1 + (currentPage - 1) * articles?.length}
+                            {i + 1 + (currentPage - 1) * articles?.length}
                           </td>
                         )}
                         <td>{title}</td>

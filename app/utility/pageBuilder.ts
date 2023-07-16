@@ -89,21 +89,22 @@ export const searchContentData = async (
   name: string,
   contentType: BlockContentType
 ) => {
-  const searchQuery = {
-    name: name as string,
-    page: 1,
-    perPage: 10,
-  };
+  const formData = new FormData();
+  formData.set("name", name as string);
+  formData.set("page", "1");
+  formData.set("perPage", "10");
 
   let searchResults;
 
   switch (contentType) {
     case "promotion":
-      const { promotions } = await searchPromotions(searchQuery);
+      const { promotions } = await searchPromotions(
+        Object.fromEntries(formData)
+      );
       searchResults = promotions;
       return { searchResults };
     case "campaign":
-      const { campaigns } = await searchCampaigns(searchQuery);
+      const { campaigns } = await searchCampaigns(Object.fromEntries(formData));
       searchResults = campaigns;
 
       return { searchResults };

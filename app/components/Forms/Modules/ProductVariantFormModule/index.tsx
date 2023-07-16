@@ -53,8 +53,8 @@ const ProductVariantFormModule = ({
   //     setActiveVariant(undefined);
   //   };
 
-  const handleEditVariant = (name: string | undefined, index: number) => {
-    setActiveVariant(variants?.[index]);
+  const handleEditVariant = (name: string | undefined, i: number) => {
+    setActiveVariant(variants?.[i]);
     setVariants(variants?.filter((e) => e?.name !== name));
   };
 
@@ -189,9 +189,9 @@ const ProductVariantFormModule = ({
                 }}
               >
                 <option value="">Select a Color</option>
-                {availableColors?.map((color: string, index: number) => {
+                {availableColors?.map((color: string, i: number) => {
                   return (
-                    <option key={color + index} value={color}>
+                    <option key={color + i} value={color}>
                       {color}
                     </option>
                   );
@@ -216,9 +216,9 @@ const ProductVariantFormModule = ({
                 }}
               >
                 <option value="">Select a Size</option>
-                {availableSizes?.map((size: string, index: number) => {
+                {availableSizes?.map((size: string, i: number) => {
                   return (
-                    <option key={size + index} value={size}>
+                    <option key={size + i} value={size}>
                       {size}
                     </option>
                   );
@@ -352,7 +352,7 @@ const ProductVariantFormModule = ({
                 </tr>
               </thead>
               <tbody>
-                {variants.map((variant: ProductVariant, index) => {
+                {variants.map((variant: ProductVariant, i) => {
                   const {
                     name,
                     color,
@@ -369,11 +369,11 @@ const ProductVariantFormModule = ({
 
                   return (
                     <tr
-                      key={"variant_" + (name || index)}
-                      onClick={() => handleEditVariant(name, index)}
+                      key={"variant_" + (name || i)}
+                      onClick={() => handleEditVariant(name, i)}
                       className="hover cursor-pointer"
                     >
-                      <th>{index + 1}</th>
+                      <th>{i + 1}</th>
                       <td>{name}</td>
                       <td>{color}</td>
                       <td>{size}</td>

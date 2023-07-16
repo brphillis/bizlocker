@@ -9,25 +9,23 @@ import ProductGrid from "~/components/Grids/ProductGrid";
 import PageWrapper from "~/components/Layout/PageWrapper";
 import Pagination from "~/components/Pagination";
 import { addToCart } from "~/models/cart.server";
+import { searchProducts } from "~/models/products.server";
 import { getPromotion } from "~/models/promotions.server";
-import { productSearchParams } from "~/utility/actionHelpers";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
-  const url = new URL(request?.url);
-  const promotionName = params.name;
+  const promotion = await getPromotion(undefined, params.name);
 
-  if (promotionName) {
-    const { products, totalPages } = await productSearchParams(url);
+  if (promotion) {
+    const formData = new FormData();
+    formData.set("promotionId", promotion.id.toString());
+    const { products, totalPages } = await searchProducts(
+      Object.fromEntries(formData)
+    );
 
-    //we get the promotion related to the products fetched with the promotion name to ensure they match
-    if (products && products[0]?.promotionId) {
-      const promotion = await getPromotion(products[0].promotionId.toString());
-
-      if (promotion?.isActive) {
-        return { promotion, products, totalPages };
-      }
-    } else return redirect(request?.referrer);
-  } else return null;
+    if (promotion?.isActive) {
+      return { promotion, products, totalPages };
+    } else redirect(request?.referrer);
+  } else return redirect(request?.referrer);
 };
 
 export const action = async ({ request }: ActionArgs) => {

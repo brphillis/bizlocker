@@ -15,13 +15,7 @@ import { searchCampaigns } from "~/models/campaigns.server";
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
 
-  const searchQuery = {
-    title: url.searchParams.get("title")?.toString() || undefined,
-    page: Number(url.searchParams.get("pageNumber")) || 1,
-    perPage: Number(url.searchParams.get("itemsPerPage")) || 10,
-  };
-
-  const { campaigns, totalPages } = await searchCampaigns(searchQuery);
+  const { campaigns, totalPages } = await searchCampaigns(undefined, url);
 
   return json({ campaigns, totalPages });
 };
@@ -82,7 +76,7 @@ const Campaigns = () => {
                 campaigns.map(
                   (
                     { id, name, updatedAt, createdAt, isActive }: Campaign,
-                    index
+                    i
                   ) => {
                     return (
                       <tr
@@ -92,7 +86,7 @@ const Campaigns = () => {
                       >
                         {currentPage && (
                           <td>
-                            {index + 1 + (currentPage - 1) * campaigns?.length}
+                            {i + 1 + (currentPage - 1) * campaigns?.length}
                           </td>
                         )}
                         <td>{name}</td>

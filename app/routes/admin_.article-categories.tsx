@@ -79,28 +79,22 @@ const ArticleCategories = () => {
               </tr>
             </thead>
             <tbody>
-              {articleCategories?.map(
-                ({ id, name }: ArticleCategory, index) => {
-                  return (
-                    <tr
-                      className="hover cursor-pointer"
-                      onClick={() =>
-                        navigate(`/admin/article-categories/${id}`)
-                      }
-                      key={id}
-                    >
-                      {currentPage && (
-                        <td>
-                          {index +
-                            1 +
-                            (currentPage - 1) * articleCategories?.length}
-                        </td>
-                      )}
-                      <td>{capitalizeFirst(name)}</td>
-                    </tr>
-                  );
-                }
-              )}
+              {articleCategories?.map(({ id, name }: ArticleCategory, i) => {
+                return (
+                  <tr
+                    className="hover cursor-pointer"
+                    onClick={() => navigate(`/admin/article-categories/${id}`)}
+                    key={id}
+                  >
+                    {currentPage && (
+                      <td>
+                        {i + 1 + (currentPage - 1) * articleCategories?.length}
+                      </td>
+                    )}
+                    <td>{capitalizeFirst(name)}</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

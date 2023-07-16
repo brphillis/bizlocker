@@ -19,23 +19,43 @@ export function getPromotions(
   } else return prisma.promotion.findMany();
 }
 
-export const getPromotion = async (id: string) => {
-  return prisma.promotion.findUnique({
-    where: {
-      id: parseInt(id),
-    },
-    include: {
-      bannerImage: true,
-      tileImage: true,
-      department: true,
-      products: {
-        include: {
-          images: true,
-          variants: true,
+export const getPromotion = async (id?: string, name?: string) => {
+  if (id) {
+    return prisma.promotion.findUnique({
+      where: {
+        id: parseInt(id),
+      },
+      include: {
+        bannerImage: true,
+        tileImage: true,
+        department: true,
+        products: {
+          include: {
+            images: true,
+            variants: true,
+          },
         },
       },
-    },
-  });
+    });
+  }
+  if (name) {
+    return prisma.promotion.findFirst({
+      where: {
+        name: name,
+      },
+      include: {
+        bannerImage: true,
+        tileImage: true,
+        department: true,
+        products: {
+          include: {
+            images: true,
+            variants: true,
+          },
+        },
+      },
+    });
+  } else return null;
 };
 
 export const upsertPromotion = async (updateData: any) => {
@@ -163,10 +183,26 @@ export const upsertPromotion = async (updateData: any) => {
   return updatedPromotion;
 };
 
-export const searchPromotions = async (searchArgs: BasicSearchArgs) => {
-  const { name, departmentName, page = 1, perPage = 10 } = searchArgs;
+export const searchPromotions = async (
+  formData?: { [k: string]: FormDataEntryValue },
+  url?: URL
+) => {
+  const name =
+    formData?.name || (url && url.searchParams.get("name")?.toString()) || "";
+  const departmentName =
+    formData?.departmentName || url?.searchParams.get("departmentName") || "";
+  const pageNumber =
+    (formData?.pageNumber && parseInt(formData.pageNumber as string)) ||
+    (url && Number(url.searchParams.get("pageNumber"))) ||
+    1;
+  const perPage =
+    (formData?.perPage && parseInt(formData.perPage as string)) ||
+    (url && Number(url.searchParams.get("itemsPerPage"))) ||
+    10;
 
-  const skip = (page - 1) * perPage;
+  console.log("NAME", name);
+
+  const skip = (pageNumber - 1) * perPage;
   const take = perPage;
 
   // Construct a filter based on the search parameters provided

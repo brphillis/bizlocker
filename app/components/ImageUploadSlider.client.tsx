@@ -24,10 +24,10 @@ const ImageUploadSlider = ({ defaultImages }: ImageUploadSliderProps) => {
           centeredSlides={true}
           navigation
         >
-          {images?.map((image, index) => {
+          {images?.map((image, i) => {
             if (image?.url) {
               return (
-                <SwiperSlide key={index}>
+                <SwiperSlide key={i}>
                   <img
                     src={image.url}
                     alt={image.altText}
@@ -43,32 +43,32 @@ const ImageUploadSlider = ({ defaultImages }: ImageUploadSliderProps) => {
 
       <div className="form-control my-6 w-[495px] max-w-[95vw] items-center gap-3 self-center sm:items-start">
         <div className="flex w-full flex-row justify-center gap-6">
-          {Array.from({ length: 3 }).map((_, index) => {
-            const image = images?.[index] || null;
+          {Array.from({ length: 3 }).map((_, i) => {
+            const image = images?.[i] || null;
             return (
-              <React.Fragment key={index}>
+              <React.Fragment key={i}>
                 <input
                   type="file"
-                  id={`image${index + 1}`}
+                  id={`image${i + 1}`}
                   accept="image/*"
                   className="file-input-bordered file-input hidden w-full"
                   onChange={async (e) => {
                     const convertedImage = await ConvertToBase64(e);
                     if (convertedImage) {
                       const updatedImages = [...(images || [])];
-                      updatedImages[index] = convertedImage;
+                      updatedImages[i] = convertedImage;
                       setCurrentImages(updatedImages);
                     }
                   }}
                 />
                 <label
-                  htmlFor={`image${index + 1}`}
+                  htmlFor={`image${i + 1}`}
                   className={`btn ${image && "btn-success"} ${
-                    activeSlide === index &&
+                    activeSlide === i &&
                     "border-none outline outline-[4px] outline-success"
                   }`}
                 >
-                  Image {index + 1}
+                  Image {i + 1}
                 </label>
               </React.Fragment>
             );

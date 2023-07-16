@@ -97,10 +97,10 @@ export default function LoginPage() {
         </div>
 
         {validationError?.length > 0 &&
-          validationError.map((error: string, index) => {
+          validationError.map((error: string, i) => {
             return (
               <p
-                key={error + index}
+                key={error + i}
                 className="my-2 text-center text-xs text-red-500/75"
               >
                 {error}

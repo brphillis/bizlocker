@@ -99,9 +99,6 @@ export const upsertProduct = async (productData: any) => {
     description,
     gender,
     isActive,
-    brand: {
-      connect: { id: parseInt(brand) },
-    },
     discountPercentageHigh,
     discountPercentageLow,
     productCategories: {
@@ -122,10 +119,28 @@ export const upsertProduct = async (productData: any) => {
         : undefined,
   };
 
+  if (brand !== undefined) {
+    if (brand) {
+      data.brand = {
+        connect: { id: parseInt(brand) },
+      };
+    } else {
+      data.brand = {
+        disconnect: true,
+      };
+    }
+  }
+
   if (promotion !== undefined) {
-    data.promotion = {
-      connect: { id: parseInt(promotion) },
-    };
+    if (promotion) {
+      data.promotion = {
+        connect: { id: parseInt(promotion) },
+      };
+    } else {
+      data.promotion = {
+        disconnect: true,
+      };
+    }
   }
 
   if (!id) {
@@ -268,21 +283,32 @@ export const deleteProduct = async (id: string) => {
   });
 };
 
-export const searchProducts = async (searchArgs: BasicSearchArgs) => {
-  const {
-    name,
-    rootCategory,
-    category,
-    brand,
-    promotion,
-    gender,
-    page,
-    perPage,
-    sortBy,
-    sortOrder,
-  } = searchArgs;
+export const searchProducts = async (
+  formData?: { [k: string]: FormDataEntryValue },
+  url?: URL
+) => {
+  const name =
+    formData?.name || (url && url.searchParams.get("name")?.toString()) || "";
+  const rootCategory =
+    formData?.rootCategory || url?.searchParams.get("rootCategory") || "";
+  const category =
+    formData?.productCategory || url?.searchParams.get("productCategory") || "";
+  const brand = formData?.brand || url?.searchParams.get("brand") || "";
+  const promotionId =
+    formData?.promotionId || url?.searchParams.get("promotionId") || "";
+  const sortBy = formData?.sortBy || url?.searchParams.get("sortBy") || "";
+  const sortOrder =
+    formData?.sortOrder || url?.searchParams.get("sortOrder") || "";
+  const pageNumber =
+    (formData?.pageNumber && parseInt(formData.pageNumber as string)) ||
+    (url && Number(url.searchParams.get("pageNumber"))) ||
+    1;
+  const perPage =
+    (formData?.perPage && parseInt(formData.perPage as string)) ||
+    (url && Number(url.searchParams.get("itemsPerPage"))) ||
+    10;
 
-  const skip = (page - 1) * perPage;
+  const skip = (pageNumber - 1) * perPage;
   const take = perPage;
 
   // Construct a filter based on the search parameters provided
@@ -300,7 +326,7 @@ export const searchProducts = async (searchArgs: BasicSearchArgs) => {
       where: {
         rootCategory: {
           name: {
-            equals: rootCategory,
+            equals: rootCategory as string,
             mode: "insensitive",
           },
         },
@@ -339,18 +365,12 @@ export const searchProducts = async (searchArgs: BasicSearchArgs) => {
     };
   }
 
-  if (promotion) {
+  if (promotionId) {
     filter.promotion = {
-      isActive: true,
-      name: {
-        contains: promotion,
-        mode: "insensitive",
+      id: {
+        equals: parseInt(promotionId as string),
       },
     };
-  }
-
-  if (gender) {
-    filter.gender = gender;
   }
 
   // Find and count the products
@@ -404,7 +424,7 @@ export const searchProducts = async (searchArgs: BasicSearchArgs) => {
     products = fetchedProducts;
   }
 
-  const totalPages = Math.ceil(totalProducts / (Number(perPage) || 1));
+  const totalPages = Math.ceil(totalProducts / (perPage || 1));
 
   return { products, totalPages };
 };

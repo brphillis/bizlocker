@@ -128,7 +128,7 @@ const ModifyPromotion = () => {
 
               <SelectDepartment
                 departments={departments}
-                defaultValue={promotion?.department?.name}
+                defaultValue={promotion?.department?.id.toString()}
               />
             </div>
 
@@ -170,16 +170,16 @@ const ModifyPromotion = () => {
                 </tr>
               </thead>
               <tbody>
-                {products?.map((product: Product, index) => {
+                {products?.map((product: Product, i) => {
                   const { id, name, gender, isActive } = product || {};
 
                   return (
                     <tr
-                      key={"product_" + (name || index)}
+                      key={"product_" + (name || i)}
                       className="hover cursor-pointer"
                       onClick={() => navigate(`/admin/products/${id}`)}
                     >
-                      <th>{index + 1}</th>
+                      <th>{i + 1}</th>
                       <td>{name}</td>
                       <td>{gender}</td>
 

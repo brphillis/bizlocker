@@ -49,26 +49,26 @@ const PageBuilder = ({
     setSelectedItems([]);
   };
 
-  const editBlock = (index: number) => {
+  const editBlock = (i: number) => {
     setEditingContent(true);
-    setEditingIndex(index);
+    setEditingIndex(i);
 
-    if (blocks[index].name === "banner" || "tile") {
-      setSelectedBlock((blocks[index].name as "banner") || "tile");
-      setSelectedItems(blocks[index].content as Campaign[] | Promotion[]);
+    if (blocks[i].name === "banner" || "tile") {
+      setSelectedBlock((blocks[i].name as "banner") || "tile");
+      setSelectedItems(blocks[i].content as Campaign[] | Promotion[]);
     }
-    if (blocks[index].name === "text") {
+    if (blocks[i].name === "text") {
       setSelectedBlock("text");
       setSelectedItems([]);
     }
   };
 
-  const deleteBlock = (index: number) => {
+  const deleteBlock = (i: number) => {
     const formData = new FormData();
 
     formData.set("_action", "delete");
     formData.set("pageId", page.id.toString() || "");
-    formData.set("itemIndex", index.toString() || "");
+    formData.set("itemIndex", i.toString() || "");
 
     submit(formData, {
       method: "POST",
@@ -77,11 +77,11 @@ const PageBuilder = ({
     setEditingContent(false);
   };
 
-  const changeBlockOrder = (index: number, direction: "up" | "down") => {
+  const changeBlockOrder = (i: number, direction: "up" | "down") => {
     const formData = new FormData();
     formData.set("_action", "rearrange");
     formData.set("pageId", page.id.toString() || "");
-    formData.set("itemIndex", index.toString() || "");
+    formData.set("itemIndex", i.toString() || "");
     formData.set("direction", direction.toString() || "");
 
     submit(formData, {
@@ -114,52 +114,47 @@ const PageBuilder = ({
               <tbody>
                 {blocks
                   ?.sort((a: Block, b: Block) => a.order - b.order)
-                  .map((e: Block, index) => {
+                  .map((e: Block, i) => {
                     return (
                       <tr
-                        key={
-                          "block_" +
-                          blocks?.[index]?.name +
-                          blocks?.[index]?.id +
-                          index
-                        }
+                        key={"block_" + blocks?.[i]?.name + blocks?.[i]?.id + i}
                       >
-                        <td>{blocks?.[index]?.order + 1}</td>
+                        <td>{blocks?.[i]?.order + 1}</td>
                         <td>
                           <div className="flex gap-3">
                             <BlockIcon
-                              blockName={blocks[index].name}
+                              blockName={blocks[i].name}
                               size={18}
                               styles={"mt-[1px]"}
                             />
 
-                            <p>{capitalizeFirst(blocks[index]?.name)}</p>
+                            <p>{capitalizeFirst(blocks[i]?.name)}</p>
                           </div>
                         </td>
 
                         <td>
-                          {blocks?.[index]?.type &&
-                            capitalizeFirst(blocks?.[index]?.type)}
+                          {blocks?.[i]?.type &&
+                            capitalizeFirst(blocks?.[i]?.type)}
                         </td>
                         <td>
                           <div className="flex h-full flex-row items-center justify-center gap-3">
                             <HiMiniArrowDown
                               size={24}
                               className="cursor-pointer rounded-full bg-primary p-[0.3rem] text-primary-content"
-                              onClick={() => changeBlockOrder(index, "down")}
+                              onClick={() => changeBlockOrder(i, "down")}
                             />
 
                             <HiMiniArrowUp
                               size={24}
                               className="cursor-pointer rounded-full bg-primary p-[0.3rem] text-primary-content"
-                              onClick={() => changeBlockOrder(index, "up")}
+                              onClick={() => changeBlockOrder(i, "up")}
                             />
 
                             <HiPencil
                               size={24}
                               className="cursor-pointer rounded-full bg-primary p-[0.3rem] text-primary-content"
                               onClick={() => {
-                                editBlock(index);
+                                editBlock(i);
                               }}
                             />
 
@@ -167,7 +162,7 @@ const PageBuilder = ({
                               size={24}
                               className="cursor-pointer rounded-full bg-error p-[0.3rem] text-primary-content"
                               onClick={() => {
-                                deleteBlock(index);
+                                deleteBlock(i);
                               }}
                             />
                           </div>

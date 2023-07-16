@@ -108,7 +108,7 @@ const ManageOrders = () => {
             </thead>
             <tbody>
               {orders &&
-                orders.map(({ orderId, status, user }: Order, index) => {
+                orders.map(({ orderId, status, user }: Order, i) => {
                   return (
                     <tr
                       className="hover cursor-pointer"
@@ -116,9 +116,7 @@ const ManageOrders = () => {
                       onClick={() => navigate(`/admin/orders/${orderId}`)}
                     >
                       {currentPage && (
-                        <td>
-                          {index + 1 + (currentPage - 1) * orders?.length}
-                        </td>
+                        <td>{i + 1 + (currentPage - 1) * orders?.length}</td>
                       )}
                       <td>{orderId}</td>
                       <td>{user.email}</td>

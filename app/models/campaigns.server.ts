@@ -172,10 +172,24 @@ export const upsertCampaign = async (updateData: any) => {
   return updatedCampaign;
 };
 
-export const searchCampaigns = async (searchArgs: BasicSearchArgs) => {
-  const { name, departmentName, page = 1, perPage = 10 } = searchArgs;
+export const searchCampaigns = async (
+  formData?: { [k: string]: FormDataEntryValue },
+  url?: URL
+) => {
+  const name =
+    formData?.name || (url && url.searchParams.get("name")?.toString()) || "";
+  const departmentName =
+    formData?.departmentName || url?.searchParams.get("departmentName") || "";
+  const pageNumber =
+    (formData?.pageNumber && parseInt(formData.pageNumber as string)) ||
+    (url && Number(url.searchParams.get("pageNumber"))) ||
+    1;
+  const perPage =
+    (formData?.perPage && parseInt(formData.perPage as string)) ||
+    (url && Number(url.searchParams.get("itemsPerPage"))) ||
+    10;
 
-  const skip = (page - 1) * perPage;
+  const skip = (pageNumber - 1) * perPage;
   const take = perPage;
 
   // Construct a filter based on the search parameters provided

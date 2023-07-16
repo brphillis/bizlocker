@@ -124,13 +124,25 @@ export const deleteProductCategory = async (id: string) => {
   });
 };
 
-export const searchProductCategories = async (searchArgs: BasicSearchArgs) => {
-  const { name, page, perPage } = searchArgs;
+export const searchProductCategories = async (
+  formData?: { [k: string]: FormDataEntryValue },
+  url?: URL
+) => {
+  const name =
+    formData?.name || (url && url.searchParams.get("name")?.toString()) || "";
+  const pageNumber =
+    (formData?.pageNumber && parseInt(formData.pageNumber as string)) ||
+    (url && Number(url.searchParams.get("pageNumber"))) ||
+    1;
+  const perPage =
+    (formData?.perPage && parseInt(formData.perPage as string)) ||
+    (url && Number(url.searchParams.get("itemsPerPage"))) ||
+    10;
 
   let productCategories;
   let totalProductCategories;
 
-  const skip = (page - 1) * perPage;
+  const skip = (pageNumber - 1) * perPage;
   let take = perPage;
   if (perPage !== undefined) {
     if (name) {
@@ -139,7 +151,7 @@ export const searchProductCategories = async (searchArgs: BasicSearchArgs) => {
           OR: [
             {
               name: {
-                contains: name || "",
+                contains: (name as string) || "",
                 mode: "insensitive",
               },
             },
@@ -154,7 +166,7 @@ export const searchProductCategories = async (searchArgs: BasicSearchArgs) => {
           OR: [
             {
               name: {
-                contains: name || "",
+                contains: (name as string) || "",
                 mode: "insensitive",
               },
             },

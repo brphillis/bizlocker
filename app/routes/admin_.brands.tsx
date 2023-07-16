@@ -75,7 +75,7 @@ const Brands = () => {
             </thead>
             <tbody>
               {brands &&
-                brands.map(({ id, name }: Brand, index) => {
+                brands.map(({ id, name }: Brand, i) => {
                   return (
                     <tr
                       className="hover cursor-pointer"
@@ -83,9 +83,7 @@ const Brands = () => {
                       key={id}
                     >
                       {currentPage && (
-                        <td>
-                          {index + 1 + (currentPage - 1) * brands?.length}
-                        </td>
+                        <td>{i + 1 + (currentPage - 1) * brands?.length}</td>
                       )}
                       <td>{capitalizeFirst(name)}</td>
                     </tr>

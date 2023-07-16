@@ -92,10 +92,10 @@ export const RegisterPage = () => {
         </div>
 
         {validationError?.length > 0 &&
-          validationError.map((error: string, index) => {
+          validationError.map((error: string, i) => {
             return (
               <p
-                key={error + index}
+                key={error + i}
                 className="mt-1 text-center text-xs text-red-500/75"
               >
                 {error}
