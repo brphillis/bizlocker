@@ -104,7 +104,7 @@ const PageBuilder = ({
           <div className="scrollbar-hide w-full overflow-x-auto">
             <table className="table">
               <thead>
-                <tr>
+                <tr className="border-b-0 text-brand-white/50">
                   <th className="w-1/4">#</th>
                   <th className="w-1/4">Block</th>
                   <th className="w-1/4">Type</th>
@@ -117,6 +117,7 @@ const PageBuilder = ({
                   .map((e: Block, i) => {
                     return (
                       <tr
+                        className="border-b-0"
                         key={"block_" + blocks?.[i]?.name + blocks?.[i]?.id + i}
                       >
                         <td>{blocks?.[i]?.order + 1}</td>

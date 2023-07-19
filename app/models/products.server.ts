@@ -325,10 +325,7 @@ export const searchProducts = async (
     const productCategories = await prisma.productCategory.findMany({
       where: {
         rootCategory: {
-          name: {
-            equals: rootCategory as string,
-            mode: "insensitive",
-          },
+          id: parseInt(rootCategory as string),
         },
       },
       select: {
@@ -348,20 +345,14 @@ export const searchProducts = async (
   if (category) {
     filter.productCategories = {
       some: {
-        name: {
-          equals: category,
-          mode: "insensitive",
-        },
+        id: parseInt(category as string),
       },
     };
   }
 
   if (brand) {
     filter.brand = {
-      name: {
-        equals: brand,
-        mode: "insensitive",
-      },
+      id: parseInt(brand as string),
     };
   }
 

@@ -24,8 +24,8 @@ const PromotionBanner = ({ promotion }: Props) => {
         alt={name + "_bannerImage"}
         className="max-w-screen w-full object-cover"
       />
-      {!targetGender && (
-        <div className="flex w-full justify-center gap-3 bg-base-300 py-1">
+      {targetGender && (
+        <div className="flex w-full justify-center gap-3 bg-brand-black py-1 text-brand-white">
           <button
             className="sm:text-md px-6 py-2 text-sm tracking-wide hover:bg-primary-content/10"
             onClick={() => navigate(pathname)}

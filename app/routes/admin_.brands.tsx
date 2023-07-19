@@ -38,12 +38,12 @@ const Brands = () => {
 
   return (
     <AdminPageWrapper>
-      <Form method="GET" className="relative h-full w-full bg-base-300 p-6">
+      <Form method="GET" className="relative h-full w-full bg-base-200 p-6">
         <AdminPageHeader title="Manage Brands" addButtonText="Add Brands" />
 
         <div className="mt-3 flex flex-col">
           <div className="flex flex-row">
-            <div className="form-control w-full">
+            <div className="form-control w-full sm:w-[215px]">
               <label className="label">
                 <span className="label-text">Brand Name</span>
               </label>
@@ -51,7 +51,7 @@ const Brands = () => {
                 name="name"
                 type="text"
                 placeholder="Name"
-                className="input-bordered input w-full sm:w-[215px]"
+                className="input-bordered input w-full"
               />
             </div>
           </div>

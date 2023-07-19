@@ -12,7 +12,7 @@ const UploadBannerImage = ({ valueToChange }: Props) => {
   );
 
   return (
-    <div className="collapse-arrow collapse mt-6 rounded-none bg-base-200">
+    <div className="collapse-arrow collapse mt-6 rounded-none bg-base-100">
       <input type="checkbox" />
       <div className="collapse-title ml-3 mt-1 h-max text-center text-sm font-medium">
         Banner Image
@@ -38,16 +38,19 @@ const UploadBannerImage = ({ valueToChange }: Props) => {
               </div>
             </div>
           )}
-          <input
-            name="bannerImageUpload"
-            type="file"
-            accept="image/*"
-            className="file-input-bordered file-input mt-3 w-[120px] sm:w-[440px]"
-            onChange={async (e) => {
-              const convertedImage = await ConvertToBase64(e);
-              convertedImage && setBannerImage(convertedImage);
-            }}
-          />
+
+          {bannerImage && (
+            <input
+              name="bannerImageUpload"
+              type="file"
+              accept="image/*"
+              className="file-input-bordered file-input mt-3 w-[120px] bg-primary/50 text-brand-white sm:w-[440px]"
+              onChange={async (e) => {
+                const convertedImage = await ConvertToBase64(e);
+                convertedImage && setBannerImage(convertedImage);
+              }}
+            />
+          )}
           <input
             type="hidden"
             name="bannerImage"

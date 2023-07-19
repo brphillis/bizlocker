@@ -6,6 +6,7 @@ import {
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
+import SelectArticleCategory from "~/components/Forms/Select/SelectArticleCategory";
 
 import AdminPageHeader from "~/components/Layout/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/AdminPageWrapper";
@@ -35,42 +36,26 @@ const Articles = () => {
 
   return (
     <AdminPageWrapper>
-      <Form method="GET" className="relative h-full w-full bg-base-300 p-6">
+      <Form method="GET" className="relative h-full w-full bg-base-200 p-6">
         <AdminPageHeader title="Manage Articles" addButtonText="Add Article" />
 
         <div className="mt-3 flex flex-col">
-          <div className="flex flex-row gap-6">
-            <div className="form-control w-full max-w-xs">
-              <label className="label">
-                <span className="label-text">Title</span>
-              </label>
-              <input
-                name="title"
-                className="input-bordered input w-full max-w-xs"
-                placeholder="Title"
-                type="text"
-              />
+          <div className="flex flex-row flex-wrap gap-6">
+            <div className="flex w-full flex-row gap-6 sm:w-[215px]">
+              <div className="form-control w-full">
+                <label className="label">
+                  <span className="label-text">Article Title</span>
+                </label>
+                <input
+                  name="title"
+                  className="input w-full text-brand-black/50"
+                  placeholder="Name"
+                  type="text"
+                />
+              </div>
             </div>
 
-            <div className="form-control w-full max-w-xs">
-              <label className="label">
-                <span className="label-text">Category</span>
-              </label>
-              <select
-                name="articleCategory"
-                className=" select w-full max-w-xs"
-                placeholder="Select a Value"
-              >
-                <option value="">Select a Category</option>
-                {articleCategories.map(({ id, name }: ArticleCategory) => {
-                  return (
-                    <option key={name + id} value={name}>
-                      {name}
-                    </option>
-                  );
-                })}
-              </select>
-            </div>
+            <SelectArticleCategory articleCategories={articleCategories} />
           </div>
 
           <div className="flex flex-row justify-end sm:justify-start">

@@ -40,10 +40,10 @@ const ArticleCategories = () => {
 
   return (
     <AdminPageWrapper>
-      <Form method="GET" className="relative h-full w-full bg-base-300 p-6">
+      <Form method="GET" className="relative h-full w-full bg-base-200 p-6">
         <AdminPageHeader
           title="Manage Article Categories"
-          addButtonText="Add Article Categories"
+          addButtonText="Add Category"
         />
 
         <div className="mt-3 flex flex-col">

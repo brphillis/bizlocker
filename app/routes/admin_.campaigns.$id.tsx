@@ -104,7 +104,7 @@ const ModifyCampaign = () => {
     <DarkOverlay>
       <Form
         method="POST"
-        className="max-w-screen scrollbar-hide relative w-[600px] !max-w-[100vw] overflow-y-auto bg-base-300 px-3 py-6 sm:px-6"
+        className="max-w-screen scrollbar-hide relative w-[600px] !max-w-[100vw] overflow-y-auto bg-base-200 px-3 py-6 sm:px-6"
       >
         <FormHeader
           valueToChange={campaign}

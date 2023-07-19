@@ -7,6 +7,8 @@ import {
 } from "@remix-run/react";
 import { json, type LoaderArgs } from "@remix-run/server-runtime";
 import parse from "html-react-parser";
+import SelectBrand from "~/components/Forms/Select/SelectBrand";
+import SelectProductCategory from "~/components/Forms/Select/SelectProductCategory";
 import AdminPageHeader from "~/components/Layout/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/AdminPageWrapper";
 import Pagination from "~/components/Pagination";
@@ -44,12 +46,12 @@ const ManageProducts = () => {
 
   return (
     <AdminPageWrapper>
-      <Form method="GET" className="relative h-full w-full bg-base-300 p-6">
+      <Form method="GET" className="relative h-full w-full bg-base-200 p-6">
         <AdminPageHeader title="Manage Products" addButtonText="Add Products" />
 
         <div className="mt-3 flex flex-col">
           <div className="flex flex-row flex-wrap gap-6">
-            <div className="form-control w-full max-w-xs">
+            <div className="form-control w-full sm:w-[215px]">
               <label className="label">
                 <span className="label-text">Name</span>
               </label>
@@ -57,49 +59,12 @@ const ManageProducts = () => {
                 name="name"
                 type="text"
                 placeholder="Name"
-                className="input-bordered input w-full max-w-xs"
+                className="input-bordered input w-full"
               />
             </div>
 
-            <div className="form-control w-full max-w-xs">
-              <label className="label">
-                <span className="label-text">Category</span>
-              </label>
-              <select
-                name="productCategory"
-                className=" select w-full max-w-xs"
-                placeholder="Select a Value"
-              >
-                <option value="">Select a Category</option>
-                {productCategories?.map(({ id, name }: ProductCategory) => {
-                  return (
-                    <option key={name + id} value={name}>
-                      {name}
-                    </option>
-                  );
-                })}
-              </select>
-            </div>
-
-            <div className="form-control w-full max-w-xs">
-              <label className="label">
-                <span className="label-text">Brand</span>
-              </label>
-              <select
-                name="brand"
-                className=" select w-full max-w-xs"
-                placeholder="Select a Value"
-              >
-                <option value="">Select a Brand</option>
-                {brands?.map(({ id, name }: Brand) => {
-                  return (
-                    <option key={name + id} value={name}>
-                      {name}
-                    </option>
-                  );
-                })}
-              </select>
-            </div>
+            <SelectProductCategory productCategories={productCategories} />
+            <SelectBrand brands={brands} />
           </div>
           <div className="flex flex-row justify-end sm:justify-start">
             <button type="submit" className="btn-primary btn mt-6 w-max">

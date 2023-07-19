@@ -1,7 +1,6 @@
 import type { ActionArgs } from "@remix-run/node";
 import { getHomePage } from "~/models/homePage.server";
 import { useActionData, useLoaderData } from "@remix-run/react";
-import AdminPageHeader from "~/components/Layout/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/AdminPageWrapper";
 import PageBuilder from "~/components/PageBuilder";
 import {
@@ -89,14 +88,10 @@ const ManageHomePage = () => {
 
   return (
     <AdminPageWrapper>
-      <div className="relative h-full w-screen bg-base-300 p-6 sm:w-full">
-        <div className="hidden sm:block">
-          <AdminPageHeader title="Manage Home Page" />
-        </div>
-
+      <div className="relative h-full w-screen bg-base-200 p-6 sm:w-full">
         <div className="flex w-full justify-center">
-          <div className="flex flex-col gap-6">
-            <div className="flex justify-center gap-3 text-center text-2xl font-bold">
+          <div className="flex flex-col gap-6 rounded-none bg-brand-black text-brand-white sm:rounded-md">
+            <div className="flex justify-center gap-3 pt-6 text-center text-2xl font-bold">
               <Icon iconName="IoHomeSharp" size={24} styles="mt-[5px]" />
               Home Page Editor
             </div>

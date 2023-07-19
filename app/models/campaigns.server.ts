@@ -244,10 +244,10 @@ export const searchCampaigns = async (
   return { campaigns, totalPages };
 };
 
-export const getRandomCampaign = async (productCategoryName?: string) => {
-  if (productCategoryName) {
+export const getRandomCampaign = async (productCategoryId?: string) => {
+  if (productCategoryId) {
     const productCategory = await prisma.productCategory.findUnique({
-      where: { name: productCategoryName },
+      where: { id: parseInt(productCategoryId) },
       include: {
         campaigns: {
           include: {
@@ -260,7 +260,7 @@ export const getRandomCampaign = async (productCategoryName?: string) => {
 
     if (!productCategory) {
       throw new Error(
-        `No ProductCategory found for the name: ${productCategoryName}`
+        `No ProductCategory found for the name: ${productCategoryId}`
       );
     }
 

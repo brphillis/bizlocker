@@ -3,15 +3,15 @@ type Props = {
   defaultValue?: string;
 };
 
-const SelectBrand = ({ productCategories, defaultValue }: Props) => {
+const SelectProductCategory = ({ productCategories, defaultValue }: Props) => {
   return (
-    <div className="form-control">
+    <div className="form-control w-full sm:w-[215px]">
       <label className="label">
         <span className="label-text">Product Category</span>
       </label>
       <select
         name="productCategory"
-        className=" select w-[95vw] sm:w-[215px]"
+        className="select w-full text-brand-black/50"
         defaultValue={defaultValue}
       >
         <option value="">Select a Brand</option>
@@ -27,4 +27,4 @@ const SelectBrand = ({ productCategories, defaultValue }: Props) => {
   );
 };
 
-export default SelectBrand;
+export default SelectProductCategory;

@@ -8,31 +8,32 @@ export default {
       ptsans: ["PT Sans", "sans-serif"],
       notosans: ["Noto Sans", "sans-serif"],
     },
+    extend: {
+      colors: {
+        "brand-black": "#232227",
+        "brand-white": "#F0F0F0",
+      },
+    },
   },
   plugins: [require("daisyui")],
   daisyui: {
     themes: [
       // prettier-ignore
       {
-        "brand-theme": {
+        "brand-light": {
           "primary": "#3B82F6",
           "primary-focus": "#2563EB",
-          "primary-content": "#FFFFFF",
+          "primary-content": "#F0F0F0",
           "secondary": "#A78BFA",
           "secondary-content": "#FFFFFF",
-          "accent": "#8B5CF6",
-          "accent-content": "#FFFFFF",
-          "neutral": "#6B7280",
-          "neutral-focus": "#4B5563",
-          "neutral-content": "#1F2937",
-          "base-100": "#191A1D",
-          "base-200": "#151518",
-          "base-300": "#09090A",
-          "base-content": "#c2c2c2",
+          "base-100": "#F0F0F0",
+          "base-200": "#e0e0e0",
+          "base-300": "#DADADA",
+          "base-content": "#232227",
+          "--brand-black": "#232227",
+          "--brand-white": "#F0F0F0",
         },
       },
-      "dark",
-      "light",
     ],
   },
 } satisfies Config;

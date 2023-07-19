@@ -12,16 +12,18 @@ const BlockRenderer = ({ blocks }: Props) => {
   return (
     <>
       {blocks.map((_, i: number) => {
-        const { name, content, blockOptions } = blocks[i] || {};
+        const { name, content, blockOptions, type } = blocks[i] || {};
 
         switch (name) {
           case "banner":
             const contentData = content as Campaign[] | Promotion[];
 
             const { bannerImage } = contentData[0] as Campaign | Promotion;
+            const contentName = contentData[0]?.name;
+            const url = type && contentName && `/${type}/${contentName}`;
             return (
               <React.Fragment key={"bannerBlock_" + i}>
-                <BannerBlock image={bannerImage} />
+                <BannerBlock image={bannerImage} url={url} />
               </React.Fragment>
             );
 

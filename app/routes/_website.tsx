@@ -67,10 +67,10 @@ const App = () => {
   };
 
   return (
-    <div className="drawer" data-theme="brand-theme">
+    <div className="drawer" data-theme="brand-light">
       <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
-      <div className="!max-w-screen min-w-screen drawer-content relative flex min-h-[calc(100vh-64px)] flex-col  items-center justify-start overflow-x-hidden bg-base-300">
-        <div className="navbar relative w-full bg-base-300">
+      <div className="!max-w-screen min-w-screen drawer-content relative flex min-h-[calc(100vh-64px)] flex-col items-center justify-start overflow-x-hidden">
+        <div className="navbar relative w-full bg-brand-black">
           <div className="flex-none lg:hidden">
             <label htmlFor="my-drawer-3" className="btn-ghost btn-square btn">
               <IoMenu size={26} />
@@ -81,7 +81,7 @@ const App = () => {
 
               <IoSearchOutline
                 className={
-                  "cursor-pointer " +
+                  "cursor-pointer text-brand-white" +
                   (!user && "relative bottom-0 right-20 top-0")
                 }
                 size={24}
@@ -102,15 +102,15 @@ const App = () => {
           </div>
           <div className="relative hidden flex-none lg:absolute lg:left-1/2 lg:translate-x-[-50%] xl:block">
             <ul className="menu menu-horizontal">
-              {rootCategories?.map(({ name }: RootCategory) => {
+              {rootCategories?.map(({ id, name }: RootCategory) => {
                 return (
                   <li
-                    key={"menu_rootCategory_" + name}
-                    className="cursor-pointer border-b-2 border-primary-content/0 px-3 py-3 text-sm font-bold tracking-wide hover:bg-primary-content/10"
+                    key={"menu_rootCategory_" + id}
+                    className="cursor-pointer border-b-2 border-primary-content/0 px-3 py-3 text-sm font-bold tracking-wide text-brand-white hover:bg-primary-content/10"
                     onClick={() =>
                       navigate({
                         pathname: "/products",
-                        search: `?rootCategory=${name}`,
+                        search: `?rootCategory=${id}`,
                       })
                     }
                   >
@@ -128,6 +128,7 @@ const App = () => {
               <IoSearchOutline
                 size={24}
                 onClick={() => setSearchActive(!searchActive)}
+                className="text-brand-white"
               />
             </div>
             {user && <div>{LogoutButton()}</div>}
@@ -146,15 +147,15 @@ const App = () => {
       <div className="drawer-side">
         <label htmlFor="my-drawer-3" className="drawer-overlay"></label>
         <ul className="menu w-80 bg-base-100 p-4">
-          {rootCategories?.map(({ name }: RootCategory) => {
+          {rootCategories?.map(({ id, name }: RootCategory) => {
             return (
               <li
-                key={"menu_rootCategory_" + name}
+                key={"menu_rootCategory_" + id}
                 className="cursor-pointer border-b-2 border-primary-content/0 px-3 py-3 text-sm font-bold tracking-wide hover:bg-primary-content/10"
                 onClick={() =>
                   navigate({
                     pathname: "/products",
-                    search: `?rootCategory=${name}`,
+                    search: `?rootCategory=${id}`,
                   })
                 }
               >

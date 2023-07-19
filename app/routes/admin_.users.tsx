@@ -47,7 +47,7 @@ const Articles = () => {
 
         <div className="mt-3 flex flex-col">
           <div className="flex flex-row flex-wrap gap-6">
-            <div className="form-control w-full max-w-xs">
+            <div className="form-control w-full sm:w-[215px]">
               <label className="label">
                 <span className="label-text">First Name</span>
               </label>
@@ -59,7 +59,7 @@ const Articles = () => {
               />
             </div>
 
-            <div className="form-control w-full max-w-xs">
+            <div className="form-control w-full sm:w-[215px]">
               <label className="label">
                 <span className="label-text">Last Name</span>
               </label>
@@ -67,11 +67,11 @@ const Articles = () => {
                 name="lastName"
                 type="text"
                 placeholder="Last Name"
-                className="input-bordered input w-full max-w-xs"
+                className="input-bordered input w-full"
               />
             </div>
 
-            <div className="form-control w-full max-w-xs">
+            <div className="form-control w-full sm:w-[215px]">
               <label className="label">
                 <span className="label-text">Email Address</span>
               </label>
@@ -79,7 +79,7 @@ const Articles = () => {
                 name="email"
                 type="text"
                 placeholder="Email Address"
-                className="input-bordered input w-full max-w-xs"
+                className="input-bordered input w-full"
               />
             </div>
           </div>

@@ -24,7 +24,7 @@ const UploadAvatar = ({ avatar }: Props) => {
           <input
             type="file"
             accept="image/*"
-            className="file-input-bordered file-input w-full max-w-[50vw]"
+            className="file-input-bordered file-input w-full max-w-[50vw] bg-primary/50"
             onChange={async (e) => {
               const convertedImage = await ConvertToBase64(e);
               convertedImage && setImage(convertedImage);

@@ -234,10 +234,7 @@ export const searchArticles = async (
   if (articleCategory) {
     filter.articleCategories = {
       some: {
-        name: {
-          equals: articleCategory,
-          mode: "insensitive",
-        },
+        id: parseInt(articleCategory as string),
       },
     };
   }

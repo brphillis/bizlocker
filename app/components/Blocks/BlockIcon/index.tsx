@@ -1,4 +1,5 @@
 import Icon from "~/components/Icon";
+import type * as IconsIO5 from "react-icons/io5";
 
 type BlockIconProps = {
   blockName?: string;
@@ -7,23 +8,26 @@ type BlockIconProps = {
 };
 
 const BlockIcon = ({ blockName, size, styles }: BlockIconProps) => {
-  if (blockName === "banner") {
-    return <Icon iconName="IoTabletLandscape" size={size} styles={styles} />;
+  let iconName: keyof typeof IconsIO5 = "IoSquare";
+
+  switch (blockName) {
+    case "banner":
+      iconName = "IoTabletLandscape";
+      break;
+    case "tile":
+      iconName = "IoGrid";
+      break;
+    case "text":
+      iconName = "IoText";
+      break;
+    case "product":
+      iconName = "IoCart";
+      break;
+    default:
+      break;
   }
 
-  if (blockName === "tile") {
-    return <Icon iconName="IoGrid" size={size} styles={styles} />;
-  }
-
-  if (blockName === "text") {
-    return <Icon iconName="IoText" size={size} styles={styles} />;
-  }
-
-  if (blockName === "product") {
-    return <Icon iconName="IoCart" size={size} styles={styles} />;
-  } else {
-    return <Icon iconName="IoSquare" size={size} styles={styles} />;
-  }
+  return <Icon iconName={iconName} size={size} styles={styles} />;
 };
 
 export default BlockIcon;

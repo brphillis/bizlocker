@@ -7,7 +7,7 @@ const AccountButton = (user: User) => {
   return (
     <div className="dropdown-end dropdown relative z-10">
       <label tabIndex={0} className="relative cursor-pointer marker:h-20">
-        <IoPersonOutline size={24} />
+        <IoPersonOutline size={24} className="text-brand-white" />
       </label>
 
       {/* ACCOUNT MENU */}

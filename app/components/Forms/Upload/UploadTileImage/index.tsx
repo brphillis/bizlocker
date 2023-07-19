@@ -12,7 +12,7 @@ const UploadTileImage = ({ valueToChange }: Props) => {
   );
 
   return (
-    <div className="collapse-arrow collapse mt-6 rounded-none bg-base-200">
+    <div className="collapse-arrow collapse mt-6 rounded-none bg-base-100">
       <input type="checkbox" />
       <div className="collapse-title ml-3 mt-1 h-max text-center text-sm font-medium">
         Tile Image
@@ -33,7 +33,7 @@ const UploadTileImage = ({ valueToChange }: Props) => {
                 <IoIosCloseCircle
                   onClick={() => setTileImage(undefined)}
                   size={18}
-                  className="absolute right-0 top-0 -mr-2 mt-1 cursor-pointer rounded-full bg-white text-primary"
+                  className="absolute right-0 top-0 -mr-2 mt-1 cursor-pointer rounded-full bg-brand-white text-primary"
                 />
               </div>
             </div>
@@ -43,7 +43,7 @@ const UploadTileImage = ({ valueToChange }: Props) => {
             name="tileImageUpload"
             type="file"
             accept="image/*"
-            className="file-input-bordered file-input mt-3 w-[120px] sm:w-[440px]"
+            className="file-input-bordered file-input mt-3 w-[120px] bg-primary/50 text-brand-white sm:w-[440px]"
             onChange={async (e) => {
               const convertedImage = await ConvertToBase64(e);
               convertedImage && setTileImage(convertedImage);

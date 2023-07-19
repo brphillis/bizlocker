@@ -13,10 +13,10 @@ export const createInitialDeveloper = async () => {
         password: hashedPassword,
         role: "DEVELOPER",
         userDetails: {
-          create: {}, // create an empty UserDetails record as it's not clear what data is needed here
+          create: {},
         },
         address: {
-          create: {}, // create an empty Address record as it's not clear what data is needed here
+          create: {},
         },
       },
     });

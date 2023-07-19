@@ -29,7 +29,7 @@ const CartButton = ({ id: cartId, cartItems }: Cart) => {
             {cartItems?.length}
           </div>
         )}
-        <IoCartOutline size={24} />
+        <IoCartOutline size={24} className="text-brand-white" />
       </label>
 
       {/* CART MODAL */}

@@ -52,12 +52,12 @@ const Admin = () => {
 
   return (
     <div
-      data-theme="dark"
+      data-theme="light-theme"
       className="max-w-screen drawer min-h-screen lg:drawer-open"
     >
       <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
       <div className="max-w-screen drawer-content flex min-h-screen w-full flex-col items-center justify-start">
-        <div className="flex h-[64px] w-screen flex-row items-center gap-6 self-start justify-self-start bg-base-300 p-3 lg:hidden">
+        <div className="flex h-[64px] w-screen flex-row items-center gap-6 self-start justify-self-start bg-brand-black p-3 lg:hidden">
           <label htmlFor="my-drawer-2" className="btn-ghost btn-square btn">
             <IoMenu size={26} />
           </label>
@@ -74,7 +74,7 @@ const Admin = () => {
             htmlFor="my-drawer-2"
             className="drawer-overlay !min-h-screen"
           ></label>
-          <ul className="scrollbar-hide menu h-max min-h-full w-80 overflow-y-scroll bg-base-200 p-4 text-base-content">
+          <ul className="scrollbar-hide menu h-max min-h-full w-80 overflow-y-scroll bg-brand-black p-4 text-brand-white">
             <h1 className="select-none pt-3 text-center text-2xl font-bold tracking-wide text-white/90">
               CLUTCH.
             </h1>
@@ -95,15 +95,11 @@ const Admin = () => {
               <div className="collapse-content">
                 <ul>
                   <li onClick={() => navigate("/admin/users")}>
-                    <div>
-                      <span>Users</span>
-                    </div>
+                    <div className="hover:text-white">Users</div>
                   </li>
 
                   <li onClick={() => navigate("/admin/orders")}>
-                    <div>
-                      <span>Orders</span>
-                    </div>
+                    <div className="hover:text-white">Orders</div>
                   </li>
                 </ul>
               </div>
@@ -121,24 +117,16 @@ const Admin = () => {
               <div className="collapse-content">
                 <ul>
                   <li onClick={() => navigate("/admin/home-page")}>
-                    <div>
-                      <span>Home Page</span>
-                    </div>
+                    <div className="hover:text-white">Home Page</div>
                   </li>
                   <li onClick={() => navigate("/admin/root-categories")}>
-                    <div>
-                      <span>Root Categories</span>
-                    </div>
+                    <div className="hover:text-white">Root Categories</div>
                   </li>
                   <li onClick={() => navigate("/admin/articles")}>
-                    <div>
-                      <span>Articles</span>
-                    </div>
+                    <div className="hover:text-white">Articles</div>
                   </li>
                   <li onClick={() => navigate("/admin/article-categories")}>
-                    <div>
-                      <span>Article Categories</span>
-                    </div>
+                    <div className="hover:text-white">Article Categories</div>
                   </li>
                 </ul>
               </div>
@@ -156,19 +144,13 @@ const Admin = () => {
               <div className="collapse-content">
                 <ul>
                   <li onClick={() => navigate("/admin/products")}>
-                    <div>
-                      <span>Products</span>
-                    </div>
+                    <div className="hover:text-white">Products</div>
                   </li>
                   <li onClick={() => navigate("/admin/product-categories")}>
-                    <div>
-                      <span>Product Categories</span>
-                    </div>
+                    <div className="hover:text-white">Product Categories</div>
                   </li>
                   <li onClick={() => navigate("/admin/brands")}>
-                    <div>
-                      <span>Brands</span>
-                    </div>
+                    <div className="hover:text-white">Brands</div>
                   </li>
                 </ul>
               </div>
@@ -186,9 +168,7 @@ const Admin = () => {
               <div className="collapse-content">
                 <ul>
                   <li onClick={() => navigate("/admin/report-sales")}>
-                    <div>
-                      <span>Sales</span>
-                    </div>
+                    <div className="hover:text-white">Sales</div>
                   </li>
                 </ul>
               </div>
@@ -206,14 +186,10 @@ const Admin = () => {
               <div className="collapse-content">
                 <ul>
                   <li onClick={() => navigate("/admin/promotions")}>
-                    <div>
-                      <span>Promotions</span>
-                    </div>
+                    <div className="hover:text-white">Promotions</div>
                   </li>
                   <li onClick={() => navigate("/admin/campaigns")}>
-                    <div>
-                      <span>Campaigns</span>
-                    </div>
+                    <div className="hover:text-white">Campaigns</div>
                   </li>
                 </ul>
               </div>

@@ -6,6 +6,8 @@ import {
   useSearchParams,
 } from "@remix-run/react";
 import { json, type LoaderArgs } from "@remix-run/server-runtime";
+import SelectArticleCategory from "~/components/Forms/Select/SelectArticleCategory";
+import SelectProductCategory from "~/components/Forms/Select/SelectProductCategory";
 import AdminPageHeader from "~/components/Layout/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/AdminPageWrapper";
 import Pagination from "~/components/Pagination";
@@ -55,84 +57,39 @@ const ManageRootCategories = () => {
 
   return (
     <AdminPageWrapper>
-      <Form method="GET" className="relative h-full w-full bg-base-300 p-6">
+      <Form
+        method="GET"
+        className="relative h-full w-full rounded-none bg-base-200 p-6"
+      >
         <AdminPageHeader
           title="Manage Categories"
           addButtonText="Add Category"
         />
 
-        <div className="mt-3 flex flex-col">
-          <div className="flex flex-row gap-6">
+        <div className="mt-3 flex w-full flex-wrap items-end gap-6">
+          <div className="flex w-full flex-row gap-6 sm:w-[215px]">
             <div className="form-control w-full">
               <label className="label">
                 <span className="label-text">Category Name</span>
               </label>
               <input
                 name="rootCategory"
-                className="input-bordered input w-full sm:w-[215px]"
+                className="input w-full text-brand-black/50"
                 placeholder="Name"
                 type="text"
               />
             </div>
           </div>
 
-          <div className="collapse-arrow collapse mt-6 w-full max-w-[800px] rounded-none bg-base-200 sm:w-[800px]">
-            <input type="checkbox" />
-            <div className="collapse-title h-max text-sm font-medium">
-              Search by sub-category
-            </div>
-            <div className="collapse-content">
-              <div className="flex flex-row flex-wrap gap-6">
-                <div className="form-control w-full max-w-xs">
-                  <label className="label">
-                    <span className="label-text">Product category</span>
-                  </label>
-                  <select
-                    name="productCategory"
-                    title="productCategory"
-                    className=" select w-full max-w-xs"
-                    placeholder="Select a Value"
-                  >
-                    <option value="">Select Product Categogry</option>
-                    {productCategories.map(({ id, name }: ProductCategory) => {
-                      return (
-                        <option key={name + id} value={name}>
-                          {name}
-                        </option>
-                      );
-                    })}
-                  </select>
-                </div>
+          <SelectArticleCategory articleCategories={articleCategories} />
 
-                <div className="form-control w-full max-w-xs">
-                  <label className="label">
-                    <span className="label-text">Article Category</span>
-                  </label>
-                  <select
-                    name="articleCategory"
-                    title="articleCategory"
-                    className=" select w-full max-w-xs"
-                    placeholder="Select a Value"
-                  >
-                    <option value="">Select Article Categogry</option>
-                    {articleCategories.map(({ id, name }: ArticleCategory) => {
-                      return (
-                        <option key={name + id} value={name}>
-                          {name}
-                        </option>
-                      );
-                    })}
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
+          <SelectProductCategory productCategories={productCategories} />
+        </div>
 
-          <div className="flex flex-row justify-end sm:justify-start">
-            <button type="submit" className="btn-primary btn mt-6 w-max">
-              Search
-            </button>
-          </div>
+        <div className="flex flex-row justify-end sm:justify-start">
+          <button type="submit" className="btn-primary btn mt-6 w-max">
+            Search
+          </button>
         </div>
 
         <div className="divider w-full" />

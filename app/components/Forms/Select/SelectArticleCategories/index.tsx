@@ -28,10 +28,14 @@ const SelectArticleCategories = ({
   return (
     <div className="form-control">
       <label className="label">
-        <span className="label-text">{title ? title : "Categories"}</span>
+        <span className="label-text text-brand-white">
+          {title ? title : "Categories"}
+        </span>
       </label>
       <select
-        className={`select ${styles ? styles : "w-[95vw] sm:w-[215px]"}`}
+        className={`select text-brand-black ${
+          styles ? styles : "w-[95vw] sm:w-[215px]"
+        }`}
         onChange={handleOptionChange}
         value={selectedArticleCategories}
         multiple

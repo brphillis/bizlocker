@@ -155,7 +155,7 @@ const ModifyArticle = () => {
 
   return (
     <AdminPageWrapper>
-      <div className="relative h-full w-screen bg-base-300 p-6 sm:w-full">
+      <div className="relative h-full w-screen bg-base-200 p-6 sm:w-full">
         <div className="hidden sm:block">
           <AdminPageHeader
             title={article ? "Edit Article" : "Create Article"}
@@ -170,7 +170,7 @@ const ModifyArticle = () => {
 
               <HiTrash
                 size={24}
-                className="absolute right-3 top-2 cursor-pointer rounded-full bg-neutral p-[0.3rem] text-neutral-content"
+                className="bg-brand-lightest text-brand-lightest/50 absolute right-3 top-2 cursor-pointer rounded-full bg-error p-[0.3rem] text-brand-white"
                 onClick={() => {
                   const formData = new FormData();
                   formData.set("_action", "deleteArticle");
@@ -190,14 +190,14 @@ const ModifyArticle = () => {
                   <div className="divider mb-0 w-full pb-0" />
                   <div className="form-control">
                     <label className="label">
-                      <span className="label-text">Title</span>
+                      <span className="label-text text-brand-white">Title</span>
                     </label>
                     <input
                       name="title"
                       type="text"
                       placeholder="Title"
                       defaultValue={article?.title}
-                      className="input-bordered input w-[95vw] sm:w-[320px]"
+                      className="input-bordered input w-[95vw] text-brand-black sm:w-[320px]"
                     />
                   </div>
 
@@ -209,7 +209,9 @@ const ModifyArticle = () => {
 
                   <div className="form-control w-full max-w-xs">
                     <label className="label">
-                      <span className="label-text">Thumbnail</span>
+                      <span className="label-text text-brand-white">
+                        Thumbnail
+                      </span>
                     </label>
                     <div className="max-w-[500px]">
                       <UploadImage
@@ -220,8 +222,6 @@ const ModifyArticle = () => {
                   </div>
 
                   <input name="_action" value="update" hidden readOnly />
-
-                  <div className="divider my-0 w-full py-0" />
                   <button
                     type="submit"
                     className="btn-primary btn-md mx-auto block w-max"

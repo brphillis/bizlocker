@@ -10,8 +10,8 @@ type Props = {
 const ProductBlock = ({ content, options }: Props) => {
   const [currentProducts, setCurrentProducts] = useState<Product[]>();
   const fetcher = useFetcher();
-  const rootCategory = content?.[0]?.rootCategory?.name;
-  const productCategory = content?.[0]?.productCategory?.name;
+  const rootCategory = content?.[0]?.rootCategory?.id;
+  const productCategory = content?.[0]?.productCategory?.id;
 
   useEffect(() => {
     if (fetcher.state === "idle" && fetcher.data == null) {

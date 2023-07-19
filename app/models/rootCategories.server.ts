@@ -114,8 +114,8 @@ export const upsertRootCategory = async (categoryData: any) => {
 export const searchRootCategories = async (searchArgs: BasicSearchArgs) => {
   const {
     name,
-    productcategoryname,
-    articlecategoryname,
+    productCategory,
+    articleCategory,
     page = 1,
     perPage = 10,
   } = searchArgs;
@@ -133,24 +133,18 @@ export const searchRootCategories = async (searchArgs: BasicSearchArgs) => {
     };
   }
 
-  if (productcategoryname) {
+  if (productCategory) {
     whereClause.productCategories = {
       some: {
-        name: {
-          contains: productcategoryname,
-          mode: "insensitive",
-        },
+        id: parseInt(productCategory),
       },
     };
   }
 
-  if (articlecategoryname) {
+  if (articleCategory) {
     whereClause.articleCategories = {
       some: {
-        name: {
-          contains: articlecategoryname,
-          mode: "insensitive",
-        },
+        id: parseInt(articleCategory),
       },
     };
   }

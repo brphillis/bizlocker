@@ -280,6 +280,8 @@ type BasicSearchArgs = {
   brand?: string;
   promotion?: string;
   rootCategory?: string;
+  articleCategory?: string;
+  productCategory?: string;
   category?: string;
   page: number;
   perPage: number;

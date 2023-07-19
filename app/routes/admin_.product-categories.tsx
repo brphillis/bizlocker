@@ -35,7 +35,7 @@ const ProductCategories = () => {
 
   return (
     <AdminPageWrapper>
-      <Form method="GET" className="relative h-full w-full bg-base-300 p-6">
+      <Form method="GET" className="relative h-full w-full bg-base-200 p-6">
         <AdminPageHeader
           title="Manage Product Categories"
           addButtonText="Add Product Categories"
@@ -43,12 +43,15 @@ const ProductCategories = () => {
 
         <div className="mt-3 flex flex-col">
           <div className="flex flex-row">
-            <div className="form-control mt-6 w-full max-w-xs">
+            <div className="form-control w-full sm:w-[215px]">
+              <label className="label">
+                <span className="label-text">Category Name</span>
+              </label>
               <input
                 name="name"
                 type="text"
                 placeholder="Name"
-                className="input-bordered input w-full max-w-xs"
+                className="input-bordered input w-full"
               />
             </div>
           </div>

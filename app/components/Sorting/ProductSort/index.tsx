@@ -10,9 +10,9 @@ const ProductSort = () => {
   const [sortAsc, setSortAsc] = useState<boolean>(true);
 
   return (
-    <div className="mb-3 flex items-center justify-end gap-3">
+    <div className="mb-3 flex items-center justify-end gap-3 text-brand-white">
       <select
-        className=" select select-xs w-full max-w-[10rem] bg-base-300"
+        className=" select select-xs w-full max-w-[10rem] bg-brand-black"
         onChange={(e) => {
           searchParams.set("sortBy", e.target.value);
           const sortOrder = searchParams.get("sortOrder");
@@ -31,7 +31,7 @@ const ProductSort = () => {
 
       {sortAsc && (
         <div
-          className="flex h-[24px] cursor-pointer select-none items-center gap-1 bg-base-300 fill-current px-3"
+          className="flex h-[24px] cursor-pointer select-none items-center gap-1 bg-brand-black fill-current px-3"
           onClick={() => {
             if (sortAsc) {
               const sortBy = searchParams.get("sortBy");
