@@ -40,7 +40,7 @@ export const upsertRootCategory = async (categoryData: any) => {
 
   if (articleCategories && articleCategories.length > 0) {
     data.articleCategories = {
-      connect: articleCategories
+      set: articleCategories
         .filter((categoryId: any) => !isNaN(parseInt(categoryId)))
         .map((categoryId: any) => ({
           id: parseInt(categoryId),
@@ -50,7 +50,7 @@ export const upsertRootCategory = async (categoryData: any) => {
 
   if (productCategories && productCategories.length > 0) {
     data.productCategories = {
-      connect: productCategories
+      set: productCategories
         .filter((categoryId: any) => !isNaN(parseInt(categoryId)))
         .map((categoryId: any) => ({
           id: parseInt(categoryId),

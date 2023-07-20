@@ -18,7 +18,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     status: url.searchParams.get("status")?.toString() || undefined,
     email: url.searchParams.get("userEmail")?.toString() || undefined,
     page: Number(url.searchParams.get("pageNumber")) || 1,
-    perPage: Number(url.searchParams.get("itemsPerPage")) || 10,
+    perPage: Number(url.searchParams.get("perPage")) || 10,
   };
 
   const { orders, totalPages } = await searchOrders(searchQuery);

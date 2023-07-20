@@ -110,7 +110,7 @@ const App = () => {
                     onClick={() =>
                       navigate({
                         pathname: "/products",
-                        search: `?rootCategory=${id}`,
+                        search: `?rootCategory=${name}`,
                       })
                     }
                   >
@@ -155,7 +155,7 @@ const App = () => {
                 onClick={() =>
                   navigate({
                     pathname: "/products",
-                    search: `?rootCategory=${id}`,
+                    search: `?rootCategory=${name}`,
                   })
                 }
               >

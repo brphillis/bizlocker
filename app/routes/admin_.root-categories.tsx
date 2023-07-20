@@ -25,7 +25,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     articlecategoryname:
       url.searchParams.get("articleCategory")?.toString() || undefined,
     page: Number(url.searchParams.get("pageNumber")) || 1,
-    perPage: Number(url.searchParams.get("itemsPerPage")) || 10,
+    perPage: Number(url.searchParams.get("perPage")) || 10,
   };
 
   const { rootCategories, totalPages } = await searchRootCategories(
@@ -106,7 +106,7 @@ const ManageRootCategories = () => {
               {rootCategories?.map(({ id, name }: RootCategory, i) => {
                 return (
                   <tr
-                    className="hover cursor-pointer"
+                    className="cursor-pointer transition-colors duration-200 hover:bg-base-100"
                     key={id}
                     onClick={() => navigate(`/admin/root-categories/${id}`)}
                   >

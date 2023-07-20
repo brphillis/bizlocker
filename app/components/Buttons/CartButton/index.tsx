@@ -35,7 +35,7 @@ const CartButton = ({ id: cartId, cartItems }: Cart) => {
       {/* CART MODAL */}
       <div
         tabIndex={0}
-        className="dropdown-content mr-3 mt-3 w-max min-w-[300px] overflow-hidden rounded-none border border-white/20 bg-base-100 shadow"
+        className="dropdown-content mr-3 mt-3 w-max min-w-[300px] overflow-hidden rounded-none bg-base-100 shadow"
       >
         <Form method="POST" className="mb-6 flex flex-col gap-3">
           <div className="mt-3 text-center font-bold">Your Cart</div>
@@ -58,7 +58,7 @@ const CartButton = ({ id: cartId, cartItems }: Cart) => {
                 return (
                   <div
                     key={"cartButton_item_" + variant + "_" + index}
-                    className="relative mb-1 flex w-full flex-col items-center justify-center gap-1 bg-base-300/50 px-3 py-3"
+                    className="relative mx-3 mb-1 flex flex-col items-center justify-center gap-1 bg-brand-black/90 px-3 py-3 text-brand-white"
                   >
                     {variantId && (
                       <CartAddSubtractButton
@@ -91,7 +91,7 @@ const CartButton = ({ id: cartId, cartItems }: Cart) => {
             <div className="mt-4 text-center">
               Order Total: ${totalPrice.toFixed(2)}
             </div>
-            <div className="mb-0 text-center text-[12px] text-white/50">
+            <div className="mb-0 text-center text-[12px] text-base-content">
               inc GST - ex Delivery
             </div>
           </ul>
@@ -99,7 +99,7 @@ const CartButton = ({ id: cartId, cartItems }: Cart) => {
           <div className="absolute bottom-0 left-1/2 my-3 flex w-full translate-x-[-50%] flex-col gap-1 px-3">
             <button
               type="button"
-              className="lg btn-success btn-md relative bottom-[-1px] pr-4 font-bold tracking-wide !text-white"
+              className="lg btn-md relative bottom-[-1px] bg-primary pr-4 font-bold tracking-wide !text-white"
               onClick={() => navigate(`/cart`)}
             >
               Buy Now

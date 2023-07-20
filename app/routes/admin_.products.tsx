@@ -78,7 +78,7 @@ const ManageProducts = () => {
         <ProductSort />
 
         <div className="w-full max-w-[80vw] overflow-x-auto">
-          <table className="table-zebra table-sm my-3 table">
+          <table className="table-sm my-3 table">
             <thead className="sticky top-0">
               <tr>
                 {currentPage && <th>#</th>}
@@ -107,7 +107,7 @@ const ManageProducts = () => {
                   ) => {
                     return (
                       <tr
-                        className="hover cursor-pointer"
+                        className="cursor-pointer transition-colors duration-200 hover:bg-base-100"
                         key={"product" + id}
                         onClick={() => navigate(`/admin/products/${id}`)}
                       >

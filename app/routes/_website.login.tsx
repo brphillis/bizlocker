@@ -63,52 +63,55 @@ export default function LoginPage() {
       />
       <Form
         method="POST"
-        className="w-max-content form-control relative w-[24rem] max-w-[98vw] rounded-lg bg-base-300 p-8"
+        className="w-max-content form-control relative w-[24rem] max-w-[98vw] rounded-lg bg-brand-black p-8 text-brand-white"
       >
         <h1 className="select-none pb-6 pt-3 text-center text-6xl font-bold tracking-wide text-white/90">
           CLUTCH.
         </h1>
         <div className="form-control">
           <label className="label">
-            <span className="label-text">Email</span>
+            <span className="label-text text-brand-white">Email</span>
           </label>
           <input
             name="email"
             type="text"
             placeholder="email"
-            className="input-bordered input"
+            className="input-bordered input bg-base-300 text-brand-black/50 focus:text-brand-black"
           />
         </div>
         <div className="form-control">
           <label className="label">
-            <span className="label-text">Password</span>
+            <span className="label-text text-brand-white">Password</span>
           </label>
           <input
             name="password"
             type="password"
             placeholder="password"
-            className="input-bordered input"
+            className="input-bordered input bg-base-300 text-brand-black/50 focus:text-brand-black"
           />
           <label className="label">
-            <div className="link-hover label-text-alt link">
+            <div className="link-hover label-text-alt link text-brand-white/75">
               Forgot password?
             </div>
           </label>
         </div>
 
-        {validationError?.length > 0 &&
-          validationError.map((error: string, i) => {
-            return (
-              <p
-                key={error + i}
-                className="my-2 text-center text-xs text-red-500/75"
-              >
-                {error}
-              </p>
-            );
-          })}
+        {validationError?.length > 0 && (
+          <div>
+            {validationError.map((error: string, i) => {
+              return (
+                <p
+                  key={error + i}
+                  className="my-2 text-center text-xs text-red-500"
+                >
+                  {error}
+                </p>
+              );
+            })}
+          </div>
+        )}
 
-        <div className="form-control mt-6 gap-3">
+        <div className="form-control mt-3 gap-3">
           <button
             type="submit"
             name="_action"
@@ -120,7 +123,7 @@ export default function LoginPage() {
           <NavLink to="/register" type="button" className="btn-primary btn">
             Create Account
           </NavLink>
-          <div className="divider !my-[0.1rem] w-full" />
+          <div className="my-2 w-full border-b-2 border-brand-white/10" />
           <LoginGoogle />
         </div>
       </Form>

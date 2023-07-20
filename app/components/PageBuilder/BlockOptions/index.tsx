@@ -9,7 +9,7 @@ const BlockOptions = ({ selectedBlock, defaultValues }: Props) => {
   return (
     <>
       {selectedBlock && selectedBlock !== "text" && (
-        <div className="w-full bg-base-300 px-2 py-3">
+        <div className="w-full bg-base-300 px-2 py-3 text-brand-white">
           <p className="px-1 pb-3 font-bold">Options</p>
           <div className="flex flex-wrap gap-3">
             {selectedBlock === "product" && (
@@ -19,7 +19,7 @@ const BlockOptions = ({ selectedBlock, defaultValues }: Props) => {
                 </label>
                 <select
                   name="sortBy"
-                  className=" select w-[95vw] max-w-full sm:w-[215px]"
+                  className=" select w-[95vw] max-w-full text-brand-black sm:w-[215px]"
                   placeholder="Select a Type"
                   defaultValue={sortBy as string}
                 >
@@ -39,7 +39,7 @@ const BlockOptions = ({ selectedBlock, defaultValues }: Props) => {
                 </label>
                 <select
                   name="sortOrder"
-                  className=" select w-[95vw] max-w-full sm:w-[215px]"
+                  className=" select w-[95vw] max-w-full text-brand-black sm:w-[215px]"
                   placeholder="Select a Type"
                   defaultValue={sortOrder as string}
                 >
@@ -59,7 +59,7 @@ const BlockOptions = ({ selectedBlock, defaultValues }: Props) => {
                 </label>
                 <select
                   name="size"
-                  className=" select w-[95vw] max-w-full sm:w-[215px]"
+                  className=" select w-[95vw] max-w-full text-brand-black sm:w-[215px]"
                   placeholder="Select a Type"
                   defaultValue={size as string}
                 >
@@ -79,7 +79,7 @@ const BlockOptions = ({ selectedBlock, defaultValues }: Props) => {
                 <input
                   name="count"
                   type="number"
-                  className="input-bordered input w-[95vw] max-w-full sm:w-[215px]"
+                  className="input-bordered input w-[95vw] max-w-full text-brand-black sm:w-[215px]"
                   placeholder="Count"
                   defaultValue={count as number}
                 />
@@ -94,7 +94,7 @@ const BlockOptions = ({ selectedBlock, defaultValues }: Props) => {
                 <input
                   name="rows"
                   type="number"
-                  className="input-bordered input w-[95vw] max-w-full sm:w-[215px]"
+                  className="input-bordered input w-[95vw] max-w-full text-brand-black sm:w-[215px]"
                   placeholder="Rows"
                   defaultValue={rows as number}
                 />
@@ -109,7 +109,7 @@ const BlockOptions = ({ selectedBlock, defaultValues }: Props) => {
                 <input
                   name="columns"
                   type="number"
-                  className="input-bordered input w-[95vw] max-w-full sm:w-[215px]"
+                  className="input-bordered input w-[95vw] max-w-full text-brand-black sm:w-[215px]"
                   placeholder="Columns"
                   defaultValue={columns as number}
                 />

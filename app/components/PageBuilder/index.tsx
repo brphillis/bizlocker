@@ -199,7 +199,7 @@ const PageBuilder = ({
                 </label>
                 <select
                   name="blockName"
-                  className=" select w-[95vw] max-w-full sm:w-[215px]"
+                  className=" select w-[95vw] max-w-full text-brand-black/50 sm:w-[215px]"
                   defaultValue={selectedBlock}
                   placeholder="Select Block"
                   onChange={(e) => {

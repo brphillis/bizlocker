@@ -42,7 +42,7 @@ const Articles = () => {
 
   return (
     <AdminPageWrapper>
-      <Form method="GET" className="relative h-full w-full bg-base-300 p-6">
+      <Form method="GET" className="relative h-full w-full bg-base-200 p-6">
         <AdminPageHeader title="Manage Users" addButtonText="Add User" />
 
         <div className="mt-3 flex flex-col">
@@ -113,7 +113,7 @@ const Articles = () => {
 
                     return (
                       <tr
-                        className="hover cursor-pointer"
+                        className="cursor-pointer transition-colors duration-200 hover:bg-base-100"
                         key={id}
                         onClick={() => navigate(`/admin/users/${id}`)}
                       >

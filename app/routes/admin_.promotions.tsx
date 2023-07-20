@@ -14,7 +14,6 @@ import { searchPromotions } from "~/models/promotions.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
-  console.log(url);
 
   const { promotions, totalPages } = await searchPromotions(undefined, url);
 
@@ -90,7 +89,7 @@ const Promotions = () => {
                 ) => {
                   return (
                     <tr
-                      className="hover cursor-pointer"
+                      className="cursor-pointer transition-colors duration-200 hover:bg-base-100"
                       key={id}
                       onClick={() => navigate(`/admin/promotions/${id}`)}
                     >

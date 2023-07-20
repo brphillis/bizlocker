@@ -74,7 +74,7 @@ const Cart = () => {
                 const { name } = product;
                 return (
                   <div
-                    className="relative flex w-[420px] max-w-[100vw] flex-row items-center bg-base-300 p-3"
+                    className="relative flex w-[420px] max-w-[100vw] flex-row items-center bg-brand-black p-3 text-brand-white"
                     key={"cartItem-" + product.name}
                   >
                     <img
@@ -118,13 +118,14 @@ const Cart = () => {
 
         <Form
           method="POST"
-          className="order-1 flex !min-w-[100vw] flex-col items-center justify-center bg-base-300 px-3 py-6 md:order-2 md:!min-w-[400px]"
+          className="order-1 flex !min-w-[100vw] flex-col items-center justify-center bg-brand-black px-3 py-6 text-brand-white md:order-2 md:!min-w-[400px]"
         >
           <div className="hidden select-none text-center md:block">
             <h1 className="text-3xl">Your Cart</h1>
             <div className="opacity-50">Track your Order History</div>
           </div>
-          <div className="divider !mb-0 w-full" />
+
+          <div className="mt-6 h-1 w-full border-t-2 border-brand-white/10" />
 
           <div className="flex flex-col py-3 text-center">
             <div>Sub Total: $ {orderTotal.toFixed(2)} </div>
@@ -136,7 +137,7 @@ const Cart = () => {
             <select
               name="rootCategory"
               title="category"
-              className=" select mt-3 w-[215px] !font-normal text-white/50"
+              className=" select mt-3 w-[215px] !font-normal text-brand-black/50"
               placeholder="Select a Value"
               defaultValue=""
             >
@@ -155,8 +156,10 @@ const Cart = () => {
           >
             Continue to Checkout
           </button>
-          <div className="divider w-full" />
-          <div className="flex select-none flex-col items-center gap-3">
+
+          <div className="mt-6 h-1 w-full border-t-2 border-brand-white/10" />
+
+          <div className="mt-3 flex select-none flex-col items-center gap-3">
             <div className="flex flex-row gap-6 px-6 py-3">
               <img
                 className="h-6 w-auto rounded-md bg-white/75 p-1"

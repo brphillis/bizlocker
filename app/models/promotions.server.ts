@@ -197,10 +197,8 @@ export const searchPromotions = async (
     1;
   const perPage =
     (formData?.perPage && parseInt(formData.perPage as string)) ||
-    (url && Number(url.searchParams.get("itemsPerPage"))) ||
+    (url && Number(url.searchParams.get("perPage"))) ||
     10;
-
-  console.log("NAME", name);
 
   const skip = (pageNumber - 1) * perPage;
   const take = perPage;

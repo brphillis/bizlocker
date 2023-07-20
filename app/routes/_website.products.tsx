@@ -47,7 +47,10 @@ const Products = () => {
   return (
     <PageWrapper>
       {campaign && <BannerBlock image={campaign?.bannerImage} />}
-      <ProductGrid products={products} />
+      <ProductGrid
+        products={products}
+        totalCount={products.length * totalPages}
+      />
       <Pagination totalPages={totalPages} />
     </PageWrapper>
   );

@@ -184,11 +184,13 @@ export const updatePageBlock = async (
             data: {
               rootCategory: rootCategory
                 ? { connect: { id: parseInt(rootCategory) } }
-                : undefined,
+                : { disconnect: true },
               productCategory: productCategory
                 ? { connect: { id: parseInt(productCategory) } }
-                : undefined,
-              brand: brand ? { connect: { id: parseInt(brand) } } : undefined,
+                : { disconnect: true },
+              brand: brand
+                ? { connect: { id: parseInt(brand) } }
+                : { disconnect: true },
             },
           });
 

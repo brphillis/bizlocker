@@ -215,7 +215,7 @@ export const searchArticles = async (
     1;
   const perPage =
     (formData?.perPage && parseInt(formData.perPage as string)) ||
-    (url && Number(url.searchParams.get("itemsPerPage"))) ||
+    (url && Number(url.searchParams.get("perPage"))) ||
     10;
 
   const skip = (pageNumber - 1) * perPage;

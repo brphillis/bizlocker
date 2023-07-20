@@ -57,7 +57,7 @@ const SearchBar = ({ rootCategories, brands }: Props) => {
             <option value="">By Category</option>
             {rootCategories?.map(({ id, name }: RootCategory) => {
               return (
-                <option key={name + id} value={id}>
+                <option key={name + id} value={name}>
                   {name}
                 </option>
               );
@@ -82,7 +82,7 @@ const SearchBar = ({ rootCategories, brands }: Props) => {
               <option value="">By Range</option>
               {subCategories?.map(({ id, name }: ProductCategory) => {
                 return (
-                  <option key={name + id} value={id}>
+                  <option key={name + id} value={name}>
                     {name}
                   </option>
                 );
@@ -109,7 +109,7 @@ const SearchBar = ({ rootCategories, brands }: Props) => {
             <option value="">By Brand</option>
             {brands?.map(({ id, name }: Brand) => {
               return (
-                <option key={name + id} value={id}>
+                <option key={name + id} value={name}>
                   {name}
                 </option>
               );

@@ -51,7 +51,7 @@ const AdminLogin = () => {
       />
       <Form
         method="POST"
-        className="w-max-content form-control relative w-[24rem] max-w-[98vw] rounded-lg bg-base-300 p-8"
+        className="w-max-content form-control relative w-[24rem] max-w-[98vw] rounded-lg bg-brand-black p-8 text-brand-white"
       >
         <div className="flex flex-col items-center">
           <h1 className="select-none pb-6 pt-3 text-center text-6xl font-bold tracking-wide text-white/90">
@@ -62,24 +62,24 @@ const AdminLogin = () => {
         {/* <img src={image} className="mb-1 mt-1 h-[80px] select-none p-2" /> */}
         <div className="form-control">
           <label className="label">
-            <span className="label-text">Email</span>
+            <span className="label-text text-brand-white">Email</span>
           </label>
           <input
             name="email"
             type="text"
             placeholder="email"
-            className="input-bordered input"
+            className="input-bordered input text-brand-black/50 focus:text-brand-black"
           />
         </div>
         <div className="form-control">
           <label className="label">
-            <span className="label-text">Password</span>
+            <span className="label-text text-brand-white">Password</span>
           </label>
           <input
             name="password"
             type="password"
             placeholder="password"
-            className="input-bordered input"
+            className="input-bordered input text-brand-black/50 focus:text-brand-black"
           />
           <label className="label">
             <div className="link-hover label-text-alt link">
@@ -88,14 +88,14 @@ const AdminLogin = () => {
           </label>
         </div>
 
-        <div className="form-control mt-6 gap-3">
+        <div className="form-control gap-3">
           <button type="submit" className="btn-primary btn">
             Login
           </button>
           <NavLink to="/register" type="button" className="btn-primary btn">
             Create Account
           </NavLink>
-          <div className="divider !my-[0.1rem] w-full" />
+          <div className="my-2 w-full border-b-2 border-brand-white/10" />
           <p className="select-none text-center text-xs">
             Powered by BizLocker v0.1
           </p>

@@ -80,7 +80,7 @@ const Campaigns = () => {
                   ) => {
                     return (
                       <tr
-                        className="hover cursor-pointer"
+                        className="cursor-pointer transition-colors duration-200 hover:bg-base-100"
                         key={id}
                         onClick={() => navigate(`/admin/campaigns/${id}`)}
                       >

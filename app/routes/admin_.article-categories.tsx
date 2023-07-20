@@ -18,7 +18,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   const searchQuery = {
     name: url.searchParams.get("name")?.toString() || undefined,
     page: Number(url.searchParams.get("pageNumber")) || 1,
-    perPage: Number(url.searchParams.get("itemsPerPage")) || 10,
+    perPage: Number(url.searchParams.get("perPage")) || 10,
   };
 
   const { articleCategories, totalPages } = await searchArticleCategories(
@@ -82,7 +82,7 @@ const ArticleCategories = () => {
               {articleCategories?.map(({ id, name }: ArticleCategory, i) => {
                 return (
                   <tr
-                    className="hover cursor-pointer"
+                    className="cursor-pointer transition-colors duration-200 hover:bg-base-100"
                     onClick={() => navigate(`/admin/article-categories/${id}`)}
                     key={id}
                   >

@@ -78,7 +78,7 @@ const ProductCategories = () => {
                 productCategories.map(({ id, name }: ProductCategory, i) => {
                   return (
                     <tr
-                      className="hover cursor-pointer"
+                      className="cursor-pointer transition-colors duration-200 hover:bg-base-100"
                       onClick={() =>
                         navigate(`/admin/product-categories/${id}`)
                       }

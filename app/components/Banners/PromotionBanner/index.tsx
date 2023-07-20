@@ -25,15 +25,15 @@ const PromotionBanner = ({ promotion }: Props) => {
         className="max-w-screen w-full object-cover"
       />
       {targetGender && (
-        <div className="flex w-full justify-center gap-3 bg-brand-black py-1 text-brand-white">
+        <div className="flex w-full justify-center gap-3 bg-base-300 py-1 text-brand-black">
           <button
-            className="sm:text-md px-6 py-2 text-sm tracking-wide hover:bg-primary-content/10"
+            className="sm:text-md px-6 py-2 text-sm font-semibold tracking-wide hover:bg-primary-content/10"
             onClick={() => navigate(pathname)}
           >
             All Deals
           </button>
           <button
-            className="sm:text-md px-6 py-2 text-sm tracking-wide hover:bg-primary-content/10"
+            className="sm:text-md px-6 py-2 text-sm font-semibold tracking-wide hover:bg-primary-content/10"
             onClick={() => {
               searchParams.set("gender", "MALE");
               submit(searchParams, {
@@ -45,7 +45,7 @@ const PromotionBanner = ({ promotion }: Props) => {
             Mens
           </button>
           <button
-            className="sm:text-md px-6 py-2 text-sm tracking-wide hover:bg-primary-content/10"
+            className="sm:text-md px-6 py-2 text-sm font-semibold tracking-wide hover:bg-primary-content/10"
             onClick={() => {
               searchParams.set("gender", "FEMALE");
               submit(searchParams, {
@@ -57,7 +57,7 @@ const PromotionBanner = ({ promotion }: Props) => {
             Womans
           </button>
           <button
-            className="sm:text-md px-6 py-2 text-sm tracking-wide hover:bg-primary-content/10"
+            className="sm:text-md px-6 py-2 text-sm font-semibold tracking-wide hover:bg-primary-content/10"
             onClick={() => {
               searchParams.set("gender", "KIDS");
               submit(searchParams, {

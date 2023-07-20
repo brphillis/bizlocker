@@ -93,7 +93,7 @@ const Admin = () => {
                 </div>
               </summary>
               <div className="collapse-content">
-                <ul>
+                <ul className="text-white/75">
                   <li onClick={() => navigate("/admin/users")}>
                     <div className="hover:text-white">Users</div>
                   </li>
@@ -115,7 +115,7 @@ const Admin = () => {
                 </div>
               </summary>
               <div className="collapse-content">
-                <ul>
+                <ul className="text-white/75">
                   <li onClick={() => navigate("/admin/home-page")}>
                     <div className="hover:text-white">Home Page</div>
                   </li>
@@ -142,7 +142,7 @@ const Admin = () => {
                 </div>
               </summary>
               <div className="collapse-content">
-                <ul>
+                <ul className="text-white/75">
                   <li onClick={() => navigate("/admin/products")}>
                     <div className="hover:text-white">Products</div>
                   </li>
@@ -166,7 +166,7 @@ const Admin = () => {
                 </div>
               </summary>
               <div className="collapse-content">
-                <ul>
+                <ul className="text-white/75">
                   <li onClick={() => navigate("/admin/report-sales")}>
                     <div className="hover:text-white">Sales</div>
                   </li>
@@ -184,7 +184,7 @@ const Admin = () => {
                 </div>
               </summary>
               <div className="collapse-content">
-                <ul>
+                <ul className="text-white/75">
                   <li onClick={() => navigate("/admin/promotions")}>
                     <div className="hover:text-white">Promotions</div>
                   </li>

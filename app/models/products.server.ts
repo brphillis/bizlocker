@@ -305,7 +305,7 @@ export const searchProducts = async (
     1;
   const perPage =
     (formData?.perPage && parseInt(formData.perPage as string)) ||
-    (url && Number(url.searchParams.get("itemsPerPage"))) ||
+    (url && Number(url.searchParams.get("perPage"))) ||
     10;
 
   const skip = (pageNumber - 1) * perPage;
@@ -322,44 +322,92 @@ export const searchProducts = async (
   }
 
   if (rootCategory && !category) {
-    const productCategories = await prisma.productCategory.findMany({
-      where: {
-        rootCategory: {
-          id: parseInt(rootCategory as string),
+    if (isNaN(parseInt(rootCategory as string))) {
+      const productCategories = await prisma.productCategory.findMany({
+        where: {
+          rootCategory: {
+            name: {
+              equals: rootCategory as string,
+              mode: "insensitive", // Use 'insensitive' mode for case-insensitive comparison
+            },
+          },
         },
-      },
-      select: {
-        id: true,
-      },
-    });
+        select: {
+          name: true,
+        },
+      });
+      filter.productCategories = {
+        some: {
+          name: {
+            in: productCategories.map((category) => category.name),
+          },
+        },
+      };
+    } else {
+      const productCategories = await prisma.productCategory.findMany({
+        where: {
+          rootCategory: {
+            id: {
+              equals: parseInt(rootCategory as string),
+            },
+          },
+        },
+        select: {
+          id: true,
+        },
+      });
 
-    filter.productCategories = {
-      some: {
-        id: {
-          in: productCategories.map((category) => category.id),
+      filter.productCategories = {
+        some: {
+          id: {
+            in: productCategories.map((category) => category.id),
+          },
         },
-      },
-    };
+      };
+    }
   }
 
   if (category) {
-    filter.productCategories = {
-      some: {
-        id: parseInt(category as string),
-      },
-    };
+    if (isNaN(parseInt(category as string))) {
+      filter.productCategories = {
+        some: {
+          name: {
+            equals: category as string,
+            mode: "insensitive", // Use 'insensitive' mode for case-insensitive comparison
+          },
+        },
+      };
+    } else {
+      const categoryId = parseInt(category as string);
+      filter.productCategories = {
+        some: {
+          id: categoryId,
+        },
+      };
+    }
   }
 
   if (brand) {
-    filter.brand = {
-      id: parseInt(brand as string),
-    };
+    if (isNaN(parseInt(brand as string))) {
+      filter.brand = {
+        name: {
+          equals: brand as string,
+          mode: "insensitive", // Use 'insensitive' mode for case-insensitive comparison
+        },
+      };
+    } else {
+      const brandId = parseInt(brand as string);
+      filter.brand = {
+        id: brandId,
+      };
+    }
   }
 
   if (promotionId) {
+    const id = parseInt(promotionId as string);
     filter.promotion = {
       id: {
-        equals: parseInt(promotionId as string),
+        equals: id,
       },
     };
   }
