@@ -1,81 +1,71 @@
-import { useState } from "react";
-import { IoAdd, IoCartOutline, IoRemove } from "react-icons/io5";
-import { Form } from "react-router-dom";
+import { useSubmit } from "@remix-run/react";
+import { IoCart } from "react-icons/io5";
 
 const ProductCard = ({ name, images, variants, brand }: Product) => {
-  const [quantity, setQuantity] = useState<number>(1);
-  const { price } = variants[0] || {};
+  const submit = useSubmit();
+  const { id, price, isOnSale, salePrice } = variants[0] || {};
   const displayImage = images[0]?.url;
 
-  const handleChangeQuantity = (string: "add" | "subtract") => {
-    if (string === "add") {
-      setQuantity(quantity + 1);
-    }
-    if (string === "subtract" && quantity > 1) {
-      setQuantity(quantity - 1);
+  const handleAddToCart = () => {
+    if (id) {
+      const formData = new FormData();
+      formData.set("variantId", id.toString());
+      formData.set("quantity", "1");
+
+      submit(formData, { method: "POST", action: "/products" });
     }
   };
 
   return (
-    <Form
-      method="POST"
-      action="/products"
-      className="w-48 rounded-none bg-primary-content shadow lg:w-72"
-    >
-      <div
-        className="bg-fit relative flex h-32 w-full flex-col justify-between bg-gray-200 bg-contain bg-center p-4 lg:h-52"
-        style={{
-          backgroundImage: `url(${displayImage})`,
-        }}
-      >
-        {brand?.name !== "Generic" && (
-          <div className="absolute bottom-0 left-0 right-0 h-max w-full bg-base-300/20">
-            <p className="relative left-4 py-2 text-primary-content">
-              {brand?.name}
-            </p>
-          </div>
-        )}
-      </div>
-
-      <div className="flex flex-col items-center p-2">
-        <h1 className="mt-1 text-center text-neutral">{name}</h1>
-        <p className="mt-1 text-center text-neutral">${price?.toFixed(2)}</p>
-        <div className="mt-2 inline-flex items-center">
+    <div className="group flex w-full max-w-xs flex-col overflow-hidden bg-white">
+      <div className="relative flex h-72 w-56 overflow-hidden">
+        <img
+          className="absolute right-0 top-0 h-full w-full object-cover"
+          src={displayImage}
+          alt="product"
+        />
+        <div className="absolute bottom-0 mb-4 flex w-full justify-center space-x-4">
+          <div className="h-3 w-3 rounded-full border-2 border-white bg-white"></div>
+          <div className="h-3 w-3 rounded-full border-2 border-white bg-transparent"></div>
+          <div className="h-3 w-3 rounded-full border-2 border-white bg-transparent"></div>
+        </div>
+        <div className="absolute bottom-0 right-0 mb-4 mr-2 space-y-2 transition-all duration-300 group-hover:right-0">
+          {/* <button className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-900 text-white transition hover:bg-gray-700">
+            <IoHeart size={18} />
+          </button> */}
           <button
-            type="button"
-            className="inline-flex items-center rounded-l border border-r border-base-content/40 bg-primary-content px-2 py-1 text-info-content active:bg-base-content/50 disabled:opacity-50"
-            onClick={() => handleChangeQuantity("subtract")}
+            className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-900 text-white transition hover:bg-gray-700"
+            onClick={handleAddToCart}
           >
-            <IoRemove size={20} className="my-[2px]" />
-          </button>
-          <div className="inline-flex select-none items-center border-b border-t border-base-content/40 bg-primary-content px-4 py-1 text-info-content">
-            {quantity}
-          </div>
-          <button
-            type="button"
-            className="inline-flex items-center rounded-r border border-r border-base-content/40 bg-primary-content px-2 py-1 text-info-content active:bg-base-content/50 disabled:opacity-50"
-            onClick={() => handleChangeQuantity("add")}
-          >
-            <IoAdd size={20} className="my-[2px]" />
+            <IoCart size={18} />
           </button>
         </div>
-
-        <input
-          hidden
-          readOnly
-          name="variantId"
-          value={variants?.[0]?.id || ""}
-        />
-        <input hidden readOnly name="quantity" value={quantity || ""} />
-        <button
-          type="submit"
-          className="btn-primary btn mt-4 flex w-full items-center justify-center rounded disabled:opacity-50"
-        >
-          Add to order
-          <IoCartOutline size={24} className="ml-3 hidden lg:block" />
-        </button>
       </div>
-    </Form>
+      <div className="mt-2 text-left">
+        {brand && (
+          <h5 className="font-semibold tracking-tight text-gray-500">
+            {brand.name}
+          </h5>
+        )}
+        <h5 className="tracking-tight text-gray-500">{name}</h5>
+
+        <div className="mb-5">
+          <p>
+            <span className="text-sm font-bold text-gray-900">
+              ${isOnSale ? salePrice.toFixed(2) : price.toFixed(2)}&nbsp;
+            </span>
+            {isOnSale && (
+              <>
+                <span className="text-sm text-gray-400 line-through">
+                  ${price.toFixed(2)}
+                </span>
+                <span className="ml-1 text-sm text-gray-400">SALE</span>
+              </>
+            )}
+          </p>
+        </div>
+      </div>
+    </div>
   );
 };
 

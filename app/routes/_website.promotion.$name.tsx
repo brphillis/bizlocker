@@ -48,7 +48,10 @@ const Promotion = () => {
   return (
     <PageWrapper>
       <PromotionBanner promotion={promotion} />
-      <ProductGrid products={products} />
+      <ProductGrid
+        products={products}
+        totalCount={products.length * totalPages}
+      />
       <Pagination totalPages={totalPages} />
     </PageWrapper>
   );
