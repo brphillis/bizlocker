@@ -125,6 +125,7 @@ const SearchBar = ({ rootCategories, brands }: Props) => {
             searchParams.delete("rootCategory");
             searchParams.delete("productCategory");
             searchParams.delete("brand");
+            searchParams.delete("gender");
             submit(searchParams, {
               method: "GET",
               action: "/products",

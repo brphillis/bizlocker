@@ -244,10 +244,12 @@ export const searchCampaigns = async (
   return { campaigns, totalPages };
 };
 
-export const getRandomCampaign = async (productCategoryId?: string) => {
-  if (productCategoryId) {
-    const productCategory = await prisma.productCategory.findUnique({
-      where: { id: parseInt(productCategoryId) },
+export const getRandomCampaign = async (productCategoryIdOrName?: string) => {
+  let productCategory;
+
+  if (productCategoryIdOrName && isNaN(parseInt(productCategoryIdOrName))) {
+    productCategory = await prisma.productCategory.findFirst({
+      where: { name: productCategoryIdOrName },
       include: {
         campaigns: {
           include: {
@@ -257,38 +259,61 @@ export const getRandomCampaign = async (productCategoryId?: string) => {
         },
       },
     });
-
-    if (!productCategory) {
-      throw new Error(
-        `No ProductCategory found for the name: ${productCategoryId}`
-      );
-    }
-
-    const { campaigns } = productCategory;
-
-    if (campaigns.length === 0) {
-      return null;
-    }
-
-    const randomIndex = Math.floor(Math.random() * campaigns.length);
-    const randomCampaign = campaigns[randomIndex];
-
-    return randomCampaign;
-  } else {
-    const campaigns = await prisma.campaign.findMany({
+  } else if (
+    productCategoryIdOrName &&
+    !isNaN(parseInt(productCategoryIdOrName))
+  ) {
+    productCategory = await prisma.productCategory.findUnique({
+      where: { id: parseInt(productCategoryIdOrName as string) },
       include: {
-        bannerImage: true,
-        tileImage: true,
+        campaigns: {
+          include: {
+            bannerImage: true,
+            tileImage: true,
+          },
+        },
       },
     });
+  }
 
-    if (!campaigns || campaigns.length === 0) {
-      return null;
+  if (!productCategory) {
+    const randomCampaignAnyCategory = await getRandomCampaignAnyCategory();
+
+    if (randomCampaignAnyCategory) {
+      return randomCampaignAnyCategory;
     }
+  }
 
+  const { campaigns } = productCategory || {};
+
+  if (campaigns?.length === 0 || !campaigns) {
+    const randomCampaignAnyCategory = await getRandomCampaignAnyCategory();
+
+    if (randomCampaignAnyCategory) {
+      return randomCampaignAnyCategory;
+    }
+  } else {
     const randomIndex = Math.floor(Math.random() * campaigns.length);
     const randomCampaign = campaigns[randomIndex];
 
     return randomCampaign;
   }
+};
+
+const getRandomCampaignAnyCategory = async () => {
+  const campaigns = await prisma.campaign.findMany({
+    include: {
+      bannerImage: true,
+      tileImage: true,
+    },
+  });
+
+  if (!campaigns || campaigns.length === 0) {
+    return null;
+  }
+
+  const randomIndex = Math.floor(Math.random() * campaigns.length);
+  const randomCampaign = campaigns[randomIndex];
+
+  return randomCampaign;
 };

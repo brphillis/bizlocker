@@ -294,19 +294,21 @@ export const searchProducts = async (
   const category =
     formData?.productCategory || url?.searchParams.get("productCategory") || "";
   const brand = formData?.brand || url?.searchParams.get("brand") || "";
+  const gender = formData?.gender || url?.searchParams.get("gender") || "";
   const promotionId =
     formData?.promotionId || url?.searchParams.get("promotionId") || "";
   const sortBy = formData?.sortBy || url?.searchParams.get("sortBy") || "";
   const sortOrder =
     formData?.sortOrder || url?.searchParams.get("sortOrder") || "";
+
   const pageNumber =
     (formData?.pageNumber && parseInt(formData.pageNumber as string)) ||
-    (url && Number(url.searchParams.get("pageNumber"))) ||
+    Number(url?.searchParams.get("pageNumber")) ||
     1;
   const perPage =
     (formData?.perPage && parseInt(formData.perPage as string)) ||
-    (url && Number(url.searchParams.get("perPage"))) ||
-    10;
+    Number(url?.searchParams.get("perPage")) ||
+    8;
 
   const skip = (pageNumber - 1) * perPage;
   const take = perPage;
@@ -401,6 +403,10 @@ export const searchProducts = async (
         id: brandId,
       };
     }
+  }
+
+  if (gender) {
+    filter.gender = gender as string;
   }
 
   if (promotionId) {

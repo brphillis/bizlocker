@@ -18,7 +18,7 @@ const PromotionBanner = ({ promotion }: Props) => {
   const { name, bannerImage, targetGender } = promotion;
 
   return (
-    <div className="max-w-screen w-screen sm:w-[1280px]">
+    <div className="w-screen max-w-[100vw] sm:w-[1280px]">
       <img
         src={bannerImage?.url}
         alt={name + "_bannerImage"}
@@ -30,7 +30,7 @@ const PromotionBanner = ({ promotion }: Props) => {
             className="sm:text-md px-6 py-2 text-sm font-semibold tracking-wide hover:bg-primary-content/10"
             onClick={() => navigate(pathname)}
           >
-            All Deals
+            All
           </button>
           <button
             className="sm:text-md px-6 py-2 text-sm font-semibold tracking-wide hover:bg-primary-content/10"

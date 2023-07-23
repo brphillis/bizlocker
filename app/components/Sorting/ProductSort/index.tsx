@@ -14,72 +14,74 @@ const ProductSort = ({ totalCount }: Props) => {
   const [sortAsc, setSortAsc] = useState<boolean>(true);
 
   return (
-    <div className="mb-3 flex items-center justify-end gap-3 text-brand-black/50">
-      <p className="w-full text-sm">{totalCount} items found</p>
-      <select
-        className="select select-xs w-full max-w-[10rem] border border-brand-black/20 bg-base-100"
-        onChange={(e) => {
-          searchParams.set("sortBy", e.target.value);
-          const sortOrder = searchParams.get("sortOrder");
-          searchParams.set("sortOrder", sortOrder || "desc");
-          submit(searchParams, {
-            method: "GET",
-            action: pathname,
-          });
-        }}
-      >
-        <option value="totalSold">Popular</option>
-        <option value="createdAt">New</option>
-        <option value="price">Price</option>
-        <option value="name">Name</option>
-      </select>
-
-      {sortAsc && (
-        <div
-          className="flex h-[24px] cursor-pointer select-none items-center gap-1 border border-brand-black/20 bg-base-100 fill-current px-3"
-          onClick={() => {
-            if (sortAsc) {
-              const sortBy = searchParams.get("sortBy");
-              if (!sortBy) {
-                searchParams.set("sortBy", "popular");
-              }
-
-              setSortAsc(!sortAsc);
-              searchParams.set("sortOrder", "desc");
-              submit(searchParams, {
-                method: "GET",
-                action: pathname,
-              });
-            }
+    <div className="mb-3 flex max-w-full items-center justify-between gap-3 px-3 text-brand-black/50">
+      <p className="text-sm">{totalCount} items found</p>
+      <div className="flex gap-3">
+        <select
+          className="select select-xs w-28 border border-brand-black/20 bg-base-100"
+          onChange={(e) => {
+            searchParams.set("sortBy", e.target.value);
+            const sortOrder = searchParams.get("sortOrder");
+            searchParams.set("sortOrder", sortOrder || "desc");
+            submit(searchParams, {
+              method: "GET",
+              action: pathname,
+            });
           }}
         >
-          <IoTrendingUp size={20} />
-          <p className="text-xs">Asc</p>
-        </div>
-      )}
-      {!sortAsc && (
-        <div
-          className="flex h-[24px] cursor-pointer select-none items-center gap-1 border border-brand-black/20 bg-base-100 fill-current px-3"
-          onClick={() => {
-            if (!sortAsc) {
-              const sortBy = searchParams.get("sortBy");
-              if (!sortBy) {
-                searchParams.set("sortBy", "popular");
-              }
+          <option value="totalSold">Popular</option>
+          <option value="createdAt">New</option>
+          <option value="price">Price</option>
+          <option value="name">Name</option>
+        </select>
 
-              setSortAsc(!sortAsc);
-              searchParams.set("sortOrder", "asc");
-              submit(searchParams, {
-                method: "GET",
-                action: pathname,
-              });
-            }
-          }}
-        >
-          <IoTrendingDown size={20} />
-          <p className="text-xs">Desc</p>
-        </div>
-      )}
+        {sortAsc && (
+          <div
+            className="flex h-[24px] cursor-pointer select-none items-center gap-1 border border-brand-black/20 bg-base-100 fill-current px-3"
+            onClick={() => {
+              if (sortAsc) {
+                const sortBy = searchParams.get("sortBy");
+                if (!sortBy) {
+                  searchParams.set("sortBy", "popular");
+                }
+
+                setSortAsc(!sortAsc);
+                searchParams.set("sortOrder", "desc");
+                submit(searchParams, {
+                  method: "GET",
+                  action: pathname,
+                });
+              }
+            }}
+          >
+            <IoTrendingUp size={20} />
+            <p className="text-xs">Asc</p>
+          </div>
+        )}
+        {!sortAsc && (
+          <div
+            className="flex h-[24px] cursor-pointer select-none items-center gap-1 border border-brand-black/20 bg-base-100 fill-current px-3"
+            onClick={() => {
+              if (!sortAsc) {
+                const sortBy = searchParams.get("sortBy");
+                if (!sortBy) {
+                  searchParams.set("sortBy", "popular");
+                }
+
+                setSortAsc(!sortAsc);
+                searchParams.set("sortOrder", "asc");
+                submit(searchParams, {
+                  method: "GET",
+                  action: pathname,
+                });
+              }
+            }}
+          >
+            <IoTrendingDown size={20} />
+            <p className="text-xs">Desc</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

@@ -17,8 +17,8 @@ const ProductCard = ({ name, images, variants, brand }: Product) => {
   };
 
   return (
-    <div className="group flex w-full max-w-xs flex-col overflow-hidden bg-white">
-      <div className="relative flex h-72 w-56 overflow-hidden">
+    <div className="group flex w-48 max-w-[48vw] flex-col overflow-hidden bg-white sm:w-56">
+      <div className="relative flex h-64 w-full max-w-full overflow-hidden sm:h-72">
         <img
           className="absolute right-0 top-0 h-full w-full object-cover"
           src={displayImage}
@@ -34,7 +34,7 @@ const ProductCard = ({ name, images, variants, brand }: Product) => {
             <IoHeart size={18} />
           </button> */}
           <button
-            className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-900 text-white transition hover:bg-gray-700"
+            className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-black text-white transition hover:bg-gray-700"
             onClick={handleAddToCart}
           >
             <IoCart size={18} />

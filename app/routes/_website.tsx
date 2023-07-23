@@ -8,7 +8,7 @@ import { cssBundleHref } from "@remix-run/css-bundle";
 import CartButton from "~/components/Buttons/CartButton";
 import { getRootCategories } from "~/models/rootCategories.server";
 import AccountButton from "~/components/Buttons/AccountButton";
-import { IoHomeSharp, IoMenu, IoSearchOutline } from "react-icons/io5";
+import { IoMenu, IoSearchOutline } from "react-icons/io5";
 import {
   Outlet,
   useLoaderData,
@@ -72,7 +72,10 @@ const App = () => {
       <div className="!max-w-screen min-w-screen drawer-content relative flex min-h-[calc(100vh-64px)] flex-col items-center justify-start overflow-x-hidden">
         <div className="navbar relative w-full bg-brand-black">
           <div className="flex-none lg:hidden">
-            <label htmlFor="my-drawer-3" className="btn-ghost btn-square btn">
+            <label
+              htmlFor="my-drawer-3"
+              className="btn-ghost btn-square btn text-brand-white/50"
+            >
               <IoMenu size={26} />
             </label>
             <div className="absolute right-6 flex gap-6">
@@ -81,7 +84,7 @@ const App = () => {
 
               <IoSearchOutline
                 className={
-                  "cursor-pointer text-brand-white" +
+                  "cursor-pointer text-brand-white " +
                   (!user && "relative bottom-0 right-20 top-0")
                 }
                 size={24}
@@ -91,12 +94,10 @@ const App = () => {
           </div>
 
           <div className="mx-2 flex flex-1 flex-row gap-4 px-2 font-bold">
-            <IoHomeSharp
-              size={48}
-              className="cursor-pointer bg-primary p-3 text-primary-content transition-all duration-200 hover:scale-105"
+            <h1
+              className="cursor-pointer select-none text-xl font-bold tracking-widest text-white"
               onClick={() => navigate("/")}
-            />
-            <h1 className="select-none text-xl font-bold tracking-widest text-white">
+            >
               CLUTCH.
             </h1>
           </div>
@@ -146,7 +147,7 @@ const App = () => {
       </div>
       <div className="drawer-side">
         <label htmlFor="my-drawer-3" className="drawer-overlay"></label>
-        <ul className="menu w-80 bg-base-100 p-4">
+        <ul className="z-100 menu min-h-[100vh] w-64 bg-brand-black p-4 text-brand-white">
           {rootCategories?.map(({ id, name }: RootCategory) => {
             return (
               <li
