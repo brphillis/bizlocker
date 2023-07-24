@@ -7,6 +7,7 @@ type Props = {
   rootCategories: RootCategory[];
   productCategories: ProductCategory[];
   brands: Brand[];
+  defaultValues: ProductBlockContent;
 };
 
 const ProductBlockOptions = ({
@@ -14,18 +15,30 @@ const ProductBlockOptions = ({
   rootCategories,
   productCategories,
   brands,
+  defaultValues,
 }: Props) => {
   return (
     <>
       {selectedBlock === "product" && (
-        <div className=" w-full bg-base-300 px-2 py-3">
-          <p className="px-1 pb-3 font-bold">Product Block Filters</p>
+        <div className="w-full bg-base-300/50 px-2 pb-3">
+          <p className="mb-3 px-1 pt-3 font-semibold text-brand-black">
+            Filters
+          </p>
           <div className="flex flex-wrap gap-3">
-            <SelectRootCategory rootCategories={rootCategories} />
+            <SelectRootCategory
+              rootCategories={rootCategories}
+              defaultValue={defaultValues?.rootCategoryId?.toString()}
+            />
 
-            <SelectProductCategory productCategories={productCategories} />
+            <SelectProductCategory
+              productCategories={productCategories}
+              defaultValue={defaultValues?.productCategoryId?.toString()}
+            />
 
-            <SelectBrand brands={brands} />
+            <SelectBrand
+              brands={brands}
+              defaultValue={defaultValues?.brandId?.toString()}
+            />
           </div>
         </div>
       )}

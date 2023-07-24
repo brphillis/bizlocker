@@ -49,6 +49,7 @@ const UploadTileImage = ({ valueToChange }: Props) => {
               convertedImage && setTileImage(convertedImage);
             }}
           />
+
           <input
             type="hidden"
             name="tileImage"

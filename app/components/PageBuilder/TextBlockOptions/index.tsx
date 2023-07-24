@@ -13,11 +13,10 @@ const TextBlockOptions = ({ selectedBlock, defaultValue }: Props) => {
     <>
       {selectedBlock === "text" && (
         <div className="w-full overflow-x-auto">
-          <div className="divider my-0 w-full py-0" />
           <RichTextEditor
             value={stringData}
             onChange={setStringData}
-            className="mb-12 mt-6 h-[320px]"
+            className="mb-12 mt-3 h-[320px]"
           />
 
           <input name="stringData" value={stringData} hidden readOnly />

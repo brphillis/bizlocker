@@ -202,6 +202,7 @@ type Product = {
   updatedAt: Date;
   productCategories: ProductCategory[];
   brand?: Brand | null;
+  brandId?: number;
   variants: ProductVariant[];
   totalSold?: number;
   isActive?: boolean;
@@ -216,6 +217,7 @@ type ProductCategory = {
   image?: Image;
   imageId?: number;
   rootCategory?: RootCategory | null;
+  rootCategoryId?: number;
 };
 
 type Brand = {
@@ -385,8 +387,11 @@ interface ProductBlockContent {
   productBlock?: ProductBlock;
   productBlockId?: string;
   rootCategory?: RootCategory;
+  rootCategoryId?: number;
   productCategory?: ProductCategory;
+  productCategoryId?: number;
   brand?: Brand;
+  brandId?: number;
   createdAt: Date;
   updatedAt: Date;
 }

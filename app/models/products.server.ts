@@ -295,6 +295,8 @@ export const searchProducts = async (
     formData?.productCategory || url?.searchParams.get("productCategory") || "";
   const brand = formData?.brand || url?.searchParams.get("brand") || "";
   const gender = formData?.gender || url?.searchParams.get("gender") || "";
+  const color = formData?.color || url?.searchParams.get("color") || "";
+  const onSale = formData?.onSale || url?.searchParams.get("onSale") || "";
   const promotionId =
     formData?.promotionId || url?.searchParams.get("promotionId") || "";
   const sortBy = formData?.sortBy || url?.searchParams.get("sortBy") || "";
@@ -407,6 +409,24 @@ export const searchProducts = async (
 
   if (gender) {
     filter.gender = gender as string;
+  }
+
+  if (color) {
+    filter.variants = {
+      some: {
+        color: {
+          equals: color,
+        },
+      },
+    };
+  }
+
+  if (onSale) {
+    filter.variants = {
+      some: {
+        isOnSale: true,
+      },
+    };
   }
 
   if (promotionId) {

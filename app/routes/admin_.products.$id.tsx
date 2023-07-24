@@ -166,7 +166,10 @@ const Product = () => {
                 />
               </div>
 
-              <SelectBrand brands={brands} valueToChange={product} />
+              <SelectBrand
+                brands={brands}
+                defaultValue={product?.brandId?.toString()}
+              />
             </div>
 
             <div className="flex flex-wrap justify-evenly gap-3">

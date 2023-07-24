@@ -60,7 +60,12 @@ export const updatePageBlock = async (
     orderBy: { order: "asc" },
     include: {
       bannerBlock: true,
-      tileBlock: true,
+      tileBlock: {
+        include: {
+          campaigns: true,
+          promotions: true,
+        },
+      },
       textBlock: true,
       productBlock: true,
     },
@@ -76,6 +81,7 @@ export const updatePageBlock = async (
     if (blockName === "banner" && contentData) {
       const bannerBlock = blockToUpdate.bannerBlock;
       if (bannerBlock) {
+        // Disconnect existing promotions and campaigns
         await prisma.bannerBlock.update({
           where: { id: bannerBlock.id },
           data: {
@@ -111,20 +117,24 @@ export const updatePageBlock = async (
     } else if (blockName === "tile" && contentData) {
       const tileBlock = blockToUpdate.tileBlock;
       if (tileBlock) {
+        // Find the current connected promotions and campaigns to disconnect them
+        const existingPromotions = tileBlock.promotions.map((p) => ({
+          id: p.id,
+        }));
+        const existingCampaigns = tileBlock.campaigns.map((c) => ({
+          id: c.id,
+        }));
+
+        // Disconnect existing promotions and campaigns
         await prisma.tileBlock.update({
           where: { id: tileBlock.id },
           data: {
-            promotions:
-              contentType === "promotion"
-                ? { connect: contentData.map((p) => ({ id: p.id })) }
-                : undefined,
-            campaigns:
-              contentType === "campaign"
-                ? { connect: contentData.map((c) => ({ id: c.id })) }
-                : undefined,
+            promotions: { disconnect: existingPromotions },
+            campaigns: { disconnect: existingCampaigns },
           },
         });
 
+        // Fetch the updated tileBlock with promotions and campaigns
         const updatedTileBlock = await prisma.tileBlock.update({
           where: { id: tileBlock.id },
           data: {
@@ -138,8 +148,18 @@ export const updatePageBlock = async (
                 ? { connect: contentData.map((c) => ({ id: c.id })) }
                 : undefined,
           },
+          // Fetch the promotions field along with other necessary fields
+          select: {
+            id: true,
+            name: true,
+            type: true,
+            createdAt: true,
+            updatedAt: true,
+            promotions: true,
+          },
         });
 
+        // Update the block to connect to the updated tileBlock and disconnect the bannerBlock
         await prisma.block.update({
           where: { id: blockToUpdate.id },
           data: {

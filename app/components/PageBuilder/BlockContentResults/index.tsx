@@ -1,4 +1,5 @@
 import { useSearchParams } from "@remix-run/react";
+import { useEffect } from "react";
 
 import { IoCaretForwardCircleSharp, IoCloseCircle } from "react-icons/io5";
 import { capitalizeFirst } from "~/utility/stringHelpers";
@@ -38,6 +39,10 @@ const BlockContentResults = ({
       ])(selectedItems)
     );
   };
+
+  useEffect(() => {
+    console.log(selectedItems);
+  }, [selectedItems]);
 
   return (
     <>

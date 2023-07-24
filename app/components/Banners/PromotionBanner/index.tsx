@@ -22,7 +22,7 @@ const PromotionBanner = ({ promotion }: Props) => {
       <img
         src={bannerImage?.url}
         alt={name + "_bannerImage"}
-        className="max-w-screen w-full object-cover"
+        className="max-w-screen h-[146px] w-full object-cover"
       />
       {targetGender && (
         <div className="flex w-full justify-center gap-3 bg-base-200/50 py-1 text-brand-black">

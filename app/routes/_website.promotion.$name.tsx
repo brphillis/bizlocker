@@ -15,6 +15,7 @@ import { getAvailableColors } from "~/models/enums.server";
 import { getProductCategories } from "~/models/productCategories.server";
 import { searchProducts } from "~/models/products.server";
 import { getPromotion } from "~/models/promotions.server";
+import { getRootCategories } from "~/models/rootCategories.server";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const url = new URL(request.url);
@@ -28,6 +29,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
       url
     );
     if (promotion?.isActive) {
+      const rootCategories = await getRootCategories();
       const productCategories = await getProductCategories();
       const brands = await getBrands();
       const colors = await getAvailableColors();
@@ -36,6 +38,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
         promotion,
         products,
         totalPages,
+        rootCategories,
         productCategories,
         brands,
         colors,
@@ -54,11 +57,20 @@ export const action = async ({ request }: ActionArgs) => {
 };
 
 const Promotion = () => {
-  const { promotion, products, totalPages, productCategories, brands, colors } =
+  const {
+    promotion,
+    products,
+    totalPages,
+    rootCategories,
+    productCategories,
+    brands,
+    colors,
+  } =
     (useLoaderData() as {
       promotion: Promotion;
       products: Product[];
       totalPages: number;
+      rootCategories: RootCategory[];
       productCategories: ProductCategory[];
       brands: Brand[];
       colors: string[];
@@ -71,8 +83,9 @@ const Promotion = () => {
         <ProductSort totalCount={products.length * totalPages} />
         <div className="my-3 w-full border-b border-brand-black/20" />
 
-        <div className="flex w-screen items-start justify-center gap-6 px-0 py-3 sm:w-full">
+        <div className="flex w-screen flex-wrap items-start justify-center gap-3 px-0 sm:w-full xl:flex-nowrap">
           <ProductFilterSideBar
+            rootCategories={rootCategories}
             productCategories={productCategories}
             brands={brands}
             colors={colors}

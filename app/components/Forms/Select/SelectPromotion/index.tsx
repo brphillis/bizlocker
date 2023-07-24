@@ -27,7 +27,7 @@ const SelectPromotion = ({ promotions, valueToChange }: Props) => {
         onChange={(e) => {
           const selectedPromotionId = e.target.value;
           const selectedPromotion = promotions.find(
-            (promotion) => promotion.id === selectedPromotionId
+            (promotion) => promotion.id === Number(selectedPromotionId)
           );
           if (selectedPromotion) {
             setPromotionDiscount(String(selectedPromotion.discountPercentage));

@@ -39,18 +39,17 @@ const UploadBannerImage = ({ valueToChange }: Props) => {
             </div>
           )}
 
-          {bannerImage && (
-            <input
-              name="bannerImageUpload"
-              type="file"
-              accept="image/*"
-              className="file-input-bordered file-input mt-3 w-[120px] bg-primary/50 text-brand-white sm:w-[440px]"
-              onChange={async (e) => {
-                const convertedImage = await ConvertToBase64(e);
-                convertedImage && setBannerImage(convertedImage);
-              }}
-            />
-          )}
+          <input
+            name="bannerImageUpload"
+            type="file"
+            accept="image/*"
+            className="file-input-bordered file-input mt-3 w-[120px] bg-primary/50 text-brand-white sm:w-[440px]"
+            onChange={async (e) => {
+              const convertedImage = await ConvertToBase64(e);
+              convertedImage && setBannerImage(convertedImage);
+            }}
+          />
+
           <input
             type="hidden"
             name="bannerImage"

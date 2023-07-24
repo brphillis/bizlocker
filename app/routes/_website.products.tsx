@@ -16,11 +16,13 @@ import { addToCart } from "~/models/cart.server";
 import { getAvailableColors } from "~/models/enums.server";
 import { getProductCategories } from "~/models/productCategories.server";
 import { searchProducts } from "~/models/products.server";
+import { getRootCategories } from "~/models/rootCategories.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
 
   const { products, totalPages } = await searchProducts(undefined, url);
+  const rootCategories = await getRootCategories();
   const productCategories = await getProductCategories();
   const brands = await getBrands();
   const colors = await getAvailableColors();
@@ -28,7 +30,15 @@ export const loader = async ({ request }: LoaderArgs) => {
   const productCategory = url.searchParams.get("productCategory")?.toString();
   const campaign = await getRandomCampaign(productCategory);
 
-  return { campaign, products, totalPages, productCategories, brands, colors };
+  return {
+    campaign,
+    products,
+    totalPages,
+    rootCategories,
+    productCategories,
+    brands,
+    colors,
+  };
 };
 
 export const action = async ({ request }: ActionArgs) => {
@@ -45,15 +55,23 @@ export const action = async ({ request }: ActionArgs) => {
 };
 
 const Products = () => {
-  const { campaign, products, totalPages, productCategories, brands, colors } =
-    useLoaderData() as {
-      campaign: Campaign;
-      products: Product[];
-      totalPages: number;
-      productCategories: ProductCategory[];
-      brands: Brand[];
-      colors: string[];
-    };
+  const {
+    campaign,
+    products,
+    totalPages,
+    rootCategories,
+    productCategories,
+    brands,
+    colors,
+  } = useLoaderData() as {
+    campaign: Campaign;
+    products: Product[];
+    totalPages: number;
+    rootCategories: RootCategory[];
+    productCategories: ProductCategory[];
+    brands: Brand[];
+    colors: string[];
+  };
 
   return (
     <PageWrapper>
@@ -63,8 +81,9 @@ const Products = () => {
         <ProductSort totalCount={products.length * totalPages} />
         <div className="my-3 w-full border-b border-brand-black/20" />
 
-        <div className="flex w-screen items-start justify-center gap-6 px-0 py-3 sm:w-full">
+        <div className="flex w-screen flex-wrap items-start justify-center gap-3 px-0 sm:w-full xl:flex-nowrap">
           <ProductFilterSideBar
+            rootCategories={rootCategories}
             productCategories={productCategories}
             brands={brands}
             colors={colors}

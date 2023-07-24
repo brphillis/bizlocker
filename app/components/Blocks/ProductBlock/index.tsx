@@ -78,15 +78,17 @@ const ProductBlock = ({ content, options }: Props) => {
     }
   };
 
+  const columns = options.columns ? options.columns : undefined;
+
   return (
     <>
-      <p className="mt-3 text-xl font-bold">
+      <p className="pl-3 text-xl font-bold md:pl-1">
         {options.sortBy ? determineSortPhrase(options.sortBy) : null}
         <span className="text-2xl">{determineDisplayedFilter(content[0])}</span>
       </p>
 
       {currentProducts && (
-        <ProductGrid products={currentProducts} sort={false} />
+        <ProductGrid products={currentProducts} cols={columns} />
       )}
     </>
   );

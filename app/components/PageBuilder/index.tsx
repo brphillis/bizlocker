@@ -97,8 +97,6 @@ const PageBuilder = ({
     <Form className="max-w-screen w-full" method="POST">
       <input name="pageId" value={page.id} hidden readOnly />
       <input name="itemIndex" value={editingIndex.toString()} hidden readOnly />
-
-      <div className="divider w-full" />
       {!editingContent && (
         <div className="flex w-full max-w-full flex-col items-center overflow-x-hidden">
           <div className="scrollbar-hide w-full overflow-x-auto">
@@ -192,14 +190,16 @@ const PageBuilder = ({
       {editingContent && (
         <div className="mt-3 flex w-full flex-col gap-6">
           <div className="flex w-full flex-row flex-wrap justify-center gap-3 sm:justify-start">
-            <div className="w-full bg-base-300 px-2 py-3">
+            <div className="w-full bg-base-300/50 px-2 pb-3">
               <div className="form-control">
                 <label className="label">
-                  <span className="label-text">Block</span>
+                  <span className="label-text mb-3 pt-1 font-semibold text-brand-black">
+                    Block
+                  </span>
                 </label>
                 <select
                   name="blockName"
-                  className=" select w-[95vw] max-w-full text-brand-black/50 sm:w-[215px]"
+                  className=" select w-[95vw] max-w-full text-brand-black/75 sm:w-[215px]"
                   defaultValue={selectedBlock}
                   placeholder="Select Block"
                   onChange={(e) => {
@@ -232,6 +232,9 @@ const PageBuilder = ({
             rootCategories={rootCategories}
             productCategories={productCategories}
             brands={brands}
+            defaultValues={
+              blocks[editingIndex]?.content[0] as ProductBlockContent
+            }
           />
 
           <TextBlockOptions

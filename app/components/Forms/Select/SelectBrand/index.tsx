@@ -1,9 +1,9 @@
 type Props = {
   brands: Brand[];
-  valueToChange?: Product;
+  defaultValue?: string;
 };
 
-const SelectBrand = ({ brands, valueToChange }: Props) => {
+const SelectBrand = ({ brands, defaultValue }: Props) => {
   return (
     <div className="form-control w-full sm:w-[215px]">
       <label className="label">
@@ -11,8 +11,8 @@ const SelectBrand = ({ brands, valueToChange }: Props) => {
       </label>
       <select
         name="brand"
-        className="select w-full text-brand-black/50"
-        defaultValue={valueToChange?.brand?.id || ""}
+        className="select w-full text-brand-black/75"
+        defaultValue={defaultValue}
       >
         <option value="">Select a Brand</option>
         {brands?.map(({ id, name }: Brand) => {

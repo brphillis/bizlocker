@@ -9,12 +9,12 @@ const BannerBlock = ({ image, url }: Props) => {
   const navigate = useNavigate();
 
   return (
-    <div className="max-w-screen w-screen sm:w-[1280px]">
+    <div className="max-w-[100vw] sm:w-[1280px]">
       <img
         src={image?.url}
         alt="banner_image"
         onClick={() => url && navigate(url)}
-        className={`max-w-screen h-[120px] w-full object-cover sm:h-max ${
+        className={`h-[110px] w-full max-w-[100vw] object-cover md:h-[146px]  ${
           url && "cursor-pointer"
         }`}
       />

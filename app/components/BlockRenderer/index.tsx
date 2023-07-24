@@ -30,7 +30,10 @@ const BlockRenderer = ({ blocks }: Props) => {
           case "tile":
             return (
               <React.Fragment key={"tileBlock_" + i}>
-                <TileBlock content={content as Campaign[] | Promotion[]} />
+                <TileBlock
+                  content={content as Campaign[] | Promotion[]}
+                  options={blockOptions as BlockOptions}
+                />
               </React.Fragment>
             );
 
