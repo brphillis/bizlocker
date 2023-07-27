@@ -79,8 +79,8 @@ export const action = async ({ request, params }: ActionArgs) => {
   switch (form._action) {
     case "search":
       return await searchContentData(
-        name as string,
-        contentType as BlockContentType
+        contentType as BlockContentType,
+        (name as string) || undefined
       );
 
     case "update":
@@ -155,7 +155,7 @@ const ModifyArticle = () => {
 
   return (
     <AdminPageWrapper>
-      <div className="relative h-full w-screen bg-base-200 p-6 sm:w-full">
+      <div className="relative h-full w-full bg-base-200 p-6 sm:w-full">
         <div className="hidden sm:block">
           <AdminPageHeader
             title={article ? "Edit Article" : "Create Article"}

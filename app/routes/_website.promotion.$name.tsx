@@ -79,11 +79,11 @@ const Promotion = () => {
   return (
     <PageWrapper>
       <PromotionBanner promotion={promotion} />
-      <div className="w-[1280px] max-w-[100vw]">
+      <div className="w-[1280px] max-w-full">
         <ProductSort totalCount={products.length * totalPages} />
         <div className="my-3 w-full border-b border-brand-black/20" />
 
-        <div className="flex w-screen flex-wrap items-start justify-center gap-3 px-0 sm:w-full xl:flex-nowrap">
+        <div className="flex flex-wrap items-start justify-center gap-3 px-0 sm:w-full xl:flex-nowrap">
           <ProductFilterSideBar
             rootCategories={rootCategories}
             productCategories={productCategories}

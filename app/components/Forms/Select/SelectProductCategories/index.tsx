@@ -25,9 +25,7 @@ const SelectProductCategories = ({
 
   return (
     <div className="form-control">
-      <label className="label">
-        <span className="label-text">{title ? title : "Categories"}</span>
-      </label>
+      <label className="label text-sm">{title ? title : "Categories"}</label>
       <select
         className=" select w-[95vw] sm:w-[215px]"
         onChange={handleCategoryChange}

@@ -31,7 +31,7 @@ const ProductCard = ({ name, images, variants, brand }: Product) => {
         <img
           className="absolute right-0 top-0 h-full w-full object-cover"
           src={displayImage}
-          alt="product"
+          alt={name.toLowerCase() + " product card"}
         />
         <div className="absolute bottom-0 mb-4 flex w-full justify-center space-x-4">
           <div className="h-3 w-3 rounded-full border-2 border-brand-white bg-white"></div>

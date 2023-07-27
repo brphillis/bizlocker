@@ -64,7 +64,7 @@ const ModifyArticleCategory = () => {
     <DarkOverlay>
       <Form
         method="POST"
-        className="max-w-screen scrollbar-hide relative w-[360px] !max-w-[100vw] overflow-y-auto bg-base-300 px-3 py-6 sm:px-6"
+        className="scrollbar-hide relative w-[360px] overflow-y-auto bg-base-300 px-3 py-6 sm:px-6"
       >
         <FormHeader
           valueToChange={articleCategory}

@@ -53,11 +53,11 @@ const Admin = () => {
   return (
     <div
       data-theme="light-theme"
-      className="max-w-screen drawer min-h-screen lg:drawer-open"
+      className="drawer min-h-screen lg:drawer-open"
     >
       <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
-      <div className="max-w-screen drawer-content flex min-h-screen w-full flex-col items-center justify-start">
-        <div className="flex h-[64px] w-screen flex-row items-center gap-6 self-start justify-self-start bg-brand-black p-3 lg:hidden">
+      <div className="drawer-content flex min-h-screen w-full flex-col items-center justify-start">
+        <div className="flex h-[64px] flex-row items-center gap-6 self-start justify-self-start bg-brand-black p-3 lg:hidden">
           <label htmlFor="my-drawer-2" className="btn-ghost btn-square btn">
             <IoMenu size={26} />
           </label>

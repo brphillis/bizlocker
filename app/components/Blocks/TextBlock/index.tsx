@@ -13,7 +13,7 @@ const TextBlock = ({ content }: Props) => {
     replace: (node) => {
       if (node instanceof Element && node.name === "p") {
         return (
-          <p className="max-w-screen px-3 sm:px-0">
+          <p className="max-w-full px-3 sm:px-0">
             {domToReact(node.children, options)}
           </p>
         );
@@ -21,7 +21,7 @@ const TextBlock = ({ content }: Props) => {
 
       if (node instanceof Element && node.name === "h1") {
         return (
-          <h2 className="max-w-screen px-3 pb-2 text-4xl text-primary sm:px-0">
+          <h2 className="max-w-full px-3 pb-2 text-4xl text-primary sm:px-0">
             {domToReact(node.children, options)}
           </h2>
         );
@@ -29,7 +29,7 @@ const TextBlock = ({ content }: Props) => {
 
       if (node instanceof Element && node.name === "h2") {
         return (
-          <h2 className="max-w-screen px-3 pb-2 text-2xl text-primary sm:px-0">
+          <h2 className="max-w-full px-3 pb-2 text-2xl text-primary sm:px-0">
             {domToReact(node.children, options)}
           </h2>
         );
@@ -37,7 +37,7 @@ const TextBlock = ({ content }: Props) => {
 
       if (node instanceof Element && node.name === "h3") {
         return (
-          <h2 className="max-w-screen px-3 pb-2 text-xl text-primary sm:px-0">
+          <h2 className="max-w-full px-3 pb-2 text-xl text-primary sm:px-0">
             {domToReact(node.children, options)}
           </h2>
         );
@@ -46,7 +46,7 @@ const TextBlock = ({ content }: Props) => {
   };
 
   return (
-    <div className="max-w-screen w-screen sm:w-[1280px]">
+    <div className="w-full max-w-full sm:w-[1280px]">
       {parse(content[0], options)}
     </div>
   );

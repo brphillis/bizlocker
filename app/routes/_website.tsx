@@ -69,7 +69,7 @@ const App = () => {
   return (
     <div className="drawer" data-theme="brand-light">
       <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
-      <div className="!max-w-screen min-w-screen drawer-content relative flex min-h-[calc(100vh-64px)] flex-col items-center justify-start overflow-x-hidden">
+      <div className="drawer-content relative flex min-h-[calc(100vh-64px)] flex-col items-center justify-start overflow-x-hidden">
         <div className="navbar relative w-full bg-brand-black">
           <div className="flex-none lg:hidden">
             <label

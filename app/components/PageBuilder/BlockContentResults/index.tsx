@@ -1,5 +1,4 @@
 import { useSearchParams } from "@remix-run/react";
-import { useEffect } from "react";
 
 import { IoCaretForwardCircleSharp, IoCloseCircle } from "react-icons/io5";
 import { capitalizeFirst } from "~/utility/stringHelpers";
@@ -40,10 +39,6 @@ const BlockContentResults = ({
     );
   };
 
-  useEffect(() => {
-    console.log(selectedItems);
-  }, [selectedItems]);
-
   return (
     <>
       <input
@@ -56,7 +51,6 @@ const BlockContentResults = ({
       {searchResults &&
         (selectedBlock === "banner" || selectedBlock === "tile") && (
           <div className="w-full overflow-x-auto">
-            <div className="divider my-0 w-full py-0" />
             <p className="my-3 text-sm font-bold">Select an Item</p>
             <table className="table-sm table">
               <thead>

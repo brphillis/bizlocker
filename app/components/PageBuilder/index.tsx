@@ -94,7 +94,7 @@ const PageBuilder = ({
   }, [updateSuccess]);
 
   return (
-    <Form className="max-w-screen w-full" method="POST">
+    <Form className="w-full" method="POST">
       <input name="pageId" value={page.id} hidden readOnly />
       <input name="itemIndex" value={editingIndex.toString()} hidden readOnly />
       {!editingContent && (
@@ -190,10 +190,10 @@ const PageBuilder = ({
       {editingContent && (
         <div className="mt-3 flex w-full flex-col gap-6">
           <div className="flex w-full flex-row flex-wrap justify-center gap-3 sm:justify-start">
-            <div className="w-full bg-base-300/50 px-2 pb-3">
+            <div className="w-full px-2 pb-3">
               <div className="form-control">
                 <label className="label">
-                  <span className="label-text mb-3 pt-1 font-semibold text-brand-black">
+                  <span className="label-text pt-1 font-semibold text-brand-white">
                     Block
                   </span>
                 </label>

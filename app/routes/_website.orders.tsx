@@ -31,7 +31,7 @@ const Orders = () => {
           )}
 
           {orders?.length > 0 && (
-            <table className="max-w-screen table-zebra table">
+            <table className="table-zebra table">
               <thead>
                 <tr>
                   <th className="!rounded-none">#</th>

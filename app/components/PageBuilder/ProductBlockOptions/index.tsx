@@ -20,11 +20,11 @@ const ProductBlockOptions = ({
   return (
     <>
       {selectedBlock === "product" && (
-        <div className="w-full bg-base-300/50 px-2 pb-3">
-          <p className="mb-3 px-1 pt-3 font-semibold text-brand-black">
+        <div className="w-full px-2 pb-3">
+          <p className="mb-3 px-1 pt-3 font-semibold text-brand-white">
             Filters
           </p>
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-3 !text-brand-white">
             <SelectRootCategory
               rootCategories={rootCategories}
               defaultValue={defaultValues?.rootCategoryId?.toString()}

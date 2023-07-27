@@ -46,7 +46,7 @@ const FormHeader = ({
 
   return (
     <>
-      <div className="max-w-screen flex flex-row justify-end sm:justify-between">
+      <div className="flex max-w-[100vw] flex-row justify-end sm:justify-between">
         <h1 className="absolute left-3 top-[1.2rem] sm:relative sm:top-0">
           {mode && capitalizeFirst(mode)} {type}
         </h1>

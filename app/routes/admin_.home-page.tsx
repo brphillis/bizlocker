@@ -37,8 +37,8 @@ export const action = async ({ request }: ActionArgs) => {
   switch (form._action) {
     case "search":
       return await searchContentData(
-        name as string,
-        contentType as BlockContentType
+        contentType as BlockContentType,
+        (name as string) || undefined
       );
 
     case "update":
@@ -88,7 +88,7 @@ const ManageHomePage = () => {
 
   return (
     <AdminPageWrapper>
-      <div className="relative h-full w-screen bg-base-200 p-6 sm:w-full">
+      <div className="relative h-full bg-base-200 p-6 sm:w-full">
         <div className="flex w-full justify-center">
           <div className="flex flex-col gap-6 rounded-none bg-brand-black text-brand-white sm:rounded-md">
             <div className="flex justify-center gap-3 pt-6 text-center text-2xl font-bold">

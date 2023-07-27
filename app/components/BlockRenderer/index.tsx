@@ -23,7 +23,11 @@ const BlockRenderer = ({ blocks }: Props) => {
             const url = type && contentName && `/${type}/${contentName}`;
             return (
               <React.Fragment key={"bannerBlock_" + i}>
-                <BannerBlock image={bannerImage} url={url} />
+                <BannerBlock
+                  image={bannerImage}
+                  alt={contentName.toLowerCase() + " banner"}
+                  url={url}
+                />
               </React.Fragment>
             );
 

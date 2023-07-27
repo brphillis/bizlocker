@@ -65,7 +65,7 @@ const ModifyUser = () => {
     <DarkOverlay>
       <Form
         method="POST"
-        className="max-w-screen relative w-[600px] bg-base-300 py-6 sm:px-6"
+        className="relative w-[600px] bg-base-200 py-6 sm:px-6"
       >
         <FormHeader
           hasDelete={false}

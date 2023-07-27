@@ -6,9 +6,7 @@ type Props = {
 const SelectProductCategory = ({ productCategories, defaultValue }: Props) => {
   return (
     <div className="form-control w-full sm:w-[215px]">
-      <label className="label">
-        <span className="label-text">Product Category</span>
-      </label>
+      <label className="label text-sm">Product Category</label>
       <select
         name="productCategory"
         className="select w-full text-brand-black/75"

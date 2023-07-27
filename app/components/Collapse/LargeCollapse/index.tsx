@@ -8,7 +8,7 @@ type Props = {
 const LargeCollapse = ({ content, title, forceOpen, forceClose }: Props) => {
   return (
     <div
-      className={`max-w-screen collapse-plus collapse w-full rounded-none rounded-t-none bg-brand-black py-3 text-brand-white sm:rounded-b-md sm:rounded-t-md md:w-[800px] 
+      className={`collapse-plus collapse w-full max-w-[100vw] rounded-none rounded-t-none bg-brand-black py-3 text-brand-white sm:rounded-b-md sm:rounded-t-md md:w-[800px] 
         ${forceOpen && " collapse-open "} 
         ${forceClose && " collapse-close "}
         `}
@@ -19,7 +19,7 @@ const LargeCollapse = ({ content, title, forceOpen, forceClose }: Props) => {
           <p>{title}</p>
         </div>
       </div>
-      <div className="collapse-content w-screen sm:w-full">
+      <div className="collapse-content max-w-full sm:w-full">
         <div className="flex justify-center">{content}</div>
       </div>
     </div>

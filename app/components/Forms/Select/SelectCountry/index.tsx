@@ -7,9 +7,7 @@ type Props = {
 const index = ({ defaultValue }: Props) => {
   return (
     <div className="form-control">
-      <label className="label">
-        <span className="label-text">Country</span>
-      </label>
+      <label className="label text-sm">Country</label>
       <select
         name="country"
         className=" select w-[95vw] sm:w-[215px]"

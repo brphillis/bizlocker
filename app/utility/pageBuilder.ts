@@ -86,11 +86,13 @@ export const parseObjectData = (
 };
 
 export const searchContentData = async (
-  name: string,
-  contentType: BlockContentType
+  contentType: BlockContentType,
+  name?: string
 ) => {
   const formData = new FormData();
-  formData.set("name", name as string);
+  if (name) {
+    formData.set("name", name as string);
+  }
   formData.set("page", "1");
   formData.set("perPage", "10");
 
@@ -102,6 +104,7 @@ export const searchContentData = async (
         Object.fromEntries(formData)
       );
       searchResults = promotions;
+
       return { searchResults };
     case "campaign":
       const { campaigns } = await searchCampaigns(Object.fromEntries(formData));

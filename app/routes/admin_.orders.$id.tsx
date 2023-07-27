@@ -79,7 +79,7 @@ const ModifyOrder = () => {
 
   return (
     <DarkOverlay>
-      <div className="max-w-screen scrollbar-hide relative w-[720px] !max-w-[100vw] overflow-y-auto bg-base-300 px-3 py-6 sm:px-6">
+      <div className="scrollbar-hide relative w-[720px] overflow-y-auto bg-base-300 px-3 py-6 sm:px-6">
         <button className="absolute right-3 top-3 cursor-pointer">
           <IoClose onClick={() => navigate("..")} />
         </button>

@@ -10,38 +10,35 @@ const BlockContentSearch = ({ selectedBlock, defaultValue }: Props) => {
   const [searchParams] = useSearchParams();
 
   const handleSearchSubmit = (contentType?: string, name?: string) => {
-    console.log("NAME", name, "CONTENT TYPE", contentType);
     const searchForm = new FormData();
     searchForm.set("_action", "search");
 
-    if (contentType && name) {
+    if (contentType) {
       searchParams.set("contentType", contentType);
-      const searchType = searchParams.get("contentType");
-      searchForm.set("contentType", searchType as string);
     }
 
-    if (contentType && name) {
-      searchParams.set("name", name);
-      const searchType = searchParams.get("contentType");
-      const searchName = searchParams.get("name");
-      searchForm.set("contentType", searchType as string);
-      searchForm.set("name", searchName as string);
+    const selectedContentType = searchParams.get("contentType");
+
+    if (selectedContentType) {
+      searchForm.set("contentType", selectedContentType as string);
+      if (name) {
+        searchForm.set("name", name as string);
+      }
       submit(searchForm, { method: "POST" });
-      console.log("Triggered");
     }
   };
 
   return (
     <>
       {(selectedBlock === "banner" || selectedBlock === "tile") && (
-        <div className=" w-full bg-base-300/50 px-2 py-3">
-          <p className="px-1 pb-3 font-semibold text-brand-black">
+        <div className=" w-full  px-2 py-3">
+          <p className="px-1 pb-3 font-semibold text-brand-white">
             Content Options
           </p>
           <div className="flex flex-wrap gap-3">
             <div className="form-control text-brand-black">
-              <label className="label">
-                <span className="label-text">Content Selection</span>
+              <label className="label text-sm text-brand-white">
+                Content Selection
               </label>
               <select
                 name="contentType"
@@ -49,7 +46,7 @@ const BlockContentSearch = ({ selectedBlock, defaultValue }: Props) => {
                 defaultValue={defaultValue}
                 placeholder="Select a Type"
                 onChange={(e) => {
-                  handleSearchSubmit(e.target.value, "saba");
+                  handleSearchSubmit(e.target.value, undefined);
                 }}
               >
                 <option value="">Select Content Type</option>
@@ -60,8 +57,8 @@ const BlockContentSearch = ({ selectedBlock, defaultValue }: Props) => {
 
             <div className="flex flex-row gap-6">
               <div className="form-control w-[95vw] sm:w-[215px]">
-                <label className="label">
-                  <span className="label-text">Search Content</span>
+                <label className="label text-sm text-brand-white">
+                  Search Content
                 </label>
                 <input
                   name="name"

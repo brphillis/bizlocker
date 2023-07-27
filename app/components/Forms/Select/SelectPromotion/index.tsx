@@ -12,8 +12,8 @@ const SelectPromotion = ({ promotions, valueToChange }: Props) => {
 
   return (
     <div className="form-control">
-      <label className="label">
-        <span className="label-text">Promotion </span>
+      <label className="label text-sm">
+        Promotion
         {promotionDiscount !== undefined && (
           <span className="text-[10px] text-error">
             -{promotionDiscount}% Applied to Promo Items

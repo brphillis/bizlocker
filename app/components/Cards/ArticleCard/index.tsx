@@ -11,10 +11,10 @@ const ArticleCard = ({ article, hasDescription }: Props) => {
   const image = article?.thumbnail?.url;
   return (
     <article
-      className="max-w-screen group flex min-h-[270px] w-[400px] max-w-full cursor-pointer flex-col"
+      className="group flex min-h-[270px] w-[400px] cursor-pointer flex-col"
       onClick={() => navigate(`./articles/${article.id}`)}
     >
-      <div className="max-w-screen relative min-h-[270px] w-[400px] max-w-full drop-shadow-xl">
+      <div className="relative min-h-[270px] w-[400px] max-w-full drop-shadow-xl">
         <img
           className="h-full w-full object-cover object-top"
           src={image || ""}

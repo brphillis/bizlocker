@@ -27,11 +27,7 @@ const SelectArticleCategories = ({
 
   return (
     <div className="form-control">
-      <label className="label">
-        <span className="label-text text-brand-white">
-          {title ? title : "Categories"}
-        </span>
-      </label>
+      <label className="label text-sm">{title ? title : "Categories"}</label>
       <select
         className={`select text-brand-black ${
           styles ? styles : "w-[95vw] sm:w-[215px]"

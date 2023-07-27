@@ -6,9 +6,7 @@ type Props = {
 const SelectDepartment = ({ departments, defaultValue }: Props) => {
   return (
     <div className="form-control">
-      <label className="label">
-        <span className="label-text">Department</span>
-      </label>
+      <label className="label text-sm">Department</label>
       <select
         name="department"
         className=" select w-[95vw] sm:w-[215px]"

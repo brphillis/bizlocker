@@ -63,10 +63,7 @@ const ManageHomePage = () => {
 
   return (
     <AdminPageWrapper>
-      <Form
-        method="GET"
-        className="max-w-screen relative h-max w-full bg-base-200 p-6"
-      >
+      <Form method="GET" className="relative h-max w-full bg-base-200 p-6">
         <AdminPageHeader title="Sales Reports" />
         <div className="flex justify-center pb-6 text-3xl">
           <h1 className="tracking wider font-bold">Sales Statistics - Today</h1>
