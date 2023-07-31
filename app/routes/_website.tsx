@@ -1,3 +1,4 @@
+import "sweetalert2/dist/sweetalert2.css";
 import type { LinksFunction } from "@remix-run/node";
 import { useState } from "react";
 import { json } from "@remix-run/node";

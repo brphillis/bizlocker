@@ -1,4 +1,5 @@
 import { type ChangeEvent } from "react";
+import fs from "fs";
 
 export const ConvertToBase64 = async (
   event: ChangeEvent<HTMLInputElement>
@@ -23,5 +24,19 @@ export const ConvertToBase64 = async (
     });
   } else {
     return undefined;
+  }
+};
+
+export const encodeImageToBase64 = (imagePath: string): string => {
+  try {
+    const imageBuffer = fs.readFileSync(imagePath);
+    const base64Image = imageBuffer.toString("base64");
+    return base64Image;
+  } catch (error) {
+    console.error(
+      "Error while encoding image to base64:",
+      (error as Error).message
+    );
+    return "";
   }
 };

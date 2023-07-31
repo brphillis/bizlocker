@@ -1,4 +1,4 @@
-import React, { Suspense, useState } from "react";
+import { Suspense, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
@@ -8,11 +8,7 @@ interface RichTextEditorProps {
   className?: string;
 }
 
-const RichTextEditor = ({
-  value,
-  onChange,
-  className,
-}: RichTextEditorProps) => {
+const RichTextInput = ({ value, onChange, className }: RichTextEditorProps) => {
   const [richText, setRichText] = useState(value || "");
 
   const handleEditorChange = (content: string) => {
@@ -34,4 +30,4 @@ const RichTextEditor = ({
   );
 };
 
-export default RichTextEditor;
+export default RichTextInput;

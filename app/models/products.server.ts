@@ -457,6 +457,12 @@ export const searchProducts = async (
         },
         images: true,
         variants: true,
+        promotion: {
+          select: {
+            name: true,
+            discountPercentage: true,
+          },
+        },
       },
       skip,
       take,

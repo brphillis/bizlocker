@@ -7,10 +7,10 @@ import {
   useNavigate,
 } from "@remix-run/react";
 import { useEffect } from "react";
-import { verifyLogin } from "~/models/login.server";
+import { verifyLogin } from "~/models/auth/login.server";
 import { createUserSession } from "~/session.server";
 import { safeRedirect } from "~/utils";
-import background from "../assets/images/banner-login.jpg";
+import background from "../assets/banners/banner-login.jpg";
 
 export const action = async ({ request }: ActionArgs) => {
   const formData = await request.formData();
@@ -68,7 +68,7 @@ const AdminLogin = () => {
             name="email"
             type="text"
             placeholder="email"
-            className="input-bordered input text-brand-black/50 focus:text-brand-black"
+            className="input input-bordered text-brand-black/50 focus:text-brand-black"
           />
         </div>
         <div className="form-control">
@@ -79,20 +79,20 @@ const AdminLogin = () => {
             name="password"
             type="password"
             placeholder="password"
-            className="input-bordered input text-brand-black/50 focus:text-brand-black"
+            className="input input-bordered text-brand-black/50 focus:text-brand-black"
           />
           <label className="label">
-            <div className="link-hover label-text-alt link">
+            <div className="link-hover link label-text-alt">
               Forgot password?
             </div>
           </label>
         </div>
 
         <div className="form-control gap-3">
-          <button type="submit" className="btn-primary btn">
+          <button type="submit" className="btn btn-primary">
             Login
           </button>
-          <NavLink to="/register" type="button" className="btn-primary btn">
+          <NavLink to="/register" type="button" className="btn btn-primary">
             Create Account
           </NavLink>
           <div className="my-2 w-full border-b-2 border-brand-white/10" />

@@ -11,7 +11,7 @@ export const loader = async ({ request }: ActionArgs) => {
 
 const Orders = () => {
   const navigate = useNavigate();
-  const orders = useLoaderData() as Order[];
+  const orders = useLoaderData();
 
   return (
     <PageWrapper>
@@ -31,7 +31,7 @@ const Orders = () => {
           )}
 
           {orders?.length > 0 && (
-            <table className="table-zebra table">
+            <table className="table table-zebra">
               <thead>
                 <tr>
                   <th className="!rounded-none">#</th>
@@ -43,7 +43,7 @@ const Orders = () => {
               </thead>
 
               <tbody>
-                {orders?.map((order: Order, i) => {
+                {orders?.map((order: Order, i: number) => {
                   const { createdAt, items, totalPrice, status, orderId } =
                     order;
                   const itemNames: string[] = [];

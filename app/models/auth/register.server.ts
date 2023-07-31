@@ -1,8 +1,9 @@
 import { prisma } from "~/db.server";
 import bcrypt from "bcryptjs";
-import { redirect } from "@remix-run/server-runtime";
+import { sendEmailVerificationEmail } from "~/integrations/sendgrid/emails/emailVerification";
 
 export const registerUser = async (email: string, password: string) => {
+  let success;
   const existingUser = await prisma.user.findUnique({
     where: {
       email,
@@ -23,5 +24,16 @@ export const registerUser = async (email: string, password: string) => {
     },
   });
 
-  return redirect("/login");
+  const { code: verificationCode } = await prisma.emailVerifier.create({
+    data: {
+      email: email,
+    },
+  });
+
+  if (verificationCode) {
+    await sendEmailVerificationEmail(email, verificationCode);
+    success = true;
+  }
+
+  return { success };
 };

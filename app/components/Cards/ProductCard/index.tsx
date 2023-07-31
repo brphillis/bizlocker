@@ -1,11 +1,11 @@
 import { useSubmit } from "@remix-run/react";
 import { IoCart } from "react-icons/io5";
 import { Toast } from "~/components/Notifications/Toast";
-
-const ProductCard = ({ name, images, variants, brand }: Product) => {
+import { minusPercentage } from "~/utility/numberHelpers";
+const ProductCard = ({ name, images, variants, brand, promotion }: Product) => {
   const submit = useSubmit();
 
-  const { id, price, isOnSale, salePrice } = variants[0] || {};
+  const { id, price, isOnSale, isPromoted } = variants[0] || {};
   const displayImage = images[0]?.url;
 
   const handleAddToCart = () => {
@@ -25,14 +25,37 @@ const ProductCard = ({ name, images, variants, brand }: Product) => {
     Toast("success", 2000, "Item Added");
   };
 
+  const UnitPrice = (variant: ProductVariant): string => {
+    let unitPrice = variant.isOnSale ? variant.salePrice : variant.price;
+
+    if (isPromoted && !isOnSale) {
+      const { discountPercentage } = promotion || {};
+      if (discountPercentage) {
+        unitPrice = minusPercentage(unitPrice, discountPercentage);
+      }
+    }
+    return unitPrice?.toFixed(2);
+  };
+
   return (
     <div className="group flex w-full flex-col overflow-hidden bg-brand-white">
-      <div className="relative flex h-60 w-full max-w-full overflow-hidden sm:h-72">
+      <div className="relative flex h-60 w-full max-w-full cursor-pointer overflow-hidden sm:h-72">
         <img
           className="absolute right-0 top-0 h-full w-full object-cover"
           src={displayImage}
           alt={name.toLowerCase() + " product card"}
         />
+        {isOnSale && (
+          <span className="absolute left-2 top-2 mr-2 bg-red-500 px-2 py-1 text-xs text-brand-white opacity-30">
+            SALE
+          </span>
+        )}
+
+        {isPromoted && (
+          <span className="absolute left-2 top-2 mr-2 bg-green-500 px-2 py-1 text-xs text-brand-white opacity-30">
+            PROMO
+          </span>
+        )}
         <div className="absolute bottom-0 mb-4 flex w-full justify-center space-x-4">
           <div className="h-3 w-3 rounded-full border-2 border-brand-white bg-white"></div>
           <div className="h-3 w-3 rounded-full border-2 border-brand-white bg-transparent"></div>
@@ -60,17 +83,24 @@ const ProductCard = ({ name, images, variants, brand }: Product) => {
 
         <div>
           <p>
-            <span className="text-sm font-bold text-gray-900">
-              ${isOnSale ? salePrice.toFixed(2) : price.toFixed(2)}&nbsp;
-            </span>
             {isOnSale && (
               <>
-                <span className="text-sm text-gray-400 line-through">
+                <span className="mr-2 text-sm text-gray-400 line-through">
                   ${price.toFixed(2)}
                 </span>
-                <span className="ml-1 text-sm text-gray-400">SALE</span>
               </>
             )}
+
+            {isPromoted && (
+              <>
+                <span className="mr-2 text-sm text-gray-400 line-through">
+                  ${price.toFixed(2)}
+                </span>
+              </>
+            )}
+            <span className="text-sm font-bold text-gray-900">
+              ${UnitPrice(variants[0])}&nbsp;
+            </span>
           </p>
         </div>
       </div>

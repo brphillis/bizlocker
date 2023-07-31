@@ -13,6 +13,7 @@ export const verifyLogin = async (email: string, password: string) => {
     select: {
       id: true,
       email: true,
+      verified: true,
       password: true,
       cart: {
         select: {
@@ -45,18 +46,26 @@ export const verifyLogin = async (email: string, password: string) => {
   });
 
   if (!userWithPassword || !userWithPassword.password) {
-    return null;
+    const error = "No Email or Password Provided";
+    return { error };
   }
 
   const isValid = await bcrypt.compare(password, userWithPassword.password);
 
   if (!isValid) {
-    return null;
+    const error = "Incorrect Credentials";
+    return { error };
+  }
+
+  if (!userWithPassword.verified) {
+    const error = "Email not Verified, Please Check Your Email.";
+    return { error };
   }
 
   const { password: _password, ...userWithoutPassword } = userWithPassword;
+  const user = userWithoutPassword;
 
-  return userWithoutPassword;
+  return { user };
 };
 
 export const googleLogin = async (request: Request, credential: any) => {
@@ -118,6 +127,7 @@ export const googleLogin = async (request: Request, credential: any) => {
         email: credentials?.email,
         googleLogin: true,
         googleEmail: credentials?.email,
+        verified: true,
       },
     });
 

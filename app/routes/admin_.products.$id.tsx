@@ -1,13 +1,10 @@
 import { useState } from "react";
-
 import { getBrands } from "~/models/brands.server";
 import DarkOverlay from "~/components/Layout/DarkOverlay";
 import { getPromotions } from "~/models/promotions.server";
 import FormHeader from "~/components/Forms/Headers/FormHeader";
-import RichTextEditor from "~/components/RichTextEditor.client";
 import SelectBrand from "~/components/Forms/Select/SelectBrand";
 import SelectGender from "~/components/Forms/Select/SelectGender";
-import ImageUploadSlider from "~/components/ImageUploadSlider.client";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import SelectPromotion from "~/components/Forms/Select/SelectPromotion";
 import { getProductCategories } from "~/models/productCategories.server";
@@ -30,6 +27,8 @@ import {
 
 import swiper from "../../node_modules/swiper/swiper.css";
 import swiperNav from "../../node_modules/swiper/modules/navigation/navigation.min.css";
+import UploadMultipleImages from "~/components/Forms/Upload/UploadMultipleImages/index.client";
+import RichTextInput from "~/components/Forms/Input/RichTextInput/index.client";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: swiper },
@@ -140,7 +139,7 @@ const Product = () => {
     <DarkOverlay>
       <Form
         method="POST"
-        className="scrollbar-hide relative w-[600px] overflow-y-auto bg-base-300 px-3 py-6 sm:px-6"
+        className="scrollbar-hide relative w-[600px] overflow-y-auto bg-base-200 px-3 py-6 sm:px-6"
       >
         <FormHeader
           valueToChange={product}
@@ -196,7 +195,7 @@ const Product = () => {
 
           <div className="divider w-full pt-4" />
 
-          <ImageUploadSlider defaultImages={product?.images} />
+          <UploadMultipleImages defaultImages={product?.images} />
 
           <div className="divider w-full pt-4" />
 
@@ -213,7 +212,7 @@ const Product = () => {
               <span className="label-text">Description</span>
             </label>
 
-            <RichTextEditor
+            <RichTextInput
               value={richText}
               onChange={setRichText}
               className="mb-6 h-[200px] pb-3"

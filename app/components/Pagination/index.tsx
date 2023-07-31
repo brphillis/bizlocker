@@ -21,7 +21,7 @@ const Pagination = ({ totalPages }: Props) => {
                 <button
                   type="button"
                   key={"pagination" + i}
-                  className={`btn-sm ${
+                  className={`btn-sm border border-brand-black/20 ${
                     currentPage === pageNumber && "btn-active"
                   }`}
                   onClick={() => {

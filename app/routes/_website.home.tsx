@@ -13,11 +13,7 @@ export const loader = async () => {
 };
 
 const Home = () => {
-  const { homePage } =
-    (useLoaderData() as {
-      homePage: HomePage;
-    }) || {};
-
+  const { homePage } = useLoaderData();
   const blocks: Block[] = getBlocks(homePage);
 
   return (

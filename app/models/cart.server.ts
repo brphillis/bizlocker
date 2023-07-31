@@ -23,8 +23,15 @@ export const getCart = async (request: Request) => {
           variant: {
             include: {
               product: {
-                include: {
+                select: {
+                  id: true,
+                  name: true,
                   images: true,
+                  promotion: {
+                    select: {
+                      discountPercentage: true,
+                    },
+                  },
                 },
               },
             },
@@ -190,10 +197,21 @@ export const addToCart = async (
       cartItems: {
         include: {
           variant: {
-            include: {
+            select: {
+              price: true,
+              salePrice: true,
+              name: true,
+              id: true,
+              isOnSale: true,
+              isPromoted: true,
               product: {
                 select: {
                   name: true,
+                  promotion: {
+                    select: {
+                      discountPercentage: true,
+                    },
+                  },
                 },
               },
             },

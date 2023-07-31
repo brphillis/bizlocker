@@ -2,16 +2,24 @@ import React, { Suspense, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper";
 import { ConvertToBase64 } from "~/utility/fileHelpers";
+import { IoClose } from "react-icons/io5";
 
 type ImageUploadSliderProps = {
   defaultImages: Image[] | undefined;
 };
 
-const ImageUploadSlider = ({ defaultImages }: ImageUploadSliderProps) => {
+const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
   const [activeSlide, setActiveSlide] = useState(0);
   const [images, setCurrentImages] = useState<Image[] | undefined>(
     defaultImages
   );
+
+  const handleRemoveImage = (index: number) => {
+    const updatedImages = [...(images || [])];
+    updatedImages.splice(index, 1);
+    setCurrentImages(updatedImages);
+  };
+
   return (
     <Suspense fallback={<div>Loading...</div>}>
       {images && images?.some((image) => image) ? (
@@ -24,15 +32,26 @@ const ImageUploadSlider = ({ defaultImages }: ImageUploadSliderProps) => {
           centeredSlides={true}
           navigation
         >
-          {images?.map((image, i) => {
-            if (image?.url) {
+          {images?.map(({ url, altText }: Image, i) => {
+            if (url) {
               return (
                 <SwiperSlide key={i}>
-                  <img
-                    src={image.url}
-                    alt={image.altText}
-                    className="mx-auto block max-w-[320px] rounded-lg object-cover"
-                  />
+                  <div className="relative mx-auto block max-w-[200px] rounded-lg">
+                    <IoClose
+                      size={20}
+                      className="
+                    absolute right-2 top-2
+                    -mr-2 -mt-2 cursor-pointer
+                    rounded-bl-md bg-primary p-[0.2rem] text-white
+                  "
+                      onClick={() => handleRemoveImage(i)}
+                    />
+                    <img
+                      src={url}
+                      alt={altText}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
                 </SwiperSlide>
               );
             }
@@ -86,4 +105,4 @@ const ImageUploadSlider = ({ defaultImages }: ImageUploadSliderProps) => {
   );
 };
 
-export default ImageUploadSlider;
+export default UploadMultipleImages;

@@ -126,8 +126,18 @@ model User {
   googleEmail          String?
   microsoftLogin       Boolean      @default(false)
   microsoftEmail       String?
+  verified             Boolean      @default(false)
   createdAt            DateTime     @default(now())
   updatedAt            DateTime     @updatedAt
+}
+
+model EmailVerifier {
+  id         Int      @id @default(autoincrement())
+  email      String   @unique
+  code       String?  @default(cuid())
+  expiration DateTime @default(dbgenerated("NOW() + interval '3 hours'"))
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 model UserDetails {

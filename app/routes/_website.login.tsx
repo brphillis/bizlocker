@@ -1,8 +1,8 @@
 import type { ActionArgs, V2_MetaFunction } from "@remix-run/node";
 import { Form, NavLink, useActionData } from "@remix-run/react";
-import { googleLogin, verifyLogin } from "~/models/login.server";
+import { googleLogin, verifyLogin } from "~/models/auth/login.server";
 import { createUserSession } from "~/session.server";
-import background from "../assets/images/banner-login.jpg";
+import background from "../assets/banners/banner-login.jpg";
 import LoginGoogle from "~/components/auth/LoginGoogle";
 import { isValidEmail, isValidPassword } from "~/utility/validate";
 
@@ -26,7 +26,16 @@ export const action = async ({ request }: ActionArgs) => {
         return { validationError };
       }
 
-      const user = await verifyLogin(email as string, password as string);
+      const { user, error } = await verifyLogin(
+        email as string,
+        password as string
+      );
+
+      if (error) {
+        const validationError = [error];
+        return { validationError };
+      }
+
       if (user) {
         return createUserSession({
           request,
@@ -76,7 +85,7 @@ export default function LoginPage() {
             name="email"
             type="text"
             placeholder="email"
-            className="input-bordered input bg-base-300 text-brand-black/50 focus:text-brand-black"
+            className="input input-bordered bg-base-100 text-brand-black/50 focus:text-brand-black"
           />
         </div>
         <div className="form-control">
@@ -87,10 +96,10 @@ export default function LoginPage() {
             name="password"
             type="password"
             placeholder="password"
-            className="input-bordered input bg-base-300 text-brand-black/50 focus:text-brand-black"
+            className="input input-bordered bg-base-100 text-brand-black/50 focus:text-brand-black"
           />
           <label className="label">
-            <div className="link-hover label-text-alt link text-brand-white/75">
+            <div className="link-hover link label-text-alt text-brand-white/75">
               Forgot password?
             </div>
           </label>
@@ -116,11 +125,11 @@ export default function LoginPage() {
             type="submit"
             name="_action"
             value="login"
-            className="btn-primary btn"
+            className="btn btn-primary"
           >
             Login
           </button>
-          <NavLink to="/register" type="button" className="btn-primary btn">
+          <NavLink to="/register" type="button" className="btn btn-primary">
             Create Account
           </NavLink>
           <div className="my-2 w-full border-b-2 border-brand-white/10" />

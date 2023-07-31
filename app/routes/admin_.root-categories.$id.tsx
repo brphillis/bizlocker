@@ -95,7 +95,7 @@ const ModifyRootCategory = () => {
     <DarkOverlay>
       <Form
         method="POST"
-        className="relative max-w-full rounded-none bg-base-300 px-0 py-6 sm:rounded-md sm:px-6"
+        className="relative max-w-full rounded-none bg-base-200 px-0 py-6 sm:rounded-md sm:px-6"
       >
         <FormHeader
           hasDelete={false}

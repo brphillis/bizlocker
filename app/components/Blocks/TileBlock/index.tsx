@@ -8,7 +8,7 @@ type Props = {
 const TileBlock = ({ content, options }: Props) => {
   const navigate = useNavigate();
   const { columns } = options || {};
-  console.log("CONT", content);
+
   return (
     <div
       className="grid place-items-center gap-3 gap-y-3 px-3 max-sm:!grid-cols-2 sm:gap-6 lg:px-0"

@@ -57,7 +57,7 @@ const ModifyProductCategory = () => {
     <DarkOverlay>
       <Form
         method="POST"
-        className="scrollbar-hide relative w-[360px] overflow-y-auto bg-base-300 px-3 py-6 sm:px-6"
+        className="relative max-w-full rounded-none bg-base-200 px-0 py-6 sm:rounded-md sm:px-6"
       >
         <FormHeader
           valueToChange={productCategory}

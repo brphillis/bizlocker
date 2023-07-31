@@ -2,6 +2,10 @@ import { IoCartOutline } from "react-icons/io5";
 import { useEffect, useState } from "react";
 import { Form, useNavigate } from "react-router-dom";
 import CartAddSubtractButton from "./CartAddSubtractButton";
+import {
+  calculateCartTotal,
+  getVariantUnitPrice,
+} from "~/utility/numberHelpers";
 
 const CartButton = ({ id: cartId, cartItems }: Cart) => {
   const navigate = useNavigate();
@@ -9,16 +13,8 @@ const CartButton = ({ id: cartId, cartItems }: Cart) => {
   const [totalPrice, setTotalPrice] = useState<number>(0);
 
   useEffect(() => {
-    const calcTotal = () => {
-      let total = 0;
-      cartItems.forEach((e) => {
-        if (e.variant.price) total += e.variant.price * e.quantity;
-      });
-
-      setTotalPrice(total);
-    };
-
-    calcTotal();
+    const total = calculateCartTotal(cartItems);
+    setTotalPrice(total);
   }, [cartItems]);
 
   return (
@@ -46,14 +42,7 @@ const CartButton = ({ id: cartId, cartItems }: Cart) => {
               )
               .reverse()
               .map(({ variant, quantity }: CartItem, index) => {
-                const {
-                  product,
-                  price,
-                  salePrice,
-                  isOnSale,
-                  id: variantId,
-                } = variant;
-                const unitPrice = isOnSale ? price : salePrice;
+                const { product, id: variantId } = variant;
 
                 return (
                   <div
@@ -71,7 +60,7 @@ const CartButton = ({ id: cartId, cartItems }: Cart) => {
                     <div>{product?.name}</div>
 
                     <div className="flex flex-row gap-3">
-                      <div>${unitPrice?.toFixed(2)}</div>
+                      <div>${getVariantUnitPrice(variant)}</div>
                       <div> x {quantity}</div>
                     </div>
 

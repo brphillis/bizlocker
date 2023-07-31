@@ -1,4 +1,4 @@
-import Swal from "sweetalert2";
+import Swal from "sweetalert2/dist/sweetalert2.js";
 import { capitalizeFirst } from "../../../utility/stringHelpers";
 
 type ToastType = "success" | "error" | "warning" | "info" | "question";

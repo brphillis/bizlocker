@@ -5,7 +5,7 @@ import FormHeader from "~/components/Forms/Headers/FormHeader";
 import SelectCountry from "~/components/Forms/Select/SelectCountry";
 import UploadAvatar from "~/components/Forms/Upload/UploadAvatar";
 import DarkOverlay from "~/components/Layout/DarkOverlay";
-import { getUser, upsertUser } from "~/models/users.server";
+import { getUser, upsertUser } from "~/models/auth/users.server";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const id = params?.id;
@@ -57,7 +57,7 @@ export const action = async ({ request, params }: ActionArgs) => {
 };
 
 const ModifyUser = () => {
-  const user = useLoaderData() as User;
+  const user = useLoaderData();
 
   const mode = user ? "edit" : "add";
 
@@ -89,7 +89,7 @@ const ModifyUser = () => {
                     name="email"
                     type="text"
                     placeholder="Email Address"
-                    className="input-bordered input w-[95vw] sm:w-[215px]"
+                    className="input input-bordered w-[95vw] sm:w-[215px]"
                     defaultValue={user?.email || undefined}
                   />
                 </div>
@@ -102,7 +102,7 @@ const ModifyUser = () => {
                     name="firstName"
                     type="text"
                     placeholder="First Name"
-                    className="input-bordered input w-[95vw] sm:w-[215px]"
+                    className="input input-bordered w-[95vw] sm:w-[215px]"
                     defaultValue={user?.userDetails?.firstName || undefined}
                   />
                 </div>
@@ -115,7 +115,7 @@ const ModifyUser = () => {
                     name="lastName"
                     type="text"
                     placeholder="Last Name"
-                    className="input-bordered input w-[95vw] sm:w-[215px]"
+                    className="input input-bordered w-[95vw] sm:w-[215px]"
                     defaultValue={user?.userDetails?.lastName || undefined}
                   />
                 </div>
@@ -128,7 +128,7 @@ const ModifyUser = () => {
                     name="phonenumber"
                     type="text"
                     placeholder="Phone Number"
-                    className="input-bordered input w-[95vw] sm:w-[215px]"
+                    className="input input-bordered w-[95vw] sm:w-[215px]"
                     defaultValue={user?.userDetails?.phoneNumber || undefined}
                   />
                 </div>
@@ -141,7 +141,7 @@ const ModifyUser = () => {
                     name="dateofbirth"
                     type="date"
                     placeholder="Date of Birth"
-                    className="input-bordered input w-[95vw] min-w-[215px] cursor-pointer sm:w-full"
+                    className="input input-bordered w-[95vw] min-w-[215px] cursor-pointer sm:w-full"
                     defaultValue={
                       user?.userDetails?.dateOfBirth
                         ? new Date(user?.userDetails?.dateOfBirth)
@@ -162,7 +162,7 @@ const ModifyUser = () => {
                     name="address1"
                     type="text"
                     placeholder="Address Line 1"
-                    className="input-bordered input w-[95vw] sm:w-[215px]"
+                    className="input input-bordered w-[95vw] sm:w-[215px]"
                     defaultValue={user?.address?.addressLine1 || undefined}
                   />
                 </div>
@@ -175,7 +175,7 @@ const ModifyUser = () => {
                     name="address2"
                     type="text"
                     placeholder="Address Line 2"
-                    className="input-bordered input w-[95vw] sm:w-[215px]"
+                    className="input input-bordered w-[95vw] sm:w-[215px]"
                     defaultValue={user?.address?.addressLine2 || undefined}
                   />
                 </div>
@@ -188,7 +188,7 @@ const ModifyUser = () => {
                     name="suburb"
                     type="text"
                     placeholder="Suburb"
-                    className="input-bordered input w-[95vw] sm:w-[215px]"
+                    className="input input-bordered w-[95vw] sm:w-[215px]"
                     defaultValue={user?.address?.suburb || undefined}
                   />
                 </div>
@@ -201,7 +201,7 @@ const ModifyUser = () => {
                     name="postcode"
                     type="text"
                     placeholder="Post Code"
-                    className="input-bordered input w-[95vw] sm:w-[215px]"
+                    className="input input-bordered w-[95vw] sm:w-[215px]"
                     defaultValue={user?.address?.postcode || undefined}
                   />
                 </div>
@@ -214,7 +214,7 @@ const ModifyUser = () => {
                     name="state"
                     type="text"
                     placeholder="State"
-                    className="input-bordered input w-[95vw] sm:w-[215px]"
+                    className="input input-bordered w-[95vw] sm:w-[215px]"
                     defaultValue={user?.address?.state || undefined}
                   />
                 </div>

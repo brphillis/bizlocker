@@ -1,7 +1,7 @@
 import { useMatches } from "@remix-run/react";
 import { useMemo } from "react";
 
-import type { User } from "~/models/login.server";
+import type { User } from "~/models/auth/login.server";
 
 const DEFAULT_REDIRECT = "/";
 

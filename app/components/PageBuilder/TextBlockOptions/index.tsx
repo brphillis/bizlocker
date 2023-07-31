@@ -1,5 +1,5 @@
 import { useState } from "react";
-import RichTextEditor from "~/components/RichTextEditor.client";
+import RichTextInput from "~/components/Forms/Input/RichTextInput/index.client";
 
 type Props = {
   selectedBlock: BlockName | undefined;
@@ -13,7 +13,7 @@ const TextBlockOptions = ({ selectedBlock, defaultValue }: Props) => {
     <>
       {selectedBlock === "text" && (
         <div className="w-full overflow-x-auto">
-          <RichTextEditor
+          <RichTextInput
             value={stringData}
             onChange={setStringData}
             className="mb-12 mt-3 h-[320px]"

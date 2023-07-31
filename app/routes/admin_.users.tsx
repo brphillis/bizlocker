@@ -10,7 +10,7 @@ import {
 import AdminPageHeader from "~/components/Layout/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/AdminPageWrapper";
 import Pagination from "~/components/Pagination";
-import { searchUsers } from "~/models/users.server";
+import { searchUsers } from "~/models/auth/users.server";
 import { placeholderAvatar } from "~/utility/placeholderAvatar";
 import { capitalizeFirst } from "~/utility/stringHelpers";
 
@@ -55,7 +55,7 @@ const Articles = () => {
                 name="firstName"
                 type="text"
                 placeholder="First Name"
-                className="input-bordered input w-full max-w-xs"
+                className="input input-bordered w-full max-w-xs"
               />
             </div>
 
@@ -67,7 +67,7 @@ const Articles = () => {
                 name="lastName"
                 type="text"
                 placeholder="Last Name"
-                className="input-bordered input w-full"
+                className="input input-bordered w-full"
               />
             </div>
 
@@ -79,13 +79,13 @@ const Articles = () => {
                 name="email"
                 type="text"
                 placeholder="Email Address"
-                className="input-bordered input w-full"
+                className="input input-bordered w-full"
               />
             </div>
           </div>
 
           <div className="flex flex-row justify-end sm:justify-start">
-            <button type="submit" className="btn-primary btn mt-6 w-max">
+            <button type="submit" className="btn btn-primary mt-6 w-max">
               Search
             </button>
           </div>
@@ -94,7 +94,7 @@ const Articles = () => {
         <div className="divider w-full" />
 
         <div className="w-full max-w-[80vw] overflow-x-auto">
-          <table className="table-sm my-3 table">
+          <table className="table table-sm my-3">
             <thead className="sticky top-0">
               <tr>
                 {currentPage && <th>#</th>}

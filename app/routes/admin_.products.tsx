@@ -34,13 +34,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 const ManageProducts = () => {
   const navigate = useNavigate();
-  const { products, totalPages, productCategories, brands } =
-    (useLoaderData() as {
-      products: Product[];
-      productCategories: ProductCategory[];
-      brands: Brand[];
-      totalPages: number;
-    }) || {};
+  const { products, totalPages, productCategories, brands } = useLoaderData();
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("pageNumber")) || 1;
 
@@ -59,7 +53,7 @@ const ManageProducts = () => {
                 name="name"
                 type="text"
                 placeholder="Name"
-                className="input-bordered input w-full"
+                className="input input-bordered w-full"
               />
             </div>
 
@@ -67,7 +61,7 @@ const ManageProducts = () => {
             <SelectBrand brands={brands} />
           </div>
           <div className="flex flex-row justify-end sm:justify-start">
-            <button type="submit" className="btn-primary btn mt-6 w-max">
+            <button type="submit" className="btn btn-primary mt-6 w-max">
               Search
             </button>
           </div>
@@ -78,7 +72,7 @@ const ManageProducts = () => {
         <ProductSort />
 
         <div className="w-full max-w-[80vw] overflow-x-auto">
-          <table className="table-sm my-3 table">
+          <table className="table table-sm my-3">
             <thead className="sticky top-0">
               <tr>
                 {currentPage && <th>#</th>}
@@ -103,7 +97,7 @@ const ManageProducts = () => {
                       totalSold,
                       isActive,
                     }: Product,
-                    i
+                    i: number
                   ) => {
                     return (
                       <tr

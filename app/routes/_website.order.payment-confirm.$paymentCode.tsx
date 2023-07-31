@@ -13,7 +13,7 @@ export const loader = async ({ params }: ActionArgs) => {
 };
 
 const PaymentConfirm = () => {
-  const order = useLoaderData() as Order;
+  const order = useLoaderData();
   const { items } = (order as { items: OrderItem[] }) || {};
 
   return (
