@@ -131,13 +131,14 @@ model User {
   updatedAt            DateTime     @updatedAt
 }
 
-model EmailVerifier {
-  id         Int      @id @default(autoincrement())
-  email      String   @unique
-  code       String?  @default(cuid())
-  expiration DateTime @default(dbgenerated("NOW() + interval '3 hours'"))
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+model Verifier {
+  id         Int         @id @default(autoincrement())
+  email      String
+  type       VerifyTypes
+  code       String?     @default(cuid())
+  expiration DateTime    @default(dbgenerated("NOW() + interval '3 hours'"))
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
 }
 
 model UserDetails {
@@ -388,6 +389,11 @@ enum Role {
   ADMIN
   STAFF
   USER
+}
+
+enum VerifyTypes {
+  email
+  password
 }
 
 enum Gender {

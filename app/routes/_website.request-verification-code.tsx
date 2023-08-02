@@ -1,20 +1,17 @@
 import type { ActionArgs, V2_MetaFunction } from "@remix-run/node";
 import { NavLink, useActionData, useNavigate } from "@remix-run/react";
-import { registerUser } from "~/models/auth/register.server";
 import { isValidEmail, isValidPassword } from "~/utility/validate";
 import { useEffect } from "react";
 import { ActionAlert } from "~/components/Notifications/Alerts";
 import AuthPageWrapper from "~/components/Layout/AuthPageWrapper";
 import AuthContainer from "~/components/Layout/AuthContainer";
+import { requestNewVerifyEmail } from "~/models/auth/verification.server";
+import { verifyLogin } from "~/models/auth/login.server";
 
 export const action = async ({ request }: ActionArgs) => {
   const form = Object.fromEntries(await request.formData());
-  const { email, password, confirmPassword } = form;
+  const { email, password } = form;
   let validationError: string[] = [];
-
-  if (password !== confirmPassword) {
-    validationError.push("Passwords Do Not Match");
-  }
 
   if (!isValidEmail(email as string)) {
     validationError.push("Invalid Email Address");
@@ -29,8 +26,24 @@ export const action = async ({ request }: ActionArgs) => {
   }
 
   try {
-    const { success } = await registerUser(email as string, password as string);
-    return { success };
+    const { user, error } = await verifyLogin(
+      email as string,
+      password as string,
+      false
+    );
+
+    if (error) {
+      const validationError = [error];
+      return { validationError };
+    }
+
+    if (user) {
+      const { success } = await requestNewVerifyEmail(email as string, "email");
+      return { success };
+    }
+
+    const validationError = ["An Error Has Occured."];
+    return { validationError };
   } catch (error: any) {
     const validationError = [error.message];
     return { validationError };
@@ -39,7 +52,7 @@ export const action = async ({ request }: ActionArgs) => {
 
 export const meta: V2_MetaFunction = () => [{ title: "Register" }];
 
-export const RegisterPage = () => {
+export const RequestVerificationCode = () => {
   const navigate = useNavigate();
   const { validationError, success } =
     (useActionData() as { validationError: string[]; success: boolean }) || {};
@@ -47,7 +60,7 @@ export const RegisterPage = () => {
   useEffect(() => {
     const successPopup = () => {
       ActionAlert(
-        "Registration Complete",
+        "Verification Email Sent",
         "We Have Sent You a Verification Email.",
         () => navigate("/login")
       );
@@ -61,6 +74,10 @@ export const RegisterPage = () => {
   return (
     <AuthPageWrapper>
       <AuthContainer>
+        <p className="mb-3 select-none text-center text-xs">
+          Request Verification Email
+        </p>
+
         <div className="form-control">
           <label className="label">
             <span className="label-text text-brand-white">Email</span>
@@ -73,7 +90,7 @@ export const RegisterPage = () => {
           />
         </div>
 
-        <div className="form-control">
+        <div className="form-control mb-3">
           <label className="label">
             <span className="label-text text-brand-white">Password</span>
           </label>
@@ -85,19 +102,6 @@ export const RegisterPage = () => {
           />
         </div>
 
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text text-brand-white">
-              Confirm Password
-            </span>
-          </label>
-          <input
-            name="confirmPassword"
-            type="password"
-            placeholder="confirm password"
-            className="input input-bordered mb-3 bg-base-100 text-brand-black/50 focus:text-brand-black"
-          />
-        </div>
         <>
           {validationError?.length > 0 &&
             validationError?.map((error: string, i) => {
@@ -124,12 +128,8 @@ export const RegisterPage = () => {
           )}
         </>
         <div className="form-control mt-6">
-          <p className="pb-6 text-[10px] opacity-75">
-            By subscribing and / or creating an account you agree to CLUTCH
-            Terms and Conditions, and Privacy Policy.
-          </p>
           <button type="submit" className="btn btn-primary mb-3">
-            Register
+            Resend Email
           </button>
           <NavLink to="/login" type="button" className="btn btn-primary">
             Back
@@ -140,4 +140,4 @@ export const RegisterPage = () => {
   );
 };
 
-export default RegisterPage;
+export default RequestVerificationCode;

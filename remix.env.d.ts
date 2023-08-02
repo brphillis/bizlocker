@@ -14,6 +14,18 @@ type GoogleAuthResponse = {
   given_name: string;
 };
 
+interface Verifier {
+  id: number;
+  email: string;
+  type: VerifyTypes;
+  code: string | null;
+  expiration: DateTime;
+  createdAt: DateTime;
+  updatedAt: DateTime | null;
+}
+
+type VerifyTypes = "email" | "password";
+
 type Image = {
   url: string;
   altText?: string;

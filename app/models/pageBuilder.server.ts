@@ -618,8 +618,7 @@ export const deleteBlockIfInvalid = async (blockId: string) => {
       await prisma.blockOptions.delete({ where: { id: block.blockOptionsId } });
     }
     await prisma.block.delete({ where: { id: blockId } });
-    console.log("Block and associated options deleted successfully.");
   } else {
-    console.log("Block has associated blocks and cannot be deleted.");
+    console.error("Block has associated blocks and cannot be deleted.");
   }
 };

@@ -1,6 +1,6 @@
 import { prisma } from "~/db.server";
 import bcrypt from "bcryptjs";
-import { sendEmailVerificationEmail } from "~/integrations/sendgrid/emails/emailVerification";
+import { initiateVerifyUserAccount } from "./verification.server";
 
 export const registerUser = async (email: string, password: string) => {
   let success;
@@ -24,16 +24,39 @@ export const registerUser = async (email: string, password: string) => {
     },
   });
 
-  const { code: verificationCode } = await prisma.emailVerifier.create({
-    data: {
-      email: email,
+  await initiateVerifyUserAccount(email);
+
+  success = true;
+
+  return { success };
+};
+
+export const resetUserPassword = async (email: string, password: string) => {
+  const userToUpdate = await prisma.user.findUnique({
+    where: {
+      email,
     },
   });
 
-  if (verificationCode) {
-    await sendEmailVerificationEmail(email, verificationCode);
-    success = true;
-  }
+  if (userToUpdate) {
+    try {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
 
-  return { success };
+      await prisma.user.update({
+        where: {
+          email,
+        },
+        data: {
+          password: hashedPassword,
+        },
+      });
+
+      return { success: true };
+    } catch (error) {
+      throw new Error("An Error has Occured.");
+    }
+  } else {
+    throw new Error("User Could Not Be Found.");
+  }
 };

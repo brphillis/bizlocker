@@ -1,10 +1,11 @@
 import type { ActionArgs, V2_MetaFunction } from "@remix-run/node";
-import { Form, NavLink, useActionData } from "@remix-run/react";
+import { Link, useActionData } from "@remix-run/react";
 import { googleLogin, verifyLogin } from "~/models/auth/login.server";
 import { createUserSession } from "~/session.server";
-import background from "../assets/banners/banner-login.jpg";
 import LoginGoogle from "~/components/auth/LoginGoogle";
 import { isValidEmail, isValidPassword } from "~/utility/validate";
+import AuthPageWrapper from "~/components/Layout/AuthPageWrapper";
+import AuthContainer from "~/components/Layout/AuthContainer";
 
 export const action = async ({ request }: ActionArgs) => {
   const form = Object.fromEntries(await request.formData());
@@ -63,20 +64,8 @@ export default function LoginPage() {
     (useActionData() as { validationError: string[] }) || {};
 
   return (
-    <div className="relative flex h-full min-h-[calc(100vh-64px)] w-full items-center justify-center">
-      <div
-        style={{
-          backgroundImage: `url(${background})`,
-        }}
-        className="absolute top-0 z-0 h-full w-full bg-cover brightness-75"
-      />
-      <Form
-        method="POST"
-        className="w-max-content form-control relative w-[24rem] max-w-[98vw] rounded-lg bg-brand-black p-8 text-brand-white"
-      >
-        <h1 className="select-none pb-6 pt-3 text-center text-6xl font-bold tracking-wide text-white/90">
-          CLUTCH.
-        </h1>
+    <AuthPageWrapper>
+      <AuthContainer>
         <div className="form-control">
           <label className="label">
             <span className="label-text text-brand-white">Email</span>
@@ -98,27 +87,40 @@ export default function LoginPage() {
             placeholder="password"
             className="input input-bordered bg-base-100 text-brand-black/50 focus:text-brand-black"
           />
-          <label className="label">
-            <div className="link-hover link label-text-alt text-brand-white/75">
-              Forgot password?
-            </div>
-          </label>
+
+          <Link
+            to="/forgot-password"
+            className="link-hover link mb-3 ml-1 mt-2 cursor-pointer text-xs text-brand-white/75"
+          >
+            Forgot password?
+          </Link>
         </div>
 
-        {validationError?.length > 0 && (
-          <div>
-            {validationError.map((error: string, i) => {
-              return (
-                <p
-                  key={error + i}
-                  className="my-2 text-center text-xs text-red-500"
-                >
-                  {error}
-                </p>
-              );
-            })}
-          </div>
-        )}
+        <>
+          {validationError?.length > 0 && (
+            <div>
+              {validationError.map((error: string, i) => {
+                return (
+                  <p
+                    key={error + i}
+                    className="my-2 text-center text-xs text-red-500"
+                  >
+                    {error}
+                  </p>
+                );
+              })}
+            </div>
+          )}
+
+          {validationError?.[0]?.includes("Email not Verified") && (
+            <Link
+              to="/request-verification-code"
+              className="link-hover link mb-2 cursor-pointer text-center text-xs text-brand-white/75"
+            >
+              Resend Email?
+            </Link>
+          )}
+        </>
 
         <div className="form-control mt-3 gap-3">
           <button
@@ -129,13 +131,13 @@ export default function LoginPage() {
           >
             Login
           </button>
-          <NavLink to="/register" type="button" className="btn btn-primary">
+          <Link to="/register" type="button" className="btn btn-primary">
             Create Account
-          </NavLink>
+          </Link>
           <div className="my-2 w-full border-b-2 border-brand-white/10" />
           <LoginGoogle />
         </div>
-      </Form>
-    </div>
+      </AuthContainer>
+    </AuthPageWrapper>
   );
 }

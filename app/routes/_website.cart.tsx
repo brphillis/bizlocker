@@ -64,11 +64,11 @@ const Cart = () => {
 
                 return (
                   <div
-                    className="relative flex w-[420px] max-w-full flex-row items-center border border-base-300 bg-base-200/50 p-3 text-brand-black shadow-sm"
+                    className="relative flex w-[420px] max-w-full flex-row items-center border border-base-300 bg-base-200/50 p-2 text-brand-black shadow-sm"
                     key={"cartItem-" + name}
                   >
                     <img
-                      className="h-20 w-20  border border-base-300 object-cover md:h-28 md:w-28"
+                      className="h-20 w-20  border border-base-300 object-cover md:h-[8.8rem] md:w-[8.8rem]"
                       src={images[0].url}
                       alt={name + "_cartImage"}
                     />

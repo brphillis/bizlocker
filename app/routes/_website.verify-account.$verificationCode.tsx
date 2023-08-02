@@ -11,28 +11,31 @@ export const loader = async ({ params, request }: ActionArgs) => {
   const emailAddress = url.searchParams.get("email");
 
   if (emailAddress && verificationCode) {
-    const success = await verifyUserAccount(emailAddress, verificationCode);
-    return success;
+    const { success: verified } = await verifyUserAccount(
+      emailAddress,
+      verificationCode
+    );
+    return verified;
   } else return false;
 };
 
 const VerifyAccount = () => {
-  const success = useLoaderData();
+  const verified = useLoaderData();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (success) {
+    if (verified) {
       setTimeout(() => {
         navigate("/login");
       }, 7500);
     }
-  }, [success, navigate]);
+  }, [verified, navigate]);
 
   return (
     <PageWrapper>
       <div className="min-h-[62.3vh] py-6">
         <div className="flex flex-col items-center gap-3">
-          {success && (
+          {verified && (
             <>
               <h1 className="text-center text-2xl font-semibold">Success!</h1>
               <h1 className="text-center text-2xl">
@@ -40,7 +43,7 @@ const VerifyAccount = () => {
               </h1>
             </>
           )}
-          {!success && (
+          {!verified && (
             <h1 className="text-center text-2xl">Invalid Verification Code</h1>
           )}
 

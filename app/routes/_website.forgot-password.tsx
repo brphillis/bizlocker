@@ -1,0 +1,107 @@
+import type { ActionArgs, V2_MetaFunction } from "@remix-run/node";
+import { Form, NavLink, useActionData, useNavigate } from "@remix-run/react";
+import background from "../assets/banners/banner-login.jpg";
+import { isValidEmail } from "~/utility/validate";
+import { useEffect } from "react";
+import { ActionAlert } from "~/components/Notifications/Alerts";
+import { initiatePasswordReset } from "~/models/auth/verification.server";
+
+export const action = async ({ request }: ActionArgs) => {
+  const form = Object.fromEntries(await request.formData());
+  const { email } = form;
+  let validationError: string[] = [];
+
+  if (!isValidEmail(email as string)) {
+    validationError.push("Invalid Email Address");
+  }
+
+  if (validationError.length > 0) {
+    return { validationError };
+  }
+
+  try {
+    const { success } = await initiatePasswordReset(email as string);
+    return { success };
+  } catch (error: any) {
+    const validationError = [error.message];
+
+    return { validationError };
+  }
+};
+
+export const meta: V2_MetaFunction = () => [{ title: "Register" }];
+
+export const RegisterPage = () => {
+  const navigate = useNavigate();
+  const { validationError, success } =
+    (useActionData() as { validationError: string[]; success: boolean }) || {};
+
+  useEffect(() => {
+    const successPopup = () => {
+      ActionAlert(
+        "Verification Email Sent!",
+        "Check your inbox to reset your password.",
+        () => navigate("/login")
+      );
+    };
+
+    if (success) {
+      successPopup();
+    }
+  }, [success, navigate]);
+
+  return (
+    <div className="relative flex h-full min-h-[calc(100vh-64px)] w-full items-center justify-center">
+      <div
+        style={{
+          backgroundImage: `url(${background})`,
+        }}
+        className="absolute top-0 z-0 h-full w-full bg-cover brightness-75"
+      />
+      <Form
+        method="POST"
+        className="w-max-content form-control relative w-[24rem] max-w-[98vw] rounded-lg bg-brand-black p-8 text-brand-white"
+      >
+        <h1 className="select-none pb-6 pt-3 text-center text-6xl font-bold tracking-wide text-white/90">
+          CLUTCH
+        </h1>
+
+        <p className="py-6 text-center text-sm">
+          Enter your email address to reset your password.
+        </p>
+
+        <div className="form-control">
+          <input
+            name="email"
+            type="text"
+            placeholder="email"
+            className="input input-bordered bg-base-100 text-brand-black/50 focus:text-brand-black"
+          />
+        </div>
+
+        {validationError?.length > 0 &&
+          validationError?.map((error: string, i) => {
+            return (
+              <p
+                key={error + i}
+                className="mt-1 text-center text-xs text-red-500/75"
+              >
+                {error}
+              </p>
+            );
+          })}
+
+        <div className="form-control mt-12">
+          <button type="submit" className="btn btn-primary mb-3">
+            Submit
+          </button>
+          <NavLink to="/login" type="button" className="btn btn-primary">
+            Back
+          </NavLink>
+        </div>
+      </Form>
+    </div>
+  );
+};
+
+export default RegisterPage;

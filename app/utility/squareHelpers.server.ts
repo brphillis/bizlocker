@@ -5,7 +5,7 @@ import type {
   OrderLineItem,
 } from "square";
 import { prisma } from "~/db.server";
-import { squareClient } from "~/square.server";
+import { squareClient } from "~/integrations/square/square.server";
 
 export const CartItemsToSquareApiLineItems = (
   cartItems: CartItem[]

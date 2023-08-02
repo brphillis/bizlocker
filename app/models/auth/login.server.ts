@@ -5,7 +5,11 @@ import { createUserSession } from "~/session.server";
 
 export type { User } from "@prisma/client";
 
-export const verifyLogin = async (email: string, password: string) => {
+export const verifyLogin = async (
+  email: string,
+  password: string,
+  verifiedOnly: boolean = true
+) => {
   const userWithPassword = await prisma.user.findUnique({
     where: {
       email,
@@ -57,7 +61,7 @@ export const verifyLogin = async (email: string, password: string) => {
     return { error };
   }
 
-  if (!userWithPassword.verified) {
+  if (!userWithPassword.verified && verifiedOnly) {
     const error = "Email not Verified, Please Check Your Email.";
     return { error };
   }

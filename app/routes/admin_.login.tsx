@@ -10,7 +10,7 @@ import { useEffect } from "react";
 import { verifyLogin } from "~/models/auth/login.server";
 import { createUserSession } from "~/session.server";
 import { safeRedirect } from "~/utils";
-import background from "../assets/banners/banner-login.jpg";
+import AuthPageWrapper from "~/components/Layout/AuthPageWrapper";
 
 export const action = async ({ request }: ActionArgs) => {
   const formData = await request.formData();
@@ -42,13 +42,7 @@ const AdminLogin = () => {
   }, [user, navigate, location]);
 
   return (
-    <div className="relative flex h-full min-h-[calc(100vh-64px)] w-full items-center justify-center">
-      <div
-        style={{
-          backgroundImage: `url(${background})`,
-        }}
-        className="absolute top-0 z-0 h-full w-full bg-cover brightness-75"
-      />
+    <AuthPageWrapper>
       <Form
         method="POST"
         className="w-max-content form-control relative w-[24rem] max-w-[98vw] rounded-lg bg-brand-black p-8 text-brand-white"
@@ -101,7 +95,7 @@ const AdminLogin = () => {
           </p>
         </div>
       </Form>
-    </div>
+    </AuthPageWrapper>
   );
 };
 
