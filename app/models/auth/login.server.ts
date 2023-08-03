@@ -19,33 +19,7 @@ export const verifyLogin = async (
       email: true,
       verified: true,
       password: true,
-      cart: {
-        select: {
-          id: true,
-          cartItems: {
-            include: {
-              variant: {
-                select: {
-                  id: true,
-                  price: true,
-                  salePrice: true,
-                  product: {
-                    select: {
-                      name: true,
-                    },
-                  },
-                },
-              },
-            },
-          },
-          user: {
-            select: {
-              id: true,
-              email: true,
-            },
-          },
-        },
-      },
+      cartId: true,
     },
   });
 
@@ -66,8 +40,14 @@ export const verifyLogin = async (
     return { error };
   }
 
-  const { password: _password, ...userWithoutPassword } = userWithPassword;
+  const {
+    password: _password,
+    verified: _verified,
+    ...userWithoutPassword
+  } = userWithPassword;
   const user = userWithoutPassword;
+
+  console.log("RETURNED USER", user);
 
   return { user };
 };

@@ -1,21 +1,17 @@
 import { redirect } from "@remix-run/server-runtime";
 import { prisma } from "~/db.server";
-import {
-  USER_SESSION_KEY,
-  getSession,
-  getUserObject,
-  sessionStorage,
-} from "~/session.server";
+import { getUserObject } from "~/session.server";
 
 export const getCart = async (request: Request) => {
-  const userData = (await getUserObject(request)) as User;
-  const cartId = userData?.cart?.id;
+  const { id } = ((await getUserObject(request)) as User) || {};
 
-  if (!cartId) return null;
-
+  if (!id) {
+    console.error("Logged in user required.");
+    return null;
+  }
   return await prisma.cart.findUnique({
     where: {
-      id: cartId,
+      userId: id,
     },
     include: {
       cartItems: {
@@ -123,20 +119,6 @@ export const addToCart = async (
             id: userCart.id,
           },
         });
-
-        //remove the cart from current user cookie
-        const userNoCart = {
-          ...userData,
-          cart: null,
-        };
-
-        const session = await getSession(request);
-        session.set(USER_SESSION_KEY, userNoCart);
-        return redirect(referer || "/products", {
-          headers: {
-            "Set-Cookie": await sessionStorage.commitSession(session),
-          },
-        });
       }
     } else {
       // Otherwise, update the quantity of the cart item
@@ -188,52 +170,5 @@ export const addToCart = async (
     });
   }
 
-  // Fetch the updated cart with cartItems, including user and productVariants
-  const updatedCart = await prisma.cart.findUnique({
-    where: {
-      id: userCart.id,
-    },
-    include: {
-      cartItems: {
-        include: {
-          variant: {
-            select: {
-              price: true,
-              salePrice: true,
-              name: true,
-              id: true,
-              isOnSale: true,
-              isPromoted: true,
-              product: {
-                select: {
-                  name: true,
-                  promotion: {
-                    select: {
-                      discountPercentage: true,
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-      user: {
-        select: {
-          id: true,
-        },
-      },
-    },
-  });
-
-  const updatedUser = {
-    ...userData,
-    cart: updatedCart,
-  };
-
-  const session = await getSession(request);
-  session.set(USER_SESSION_KEY, updatedUser);
-  return redirect(referer || "/products", {
-    headers: { "Set-Cookie": await sessionStorage.commitSession(session) },
-  });
+  return redirect(referer || "/products");
 };

@@ -7,8 +7,10 @@ import {
   getUserObject,
   sessionStorage,
 } from "~/session.server";
-import { squareClient } from "~/integrations/square/square.server";
-import { createSquarePaymentLink } from "~/utility/squareHelpers.server";
+import {
+  createSquarePaymentLink,
+  squareClient,
+} from "~/integrations/square/square.server";
 
 export const getOrder = async (orderId: string) => {
   return await prisma.order.findUnique({

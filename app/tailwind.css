@@ -7,12 +7,9 @@
   @apply border-white/20;
 }
 
-.input {
-  @apply rounded-none;
-}
-
+.input,
 .select {
-  @apply rounded-none;
+  @apply h-[2.6rem] min-h-[2.6rem] rounded-none;
 }
 
 /* For Webkit-based browsers (Chrome, Safari and Opera) */

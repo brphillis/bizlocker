@@ -87,7 +87,7 @@ export const upsertProduct = async (productData: any) => {
     (variant: ProductVariant) => variant.isActive
   );
   const discountPercentages = activeVariants.map((variant: ProductVariant) =>
-    calculateDiscountPercentage(variant.price, variant.salePrice)
+    calculateDiscountPercentage(variant.price, variant.salePrice!)
   );
   const discountPercentageHigh =
     discountPercentages.length > 0 ? Math.max(...discountPercentages) : 0;

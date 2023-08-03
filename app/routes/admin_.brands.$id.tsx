@@ -5,19 +5,14 @@ import UploadImage from "~/components/Forms/Upload/UploadImage";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { deleteBrand, getBrand, upsertBrand } from "~/models/brands.server";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
-import {
-  json,
-  redirect,
-  type ActionArgs,
-  type LoaderArgs,
-} from "@remix-run/node";
+import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const id = params?.id;
 
   if (id && id !== "add") {
     const brand = await getBrand(id);
-    return json({ brand });
+    return { brand };
   } else {
     return null;
   }
@@ -54,10 +49,7 @@ export const action = async ({ request, params }: ActionArgs) => {
 };
 
 const ModifyBrand = () => {
-  const { brand } =
-    (useLoaderData() as {
-      brand: Brand;
-    }) || {};
+  const { brand } = useLoaderData();
   const { validationError } =
     (useActionData() as { validationError: string }) || {};
   const mode = brand ? "edit" : "add";
@@ -85,7 +77,7 @@ const ModifyBrand = () => {
               name="name"
               type="text"
               placeholder="Name"
-              className="input-bordered input w-full max-w-xs"
+              className="input input-bordered w-full max-w-xs"
               defaultValue={brand?.name || undefined}
             />
           </div>

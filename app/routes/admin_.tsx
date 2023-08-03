@@ -1,9 +1,11 @@
 import { useEffect } from "react";
+import type { LoaderArgs } from "@remix-run/server-runtime";
+import { getUserObject } from "~/session.server";
 import {
   Outlet,
+  useLoaderData,
   useLocation,
   useNavigate,
-  useRouteLoaderData,
   useSubmit,
 } from "@remix-run/react";
 import {
@@ -15,8 +17,13 @@ import {
   IoPricetag,
 } from "react-icons/io5";
 
+export const loader = async ({ request }: LoaderArgs) => {
+  const user = await getUserObject(request);
+  return { user };
+};
+
 const Admin = () => {
-  const user = useRouteLoaderData("root") as User | undefined;
+  const { user } = useLoaderData();
   const submit = useSubmit();
   const navigate = useNavigate();
   const location = useLocation();
@@ -58,7 +65,7 @@ const Admin = () => {
       <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content flex min-h-screen w-full flex-col items-center justify-start">
         <div className="flex h-[64px] flex-row items-center gap-6 self-start justify-self-start bg-brand-black p-3 lg:hidden">
-          <label htmlFor="my-drawer-2" className="btn-ghost btn-square btn">
+          <label htmlFor="my-drawer-2" className="btn btn-square btn-ghost">
             <IoMenu size={26} />
           </label>
           <h1 className="select-none text-center text-2xl font-bold tracking-wide text-white/90">

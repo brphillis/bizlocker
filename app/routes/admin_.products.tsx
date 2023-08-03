@@ -6,7 +6,6 @@ import {
   useSearchParams,
 } from "@remix-run/react";
 import { json, type LoaderArgs } from "@remix-run/server-runtime";
-import parse from "html-react-parser";
 import SelectBrand from "~/components/Forms/Select/SelectBrand";
 import SelectProductCategory from "~/components/Forms/Select/SelectProductCategory";
 import AdminPageHeader from "~/components/Layout/AdminPageHeader";
@@ -77,7 +76,6 @@ const ManageProducts = () => {
               <tr>
                 {currentPage && <th>#</th>}
                 <th>Title</th>
-                <th>Description</th>
                 <th>Category</th>
                 <th>Brand</th>
                 <th>Sold</th>
@@ -111,7 +109,6 @@ const ManageProducts = () => {
                           </td>
                         )}
                         <td>{name}</td>
-                        <td>{parse(description.substring(0, 50))}</td>
                         <td>
                           {productCategories?.map(
                             ({ id, name }: ProductCategory) => (

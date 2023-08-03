@@ -1,6 +1,5 @@
 import { cssBundleHref } from "@remix-run/css-bundle";
-import type { LinksFunction, LoaderArgs } from "@remix-run/node";
-import { json } from "@remix-run/node";
+import type { LinksFunction } from "@remix-run/node";
 import {
   Links,
   LiveReload,
@@ -10,23 +9,12 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 
-import { getUserObject } from "~/session.server";
 import stylesheet from "~/tailwind.css";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
 ];
-
-export const loader = async ({ request }: LoaderArgs) => {
-  const userData = await getUserObject(request);
-  let user;
-  if (userData) {
-    user = userData;
-  } else return null;
-
-  return json(user);
-};
 
 export default function App() {
   return (

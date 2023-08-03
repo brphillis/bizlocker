@@ -62,7 +62,7 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
 
       <div className="form-control my-6 w-[495px] max-w-[95vw] items-center gap-3 self-center sm:items-start">
         <div className="flex w-full flex-row justify-center gap-6">
-          {Array.from({ length: 3 }).map((_, i) => {
+          {Array.from({ length: 5 }).map((_, i) => {
             const image = images?.[i] || null;
             return (
               <React.Fragment key={i}>
@@ -70,7 +70,7 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
                   type="file"
                   id={`image${i + 1}`}
                   accept="image/*"
-                  className="file-input-bordered file-input hidden w-full"
+                  className="file-input file-input-bordered hidden w-full"
                   onChange={async (e) => {
                     const convertedImage = await ConvertToBase64(e);
                     if (convertedImage) {
@@ -82,13 +82,15 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
                 />
                 <label
                   htmlFor={`image${i + 1}`}
-                  className={`btn ${image && "btn-success"} ${
+                  className={`h-4 w-4 rounded-full ${
+                    image ? "bg-success" : "bg-gray-500"
+                  }
+                  ${
                     activeSlide === i &&
                     "border-none outline outline-[4px] outline-success"
-                  }`}
-                >
-                  Image {i + 1}
-                </label>
+                  }
+                  `}
+                />
               </React.Fragment>
             );
           })}

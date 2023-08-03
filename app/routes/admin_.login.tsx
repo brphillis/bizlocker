@@ -1,7 +1,6 @@
 import type { ActionArgs } from "@remix-run/node";
 import {
   Form,
-  NavLink,
   useActionData,
   useLocation,
   useNavigate,
@@ -19,7 +18,8 @@ export const action = async ({ request }: ActionArgs) => {
   const redirectTo = safeRedirect(formData.get("redirectTo"), "/admin");
   const remember = formData.get("remember");
 
-  const user = await verifyLogin(email as string, password as string);
+  const { user } = await verifyLogin(email as string, password as string);
+  console.log("ADMINUSER", user);
   if (user) {
     return createUserSession({
       request,
@@ -86,9 +86,6 @@ const AdminLogin = () => {
           <button type="submit" className="btn btn-primary">
             Login
           </button>
-          <NavLink to="/register" type="button" className="btn btn-primary">
-            Create Account
-          </NavLink>
           <div className="my-2 w-full border-b-2 border-brand-white/10" />
           <p className="select-none text-center text-xs">
             Powered by BizLocker v0.1

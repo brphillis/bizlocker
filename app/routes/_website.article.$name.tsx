@@ -15,11 +15,7 @@ export const loader = async ({ params }: LoaderArgs) => {
 };
 
 const Home = () => {
-  const { article } =
-    (useLoaderData() as {
-      article: Article;
-    }) || {};
-
+  const { article } = useLoaderData();
   const blocks: Block[] = getBlocks(article);
 
   return (

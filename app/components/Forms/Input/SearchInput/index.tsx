@@ -48,7 +48,7 @@ const SearchInput = ({ name, placeholder, auto, delay, action }: Props) => {
   return (
     <input
       name={name}
-      className="text-brand-black/50 input-bordered input w-[95vw] sm:w-[215px]"
+      className="input input-bordered max-h-full w-[95vw] text-brand-black/50 sm:w-[215px]"
       placeholder={placeholder}
       type="text"
       onChange={handleChange}

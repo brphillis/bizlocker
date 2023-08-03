@@ -84,11 +84,7 @@ export const action = async ({ request, params }: ActionArgs) => {
 
 const ModifyPromotion = () => {
   const navigate = useNavigate();
-  const { promotion, departments } =
-    (useLoaderData() as {
-      promotion: Promotion;
-      departments: Department[];
-    }) || {};
+  const { promotion, departments } = useLoaderData();
 
   const { products } = (promotion as { products: Product[] }) || {};
 
@@ -121,7 +117,7 @@ const ModifyPromotion = () => {
                   name="name"
                   type="text"
                   placeholder="Name"
-                  className="input-bordered input w-[95vw] sm:w-[215px]"
+                  className="input input-bordered w-[95vw] sm:w-[215px]"
                   defaultValue={promotion?.name || undefined}
                 />
               </div>
@@ -145,7 +141,7 @@ const ModifyPromotion = () => {
                   name="discountPercentage"
                   type="number"
                   placeholder="Discount %"
-                  className="input-bordered input w-[95vw] sm:w-[215px]"
+                  className="input input-bordered w-[95vw] sm:w-[215px]"
                   defaultValue={promotion?.discountPercentage || ""}
                 />
               </div>
@@ -160,7 +156,7 @@ const ModifyPromotion = () => {
           <div className="divider w-full pt-8" />
 
           <div className="max-w-full overflow-x-auto sm:max-w-none">
-            <table className="table-md table">
+            <table className="table table-md">
               <thead>
                 <tr>
                   <th></th>

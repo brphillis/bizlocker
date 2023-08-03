@@ -1,6 +1,6 @@
 import type { ActionArgs, V2_MetaFunction } from "@remix-run/node";
 import { Link, useActionData } from "@remix-run/react";
-import { googleLogin, verifyLogin } from "~/models/auth/login.server";
+import { verifyLogin } from "~/models/auth/login.server";
 import { createUserSession } from "~/session.server";
 import LoginGoogle from "~/components/auth/LoginGoogle";
 import { isValidEmail, isValidPassword } from "~/utility/validate";
@@ -47,12 +47,6 @@ export const action = async ({ request }: ActionArgs) => {
       } else {
         const validationError = ["Incorrect Credentials"];
         return { validationError };
-      }
-
-    case "googleLogin":
-      const { credential } = form;
-      if (credential) {
-        return await googleLogin(request, credential);
       }
   }
 };

@@ -120,15 +120,8 @@ const Product = () => {
     promotions,
     availableColors,
     availableSizes,
-  } =
-    (useLoaderData() as {
-      product: Product;
-      productCategories: ProductCategory[];
-      brands: Brand[];
-      promotions: Promotion[];
-      availableColors: string[];
-      availableSizes: string[];
-    }) || {};
+  } = useLoaderData();
+
   const { statusText } = (useActionData() as { statusText: string }) || {};
 
   const mode = product ? "edit" : "add";
@@ -160,7 +153,7 @@ const Product = () => {
                   name="name"
                   type="text"
                   placeholder="Name"
-                  className="input-bordered input w-[95vw] sm:w-[215px]"
+                  className="input input-bordered w-[95vw] sm:w-[215px]"
                   defaultValue={product?.name}
                 />
               </div>

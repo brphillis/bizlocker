@@ -20,9 +20,9 @@ const SearchBar = ({ rootCategories, brands }: Props) => {
     <Form
       method="GET"
       action="/products"
-      className="form-control mt-[-1px] flex h-max w-full !flex-row justify-center gap-3 bg-brand-black py-3 sm:py-6"
+      className="form-control mt-[-1px] flex h-[60px] w-full !flex-row justify-center gap-3 bg-brand-black"
     >
-      <div className="flex flex-row flex-wrap justify-center gap-3">
+      <div className="flex flex-row flex-wrap items-center justify-center gap-3">
         <div className="flex flex-row gap-3">
           <SearchInput
             name="name"
@@ -36,7 +36,7 @@ const SearchBar = ({ rootCategories, brands }: Props) => {
           <select
             name="rootCategory"
             title="category"
-            className=" select w-[95vw] !font-normal text-brand-black/50 sm:w-[215px]"
+            className="select max-h-[1rem] w-[95vw] !font-normal text-brand-black/50 sm:w-[215px]"
             placeholder="Select a Value"
             value={searchParams.get("rootCategory") || ""}
             onChange={(e) => {
@@ -68,7 +68,7 @@ const SearchBar = ({ rootCategories, brands }: Props) => {
             <select
               name="productCategory"
               title="Sub Category"
-              className=" select w-[95vw] !font-normal text-brand-black/50 sm:w-[215px]"
+              className="select w-[95vw] !font-normal text-brand-black/50 sm:w-[215px]"
               placeholder="Select a Value"
               value={searchParams.get("productCategory") || ""}
               onChange={(e) => {
@@ -95,7 +95,7 @@ const SearchBar = ({ rootCategories, brands }: Props) => {
           <select
             name="brand"
             title="brand"
-            className=" select w-[95vw] !font-normal text-brand-black/50 sm:w-[215px]"
+            className="select w-[95vw] !font-normal text-brand-black/50 sm:w-[215px]"
             placeholder="Select a Value"
             value={searchParams.get("brand") || ""}
             onChange={(e) => {
@@ -119,7 +119,7 @@ const SearchBar = ({ rootCategories, brands }: Props) => {
 
         <button
           type="button"
-          className="btn-primary btn-square !ml-[85%] flex w-12 items-center justify-center sm:!ml-0"
+          className="btn-square btn-primary !ml-[85%] flex h-[2.6rem] w-12 items-center justify-center sm:!ml-0"
           onClick={() => {
             searchParams.delete("name");
             searchParams.delete("rootCategory");

@@ -26,10 +26,27 @@ interface Verifier {
 
 type VerifyTypes = "email" | "password";
 
-type Image = {
+interface Image {
+  id: number;
   url: string;
   altText?: string;
-};
+  user?: User;
+  userId?: string;
+  article?: Article;
+  articleId?: number;
+  product?: Product;
+  productId?: number;
+  productCategory?: ProductCategory;
+  productCategoryId?: number;
+  brand?: Brand;
+  brandId?: number;
+  campaignTile?: Campaign;
+  campaignBanner?: Campaign;
+  promotionTile?: Promotion;
+  promotionBanner?: Promotion;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
 type LoginData = {
   username: string;
@@ -90,10 +107,11 @@ type SquareShippingDetails = {
   postalCode?: string;
 };
 
-type Order = {
+interface Order {
   orderId: string;
   status: OrderStatus;
   totalPrice: number;
+  paymentCode: string;
   paymentUrl: string;
   paymentLinkId: string;
   items: OrderItem[];
@@ -101,11 +119,11 @@ type Order = {
   user: User;
   createdAt: Date;
   updatedAt: Date;
-};
+}
 
 type OrderStatus = "created" | "cancelled" | "paid" | "shipped" | "complete";
 
-type OrderItem = {
+interface OrderItem {
   id: number;
   quantity: number;
   unitPrice: number;
@@ -113,7 +131,9 @@ type OrderItem = {
   variantId: number;
   order: Order;
   orderId: string;
-};
+  createdAt: Date;
+  updatedAt: Date;
+}
 
 type NewOrderItem = {
   id?: number;
@@ -125,27 +145,33 @@ type NewOrderItem = {
   orderId?: string;
 };
 
-type Cart = {
-  id?: number;
-  user?: User;
-  userId?: number;
+interface Cart {
+  id: number;
+  user: User;
+  userId: string;
   cartItems: CartItem[];
-};
+  createdAt: Date;
+  updatedAt: Date;
+}
 
-type CartItem = {
+interface CartItem {
   id: number;
   quantity: number;
   cart: Cart;
-  cartid: number;
+  cartId: number;
   variant: ProductVariant;
   variantId: number;
-};
+  createdAt: Date;
+  updatedAt: Date;
+}
 
-type Department = {
+interface Department {
   id: number;
   name: string;
   rootCategories: RootCategory[];
-};
+  campaigns: Campaign[];
+  promotions: Promotion[];
+}
 
 type RootCategory = {
   id: number;
@@ -173,21 +199,27 @@ type ArticleCategory = {
   rootCategory?: RootCategory | null;
 };
 
-type ProductVariant = {
-  id?: number;
+interface ProductVariant {
+  id: number;
   name: string;
   sku: string;
   price: number;
-  salePrice: number;
+  salePrice?: number;
   isOnSale: boolean;
   stock?: number;
+  productId: number;
   product: Product;
   color?: Color;
   size?: Size;
-  orders?: Order[];
+  totalSold: number;
+  cartItems: CartItem[];
+  orderItems: OrderItem[];
+  orderId?: string;
   isActive: boolean;
-  isPromoted?: boolean;
-};
+  isPromoted: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
 type NewProductVariant = {
   id?: number;
@@ -205,42 +237,52 @@ type NewProductVariant = {
   isPromoted?: boolean;
 };
 
-type Product = {
+interface Product {
   id: number;
   name: string;
   description: string;
   images: Image[];
-  createdAt: Date;
-  updatedAt: Date;
   productCategories: ProductCategory[];
-  brand?: Brand | null;
+  brand?: Brand;
   brandId?: number;
   variants: ProductVariant[];
-  totalSold?: number;
-  isActive?: boolean;
-  gender?: Gender | null;
+  discountPercentageHigh: number;
+  discountPercentageLow: number;
+  totalSold: number;
+  isActive: boolean;
+  gender?: Gender;
+  campaigns: Campaign[];
   promotion?: Promotion;
-};
+  promotionId?: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
-type ProductCategory = {
+interface ProductCategory {
+  id: number;
+  name: string;
+  rootCategory?: RootCategory;
+  rootCategoryId?: number;
+  products: Product[];
+  productBlockContent: ProductBlockContent[];
+  image?: Image;
+  imageId?: number;
+  campaigns: Campaign[];
+}
+
+interface Brand {
   id: number;
   name: string;
   products: Product[];
+  productBlockContent: ProductBlockContent[];
   image?: Image;
   imageId?: number;
-  rootCategory?: RootCategory | null;
-  rootCategoryId?: number;
-};
+  campaigns: Campaign[];
+  createdAt: Date;
+  updatedAt: Date;
+}
 
-type Brand = {
-  id?: number;
-  name: string;
-  products?: Product[];
-  image?: Image;
-  imageId?: number;
-};
-
-type Promotion = {
+interface Promotion {
   id: number;
   name: string;
   products: Product[];
@@ -253,17 +295,19 @@ type Promotion = {
   bannerImageId: number;
   department: Department;
   departmentId: number;
+  bannerBlocks: BannerBlock[];
+  tileBlocks: TileBlock[];
   createdAt: Date;
-  updatedAt: Date;
-};
+  updatedAt?: Date;
+}
 
-type Campaign = {
+interface Campaign {
   id: number;
   name: string;
   excludedProducts: Product[];
   minSaleRange: number;
   maxSaleRange: number;
-  targetGender: Gender;
+  targetGender?: Gender;
   isActive: boolean;
   tileImage: Image;
   tileImageId: number;
@@ -271,11 +315,13 @@ type Campaign = {
   bannerImageId: number;
   department: Department;
   departmentId: number;
-  createdAt: Date;
-  updatedAt: Date;
   productCategories: ProductCategory[];
   brands: Brand[];
-};
+  bannerBlocks: BannerBlock[];
+  tileBlocks: TileBlock[];
+  createdAt: Date;
+  updatedAt?: Date;
+}
 
 type BasicSearchArgs = {
   id?: string;

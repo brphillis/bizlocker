@@ -1,17 +1,25 @@
-import { useSubmit } from "@remix-run/react";
+import { useNavigate, useSubmit } from "@remix-run/react";
 import { IoCart } from "react-icons/io5";
 import { Toast } from "~/components/Notifications/Toast";
 import { minusPercentage } from "~/utility/numberHelpers";
-const ProductCard = ({ name, images, variants, brand, promotion }: Product) => {
+const ProductCard = ({
+  id,
+  name,
+  images,
+  variants,
+  brand,
+  promotion,
+}: Product) => {
   const submit = useSubmit();
+  const navigate = useNavigate();
 
-  const { id, price, isOnSale, isPromoted } = variants[0] || {};
+  const { id: variantId, price, isOnSale, isPromoted } = variants[0] || {};
   const displayImage = images[0]?.url;
 
   const handleAddToCart = () => {
-    if (id) {
+    if (variantId) {
       const formData = new FormData();
-      formData.set("variantId", id.toString());
+      formData.set("variantId", variantId.toString());
       formData.set("quantity", "1");
 
       submit(formData, {
@@ -39,9 +47,12 @@ const ProductCard = ({ name, images, variants, brand, promotion }: Product) => {
 
   return (
     <div className="group flex w-full flex-col overflow-hidden bg-brand-white">
-      <div className="relative flex h-60 w-full max-w-full cursor-pointer overflow-hidden sm:h-72">
+      <div
+        className="relative flex h-60 w-full max-w-full cursor-pointer overflow-hidden sm:h-72"
+        onClick={() => navigate(`/product/${name}?id=${id}`)}
+      >
         <img
-          className="absolute right-0 top-0 h-full w-full object-cover"
+          className="absolute right-0 top-0 h-full w-full transform object-cover hover:scale-[1.025]"
           src={displayImage}
           alt={name.toLowerCase() + " product card"}
         />

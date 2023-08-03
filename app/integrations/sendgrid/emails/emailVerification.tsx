@@ -6,7 +6,7 @@ export const sendEmailVerificationEmail = async (
   recipient: string,
   verificationCode: string
 ) => {
-  const verificationLink = `http://localhost:5173/verify-account/${verificationCode}?email=${recipient}`;
+  const verificationLink = `${process.env.DEV_URL}/verify-account/${verificationCode}?email=${recipient}`;
 
   const template = Splash_Message_Button(
     recipient,

@@ -6,7 +6,7 @@ export const sendPasswordResetEmail = async (
   recipient: string,
   verificationCode: string
 ) => {
-  const verificationLink = `http://localhost:5173/reset-password/${verificationCode}?email=${recipient}`;
+  const verificationLink = `${process.env.DEV_URL}/reset-password/${verificationCode}?email=${recipient}`;
 
   const template = Splash_Message_Button(
     recipient,
