@@ -1,17 +1,13 @@
 import { useNavigate, useSubmit } from "@remix-run/react";
 import { IoCart } from "react-icons/io5";
 import { Toast } from "~/components/Notifications/Toast";
-import { minusPercentage } from "~/utility/numberHelpers";
-const ProductCard = ({
-  id,
-  name,
-  images,
-  variants,
-  brand,
-  promotion,
-}: Product) => {
+import { getVariantUnitPrice } from "~/utility/numberHelpers";
+
+const ProductCard = (product: Product) => {
   const submit = useSubmit();
   const navigate = useNavigate();
+
+  const { id, name, images, variants, brand } = product;
 
   const { id: variantId, price, isOnSale, isPromoted } = variants[0] || {};
   const displayImage = images[0]?.url;
@@ -31,18 +27,6 @@ const ProductCard = ({
     }
 
     Toast("success", 2000, "Item Added");
-  };
-
-  const UnitPrice = (variant: ProductVariant): string => {
-    let unitPrice = variant.isOnSale ? variant.salePrice : variant.price;
-
-    if (isPromoted && !isOnSale) {
-      const { discountPercentage } = promotion || {};
-      if (discountPercentage) {
-        unitPrice = minusPercentage(unitPrice, discountPercentage);
-      }
-    }
-    return unitPrice?.toFixed(2);
   };
 
   return (
@@ -110,7 +94,7 @@ const ProductCard = ({
               </>
             )}
             <span className="text-sm font-bold text-gray-900">
-              ${UnitPrice(variants[0])}&nbsp;
+              ${getVariantUnitPrice(variants[0], product)}&nbsp;
             </span>
           </p>
         </div>

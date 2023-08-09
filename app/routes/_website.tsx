@@ -135,13 +135,13 @@ const App = () => {
           </div>
         </div>
 
-        <div className="navbar relative flex !min-h-[50px] w-full items-center justify-center bg-base-200 !py-0 text-sm font-bold text-brand-black/80 shadow-md">
-          BUY NOW - SELL LATER - FREE RETURNS
-        </div>
-
         {searchActive && (
           <SearchBar rootCategories={rootCategories} brands={brands} />
         )}
+
+        <div className="navbar relative flex !min-h-[50px] w-full items-center justify-center bg-base-200 !py-0 text-sm font-bold text-brand-black/80 shadow-md">
+          <p className="cursor-pointer">BUY NOW - SELL LATER - FREE RETURNS</p>
+        </div>
 
         <Outlet />
 

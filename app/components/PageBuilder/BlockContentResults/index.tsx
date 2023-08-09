@@ -52,7 +52,7 @@ const BlockContentResults = ({
         (selectedBlock === "banner" || selectedBlock === "tile") && (
           <div className="w-full overflow-x-auto">
             <p className="my-3 text-sm font-bold">Select an Item</p>
-            <table className="table-sm table">
+            <table className="table table-sm">
               <thead>
                 <tr>
                   <th className="w-1/4"></th>
@@ -67,7 +67,7 @@ const BlockContentResults = ({
                     return (
                       <tr
                         key={"promotionOrCampaign_" + name + index}
-                        className="hover cursor-pointer"
+                        className="cursor-pointer"
                         onClick={() => {
                           selectItem(searchResults[index]);
                         }}
@@ -101,7 +101,7 @@ const BlockContentResults = ({
           <div className="max-w-3xl overflow-x-auto">
             <div className="divider my-0 w-full py-0" />
             <p className="my-3 text-sm font-bold">Selected Items</p>
-            <table className="table-sm table">
+            <table className="table table-sm">
               <thead>
                 <tr>
                   <th className="w-1/4"></th>
@@ -116,7 +116,7 @@ const BlockContentResults = ({
                     return (
                       <tr
                         key={"promotionOrCampaign_" + name + index}
-                        className="hover cursor-pointer"
+                        className="cursor-pointer"
                       >
                         <td className="w-1/4">{index + 1}</td>
                         <td className="w-1/4">{name}</td>

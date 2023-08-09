@@ -18,7 +18,7 @@ const ProductSort = ({ totalCount }: Props) => {
       <p className="text-sm">{totalCount} items found</p>
       <div className="flex gap-3">
         <select
-          className="select select-xs w-28 border border-brand-black/20 bg-base-100"
+          className="select select-xs !h-[24px] !min-h-[24px] w-28 border border-brand-black/20 bg-base-100"
           onChange={(e) => {
             searchParams.set("sortBy", e.target.value);
             const sortOrder = searchParams.get("sortOrder");

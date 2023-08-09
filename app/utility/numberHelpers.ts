@@ -30,7 +30,7 @@ export const calculateCartTotal = (cartItems: CartItem[]): number => {
   let total = 0;
 
   cartItems?.forEach((e) => {
-    if (e.variant.isOnSale) {
+    if (e.variant.isOnSale && e.variant.salePrice) {
       total += e.variant.salePrice * e.quantity;
     } else {
       let variantTotalPrice = e.variant.price;
@@ -55,16 +55,20 @@ export const calculateCartTotal = (cartItems: CartItem[]): number => {
   return total;
 };
 
-export const getVariantUnitPrice = (variant: ProductVariant): string => {
-  const { isOnSale, salePrice, price, isPromoted, product } = variant;
+export const getVariantUnitPrice = (
+  variant: ProductVariant,
+  product: Product
+): string | undefined => {
+  const { isOnSale, salePrice, price, isPromoted } = variant;
 
   let unitPrice = isOnSale ? salePrice : price;
 
-  if (isPromoted && !isOnSale) {
+  if (unitPrice && isPromoted && !isOnSale) {
     const { discountPercentage } = product.promotion || {};
     if (discountPercentage) {
       unitPrice = minusPercentage(unitPrice, discountPercentage);
     }
   }
+
   return unitPrice?.toFixed(2);
 };
