@@ -81,6 +81,12 @@ export const parseObjectData = (
       brand: brand,
     };
   }
+  if (blockName === "article") {
+    const { articleCategory } = form;
+    objectData = {
+      articleCategory: articleCategory,
+    };
+  }
 
   return objectData;
 };

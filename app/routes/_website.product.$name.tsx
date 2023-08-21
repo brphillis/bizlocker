@@ -1,4 +1,4 @@
-import { useLoaderData, useSubmit } from "@remix-run/react";
+import { Link, useLoaderData, useSubmit } from "@remix-run/react";
 import { type LoaderArgs } from "@remix-run/server-runtime";
 import parse from "html-react-parser";
 import { parseOptions } from "~/utility/parseOptions";
@@ -101,7 +101,7 @@ const Product = () => {
 
   return (
     <PageWrapper>
-      <div className="mx-auto cursor-auto px-3 pb-6">
+      <div className="mx-auto cursor-auto px-3">
         <div className="mx-auto flex justify-center max-xl:flex-wrap">
           <div className="flex h-[740px] gap-3 max-xl:h-[70vh] max-xl:flex-col max-xl:gap-6">
             <div className="scrollbar-hide flex h-full flex-col justify-start gap-3 overflow-auto max-xl:order-2 max-xl:h-1/3 max-xl:flex-row">
@@ -192,17 +192,33 @@ const Product = () => {
 
             <div className="flex items-center justify-between py-3">
               <div>
-                <div className="text-xs">
-                  {selectedSize} / {selectedColor}
+                <div className="mb-3 flex items-center gap-3 text-xs">
+                  {selectedSize && selectedSize}
+                  {selectedColor && "/" + selectedColor}
+                  {selectedVariant.isPromoted && (
+                    <div className="mb-[0.125rem] w-max bg-green-500 px-2 py-1 text-xs text-brand-white">
+                      PROMO
+                    </div>
+                  )}
+                  {selectedVariant.isOnSale && (
+                    <div className="mb-[0.125rem] w-max bg-red-500 px-2 py-1 text-xs text-brand-white">
+                      SALE
+                    </div>
+                  )}
                 </div>
-                <div className="title-font text-2xl font-medium text-gray-900">
+                <div className="title-font flex items-end gap-3 text-2xl font-medium text-gray-900">
+                  {(selectedVariant.isOnSale || selectedVariant.isPromoted) && (
+                    <div className="text-sm text-gray-400 line-through">
+                      ${selectedVariant.price.toFixed(2)}
+                    </div>
+                  )}
                   ${getVariantUnitPrice(selectedVariant, product)}
                 </div>
               </div>
 
               <div className="flex gap-3">
                 <button
-                  className="ml-auto flex border-0 bg-primary px-6 py-2 text-white hover:bg-primary focus:outline-none max-sm:order-2"
+                  className="ml-auto flex border-0 bg-primary px-3 py-2 text-white hover:bg-primary focus:outline-none max-sm:order-2"
                   onClick={handleAddToCart}
                 >
                   Add to Cart
@@ -217,9 +233,43 @@ const Product = () => {
             <div className="py-3 leading-relaxed">
               {parse(description, parseOptions)}
             </div>
+
+            <div className="my-3 w-full border-b border-brand-black/20" />
+
+            <div className="leading-relaxed">
+              <div>
+                <b>Return Policy</b>
+              </div>
+              <div className="mt-1 max-w-full px-3 text-sm sm:px-0">
+                <span className="font-semibold">Clutch.</span> returns all non
+                promotion & sale items free of charge.
+              </div>
+              <Link
+                to="/return-policy"
+                className="max-w-full px-3 text-sm text-primary hover:underline sm:px-0"
+              >
+                Read more about our return policy.
+              </Link>
+            </div>
+
+            <div className="my-3 w-full border-b border-brand-black/20" />
+
+            <div className="leading-relaxed">
+              <div>
+                <b>Size Guide</b>
+              </div>
+              <Link
+                to="/return-policy"
+                className="max-w-full px-3 text-sm text-primary hover:underline sm:px-0"
+              >
+                Check out the size guide.
+              </Link>
+            </div>
           </div>
         </div>
       </div>
+
+      <div className="my-3 w-full border-b border-brand-black/20" />
     </PageWrapper>
   );
 };

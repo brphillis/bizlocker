@@ -1,35 +1,25 @@
 import { useFetcher } from "@remix-run/react";
 import { useEffect, useState } from "react";
-import ProductGrid from "~/components/Grids/ProductGrid";
+import ArticleGrid from "~/components/Grids/ArticleGrid";
 
 type Props = {
-  content: ProductBlockContent[];
+  content: ArticleBlockContent[];
   options: BlockOptions;
 };
 
 const ArticleBlock = ({ content, options }: Props) => {
-  const [currentProducts, setCurrentProducts] = useState<Product[]>();
+  const [currentArticles, setCurrentArticles] = useState<Article[]>();
   const fetcher = useFetcher();
-  const rootCategory = content?.[0]?.rootCategory?.id;
-  const productCategory = content?.[0]?.productCategory?.id;
-  const brand = content?.[0]?.brand?.id;
+  const articleCategory = content?.[0]?.articleCategory?.id;
   const count = options?.count;
 
   useEffect(() => {
     if (fetcher.state === "idle" && fetcher.data == null) {
-      let query = "/api/searchProducts";
+      let query = "/api/searchArticles";
 
       const params = [];
-      if (rootCategory !== null && rootCategory !== undefined) {
-        params.push(`rootCategory=${rootCategory}`);
-      }
-
-      if (productCategory !== null && productCategory !== undefined) {
-        params.push(`productCategory=${productCategory}`);
-      }
-
-      if (brand !== null && brand !== undefined) {
-        params.push(`brand=${brand}`);
+      if (articleCategory !== null && articleCategory !== undefined) {
+        params.push(`articleCategory=${articleCategory}`);
       }
 
       if (count !== null && count !== undefined) {
@@ -43,53 +33,47 @@ const ArticleBlock = ({ content, options }: Props) => {
       fetcher.load(query);
     }
 
-    if (fetcher.data && !currentProducts) {
-      const { products } = fetcher.data;
-      setCurrentProducts(products);
+    if (fetcher.data && !currentArticles) {
+      const { articles } = fetcher.data;
+      setCurrentArticles(articles);
     }
   }, [
     fetcher,
-    currentProducts,
-    content,
-    rootCategory,
-    productCategory,
-    brand,
+    currentArticles,
+    // content,
     count,
+    articleCategory,
   ]);
 
-  const determineSortPhrase = (sortBy: SortBy) => {
-    if (sortBy === "createdAt") {
-      return "Shop New In  ";
-    }
-    if (sortBy === "totalSold") {
-      return "Shop Best In  ";
-    } else return null;
-  };
+  // const determineSortPhrase = (sortBy: SortBy) => {
+  //   if (sortBy === "createdAt") {
+  //     return "Shop New In  ";
+  //   }
+  //   if (sortBy === "totalSold") {
+  //     return "Shop Best In  ";
+  //   } else return null;
+  // };
 
-  const determineDisplayedFilter = (content: ProductBlockContent) => {
-    if (content?.brand?.name) {
-      return content?.brand?.name;
-    }
-    if (content?.productCategory?.name) {
-      return content?.productCategory?.name;
-    }
-    if (content?.rootCategory?.name) {
-      return content?.rootCategory?.name;
-    }
-  };
-
-  const columns = options.columns ? options.columns : undefined;
+  // const determineDisplayedFilter = (content: ProductBlockContent) => {
+  //   if (content?.brand?.name) {
+  //     return content?.brand?.name;
+  //   }
+  //   if (content?.productCategory?.name) {
+  //     return content?.productCategory?.name;
+  //   }
+  //   if (content?.rootCategory?.name) {
+  //     return content?.rootCategory?.name;
+  //   }
+  // };
 
   return (
     <>
-      <p className="pl-3 text-xl font-bold md:pl-1">
+      {/* <p className="pl-3 text-xl font-bold md:pl-1">
         {options.sortBy ? determineSortPhrase(options.sortBy) : null}
         <span className="text-2xl">{determineDisplayedFilter(content[0])}</span>
-      </p>
+      </p> */}
 
-      {currentProducts && (
-        <ProductGrid products={currentProducts} cols={columns} />
-      )}
+      {currentArticles && <ArticleGrid articles={currentArticles} />}
     </>
   );
 };

@@ -31,14 +31,12 @@ const ProductCard = (product: Product) => {
 
   return (
     <div className="group flex w-full flex-col overflow-hidden bg-brand-white">
-      <div
-        className="relative flex h-60 w-full max-w-full cursor-pointer overflow-hidden sm:h-72"
-        onClick={() => navigate(`/product/${name}?id=${id}`)}
-      >
+      <div className="relative flex h-60 w-full max-w-full cursor-pointer overflow-hidden sm:h-72">
         <img
           className="absolute right-0 top-0 h-full w-full transform object-cover hover:scale-[1.025]"
           src={displayImage}
           alt={name.toLowerCase() + " product card"}
+          onClick={() => navigate(`/product/${name}?id=${id}`)}
         />
         {isOnSale && (
           <span className="absolute left-2 top-2 mr-2 bg-red-500 px-2 py-1 text-xs text-brand-white opacity-30">
@@ -51,11 +49,11 @@ const ProductCard = (product: Product) => {
             PROMO
           </span>
         )}
-        <div className="absolute bottom-0 mb-4 flex w-full justify-center space-x-4">
+        {/* <div className="absolute bottom-0 mb-4 flex w-full justify-center space-x-4">
           <div className="h-3 w-3 rounded-full border-2 border-brand-white bg-white"></div>
           <div className="h-3 w-3 rounded-full border-2 border-brand-white bg-transparent"></div>
           <div className="h-3 w-3 rounded-full border-2 border-brand-white bg-transparent"></div>
-        </div>
+        </div> */}
         <div className="absolute bottom-0 right-0 mb-4 mr-2 space-y-2 transition-all duration-300 group-hover:right-0">
           {/* <button className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-900 text-white transition hover:bg-gray-700">
             <IoHeart size={18} />
@@ -78,15 +76,7 @@ const ProductCard = (product: Product) => {
 
         <div>
           <p>
-            {isOnSale && (
-              <>
-                <span className="mr-2 text-sm text-gray-400 line-through">
-                  ${price.toFixed(2)}
-                </span>
-              </>
-            )}
-
-            {isPromoted && (
+            {(isOnSale || isPromoted) && (
               <>
                 <span className="mr-2 text-sm text-gray-400 line-through">
                   ${price.toFixed(2)}

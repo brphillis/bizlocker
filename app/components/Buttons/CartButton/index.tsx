@@ -18,7 +18,7 @@ const CartButton = ({ id: cartId, cartItems }: Cart) => {
   }, [cartItems]);
 
   return (
-    <div className="dropdown-end dropdown relative z-10">
+    <div className="dropdown dropdown-end relative z-10">
       <label tabIndex={0} className="relative cursor-pointer marker:h-20">
         {cartItems?.length > 0 && (
           <div className="absolute right-[-6px] top-[-6px] flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">
@@ -31,7 +31,7 @@ const CartButton = ({ id: cartId, cartItems }: Cart) => {
       {/* CART MODAL */}
       <div
         tabIndex={0}
-        className="dropdown-content mr-3 mt-3 w-max min-w-[300px] overflow-hidden rounded-none bg-base-100 shadow"
+        className="dropdown-content mr-2 mt-4 w-max min-w-[300px] overflow-hidden rounded-md border-2 border-base-200/75 bg-base-100 shadow-xl"
       >
         <Form method="POST" className="mb-6 flex flex-col gap-3">
           <div className="mt-3 text-center font-bold">Your Cart</div>
@@ -47,20 +47,20 @@ const CartButton = ({ id: cartId, cartItems }: Cart) => {
                 return (
                   <div
                     key={"cartButton_item_" + variant + "_" + index}
-                    className="relative mx-3 mb-1 flex flex-col items-center justify-center gap-1 bg-brand-black/90 px-3 py-3 text-brand-white"
+                    className="relative mx-3 mb-1 flex flex-col items-center justify-center gap-1 border border-base-300 bg-base-200/50 px-3 py-3 text-brand-black"
                   >
                     {variantId && (
                       <CartAddSubtractButton
                         mode="subtract"
                         variantId={variantId?.toString()}
-                        extendStyle="absolute left-8 cursor-pointer text-white/20"
+                        extendStyle="absolute left-8"
                       />
                     )}
 
                     <div>{product?.name}</div>
 
                     <div className="flex flex-row gap-3">
-                      <div>${getVariantUnitPrice(variant)}</div>
+                      <div>${getVariantUnitPrice(variant, product)}</div>
                       <div> x {quantity}</div>
                     </div>
 
@@ -68,7 +68,7 @@ const CartButton = ({ id: cartId, cartItems }: Cart) => {
                       <CartAddSubtractButton
                         mode="add"
                         variantId={variantId?.toString()}
-                        extendStyle="absolute right-8 cursor-pointer text-white/20"
+                        extendStyle="absolute right-8"
                       />
                     )}
                   </div>

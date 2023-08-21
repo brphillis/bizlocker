@@ -3,6 +3,7 @@ import React from "react";
 import TileBlock from "../Blocks/TileBlock";
 import TextBlock from "../Blocks/TextBlock";
 import ProductBlock from "../Blocks/ProductBlock";
+import ArticleBlock from "../Blocks/ArticleBlock";
 
 type Props = {
   blocks: Block[];
@@ -53,6 +54,16 @@ const BlockRenderer = ({ blocks }: Props) => {
               <React.Fragment key={"productBlock_" + i}>
                 <ProductBlock
                   content={content as ProductBlockContent[]}
+                  options={blockOptions as BlockOptions}
+                />
+              </React.Fragment>
+            );
+
+          case "article":
+            return (
+              <React.Fragment key={"articleBlock" + i}>
+                <ArticleBlock
+                  content={content as ArticleBlockContent[]}
                   options={blockOptions as BlockOptions}
                 />
               </React.Fragment>

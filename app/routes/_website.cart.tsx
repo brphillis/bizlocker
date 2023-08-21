@@ -78,7 +78,7 @@ const Cart = () => {
                       </div>
                       <div className="text-xs opacity-50">{variant?.name}</div>
                       <div className="!rounded-none">
-                        ${getVariantUnitPrice(variant) + " ea"}
+                        ${getVariantUnitPrice(variant, product) + " ea"}
                       </div>
 
                       {variantId && (
@@ -86,13 +86,13 @@ const Cart = () => {
                           <CartAddSubtractButton
                             mode="subtract"
                             variantId={variantId?.toString()}
-                            extendStyle="absolute bottom-[34%] left-8 cursor-pointer !text-brand-black/75 !bg-brand-white"
+                            extendStyle="absolute bottom-[34%] left-8"
                           />
 
                           <CartAddSubtractButton
                             mode="add"
                             variantId={variantId?.toString()}
-                            extendStyle="absolute bottom-[34%] right-8 cursor-pointer !text-brand-black/75 !bg-brand-white"
+                            extendStyle="absolute bottom-[34%] right-8"
                           />
                         </>
                       )}

@@ -23,6 +23,9 @@ const BlockIcon = ({ blockName, size, styles }: BlockIconProps) => {
     case "product":
       iconName = "IoCart";
       break;
+    case "article":
+      iconName = "IoNewspaper";
+      break;
     default:
       break;
   }

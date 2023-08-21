@@ -50,6 +50,15 @@ export const getHomePage = async () => {
               },
             },
           },
+          articleBlock: {
+            include: {
+              content: {
+                include: {
+                  articleCategory: true,
+                },
+              },
+            },
+          },
         },
       },
     },

@@ -14,6 +14,7 @@ import {
   HiPencil,
   HiTrash,
 } from "react-icons/hi2";
+import ArticleBlockOptions from "./ArticleBlockOptions";
 
 type Props = {
   page: HomePage | Article;
@@ -22,6 +23,7 @@ type Props = {
   rootCategories: RootCategory[];
   productCategories: ProductCategory[];
   brands: Brand[];
+  articleCategories: ArticleCategory[];
 };
 
 const PageBuilder = ({
@@ -31,6 +33,7 @@ const PageBuilder = ({
   rootCategories,
   productCategories,
   brands,
+  articleCategories,
 }: Props) => {
   const submit = useSubmit();
 
@@ -212,6 +215,7 @@ const PageBuilder = ({
                   <option value="tile">Tile</option>
                   <option value="text">Text</option>
                   <option value="product">Product</option>
+                  <option value="article">Article</option>
                 </select>
               </div>
             </div>
@@ -232,6 +236,14 @@ const PageBuilder = ({
             rootCategories={rootCategories}
             productCategories={productCategories}
             brands={brands}
+            defaultValues={
+              blocks[editingIndex]?.content[0] as ProductBlockContent
+            }
+          />
+
+          <ArticleBlockOptions
+            selectedBlock={selectedBlock}
+            articleCategories={articleCategories}
             defaultValues={
               blocks[editingIndex]?.content[0] as ProductBlockContent
             }

@@ -47,8 +47,6 @@ export const verifyLogin = async (
   } = userWithPassword;
   const user = userWithoutPassword;
 
-  console.log("RETURNED USER", user);
-
   return { user };
 };
 

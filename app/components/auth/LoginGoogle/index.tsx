@@ -1,5 +1,4 @@
-import { GoogleLogin } from "@react-oauth/google";
-import { GoogleOAuthProvider } from "@react-oauth/google";
+import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import { Toast } from "../../Notifications/Toast";
 import { Suspense } from "react";
 import { useSubmit } from "@remix-run/react";

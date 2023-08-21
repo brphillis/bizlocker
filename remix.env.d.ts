@@ -352,7 +352,7 @@ type BasicSearchArgs = {
 type SortBy = "createdAt" | "totalSold" | "price" | "name";
 type SortOrder = "asc" | "desc";
 
-type BlockName = "banner" | "tile" | "text" | "product";
+type BlockName = "banner" | "tile" | "text" | "product" | "article";
 type BlockContentType = "campaign" | "promotion";
 
 interface HomePage {
@@ -454,10 +454,24 @@ interface ProductBlockContent {
   updatedAt: Date;
 }
 
+interface ArticleBlockContent {
+  id: string;
+  articleBlock?: ArticleBlock;
+  articleBlockId?: string;
+  articleCategory?: ArticleCategory;
+  articleCategoryId?: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 type NewProductBlockContent = {
   rootCategory?: string;
   productCategory?: string;
   brand?: string;
+};
+
+type NewArticleBlockContent = {
+  articleCategory?: string;
 };
 
 interface Money {

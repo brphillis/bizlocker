@@ -31,6 +31,8 @@ model Block {
   textBlockId    String?       @unique
   productBlock   ProductBlock? @relation("BlockToProductBlock", fields: [productBlockId], references: [id])
   productBlockId String?       @unique
+  articleBlock   ArticleBlock? @relation("BlockToArticleBlock", fields: [articleBlockId], references: [id])
+  articleBlockId String?       @unique
 
   blockOptions   BlockOptions? @relation(fields: [blockOptionsId], references: [id])
   blockOptionsId String?       @unique
@@ -103,6 +105,25 @@ model ProductBlockContent {
   productCategoryId Int?
   brand             Brand?           @relation("BrandToProductBlock", fields: [brandId], references: [id])
   brandId           Int?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+}
+
+model ArticleBlock {
+  id        String               @id @unique @default(cuid())
+  name      String               @default("product")
+  block     Block?               @relation("BlockToArticleBlock")
+  content   ArticleBlockContent? @relation("ArticleBlockContentToArticleBlock")
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt
+}
+
+model ArticleBlockContent {
+  id                String           @id @unique @default(cuid())
+  articleBlock      ArticleBlock?    @relation("ArticleBlockContentToArticleBlock", fields: [articleBlockId], references: [id])
+  articleBlockId    String?          @unique
+  articleCategory   ArticleCategory? @relation("ArticleCategoryToArticleBlock", fields: [articleCategoryId], references: [id])
+  articleCategoryId Int?
   createdAt         DateTime         @default(now())
   updatedAt         DateTime         @updatedAt
 }
@@ -254,11 +275,12 @@ model RootCategory {
 }
 
 model ArticleCategory {
-  id             Int           @id @default(autoincrement())
-  name           String        @unique
-  rootCategory   RootCategory? @relation("RootCategoryToArticleCategory", fields: [rootCategoryId], references: [id])
-  rootCategoryId Int?
-  articles       Article[]     @relation("ArticleCategoryToArticle")
+  id                  Int                   @id @default(autoincrement())
+  name                String                @unique
+  rootCategory        RootCategory?         @relation("RootCategoryToArticleCategory", fields: [rootCategoryId], references: [id])
+  rootCategoryId      Int?
+  articles            Article[]             @relation("ArticleCategoryToArticle")
+  articleBlockContent ArticleBlockContent[] @relation("ArticleCategoryToArticleBlock")
 }
 
 model ProductCategory {

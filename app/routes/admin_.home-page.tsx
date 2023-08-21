@@ -18,14 +18,22 @@ import {
   getBlockUpdateValues,
   searchContentData,
 } from "~/utility/pageBuilder";
+import { getArticleCategories } from "~/models/articleCategories.server";
 
 export const loader = async () => {
   const homePage = await getHomePage();
   const rootCategories = await getRootCategories();
   const productCategories = await getProductCategories();
+  const articleCategories = await getArticleCategories();
   const brands = await getBrands();
 
-  return { homePage, rootCategories, productCategories, brands };
+  return {
+    homePage,
+    rootCategories,
+    productCategories,
+    articleCategories,
+    brands,
+  };
 };
 
 export const action = async ({ request }: ActionArgs) => {
@@ -72,8 +80,13 @@ export const action = async ({ request }: ActionArgs) => {
 };
 
 const ManageHomePage = () => {
-  const { homePage, rootCategories, productCategories, brands } =
-    useLoaderData() || {};
+  const {
+    homePage,
+    rootCategories,
+    productCategories,
+    articleCategories,
+    brands,
+  } = useLoaderData() || {};
 
   const { searchResults, updateSuccess } = useActionData() || {};
 
@@ -96,6 +109,7 @@ const ManageHomePage = () => {
                   updateSuccess={updateSuccess}
                   rootCategories={rootCategories}
                   productCategories={productCategories}
+                  articleCategories={articleCategories}
                   brands={brands}
                 />
               }

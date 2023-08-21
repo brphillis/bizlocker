@@ -1,5 +1,6 @@
 import { redirect } from "@remix-run/server-runtime";
 import { prisma } from "~/db.server";
+import { getOrderBy } from "./products.server";
 
 export const getArticle = async (id?: string, title?: string) => {
   let whereClause;
@@ -117,6 +118,7 @@ export const upsertArticleInfo = async (
       where: { id: articleId },
       data: {
         articleCategories: { set: [] },
+        // thumbnail: { disconnect: true },
       },
     });
 
@@ -129,7 +131,7 @@ export const upsertArticleInfo = async (
         title: title,
         articleCategories: {
           connect: articleCategories.map((category: string) => ({
-            name: category,
+            id: parseInt(category),
           })),
         },
         thumbnail: {
@@ -209,6 +211,9 @@ export const searchArticles = async (
     formData?.title || (url && url.searchParams.get("title")?.toString()) || "";
   const articleCategory =
     formData?.articleCategory || url?.searchParams.get("articleCategory") || "";
+  const sortBy = formData?.sortBy || url?.searchParams.get("sortBy") || "";
+  const sortOrder =
+    formData?.sortOrder || url?.searchParams.get("sortOrder") || "";
   const pageNumber =
     (formData?.pageNumber && parseInt(formData.pageNumber as string)) ||
     (url && Number(url.searchParams.get("pageNumber"))) ||
@@ -254,6 +259,7 @@ export const searchArticles = async (
       },
       skip,
       take,
+      orderBy: getOrderBy(sortBy as SortBy, sortOrder as SortOrder),
     }),
     prisma.article.count({
       where: filter,

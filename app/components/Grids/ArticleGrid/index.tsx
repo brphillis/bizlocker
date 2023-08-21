@@ -7,16 +7,26 @@ type Props = {
 };
 
 const ArticleGrid = ({ articles, hasDescription }: Props) => {
+  const cols = 3;
   return (
-    <div className="grid grid-cols-1 gap-6 gap-y-6 px-2 py-6 md:grid-cols-3">
-      {articles?.map((article) => (
-        <React.Fragment key={article.id}>
-          <ArticleCard
-            article={{ ...article, id: article.id }}
-            hasDescription={hasDescription}
-          />
-        </React.Fragment>
-      ))}
+    <div className="w-full">
+      <div
+        style={{
+          gridTemplateColumns: cols
+            ? `repeat(${cols}, minmax(0, 1fr))`
+            : "repeat(4, minmax(0, 1fr))",
+        }}
+        className="relative grid justify-items-center gap-3 gap-y-3 px-3 pb-3 max-lg:!grid-cols-4 max-md:!grid-cols-3 max-sm:!grid-cols-2 md:gap-6 md:gap-y-6 xl:px-0"
+      >
+        {articles?.map((article) => (
+          <React.Fragment key={article.id}>
+            <ArticleCard
+              article={{ ...article, id: article.id }}
+              hasDescription={hasDescription}
+            />
+          </React.Fragment>
+        ))}
+      </div>
     </div>
   );
 };

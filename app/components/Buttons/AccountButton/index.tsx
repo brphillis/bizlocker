@@ -1,11 +1,13 @@
+import { useSubmit } from "@remix-run/react";
 import { IoPersonOutline } from "react-icons/io5";
 import { NavLink } from "react-router-dom";
 
 const AccountButton = (user: User) => {
+  const submit = useSubmit();
   const { email } = user;
 
   return (
-    <div className="dropdown-end dropdown relative z-10">
+    <div className="dropdown dropdown-end relative z-10">
       <label tabIndex={0} className="relative cursor-pointer marker:h-20">
         <IoPersonOutline size={24} className="text-brand-white" />
       </label>
@@ -32,6 +34,12 @@ const AccountButton = (user: User) => {
         >
           Orders
         </NavLink>
+        <div
+          className="relative mb-1 flex w-full cursor-pointer flex-col items-center justify-center gap-1 bg-base-300/50 px-3 py-3"
+          onClick={() => submit(null, { method: "post", action: "/logout" })}
+        >
+          Logout
+        </div>
       </div>
       {/* ACCOUNT MENU */}
     </div>

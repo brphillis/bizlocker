@@ -500,7 +500,7 @@ export const searchProducts = async (
   return { products, totalPages };
 };
 
-const getOrderBy = (sortBy?: SortBy, sortOrder?: SortOrder) => {
+export const getOrderBy = (sortBy?: SortBy, sortOrder?: SortOrder) => {
   if (sortBy && sortOrder) {
     switch (sortBy) {
       case "createdAt":

@@ -14,7 +14,7 @@ const BlockOptions = ({ selectedBlock, defaultValues }: Props) => {
             Options
           </p>
           <div className="flex flex-wrap gap-3">
-            {selectedBlock === "product" && (
+            {(selectedBlock === "product" || selectedBlock === "article") && (
               <div className="form-control">
                 <label className="label">
                   <span className="label-text text-brand-white">Sort By</span>
@@ -28,13 +28,18 @@ const BlockOptions = ({ selectedBlock, defaultValues }: Props) => {
                   <option value={undefined}>Select Order</option>
                   <option value="name">Name</option>
                   <option value="createdAt">Created</option>
-                  <option value="totalSold">Popularity</option>
-                  <option value="price">Price</option>
+
+                  {selectedBlock === "product" && (
+                    <>
+                      <option value="totalSold">Popularity</option>
+                      <option value="price">Price</option>
+                    </>
+                  )}
                 </select>
               </div>
             )}
 
-            {selectedBlock === "product" && (
+            {(selectedBlock === "product" || selectedBlock === "article") && (
               <div className="form-control">
                 <label className="label">
                   <span className="label-text text-brand-white">
@@ -80,7 +85,7 @@ const BlockOptions = ({ selectedBlock, defaultValues }: Props) => {
                 <input
                   name="count"
                   type="number"
-                  className="input-bordered input w-[95vw] max-w-full text-brand-black  sm:w-[215px]"
+                  className="input input-bordered w-[95vw] max-w-full text-brand-black  sm:w-[215px]"
                   placeholder="Count"
                   defaultValue={!count ? undefined : count}
                 />
@@ -109,7 +114,7 @@ const BlockOptions = ({ selectedBlock, defaultValues }: Props) => {
                 <input
                   name="columns"
                   type="number"
-                  className="input-bordered input w-[95vw] max-w-full text-brand-black sm:w-[215px]"
+                  className="input input-bordered w-[95vw] max-w-full text-brand-black sm:w-[215px]"
                   placeholder="Columns"
                   defaultValue={!columns ? undefined : columns}
                 />
