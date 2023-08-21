@@ -19,7 +19,6 @@ export const verifyLogin = async (
       email: true,
       verified: true,
       password: true,
-      cartId: true,
     },
   });
 
