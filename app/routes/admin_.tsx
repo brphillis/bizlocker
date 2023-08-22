@@ -10,6 +10,7 @@ import {
 } from "@remix-run/react";
 import {
   IoFileTrayFull,
+  IoFolder,
   IoMegaphone,
   IoMenu,
   IoPeople,
@@ -158,6 +159,24 @@ const Admin = () => {
                   </li>
                   <li onClick={() => navigate("/admin/brands")}>
                     <div className="hover:text-white">Brands</div>
+                  </li>
+                </ul>
+              </div>
+            </details>
+
+            <details className="collapse">
+              <summary className="text-md collapse-title -mb-3 !pb-0 font-medium tracking-wide text-primary-content">
+                <div className="flex items-center gap-3">
+                  <IoFolder size={18} />
+                  <p className="transition duration-500 ease-in-out hover:scale-[1.03]">
+                    Storage
+                  </p>
+                </div>
+              </summary>
+              <div className="collapse-content">
+                <ul className="text-white/75">
+                  <li onClick={() => navigate("/admin/images")}>
+                    <div className="hover:text-white">Images</div>
                   </li>
                 </ul>
               </div>

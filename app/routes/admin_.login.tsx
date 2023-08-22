@@ -19,7 +19,7 @@ export const action = async ({ request }: ActionArgs) => {
   const remember = formData.get("remember");
 
   const { user } = await verifyLogin(email as string, password as string);
-  console.log("ADMINUSER", user);
+
   if (user) {
     return createUserSession({
       request,

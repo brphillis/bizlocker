@@ -25,11 +25,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 const Articles = () => {
   const navigate = useNavigate();
-  const { articles, articleCategories, totalPages } = useLoaderData() as {
-    articles: Article[];
-    totalPages: number;
-    articleCategories: ArticleCategory[];
-  };
+  const { articles, articleCategories, totalPages } = useLoaderData() || {};
 
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("pageNumber")) || 1;
@@ -59,7 +55,7 @@ const Articles = () => {
           </div>
 
           <div className="flex flex-row justify-end sm:justify-start">
-            <button type="submit" className="btn-primary btn mt-6 w-max">
+            <button type="submit" className="btn btn-primary mt-6 w-max">
               Search
             </button>
           </div>
@@ -68,7 +64,7 @@ const Articles = () => {
         <div className="divider w-full" />
 
         <div className="w-full max-w-[80vw] overflow-x-auto">
-          <table className="table-sm my-3 table">
+          <table className="table table-sm my-3">
             <thead className="sticky top-0">
               <tr>
                 {currentPage && <th>#</th>}
@@ -89,7 +85,7 @@ const Articles = () => {
                       articleCategories,
                       isActive,
                     }: Article,
-                    i
+                    i: number
                   ) => {
                     return (
                       <tr

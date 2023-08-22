@@ -28,10 +28,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 const Brands = () => {
   const navigate = useNavigate();
-  const { brands, totalPages } = useLoaderData() as {
-    brands: Brand[];
-    totalPages: number;
-  };
+  const { brands, totalPages } = useLoaderData() || {};
 
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("pageNumber")) || 1;
@@ -51,13 +48,13 @@ const Brands = () => {
                 name="name"
                 type="text"
                 placeholder="Name"
-                className="input-bordered input w-full"
+                className="input input-bordered w-full"
               />
             </div>
           </div>
 
           <div className="flex flex-row justify-end sm:justify-start">
-            <button type="submit" className="btn-primary btn mt-6 w-max">
+            <button type="submit" className="btn btn-primary mt-6 w-max">
               Search
             </button>
           </div>
@@ -66,7 +63,7 @@ const Brands = () => {
         <div className="divider w-full" />
 
         <div className="w-full max-w-[80vw] overflow-x-auto">
-          <table className="table-sm my-3 table">
+          <table className="table table-sm my-3">
             <thead className="sticky top-0">
               <tr>
                 {currentPage && <th>#</th>}
@@ -75,7 +72,7 @@ const Brands = () => {
             </thead>
             <tbody>
               {brands &&
-                brands.map(({ id, name }: Brand, i) => {
+                brands.map(({ id, name }: Brand, i: number) => {
                   return (
                     <tr
                       className="cursor-pointer transition-colors duration-200 hover:bg-base-100"

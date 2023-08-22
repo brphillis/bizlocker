@@ -138,20 +138,9 @@ const ModifyArticle = () => {
     articleCategories,
     productCategories,
     brands,
-  } =
-    (useLoaderData() as {
-      article: Article;
-      articleCategories: ArticleCategory[];
-      rootCategories: RootCategory[];
-      productCategories: ProductCategory[];
-      brands: Brand[];
-    }) || {};
+  } = useLoaderData() || {};
 
-  const { searchResults, updateSuccess } =
-    (useActionData() as {
-      searchResults: Promotion[] | Campaign[];
-      updateSuccess: boolean;
-    }) || {};
+  const { searchResults, updateSuccess } = useActionData() || {};
 
   return (
     <AdminPageWrapper>
@@ -197,7 +186,7 @@ const ModifyArticle = () => {
                       type="text"
                       placeholder="Title"
                       defaultValue={article?.title}
-                      className="input-bordered input w-[95vw] text-brand-black sm:w-[320px]"
+                      className="input input-bordered w-[95vw] text-brand-black sm:w-[320px]"
                     />
                   </div>
 
@@ -244,6 +233,7 @@ const ModifyArticle = () => {
                     rootCategories={rootCategories}
                     productCategories={productCategories}
                     brands={brands}
+                    articleCategories={articleCategories}
                   />
                 }
               />

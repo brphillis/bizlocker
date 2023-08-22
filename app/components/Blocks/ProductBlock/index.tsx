@@ -78,12 +78,12 @@ const ProductBlock = ({ content, options }: Props) => {
     }
   };
 
-  const columns = options.columns ? options.columns : undefined;
+  const columns = options?.columns ? options?.columns : undefined;
 
   return (
     <>
       <p className="pl-3 text-xl font-bold md:pl-1">
-        {options.sortBy ? determineSortPhrase(options.sortBy) : null}
+        {options?.sortBy ? determineSortPhrase(options?.sortBy) : null}
         <span className="text-2xl">{determineDisplayedFilter(content[0])}</span>
       </p>
 

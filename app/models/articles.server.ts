@@ -18,6 +18,7 @@ export const getArticle = async (id?: string, title?: string) => {
     include: {
       blocks: {
         include: {
+          blockOptions: true,
           bannerBlock: {
             include: {
               campaign: {
@@ -58,6 +59,15 @@ export const getArticle = async (id?: string, title?: string) => {
                   rootCategory: true,
                   productCategory: true,
                   brand: true,
+                },
+              },
+            },
+          },
+          articleBlock: {
+            include: {
+              content: {
+                include: {
+                  articleCategory: true,
                 },
               },
             },
