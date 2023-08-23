@@ -48,7 +48,7 @@ export const action = async ({ request, params }: ActionArgs) => {
 };
 
 const ModifyProductCategory = () => {
-  const productCategory = useLoaderData() as ProductCategory;
+  const productCategory = useLoaderData() || {};
   const { validationError } =
     (useActionData() as { validationError: string }) || {};
   const mode = productCategory ? "edit" : "add";
@@ -76,7 +76,7 @@ const ModifyProductCategory = () => {
               name="name"
               type="text"
               placeholder="Name"
-              className="input-bordered input w-full max-w-xs"
+              className="input input-bordered w-full max-w-xs"
               defaultValue={productCategory?.name || undefined}
             />
           </div>

@@ -4,7 +4,7 @@ type Props = {
 
 const AdminPageWrapper = ({ children }: Props) => {
   return (
-    <div className="relative min-h-screen w-full bg-brand-black p-0 pt-3 lg:p-3 lg:pt-3">
+    <div className="relative min-h-screen w-full bg-brand-black p-0 pt-3 max-lg:pt-0 lg:p-3">
       {children}
     </div>
   );

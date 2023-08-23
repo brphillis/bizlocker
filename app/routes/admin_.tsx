@@ -64,9 +64,12 @@ const Admin = () => {
       className="drawer min-h-screen lg:drawer-open"
     >
       <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
-      <div className="drawer-content flex min-h-screen w-full flex-col items-center justify-start">
-        <div className="flex h-[64px] flex-row items-center gap-6 self-start justify-self-start bg-brand-black p-3 lg:hidden">
-          <label htmlFor="my-drawer-2" className="btn btn-square btn-ghost">
+      <div className="drawer-content relative flex min-h-[calc(100vh-64px)] flex-col items-center justify-start overflow-x-hidden">
+        <div className="flex h-[64px] w-full flex-row items-center gap-6 self-start justify-self-start bg-brand-black p-3 lg:hidden">
+          <label
+            htmlFor="my-drawer-2"
+            className="btn btn-square btn-ghost text-brand-white/50"
+          >
             <IoMenu size={26} />
           </label>
           <h1 className="select-none text-center text-2xl font-bold tracking-wide text-white/90">

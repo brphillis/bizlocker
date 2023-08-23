@@ -14,7 +14,8 @@ type Props = {
     | ArticleCategory
     | RootCategory
     | User
-    | Campaign;
+    | Campaign
+    | Image;
   type:
     | "Promotion"
     | "Product"
@@ -22,10 +23,12 @@ type Props = {
     | "Article"
     | "Category"
     | "User"
-    | "Campaign";
+    | "Campaign"
+    | "Image";
   mode: "add" | "edit";
-  hasIsActive: boolean;
-  hasDelete: boolean;
+  hasIsActive?: boolean;
+  hasDelete?: boolean;
+  hasConnections?: boolean;
 };
 
 const FormHeader = ({
@@ -34,8 +37,10 @@ const FormHeader = ({
   mode,
   hasIsActive,
   hasDelete,
+  hasConnections,
 }: Props) => {
   const navigate = useNavigate();
+
   const [isActive, setIsActive] = useState<string | undefined>(
     mode === "add"
       ? " "

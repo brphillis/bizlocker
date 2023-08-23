@@ -22,10 +22,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 const Promotions = () => {
   const navigate = useNavigate();
-  const { promotions, totalPages } = useLoaderData() as {
-    promotions: Promotion[];
-    totalPages: number;
-  };
+  const { promotions, totalPages } = useLoaderData() || {};
 
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("pageNumber")) || 1;
@@ -46,7 +43,7 @@ const Promotions = () => {
               </label>
               <input
                 name="name"
-                className="input-bordered input w-full max-w-xs"
+                className="input input-bordered w-full max-w-xs"
                 placeholder="Name"
                 type="text"
               />
@@ -54,7 +51,7 @@ const Promotions = () => {
           </div>
 
           <div className="flex flex-row justify-end sm:justify-start">
-            <button type="submit" className="btn-primary btn mt-6 w-max">
+            <button type="submit" className="btn btn-primary mt-6 w-max">
               Search
             </button>
           </div>
@@ -63,7 +60,7 @@ const Promotions = () => {
         <div className="divider w-full" />
 
         <div className="w-full max-w-[80vw] overflow-x-auto">
-          <table className="table-sm my-3 table">
+          <table className="table table-sm my-3">
             <thead className="sticky top-0">
               <tr>
                 {currentPage && <th>#</th>}
@@ -85,7 +82,7 @@ const Promotions = () => {
                     createdAt,
                     isActive,
                   }: Promotion,
-                  i
+                  i: number
                 ) => {
                   return (
                     <tr
@@ -101,11 +98,14 @@ const Promotions = () => {
                       <td>{name}</td>
                       <td>{discountPercentage}%</td>
                       <td>
-                        {new Date(updatedAt).toLocaleDateString("en-US", {
-                          day: "numeric",
-                          month: "long",
-                          year: "numeric",
-                        })}
+                        {new Date(updatedAt as Date).toLocaleDateString(
+                          "en-US",
+                          {
+                            day: "numeric",
+                            month: "long",
+                            year: "numeric",
+                          }
+                        )}
                       </td>
                       <td>
                         {new Date(createdAt).toLocaleDateString("en-US", {

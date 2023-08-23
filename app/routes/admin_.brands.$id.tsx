@@ -11,8 +11,7 @@ export const loader = async ({ params }: LoaderArgs) => {
   const id = params?.id;
 
   if (id && id !== "add") {
-    const brand = await getBrand(id);
-    return { brand };
+    return await getBrand(id);
   } else {
     return null;
   }
@@ -49,7 +48,7 @@ export const action = async ({ request, params }: ActionArgs) => {
 };
 
 const ModifyBrand = () => {
-  const { brand } = useLoaderData();
+  const brand = useLoaderData();
   const { validationError } =
     (useActionData() as { validationError: string }) || {};
   const mode = brand ? "edit" : "add";

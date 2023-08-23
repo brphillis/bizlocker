@@ -247,10 +247,10 @@ model Image {
   productCategoryId Int?             @unique
   brand             Brand?           @relation("BrandImage", fields: [brandId], references: [id])
   brandId           Int?             @unique
-  campaignTile      Campaign?        @relation("TileImageToCampaign")
-  campaignBanner    Campaign?        @relation("BannerImageToCampaign")
-  promotionTile     Promotion?       @relation("TileImageToPromotion")
-  promotionBanner   Promotion?       @relation("BannerImageToPromotion")
+  campaignTile      Campaign[]       @relation("TileImageToCampaign")
+  campaignBanner    Campaign[]       @relation("BannerImageToCampaign")
+  promotionTile     Promotion[]      @relation("TileImageToPromotion")
+  promotionBanner   Promotion[]      @relation("BannerImageToPromotion")
   createdAt         DateTime         @default(now())
   updatedAt         DateTime         @updatedAt
 }

@@ -128,7 +128,6 @@ export const upsertArticleInfo = async (
       where: { id: articleId },
       data: {
         articleCategories: { set: [] },
-        // thumbnail: { disconnect: true },
       },
     });
 
@@ -145,9 +144,15 @@ export const upsertArticleInfo = async (
           })),
         },
         thumbnail: {
-          update: {
-            url: thumbnail.url,
-            altText: thumbnail.altText,
+          upsert: {
+            create: {
+              url: thumbnail.url,
+              altText: thumbnail.altText,
+            },
+            update: {
+              url: thumbnail.url,
+              altText: thumbnail.altText,
+            },
           },
         },
       },

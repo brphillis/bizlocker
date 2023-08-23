@@ -1,5 +1,5 @@
 import type { LoaderArgs } from "@remix-run/node";
-import { Form, useLoaderData, useNavigate } from "@remix-run/react";
+import { Form, Outlet, useLoaderData, useNavigate } from "@remix-run/react";
 import AdminPageHeader from "~/components/Layout/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/AdminPageWrapper";
 import Pagination from "~/components/Pagination";
@@ -45,12 +45,12 @@ const Images = () => {
                 className="select w-full text-brand-black/50"
               >
                 <option value="">Select a Connection</option>
-                <option value="promotion">promotion</option>
-                <option value="campaign">campaign</option>
-                <option value="brand">brand</option>
-                <option value="product">product</option>
-                <option value="article">article</option>
-                <option value="disconnected">disconnected</option>
+                <option value="promotion">Promotion</option>
+                <option value="campaign">Campaign</option>
+                <option value="brand">Brand</option>
+                <option value="product">Product</option>
+                <option value="article">Article</option>
+                <option value="disconnected">Disconnected</option>
               </select>
             </div>
           </div>
@@ -64,14 +64,14 @@ const Images = () => {
 
         <div className="divider w-full" />
 
-        <div className="mb-3 flex w-full max-w-[80vw] flex-wrap justify-center gap-6 overflow-x-auto">
+        <div className="flex w-full flex-wrap justify-center gap-6 overflow-x-auto pb-3 max-lg:gap-3">
           {images?.map(({ id, url, altText }: Image, i: number) => {
             return (
               <img
                 key={id}
                 src={url}
                 alt={altText}
-                className="h-52 w-52 cursor-pointer object-cover"
+                className=" h-52 w-52 cursor-pointer object-cover transition-all duration-300 hover:scale-105 max-lg:h-44 max-lg:w-44"
                 onClick={() => navigate(`/admin/images/${id}`)}
               />
             );
@@ -80,6 +80,7 @@ const Images = () => {
 
         <Pagination totalPages={totalPages} />
       </Form>
+      <Outlet />
     </AdminPageWrapper>
   );
 };

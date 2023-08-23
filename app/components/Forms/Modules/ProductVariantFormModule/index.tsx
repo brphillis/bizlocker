@@ -80,7 +80,7 @@ const ProductVariantFormModule = ({
               <input
                 type="string"
                 placeholder="Variant Name"
-                className="input-bordered input w-[95vw] sm:w-[215px]"
+                className="input input-bordered w-[95vw] sm:w-[215px]"
                 defaultValue={activeVariant?.name || "BASE"}
                 onChange={(e) => {
                   const value = e.target.value.trim();
@@ -103,7 +103,7 @@ const ProductVariantFormModule = ({
               <input
                 type="number"
                 placeholder="Price"
-                className="input-bordered input w-[95vw] sm:w-[215px]"
+                className="input input-bordered w-[95vw] sm:w-[215px]"
                 defaultValue={activeVariant?.price || ""}
                 onChange={(e) => {
                   setActiveVariant({
@@ -121,7 +121,7 @@ const ProductVariantFormModule = ({
               <input
                 type="number"
                 placeholder="Sale Price"
-                className="input-bordered input w-[95vw] sm:w-[215px]"
+                className="input input-bordered w-[95vw] sm:w-[215px]"
                 defaultValue={activeVariant?.salePrice || ""}
                 onChange={(e) => {
                   setActiveVariant({
@@ -141,7 +141,7 @@ const ProductVariantFormModule = ({
               <input
                 type="number"
                 placeholder="Stock"
-                className="input-bordered input w-[95vw] sm:w-[215px]"
+                className="input input-bordered w-[95vw] sm:w-[215px]"
                 defaultValue={activeVariant?.stock || ""}
                 onChange={(e) => {
                   setActiveVariant({
@@ -159,7 +159,7 @@ const ProductVariantFormModule = ({
               <input
                 type="text"
                 placeholder="SKU"
-                className="input-bordered input w-[95vw] sm:w-[215px]"
+                className="input input-bordered w-[95vw] sm:w-[215px]"
                 defaultValue={activeVariant?.sku || ""}
                 onChange={(e) => {
                   setActiveVariant({
@@ -233,7 +233,7 @@ const ProductVariantFormModule = ({
                 <label className="label cursor-pointer !pb-0">
                   <input
                     type="checkbox"
-                    className="toggle-success toggle ml-3"
+                    className="toggle toggle-success ml-3"
                     checked={
                       activeVariant.hasOwnProperty("isActive")
                         ? activeVariant.isActive
@@ -256,7 +256,7 @@ const ProductVariantFormModule = ({
                 <label className="label cursor-pointer !pb-0">
                   <input
                     type="checkbox"
-                    className="toggle-success toggle ml-3"
+                    className="toggle toggle-success ml-3"
                     checked={activeVariant?.isOnSale || false}
                     onChange={(e) => {
                       const isChecked = e.target.checked;
@@ -284,7 +284,7 @@ const ProductVariantFormModule = ({
                 <label className="label cursor-pointer !pb-0">
                   <input
                     type="checkbox"
-                    className="toggle-success toggle ml-3"
+                    className="toggle toggle-success ml-3"
                     checked={activeVariant?.isPromoted || false}
                     onChange={(e) => {
                       const isChecked = e.target.checked;
@@ -338,7 +338,7 @@ const ProductVariantFormModule = ({
 
         {variants && !activeVariant && (
           <div className="max-w-full overflow-x-auto sm:max-w-none">
-            <table className="table-md table">
+            <table className="table table-md">
               <thead>
                 <tr>
                   <th></th>
@@ -365,7 +365,7 @@ const ProductVariantFormModule = ({
                   } = variant || {};
 
                   const discountPercentage =
-                    ((price - salePrice) / price) * 100;
+                    ((price - salePrice!) / price) * 100;
 
                   return (
                     <tr

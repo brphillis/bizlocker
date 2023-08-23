@@ -5,118 +5,83 @@ export function getImages() {
   return prisma.image.findMany();
 }
 
-// export const getBrand = async (id: string) => {
-//   return prisma.brand.findUnique({
-//     where: {
-//       id: parseInt(id),
-//     },
-//     include: {
-//       image: true,
-//     },
-//   });
-// };
+export const getImage = async (id: string) => {
+  return prisma.image.findUnique({
+    where: {
+      id: parseInt(id),
+    },
+    include: {
+      promotionBanner: true,
+      promotionTile: true,
+      campaignBanner: true,
+      campaignTile: true,
+    },
+  });
+};
 
-// export const upsertBrand = async (name: string, image?: Image, id?: string) => {
-//   let updatedBrand;
+export const upsertImage = async (
+  altText: string,
+  image?: Image,
+  id?: string
+) => {
+  let updatedImage;
 
-//   if (!id && image) {
-//     updatedBrand = await prisma.brand.create({
-//       data: {
-//         name: name,
-//         image: {
-//           create: {
-//             url: image.url,
-//             altText: image.altText,
-//           },
-//         },
-//       },
-//     });
-//   }
-//   if (!id && !image) {
-//     updatedBrand = await prisma.brand.create({
-//       data: {
-//         name: name,
-//       },
-//     });
-//   } else if (id) {
-//     const existingBrand = await prisma.brand.findUnique({
-//       where: {
-//         id: parseInt(id),
-//       },
-//       include: {
-//         image: true, // Include the existing image
-//       },
-//     });
+  if (!id && image) {
+    updatedImage = await prisma.image.create({
+      data: {
+        altText: altText,
+        url: image.url,
+      },
+    });
+  } else if (id) {
+    const existingImage = await prisma.image.findUnique({
+      where: {
+        id: parseInt(id),
+      },
+    });
 
-//     if (!existingBrand) {
-//       throw new Error("Brand not found");
-//     }
+    if (!existingImage) {
+      throw new Error("Image not found");
+    }
 
-//     let imageData = {};
+    updatedImage = await prisma.image.update({
+      where: {
+        id: parseInt(id),
+      },
+      data: {
+        altText: altText,
+        url: image?.url,
+      },
+    });
+  }
 
-//     if (image && existingBrand.image) {
-//       imageData = {
-//         update: {
-//           url: image.url,
-//           altText: image.altText,
-//         },
-//       };
-//     }
-//     if (image && !existingBrand.image) {
-//       imageData = {
-//         create: {
-//           url: image.url,
-//           altText: image.altText,
-//         },
-//       };
-//     }
-//     if (!image && existingBrand.image) {
-//       imageData = {
-//         delete: true,
-//       };
-//     }
+  return updatedImage;
+};
 
-//     updatedBrand = await prisma.brand.update({
-//       where: {
-//         id: parseInt(id),
-//       },
-//       data: {
-//         name: name,
-//         image: imageData,
-//       },
-//       include: {
-//         image: true, // Include the image in the updated brand response
-//       },
-//     });
-//   }
+export const deleteImage = async (id: string) => {
+  const image = await prisma.image.findUnique({
+    where: {
+      id: parseInt(id),
+    },
+  });
 
-//   return updatedBrand;
-// };
+  if (!image) {
+    return false;
+  }
 
-// export const deleteBrand = async (id: string) => {
-//   const brand = await prisma.brand.findUnique({
-//     where: {
-//       id: parseInt(id),
-//     },
-//   });
-
-//   if (!brand) {
-//     return false;
-//   }
-
-//   return await prisma.brand.delete({
-//     where: {
-//       id: parseInt(id),
-//     },
-//   });
-// };
+  return await prisma.image.delete({
+    where: {
+      id: parseInt(id),
+    },
+  });
+};
 
 export const searchImages = async (
   formData?: { [k: string]: FormDataEntryValue },
   url?: URL
 ) => {
-  const name =
-    formData?.name || (url && url.searchParams.get("name")?.toString()) || "";
+  const title =
+    formData?.name || (url && url.searchParams.get("title")?.toString()) || "";
 
   const connectionType =
     formData?.name ||
@@ -138,9 +103,9 @@ export const searchImages = async (
   // Construct a filter based on the search parameters provided
   const filter: { [key: string]: any } = {};
 
-  if (name) {
-    filter.name = {
-      contains: name,
+  if (title) {
+    filter.altText = {
+      contains: title,
       mode: "insensitive",
     };
   }

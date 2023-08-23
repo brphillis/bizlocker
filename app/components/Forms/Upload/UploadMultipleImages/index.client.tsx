@@ -3,6 +3,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper";
 import { ConvertToBase64 } from "~/utility/fileHelpers";
 import { IoClose } from "react-icons/io5";
+import { findFirstNotNullInputValue } from "~/utility/formHelpers";
 
 type ImageUploadSliderProps = {
   defaultImages: Image[] | undefined;
@@ -55,7 +56,7 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
                 </SwiperSlide>
               );
             }
-            return null; // Skip undefined elements
+            return null;
           })}
         </Swiper>
       ) : null}
@@ -76,6 +77,24 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
                     if (convertedImage) {
                       const updatedImages = [...(images || [])];
                       updatedImages[i] = convertedImage;
+                      if (updatedImages[i]?.altText?.includes(".") || null) {
+                        const nameSelector = findFirstNotNullInputValue("name");
+                        const titleSelector =
+                          findFirstNotNullInputValue("title");
+                        const altTextSelector =
+                          findFirstNotNullInputValue("altText");
+
+                        if (nameSelector) {
+                          updatedImages[i].altText =
+                            nameSelector.value + " " + i;
+                        } else if (titleSelector) {
+                          updatedImages[i].altText =
+                            titleSelector.value + " " + i;
+                        } else if (altTextSelector) {
+                          updatedImages[i].altText =
+                            altTextSelector.value + " " + i;
+                        }
+                      }
                       setCurrentImages(updatedImages);
                     }
                   }}
