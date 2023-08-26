@@ -3,9 +3,16 @@ import { useSearchParams, useSubmit } from "@remix-run/react";
 type Props = {
   selectedBlock: BlockName | undefined;
   defaultValue: string;
+  contentType: BlockContentType | undefined;
+  setContentType: Function;
 };
 
-const BlockContentSearch = ({ selectedBlock, defaultValue }: Props) => {
+const BlockContentSearch = ({
+  selectedBlock,
+  defaultValue,
+  contentType,
+  setContentType,
+}: Props) => {
   const submit = useSubmit();
   const [searchParams] = useSearchParams();
 
@@ -47,11 +54,13 @@ const BlockContentSearch = ({ selectedBlock, defaultValue }: Props) => {
                 placeholder="Select a Type"
                 onChange={(e) => {
                   handleSearchSubmit(e.target.value, undefined);
+                  setContentType(e.target.value);
                 }}
               >
                 <option value="">Select Content Type</option>
                 <option value="promotion">Promotion</option>
                 <option value="campaign">Campaign</option>
+                <option value="image">Image</option>
               </select>
             </div>
 
@@ -63,7 +72,7 @@ const BlockContentSearch = ({ selectedBlock, defaultValue }: Props) => {
                 <input
                   name="name"
                   placeholder="Search Name"
-                  className="input-bordered input w-[95vw] text-brand-black/75 sm:w-[215px]"
+                  className="input input-bordered w-[95vw] text-brand-black/75 sm:w-[215px]"
                   type="text"
                   onChange={(e) => {
                     handleSearchSubmit(undefined, e.target.value);

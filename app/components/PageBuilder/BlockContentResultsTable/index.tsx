@@ -1,5 +1,3 @@
-import { useSearchParams } from "@remix-run/react";
-
 import { IoCaretForwardCircleSharp, IoCloseCircle } from "react-icons/io5";
 import { capitalizeFirst } from "~/utility/stringHelpers";
 
@@ -10,27 +8,13 @@ type Props = {
   setSelectedItems: (prevSelectedItems: (Campaign | Promotion)[]) => void;
 };
 
-const BlockContentResults = ({
+const BlockContentResultsTable = ({
   selectedBlock,
   searchResults,
   selectedItems,
   setSelectedItems,
 }: Props) => {
-  const [searchParams] = useSearchParams();
-
   const selectItem = (item: Campaign | Promotion) => {
-    const blockName = searchParams.get("blockName");
-
-    if (blockName === "banner" && selectedItems.length >= 1) {
-      // BANNER BLOCK CAN ONLY HAVE 1 ITEM
-      return;
-    }
-
-    if (blockName === "tile" && selectedItems.length >= 4) {
-      // TILE BLOCK CAN HAVE MAX OF 4 ITEMS
-      return;
-    }
-
     setSelectedItems(
       ((prevSelectedItems: (Campaign | Promotion)[]) => [
         ...prevSelectedItems,
@@ -63,11 +47,13 @@ const BlockContentResults = ({
               </thead>
               <tbody>
                 {searchResults?.map(
-                  ({ name, createdAt }: Promotion | Campaign, index) => {
+                  (
+                    { name, createdAt }: Promotion | Campaign,
+                    index: number
+                  ) => {
                     return (
                       <tr
                         key={"promotionOrCampaign_" + name + index}
-                        className="cursor-pointer"
                         onClick={() => {
                           selectItem(searchResults[index]);
                         }}
@@ -153,4 +139,4 @@ const BlockContentResults = ({
   );
 };
 
-export default BlockContentResults;
+export default BlockContentResultsTable;

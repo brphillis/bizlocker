@@ -7,7 +7,7 @@ const ProductCard = (product: Product) => {
   const submit = useSubmit();
   const navigate = useNavigate();
 
-  const { id, name, images, variants, brand } = product;
+  const { id, name, images, variants, brand, promotion } = product;
 
   const { id: variantId, price, isOnSale, isPromoted } = variants[0] || {};
   const displayImage = images[0]?.url;
@@ -44,7 +44,7 @@ const ProductCard = (product: Product) => {
           </span>
         )}
 
-        {isPromoted && (
+        {isPromoted && promotion?.isActive && (
           <span className="absolute left-2 top-2 mr-2 bg-green-500 px-2 py-1 text-xs text-brand-white opacity-30">
             PROMO
           </span>

@@ -1,4 +1,5 @@
 import { searchCampaigns } from "~/models/campaigns.server";
+import { searchImages } from "~/models/images.server";
 import { searchPromotions } from "~/models/promotions.server";
 
 export const getFormBlockOptions = (form: {
@@ -115,6 +116,12 @@ export const searchContentData = async (
     case "campaign":
       const { campaigns } = await searchCampaigns(Object.fromEntries(formData));
       searchResults = campaigns;
+
+      return { searchResults };
+
+    case "image":
+      const { images } = await searchImages(Object.fromEntries(formData));
+      searchResults = images;
 
       return { searchResults };
 

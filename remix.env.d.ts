@@ -353,7 +353,7 @@ type SortBy = "createdAt" | "totalSold" | "price" | "name";
 type SortOrder = "asc" | "desc";
 
 type BlockName = "banner" | "tile" | "text" | "product" | "article";
-type BlockContentType = "campaign" | "promotion";
+type BlockContentType = "campaign" | "promotion" | "image";
 
 interface HomePage {
   id: number;
@@ -377,12 +377,25 @@ interface Block extends BannerBlock, TileBlock, TextBlock, ProductBlock {
   order: number;
   page: Page;
   pageId: number;
-  content: Campaign[] | Promotion[] | string[] | ProductBlockContent[];
+  content:
+    | Campaign[]
+    | Promotion[]
+    | ContentImage[]
+    | string[]
+    | ProductBlockContent[];
   blockOptions: BlockOptions;
   bannerBlock?: BannerBlock;
   bannerBlockId?: string;
   tileBlock?: TileBlock;
   tileBlockId?: string;
+}
+
+interface ContentImage {
+  id?: number;
+  image: Image;
+  href: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 interface NewBlockOptions {

@@ -461,6 +461,7 @@ export const searchProducts = async (
           select: {
             name: true,
             discountPercentage: true,
+            isActive: true,
           },
         },
       },

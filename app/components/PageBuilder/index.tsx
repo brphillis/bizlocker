@@ -7,7 +7,7 @@ import BlockOptions from "./BlockOptions";
 import ProductBlockOptions from "./ProductBlockOptions";
 import TextBlockOptions from "./TextBlockOptions";
 import BlockContentSearch from "./BlockContentSearch";
-import BlockContentResults from "./BlockContentResults";
+import BlockContentResultsTable from "./BlockContentResultsTable";
 import {
   HiMiniArrowDown,
   HiMiniArrowUp,
@@ -15,10 +15,11 @@ import {
   HiTrash,
 } from "react-icons/hi2";
 import ArticleBlockOptions from "./ArticleBlockOptions";
+import BlockContentImageResults from "./BlockContentImageResults";
 
 type Props = {
   page: HomePage | Article;
-  searchResults: Campaign[] | Promotion[];
+  searchResults: Campaign[] | Promotion[] | Image[] | undefined;
   updateSuccess: boolean;
   rootCategories: RootCategory[];
   productCategories: ProductCategory[];
@@ -36,15 +37,15 @@ const PageBuilder = ({
   articleCategories,
 }: Props) => {
   const submit = useSubmit();
-
   const blocks = getBlocks(page);
 
   const [selectedBlock, setSelectedBlock] = useState<BlockName | undefined>();
+  const [contentType, setContentType] = useState<BlockContentType>();
   const [editingContent, setEditingContent] = useState<boolean>(false);
   const [editingIndex, setEditingIndex] = useState<number>(1);
-  const [selectedItems, setSelectedItems] = useState<(Campaign | Promotion)[]>(
-    blocks[editingIndex]?.content as Campaign[] | Promotion[]
-  );
+  const [selectedItems, setSelectedItems] = useState<
+    (Campaign | Promotion | ContentImage)[]
+  >(blocks[editingIndex]?.content as Campaign[] | Promotion[]);
 
   const reset = () => {
     setEditingContent(false);
@@ -229,6 +230,8 @@ const PageBuilder = ({
           <BlockContentSearch
             selectedBlock={selectedBlock}
             defaultValue={blocks[editingIndex]?.type}
+            contentType={contentType}
+            setContentType={setContentType}
           />
 
           <ProductBlockOptions
@@ -254,12 +257,26 @@ const PageBuilder = ({
             defaultValue={blocks[editingIndex]?.content as string[]}
           />
 
-          <BlockContentResults
-            selectedBlock={selectedBlock}
-            searchResults={searchResults}
-            selectedItems={selectedItems}
-            setSelectedItems={setSelectedItems}
-          />
+          {((contentType === "campaign" &&
+            (searchResults?.[0] as Campaign)?.name) ||
+            (contentType === "promotion" &&
+              (searchResults?.[0] as Promotion)?.name)) && (
+            <BlockContentResultsTable
+              selectedBlock={selectedBlock}
+              searchResults={searchResults as Campaign[] | Promotion[]}
+              selectedItems={selectedItems as (Campaign | Promotion)[]}
+              setSelectedItems={setSelectedItems}
+            />
+          )}
+
+          {contentType === "image" && (
+            <BlockContentImageResults
+              selectedBlock={selectedBlock}
+              searchResults={searchResults as Image[]}
+              selectedItems={selectedItems as ContentImage[]}
+              setSelectedItems={setSelectedItems}
+            />
+          )}
 
           <div className="flex flex-row justify-center gap-3">
             <button

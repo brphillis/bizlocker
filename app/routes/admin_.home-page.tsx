@@ -19,6 +19,7 @@ import {
   searchContentData,
 } from "~/utility/pageBuilder";
 import { getArticleCategories } from "~/models/articleCategories.server";
+import { useEffect } from "react";
 
 export const loader = async () => {
   const homePage = await getHomePage();
@@ -76,6 +77,9 @@ export const action = async ({ request }: ActionArgs) => {
         parseInt(pageId as string),
         parseInt(itemIndex as string)
       );
+
+    default:
+      return null;
   }
 };
 
@@ -89,6 +93,10 @@ const ManageHomePage = () => {
   } = useLoaderData() || {};
 
   const { searchResults, updateSuccess } = useActionData() || {};
+
+  useEffect(() => {
+    console.log(searchResults);
+  }, [searchResults]);
 
   return (
     <AdminPageWrapper>
