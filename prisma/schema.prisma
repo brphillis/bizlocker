@@ -96,17 +96,17 @@ model ProductBlock {
 }
 
 model ProductBlockContent {
-  id                String           @id @unique @default(cuid())
-  productBlock      ProductBlock?    @relation("ProductBlockContentToProductBlock", fields: [productBlockId], references: [id])
-  productBlockId    String?          @unique
-  rootCategory      RootCategory?    @relation("RootCategoryToProductBlock", fields: [rootCategoryId], references: [id])
-  rootCategoryId    Int?
-  productCategory   ProductCategory? @relation("ProductCategoryToProductBlock", fields: [productCategoryId], references: [id])
-  productCategoryId Int?
-  brand             Brand?           @relation("BrandToProductBlock", fields: [brandId], references: [id])
-  brandId           Int?
-  createdAt         DateTime         @default(now())
-  updatedAt         DateTime         @updatedAt
+  id                   String              @id @unique @default(cuid())
+  productBlock         ProductBlock?       @relation("ProductBlockContentToProductBlock", fields: [productBlockId], references: [id])
+  productBlockId       String?             @unique
+  productCategory      ProductCategory?    @relation("ProductCategoryToProductBlock", fields: [subProductCategoryId], references: [id])
+  subProductCategoryId Int?
+  productSubCategory   ProductSubCategory? @relation("ProductSubCategoryToProductBlock", fields: [productSubCategoryId], references: [id])
+  productSubCategoryId Int?
+  brand                Brand?              @relation("BrandToProductBlock", fields: [brandId], references: [id])
+  brandId              Int?
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
 }
 
 model ArticleBlock {
@@ -234,65 +234,65 @@ model OrderItem {
 }
 
 model Image {
-  id                Int              @id @default(autoincrement())
-  url               String
-  altText           String?
-  user              User?            @relation("AvatarImage", fields: [userId], references: [id])
-  userId            String?          @unique
-  article           Article?         @relation("ArticleImage", fields: [articleId], references: [id])
-  articleId         Int?             @unique
-  product           Product?         @relation(fields: [productId], references: [id])
-  productId         Int?
-  productCategory   ProductCategory? @relation("ProductCategoryImage", fields: [productCategoryId], references: [id])
-  productCategoryId Int?             @unique
-  brand             Brand?           @relation("BrandImage", fields: [brandId], references: [id])
-  brandId           Int?             @unique
-  campaignTile      Campaign[]       @relation("TileImageToCampaign")
-  campaignBanner    Campaign[]       @relation("BannerImageToCampaign")
-  promotionTile     Promotion[]      @relation("TileImageToPromotion")
-  promotionBanner   Promotion[]      @relation("BannerImageToPromotion")
-  createdAt         DateTime         @default(now())
-  updatedAt         DateTime         @updatedAt
+  id                   Int                 @id @default(autoincrement())
+  url                  String
+  altText              String?
+  user                 User?               @relation("AvatarImage", fields: [userId], references: [id])
+  userId               String?             @unique
+  article              Article?            @relation("ArticleImage", fields: [articleId], references: [id])
+  articleId            Int?                @unique
+  product              Product?            @relation(fields: [productId], references: [id])
+  productId            Int?
+  productSubCategory   ProductSubCategory? @relation("ProductSubCategoryImage", fields: [productSubCategoryId], references: [id])
+  productSubCategoryId Int?                @unique
+  brand                Brand?              @relation("BrandImage", fields: [brandId], references: [id])
+  brandId              Int?                @unique
+  campaignTile         Campaign[]          @relation("TileImageToCampaign")
+  campaignBanner       Campaign[]          @relation("BannerImageToCampaign")
+  promotionTile        Promotion[]         @relation("TileImageToPromotion")
+  promotionBanner      Promotion[]         @relation("BannerImageToPromotion")
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
 }
 
 model Department {
-  id             Int            @id @default(autoincrement())
-  name           String         @unique
-  rootCategories RootCategory[] @relation("DepartmentToRootCategory")
-  campaigns      Campaign[]
-  promotions     Promotion[]
-}
-
-model RootCategory {
-  id                  Int                   @id @default(autoincrement())
-  name                String                @unique
-  department          Department            @relation("DepartmentToRootCategory", fields: [departmentId], references: [id])
-  departmentId        Int
-  articleCategories   ArticleCategory[]     @relation("RootCategoryToArticleCategory")
-  productCategories   ProductCategory[]     @relation("RootCategoryToProductCategory")
-  productBlockContent ProductBlockContent[] @relation("RootCategoryToProductBlock")
-  productBlockId      String?               @unique
-}
-
-model ArticleCategory {
-  id                  Int                   @id @default(autoincrement())
-  name                String                @unique
-  rootCategory        RootCategory?         @relation("RootCategoryToArticleCategory", fields: [rootCategoryId], references: [id])
-  rootCategoryId      Int?
-  articles            Article[]             @relation("ArticleCategoryToArticle")
-  articleBlockContent ArticleBlockContent[] @relation("ArticleCategoryToArticleBlock")
+  id                Int               @id @default(autoincrement())
+  name              String            @unique
+  productCategories ProductCategory[] @relation("DepartmentToProductCategory")
+  campaigns         Campaign[]
+  promotions        Promotion[]
 }
 
 model ProductCategory {
-  id                  Int                   @id @default(autoincrement())
-  name                String                @unique
-  rootCategory        RootCategory?         @relation("RootCategoryToProductCategory", fields: [rootCategoryId], references: [id])
-  rootCategoryId      Int?
-  products            Product[]             @relation("ProductCategoryToProduct")
-  productBlockContent ProductBlockContent[] @relation("ProductCategoryToProductBlock")
-  image               Image?                @relation("ProductCategoryImage")
-  imageId             Int?
-  campaigns           Campaign[]            @relation("ProductCategoryToCampaign")
+  id                   Int                   @id @default(autoincrement())
+  name                 String                @unique
+  department           Department            @relation("DepartmentToProductCategory", fields: [departmentId], references: [id])
+  departmentId         Int
+  articleCategories    ArticleCategory[]     @relation("ProductCategoryToArticleCategory")
+  productSubCategories ProductSubCategory[]  @relation("ProductCategoryToProductSubCategory")
+  productBlockContent  ProductBlockContent[] @relation("ProductCategoryToProductBlock")
+  productBlockId       String?               @unique
+}
+
+model ArticleCategory {
+  id                   Int                   @id @default(autoincrement())
+  name                 String                @unique
+  productCategory      ProductCategory?      @relation("ProductCategoryToArticleCategory", fields: [subProductCategoryId], references: [id])
+  subProductCategoryId Int?
+  articles             Article[]             @relation("ArticleCategoryToArticle")
+  articleBlockContent  ArticleBlockContent[] @relation("ArticleCategoryToArticleBlock")
+}
+
+model ProductSubCategory {
+  id                   Int                   @id @default(autoincrement())
+  name                 String                @unique
+  productCategory      ProductCategory?      @relation("ProductCategoryToProductSubCategory", fields: [subProductCategoryId], references: [id])
+  subProductCategoryId Int?
+  products             Product[]             @relation("ProductSubCategoryToProduct")
+  productBlockContent  ProductBlockContent[] @relation("ProductSubCategoryToProductBlock")
+  image                Image?                @relation("ProductSubCategoryImage")
+  imageId              Int?
+  campaigns            Campaign[]            @relation("ProductSubCategoryToCampaign")
 }
 
 model Article {
@@ -307,21 +307,21 @@ model Article {
 }
 
 model Campaign {
-  id                Int               @id @default(autoincrement())
-  name              String
-  excludedProducts  Product[]
-  minSaleRange      Float
-  maxSaleRange      Float
-  targetGender      Gender?
-  isActive          Boolean           @default(false)
-  tileImage         Image             @relation("TileImageToCampaign", fields: [tileImageId], references: [id])
-  tileImageId       Int               @unique
-  bannerImage       Image             @relation("BannerImageToCampaign", fields: [bannerImageId], references: [id])
-  bannerImageId     Int               @unique
-  department        Department        @relation(fields: [departmentId], references: [id])
-  departmentId      Int
-  productCategories ProductCategory[] @relation("ProductCategoryToCampaign")
-  brands            Brand[]           @relation("BrandToCampaign")
+  id                   Int                  @id @default(autoincrement())
+  name                 String
+  excludedProducts     Product[]
+  minSaleRange         Float
+  maxSaleRange         Float
+  targetGender         Gender?
+  isActive             Boolean              @default(false)
+  tileImage            Image                @relation("TileImageToCampaign", fields: [tileImageId], references: [id])
+  tileImageId          Int                  @unique
+  bannerImage          Image                @relation("BannerImageToCampaign", fields: [bannerImageId], references: [id])
+  bannerImageId        Int                  @unique
+  department           Department           @relation(fields: [departmentId], references: [id])
+  departmentId         Int
+  productSubCategories ProductSubCategory[] @relation("ProductSubCategoryToCampaign")
+  brands               Brand[]              @relation("BrandToCampaign")
 
   bannerBlocks BannerBlock[]
   tileBlocks   TileBlock[]
@@ -350,24 +350,24 @@ model Promotion {
 }
 
 model Product {
-  id                     Int               @id @default(autoincrement())
+  id                     Int                  @id @default(autoincrement())
   name                   String
   description            String
   images                 Image[]
-  productCategories      ProductCategory[] @relation("ProductCategoryToProduct")
-  brand                  Brand?            @relation("BrandToProduct", fields: [brandId], references: [id])
+  productSubCategories   ProductSubCategory[] @relation("ProductSubCategoryToProduct")
+  brand                  Brand?               @relation("BrandToProduct", fields: [brandId], references: [id])
   brandId                Int?
-  variants               ProductVariant[]  @relation("ProductVariants")
-  discountPercentageHigh Float             @default(0)
-  discountPercentageLow  Float             @default(0)
-  totalSold              Int               @default(0)
-  isActive               Boolean           @default(true)
+  variants               ProductVariant[]     @relation("ProductVariants")
+  discountPercentageHigh Float                @default(0)
+  discountPercentageLow  Float                @default(0)
+  totalSold              Int                  @default(0)
+  isActive               Boolean              @default(true)
   gender                 Gender?
   campaigns              Campaign[]
-  promotion              Promotion?        @relation("PromotionToProduct", fields: [promotionId], references: [id])
+  promotion              Promotion?           @relation("PromotionToProduct", fields: [promotionId], references: [id])
   promotionId            Int?
-  createdAt              DateTime          @default(now())
-  updatedAt              DateTime          @updatedAt
+  createdAt              DateTime             @default(now())
+  updatedAt              DateTime             @updatedAt
 }
 
 model ProductVariant {

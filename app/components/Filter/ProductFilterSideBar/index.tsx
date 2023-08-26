@@ -3,38 +3,38 @@ import { useEffect, useState } from "react";
 import { IoChevronDown, IoChevronUp } from "react-icons/io5";
 
 type Props = {
-  rootCategories: RootCategory[];
   productCategories: ProductCategory[];
+  productSubCategories: ProductSubCategory[];
   brands: Brand[];
   colors: string[];
 };
 
 const ProductFilterSideBar = ({
-  rootCategories,
   productCategories,
+  productSubCategories,
   brands,
   colors,
 }: Props) => {
   const [searchParams] = useSearchParams();
   const submit = useSubmit();
 
-  const [filteredProductCategories, setFilteredProductCategories] =
-    useState<ProductCategory[]>(productCategories);
+  const [filteredProductSubCategories, setFilteredProductSubCategories] =
+    useState<ProductSubCategory[]>(productSubCategories);
   const searchedGender = searchParams.get("gender");
-  const searchedRootCat = searchParams.get("rootCategory");
-  const searchedProdCat = searchParams.get("productCategory");
+  const searchedRootCat = searchParams.get("productCategory");
+  const searchedProdCat = searchParams.get("productSubCategory");
   const searchedBrand = searchParams.get("brand");
   const searchedColor = searchParams.get("color");
   const onSaleChecked = searchParams.get("onSale");
 
   const [menuIsExpanded, setMenuIsExpanded] = useState(true);
 
-  const filterProductCategories = (rootCategoryId: number) => {
-    const filteredCats = productCategories.filter(
-      (e) => e.rootCategoryId === rootCategoryId
+  const filterProductSubCategories = (subProductCategoryId: number) => {
+    const filteredCats = productSubCategories.filter(
+      (e) => e.subProductCategoryId === subProductCategoryId
     );
 
-    setFilteredProductCategories(filteredCats);
+    setFilteredProductSubCategories(filteredCats);
   };
 
   const handleExpandMenu = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -110,7 +110,7 @@ const ProductFilterSideBar = ({
                   }}
                 >
                   <input
-                    id={"checkBox_productCategory_MENS"}
+                    id={"checkBox_productSubCategory_MENS"}
                     type="checkbox"
                     checked={searchedGender === "MALE"}
                     className="checkbox checkbox-xs"
@@ -134,7 +134,7 @@ const ProductFilterSideBar = ({
                   }}
                 >
                   <input
-                    id={"checkBox_productCategory_FEMALE"}
+                    id={"checkBox_productSubCategory_FEMALE"}
                     type="checkbox"
                     checked={searchedGender === "FEMALE"}
                     className="checkbox checkbox-xs"
@@ -158,7 +158,7 @@ const ProductFilterSideBar = ({
                   }}
                 >
                   <input
-                    id={"checkBox_productCategory_KIDS"}
+                    id={"checkBox_productSubCategory_KIDS"}
                     type="checkbox"
                     checked={searchedGender === "KIDS"}
                     className="checkbox checkbox-xs"
@@ -178,19 +178,19 @@ const ProductFilterSideBar = ({
                   Category
                 </summary>
                 <div className="max-h-[300px] overflow-y-auto">
-                  {rootCategories?.map(({ id, name }: RootCategory) => {
+                  {productCategories?.map(({ id, name }: ProductCategory) => {
                     return (
                       <div
-                        key={"rootCategory_sideFilter_" + id}
+                        key={"productCategory_sideFilter_" + id}
                         className="ml-3 flex cursor-pointer gap-2 py-1 pt-3"
                         onClick={() => {
-                          filterProductCategories(id);
-                          searchParams.delete("productCategory");
-                          const selectedRootCategory = searchedRootCat;
-                          if (selectedRootCategory === name) {
-                            searchParams.delete("rootCategory");
+                          filterProductSubCategories(id);
+                          searchParams.delete("productSubCategory");
+                          const selectedProductCategory = searchedRootCat;
+                          if (selectedProductCategory === name) {
+                            searchParams.delete("productCategory");
                           } else {
-                            searchParams.set("rootCategory", name);
+                            searchParams.set("productCategory", name);
                           }
                           submit(searchParams, {
                             method: "GET",
@@ -199,7 +199,7 @@ const ProductFilterSideBar = ({
                         }}
                       >
                         <input
-                          id={"checkBox_rootCategory_" + name}
+                          id={"checkBox_productCategory_" + name}
                           type="checkbox"
                           checked={searchedRootCat === name}
                           className="checkbox checkbox-xs"
@@ -222,18 +222,18 @@ const ProductFilterSideBar = ({
                   Sub-Category
                 </summary>
                 <div className="max-h-[300px] overflow-y-auto">
-                  {filteredProductCategories?.map(
-                    ({ id, name }: ProductCategory) => {
+                  {filteredProductSubCategories?.map(
+                    ({ id, name }: ProductSubCategory) => {
                       return (
                         <div
-                          key={"productCategory_sideFilter_" + id}
+                          key={"productSubCategory_sideFilter_" + id}
                           className="ml-3 flex cursor-pointer gap-2 py-1 pt-3"
                           onClick={() => {
-                            const selectedProductCategory = searchedProdCat;
-                            if (selectedProductCategory === name) {
-                              searchParams.delete("productCategory");
+                            const selectedProductSubCategory = searchedProdCat;
+                            if (selectedProductSubCategory === name) {
+                              searchParams.delete("productSubCategory");
                             } else {
-                              searchParams.set("productCategory", name);
+                              searchParams.set("productSubCategory", name);
                             }
                             submit(searchParams, {
                               method: "GET",
@@ -242,7 +242,7 @@ const ProductFilterSideBar = ({
                           }}
                         >
                           <input
-                            id={"checkBox_productCategory_" + name}
+                            id={"checkBox_productSubCategory_" + name}
                             type="checkbox"
                             checked={searchedProdCat === name}
                             className="checkbox checkbox-xs"

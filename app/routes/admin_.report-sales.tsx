@@ -7,7 +7,7 @@ import { getSalesToday } from "~/models/saleReports.server";
 import { calculatePercentageChange } from "~/utility/numberHelpers";
 
 type ReportData = {
-  productCategory: string;
+  productSubCategory: string;
   brand: string;
   totalSales: number;
   totalSalesYesterday: number;
@@ -18,7 +18,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     totalSalesToday,
     totalSalesYesterday,
     productCountToday,
-    topProductCategoriesToday,
+    topProductSubCategoriesToday,
     topBrandsToday,
   } = await getSalesToday();
 
@@ -26,7 +26,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     totalSalesToday,
     totalSalesYesterday,
     productCountToday,
-    topProductCategoriesToday,
+    topProductSubCategoriesToday,
     topBrandsToday,
   };
 };
@@ -36,21 +36,21 @@ const ManageHomePage = () => {
     totalSalesToday,
     totalSalesYesterday,
     productCountToday,
-    topProductCategoriesToday,
+    topProductSubCategoriesToday,
     topBrandsToday,
   } =
     (useLoaderData() as {
       totalSalesToday: number;
       totalSalesYesterday: number;
       productCountToday: number;
-      topProductCategoriesToday: ReportData[];
+      topProductSubCategoriesToday: ReportData[];
       topBrandsToday: ReportData[];
     }) || {};
 
-  let categoryPieData = topProductCategoriesToday
+  let categoryPieData = topProductSubCategoriesToday
     .filter((item: any) => item.totalSales !== 0)
     .map((item: ReportData) => ({
-      name: item.productCategory,
+      name: item.productSubCategory,
       value: item.totalSales,
     }));
 

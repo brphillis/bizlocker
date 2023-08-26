@@ -33,8 +33,8 @@ import {
 import UploadImage from "~/components/Forms/Upload/UploadImage";
 import SelectArticleCategories from "~/components/Forms/Select/SelectArticleCategories";
 import LargeCollapse from "~/components/Collapse/LargeCollapse";
-import { getRootCategories } from "~/models/rootCategories.server";
 import { getProductCategories } from "~/models/productCategories.server";
+import { getProductSubCategories } from "~/models/productSubCategories.server";
 import { getBrands } from "~/models/brands.server";
 import {
   getFormBlockOptions,
@@ -52,8 +52,8 @@ export const loader = async ({ params }: LoaderArgs) => {
   const id = params?.id;
 
   const articleCategories = await getArticleCategories();
-  const rootCategories = await getRootCategories();
   const productCategories = await getProductCategories();
+  const productSubCategories = await getProductSubCategories();
   const brands = await getBrands();
 
   if (id && id !== "add") {
@@ -61,8 +61,8 @@ export const loader = async ({ params }: LoaderArgs) => {
     return json({
       article,
       articleCategories,
-      rootCategories,
       productCategories,
+      productSubCategories,
       brands,
     });
   } else return json({ articleCategories });
@@ -134,9 +134,9 @@ const ModifyArticle = () => {
   const submit = useSubmit();
   const {
     article,
-    rootCategories,
-    articleCategories,
     productCategories,
+    articleCategories,
+    productSubCategories,
     brands,
   } = useLoaderData() || {};
 
@@ -230,8 +230,8 @@ const ModifyArticle = () => {
                     page={article}
                     searchResults={searchResults}
                     updateSuccess={updateSuccess}
-                    rootCategories={rootCategories}
                     productCategories={productCategories}
+                    productSubCategories={productSubCategories}
                     brands={brands}
                     articleCategories={articleCategories}
                   />

@@ -1,19 +1,19 @@
 import SelectBrand from "~/components/Forms/Select/SelectBrand";
 import SelectProductCategory from "~/components/Forms/Select/SelectProductCategory";
-import SelectRootCategory from "~/components/Forms/Select/SelectRootCategory";
+import SelectProductSubCategory from "~/components/Forms/Select/SelectProductSubCategory";
 
 type Props = {
   selectedBlock: BlockName | undefined;
-  rootCategories: RootCategory[];
   productCategories: ProductCategory[];
+  productSubCategories: ProductSubCategory[];
   brands: Brand[];
   defaultValues: ProductBlockContent;
 };
 
 const ProductBlockOptions = ({
   selectedBlock,
-  rootCategories,
   productCategories,
+  productSubCategories,
   brands,
   defaultValues,
 }: Props) => {
@@ -25,14 +25,14 @@ const ProductBlockOptions = ({
             Filters
           </p>
           <div className="flex flex-wrap gap-3 !text-brand-white">
-            <SelectRootCategory
-              rootCategories={rootCategories}
-              defaultValue={defaultValues?.rootCategoryId?.toString()}
-            />
-
             <SelectProductCategory
               productCategories={productCategories}
-              defaultValue={defaultValues?.productCategoryId?.toString()}
+              defaultValue={defaultValues?.subProductCategoryId?.toString()}
+            />
+
+            <SelectProductSubCategory
+              productSubCategories={productSubCategories}
+              defaultValue={defaultValues?.productSubCategoryId?.toString()}
             />
 
             <SelectBrand

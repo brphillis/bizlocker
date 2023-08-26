@@ -195,7 +195,7 @@ export const updatePageBlock = async (
         where: { productBlockId: blockToUpdate.productBlockId },
       });
 
-      const { rootCategory, productCategory, brand } =
+      const { productCategory, productSubCategory, brand } =
         objectData as NewProductBlockContent;
 
       if (productBlock && productBlockContent) {
@@ -203,11 +203,11 @@ export const updatePageBlock = async (
           await prisma.productBlockContent.update({
             where: { id: productBlockContent.id },
             data: {
-              rootCategory: rootCategory
-                ? { connect: { id: parseInt(rootCategory) } }
-                : { disconnect: true },
               productCategory: productCategory
                 ? { connect: { id: parseInt(productCategory) } }
+                : { disconnect: true },
+              productSubCategory: productSubCategory
+                ? { connect: { id: parseInt(productSubCategory) } }
                 : { disconnect: true },
               brand: brand
                 ? { connect: { id: parseInt(brand) } }
@@ -357,17 +357,17 @@ export const updatePageBlock = async (
         },
       });
     } else if (blockName === "product" && objectData) {
-      const { rootCategory, productCategory, brand } =
+      const { productCategory, productSubCategory, brand } =
         objectData as NewProductBlockContent;
 
       // Create a new ProductBlock with the new ProductBlockContent
       const newProductBlockContent = await prisma.productBlockContent.create({
         data: {
-          rootCategory: rootCategory
-            ? { connect: { id: parseInt(rootCategory) } }
-            : undefined,
           productCategory: productCategory
             ? { connect: { id: parseInt(productCategory) } }
+            : undefined,
+          productSubCategory: productSubCategory
+            ? { connect: { id: parseInt(productSubCategory) } }
             : undefined,
           brand: brand ? { connect: { id: parseInt(brand) } } : undefined,
         },

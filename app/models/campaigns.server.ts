@@ -11,7 +11,7 @@ export function getCampaigns(inDetail?: boolean) {
         bannerImage: true,
         tileImage: true,
         brands: true,
-        productCategories: true,
+        productSubCategories: true,
       },
     });
   } else return prisma.campaign.findMany();
@@ -27,7 +27,7 @@ export const getCampaign = async (id: string) => {
       tileImage: true,
       department: true,
       excludedProducts: true,
-      productCategories: true,
+      productSubCategories: true,
       brands: true,
     },
   });
@@ -37,7 +37,7 @@ export const upsertCampaign = async (updateData: any) => {
   const {
     name,
     department,
-    productCategories,
+    productSubCategories,
     brands,
     minSaleRange,
     maxSaleRange,
@@ -54,9 +54,11 @@ export const upsertCampaign = async (updateData: any) => {
     id: parseInt(brandId),
   }));
 
-  const productCategoryData = productCategories.map((categoryId: string) => ({
-    id: parseInt(categoryId),
-  }));
+  const productSubCategoryData = productSubCategories.map(
+    (categoryId: string) => ({
+      id: parseInt(categoryId),
+    })
+  );
 
   if (!id) {
     // Create a new campaign
@@ -68,8 +70,8 @@ export const upsertCampaign = async (updateData: any) => {
             id: parseInt(department),
           },
         },
-        productCategories: {
-          connect: productCategoryData,
+        productSubCategories: {
+          connect: productSubCategoryData,
         },
         brands: {
           connect: brandData,
@@ -99,7 +101,7 @@ export const upsertCampaign = async (updateData: any) => {
       include: {
         tileImage: true,
         bannerImage: true,
-        productCategories: true,
+        productSubCategories: true,
         brands: true,
       },
     });
@@ -123,7 +125,7 @@ export const upsertCampaign = async (updateData: any) => {
     };
 
     // Disconnect from old product categories and brands
-    const oldProductCategoryData = existingCampaign.productCategories.map(
+    const oldProductSubCategoryData = existingCampaign.productSubCategories.map(
       (category: any) => ({ id: category.id })
     );
     const oldBrandData = existingCampaign.brands.map((brand: any) => ({
@@ -138,9 +140,9 @@ export const upsertCampaign = async (updateData: any) => {
           id: parseInt(department),
         },
       },
-      productCategories: {
-        disconnect: oldProductCategoryData,
-        connect: productCategoryData,
+      productSubCategories: {
+        disconnect: oldProductSubCategoryData,
+        connect: productSubCategoryData,
       },
       brands: {
         disconnect: oldBrandData,
@@ -244,12 +246,17 @@ export const searchCampaigns = async (
   return { campaigns, totalPages };
 };
 
-export const getRandomCampaign = async (productCategoryIdOrName?: string) => {
-  let productCategory;
+export const getRandomCampaign = async (
+  productSubCategoryIdOrName?: string
+) => {
+  let productSubCategory;
 
-  if (productCategoryIdOrName && isNaN(parseInt(productCategoryIdOrName))) {
-    productCategory = await prisma.productCategory.findFirst({
-      where: { name: productCategoryIdOrName },
+  if (
+    productSubCategoryIdOrName &&
+    isNaN(parseInt(productSubCategoryIdOrName))
+  ) {
+    productSubCategory = await prisma.productSubCategory.findFirst({
+      where: { name: productSubCategoryIdOrName },
       include: {
         campaigns: {
           include: {
@@ -260,11 +267,11 @@ export const getRandomCampaign = async (productCategoryIdOrName?: string) => {
       },
     });
   } else if (
-    productCategoryIdOrName &&
-    !isNaN(parseInt(productCategoryIdOrName))
+    productSubCategoryIdOrName &&
+    !isNaN(parseInt(productSubCategoryIdOrName))
   ) {
-    productCategory = await prisma.productCategory.findUnique({
-      where: { id: parseInt(productCategoryIdOrName as string) },
+    productSubCategory = await prisma.productSubCategory.findUnique({
+      where: { id: parseInt(productSubCategoryIdOrName as string) },
       include: {
         campaigns: {
           include: {
@@ -276,7 +283,7 @@ export const getRandomCampaign = async (productCategoryIdOrName?: string) => {
     });
   }
 
-  if (!productCategory) {
+  if (!productSubCategory) {
     const randomCampaignAnyCategory = await getRandomCampaignAnyCategory();
 
     if (randomCampaignAnyCategory) {
@@ -284,7 +291,7 @@ export const getRandomCampaign = async (productCategoryIdOrName?: string) => {
     }
   }
 
-  const { campaigns } = productCategory || {};
+  const { campaigns } = productSubCategory || {};
 
   if (campaigns?.length === 0 || !campaigns) {
     const randomCampaignAnyCategory = await getRandomCampaignAnyCategory();

@@ -43,8 +43,8 @@ export const getHomePage = async () => {
             include: {
               content: {
                 include: {
-                  rootCategory: true,
                   productCategory: true,
+                  productSubCategory: true,
                   brand: true,
                 },
               },

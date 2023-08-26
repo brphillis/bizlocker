@@ -36,8 +36,8 @@ interface Image {
   articleId?: number;
   product?: Product;
   productId?: number;
-  productCategory?: ProductCategory;
-  productCategoryId?: number;
+  productSubCategory?: ProductSubCategory;
+  productSubCategoryId?: number;
   brand?: Brand;
   brandId?: number;
   campaignTile?: Campaign;
@@ -168,17 +168,17 @@ interface CartItem {
 interface Department {
   id: number;
   name: string;
-  rootCategories: RootCategory[];
+  productCategories: ProductCategory[];
   campaigns: Campaign[];
   promotions: Promotion[];
 }
 
-type RootCategory = {
+type ProductCategory = {
   id: number;
   name: string;
   department: Department;
   articleCategories?: ArticleCategory[];
-  productCategories?: ProductCategory[];
+  productSubCategories?: ProductSubCategory[];
 };
 
 type Article = {
@@ -196,7 +196,7 @@ type ArticleCategory = {
   id: number;
   name: string;
   articles?: Article[];
-  rootCategory?: RootCategory | null;
+  productCategory?: ProductCategory | null;
 };
 
 interface ProductVariant {
@@ -242,7 +242,7 @@ interface Product {
   name: string;
   description: string;
   images: Image[];
-  productCategories: ProductCategory[];
+  productSubCategories: ProductSubCategory[];
   brand?: Brand;
   brandId?: number;
   variants: ProductVariant[];
@@ -258,11 +258,11 @@ interface Product {
   updatedAt: Date;
 }
 
-interface ProductCategory {
+interface ProductSubCategory {
   id: number;
   name: string;
-  rootCategory?: RootCategory;
-  rootCategoryId?: number;
+  productCategory?: ProductCategory;
+  subProductCategoryId?: number;
   products: Product[];
   productBlockContent: ProductBlockContent[];
   image?: Image;
@@ -315,7 +315,7 @@ interface Campaign {
   bannerImageId: number;
   department: Department;
   departmentId: number;
-  productCategories: ProductCategory[];
+  productSubCategories: ProductSubCategory[];
   brands: Brand[];
   bannerBlocks: BannerBlock[];
   tileBlocks: TileBlock[];
@@ -339,9 +339,9 @@ type BasicSearchArgs = {
   departmentName?: string;
   brand?: string;
   promotion?: string;
-  rootCategory?: string;
-  articleCategory?: string;
   productCategory?: string;
+  articleCategory?: string;
+  productSubCategory?: string;
   category?: string;
   page: number;
   perPage: number;
@@ -457,10 +457,10 @@ interface ProductBlockContent {
   id: string;
   productBlock?: ProductBlock;
   productBlockId?: string;
-  rootCategory?: RootCategory;
-  rootCategoryId?: number;
   productCategory?: ProductCategory;
-  productCategoryId?: number;
+  subProductCategoryId?: number;
+  productSubCategory?: ProductSubCategory;
+  productSubCategoryId?: number;
   brand?: Brand;
   brandId?: number;
   createdAt: Date;
@@ -478,8 +478,8 @@ interface ArticleBlockContent {
 }
 
 type NewProductBlockContent = {
-  rootCategory?: string;
   productCategory?: string;
+  productSubCategory?: string;
   brand?: string;
 };
 

@@ -8,11 +8,11 @@ type Props = {
   valueToChange:
     | Promotion
     | Product
-    | ProductCategory
+    | ProductSubCategory
     | Brand
     | Article
     | ArticleCategory
-    | RootCategory
+    | ProductCategory
     | User
     | Campaign
     | Image;

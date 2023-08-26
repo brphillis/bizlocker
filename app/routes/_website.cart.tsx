@@ -121,7 +121,7 @@ const Cart = () => {
 
             <div>Shipping Options</div>
             <select
-              name="rootCategory"
+              name="productCategory"
               title="category"
               className=" select mt-3 w-[215px] border border-base-300 !font-normal text-brand-black/50"
               placeholder="Select a Value"

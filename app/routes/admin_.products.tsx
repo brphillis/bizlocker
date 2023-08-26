@@ -7,13 +7,13 @@ import {
 } from "@remix-run/react";
 import { json, type LoaderArgs } from "@remix-run/server-runtime";
 import SelectBrand from "~/components/Forms/Select/SelectBrand";
-import SelectProductCategory from "~/components/Forms/Select/SelectProductCategory";
+import SelectProductSubCategory from "~/components/Forms/Select/SelectProductSubCategory";
 import AdminPageHeader from "~/components/Layout/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/AdminPageWrapper";
 import Pagination from "~/components/Pagination";
 import ProductSort from "~/components/Sorting/ProductSort";
 import { getBrands } from "~/models/brands.server";
-import { getProductCategories } from "~/models/productCategories.server";
+import { getProductSubCategories } from "~/models/productSubCategories.server";
 import { searchProducts } from "~/models/products.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
@@ -21,19 +21,20 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   const { products, totalPages } = await searchProducts(undefined, url);
   const brands = await getBrands();
-  const productCategories = await getProductCategories();
+  const productSubCategories = await getProductSubCategories();
 
   return json({
     products,
     brands,
-    productCategories,
+    productSubCategories,
     totalPages,
   });
 };
 
 const ManageProducts = () => {
   const navigate = useNavigate();
-  const { products, totalPages, productCategories, brands } = useLoaderData();
+  const { products, totalPages, productSubCategories, brands } =
+    useLoaderData();
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("pageNumber")) || 1;
 
@@ -56,7 +57,9 @@ const ManageProducts = () => {
               />
             </div>
 
-            <SelectProductCategory productCategories={productCategories} />
+            <SelectProductSubCategory
+              productSubCategories={productSubCategories}
+            />
             <SelectBrand brands={brands} />
           </div>
           <div className="flex flex-row justify-end sm:justify-start">
@@ -90,7 +93,7 @@ const ManageProducts = () => {
                       id,
                       name,
                       description,
-                      productCategories,
+                      productSubCategories,
                       brand,
                       totalSold,
                       isActive,
@@ -110,8 +113,8 @@ const ManageProducts = () => {
                         )}
                         <td>{name}</td>
                         <td>
-                          {productCategories?.map(
-                            ({ id, name }: ProductCategory) => (
+                          {productSubCategories?.map(
+                            ({ id, name }: ProductSubCategory) => (
                               <p key={"category" + id + name}>{name}</p>
                             )
                           )}

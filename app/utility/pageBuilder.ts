@@ -75,10 +75,10 @@ export const parseObjectData = (
   let objectData;
 
   if (blockName === "product") {
-    const { rootCategory, productCategory, brand } = form;
+    const { productCategory, productSubCategory, brand } = form;
     objectData = {
-      rootCategory: rootCategory,
       productCategory: productCategory,
+      productSubCategory: productSubCategory,
       brand: brand,
     };
   }

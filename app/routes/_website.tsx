@@ -10,7 +10,7 @@ import CartButton from "~/components/Buttons/CartButton";
 import { IoMenu, IoSearchOutline } from "react-icons/io5";
 import AccountButton from "~/components/Buttons/AccountButton";
 import type { LinksFunction, LoaderArgs } from "@remix-run/node";
-import { getRootCategories } from "~/models/rootCategories.server";
+import { getProductCategories } from "~/models/productCategories.server";
 import {
   Outlet,
   useLoaderData,
@@ -29,10 +29,10 @@ export const links: LinksFunction = () => [
 export const loader = async ({ request }: LoaderArgs) => {
   const user = await getUserObject(request);
   const cart = await getCart(request);
-  const rootCategories = await getRootCategories();
+  const productCategories = await getProductCategories();
   const brands = await getBrands();
 
-  return { user, cart, rootCategories, brands };
+  return { user, cart, productCategories, brands };
 };
 
 const App = () => {
@@ -40,7 +40,7 @@ const App = () => {
   const location = useLocation();
   const submit = useSubmit();
 
-  const { user, cart, rootCategories, brands } = useLoaderData();
+  const { user, cart, productCategories, brands } = useLoaderData();
 
   const [searchActive, setSearchActive] = useState<boolean | null>(false);
 
@@ -103,15 +103,15 @@ const App = () => {
 
             <div className="relative hidden h-full xl:block">
               <ul className="menu menu-horizontal h-full items-center !py-0">
-                {rootCategories?.map(({ id, name }: RootCategory) => {
+                {productCategories?.map(({ id, name }: ProductCategory) => {
                   return (
                     <li
-                      key={"menu_rootCategory_" + id}
+                      key={"menu_productCategory_" + id}
                       className="flex h-full cursor-pointer items-center justify-center border-b-2 border-primary-content/0 px-3 py-3 text-sm font-bold tracking-wide text-brand-white hover:bg-primary-content/10"
                       onClick={() =>
                         navigate({
                           pathname: "/products",
-                          search: `?rootCategory=${name}`,
+                          search: `?productCategory=${name}`,
                         })
                       }
                     >
@@ -138,7 +138,7 @@ const App = () => {
         </div>
 
         {searchActive && (
-          <SearchBar rootCategories={rootCategories} brands={brands} />
+          <SearchBar productCategories={productCategories} brands={brands} />
         )}
 
         {(!location.pathname.includes("/login") ||
@@ -159,15 +159,15 @@ const App = () => {
       <div className="drawer-side">
         <label htmlFor="my-drawer-3" className="drawer-overlay"></label>
         <ul className="z-100 menu min-h-[100vh] w-64 bg-brand-black p-4 text-brand-white">
-          {rootCategories?.map(({ id, name }: RootCategory) => {
+          {productCategories?.map(({ id, name }: ProductCategory) => {
             return (
               <li
-                key={"menu_rootCategory_" + id}
+                key={"menu_productCategory_" + id}
                 className="cursor-pointer border-b-2 border-primary-content/0 px-3 py-3 text-sm font-bold tracking-wide hover:bg-primary-content/10"
                 onClick={() =>
                   navigate({
                     pathname: "/products",
-                    search: `?rootCategory=${name}`,
+                    search: `?productCategory=${name}`,
                   })
                 }
               >

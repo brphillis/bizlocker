@@ -1,18 +1,18 @@
 import { useState } from "react";
 
 type Props = {
-  productCategories: ProductCategory[];
+  productSubCategories: ProductSubCategory[];
   valueToChange: Product | Campaign;
   title?: string;
 };
 
-const SelectProductCategories = ({
-  productCategories,
+const SelectProductSubCategories = ({
+  productSubCategories,
   valueToChange,
   title,
 }: Props) => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
-    valueToChange?.productCategories?.map((e) => e?.id.toString()) || [""]
+    valueToChange?.productSubCategories?.map((e) => e?.id.toString()) || [""]
   );
 
   const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -32,7 +32,7 @@ const SelectProductCategories = ({
         value={selectedCategories}
         multiple
       >
-        {productCategories?.map(({ id, name }: ProductCategory) => (
+        {productSubCategories?.map(({ id, name }: ProductSubCategory) => (
           <option key={id} value={id}>
             {name}
           </option>
@@ -41,11 +41,11 @@ const SelectProductCategories = ({
       <input
         hidden
         readOnly
-        name="productCategories"
+        name="productSubCategories"
         value={JSON.stringify(selectedCategories)}
       />
     </div>
   );
 };
 
-export default SelectProductCategories;
+export default SelectProductSubCategories;

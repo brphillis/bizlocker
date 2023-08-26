@@ -4,7 +4,7 @@ export const getProducts = async (count?: string) => {
   if (count) {
     return await prisma.product.findMany({
       include: {
-        productCategories: {
+        productSubCategories: {
           select: {
             id: true,
             name: true,
@@ -18,7 +18,7 @@ export const getProducts = async (count?: string) => {
   } else {
     return await prisma.product.findMany({
       include: {
-        productCategories: {
+        productSubCategories: {
           select: {
             id: true,
             name: true,
@@ -37,7 +37,7 @@ export const getProduct = async (id: string) => {
       id: parseInt(id),
     },
     include: {
-      productCategories: {
+      productSubCategories: {
         select: {
           id: true,
           name: true,
@@ -69,7 +69,7 @@ export const upsertProduct = async (productData: any) => {
   const {
     name,
     description,
-    productCategories,
+    productSubCategories,
     gender,
     isActive,
     images,
@@ -101,8 +101,8 @@ export const upsertProduct = async (productData: any) => {
     isActive,
     discountPercentageHigh,
     discountPercentageLow,
-    productCategories: {
-      connect: productCategories
+    productSubCategories: {
+      connect: productSubCategories
         .filter((categoryId: any) => !isNaN(parseInt(categoryId)))
         .map((categoryId: any) => ({
           id: parseInt(categoryId),
@@ -164,7 +164,7 @@ export const upsertProduct = async (productData: any) => {
       include: {
         brand: true,
         promotion: true,
-        productCategories: true,
+        productSubCategories: true,
         images: true,
         variants: true,
       },
@@ -175,7 +175,7 @@ export const upsertProduct = async (productData: any) => {
       include: {
         brand: true,
         promotion: true,
-        productCategories: true,
+        productSubCategories: true,
         images: true,
         variants: true,
       },
@@ -192,12 +192,12 @@ export const upsertProduct = async (productData: any) => {
       });
     }
 
-    // Disconnect existing productCategories
+    // Disconnect existing productSubCategories
     await prisma.product.update({
       where: { id: parseInt(id) },
       data: {
-        productCategories: {
-          disconnect: existingProduct.productCategories.map((category) => ({
+        productSubCategories: {
+          disconnect: existingProduct.productSubCategories.map((category) => ({
             id: category.id,
           })),
         },
@@ -247,7 +247,7 @@ export const upsertProduct = async (productData: any) => {
       include: {
         brand: true,
         promotion: true,
-        productCategories: true,
+        productSubCategories: true,
         images: true,
         variants: true,
       },
@@ -289,10 +289,12 @@ export const searchProducts = async (
 ) => {
   const name =
     formData?.name || (url && url.searchParams.get("name")?.toString()) || "";
-  const rootCategory =
-    formData?.rootCategory || url?.searchParams.get("rootCategory") || "";
-  const category =
+  const productCategory =
     formData?.productCategory || url?.searchParams.get("productCategory") || "";
+  const category =
+    formData?.productSubCategory ||
+    url?.searchParams.get("productSubCategory") ||
+    "";
   const brand = formData?.brand || url?.searchParams.get("brand") || "";
   const gender = formData?.gender || url?.searchParams.get("gender") || "";
   const color = formData?.color || url?.searchParams.get("color") || "";
@@ -325,13 +327,13 @@ export const searchProducts = async (
     };
   }
 
-  if (rootCategory && !category) {
-    if (isNaN(parseInt(rootCategory as string))) {
-      const productCategories = await prisma.productCategory.findMany({
+  if (productCategory && !category) {
+    if (isNaN(parseInt(productCategory as string))) {
+      const productSubCategories = await prisma.productSubCategory.findMany({
         where: {
-          rootCategory: {
+          productCategory: {
             name: {
-              equals: rootCategory as string,
+              equals: productCategory as string,
               mode: "insensitive", // Use 'insensitive' mode for case-insensitive comparison
             },
           },
@@ -340,19 +342,19 @@ export const searchProducts = async (
           name: true,
         },
       });
-      filter.productCategories = {
+      filter.productSubCategories = {
         some: {
           name: {
-            in: productCategories.map((category) => category.name),
+            in: productSubCategories.map((category) => category.name),
           },
         },
       };
     } else {
-      const productCategories = await prisma.productCategory.findMany({
+      const productSubCategories = await prisma.productSubCategory.findMany({
         where: {
-          rootCategory: {
+          productCategory: {
             id: {
-              equals: parseInt(rootCategory as string),
+              equals: parseInt(productCategory as string),
             },
           },
         },
@@ -361,10 +363,10 @@ export const searchProducts = async (
         },
       });
 
-      filter.productCategories = {
+      filter.productSubCategories = {
         some: {
           id: {
-            in: productCategories.map((category) => category.id),
+            in: productSubCategories.map((category) => category.id),
           },
         },
       };
@@ -373,7 +375,7 @@ export const searchProducts = async (
 
   if (category) {
     if (isNaN(parseInt(category as string))) {
-      filter.productCategories = {
+      filter.productSubCategories = {
         some: {
           name: {
             equals: category as string,
@@ -383,7 +385,7 @@ export const searchProducts = async (
       };
     } else {
       const categoryId = parseInt(category as string);
-      filter.productCategories = {
+      filter.productSubCategories = {
         some: {
           id: categoryId,
         },
@@ -443,7 +445,7 @@ export const searchProducts = async (
     prisma.product.findMany({
       where: filter,
       include: {
-        productCategories: {
+        productSubCategories: {
           select: {
             id: true,
             name: true,
