@@ -12,10 +12,10 @@ import ProductSort from "~/components/Sorting/ProductSort";
 import { getBrands } from "~/models/brands.server";
 import { addToCart } from "~/models/cart.server";
 import { getAvailableColors } from "~/models/enums.server";
-import { getProductCategories } from "~/models/productCategories.server";
+import { getProductSubCategories } from "~/models/productSubCategories.server";
 import { searchProducts } from "~/models/products.server";
 import { getPromotion } from "~/models/promotions.server";
-import { getRootCategories } from "~/models/rootCategories.server";
+import { getProductCategories } from "~/models/productCategories.server";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const url = new URL(request.url);
@@ -29,8 +29,8 @@ export const loader = async ({ request, params }: LoaderArgs) => {
       url
     );
     if (promotion?.isActive) {
-      const rootCategories = await getRootCategories();
       const productCategories = await getProductCategories();
+      const productSubCategories = await getProductSubCategories();
       const brands = await getBrands();
       const colors = await getAvailableColors();
 
@@ -38,8 +38,8 @@ export const loader = async ({ request, params }: LoaderArgs) => {
         promotion,
         products,
         totalPages,
-        rootCategories,
         productCategories,
+        productSubCategories,
         brands,
         colors,
       };
@@ -61,8 +61,8 @@ const Promotion = () => {
     promotion,
     products,
     totalPages,
-    rootCategories,
     productCategories,
+    productSubCategories,
     brands,
     colors,
   } =
@@ -70,8 +70,8 @@ const Promotion = () => {
       promotion: Promotion;
       products: Product[];
       totalPages: number;
-      rootCategories: RootCategory[];
       productCategories: ProductCategory[];
+      productSubCategories: ProductSubCategory[];
       brands: Brand[];
       colors: string[];
     }) || {};
@@ -85,8 +85,8 @@ const Promotion = () => {
 
         <div className="flex flex-wrap items-start justify-center gap-3 px-0 sm:w-full xl:flex-nowrap">
           <ProductFilterSideBar
-            rootCategories={rootCategories}
             productCategories={productCategories}
+            productSubCategories={productSubCategories}
             brands={brands}
             colors={colors}
           />

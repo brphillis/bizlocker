@@ -56,8 +56,8 @@ export const getArticle = async (id?: string, title?: string) => {
             include: {
               content: {
                 include: {
-                  rootCategory: true,
                   productCategory: true,
+                  productSubCategory: true,
                   brand: true,
                 },
               },

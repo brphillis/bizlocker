@@ -10,19 +10,19 @@ import FormHeader from "~/components/Forms/Headers/FormHeader";
 import SelectBrands from "~/components/Forms/Select/SelectBrands";
 import SelectDepartment from "~/components/Forms/Select/SelectDepartment";
 import SelectGender from "~/components/Forms/Select/SelectGender";
-import SelectProductCategories from "~/components/Forms/Select/SelectProductCategories";
+import SelectProductSubCategories from "~/components/Forms/Select/SelectProductSubCategories";
 import UploadBannerImage from "~/components/Forms/Upload/UploadBannerImage";
 import UploadTileImage from "~/components/Forms/Upload/UploadTileImage";
 import DarkOverlay from "~/components/Layout/DarkOverlay";
 import { getBrands } from "~/models/brands.server";
 import { getCampaign, upsertCampaign } from "~/models/campaigns.server";
 import { getDepartments } from "~/models/departments.server";
-import { getProductCategories } from "~/models/productCategories.server";
+import { getProductSubCategories } from "~/models/productSubCategories.server";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const id = params?.id;
   const departments = await getDepartments();
-  const productCategories = await getProductCategories();
+  const productSubCategories = await getProductSubCategories();
   const brands = await getBrands();
   let campaign;
 
@@ -30,7 +30,7 @@ export const loader = async ({ params }: LoaderArgs) => {
     campaign = await getCampaign(id);
   }
 
-  return json({ campaign, departments, productCategories, brands });
+  return json({ campaign, departments, productSubCategories, brands });
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
@@ -39,7 +39,7 @@ export const action = async ({ request, params }: ActionArgs) => {
   const {
     name,
     department,
-    productCategories,
+    productSubCategories,
     brands,
     minSaleRange,
     maxSaleRange,
@@ -67,8 +67,8 @@ export const action = async ({ request, params }: ActionArgs) => {
       const updateData = {
         name: name as string,
         department: department as string,
-        productCategories:
-          productCategories && JSON.parse(productCategories as string),
+        productSubCategories:
+          productSubCategories && JSON.parse(productSubCategories as string),
         brands: brands && JSON.parse(brands as string),
         minSaleRange: minSaleRange as string,
         maxSaleRange: maxSaleRange as string,
@@ -89,11 +89,11 @@ export const action = async ({ request, params }: ActionArgs) => {
 };
 
 const ModifyCampaign = () => {
-  const { campaign, departments, productCategories, brands } =
+  const { campaign, departments, productSubCategories, brands } =
     (useLoaderData() as {
       campaign: Campaign;
       departments: Department[];
-      productCategories: ProductCategory[];
+      productSubCategories: ProductSubCategory[];
       brands: Brand[];
     }) || {};
   const { validationError } =
@@ -125,7 +125,7 @@ const ModifyCampaign = () => {
                   name="name"
                   type="text"
                   placeholder="Name"
-                  className="input-bordered input w-[95vw] sm:w-[215px]"
+                  className="input input-bordered w-[95vw] sm:w-[215px]"
                   defaultValue={campaign?.name || undefined}
                 />
               </div>
@@ -141,8 +141,8 @@ const ModifyCampaign = () => {
             <div className="text-center">Campaign Filters</div>
 
             <div className="flex flex-wrap justify-evenly gap-3">
-              <SelectProductCategories
-                productCategories={productCategories}
+              <SelectProductSubCategories
+                productSubCategories={productSubCategories}
                 valueToChange={campaign}
                 title="Targets Categories?"
               />
@@ -163,7 +163,7 @@ const ModifyCampaign = () => {
                   name="minSaleRange"
                   type="number"
                   placeholder="Discount %"
-                  className="input-bordered input w-[95vw] sm:w-[215px]"
+                  className="input input-bordered w-[95vw] sm:w-[215px]"
                   defaultValue={campaign?.minSaleRange || ""}
                 />
               </div>
@@ -176,7 +176,7 @@ const ModifyCampaign = () => {
                   name="maxSaleRange"
                   type="number"
                   placeholder="Discount %"
-                  className="input-bordered input w-[95vw] sm:w-[215px]"
+                  className="input input-bordered w-[95vw] sm:w-[215px]"
                   defaultValue={campaign?.maxSaleRange || ""}
                 />
               </div>

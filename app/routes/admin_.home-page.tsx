@@ -11,8 +11,8 @@ import {
 import Icon from "~/components/Icon";
 import LargeCollapse from "~/components/Collapse/LargeCollapse";
 import { getBrands } from "~/models/brands.server";
-import { getRootCategories } from "~/models/rootCategories.server";
 import { getProductCategories } from "~/models/productCategories.server";
+import { getProductSubCategories } from "~/models/productSubCategories.server";
 import {
   getFormBlockOptions,
   getBlockUpdateValues,
@@ -23,15 +23,15 @@ import { useEffect } from "react";
 
 export const loader = async () => {
   const homePage = await getHomePage();
-  const rootCategories = await getRootCategories();
   const productCategories = await getProductCategories();
+  const productSubCategories = await getProductSubCategories();
   const articleCategories = await getArticleCategories();
   const brands = await getBrands();
 
   return {
     homePage,
-    rootCategories,
     productCategories,
+    productSubCategories,
     articleCategories,
     brands,
   };
@@ -86,8 +86,8 @@ export const action = async ({ request }: ActionArgs) => {
 const ManageHomePage = () => {
   const {
     homePage,
-    rootCategories,
     productCategories,
+    productSubCategories,
     articleCategories,
     brands,
   } = useLoaderData() || {};
@@ -115,8 +115,8 @@ const ManageHomePage = () => {
                   page={homePage}
                   searchResults={searchResults}
                   updateSuccess={updateSuccess}
-                  rootCategories={rootCategories}
                   productCategories={productCategories}
+                  productSubCategories={productSubCategories}
                   articleCategories={articleCategories}
                   brands={brands}
                 />

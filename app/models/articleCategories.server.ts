@@ -4,10 +4,10 @@ export const getArticleCategories = async (articleId?: string) => {
   if (!articleId) {
     return await prisma.articleCategory.findMany({
       include: {
-        rootCategory: {
+        productCategory: {
           include: {
             articleCategories: true,
-            productCategories: true,
+            productSubCategories: true,
           },
         },
       },

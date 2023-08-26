@@ -21,8 +21,8 @@ type Props = {
   page: HomePage | Article;
   searchResults: Campaign[] | Promotion[] | Image[] | undefined;
   updateSuccess: boolean;
-  rootCategories: RootCategory[];
   productCategories: ProductCategory[];
+  productSubCategories: ProductSubCategory[];
   brands: Brand[];
   articleCategories: ArticleCategory[];
 };
@@ -31,8 +31,8 @@ const PageBuilder = ({
   page,
   searchResults,
   updateSuccess,
-  rootCategories,
   productCategories,
+  productSubCategories,
   brands,
   articleCategories,
 }: Props) => {
@@ -236,8 +236,8 @@ const PageBuilder = ({
 
           <ProductBlockOptions
             selectedBlock={selectedBlock}
-            rootCategories={rootCategories}
             productCategories={productCategories}
+            productSubCategories={productSubCategories}
             brands={brands}
             defaultValues={
               blocks[editingIndex]?.content[0] as ProductBlockContent

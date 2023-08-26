@@ -58,11 +58,11 @@ const ArticleBlock = ({ content, options }: Props) => {
   //   if (content?.brand?.name) {
   //     return content?.brand?.name;
   //   }
+  //   if (content?.productSubCategory?.name) {
+  //     return content?.productSubCategory?.name;
+  //   }
   //   if (content?.productCategory?.name) {
   //     return content?.productCategory?.name;
-  //   }
-  //   if (content?.rootCategory?.name) {
-  //     return content?.rootCategory?.name;
   //   }
   // };
 

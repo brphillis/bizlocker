@@ -4,13 +4,13 @@ import { Form, useSearchParams, useSubmit } from "react-router-dom";
 import SearchInput from "../Forms/Input/SearchInput";
 
 type Props = {
-  rootCategories: RootCategory[];
+  productCategories: ProductCategory[];
   brands: Brand[];
 };
 
-const SearchBar = ({ rootCategories, brands }: Props) => {
+const SearchBar = ({ productCategories, brands }: Props) => {
   const [subCategories, setSubCategories] = useState<
-    ProductCategory[] | undefined
+    ProductSubCategory[] | undefined
   >(undefined);
 
   const [searchParams] = useSearchParams();
@@ -34,20 +34,21 @@ const SearchBar = ({ rootCategories, brands }: Props) => {
 
         <div className="flex flex-row flex-wrap justify-center gap-3">
           <select
-            name="rootCategory"
+            name="productCategory"
             title="category"
             className="select max-h-[1rem] w-[95vw] !font-normal text-brand-black/50 sm:w-[215px]"
             placeholder="Select a Value"
-            value={searchParams.get("rootCategory") || ""}
+            value={searchParams.get("productCategory") || ""}
             onChange={(e) => {
               if (e.target.selectedIndex === 0) {
                 setSubCategories(undefined);
               } else {
                 setSubCategories(
-                  rootCategories[e.target.selectedIndex - 1].productCategories
+                  productCategories[e.target.selectedIndex - 1]
+                    .productSubCategories
                 );
               }
-              searchParams.set("rootCategory", e.target.value);
+              searchParams.set("productCategory", e.target.value);
               submit(searchParams, {
                 method: "GET",
                 action: "/products",
@@ -55,7 +56,7 @@ const SearchBar = ({ rootCategories, brands }: Props) => {
             }}
           >
             <option value="">By Category</option>
-            {rootCategories?.map(({ id, name }: RootCategory) => {
+            {productCategories?.map(({ id, name }: ProductCategory) => {
               return (
                 <option key={name + id} value={name}>
                   {name}
@@ -66,13 +67,13 @@ const SearchBar = ({ rootCategories, brands }: Props) => {
 
           {subCategories && (
             <select
-              name="productCategory"
+              name="productSubCategory"
               title="Sub Category"
               className="select w-[95vw] !font-normal text-brand-black/50 sm:w-[215px]"
               placeholder="Select a Value"
-              value={searchParams.get("productCategory") || ""}
+              value={searchParams.get("productSubCategory") || ""}
               onChange={(e) => {
-                searchParams.set("productCategory", e.target.value);
+                searchParams.set("productSubCategory", e.target.value);
                 submit(searchParams, {
                   method: "GET",
                   action: "/products",
@@ -80,7 +81,7 @@ const SearchBar = ({ rootCategories, brands }: Props) => {
               }}
             >
               <option value="">By Range</option>
-              {subCategories?.map(({ id, name }: ProductCategory) => {
+              {subCategories?.map(({ id, name }: ProductSubCategory) => {
                 return (
                   <option key={name + id} value={name}>
                     {name}
@@ -122,8 +123,8 @@ const SearchBar = ({ rootCategories, brands }: Props) => {
           className="btn-square btn-primary !ml-[85%] flex h-[2.6rem] w-12 items-center justify-center sm:!ml-0"
           onClick={() => {
             searchParams.delete("name");
-            searchParams.delete("rootCategory");
             searchParams.delete("productCategory");
+            searchParams.delete("productSubCategory");
             searchParams.delete("brand");
             searchParams.delete("gender");
             submit(searchParams, {

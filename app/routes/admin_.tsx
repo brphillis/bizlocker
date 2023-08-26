@@ -130,9 +130,6 @@ const Admin = () => {
                   <li onClick={() => navigate("/admin/home-page")}>
                     <div className="hover:text-white">Home Page</div>
                   </li>
-                  <li onClick={() => navigate("/admin/root-categories")}>
-                    <div className="hover:text-white">Root Categories</div>
-                  </li>
                   <li onClick={() => navigate("/admin/articles")}>
                     <div className="hover:text-white">Articles</div>
                   </li>
@@ -158,7 +155,10 @@ const Admin = () => {
                     <div className="hover:text-white">Products</div>
                   </li>
                   <li onClick={() => navigate("/admin/product-categories")}>
-                    <div className="hover:text-white">Product Categories</div>
+                    <div className="hover:text-white">Categories</div>
+                  </li>
+                  <li onClick={() => navigate("/admin/product-subcategories")}>
+                    <div className="hover:text-white">SubCategories</div>
                   </li>
                   <li onClick={() => navigate("/admin/brands")}>
                     <div className="hover:text-white">Brands</div>

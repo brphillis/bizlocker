@@ -69,10 +69,12 @@ const ModifyImage = () => {
     campaignBanner,
     campaignTile,
     brandId,
-    productCategoryId,
+    productSubCategoryId,
     articleId,
     productId,
   } = image || ({} as Image);
+
+  console.log(image, "image");
 
   const determineIfConnected = (): boolean => {
     if (
@@ -81,7 +83,7 @@ const ModifyImage = () => {
       campaignBanner ||
       campaignTile ||
       brandId ||
-      productCategoryId ||
+      productSubCategoryId ||
       articleId ||
       productId
     ) {
@@ -132,65 +134,93 @@ const ModifyImage = () => {
               </tr>
             </thead>
             <tbody>
-              {promotionBanner && (
-                <tr className="hover cursor-pointer">
-                  <td className="w-4/5">Promotion Banner</td>
-                  <td className="w-1/5">
-                    <div
-                      className="ml-2"
-                      onClick={() =>
-                        navigate(`/admin/promotions/${promotionBanner?.id}`)
-                      }
-                    >
-                      <IoCaretForwardCircleSharp size={18} />
-                    </div>
-                  </td>
-                </tr>
+              {promotionBanner?.length > 0 && (
+                <>
+                  {promotionBanner.map(({ id }: Promotion) => {
+                    return (
+                      <tr
+                        key={"promotionBanner_" + id}
+                        className="hover cursor-pointer"
+                      >
+                        <td className="w-4/5">Promotion Banner</td>
+                        <td className="w-1/5">
+                          <div
+                            className="ml-2"
+                            onClick={() => navigate(`/admin/promotions/${id}`)}
+                          >
+                            <IoCaretForwardCircleSharp size={18} />
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </>
               )}
-              {promotionTile && (
-                <tr className="hover cursor-pointer">
-                  <td className="w-4/5">Promotion Tile</td>
-                  <td className="w-1/5">
-                    <div
-                      className="ml-2"
-                      onClick={() =>
-                        navigate(`/admin/promotions/${promotionTile?.id}`)
-                      }
-                    >
-                      <IoCaretForwardCircleSharp size={18} />
-                    </div>
-                  </td>
-                </tr>
+              {promotionTile?.length > 0 && (
+                <>
+                  {promotionTile.map(({ id }: Promotion) => {
+                    return (
+                      <tr
+                        key={"promotionTile_" + id}
+                        className="hover cursor-pointer"
+                      >
+                        <td className="w-4/5">Promotion Tile</td>
+                        <td className="w-1/5">
+                          <div
+                            className="ml-2"
+                            onClick={() => navigate(`/admin/promotions/${id}`)}
+                          >
+                            <IoCaretForwardCircleSharp size={18} />
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </>
               )}
-              {campaignBanner && (
-                <tr className="hover cursor-pointer">
-                  <td className="w-4/5">Campaign Banner</td>
-                  <td className="w-1/5">
-                    <div
-                      className="ml-2"
-                      onClick={() =>
-                        navigate(`/admin/promotions/${campaignBanner?.id}`)
-                      }
-                    >
-                      <IoCaretForwardCircleSharp size={18} />
-                    </div>
-                  </td>
-                </tr>
+              {campaignBanner?.length > 0 && (
+                <>
+                  {campaignBanner.map(({ id }: Campaign) => {
+                    return (
+                      <tr
+                        key={"campaignBanner" + id}
+                        className="hover cursor-pointer"
+                      >
+                        <td className="w-4/5">Campaign Banner</td>
+                        <td className="w-1/5">
+                          <div
+                            className="ml-2"
+                            onClick={() => navigate(`/admin/campaigns/${id}`)}
+                          >
+                            <IoCaretForwardCircleSharp size={18} />
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </>
               )}
-              {campaignTile && (
-                <tr className="hover cursor-pointer">
-                  <td className="w-4/5">Campaign Tile</td>
-                  <td className="w-1/5">
-                    <div
-                      className="ml-2"
-                      onClick={() =>
-                        navigate(`/admin/promotions/${campaignTile?.id}`)
-                      }
-                    >
-                      <IoCaretForwardCircleSharp size={18} />
-                    </div>
-                  </td>
-                </tr>
+              {campaignTile?.length > 0 && (
+                <>
+                  {campaignTile.map(({ id }: Campaign) => {
+                    return (
+                      <tr
+                        key={"campaignTile" + id}
+                        className="hover cursor-pointer"
+                      >
+                        <td className="w-4/5">Campaign Tile</td>
+                        <td className="w-1/5">
+                          <div
+                            className="ml-2"
+                            onClick={() => navigate(`/admin/campaigns/${id}`)}
+                          >
+                            <IoCaretForwardCircleSharp size={18} />
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </>
               )}
               {brandId && (
                 <tr className="hover cursor-pointer">
@@ -205,7 +235,7 @@ const ModifyImage = () => {
                   </td>
                 </tr>
               )}
-              {productCategoryId && (
+              {productSubCategoryId && (
                 <tr className="hover cursor-pointer">
                   <td className="w-4/5">Product Category Image</td>
                   <td className="w-1/5">
@@ -213,7 +243,7 @@ const ModifyImage = () => {
                       className="ml-2"
                       onClick={() =>
                         navigate(
-                          `/admin/product-categories/${productCategoryId}`
+                          `/admin/product-categories/${productSubCategoryId}`
                         )
                       }
                     >

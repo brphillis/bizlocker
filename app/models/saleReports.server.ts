@@ -54,20 +54,22 @@ export const getSalesToday = async () => {
     },
   });
 
-  const salesByProductCategoryToday = await prisma.productCategory.findMany({
-    include: {
-      products: {
-        include: {
-          variants: {
-            include: {
-              orderItems: {
-                where: {
-                  order: {
-                    createdAt: {
-                      gte: today,
-                    },
-                    status: {
-                      notIn: ["cancelled", "created"],
+  const salesByProductSubCategoryToday =
+    await prisma.productSubCategory.findMany({
+      include: {
+        products: {
+          include: {
+            variants: {
+              include: {
+                orderItems: {
+                  where: {
+                    order: {
+                      createdAt: {
+                        gte: today,
+                      },
+                      status: {
+                        notIn: ["cancelled", "created"],
+                      },
                     },
                   },
                 },
@@ -76,8 +78,7 @@ export const getSalesToday = async () => {
           },
         },
       },
-    },
-  });
+    });
 
   const salesByBrandToday = await prisma.brand.findMany({
     include: {
@@ -104,9 +105,9 @@ export const getSalesToday = async () => {
     },
   });
 
-  const topProductCategoriesToday = salesByProductCategoryToday
+  const topProductSubCategoriesToday = salesByProductSubCategoryToday
     .map((category) => ({
-      productCategory: category.name,
+      productSubCategory: category.name,
       totalSales: category.products.reduce(
         (total, product) =>
           total +
@@ -150,7 +151,7 @@ export const getSalesToday = async () => {
     totalSalesToday: totalSalesToday._sum.totalPrice,
     totalSalesYesterday: totalSalesYesterday._sum.totalPrice,
     productCountToday: productCountToday._sum.quantity,
-    topProductCategoriesToday,
+    topProductSubCategoriesToday,
     topBrandsToday,
   };
 };

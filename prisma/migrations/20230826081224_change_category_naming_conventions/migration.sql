@@ -2,10 +2,19 @@
 CREATE TYPE "Role" AS ENUM ('DEVELOPER', 'ADMIN', 'STAFF', 'USER');
 
 -- CreateEnum
+CREATE TYPE "VerifyTypes" AS ENUM ('email', 'password');
+
+-- CreateEnum
 CREATE TYPE "Gender" AS ENUM ('MALE', 'FEMALE', 'KIDS', 'UNISEX');
 
 -- CreateEnum
 CREATE TYPE "OrderStatus" AS ENUM ('created', 'cancelled', 'paid', 'shipped', 'complete');
+
+-- CreateEnum
+CREATE TYPE "SortBy" AS ENUM ('createdAt', 'totalSold', 'price', 'name');
+
+-- CreateEnum
+CREATE TYPE "SortOrder" AS ENUM ('asc', 'desc');
 
 -- CreateEnum
 CREATE TYPE "Color" AS ENUM ('RED', 'BLUE', 'GREEN', 'YELLOW', 'ORANGE', 'PURPLE', 'PINK', 'BLACK', 'WHITE', 'GRAY', 'BROWN', 'SILVER', 'GOLD', 'NAVY', 'TEAL', 'MAROON', 'LIME', 'OLIVE', 'AQUA', 'INDIGO');
@@ -27,10 +36,14 @@ CREATE TABLE "HomePage" (
 CREATE TABLE "Block" (
     "id" TEXT NOT NULL,
     "order" INTEGER NOT NULL,
-    "homePageId" INTEGER NOT NULL,
-    "articleId" INTEGER NOT NULL,
+    "homePageId" INTEGER,
+    "articleId" INTEGER,
     "bannerBlockId" TEXT,
     "tileBlockId" TEXT,
+    "textBlockId" TEXT,
+    "productBlockId" TEXT,
+    "articleBlockId" TEXT,
+    "blockOptionsId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -38,13 +51,27 @@ CREATE TABLE "Block" (
 );
 
 -- CreateTable
+CREATE TABLE "BlockOptions" (
+    "id" TEXT NOT NULL,
+    "columns" INTEGER,
+    "rows" INTEGER,
+    "count" INTEGER,
+    "size" TEXT,
+    "sortBy" "SortBy",
+    "sortOrder" "SortOrder",
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "BlockOptions_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "BannerBlock" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL DEFAULT 'banner',
     "type" TEXT NOT NULL,
-    "campaignId" TEXT,
-    "promotionId" TEXT,
-    "bannerBlockId" TEXT,
+    "campaignId" INTEGER,
+    "promotionId" INTEGER,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -56,12 +83,65 @@ CREATE TABLE "TileBlock" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL DEFAULT 'tile',
     "type" TEXT NOT NULL,
-    "tileSize" TEXT NOT NULL DEFAULT 'medium',
-    "tileBlockId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "TileBlock_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "TextBlock" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL DEFAULT 'text',
+    "content" TEXT[],
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "TextBlock_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "ProductBlock" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL DEFAULT 'product',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "ProductBlock_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "ProductBlockContent" (
+    "id" TEXT NOT NULL,
+    "productBlockId" TEXT,
+    "subProductCategoryId" INTEGER,
+    "productSubCategoryId" INTEGER,
+    "brandId" INTEGER,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "ProductBlockContent_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "ArticleBlock" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL DEFAULT 'product',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "ArticleBlock_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "ArticleBlockContent" (
+    "id" TEXT NOT NULL,
+    "articleBlockId" TEXT,
+    "articleCategoryId" INTEGER,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "ArticleBlockContent_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -72,17 +152,29 @@ CREATE TABLE "User" (
     "isActive" BOOLEAN NOT NULL DEFAULT true,
     "doubleAuthentication" BOOLEAN NOT NULL DEFAULT false,
     "role" "Role" NOT NULL DEFAULT 'USER',
-    "cartId" INTEGER,
-    "addressId" TEXT,
     "userDetailsId" TEXT,
     "googleLogin" BOOLEAN NOT NULL DEFAULT false,
     "googleEmail" TEXT,
     "microsoftLogin" BOOLEAN NOT NULL DEFAULT false,
     "microsoftEmail" TEXT,
+    "verified" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Verifier" (
+    "id" SERIAL NOT NULL,
+    "email" TEXT NOT NULL,
+    "type" "VerifyTypes" NOT NULL,
+    "code" TEXT,
+    "expiration" TIMESTAMP(3) NOT NULL DEFAULT NOW() + interval '3 hours',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Verifier_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -174,7 +266,7 @@ CREATE TABLE "Image" (
     "userId" TEXT,
     "articleId" INTEGER,
     "productId" INTEGER,
-    "productCategoryId" INTEGER,
+    "productSubCategoryId" INTEGER,
     "brandId" INTEGER,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -191,31 +283,32 @@ CREATE TABLE "Department" (
 );
 
 -- CreateTable
-CREATE TABLE "RootCategory" (
+CREATE TABLE "ProductCategory" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "departmentId" INTEGER NOT NULL,
+    "productBlockId" TEXT,
 
-    CONSTRAINT "RootCategory_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "ProductCategory_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "ArticleCategory" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
-    "rootCategoryId" INTEGER,
+    "subProductCategoryId" INTEGER,
 
     CONSTRAINT "ArticleCategory_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "ProductCategory" (
+CREATE TABLE "ProductSubCategory" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
-    "rootCategoryId" INTEGER,
+    "subProductCategoryId" INTEGER,
     "imageId" INTEGER,
 
-    CONSTRAINT "ProductCategory_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "ProductSubCategory_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -231,7 +324,7 @@ CREATE TABLE "Article" (
 
 -- CreateTable
 CREATE TABLE "Campaign" (
-    "id" TEXT NOT NULL,
+    "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "minSaleRange" DOUBLE PRECISION NOT NULL,
     "maxSaleRange" DOUBLE PRECISION NOT NULL,
@@ -248,7 +341,7 @@ CREATE TABLE "Campaign" (
 
 -- CreateTable
 CREATE TABLE "Promotion" (
-    "id" TEXT NOT NULL,
+    "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "discountPercentage" DOUBLE PRECISION NOT NULL DEFAULT 0,
     "targetGender" "Gender",
@@ -273,7 +366,7 @@ CREATE TABLE "Product" (
     "totalSold" INTEGER NOT NULL DEFAULT 0,
     "isActive" BOOLEAN NOT NULL DEFAULT true,
     "gender" "Gender",
-    "promotionId" TEXT,
+    "promotionId" INTEGER,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -321,30 +414,30 @@ CREATE TABLE "_ArticleCategoryToArticle" (
 
 -- CreateTable
 CREATE TABLE "_CampaignToProduct" (
-    "A" TEXT NOT NULL,
+    "A" INTEGER NOT NULL,
     "B" INTEGER NOT NULL
 );
 
 -- CreateTable
-CREATE TABLE "_ProductCategoryToCampaign" (
-    "A" TEXT NOT NULL,
+CREATE TABLE "_ProductSubCategoryToCampaign" (
+    "A" INTEGER NOT NULL,
     "B" INTEGER NOT NULL
 );
 
 -- CreateTable
 CREATE TABLE "_CampaignToTileBlock" (
-    "A" TEXT NOT NULL,
+    "A" INTEGER NOT NULL,
     "B" TEXT NOT NULL
 );
 
 -- CreateTable
 CREATE TABLE "_PromotionToTileBlock" (
-    "A" TEXT NOT NULL,
+    "A" INTEGER NOT NULL,
     "B" TEXT NOT NULL
 );
 
 -- CreateTable
-CREATE TABLE "_ProductCategoryToProduct" (
+CREATE TABLE "_ProductSubCategoryToProduct" (
     "A" INTEGER NOT NULL,
     "B" INTEGER NOT NULL
 );
@@ -352,7 +445,7 @@ CREATE TABLE "_ProductCategoryToProduct" (
 -- CreateTable
 CREATE TABLE "_BrandToCampaign" (
     "A" INTEGER NOT NULL,
-    "B" TEXT NOT NULL
+    "B" INTEGER NOT NULL
 );
 
 -- CreateIndex
@@ -365,10 +458,46 @@ CREATE UNIQUE INDEX "Block_bannerBlockId_key" ON "Block"("bannerBlockId");
 CREATE UNIQUE INDEX "Block_tileBlockId_key" ON "Block"("tileBlockId");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Block_textBlockId_key" ON "Block"("textBlockId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Block_productBlockId_key" ON "Block"("productBlockId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Block_articleBlockId_key" ON "Block"("articleBlockId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Block_blockOptionsId_key" ON "Block"("blockOptionsId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "BlockOptions_id_key" ON "BlockOptions"("id");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "BannerBlock_id_key" ON "BannerBlock"("id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "TileBlock_id_key" ON "TileBlock"("id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "TextBlock_id_key" ON "TextBlock"("id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "ProductBlock_id_key" ON "ProductBlock"("id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "ProductBlockContent_id_key" ON "ProductBlockContent"("id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "ProductBlockContent_productBlockId_key" ON "ProductBlockContent"("productBlockId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "ArticleBlock_id_key" ON "ArticleBlock"("id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "ArticleBlockContent_id_key" ON "ArticleBlockContent"("id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "ArticleBlockContent_articleBlockId_key" ON "ArticleBlockContent"("articleBlockId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_id_key" ON "User"("id");
@@ -377,13 +506,10 @@ CREATE UNIQUE INDEX "User_id_key" ON "User"("id");
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_cartId_key" ON "User"("cartId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "User_addressId_key" ON "User"("addressId");
-
--- CreateIndex
 CREATE UNIQUE INDEX "User_userDetailsId_key" ON "User"("userDetailsId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Verifier_email_key" ON "Verifier"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "UserDetails_id_key" ON "UserDetails"("id");
@@ -410,7 +536,7 @@ CREATE UNIQUE INDEX "Image_userId_key" ON "Image"("userId");
 CREATE UNIQUE INDEX "Image_articleId_key" ON "Image"("articleId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Image_productCategoryId_key" ON "Image"("productCategoryId");
+CREATE UNIQUE INDEX "Image_productSubCategoryId_key" ON "Image"("productSubCategoryId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Image_brandId_key" ON "Image"("brandId");
@@ -419,22 +545,25 @@ CREATE UNIQUE INDEX "Image_brandId_key" ON "Image"("brandId");
 CREATE UNIQUE INDEX "Department_name_key" ON "Department"("name");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "ArticleCategory_name_key" ON "ArticleCategory"("name");
-
--- CreateIndex
 CREATE UNIQUE INDEX "ProductCategory_name_key" ON "ProductCategory"("name");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Campaign_id_key" ON "Campaign"("id");
+CREATE UNIQUE INDEX "ProductCategory_productBlockId_key" ON "ProductCategory"("productBlockId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "ArticleCategory_name_key" ON "ArticleCategory"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "ProductSubCategory_name_key" ON "ProductSubCategory"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Article_title_key" ON "Article"("title");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Campaign_tileImageId_key" ON "Campaign"("tileImageId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Campaign_bannerImageId_key" ON "Campaign"("bannerImageId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Promotion_id_key" ON "Promotion"("id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Promotion_tileImageId_key" ON "Promotion"("tileImageId");
@@ -464,10 +593,10 @@ CREATE UNIQUE INDEX "_CampaignToProduct_AB_unique" ON "_CampaignToProduct"("A", 
 CREATE INDEX "_CampaignToProduct_B_index" ON "_CampaignToProduct"("B");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "_ProductCategoryToCampaign_AB_unique" ON "_ProductCategoryToCampaign"("A", "B");
+CREATE UNIQUE INDEX "_ProductSubCategoryToCampaign_AB_unique" ON "_ProductSubCategoryToCampaign"("A", "B");
 
 -- CreateIndex
-CREATE INDEX "_ProductCategoryToCampaign_B_index" ON "_ProductCategoryToCampaign"("B");
+CREATE INDEX "_ProductSubCategoryToCampaign_B_index" ON "_ProductSubCategoryToCampaign"("B");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_CampaignToTileBlock_AB_unique" ON "_CampaignToTileBlock"("A", "B");
@@ -482,10 +611,10 @@ CREATE UNIQUE INDEX "_PromotionToTileBlock_AB_unique" ON "_PromotionToTileBlock"
 CREATE INDEX "_PromotionToTileBlock_B_index" ON "_PromotionToTileBlock"("B");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "_ProductCategoryToProduct_AB_unique" ON "_ProductCategoryToProduct"("A", "B");
+CREATE UNIQUE INDEX "_ProductSubCategoryToProduct_AB_unique" ON "_ProductSubCategoryToProduct"("A", "B");
 
 -- CreateIndex
-CREATE INDEX "_ProductCategoryToProduct_B_index" ON "_ProductCategoryToProduct"("B");
+CREATE INDEX "_ProductSubCategoryToProduct_B_index" ON "_ProductSubCategoryToProduct"("B");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_BrandToCampaign_AB_unique" ON "_BrandToCampaign"("A", "B");
@@ -494,10 +623,10 @@ CREATE UNIQUE INDEX "_BrandToCampaign_AB_unique" ON "_BrandToCampaign"("A", "B")
 CREATE INDEX "_BrandToCampaign_B_index" ON "_BrandToCampaign"("B");
 
 -- AddForeignKey
-ALTER TABLE "Block" ADD CONSTRAINT "Block_homePageId_fkey" FOREIGN KEY ("homePageId") REFERENCES "HomePage"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Block" ADD CONSTRAINT "Block_homePageId_fkey" FOREIGN KEY ("homePageId") REFERENCES "HomePage"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Block" ADD CONSTRAINT "Block_articleId_fkey" FOREIGN KEY ("articleId") REFERENCES "Article"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Block" ADD CONSTRAINT "Block_articleId_fkey" FOREIGN KEY ("articleId") REFERENCES "Article"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Block" ADD CONSTRAINT "Block_bannerBlockId_fkey" FOREIGN KEY ("bannerBlockId") REFERENCES "BannerBlock"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -506,10 +635,40 @@ ALTER TABLE "Block" ADD CONSTRAINT "Block_bannerBlockId_fkey" FOREIGN KEY ("bann
 ALTER TABLE "Block" ADD CONSTRAINT "Block_tileBlockId_fkey" FOREIGN KEY ("tileBlockId") REFERENCES "TileBlock"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "Block" ADD CONSTRAINT "Block_textBlockId_fkey" FOREIGN KEY ("textBlockId") REFERENCES "TextBlock"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Block" ADD CONSTRAINT "Block_productBlockId_fkey" FOREIGN KEY ("productBlockId") REFERENCES "ProductBlock"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Block" ADD CONSTRAINT "Block_articleBlockId_fkey" FOREIGN KEY ("articleBlockId") REFERENCES "ArticleBlock"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Block" ADD CONSTRAINT "Block_blockOptionsId_fkey" FOREIGN KEY ("blockOptionsId") REFERENCES "BlockOptions"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "BannerBlock" ADD CONSTRAINT "BannerBlock_campaignId_fkey" FOREIGN KEY ("campaignId") REFERENCES "Campaign"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "BannerBlock" ADD CONSTRAINT "BannerBlock_promotionId_fkey" FOREIGN KEY ("promotionId") REFERENCES "Promotion"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ProductBlockContent" ADD CONSTRAINT "ProductBlockContent_productBlockId_fkey" FOREIGN KEY ("productBlockId") REFERENCES "ProductBlock"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ProductBlockContent" ADD CONSTRAINT "ProductBlockContent_subProductCategoryId_fkey" FOREIGN KEY ("subProductCategoryId") REFERENCES "ProductCategory"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ProductBlockContent" ADD CONSTRAINT "ProductBlockContent_productSubCategoryId_fkey" FOREIGN KEY ("productSubCategoryId") REFERENCES "ProductSubCategory"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ProductBlockContent" ADD CONSTRAINT "ProductBlockContent_brandId_fkey" FOREIGN KEY ("brandId") REFERENCES "Brand"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ArticleBlockContent" ADD CONSTRAINT "ArticleBlockContent_articleBlockId_fkey" FOREIGN KEY ("articleBlockId") REFERENCES "ArticleBlock"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ArticleBlockContent" ADD CONSTRAINT "ArticleBlockContent_articleCategoryId_fkey" FOREIGN KEY ("articleCategoryId") REFERENCES "ArticleCategory"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "UserDetails" ADD CONSTRAINT "UserDetails_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -545,19 +704,19 @@ ALTER TABLE "Image" ADD CONSTRAINT "Image_articleId_fkey" FOREIGN KEY ("articleI
 ALTER TABLE "Image" ADD CONSTRAINT "Image_productId_fkey" FOREIGN KEY ("productId") REFERENCES "Product"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Image" ADD CONSTRAINT "Image_productCategoryId_fkey" FOREIGN KEY ("productCategoryId") REFERENCES "ProductCategory"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Image" ADD CONSTRAINT "Image_productSubCategoryId_fkey" FOREIGN KEY ("productSubCategoryId") REFERENCES "ProductSubCategory"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Image" ADD CONSTRAINT "Image_brandId_fkey" FOREIGN KEY ("brandId") REFERENCES "Brand"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "RootCategory" ADD CONSTRAINT "RootCategory_departmentId_fkey" FOREIGN KEY ("departmentId") REFERENCES "Department"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "ProductCategory" ADD CONSTRAINT "ProductCategory_departmentId_fkey" FOREIGN KEY ("departmentId") REFERENCES "Department"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ArticleCategory" ADD CONSTRAINT "ArticleCategory_rootCategoryId_fkey" FOREIGN KEY ("rootCategoryId") REFERENCES "RootCategory"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "ArticleCategory" ADD CONSTRAINT "ArticleCategory_subProductCategoryId_fkey" FOREIGN KEY ("subProductCategoryId") REFERENCES "ProductCategory"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ProductCategory" ADD CONSTRAINT "ProductCategory_rootCategoryId_fkey" FOREIGN KEY ("rootCategoryId") REFERENCES "RootCategory"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "ProductSubCategory" ADD CONSTRAINT "ProductSubCategory_subProductCategoryId_fkey" FOREIGN KEY ("subProductCategoryId") REFERENCES "ProductCategory"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Campaign" ADD CONSTRAINT "Campaign_tileImageId_fkey" FOREIGN KEY ("tileImageId") REFERENCES "Image"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -599,10 +758,10 @@ ALTER TABLE "_CampaignToProduct" ADD CONSTRAINT "_CampaignToProduct_A_fkey" FORE
 ALTER TABLE "_CampaignToProduct" ADD CONSTRAINT "_CampaignToProduct_B_fkey" FOREIGN KEY ("B") REFERENCES "Product"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_ProductCategoryToCampaign" ADD CONSTRAINT "_ProductCategoryToCampaign_A_fkey" FOREIGN KEY ("A") REFERENCES "Campaign"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_ProductSubCategoryToCampaign" ADD CONSTRAINT "_ProductSubCategoryToCampaign_A_fkey" FOREIGN KEY ("A") REFERENCES "Campaign"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_ProductCategoryToCampaign" ADD CONSTRAINT "_ProductCategoryToCampaign_B_fkey" FOREIGN KEY ("B") REFERENCES "ProductCategory"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_ProductSubCategoryToCampaign" ADD CONSTRAINT "_ProductSubCategoryToCampaign_B_fkey" FOREIGN KEY ("B") REFERENCES "ProductSubCategory"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_CampaignToTileBlock" ADD CONSTRAINT "_CampaignToTileBlock_A_fkey" FOREIGN KEY ("A") REFERENCES "Campaign"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -617,10 +776,10 @@ ALTER TABLE "_PromotionToTileBlock" ADD CONSTRAINT "_PromotionToTileBlock_A_fkey
 ALTER TABLE "_PromotionToTileBlock" ADD CONSTRAINT "_PromotionToTileBlock_B_fkey" FOREIGN KEY ("B") REFERENCES "TileBlock"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_ProductCategoryToProduct" ADD CONSTRAINT "_ProductCategoryToProduct_A_fkey" FOREIGN KEY ("A") REFERENCES "Product"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_ProductSubCategoryToProduct" ADD CONSTRAINT "_ProductSubCategoryToProduct_A_fkey" FOREIGN KEY ("A") REFERENCES "Product"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_ProductCategoryToProduct" ADD CONSTRAINT "_ProductCategoryToProduct_B_fkey" FOREIGN KEY ("B") REFERENCES "ProductCategory"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_ProductSubCategoryToProduct" ADD CONSTRAINT "_ProductSubCategoryToProduct_B_fkey" FOREIGN KEY ("B") REFERENCES "ProductSubCategory"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_BrandToCampaign" ADD CONSTRAINT "_BrandToCampaign_A_fkey" FOREIGN KEY ("A") REFERENCES "Brand"("id") ON DELETE CASCADE ON UPDATE CASCADE;

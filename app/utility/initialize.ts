@@ -35,7 +35,7 @@ export const createInitialDeveloper = async () => {
 export const createSeedData = async () => {
   try {
     await createRandomBrands();
-    await createRandomProductCategories();
+    await createRandomProductSubCategories();
     await createRandomProducts();
   } catch (error) {
     console.error("Error creating products and categories:", error);
@@ -65,7 +65,7 @@ const createRandomBrands = async () => {
   }
 };
 
-const createRandomProductCategories = async () => {
+const createRandomProductSubCategories = async () => {
   try {
     const existingDepartments = await prisma.department.findMany();
     if (existingDepartments.length > 0) {
@@ -82,16 +82,16 @@ const createRandomProductCategories = async () => {
         },
       });
 
-      const rootCategoryNames = [
+      const productCategoryNames = [
         "Root Category 1",
         "Root Category 2",
         "Root Category 3",
       ];
 
-      for (const rootCategoryName of rootCategoryNames) {
-        const rootCategory = await prisma.rootCategory.create({
+      for (const productCategoryName of productCategoryNames) {
+        const productCategory = await prisma.productCategory.create({
           data: {
-            name: rootCategoryName,
+            name: productCategoryName,
             department: {
               connect: {
                 id: department.id,
@@ -100,19 +100,19 @@ const createRandomProductCategories = async () => {
           },
         });
 
-        const productCategoryNames = [
+        const productSubCategoryNames = [
           "Product Category 1",
           "Product Category 2",
           "Product Category 3",
         ];
 
-        for (const productCategoryName of productCategoryNames) {
-          await prisma.productCategory.create({
+        for (const productSubCategoryName of productSubCategoryNames) {
+          await prisma.productSubCategory.create({
             data: {
-              name: productCategoryName,
-              rootCategory: {
+              name: productSubCategoryName,
+              productCategory: {
                 connect: {
-                  id: rootCategory.id,
+                  id: productCategory.id,
                 },
               },
             },

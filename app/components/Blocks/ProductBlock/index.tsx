@@ -10,8 +10,8 @@ type Props = {
 const ProductBlock = ({ content, options }: Props) => {
   const [currentProducts, setCurrentProducts] = useState<Product[]>();
   const fetcher = useFetcher();
-  const rootCategory = content?.[0]?.rootCategory?.id;
   const productCategory = content?.[0]?.productCategory?.id;
+  const productSubCategory = content?.[0]?.productSubCategory?.id;
   const brand = content?.[0]?.brand?.id;
   const count = options?.count;
 
@@ -20,12 +20,12 @@ const ProductBlock = ({ content, options }: Props) => {
       let query = "/api/searchProducts";
 
       const params = [];
-      if (rootCategory !== null && rootCategory !== undefined) {
-        params.push(`rootCategory=${rootCategory}`);
-      }
-
       if (productCategory !== null && productCategory !== undefined) {
         params.push(`productCategory=${productCategory}`);
+      }
+
+      if (productSubCategory !== null && productSubCategory !== undefined) {
+        params.push(`productSubCategory=${productSubCategory}`);
       }
 
       if (brand !== null && brand !== undefined) {
@@ -51,8 +51,8 @@ const ProductBlock = ({ content, options }: Props) => {
     fetcher,
     currentProducts,
     content,
-    rootCategory,
     productCategory,
+    productSubCategory,
     brand,
     count,
   ]);
@@ -70,11 +70,11 @@ const ProductBlock = ({ content, options }: Props) => {
     if (content?.brand?.name) {
       return content?.brand?.name;
     }
+    if (content?.productSubCategory?.name) {
+      return content?.productSubCategory?.name;
+    }
     if (content?.productCategory?.name) {
       return content?.productCategory?.name;
-    }
-    if (content?.rootCategory?.name) {
-      return content?.rootCategory?.name;
     }
   };
 

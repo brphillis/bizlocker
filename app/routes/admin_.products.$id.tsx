@@ -7,7 +7,7 @@ import SelectBrand from "~/components/Forms/Select/SelectBrand";
 import SelectGender from "~/components/Forms/Select/SelectGender";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import SelectPromotion from "~/components/Forms/Select/SelectPromotion";
-import { getProductCategories } from "~/models/productCategories.server";
+import { getProductSubCategories } from "~/models/productSubCategories.server";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
 import { getAvailableColors, getAvailableSizes } from "~/models/enums.server";
 import ProductVariantFormModule from "~/components/Forms/Modules/ProductVariantFormModule";
@@ -16,7 +16,7 @@ import {
   getProduct,
   upsertProduct,
 } from "~/models/products.server";
-import SelectProductCategories from "~/components/Forms/Select/SelectProductCategories";
+import SelectProductSubCategories from "~/components/Forms/Select/SelectProductSubCategories";
 import {
   json,
   redirect,
@@ -37,7 +37,7 @@ export const links: LinksFunction = () => [
 
 export const loader = async ({ params }: LoaderArgs) => {
   const id = params?.id;
-  const productCategories = await getProductCategories();
+  const productSubCategories = await getProductSubCategories();
   const brands = await getBrands();
   const promotions = await getPromotions();
   const availableColors = await getAvailableColors();
@@ -50,7 +50,7 @@ export const loader = async ({ params }: LoaderArgs) => {
 
   return json({
     product,
-    productCategories,
+    productSubCategories,
     brands,
     promotions,
     availableColors,
@@ -63,7 +63,7 @@ export const action = async ({ request, params }: ActionArgs) => {
   const form = Object.fromEntries(await request.formData());
   const {
     name,
-    productCategories,
+    productSubCategories,
     description,
     gender,
     isActive,
@@ -89,8 +89,8 @@ export const action = async ({ request, params }: ActionArgs) => {
 
       const updateData = {
         name: name as string,
-        productCategories:
-          productCategories && JSON.parse(productCategories as string),
+        productSubCategories:
+          productSubCategories && JSON.parse(productSubCategories as string),
         variants: variantData,
         description: description as string,
         gender: gender as string,
@@ -115,7 +115,7 @@ export const action = async ({ request, params }: ActionArgs) => {
 const Product = () => {
   const {
     product,
-    productCategories,
+    productSubCategories,
     brands,
     promotions,
     availableColors,
@@ -177,8 +177,8 @@ const Product = () => {
             </div>
 
             <div className="flex flex-wrap justify-evenly gap-3">
-              <SelectProductCategories
-                productCategories={productCategories}
+              <SelectProductSubCategories
+                productSubCategories={productSubCategories}
                 valueToChange={product}
               />
 
