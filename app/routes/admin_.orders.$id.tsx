@@ -69,7 +69,7 @@ export const action = async ({ request }: ActionArgs) => {
 const ModifyOrder = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const order = useLoaderData() as Order;
+  const order = useLoaderData();
 
   const { items } = (order as { items: OrderItem[] }) || {};
 
@@ -119,7 +119,7 @@ const ModifyOrder = () => {
                 type="submit"
                 name="_action"
                 value="updateStatus"
-                className="btn-primary btn mt-3 w-max"
+                className="btn btn-primary mt-3 w-max"
               >
                 Update Status
               </button>
@@ -183,7 +183,7 @@ const ModifyOrder = () => {
                   type="submit"
                   name="_action"
                   value="loadShipping"
-                  className="btn-primary btn w-max"
+                  className="btn btn-primary w-max"
                   onClick={() => setViewingShippingDetails(true)}
                 >
                   Load Shipping Details
@@ -216,7 +216,7 @@ const ModifyOrder = () => {
                       name="firstName"
                       type="text"
                       placeholder="First Name"
-                      className="input-bordered input w-[95vw] sm:w-[215px]"
+                      className="input input-bordered w-[95vw] sm:w-[215px]"
                       defaultValue={shippingDetails?.firstName}
                     />
                   </div>
@@ -229,7 +229,7 @@ const ModifyOrder = () => {
                       name="lastName"
                       type="text"
                       placeholder="Last Name"
-                      className="input-bordered input w-[95vw] sm:w-[215px]"
+                      className="input input-bordered w-[95vw] sm:w-[215px]"
                       defaultValue={shippingDetails?.lastName}
                     />
                   </div>
@@ -244,7 +244,7 @@ const ModifyOrder = () => {
                       name="addressLine1"
                       type="text"
                       placeholder="Address Line 1"
-                      className="input-bordered input w-[95vw] sm:w-[215px]"
+                      className="input input-bordered w-[95vw] sm:w-[215px]"
                       defaultValue={shippingDetails?.addressLine1}
                     />
                   </div>
@@ -257,7 +257,7 @@ const ModifyOrder = () => {
                       name="addressLine2"
                       type="text"
                       placeholder="Address Line 2"
-                      className="input-bordered input w-[95vw] sm:w-[215px]"
+                      className="input input-bordered w-[95vw] sm:w-[215px]"
                       defaultValue={shippingDetails?.addressLine2}
                     />
                   </div>
@@ -272,7 +272,7 @@ const ModifyOrder = () => {
                       name="suburb"
                       type="text"
                       placeholder="State"
-                      className="input-bordered input w-[95vw] sm:w-[215px]"
+                      className="input input-bordered w-[95vw] sm:w-[215px]"
                       defaultValue={shippingDetails?.locality}
                     />
                   </div>
@@ -285,7 +285,7 @@ const ModifyOrder = () => {
                       name="state"
                       type="text"
                       placeholder="State"
-                      className="input-bordered input w-[95vw] sm:w-[215px]"
+                      className="input input-bordered w-[95vw] sm:w-[215px]"
                       defaultValue={
                         shippingDetails?.administrativeDistrictLevel1
                       }
@@ -302,7 +302,7 @@ const ModifyOrder = () => {
                       name="postcode"
                       type="text"
                       placeholder="Post Code"
-                      className="input-bordered input w-[95vw] sm:w-[215px]"
+                      className="input input-bordered w-[95vw] sm:w-[215px]"
                       defaultValue={shippingDetails?.postalCode}
                     />
                   </div>
@@ -315,7 +315,7 @@ const ModifyOrder = () => {
                       name="country"
                       type="text"
                       placeholder="Country"
-                      className="input-bordered input w-[95vw] sm:w-[215px]"
+                      className="input input-bordered w-[95vw] sm:w-[215px]"
                       defaultValue={shippingDetails?.country}
                     />
                   </div>
@@ -325,7 +325,7 @@ const ModifyOrder = () => {
                 <div className="mt-6 flex flex-wrap justify-center gap-3">
                   <button
                     type="button"
-                    className="btn-primary btn"
+                    className="btn btn-primary"
                     onClick={() => setViewingShippingDetails(false)}
                   >
                     Cancel
@@ -335,7 +335,7 @@ const ModifyOrder = () => {
                     type="submit"
                     name="_action"
                     value="updateShipping"
-                    className="btn-primary btn"
+                    className="btn btn-primary"
                     onClick={() => setViewingShippingDetails(false)}
                   >
                     Confirm
@@ -352,7 +352,7 @@ const ModifyOrder = () => {
               <div className="flex justify-center">
                 <button
                   type="button"
-                  className="btn-primary btn w-max"
+                  className="btn btn-primary w-max"
                   onClick={() =>
                     navigator.clipboard.writeText(order.paymentUrl)
                   }
@@ -367,7 +367,7 @@ const ModifyOrder = () => {
           <div className="flex flex-row justify-center gap-6">
             <button
               type="button"
-              className="btn-primary btn mt-6 w-max"
+              className="btn btn-primary mt-6 w-max"
               onClick={() => navigate("..")}
             >
               Back

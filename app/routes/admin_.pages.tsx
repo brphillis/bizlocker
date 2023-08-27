@@ -2,27 +2,30 @@ import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import {
   Form,
-  Outlet,
   useLoaderData,
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
+import SelectArticleCategory from "~/components/Forms/Select/SelectArticleCategory";
+
 import AdminPageHeader from "~/components/Layout/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/AdminPageWrapper";
 import Pagination from "~/components/Pagination";
-import { searchCampaigns } from "~/models/campaigns.server";
+import { getArticleCategories } from "~/models/articleCategories.server";
+import { searchArticles } from "~/models/articles.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
 
-  const { campaigns, totalPages } = await searchCampaigns(undefined, url);
+  const { articles, totalPages } = await searchArticles(undefined, url);
+  const articleCategories = await getArticleCategories();
 
-  return json({ campaigns, totalPages });
+  return json({ articles, totalPages, articleCategories });
 };
 
-const Campaigns = () => {
+const Articles = () => {
   const navigate = useNavigate();
-  const { campaigns, totalPages } = useLoaderData() || {};
+  const { articles, articleCategories, totalPages } = useLoaderData() || {};
 
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("pageNumber")) || 1;
@@ -30,21 +33,25 @@ const Campaigns = () => {
   return (
     <AdminPageWrapper>
       <Form method="GET" className="relative h-full w-full bg-base-200 p-6">
-        <AdminPageHeader title="Manage Campaign" addButtonText="Add Campaign" />
+        <AdminPageHeader title="Manage Articles" addButtonText="Add Article" />
 
         <div className="mt-3 flex flex-col">
-          <div className="flex flex-row gap-6">
-            <div className="form-control w-full max-w-xs">
-              <label className="label">
-                <span className="label-text">Name</span>
-              </label>
-              <input
-                name="name"
-                className="input input-bordered w-full max-w-xs"
-                placeholder="Name"
-                type="text"
-              />
+          <div className="flex flex-row flex-wrap gap-6">
+            <div className="flex w-full flex-row gap-6 sm:w-[215px]">
+              <div className="form-control w-full">
+                <label className="label">
+                  <span className="label-text">Article Title</span>
+                </label>
+                <input
+                  name="title"
+                  className="input w-full text-brand-black/50"
+                  placeholder="Name"
+                  type="text"
+                />
+              </div>
             </div>
+
+            <SelectArticleCategory articleCategories={articleCategories} />
           </div>
 
           <div className="flex flex-row justify-end sm:justify-start">
@@ -61,49 +68,45 @@ const Campaigns = () => {
             <thead className="sticky top-0">
               <tr>
                 {currentPage && <th>#</th>}
-                <th>Name</th>
-                <th>Updated</th>
-                <th>Created</th>
+                <th>Title</th>
+
+                <th>Category</th>
                 <th>Active</th>
               </tr>
             </thead>
             <tbody>
-              {campaigns &&
-                campaigns.map(
+              {articles &&
+                articles.map(
                   (
-                    { id, name, updatedAt, createdAt, isActive }: Campaign,
+                    {
+                      id,
+                      title,
+
+                      articleCategories,
+                      isActive,
+                    }: Article,
                     i: number
                   ) => {
                     return (
                       <tr
                         className="cursor-pointer transition-colors duration-200 hover:bg-base-100"
                         key={id}
-                        onClick={() => navigate(`/admin/campaigns/${id}`)}
+                        onClick={() => navigate(`/admin/articles/${id}`)}
                       >
                         {currentPage && (
                           <td>
-                            {i + 1 + (currentPage - 1) * campaigns?.length}
+                            {i + 1 + (currentPage - 1) * articles?.length}
                           </td>
                         )}
-                        <td>{name}</td>
+                        <td>{title}</td>
+
                         <td>
-                          {new Date(updatedAt as Date).toLocaleDateString(
-                            "en-US",
-                            {
-                              day: "numeric",
-                              month: "long",
-                              year: "numeric",
-                            }
+                          {articleCategories?.map(
+                            ({ id, name }: ArticleCategory) => (
+                              <p key={id + name}>{name}</p>
+                            )
                           )}
                         </td>
-                        <td>
-                          {new Date(createdAt).toLocaleDateString("en-US", {
-                            day: "numeric",
-                            month: "long",
-                            year: "numeric",
-                          })}
-                        </td>
-
                         <td>
                           {!isActive && (
                             <div className="ml-4 h-3 w-3 rounded-full bg-red-500" />
@@ -122,9 +125,9 @@ const Campaigns = () => {
 
         <Pagination totalPages={totalPages} />
       </Form>
-      <Outlet />
+      {/* <Outlet /> */}
     </AdminPageWrapper>
   );
 };
 
-export default Campaigns;
+export default Articles;

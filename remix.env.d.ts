@@ -27,7 +27,7 @@ interface Verifier {
 type VerifyTypes = "email" | "password";
 
 interface Image {
-  id: number;
+  id?: number;
   url: string;
   altText?: string;
   user?: User;
@@ -44,8 +44,8 @@ interface Image {
   campaignBanner?: Campaign;
   promotionTile?: Promotion;
   promotionBanner?: Promotion;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 type LoginData = {

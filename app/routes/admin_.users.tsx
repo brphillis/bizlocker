@@ -32,10 +32,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 const Articles = () => {
   const navigate = useNavigate();
-  const { users, totalPages } = useLoaderData() as {
-    users: User[];
-    totalPages: number;
-  };
+  const { users, totalPages } = useLoaderData() || {};
 
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("pageNumber")) || 1;
@@ -108,7 +105,10 @@ const Articles = () => {
             <tbody>
               {users &&
                 users.map(
-                  ({ id, email, avatar, userDetails, isActive }: User, i) => {
+                  (
+                    { id, email, avatar, userDetails, isActive }: User,
+                    i: number
+                  ) => {
                     const { firstName, lastName } = userDetails || {};
 
                     return (

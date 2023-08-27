@@ -13,16 +13,16 @@ const Footer = () => {
       </div>
       <div className="text-brand-white">
         <span className="footer-title">Company</span>
-        <a className="link-hover link">About us</a>
-        <a className="link-hover link">Contact</a>
-        <a className="link-hover link">Jobs</a>
-        <a className="link-hover link">Press kit</a>
+        <p className="link-hover link">About us</p>
+        <p className="link-hover link">Contact</p>
+        <p className="link-hover link">Jobs</p>
+        <p className="link-hover link">Press kit</p>
       </div>
       <div className="text-brand-white">
         <span className="footer-title">Legal</span>
-        <a className="link-hover link">Terms of use</a>
-        <a className="link-hover link">Privacy policy</a>
-        <a className="link-hover link">Cookie policy</a>
+        <p className="link-hover link">Terms of use</p>
+        <p className="link-hover link">Privacy policy</p>
+        <p className="link-hover link">Cookie policy</p>
       </div>
     </footer>
   );

@@ -13,7 +13,7 @@ const SelectDepartment = ({ departments, defaultValue }: Props) => {
         defaultValue={defaultValue || ""}
       >
         <option value="">Select a Department</option>
-        {departments?.map(({ id, name }: Brand) => {
+        {departments?.map(({ id, name }: Department) => {
           return (
             <option key={"department_" + id} value={id}>
               {name}

@@ -90,12 +90,7 @@ export const action = async ({ request, params }: ActionArgs) => {
 
 const ModifyCampaign = () => {
   const { campaign, departments, productSubCategories, brands } =
-    (useLoaderData() as {
-      campaign: Campaign;
-      departments: Department[];
-      productSubCategories: ProductSubCategory[];
-      brands: Brand[];
-    }) || {};
+    useLoaderData() || {};
   const { validationError } =
     (useActionData() as { validationError: string }) || {};
   const mode = campaign ? "edit" : "add";

@@ -27,11 +27,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 const ManageOrders = () => {
   const navigate = useNavigate();
-  const { orders, totalPages } =
-    (useLoaderData() as {
-      orders: Order[];
-      totalPages: number;
-    }) || {};
+  const { orders, totalPages } = useLoaderData() || {};
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("pageNumber")) || 1;
   return (
@@ -47,7 +43,7 @@ const ManageOrders = () => {
               </label>
               <input
                 name="orderId"
-                className="input-bordered input w-full max-w-xs"
+                className="input input-bordered w-full max-w-xs"
                 placeholder="ID"
                 type="text"
               />
@@ -78,7 +74,7 @@ const ManageOrders = () => {
               </label>
               <input
                 name="userEmail"
-                className="input-bordered input w-full max-w-xs"
+                className="input input-bordered w-full max-w-xs"
                 placeholder="Email"
                 type="text"
               />
@@ -87,7 +83,7 @@ const ManageOrders = () => {
 
           <div className="flex flex-row flex-wrap justify-between">
             <div className="mr-10 flex flex-row flex-wrap gap-2">
-              <button type="submit" className="btn-primary btn mt-6 w-max">
+              <button type="submit" className="btn btn-primary mt-6 w-max">
                 Search
               </button>
             </div>
@@ -97,7 +93,7 @@ const ManageOrders = () => {
         <div className="divider w-full" />
 
         <div className="w-full max-w-[80vw] overflow-x-auto">
-          <table className="table-sm my-3 table">
+          <table className="table table-sm my-3">
             <thead className="sticky top-0">
               <tr>
                 {currentPage && <th>#</th>}
@@ -108,7 +104,7 @@ const ManageOrders = () => {
             </thead>
             <tbody>
               {orders &&
-                orders.map(({ orderId, status, user }: Order, i) => {
+                orders.map(({ orderId, status, user }: Order, i: number) => {
                   return (
                     <tr
                       className="hover cursor-pointer"

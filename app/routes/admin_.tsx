@@ -130,6 +130,9 @@ const Admin = () => {
                   <li onClick={() => navigate("/admin/home-page")}>
                     <div className="hover:text-white">Home Page</div>
                   </li>
+                  <li onClick={() => navigate("/admin/pages")}>
+                    <div className="hover:text-white">Pages</div>
+                  </li>
                   <li onClick={() => navigate("/admin/articles")}>
                     <div className="hover:text-white">Articles</div>
                   </li>
