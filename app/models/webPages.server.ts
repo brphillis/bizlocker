@@ -2,7 +2,7 @@ import { redirect } from "@remix-run/server-runtime";
 import { prisma } from "~/db.server";
 import { getOrderBy } from "./products.server";
 
-export const getArticle = async (id?: string, title?: string) => {
+export const getWebPage = async (id?: string, title?: string) => {
   let whereClause;
 
   if (id) {
@@ -13,7 +13,7 @@ export const getArticle = async (id?: string, title?: string) => {
     throw new Error("Either id or name must be specified");
   }
 
-  return await prisma.article.findUnique({
+  return await prisma.webPage.findUnique({
     where: whereClause,
     include: {
       blocks: {
@@ -74,75 +74,51 @@ export const getArticle = async (id?: string, title?: string) => {
           },
         },
       },
-      articleCategories: {
-        select: {
-          id: true,
-          name: true,
-        },
-      },
       thumbnail: true,
     },
   });
 };
 
-export const upsertArticleInfo = async (
+export const upsertWebPageInfo = async (
   title: string,
-  articleCategories: string[],
   thumbnail: Image,
-  articleId?: number
+  webPageId?: number
 ) => {
-  let article;
+  let webPage;
 
-  if (!articleId) {
-    article = await prisma.article.create({
-      // Provide the desired properties for the new article
+  if (!webPageId) {
+    webPage = await prisma.webPage.create({
       data: {
         title: title,
-        articleCategories: {
-          connect: articleCategories.map((category: string) => ({
-            id: parseInt(category),
-          })),
-        },
-        thumbnail: {
-          create: {
-            url: thumbnail.url,
-            altText: thumbnail.altText,
-          },
-        },
+        thumbnail: thumbnail
+          ? {
+              create: {
+                url: thumbnail.url,
+                altText: thumbnail.altText,
+              },
+            }
+          : undefined, // Set thumbnail to undefined if not provided
       },
     });
   } else {
-    // Retrieve the article by articleId
-    article = await prisma.article.findUnique({
+    // Retrieve the webPage by webPageId
+    webPage = await prisma.webPage.findUnique({
       where: {
-        id: articleId,
+        id: webPageId,
       },
     });
 
-    if (!article) {
-      throw new Error(`Article not found for articleId: ${articleId}`);
+    if (!webPage) {
+      throw new Error(`WebPage not found for webPageId: ${webPageId}`);
     }
 
-    // Disconnect the existing categories from the article
-    await prisma.article.update({
-      where: { id: articleId },
-      data: {
-        articleCategories: { set: [] },
-      },
-    });
-
-    // Update the existing article's title and thumbnail
-    article = await prisma.article.update({
+    // Update the existing webPages's title and thumbnail
+    webPage = await prisma.webPage.update({
       where: {
-        id: article.id,
+        id: webPage.id,
       },
       data: {
         title: title,
-        articleCategories: {
-          connect: articleCategories.map((category: string) => ({
-            id: parseInt(category),
-          })),
-        },
         thumbnail: {
           upsert: {
             create: {
@@ -159,11 +135,11 @@ export const upsertArticleInfo = async (
     });
   }
 
-  return article.id;
+  return webPage.id;
 };
 
-export const deleteArticle = async (id: number) => {
-  const article = await prisma.article.findUnique({
+export const deleteWebPage = async (id: number) => {
+  const webPage = await prisma.webPage.findUnique({
     where: {
       id,
     },
@@ -181,12 +157,12 @@ export const deleteArticle = async (id: number) => {
     },
   });
 
-  if (!article) {
+  if (!webPage) {
     return false;
   }
 
   // Delete blockOptions associated with each block
-  for (const block of article.blocks) {
+  for (const block of webPage.blocks) {
     if (block.blockOptions) {
       await prisma.blockOptions.delete({
         where: { id: block.blockOptions.id },
@@ -195,7 +171,7 @@ export const deleteArticle = async (id: number) => {
   }
 
   // Delete bannerBlocks, tileBlocks, and textBlocks associated with each block
-  for (const block of article.blocks) {
+  for (const block of webPage.blocks) {
     if (block.bannerBlock) {
       await prisma.bannerBlock.delete({ where: { id: block.bannerBlock.id } });
     }
@@ -213,27 +189,25 @@ export const deleteArticle = async (id: number) => {
     }
   }
 
-  // Delete blocks associated with the article
-  await prisma.block.deleteMany({ where: { articleId: id } });
+  // Delete blocks associated with the webPage
+  await prisma.block.deleteMany({ where: { webPageId: id } });
 
-  // Delete the article
-  await prisma.article.delete({
+  // Delete the webPage
+  await prisma.webPage.delete({
     where: {
       id,
     },
   });
 
-  return redirect("/admin/articles");
+  return redirect("/admin/pages");
 };
 
-export const searchArticles = async (
+export const searchWebPages = async (
   formData?: { [k: string]: FormDataEntryValue },
   url?: URL
 ) => {
   const title =
     formData?.title || (url && url.searchParams.get("title")?.toString()) || "";
-  const articleCategory =
-    formData?.articleCategory || url?.searchParams.get("articleCategory") || "";
   const sortBy = formData?.sortBy || url?.searchParams.get("sortBy") || "";
   const sortOrder =
     formData?.sortOrder || url?.searchParams.get("sortOrder") || "";
@@ -259,37 +233,23 @@ export const searchArticles = async (
     };
   }
 
-  if (articleCategory) {
-    filter.articleCategories = {
-      some: {
-        id: parseInt(articleCategory as string),
-      },
-    };
-  }
-
-  // Find and count the articles
-  const [articles, totalArticles] = await Promise.all([
-    prisma.article.findMany({
+  // Find and count the webPages
+  const [webPages, totalWebPages] = await Promise.all([
+    prisma.webPage.findMany({
       where: filter,
       include: {
-        articleCategories: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
         thumbnail: true,
       },
       skip,
       take,
       orderBy: getOrderBy(sortBy as SortBy, sortOrder as SortOrder),
     }),
-    prisma.article.count({
+    prisma.webPage.count({
       where: filter,
     }),
   ]);
 
-  const totalPages = Math.ceil(totalArticles / perPage);
+  const totalPages = Math.ceil(totalWebPages / perPage);
 
-  return { articles, totalPages };
+  return { webPages, totalPages };
 };

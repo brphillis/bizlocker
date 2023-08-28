@@ -82,7 +82,7 @@ const BlockContentResultsTable = ({
         )}
 
       {selectedItems &&
-        selectedItems.length > 0 &&
+        selectedItems?.length > 0 &&
         (selectedBlock === "banner" || selectedBlock === "tile") && (
           <div className="max-w-3xl overflow-x-auto">
             <div className="divider my-0 w-full py-0" />

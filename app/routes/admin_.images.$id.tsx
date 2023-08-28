@@ -74,8 +74,6 @@ const ModifyImage = () => {
     productId,
   } = image || ({} as Image);
 
-  console.log(image, "image");
-
   const determineIfConnected = (): boolean => {
     if (
       promotionBanner ||

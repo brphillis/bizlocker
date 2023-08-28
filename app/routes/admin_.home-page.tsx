@@ -19,7 +19,6 @@ import {
   searchContentData,
 } from "~/utility/pageBuilder";
 import { getArticleCategories } from "~/models/articleCategories.server";
-import { useEffect } from "react";
 
 export const loader = async () => {
   const homePage = await getHomePage();
@@ -94,13 +93,9 @@ const ManageHomePage = () => {
 
   const { searchResults, updateSuccess } = useActionData() || {};
 
-  useEffect(() => {
-    console.log(searchResults);
-  }, [searchResults]);
-
   return (
     <AdminPageWrapper>
-      <div className="relative h-full bg-base-200 p-6 sm:w-full">
+      <div className="relative h-full bg-base-200 p-6 max-sm:p-3 sm:w-full">
         <div className="flex w-full justify-center">
           <div className="flex flex-col gap-6 rounded-none bg-brand-black text-brand-white">
             <div className="flex justify-center gap-3 pt-6 text-center text-2xl font-bold">
