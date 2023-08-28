@@ -1,8 +1,9 @@
 import { useSearchParams, useSubmit } from "@remix-run/react";
+import { useEffect } from "react";
 
 type Props = {
   selectedBlock: BlockName | undefined;
-  defaultValue: string;
+  defaultValue: BlockContentType | undefined;
   contentType: BlockContentType | undefined;
   setContentType: Function;
 };
@@ -35,13 +36,17 @@ const BlockContentSearch = ({
     }
   };
 
+  useEffect(() => {
+    if (defaultValue) {
+      setContentType(defaultValue);
+    }
+  }, [defaultValue, setContentType]);
+
   return (
     <>
       {(selectedBlock === "banner" || selectedBlock === "tile") && (
-        <div className=" w-full  px-2 py-3">
-          <p className="px-1 pb-3 font-semibold text-brand-white">
-            Content Options
-          </p>
+        <div className=" w-full py-3">
+          <p className="pb-3 font-semibold text-brand-white">Content Options</p>
           <div className="flex flex-wrap gap-3">
             <div className="form-control text-brand-black">
               <label className="label text-sm text-brand-white">

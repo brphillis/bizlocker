@@ -15,11 +15,23 @@ model HomePage {
   updatedAt DateTime @updatedAt
 }
 
+model WebPage {
+  id        Int      @id @default(autoincrement())
+  title     String   @unique
+  blocks    Block[]  @relation("WebPagesToBlocks")
+  thumbnail Image?   @relation("WebPageImage")
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Block {
   id         String    @id @unique @default(cuid())
   order      Int
   homePage   HomePage? @relation("HomePageToBlocks", fields: [homePageId], references: [id])
   homePageId Int?
+  webPage    WebPage?  @relation("WebPagesToBlocks", fields: [webPageId], references: [id])
+  webPageId  Int?
   article    Article?  @relation("ArticlesToBlocks", fields: [articleId], references: [id])
   articleId  Int?
 
@@ -54,27 +66,32 @@ model BlockOptions {
 }
 
 model BannerBlock {
-  id          String     @id @unique @default(cuid())
-  name        String     @default("banner")
-  type        String
-  block       Block?     @relation("BlockToBannerBlock")
-  campaign    Campaign?  @relation(fields: [campaignId], references: [id])
-  campaignId  Int?
-  promotion   Promotion? @relation(fields: [promotionId], references: [id])
-  promotionId Int?
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  id             String        @id @unique @default(cuid())
+  name           String        @default("banner")
+  type           String
+  block          Block?        @relation("BlockToBannerBlock")
+  campaign       Campaign?     @relation(fields: [campaignId], references: [id])
+  campaignId     Int?
+  promotion      Promotion?    @relation(fields: [promotionId], references: [id])
+  promotionId    Int?
+  contentImage   ContentImage? @relation(fields: [contentImageId], references: [id])
+  contentImageId Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model TileBlock {
-  id         String      @id @unique @default(cuid())
-  name       String      @default("tile")
-  type       String
-  block      Block?      @relation("BlockToTileBlock")
-  campaigns  Campaign[]
-  promotions Promotion[]
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
+  id            String         @id @unique @default(cuid())
+  name          String         @default("tile")
+  type          String
+  block         Block?         @relation("BlockToTileBlock")
+  campaigns     Campaign[]
+  promotions    Promotion[]
+  contentImages ContentImage[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model TextBlock {
@@ -239,6 +256,8 @@ model Image {
   altText              String?
   user                 User?               @relation("AvatarImage", fields: [userId], references: [id])
   userId               String?             @unique
+  webPage              WebPage?            @relation("WebPageImage", fields: [webPageId], references: [id])
+  webPageId            Int?                @unique
   article              Article?            @relation("ArticleImage", fields: [articleId], references: [id])
   articleId            Int?                @unique
   product              Product?            @relation(fields: [productId], references: [id])
@@ -251,8 +270,21 @@ model Image {
   campaignBanner       Campaign[]          @relation("BannerImageToCampaign")
   promotionTile        Promotion[]         @relation("TileImageToPromotion")
   promotionBanner      Promotion[]         @relation("BannerImageToPromotion")
+  contentImage         ContentImage[]      @relation("ContentImageToImage")
   createdAt            DateTime            @default(now())
   updatedAt            DateTime            @updatedAt
+}
+
+model ContentImage {
+  id      Int    @id @default(autoincrement())
+  href    String
+  image   Image  @relation("ContentImageToImage", fields: [imageId], references: [id])
+  imageId Int    @unique
+
+  bannerBlocks BannerBlock[]
+  tileBlocks   TileBlock[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime?     @default(now()) @updatedAt
 }
 
 model Department {

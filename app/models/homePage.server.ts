@@ -20,6 +20,11 @@ export const getHomePage = async () => {
                   tileImage: true,
                 },
               },
+              contentImage: {
+                include: {
+                  image: true,
+                },
+              },
             },
           },
           tileBlock: {
@@ -34,6 +39,11 @@ export const getHomePage = async () => {
                 include: {
                   bannerImage: true,
                   tileImage: true,
+                },
+              },
+              contentImages: {
+                include: {
+                  image: true,
                 },
               },
             },

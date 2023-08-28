@@ -194,7 +194,7 @@ const PageBuilder = ({
       {editingContent && (
         <div className="mt-3 flex w-full flex-col gap-6">
           <div className="flex w-full flex-row flex-wrap justify-center gap-3 sm:justify-start">
-            <div className="w-full px-2 pb-3">
+            <div className="w-full pb-3">
               <div className="form-control">
                 <label className="label">
                   <span className="label-text pt-1 font-semibold text-brand-white">
@@ -229,7 +229,7 @@ const PageBuilder = ({
 
           <BlockContentSearch
             selectedBlock={selectedBlock}
-            defaultValue={blocks[editingIndex]?.type}
+            defaultValue={blocks[editingIndex]?.type as BlockContentType}
             contentType={contentType}
             setContentType={setContentType}
           />
@@ -257,10 +257,7 @@ const PageBuilder = ({
             defaultValue={blocks[editingIndex]?.content as string[]}
           />
 
-          {((contentType === "campaign" &&
-            (searchResults?.[0] as Campaign)?.name) ||
-            (contentType === "promotion" &&
-              (searchResults?.[0] as Promotion)?.name)) && (
+          {(contentType === "campaign" || contentType === "promotion") && (
             <BlockContentResultsTable
               selectedBlock={selectedBlock}
               searchResults={searchResults as Campaign[] | Promotion[]}

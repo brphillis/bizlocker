@@ -14,7 +14,7 @@ const ArticleBlockOptions = ({
   return (
     <>
       {selectedBlock === "article" && (
-        <div className="w-full px-2 pb-3">
+        <div className="w-full pb-3">
           <p className="mb-3 px-1 pt-3 font-semibold text-brand-white">
             Filters
           </p>

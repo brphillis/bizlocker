@@ -9,7 +9,7 @@ const BlockOptions = ({ selectedBlock, defaultValues }: Props) => {
   return (
     <>
       {selectedBlock && selectedBlock !== "text" && (
-        <div className="w-full px-2 pb-3">
+        <div className="w-full pb-3">
           <p className="mb-3 px-1 pt-3 font-semibold text-brand-white">
             Options
           </p>
@@ -116,7 +116,7 @@ const BlockOptions = ({ selectedBlock, defaultValues }: Props) => {
                   type="number"
                   className="input input-bordered w-[95vw] max-w-full text-brand-black sm:w-[215px]"
                   placeholder="Columns"
-                  defaultValue={!columns ? undefined : columns}
+                  defaultValue={columns || undefined}
                 />
               </div>
             )}

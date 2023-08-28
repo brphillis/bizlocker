@@ -11,9 +11,9 @@ export const getFormBlockOptions = (form: {
     sortBy: sortBy as SortBy,
     sortOrder: sortOrder as SortOrder,
     size: size as "small" | "medium" | "large",
-    count: count && parseInt(count as string),
-    rows: rows && parseInt(rows as string),
-    columns: columns && parseInt(columns as string),
+    count: count ? parseInt(count as string) : undefined,
+    rows: rows ? parseInt(rows as string) : undefined,
+    columns: columns ? parseInt(columns as string) : undefined,
   } as NewBlockOptions;
 
   return blockOptions;

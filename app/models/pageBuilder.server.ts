@@ -23,7 +23,7 @@ const updateOrCreateBlockOptions = async (
 };
 
 export const updatePageBlock = async (
-  pageType: "homePage" | "article",
+  pageType: "homePage" | "webPage" | "article",
   pageId: number,
   blockData: NewBlockData,
   blockOptions?: NewBlockOptions
@@ -41,6 +41,10 @@ export const updatePageBlock = async (
 
   if (pageType === "homePage") {
     page = await prisma.homePage.findUnique({
+      where: { id: pageId },
+    });
+  } else if (pageType === "webPage") {
+    page = await prisma.webPage.findUnique({
       where: { id: pageId },
     });
   } else if (pageType === "article") {
@@ -64,6 +68,7 @@ export const updatePageBlock = async (
         include: {
           campaigns: true,
           promotions: true,
+          contentImages: true,
         },
       },
       textBlock: true,
@@ -88,6 +93,7 @@ export const updatePageBlock = async (
           data: {
             promotion: { disconnect: true },
             campaign: { disconnect: true },
+            contentImage: { disconnect: true },
           },
         });
 
@@ -103,6 +109,10 @@ export const updatePageBlock = async (
               contentType === "campaign"
                 ? { connect: { id: contentData[0].id } }
                 : undefined,
+            contentImage:
+              contentType === "image"
+                ? { connect: { id: contentData[0].id } }
+                : undefined,
           },
         });
 
@@ -111,31 +121,39 @@ export const updatePageBlock = async (
           data: {
             order: itemIndex === 0 ? 0 : itemIndex,
             bannerBlock: { connect: { id: updatedBannerBlock.id } },
+
+            textBlock: { disconnect: true },
             tileBlock: { disconnect: true },
+            articleBlock: { disconnect: true },
+            productBlock: { disconnect: true },
           },
         });
       }
     } else if (blockName === "tile" && contentData) {
       const tileBlock = blockToUpdate.tileBlock;
       if (tileBlock) {
-        // Find the current connected promotions and campaigns to disconnect them
+        // Find the current connected content to disconnect them
         const existingPromotions = tileBlock.promotions.map((p) => ({
           id: p.id,
         }));
         const existingCampaigns = tileBlock.campaigns.map((c) => ({
           id: c.id,
         }));
+        const existingContentImages = tileBlock.contentImages.map((c) => ({
+          id: c.id,
+        }));
 
-        // Disconnect existing promotions and campaigns
+        // Disconnect existing content
         await prisma.tileBlock.update({
           where: { id: tileBlock.id },
           data: {
             promotions: { disconnect: existingPromotions },
             campaigns: { disconnect: existingCampaigns },
+            contentImages: { disconnect: existingContentImages },
           },
         });
 
-        // Fetch the updated tileBlock with promotions and campaigns
+        // Fetch the updated tileBlock with content
         const updatedTileBlock = await prisma.tileBlock.update({
           where: { id: tileBlock.id },
           data: {
@@ -148,6 +166,10 @@ export const updatePageBlock = async (
               contentType === "campaign"
                 ? { connect: contentData.map((c) => ({ id: c.id })) }
                 : undefined,
+            contentImages:
+              contentType === "image"
+                ? { connect: contentData.map((c) => ({ id: c.id })) }
+                : undefined,
           },
           // Fetch the promotions field along with other necessary fields
           select: {
@@ -157,6 +179,8 @@ export const updatePageBlock = async (
             createdAt: true,
             updatedAt: true,
             promotions: true,
+            campaigns: true,
+            contentImages: true,
           },
         });
 
@@ -166,7 +190,11 @@ export const updatePageBlock = async (
           data: {
             order: itemIndex === 0 ? 0 : itemIndex,
             tileBlock: { connect: { id: updatedTileBlock.id } },
+
             bannerBlock: { disconnect: true },
+            textBlock: { disconnect: true },
+            productBlock: { disconnect: true },
+            articleBlock: { disconnect: true },
           },
         });
       }
@@ -183,8 +211,11 @@ export const updatePageBlock = async (
           data: {
             order: itemIndex === 0 ? 0 : itemIndex,
             textBlock: { connect: { id: updatedTextBlock.id } },
+
             bannerBlock: { disconnect: true },
             tileBlock: { disconnect: true },
+            productBlock: { disconnect: true },
+            articleBlock: { disconnect: true },
           },
         });
       }
@@ -227,9 +258,11 @@ export const updatePageBlock = async (
           data: {
             order: itemIndex === 0 ? 0 : itemIndex,
             productBlock: { connect: { id: updatedProductBlock.id } },
+
             bannerBlock: { disconnect: true },
             tileBlock: { disconnect: true },
             textBlock: { disconnect: true },
+            articleBlock: { disconnect: true },
           },
         });
       }
@@ -265,9 +298,11 @@ export const updatePageBlock = async (
           data: {
             order: itemIndex === 0 ? 0 : itemIndex,
             articleBlock: { connect: { id: updatedArticleBlock.id } },
+
             bannerBlock: { disconnect: true },
             tileBlock: { disconnect: true },
             textBlock: { disconnect: true },
+            productBlock: { disconnect: true },
           },
         });
       }
@@ -310,7 +345,39 @@ export const updatePageBlock = async (
             block: { connect: { id: newBlock.id } },
           },
         });
-      } else {
+      }
+      ///////////////////////////////////////////
+      ///////////////////////////////////////////
+      ///////////////////////////////////////////
+      ///////////////////////////////////////////
+      ///////////////////////////////////////////
+      ///////////////////////////////////////////
+      else if (contentType === "image" && contentData) {
+        const { href, image } = contentData[0] as ContentImage;
+
+        // Create a new ProductBlock with the new ProductBlockContent
+        const newContentImage = await prisma.contentImage.create({
+          data: {
+            href: href,
+            image: { connect: { id: image.id } },
+          },
+        });
+
+        await prisma.bannerBlock.create({
+          data: {
+            type: contentType,
+            contentImage: { connect: { id: newContentImage.id } },
+            block: { connect: { id: newBlock.id } },
+          },
+        });
+      }
+      ///////////////////////////////////////////
+      ///////////////////////////////////////////
+      ///////////////////////////////////////////
+      ///////////////////////////////////////////
+      ///////////////////////////////////////////
+      ///////////////////////////////////////////
+      else {
         await deleteBlockIfInvalid(newBlock.id);
         throw new Error(`Invalid data type: ${contentType}`);
       }
@@ -335,7 +402,50 @@ export const updatePageBlock = async (
             block: { connect: { id: newBlock.id } },
           },
         });
-      } else {
+      }
+
+      ///////////////////////////////////////////
+      ///////////////////////////////////////////
+      ///////////////////////////////////////////
+      ///////////////////////////////////////////
+      ///////////////////////////////////////////
+      ///////////////////////////////////////////
+      else if (contentType === "image" && contentData) {
+        const imagesToCreate = contentData as ContentImage[];
+
+        const createdContentImages: ContentImage[] = [];
+        for (const item of imagesToCreate) {
+          const createdContentImage = await prisma.contentImage.create({
+            data: {
+              href: item.href,
+              image: { connect: { id: item.image.id } },
+            },
+            include: {
+              image: true,
+            },
+          });
+
+          createdContentImages.push(createdContentImage as ContentImage);
+        }
+
+        await prisma.tileBlock.create({
+          data: {
+            type: contentType,
+            contentImages: {
+              connect: createdContentImages.map((c) => ({ id: c.id })),
+            },
+            block: { connect: { id: newBlock.id } },
+          },
+        });
+      }
+
+      ///////////////////////////////////////////
+      ///////////////////////////////////////////
+      ///////////////////////////////////////////
+      ///////////////////////////////////////////
+      ///////////////////////////////////////////
+      ///////////////////////////////////////////
+      else {
         await deleteBlockIfInvalid(newBlock.id);
         throw new Error(`Invalid data type: ${contentType}`);
       }
@@ -352,8 +462,11 @@ export const updatePageBlock = async (
         data: {
           order: itemIndex === 0 ? 0 : itemIndex,
           textBlock: { connect: { id: newTextBlock.id } },
+
           bannerBlock: { disconnect: true },
           tileBlock: { disconnect: true },
+          productBlock: { disconnect: true },
+          articleBlock: { disconnect: true },
         },
       });
     } else if (blockName === "product" && objectData) {
@@ -386,9 +499,11 @@ export const updatePageBlock = async (
         data: {
           order: itemIndex === 0 ? 0 : itemIndex,
           productBlock: { connect: { id: newProductBlock.id } },
+
           bannerBlock: { disconnect: true },
           tileBlock: { disconnect: true },
           textBlock: { disconnect: true },
+          articleBlock: { disconnect: true },
         },
       });
     } else if (blockName === "article" && objectData) {
@@ -416,6 +531,8 @@ export const updatePageBlock = async (
         data: {
           order: itemIndex === 0 ? 0 : itemIndex,
           articleBlock: { connect: { id: newArticleBlock.id } },
+
+          productBlock: { disconnect: true },
           bannerBlock: { disconnect: true },
           tileBlock: { disconnect: true },
           textBlock: { disconnect: true },
@@ -433,7 +550,7 @@ export const updatePageBlock = async (
 };
 
 export const changeBlockOrder = async (
-  pageType: "homePage" | "article",
+  pageType: "homePage" | "webPage" | "article",
   pageId: number,
   index: number,
   direction: "up" | "down"
@@ -443,6 +560,13 @@ export const changeBlockOrder = async (
   if (pageType === "homePage") {
     blockToMove = await prisma.block.findFirst({
       where: { homePageId: pageId },
+      orderBy: { order: "asc" },
+      skip: index,
+      take: 1,
+    });
+  } else if (pageType === "webPage") {
+    blockToMove = await prisma.block.findFirst({
+      where: { webPageId: pageId },
       orderBy: { order: "asc" },
       skip: index,
       take: 1,
@@ -467,6 +591,8 @@ export const changeBlockOrder = async (
   if (pageType === "homePage") {
     maxIndex =
       (await prisma.block.count({ where: { homePageId: pageId } })) - 1;
+  } else if (pageType === "webPage") {
+    maxIndex = (await prisma.block.count({ where: { webPageId: pageId } })) - 1;
   } else if (pageType === "article") {
     maxIndex = (await prisma.block.count({ where: { articleId: pageId } })) - 1;
   }
@@ -495,6 +621,28 @@ export const changeBlockOrder = async (
       prisma.block.updateMany({
         where: {
           homePageId: pageId,
+          id: { not: blockToMove.id },
+          order:
+            direction === "up"
+              ? { gte: newOrder, lte: blockToMove.order }
+              : { lte: newOrder, gte: blockToMove.order },
+        },
+        data: {
+          order: {
+            [direction === "up" ? "increment" : "decrement"]: 1,
+          },
+        },
+      }),
+    ]);
+  } else if (pageType === "webPage") {
+    await prisma.$transaction([
+      prisma.block.update({
+        where: { id: blockToMove.id },
+        data: { order: newOrder },
+      }),
+      prisma.block.updateMany({
+        where: {
+          webPageId: pageId,
           id: { not: blockToMove.id },
           order:
             direction === "up"
@@ -543,6 +691,9 @@ export const removeBlock = async (pageId: number, itemIndex: number) => {
   const isHomePage = await prisma.homePage.findUnique({
     where: { id: pageId },
   });
+  const isWebPage = await prisma.webPage.findUnique({
+    where: { id: pageId },
+  });
   const isArticlePage = await prisma.article.findUnique({
     where: { id: pageId },
   });
@@ -554,7 +705,37 @@ export const removeBlock = async (pageId: number, itemIndex: number) => {
       orderBy: { order: "asc" },
       include: {
         bannerBlock: true,
-        tileBlock: true,
+        tileBlock: {
+          include: {
+            contentImages: true,
+          },
+        },
+        textBlock: true,
+        productBlock: {
+          include: {
+            content: true,
+          },
+        },
+        articleBlock: {
+          include: {
+            content: true,
+          },
+        },
+        blockOptions: true,
+      },
+    });
+  } else if (isWebPage) {
+    page = isWebPage;
+    blocks = await prisma.block.findMany({
+      where: { webPageId: page.id },
+      orderBy: { order: "asc" },
+      include: {
+        bannerBlock: true,
+        tileBlock: {
+          include: {
+            contentImages: true,
+          },
+        },
         textBlock: true,
         productBlock: {
           include: {
@@ -576,9 +757,18 @@ export const removeBlock = async (pageId: number, itemIndex: number) => {
       orderBy: { order: "asc" },
       include: {
         bannerBlock: true,
-        tileBlock: true,
+        tileBlock: {
+          include: {
+            contentImages: true,
+          },
+        },
         textBlock: true,
         productBlock: {
+          include: {
+            content: true,
+          },
+        },
+        articleBlock: {
           include: {
             content: true,
           },
@@ -616,6 +806,13 @@ export const removeBlock = async (pageId: number, itemIndex: number) => {
       where: { id: blockToRemove.bannerBlock.id },
     });
     transaction.push(deleteBannerBlockPromise);
+
+    if (blockToRemove.bannerBlock.contentImageId) {
+      const deleteContentImagePromise = prisma.contentImage.delete({
+        where: { id: blockToRemove.bannerBlock.contentImageId },
+      });
+      transaction.push(deleteContentImagePromise);
+    }
   }
 
   if (blockToRemove.tileBlock) {
@@ -623,6 +820,22 @@ export const removeBlock = async (pageId: number, itemIndex: number) => {
       where: { id: blockToRemove.tileBlock.id },
     });
     transaction.push(deleteTileBlockPromise);
+
+    if (blockToRemove.tileBlock.contentImages) {
+      const contentImageIdsToDelete = blockToRemove.tileBlock.contentImages.map(
+        (e) => e.id
+      );
+
+      const deleteContentImagePromise = prisma.contentImage.deleteMany({
+        where: {
+          id: {
+            in: contentImageIdsToDelete,
+          },
+        },
+      });
+
+      transaction.push(deleteContentImagePromise);
+    }
   }
 
   if (blockToRemove.textBlock) {
@@ -647,6 +860,21 @@ export const removeBlock = async (pageId: number, itemIndex: number) => {
     }
   }
 
+  if (blockToRemove.articleBlock) {
+    const deleteArticleBlockPromise = prisma.articleBlock.delete({
+      where: { id: blockToRemove.articleBlock.id },
+    });
+    transaction.push(deleteArticleBlockPromise);
+
+    if (blockToRemove.articleBlock.content) {
+      const deleteArticleBlockContentPromise =
+        prisma.articleBlockContent.delete({
+          where: { id: blockToRemove.articleBlock.content.id },
+        });
+      transaction.push(deleteArticleBlockContentPromise);
+    }
+  }
+
   const deleteBlockPromise = prisma.block.delete({
     where: { id: blockToRemove.id },
   });
@@ -657,7 +885,7 @@ export const removeBlock = async (pageId: number, itemIndex: number) => {
   // Only update 'order' property of blocks that come after the removed one
   const itemsToUpdate = blocks.slice(itemIndex + 1);
 
-  const updatePromises = itemsToUpdate.map((item, i) =>
+  const updatePromises = itemsToUpdate.map((item) =>
     prisma.block.update({
       where: { id: item.id },
       data: { order: item.order - 1 },
@@ -687,6 +915,7 @@ export const deleteBlockIfInvalid = async (blockId: string) => {
     !block.tileBlock &&
     !block.textBlock &&
     !block.productBlock &&
+    !block.articleBlock &&
     !block.bannerBlock
   ) {
     if (block.blockOptionsId) {

@@ -1,9 +1,11 @@
+import { useState } from "react";
 import {
   IoAdd,
   IoCloseCircle,
   IoEllipsisVertical,
   IoLink,
 } from "react-icons/io5";
+import SelectPageLinkPopupFormModule from "~/components/Forms/Modules/SelectPageLinkPopupFormModule";
 
 type Props = {
   selectedBlock: BlockName | undefined;
@@ -18,6 +20,10 @@ const BlockContentImageResults = ({
   selectedItems,
   setSelectedItems,
 }: Props) => {
+  const [itemIndexToUpdate, setItemIndexToUpdate] = useState<
+    number | undefined
+  >(undefined);
+
   const selectItem = (item: Image) => {
     const newContentImage: ContentImage = {
       image: item,
@@ -32,12 +38,17 @@ const BlockContentImageResults = ({
     );
   };
 
-  const handleUpdateImageLink = () => {
-    //HERE WE WILL SELECT A PAGE
-  };
-
   return (
     <>
+      {!isNaN(itemIndexToUpdate!) && (
+        <SelectPageLinkPopupFormModule
+          itemIndexToUpdate={itemIndexToUpdate}
+          setItemIndexToUpdate={setItemIndexToUpdate}
+          updateItemsFunction={setSelectedItems}
+          items={selectedItems}
+        />
+      )}
+
       <input
         name="contentData"
         value={selectedItems && JSON.stringify(selectedItems)}
@@ -53,7 +64,7 @@ const BlockContentImageResults = ({
                 return (
                   <div
                     key={id}
-                    className="relative h-32 w-32 transition-all duration-300 hover:scale-105"
+                    className="relative h-32 w-32 overflow-hidden transition-all duration-300 hover:scale-105"
                   >
                     <div
                       className="absolute bottom-3 right-3 flex h-6 w-6 cursor-pointer select-none items-center justify-center rounded-full bg-primary text-brand-white transition hover:bg-primary-focus"
@@ -78,47 +89,37 @@ const BlockContentImageResults = ({
         )}
 
       {selectedItems &&
-        selectedItems.length > 0 &&
+        selectedItems?.length > 0 &&
         (selectedBlock === "banner" || selectedBlock === "tile") && (
           <div className="max-w-3xl overflow-x-auto">
-            <div className="divider my-0 w-full py-0" />
-            <p className="my-3 text-sm font-bold">Selected Items</p>
+            <p className="mb-3 text-sm font-bold">Selected Items</p>
             <table className="table table-sm">
               <thead className="text-brand-white">
                 <tr>
-                  <th className="w-1/5"></th>
-                  <th className="w-1/5">Name</th>
-                  <th className="w-1/5">Created</th>
-                  <th className="w-1/5">Link</th>
-                  <th className="w-1/5">Delete</th>
+                  <th className="w-1/4"></th>
+                  <th className="w-1/4">Name</th>
+                  <th className="w-1/4">Link</th>
+                  <th className="w-1/4">Delete</th>
                 </tr>
               </thead>
               <tbody>
-                {selectedItems?.map(({ image }: ContentImage, index) => {
+                {selectedItems?.map(({ image, href }: ContentImage, index) => {
                   return (
                     <tr key={"imageTile" + image?.altText + index}>
-                      <td className="w-1/5">{index + 1}</td>
-                      <td className="w-1/5">{image?.altText}</td>
-                      <td className="w-1/5">
-                        {new Date(image?.createdAt).toLocaleDateString(
-                          "en-US",
-                          {
-                            day: "numeric",
-                            month: "long",
-                            year: "numeric",
-                          }
-                        )}
-                      </td>
-                      <td className="w-1/5">
-                        <div className="ml-1">
-                          <IoLink
-                            size={18}
-                            className="cursor-pointer"
-                            onClick={() => handleUpdateImageLink()}
-                          />
+                      <td className="w-1/4">{index + 1}</td>
+                      <td className="w-1/4">{image?.altText}</td>
+                      <td className="w-1/4">
+                        <div
+                          className="ml-1 flex items-center gap-3"
+                          onClick={() => {
+                            setItemIndexToUpdate(index);
+                          }}
+                        >
+                          <IoLink size={18} className="cursor-pointer" />
+                          <span>{href}</span>
                         </div>
                       </td>
-                      <td className="w-1/5">
+                      <td className="w-1/4">
                         <div
                           className="ml-2"
                           onClick={() =>

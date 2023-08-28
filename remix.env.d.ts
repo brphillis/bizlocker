@@ -363,11 +363,21 @@ interface HomePage {
   updatedAt: Date;
 }
 
+interface WebPage {
+  id: number;
+  title: string;
+  blocks: Block[];
+  thumbnail?: Image;
+  isActive?: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 interface NewBlockData {
   blockName: BlockName;
   itemIndex: number;
   contentType?: BlockContentType;
-  contentData?: Promotion[] | Campaign[];
+  contentData?: Promotion[] | Campaign[] | ContentImage[];
   stringData?: string;
   objectData?: ProductBlockContent;
 }
@@ -463,6 +473,7 @@ interface ProductBlockContent {
   productSubCategoryId?: number;
   brand?: Brand;
   brandId?: number;
+
   createdAt: Date;
   updatedAt: Date;
 }
