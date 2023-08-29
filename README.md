@@ -135,11 +135,11 @@ Prior to your first deployment, you'll need to do a few things:
 - Create a database for both your staging and production environments. Run the following:
 
   ```sh
-  fly postgres create --name brockdev-remix-2eda-db
-  fly postgres attach --app brockdev-remix-2eda brockdev-remix-2eda-db
+  fly postgres create --name brockdev-remix-prod
+  fly postgres attach --app brockdev-prod brockdev-remix-prod
 
-  fly postgres create --name brockdev-remix-2eda-staging-db
-  fly postgres attach --app brockdev-remix-2eda-staging brockdev-remix-2eda-staging-db
+  fly postgres create --name brockdev-remix-staging
+  fly postgres attach --app brockdev-staging brockdev-remix-staging
   ```
 
   > **Note:** You'll get the same warning for the same reason when attaching the staging database that you did in the `fly set secret` step above. No worries. Proceed!
