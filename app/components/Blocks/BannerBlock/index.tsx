@@ -1,7 +1,7 @@
 import { useNavigate } from "@remix-run/react";
 
 type Props = {
-  content: Campaign | Promotion | ContentImage;
+  content: Campaign | Promotion | ContentImage | Image;
   type: string;
   options: BlockOptions;
 };
