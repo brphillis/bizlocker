@@ -46,7 +46,7 @@ export const createSeedData = async () => {
 };
 
 const createHomePage = async () => {
-  const existingHomePage = await prisma.department.findFirst();
+  const existingHomePage = await prisma.homePage.findFirst();
 
   if (existingHomePage) {
     console.log("home page already exist. Skipping seed creation.");
