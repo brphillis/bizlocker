@@ -5,7 +5,7 @@ import {
 } from "@remix-run/server-runtime";
 import { useLoaderData } from "react-router-dom";
 import { tokenAuth } from "~/auth.server";
-import BannerBlock from "~/components/Blocks/BannerBlock";
+// import BannerBlock from "~/components/Blocks/BannerBlock";
 import ProductFilterSideBar from "~/components/Filter/ProductFilterSideBar";
 import ProductGrid from "~/components/Grids/ProductGrid";
 import PageWrapper from "~/components/Layout/PageWrapper";
@@ -58,7 +58,7 @@ export const action = async ({ request }: ActionArgs) => {
 
 const Products = () => {
   const {
-    campaign,
+    // campaign,
     products,
     totalPages,
     productCategories,
@@ -77,7 +77,7 @@ const Products = () => {
 
   return (
     <PageWrapper>
-      {campaign && <BannerBlock image={campaign?.bannerImage} />}
+      {/* {campaign && <BannerBlock content={campaign?.bannerImage as Image} />} */}
 
       <div className="w-[1280px] max-w-[100vw]">
         <ProductSort totalCount={products.length * totalPages} />

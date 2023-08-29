@@ -223,7 +223,7 @@ const PageBuilder = ({
                   <option value="tile">Tile</option>
                   <option value="text">Text</option>
                   <option value="product">Product</option>
-                  <option value="article">Article</option>
+                  <option value="article">Articles</option>
                 </select>
               </div>
             </div>
