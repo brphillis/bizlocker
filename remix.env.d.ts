@@ -404,6 +404,7 @@ interface ContentImage {
   id?: number;
   image: Image;
   href: string;
+  imageId?: number;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -412,7 +413,7 @@ interface NewBlockOptions {
   columns?: number | null;
   rows?: number | null;
   count?: number | null;
-  size: "small" | "medium" | "large";
+  size: "small" | "medium" | "large" | "native";
   sortBy?: SortBy | null;
   sortOrder?: SortOrder | null;
 }

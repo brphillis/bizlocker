@@ -17,17 +17,12 @@ const BlockRenderer = ({ blocks }: Props) => {
 
         switch (name) {
           case "banner":
-            const contentData = content as Campaign[] | Promotion[];
-
-            const { bannerImage } = contentData[0] as Campaign | Promotion;
-            const contentName = contentData[0]?.name;
-            const url = type && contentName && `/${type}/${contentName}`;
             return (
               <React.Fragment key={"bannerBlock_" + i}>
                 <BannerBlock
-                  image={bannerImage}
-                  alt={contentName.toLowerCase() + " banner"}
-                  url={url}
+                  content={content[0] as Campaign | Promotion | ContentImage}
+                  type={type}
+                  options={blockOptions as BlockOptions}
                 />
               </React.Fragment>
             );
@@ -37,6 +32,7 @@ const BlockRenderer = ({ blocks }: Props) => {
               <React.Fragment key={"tileBlock_" + i}>
                 <TileBlock
                   content={content as Campaign[] | Promotion[]}
+                  type={type}
                   options={blockOptions as BlockOptions}
                 />
               </React.Fragment>

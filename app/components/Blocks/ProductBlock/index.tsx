@@ -1,6 +1,7 @@
 import { useFetcher } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import ProductGrid from "~/components/Grids/ProductGrid";
+import Spinner from "~/components/Spinner";
 
 type Props = {
   content: ProductBlockContent[];
@@ -82,13 +83,19 @@ const ProductBlock = ({ content, options }: Props) => {
 
   return (
     <>
-      <p className="pl-3 text-xl font-bold md:pl-1">
+      <p className="self-start pl-3 text-xl font-bold md:pl-1">
         {options?.sortBy ? determineSortPhrase(options?.sortBy) : null}
         <span className="text-2xl">{determineDisplayedFilter(content[0])}</span>
       </p>
 
       {currentProducts && (
         <ProductGrid products={currentProducts} cols={columns} />
+      )}
+
+      {!currentProducts && (
+        <div className="flex w-full items-center justify-center">
+          <Spinner />
+        </div>
       )}
     </>
   );

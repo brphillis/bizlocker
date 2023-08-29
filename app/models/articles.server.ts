@@ -33,6 +33,11 @@ export const getArticle = async (id?: string, title?: string) => {
                   tileImage: true,
                 },
               },
+              contentImage: {
+                include: {
+                  image: true,
+                },
+              },
             },
           },
           tileBlock: {
@@ -47,6 +52,11 @@ export const getArticle = async (id?: string, title?: string) => {
                 include: {
                   bannerImage: true,
                   tileImage: true,
+                },
+              },
+              contentImages: {
+                include: {
+                  image: true,
                 },
               },
             },

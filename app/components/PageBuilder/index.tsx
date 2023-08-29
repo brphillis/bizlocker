@@ -37,7 +37,10 @@ const PageBuilder = ({
   articleCategories,
 }: Props) => {
   const submit = useSubmit();
+
   const blocks = getBlocks(page);
+
+  console.log("PROCESSED BLOCKS", blocks);
 
   const [selectedBlock, setSelectedBlock] = useState<BlockName | undefined>();
   const [contentType, setContentType] = useState<BlockContentType>();

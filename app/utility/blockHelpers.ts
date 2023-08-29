@@ -52,6 +52,7 @@ export const getPageBlocks = (
   return firstPopulatedObjects;
 };
 
+//assigns the populated content from a page block and creates a block
 export const getActiveBlocks = (blocks: Block[]): Block[] => {
   let firstPopulatedItems: any[] = [];
   for (let item of blocks) {

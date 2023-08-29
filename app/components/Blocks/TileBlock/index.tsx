@@ -2,24 +2,11 @@ import { useNavigate } from "@remix-run/react";
 
 type Props = {
   content: Campaign[] | Promotion[];
+  type: string;
   options: BlockOptions;
 };
 
-const determineType = (
-  discountPercentage: number,
-  minSaleRange: number,
-  image: Image
-) => {
-  if (image) {
-    return "image";
-  } else if (discountPercentage) {
-    return "promotion";
-  } else if (minSaleRange) {
-    return "campaign";
-  }
-};
-
-const TileBlock = ({ content, options }: Props) => {
+const TileBlock = ({ content, type, options }: Props) => {
   const navigate = useNavigate();
   const { columns } = options || {};
   return (
@@ -33,11 +20,9 @@ const TileBlock = ({ content, options }: Props) => {
     >
       {content?.map((contentData: any) => {
         const { tileImage, name } = contentData as Promotion | Campaign;
-        const { discountPercentage } = contentData as Promotion;
-        const { minSaleRange } = contentData as Campaign;
         const { image, href } = contentData as ContentImage;
 
-        const generateImageLink = (type: string) => {
+        const generateImageLink = () => {
           if (type === "promotion") {
             return `/promotion/${name}`;
           } else if (type === "campaign") {
@@ -47,11 +32,7 @@ const TileBlock = ({ content, options }: Props) => {
           } else return "";
         };
 
-        const type = determineType(discountPercentage, minSaleRange, image);
-        let imageLink: string;
-        if (type) {
-          imageLink = generateImageLink(type);
-        }
+        const imageLink = generateImageLink();
 
         return (
           <img

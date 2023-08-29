@@ -87,7 +87,7 @@ export const updatePageBlock = async (
     if (blockName === "banner" && contentData) {
       const bannerBlock = blockToUpdate.bannerBlock;
       if (bannerBlock) {
-        // Disconnect existing promotions and campaigns
+        // Disconnect existing content
         await prisma.bannerBlock.update({
           where: { id: bannerBlock.id },
           data: {
@@ -96,6 +96,12 @@ export const updatePageBlock = async (
             contentImage: { disconnect: true },
           },
         });
+
+        if (bannerBlock.contentImageId) {
+          await prisma.contentImage.delete({
+            where: { id: bannerBlock.contentImageId },
+          });
+        }
 
         const updatedBannerBlock = await prisma.bannerBlock.update({
           where: { id: bannerBlock.id },
@@ -111,7 +117,12 @@ export const updatePageBlock = async (
                 : undefined,
             contentImage:
               contentType === "image"
-                ? { connect: { id: contentData[0].id } }
+                ? {
+                    create: {
+                      href: (contentData[0] as ContentImage).href,
+                      imageId: (contentData[0] as ContentImage).image.id!,
+                    },
+                  }
                 : undefined,
           },
         });
@@ -149,9 +160,19 @@ export const updatePageBlock = async (
           data: {
             promotions: { disconnect: existingPromotions },
             campaigns: { disconnect: existingCampaigns },
-            contentImages: { disconnect: existingContentImages },
+            // contentImages: { disconnect: existingContentImages },
           },
         });
+
+        if (existingContentImages) {
+          await prisma.contentImage.deleteMany({
+            where: {
+              id: {
+                in: tileBlock.contentImages.map((e) => e.id),
+              },
+            },
+          });
+        }
 
         // Fetch the updated tileBlock with content
         const updatedTileBlock = await prisma.tileBlock.update({
@@ -168,7 +189,12 @@ export const updatePageBlock = async (
                 : undefined,
             contentImages:
               contentType === "image"
-                ? { connect: contentData.map((c) => ({ id: c.id })) }
+                ? {
+                    create: (contentData as ContentImage[]).map((c) => ({
+                      href: c.href,
+                      image: { connect: { id: c.image.id } },
+                    })),
+                  }
                 : undefined,
           },
           // Fetch the promotions field along with other necessary fields
@@ -683,20 +709,32 @@ export const changeBlockOrder = async (
   return true;
 };
 
-export const removeBlock = async (pageId: number, itemIndex: number) => {
+export const removeBlock = async (
+  pageId: number,
+  itemIndex: number,
+  pageType: "homePage" | "webPage" | "article"
+) => {
   let page;
   let blocks;
 
+  let isHomePage;
+  let isWebPage;
+  let isArticlePage;
+
   // Check if the pageId corresponds to a HomePage or an Article
-  const isHomePage = await prisma.homePage.findUnique({
-    where: { id: pageId },
-  });
-  const isWebPage = await prisma.webPage.findUnique({
-    where: { id: pageId },
-  });
-  const isArticlePage = await prisma.article.findUnique({
-    where: { id: pageId },
-  });
+  if (pageType === "homePage") {
+    isHomePage = await prisma.homePage.findUnique({
+      where: { id: pageId },
+    });
+  } else if (pageType === "webPage") {
+    isWebPage = await prisma.webPage.findUnique({
+      where: { id: pageId },
+    });
+  } else if (pageType === "article") {
+    isArticlePage = await prisma.article.findUnique({
+      where: { id: pageId },
+    });
+  }
 
   if (isHomePage) {
     page = isHomePage;

@@ -59,7 +59,7 @@ const BlockOptions = ({ selectedBlock, defaultValues }: Props) => {
               </div>
             )}
 
-            {(selectedBlock === "tile" || selectedBlock === "banner") && (
+            {selectedBlock === "banner" && (
               <div className="form-control">
                 <label className="label">
                   <span className="label-text text-brand-white">Size</span>
@@ -73,6 +73,9 @@ const BlockOptions = ({ selectedBlock, defaultValues }: Props) => {
                   <option value="small">Small</option>
                   <option value="medium">Medium</option>
                   <option value="large">Large</option>
+                  {selectedBlock === "banner" && (
+                    <option value="native">Native</option>
+                  )}
                 </select>
               </div>
             )}

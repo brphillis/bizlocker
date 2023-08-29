@@ -74,7 +74,8 @@ export const action = async ({ request }: ActionArgs) => {
     case "delete":
       return await removeBlock(
         parseInt(pageId as string),
-        parseInt(itemIndex as string)
+        parseInt(itemIndex as string),
+        "homePage"
       );
 
     default:

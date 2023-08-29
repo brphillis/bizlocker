@@ -122,7 +122,8 @@ export const action = async ({ request, params }: ActionArgs) => {
     case "delete":
       return await removeBlock(
         parseInt(id as string),
-        parseInt(itemIndex as string)
+        parseInt(itemIndex as string),
+        "article"
       );
 
     case "deleteArticle":
