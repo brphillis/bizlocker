@@ -1,4 +1,4 @@
-app = "brockdev-remix-2eda"
+app = "brockdev-prod"
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = [ ]

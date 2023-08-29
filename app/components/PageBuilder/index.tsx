@@ -100,6 +100,10 @@ const PageBuilder = ({
     if (updateSuccess) reset();
   }, [updateSuccess]);
 
+  useEffect(() => {
+    setSelectedItems([]);
+  }, [contentType]);
+
   return (
     <Form className="w-full" method="POST">
       <input name="pageId" value={page.id} hidden readOnly />

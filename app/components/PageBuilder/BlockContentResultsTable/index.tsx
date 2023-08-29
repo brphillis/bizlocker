@@ -59,7 +59,9 @@ const BlockContentResultsTable = ({
                         }}
                       >
                         <td className="w-1/4">{index + 1}</td>
-                        <td className="w-1/4">{capitalizeFirst(name)}</td>
+                        <td className="w-1/4">
+                          {name && capitalizeFirst(name)}
+                        </td>
                         <td className="w-1/4">
                           {new Date(createdAt).toLocaleDateString("en-US", {
                             day: "numeric",
