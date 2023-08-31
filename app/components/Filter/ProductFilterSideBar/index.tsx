@@ -29,9 +29,9 @@ const ProductFilterSideBar = ({
 
   const [menuIsExpanded, setMenuIsExpanded] = useState(true);
 
-  const filterProductSubCategories = (subProductCategoryId: number) => {
+  const filterProductSubCategories = (productSubCategoryId: number) => {
     const filteredCats = productSubCategories.filter(
-      (e) => e.subProductCategoryId === subProductCategoryId
+      (e) => e.productSubCategoryId === productSubCategoryId
     );
 
     setFilteredProductSubCategories(filteredCats);
