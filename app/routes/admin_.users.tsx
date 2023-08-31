@@ -52,7 +52,7 @@ const Articles = () => {
                 name="firstName"
                 type="text"
                 placeholder="First Name"
-                className="input input-bordered w-full max-w-xs"
+                className="input input-bordered w-full"
               />
             </div>
 

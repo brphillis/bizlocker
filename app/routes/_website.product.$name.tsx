@@ -126,7 +126,7 @@ const Product = () => {
 
               <img
                 alt={brandName + "_image"}
-                className="absolute bottom-4 right-4 h-20 w-auto"
+                className="absolute bottom-4 right-4 h-16 w-auto max-md:h-10"
                 src={brandImage.url}
               />
             </div>

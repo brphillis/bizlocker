@@ -34,13 +34,13 @@ const Campaigns = () => {
 
         <div className="mt-3 flex flex-col">
           <div className="flex flex-row gap-6">
-            <div className="form-control w-full max-w-xs">
+            <div className="form-control w-full sm:w-[215px]">
               <label className="label">
                 <span className="label-text">Name</span>
               </label>
               <input
                 name="name"
-                className="input input-bordered w-full max-w-xs"
+                className="input input-bordered w-full"
                 placeholder="Name"
                 type="text"
               />

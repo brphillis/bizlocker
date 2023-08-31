@@ -41,17 +41,6 @@ const Admin = () => {
     );
   };
 
-  // const LoginButton = (style?: string) => {
-  //   return (
-  //     <button
-  //       className={"btn-primary btn-md " + style}
-  //       onClick={() => navigate("/login")}
-  //     >
-  //       Login
-  //     </button>
-  //   );
-  // };
-
   useEffect(() => {
     if (!user && !isLoginPage) {
       navigate("/admin/login");
@@ -72,7 +61,10 @@ const Admin = () => {
           >
             <IoMenu size={26} />
           </label>
-          <h1 className="select-none text-center text-2xl font-bold tracking-wide text-white/90">
+          <h1
+            className="select-none text-center text-2xl font-bold tracking-wide text-white/90"
+            onClick={() => navigate("/admin")}
+          >
             CLUTCH.
           </h1>
         </div>
@@ -80,7 +72,7 @@ const Admin = () => {
       </div>
 
       {user && (
-        <div className="drawer-side min-h-screen">
+        <div className="drawer-side z-50 min-h-screen">
           <label
             htmlFor="my-drawer-2"
             className="drawer-overlay !min-h-screen"
@@ -106,11 +98,15 @@ const Admin = () => {
               <div className="collapse-content">
                 <ul className="text-white/75">
                   <li onClick={() => navigate("/admin/users")}>
-                    <div className="hover:text-white">Users</div>
+                    <label htmlFor="my-drawer-2" className="hover:text-white">
+                      Users
+                    </label>
                   </li>
 
                   <li onClick={() => navigate("/admin/orders")}>
-                    <div className="hover:text-white">Orders</div>
+                    <label htmlFor="my-drawer-2" className="hover:text-white">
+                      Orders
+                    </label>
                   </li>
                 </ul>
               </div>
@@ -128,16 +124,24 @@ const Admin = () => {
               <div className="collapse-content">
                 <ul className="text-white/75">
                   <li onClick={() => navigate("/admin/home-page")}>
-                    <div className="hover:text-white">Home Page</div>
+                    <label htmlFor="my-drawer-2" className="hover:text-white">
+                      Home Page
+                    </label>
                   </li>
                   <li onClick={() => navigate("/admin/pages")}>
-                    <div className="hover:text-white">Pages</div>
+                    <label htmlFor="my-drawer-2" className="hover:text-white">
+                      Pages
+                    </label>
                   </li>
                   <li onClick={() => navigate("/admin/articles")}>
-                    <div className="hover:text-white">Articles</div>
+                    <label htmlFor="my-drawer-2" className="hover:text-white">
+                      Articles
+                    </label>
                   </li>
                   <li onClick={() => navigate("/admin/article-categories")}>
-                    <div className="hover:text-white">Article Categories</div>
+                    <label htmlFor="my-drawer-2" className="hover:text-white">
+                      Article Categories
+                    </label>
                   </li>
                 </ul>
               </div>
@@ -155,16 +159,24 @@ const Admin = () => {
               <div className="collapse-content">
                 <ul className="text-white/75">
                   <li onClick={() => navigate("/admin/products")}>
-                    <div className="hover:text-white">Products</div>
+                    <label htmlFor="my-drawer-2" className="hover:text-white">
+                      Products
+                    </label>
                   </li>
                   <li onClick={() => navigate("/admin/product-categories")}>
-                    <div className="hover:text-white">Categories</div>
+                    <label htmlFor="my-drawer-2" className="hover:text-white">
+                      Categories
+                    </label>
                   </li>
                   <li onClick={() => navigate("/admin/product-subcategories")}>
-                    <div className="hover:text-white">SubCategories</div>
+                    <label htmlFor="my-drawer-2" className="hover:text-white">
+                      SubCategories
+                    </label>
                   </li>
                   <li onClick={() => navigate("/admin/brands")}>
-                    <div className="hover:text-white">Brands</div>
+                    <label htmlFor="my-drawer-2" className="hover:text-white">
+                      Brands
+                    </label>
                   </li>
                 </ul>
               </div>
@@ -182,7 +194,9 @@ const Admin = () => {
               <div className="collapse-content">
                 <ul className="text-white/75">
                   <li onClick={() => navigate("/admin/images")}>
-                    <div className="hover:text-white">Images</div>
+                    <label htmlFor="my-drawer-2" className="hover:text-white">
+                      Images
+                    </label>
                   </li>
                 </ul>
               </div>
@@ -200,7 +214,9 @@ const Admin = () => {
               <div className="collapse-content">
                 <ul className="text-white/75">
                   <li onClick={() => navigate("/admin/report-sales")}>
-                    <div className="hover:text-white">Sales</div>
+                    <label htmlFor="my-drawer-2" className="hover:text-white">
+                      Sales
+                    </label>
                   </li>
                 </ul>
               </div>
@@ -218,10 +234,14 @@ const Admin = () => {
               <div className="collapse-content">
                 <ul className="text-white/75">
                   <li onClick={() => navigate("/admin/promotions")}>
-                    <div className="hover:text-white">Promotions</div>
+                    <label htmlFor="my-drawer-2" className="hover:text-white">
+                      Promotions
+                    </label>
                   </li>
                   <li onClick={() => navigate("/admin/campaigns")}>
-                    <div className="hover:text-white">Campaigns</div>
+                    <label htmlFor="my-drawer-2" className="hover:text-white">
+                      Campaigns
+                    </label>
                   </li>
                 </ul>
               </div>

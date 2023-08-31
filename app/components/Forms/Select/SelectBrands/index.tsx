@@ -23,7 +23,7 @@ const SelectBrands = ({ brands, valueToChange, title }: Props) => {
     <div className="form-control">
       <label className="label text-sm">{title ? title : "Categories"}</label>
       <select
-        className=" select w-[95vw] sm:w-[215px]"
+        className="select w-[95vw] sm:w-[215px]"
         onChange={handleOptionChange}
         value={selectedBrands}
         multiple

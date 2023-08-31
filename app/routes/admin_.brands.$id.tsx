@@ -37,7 +37,7 @@ export const action = async ({ request, params }: ActionArgs) => {
         ? (JSON.parse(image?.toString()) as Image)
         : undefined;
 
-      upsertBrand(name as string, parsedImage, id);
+      await upsertBrand(name as string, parsedImage, id);
 
       return redirect("/admin/brands");
 

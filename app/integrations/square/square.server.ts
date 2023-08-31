@@ -62,7 +62,7 @@ export const createSquarePaymentLink = async (
       lineItems: squareLineItems,
     },
     checkoutOptions: {
-      redirectUrl: `${process.env.DEV_URL}/order/payment-confirm/${confirmCode}`,
+      redirectUrl: `${process.env.SITE_URL}/order/payment-confirm/${confirmCode}`,
       askForShippingAddress: true,
       acceptedPaymentMethods: {
         applePay: true,

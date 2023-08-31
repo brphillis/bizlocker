@@ -92,11 +92,11 @@ const App = () => {
               </div>
             </div>
 
-            <div className="absolute left-16 flex h-full flex-row items-center gap-4 px-2 font-bold lg:relative lg:left-0">
-              <h1
-                className="-mt-1 cursor-pointer select-none text-xl font-bold tracking-widest text-white"
-                onClick={() => navigate("/")}
-              >
+            <div
+              className="absolute left-16 flex h-full flex-row items-center gap-4 px-2 font-bold lg:relative lg:left-0"
+              onClick={() => navigate("/home")}
+            >
+              <h1 className="-mt-1 cursor-pointer select-none text-xl font-bold tracking-widest text-white">
                 CLUTCH.
               </h1>
             </div>
@@ -141,8 +141,11 @@ const App = () => {
           <SearchBar productCategories={productCategories} brands={brands} />
         )}
 
-        {(!location.pathname.includes("/login") ||
-          location.pathname.includes("/register")) && (
+        {!(
+          location.pathname.includes("/login") ||
+          location.pathname.includes("/register") ||
+          location.pathname.includes("/forgot-password")
+        ) && (
           <div className="navbar relative flex !min-h-[50px] w-full items-center justify-center bg-base-200 !py-0 text-sm font-bold text-brand-black/80 shadow-md">
             <p className="cursor-pointer">
               BUY NOW - SELL LATER - FREE RETURNS
@@ -171,7 +174,9 @@ const App = () => {
                   })
                 }
               >
-                {name.toUpperCase()}
+                <label htmlFor="my-drawer-3" className="hover:text-white">
+                  {name.toUpperCase()}
+                </label>
               </li>
             );
           })}

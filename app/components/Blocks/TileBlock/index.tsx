@@ -18,34 +18,36 @@ const TileBlock = ({ content, type, options }: Props) => {
           : "repeat(2, minmax(0, 1fr))",
       }}
     >
-      {content?.map((contentData: any) => {
-        const { tileImage, name } = contentData as Promotion | Campaign;
-        const { image, href } = contentData as ContentImage;
+      {content?.map(
+        (contentData: Promotion | Campaign | ContentImage, i: number) => {
+          const { tileImage, name } = contentData as Promotion | Campaign;
+          const { image, href } = contentData as ContentImage;
 
-        const generateImageLink = () => {
-          if (type === "promotion") {
-            return `/promotion/${name}`;
-          } else if (type === "campaign") {
-            return `/campaign/${name}`;
-          } else if (type === "image") {
-            return href;
-          } else return "";
-        };
+          const generateImageLink = () => {
+            if (type === "promotion") {
+              return `/promotion/${name}`;
+            } else if (type === "campaign") {
+              return `/campaign/${name}`;
+            } else if (type === "image") {
+              return href;
+            } else return "";
+          };
 
-        const imageLink = generateImageLink();
+          const imageLink = generateImageLink();
 
-        return (
-          <img
-            key={"tileImage_" + name}
-            className={`h-full w-full cursor-pointer object-cover transition duration-300 ease-in-out hover:scale-[1.01] ${
-              content.length % 2 !== 0 ? "max-sm:last:col-span-full" : ""
-            } `}
-            onClick={() => navigate(imageLink)}
-            src={tileImage?.url || image?.url}
-            alt={name || href}
-          />
-        );
-      })}
+          return (
+            <img
+              key={"tileImage_" + (name || i)}
+              className={`h-full w-full cursor-pointer object-cover transition duration-300 ease-in-out hover:scale-[1.01] ${
+                content.length % 2 !== 0 ? "max-sm:last:col-span-full" : ""
+              } `}
+              onClick={() => navigate(imageLink)}
+              src={tileImage?.url || image?.url}
+              alt={name || href}
+            />
+          );
+        }
+      )}
     </div>
   );
 };

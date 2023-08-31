@@ -1,6 +1,7 @@
 import type { ActionArgs } from "@remix-run/node";
 import {
   Form,
+  Link,
   useActionData,
   useLocation,
   useNavigate,
@@ -10,6 +11,7 @@ import { verifyLogin } from "~/models/auth/login.server";
 import { createUserSession } from "~/session.server";
 import { safeRedirect } from "~/utils";
 import AuthPageWrapper from "~/components/Layout/AuthPageWrapper";
+import { isValidEmail, isValidPassword } from "~/utility/validate";
 
 export const action = async ({ request }: ActionArgs) => {
   const formData = await request.formData();
@@ -17,8 +19,29 @@ export const action = async ({ request }: ActionArgs) => {
   const password = formData.get("password");
   const redirectTo = safeRedirect(formData.get("redirectTo"), "/admin");
   const remember = formData.get("remember");
+  let validationError: string[] = [];
 
-  const { user } = await verifyLogin(email as string, password as string);
+  if (!isValidEmail(email as string)) {
+    validationError.push("Invalid Email Address");
+  }
+
+  if (!isValidPassword(password as string)) {
+    validationError.push("Password Does Not Meet Requirements");
+  }
+
+  if (validationError.length > 0) {
+    return { validationError };
+  }
+
+  const { user, error } = await verifyLogin(
+    email as string,
+    password as string
+  );
+
+  if (error) {
+    const validationError = [error];
+    return { validationError };
+  }
 
   if (user) {
     return createUserSession({
@@ -31,7 +54,9 @@ export const action = async ({ request }: ActionArgs) => {
 };
 
 const AdminLogin = () => {
-  const user = useActionData();
+  const { user, validationError } =
+    (useActionData() as { validationError: string[]; user: Object }) || {};
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -73,14 +98,31 @@ const AdminLogin = () => {
             name="password"
             type="password"
             placeholder="password"
-            className="input input-bordered text-brand-black/50 focus:text-brand-black"
+            className="input input-bordered bg-base-100 text-brand-black/50 focus:text-brand-black"
           />
-          <label className="label">
-            <div className="link-hover link label-text-alt">
-              Forgot password?
-            </div>
-          </label>
+
+          <Link
+            to="/forgot-password"
+            className="link-hover link mb-3 ml-1 mt-2 cursor-pointer text-xs text-brand-white/75"
+          >
+            Forgot password?
+          </Link>
         </div>
+
+        {validationError?.length > 0 && (
+          <div>
+            {validationError.map((error: string, i) => {
+              return (
+                <p
+                  key={error + i}
+                  className="mb-4 text-center text-xs text-red-500"
+                >
+                  {error}
+                </p>
+              );
+            })}
+          </div>
+        )}
 
         <div className="form-control gap-3">
           <button type="submit" className="btn btn-primary">
