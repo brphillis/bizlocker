@@ -2,27 +2,45 @@ import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import BlockRenderer from "~/components/BlockRenderer";
 import PageWrapper from "~/components/Layout/PageWrapper";
+import {
+  getArticlesForPage,
+  getProductsForPage,
+} from "~/models/blockHelpers.server";
 import { getWebPage } from "~/models/webPages.server";
 import { getBlocks } from "~/utility/blockHelpers";
 
 export const meta: V2_MetaFunction = () => [{ title: "Page Name" }];
 
 export const loader = async ({ params }: LoaderArgs) => {
-  const articleName = params.name;
+  const pageName = params.name;
+  const webPage = await getWebPage(undefined, pageName);
+  let blocks;
+  let productBlockProducts: Product[][] = [];
+  let articleBlockArticles: Article[][] = [];
 
-  const webPage = await getWebPage(undefined, articleName);
-  return { webPage };
+  if (webPage) {
+    blocks = getBlocks(webPage as any);
+  }
+  if (blocks) {
+    productBlockProducts = await getProductsForPage(blocks);
+    articleBlockArticles = await getArticlesForPage(blocks);
+  }
+  return { blocks, productBlockProducts, articleBlockArticles };
 };
 
-const Home = () => {
-  const { webPage } = useLoaderData();
-  const blocks: Block[] = getBlocks(webPage);
+const WebPage = () => {
+  const { blocks, productBlockProducts, articleBlockArticles } =
+    useLoaderData();
 
   return (
     <PageWrapper gap="medium">
-      <BlockRenderer blocks={blocks} />
+      <BlockRenderer
+        blocks={blocks}
+        productBlockProducts={productBlockProducts}
+        articleBlockArticles={articleBlockArticles}
+      />
     </PageWrapper>
   );
 };
 
-export default Home;
+export default WebPage;

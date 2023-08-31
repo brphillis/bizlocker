@@ -34,6 +34,7 @@ export const createInitialDeveloper = async () => {
 
 export const createSeedData = async () => {
   try {
+    await createHomePage();
     await createRandomBrands();
     await createRandomProductSubCategories();
     await createRandomProducts();
@@ -44,10 +45,21 @@ export const createSeedData = async () => {
   }
 };
 
+const createHomePage = async () => {
+  const existingHomePage = await prisma.homePage.findFirst();
+
+  if (existingHomePage) {
+    console.log("home page already exist. Skipping seed creation.");
+    return;
+  }
+
+  await prisma.homePage.create({ data: {} });
+};
+
 const createRandomBrands = async () => {
   const existingDepartments = await prisma.department.findMany();
   if (existingDepartments.length > 0) {
-    console.log("seed data already exist. Skipping seed creation.");
+    console.log("brands already exist. Skipping seed creation.");
     return;
   }
 

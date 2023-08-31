@@ -262,7 +262,9 @@ interface ProductSubCategory {
   id: number;
   name: string;
   productCategory?: ProductCategory;
-  subProductCategoryId?: number;
+  productCategoryId?: number;
+  productSubCategory?: ProductCategory;
+  productSubCategoryId?: number;
   products: Product[];
   productBlockContent: ProductBlockContent[];
   image?: Image;
@@ -349,7 +351,7 @@ type BasicSearchArgs = {
   sortOrder?: string;
 };
 
-type SortBy = "createdAt" | "totalSold" | "price" | "name";
+type SortBy = "createdAt" | "totalSold" | "price" | "name" | "title";
 type SortOrder = "asc" | "desc";
 
 type BlockName = "banner" | "tile" | "text" | "product" | "article";
@@ -469,7 +471,7 @@ interface ProductBlockContent {
   productBlock?: ProductBlock;
   productBlockId?: string;
   productCategory?: ProductCategory;
-  subProductCategoryId?: number;
+  productCategoryId?: number;
   productSubCategory?: ProductSubCategory;
   productSubCategoryId?: number;
   brand?: Brand;

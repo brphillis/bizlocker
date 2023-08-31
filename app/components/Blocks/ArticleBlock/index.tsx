@@ -1,49 +1,17 @@
-import { useFetcher } from "@remix-run/react";
-import { useEffect, useState } from "react";
 import ArticleGrid from "~/components/Grids/ArticleGrid";
 
 type Props = {
   content: ArticleBlockContent[];
   options: BlockOptions;
+  articles: Article[] | undefined;
 };
 
-const ArticleBlock = ({ content, options }: Props) => {
-  const [currentArticles, setCurrentArticles] = useState<Article[]>();
-  const fetcher = useFetcher();
-  const articleCategory = content?.[0]?.articleCategory?.id;
-  const count = options?.count;
-
-  useEffect(() => {
-    if (fetcher.state === "idle" && fetcher.data == null) {
-      let query = "/api/searchArticles";
-
-      const params = [];
-      if (articleCategory !== null && articleCategory !== undefined) {
-        params.push(`articleCategory=${articleCategory}`);
-      }
-
-      if (count !== null && count !== undefined) {
-        params.push(`perPage=${count.toString()}`);
-      }
-
-      if (params.length > 0) {
-        query += `?${params.join("&")}`;
-      }
-
-      fetcher.load(query);
-    }
-
-    if (fetcher.data && !currentArticles) {
-      const { articles } = fetcher.data;
-      setCurrentArticles(articles);
-    }
-  }, [fetcher, currentArticles, content, count, articleCategory]);
-
+const ArticleBlock = ({ content, options, articles }: Props) => {
   const determineSortPhrase = (sortBy: SortBy) => {
     if (sortBy === "createdAt") {
       return "Latest Article in  ";
     }
-    if (sortBy === "name") {
+    if (sortBy === "title") {
       return "Articles about  ";
     }
   };
@@ -65,7 +33,7 @@ const ArticleBlock = ({ content, options }: Props) => {
         </p>
       )}
 
-      {currentArticles && <ArticleGrid articles={currentArticles} />}
+      {articles && <ArticleGrid articles={articles} />}
     </>
   );
 };

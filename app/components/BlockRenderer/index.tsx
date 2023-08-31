@@ -7,12 +7,21 @@ import ArticleBlock from "../Blocks/ArticleBlock";
 
 type Props = {
   blocks: Block[];
+  productBlockProducts?: Product[][];
+  articleBlockArticles?: Article[][];
 };
 
-const BlockRenderer = ({ blocks }: Props) => {
+const BlockRenderer = ({
+  blocks,
+  productBlockProducts,
+  articleBlockArticles,
+}: Props) => {
+  let productBlockCount = 0;
+  let articleBlockCount = 0;
+
   return (
     <>
-      {blocks.map((_, i: number) => {
+      {blocks?.map((_, i: number) => {
         const { name, content, blockOptions, type } = blocks[i] || {};
 
         switch (name) {
@@ -46,9 +55,11 @@ const BlockRenderer = ({ blocks }: Props) => {
             );
 
           case "product":
+            productBlockCount++;
             return (
               <React.Fragment key={"productBlock_" + i}>
                 <ProductBlock
+                  products={productBlockProducts?.[productBlockCount - 1]}
                   content={content as ProductBlockContent[]}
                   options={blockOptions as BlockOptions}
                 />
@@ -56,9 +67,11 @@ const BlockRenderer = ({ blocks }: Props) => {
             );
 
           case "article":
+            articleBlockCount++;
             return (
               <React.Fragment key={"articleBlock" + i}>
                 <ArticleBlock
+                  articles={articleBlockArticles?.[articleBlockCount - 1]}
                   content={content as ArticleBlockContent[]}
                   options={blockOptions as BlockOptions}
                 />

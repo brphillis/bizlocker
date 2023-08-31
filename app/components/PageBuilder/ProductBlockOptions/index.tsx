@@ -27,7 +27,7 @@ const ProductBlockOptions = ({
           <div className="flex flex-wrap gap-3 !text-brand-white">
             <SelectProductCategory
               productCategories={productCategories}
-              defaultValue={defaultValues?.subProductCategoryId?.toString()}
+              defaultValue={defaultValues?.productCategoryId?.toString()}
             />
 
             <SelectProductSubCategory

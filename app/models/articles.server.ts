@@ -244,9 +244,11 @@ export const searchArticles = async (
     formData?.title || (url && url.searchParams.get("title")?.toString()) || "";
   const articleCategory =
     formData?.articleCategory || url?.searchParams.get("articleCategory") || "";
+
   const sortBy = formData?.sortBy || url?.searchParams.get("sortBy") || "";
   const sortOrder =
     formData?.sortOrder || url?.searchParams.get("sortOrder") || "";
+
   const pageNumber =
     (formData?.pageNumber && parseInt(formData.pageNumber as string)) ||
     (url && Number(url.searchParams.get("pageNumber"))) ||

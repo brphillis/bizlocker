@@ -40,8 +40,6 @@ const PageBuilder = ({
 
   const blocks = getBlocks(page);
 
-  console.log("PROCESSED BLOCKS", blocks);
-
   const [selectedBlock, setSelectedBlock] = useState<BlockName | undefined>();
   const [contentType, setContentType] = useState<BlockContentType>();
   const [editingContent, setEditingContent] = useState<boolean>(false);
@@ -167,14 +165,15 @@ const PageBuilder = ({
                                 editBlock(i);
                               }}
                             />
-
-                            <HiTrash
-                              size={24}
-                              className="cursor-pointer rounded-full bg-error p-[0.3rem] text-primary-content"
-                              onClick={() => {
-                                deleteBlock(i);
-                              }}
-                            />
+                            {i > 0 && (
+                              <HiTrash
+                                size={24}
+                                className="cursor-pointer rounded-full bg-error p-[0.3rem] text-primary-content"
+                                onClick={() => {
+                                  deleteBlock(i);
+                                }}
+                              />
+                            )}
                           </div>
                         </td>
                       </tr>

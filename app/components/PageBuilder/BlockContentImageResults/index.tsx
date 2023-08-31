@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   IoAdd,
   IoCloseCircle,
@@ -37,10 +37,6 @@ const BlockContentImageResults = ({
       ])(selectedItems)
     );
   };
-
-  useEffect(() => {
-    console.log("current selected", selectedItems);
-  }, [selectedItems]);
 
   return (
     <>
