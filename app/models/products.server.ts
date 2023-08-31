@@ -327,8 +327,6 @@ export const searchProducts = async (
     };
   }
 
-  console.log("BRANDO", perPage, "BRANDAAA");
-
   if (productCategory && !category) {
     if (isNaN(parseInt(productCategory as string))) {
       const productSubCategories = await prisma.productSubCategory.findMany({

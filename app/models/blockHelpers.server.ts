@@ -38,8 +38,6 @@ export const getProductsForBlock = async (
 
   const foundProducts = await searchProducts(formDataObject);
 
-  console.log("helper", formDataObject.brand);
-
   return foundProducts;
 };
 

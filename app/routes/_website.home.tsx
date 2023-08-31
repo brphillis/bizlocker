@@ -29,7 +29,7 @@ export const loader = async () => {
 
 const Home = () => {
   const { blocks, productBlockProducts, articleBlockArticles } =
-    useLoaderData();
+    useLoaderData() || {};
 
   return (
     <PageWrapper gap="medium">
