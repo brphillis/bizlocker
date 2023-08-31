@@ -20,7 +20,7 @@ const SearchBar = ({ productCategories, brands }: Props) => {
     <Form
       method="GET"
       action="/products"
-      className="form-control mt-[-1px] flex h-[60px] w-full !flex-row justify-center gap-3 bg-brand-black"
+      className="form-control relative mt-[-1px] flex h-max w-full !flex-row justify-center gap-3 bg-brand-black py-3"
     >
       <div className="flex flex-row flex-wrap items-center justify-center gap-3">
         <div className="flex flex-row gap-3">
