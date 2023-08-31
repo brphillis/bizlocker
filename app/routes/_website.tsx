@@ -28,7 +28,10 @@ export const links: LinksFunction = () => [
 
 export const loader = async ({ request }: LoaderArgs) => {
   const user = await getUserObject(request);
-  const cart = await getCart(request);
+  let cart;
+  if (user) {
+    cart = await getCart(request);
+  }
   const productCategories = await getProductCategories();
   const brands = await getBrands();
 
