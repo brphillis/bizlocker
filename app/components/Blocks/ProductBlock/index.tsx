@@ -1,63 +1,15 @@
-import { useFetcher } from "@remix-run/react";
-import { useEffect, useState } from "react";
+// import { useFetcher } from "@remix-run/react";
+// import { useEffect, useState } from "react";
 import ProductGrid from "~/components/Grids/ProductGrid";
 import Spinner from "~/components/Spinner";
 
 type Props = {
   content: ProductBlockContent[];
   options: BlockOptions;
+  products: Product[] | undefined;
 };
 
-const ProductBlock = ({ content, options }: Props) => {
-  const [currentProducts, setCurrentProducts] = useState<Product[]>();
-  const fetcher = useFetcher();
-  const productCategory = content?.[0]?.productCategory?.id;
-  const productSubCategory = content?.[0]?.productSubCategory?.id;
-  const brand = content?.[0]?.brand?.id;
-  const count = options?.count;
-
-  useEffect(() => {
-    if (fetcher.state === "idle" && fetcher.data == null) {
-      let query = "/api/searchProducts";
-
-      const params = [];
-      if (productCategory !== null && productCategory !== undefined) {
-        params.push(`productCategory=${productCategory}`);
-      }
-
-      if (productSubCategory !== null && productSubCategory !== undefined) {
-        params.push(`productSubCategory=${productSubCategory}`);
-      }
-
-      if (brand !== null && brand !== undefined) {
-        params.push(`brand=${brand}`);
-      }
-
-      if (count !== null && count !== undefined) {
-        params.push(`perPage=${count.toString()}`);
-      }
-
-      if (params.length > 0) {
-        query += `?${params.join("&")}`;
-      }
-
-      fetcher.load(query);
-    }
-
-    if (fetcher.data && !currentProducts) {
-      const { products } = fetcher.data;
-      setCurrentProducts(products);
-    }
-  }, [
-    fetcher,
-    currentProducts,
-    content,
-    productCategory,
-    productSubCategory,
-    brand,
-    count,
-  ]);
-
+const ProductBlock = ({ content, options, products }: Props) => {
   const determineSortPhrase = (sortBy: SortBy) => {
     if (sortBy === "createdAt") {
       return "Shop New In  ";
@@ -88,11 +40,9 @@ const ProductBlock = ({ content, options }: Props) => {
         <span className="text-2xl">{determineDisplayedFilter(content[0])}</span>
       </p>
 
-      {currentProducts && (
-        <ProductGrid products={currentProducts} cols={columns} />
-      )}
+      {products && <ProductGrid products={products} cols={columns} />}
 
-      {!currentProducts && (
+      {!products && (
         <div className="flex w-full items-center justify-center">
           <Spinner />
         </div>

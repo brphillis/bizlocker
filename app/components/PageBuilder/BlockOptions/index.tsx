@@ -26,7 +26,18 @@ const BlockOptions = ({ selectedBlock, defaultValues }: Props) => {
                   defaultValue={!sortBy ? undefined : sortBy}
                 >
                   <option value={undefined}>Select Order</option>
-                  <option value="name">Name</option>
+                  {selectedBlock === "product" && (
+                    <>
+                      <option value="name">Name</option>
+                    </>
+                  )}
+
+                  {selectedBlock === "article" && (
+                    <>
+                      <option value="title">Title</option>
+                    </>
+                  )}
+
                   <option value="createdAt">Created</option>
 
                   {selectedBlock === "product" && (

@@ -116,8 +116,8 @@ model ProductBlockContent {
   id                   String              @id @unique @default(cuid())
   productBlock         ProductBlock?       @relation("ProductBlockContentToProductBlock", fields: [productBlockId], references: [id])
   productBlockId       String?             @unique
-  productCategory      ProductCategory?    @relation("ProductCategoryToProductBlock", fields: [subProductCategoryId], references: [id])
-  subProductCategoryId Int?
+  productCategory      ProductCategory?    @relation("ProductCategoryToProductBlock", fields: [productCategoryId], references: [id])
+  productCategoryId    Int?
   productSubCategory   ProductSubCategory? @relation("ProductSubCategoryToProductBlock", fields: [productSubCategoryId], references: [id])
   productSubCategoryId Int?
   brand                Brand?              @relation("BrandToProductBlock", fields: [brandId], references: [id])
@@ -468,6 +468,7 @@ enum SortBy {
   totalSold
   price
   name
+  title
 }
 
 enum SortOrder {
