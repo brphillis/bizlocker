@@ -11,7 +11,7 @@ const TileBlock = ({ content, type, options }: Props) => {
   const { columns } = options || {};
   return (
     <div
-      className="grid place-items-center gap-3 gap-y-3 px-3 max-sm:!grid-cols-2 sm:gap-6 lg:px-0"
+      className="relative grid h-max place-items-center gap-3 px-3 max-sm:!grid-cols-2 sm:gap-6 lg:px-0"
       style={{
         gridTemplateColumns: columns
           ? `repeat(${columns}, minmax(0, 1fr))`
@@ -38,9 +38,10 @@ const TileBlock = ({ content, type, options }: Props) => {
           return (
             <img
               key={"tileImage_" + (name || i)}
-              className={`h-full w-full cursor-pointer object-cover transition duration-300 ease-in-out hover:scale-[1.01] ${
-                content.length % 2 !== 0 ? "max-sm:last:col-span-full" : ""
-              } `}
+              className={
+                "relative h-full w-full cursor-pointer object-cover transition duration-300 ease-in-out hover:scale-[1.01] " +
+                (content.length % 2 !== 0 ? "max-sm:last:col-span-full" : "")
+              }
               onClick={() => navigate(imageLink)}
               src={tileImage?.url || image?.url}
               alt={name || href}

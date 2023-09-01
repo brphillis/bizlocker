@@ -9,7 +9,7 @@ import {
 import { getWebPage } from "~/models/webPages.server";
 import { getBlocks } from "~/utility/blockHelpers";
 
-export const meta: V2_MetaFunction = () => [{ title: "Page Name" }];
+export const meta: V2_MetaFunction = ({ data }) => [{ title: data.pageName }];
 
 export const loader = async ({ params }: LoaderArgs) => {
   const pageName = params.name;
@@ -25,7 +25,7 @@ export const loader = async ({ params }: LoaderArgs) => {
     productBlockProducts = await getProductsForPage(blocks);
     articleBlockArticles = await getArticlesForPage(blocks);
   }
-  return { blocks, productBlockProducts, articleBlockArticles };
+  return { blocks, productBlockProducts, articleBlockArticles, pageName };
 };
 
 const WebPage = () => {

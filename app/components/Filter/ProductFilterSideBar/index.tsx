@@ -69,9 +69,12 @@ const ProductFilterSideBar = ({
         </div>
       )}
       {menuIsExpanded && (
-        <ul className="menu collapse mx-3 w-full rounded-none bg-base-200/50 px-0 xl:mx-0 xl:block xl:w-96">
+        <ul className="menu collapse pointer-events-none mx-3 w-full rounded-none bg-base-200/50 px-0 xl:mx-0 xl:block xl:w-96">
           <div className="collapse-title px-3 py-3 xl:hidden">
-            <div className="text-md flex items-center justify-center gap-3 font-semibold text-brand-black">
+            <div
+              className="text-md pointer-events-auto flex items-center justify-center gap-3 font-semibold text-brand-black"
+              onClick={() => setMenuIsExpanded(false)}
+            >
               <p>FILTERS</p> <IoChevronUp />
             </div>
             <div className="my-2 w-full border-b-2 border-brand-black/5" />
@@ -87,6 +90,7 @@ const ProductFilterSideBar = ({
               <details
                 open
                 onClick={(e) => searchedGender && e.preventDefault()}
+                className="pointer-events-auto"
               >
                 <summary
                   className={`font-semibold text-brand-black 
@@ -95,7 +99,7 @@ const ProductFilterSideBar = ({
                   Gender
                 </summary>
                 <div
-                  className="ml-3 flex cursor-pointer gap-2 py-1 pt-3"
+                  className="pointer-events-auto ml-3 flex cursor-pointer gap-2 py-1 pt-3"
                   onClick={() => {
                     const selectedGender = searchedGender;
                     if (selectedGender === "MALE") {
@@ -119,7 +123,7 @@ const ProductFilterSideBar = ({
                   <p>Mens</p>
                 </div>
                 <div
-                  className="ml-3 flex cursor-pointer gap-2 py-1 pt-3"
+                  className="pointer-events-auto ml-3 flex cursor-pointer gap-2 py-1 pt-3"
                   onClick={() => {
                     const selectedGender = searchedGender;
                     if (selectedGender === "FEMALE") {
@@ -143,7 +147,7 @@ const ProductFilterSideBar = ({
                   <p>Womans</p>
                 </div>
                 <div
-                  className="ml-3 flex cursor-pointer gap-2 py-1 pt-3"
+                  className="pointer-events-auto ml-3 flex cursor-pointer gap-2 py-1 pt-3"
                   onClick={() => {
                     const selectedGender = searchedGender;
                     if (selectedGender === "KIDS") {
@@ -173,6 +177,7 @@ const ProductFilterSideBar = ({
               <details
                 open
                 onClick={(e) => searchedProdCat && e.preventDefault()}
+                className="pointer-events-auto"
               >
                 <summary className="font-semibold text-brand-black">
                   Category
@@ -182,7 +187,7 @@ const ProductFilterSideBar = ({
                     return (
                       <div
                         key={"productCategory_sideFilter_" + id}
-                        className="ml-3 flex cursor-pointer gap-2 py-1 pt-3"
+                        className="pointer-events-auto ml-3 flex cursor-pointer gap-2 py-1 pt-3"
                         onClick={() => {
                           filterProductSubCategories(id);
                           searchParams.delete("productSubCategory");
@@ -217,6 +222,7 @@ const ProductFilterSideBar = ({
               <details
                 open
                 onClick={(e) => searchedProdCat && e.preventDefault()}
+                className="pointer-events-auto"
               >
                 <summary className="font-semibold text-brand-black">
                   Sub-Category
@@ -227,7 +233,7 @@ const ProductFilterSideBar = ({
                       return (
                         <div
                           key={"productSubCategory_sideFilter_" + id}
-                          className="ml-3 flex cursor-pointer gap-2 py-1 pt-3"
+                          className="pointer-events-auto ml-3 flex cursor-pointer gap-2 py-1 pt-3"
                           onClick={() => {
                             const selectedProductSubCategory = searchedProdCat;
                             if (selectedProductSubCategory === name) {
@@ -258,7 +264,10 @@ const ProductFilterSideBar = ({
             </li>
             <div className="my-2 w-full border-b-2 border-brand-black/5" />
             <li>
-              <details onClick={(e) => searchedBrand && e.preventDefault()}>
+              <details
+                onClick={(e) => searchedBrand && e.preventDefault()}
+                className="pointer-events-auto"
+              >
                 <summary className="font-semibold text-brand-black">
                   Brand
                 </summary>
@@ -267,7 +276,7 @@ const ProductFilterSideBar = ({
                     return (
                       <div
                         key={"brand_sideFilter_" + id}
-                        className="ml-3 flex cursor-pointer gap-2 py-1 pt-3"
+                        className="pointer-events-auto ml-3 flex cursor-pointer gap-2 py-1 pt-3"
                         onClick={() => {
                           const selectedBrand = searchedBrand;
                           if (selectedBrand === name) {
@@ -297,7 +306,10 @@ const ProductFilterSideBar = ({
             </li>
             <div className="my-2 w-full border-b-2 border-brand-black/5" />
             <li>
-              <details onClick={(e) => searchedColor && e.preventDefault()}>
+              <details
+                onClick={(e) => searchedColor && e.preventDefault()}
+                className="pointer-events-auto"
+              >
                 <summary className="font-semibold text-brand-black">
                   Color
                 </summary>
@@ -306,7 +318,7 @@ const ProductFilterSideBar = ({
                     return (
                       <div
                         key={"color_sideFilter_" + colorName}
-                        className="ml-3 flex cursor-pointer gap-2 py-1 pt-3"
+                        className="pointer-events-auto ml-3 flex cursor-pointer gap-2 py-1 pt-3"
                         onClick={() => {
                           const selectedColor = searchedColor;
                           if (selectedColor === colorName) {
@@ -337,7 +349,7 @@ const ProductFilterSideBar = ({
             <div className="my-2 w-full border-b-2 border-brand-black/5" />
             <li>
               <div
-                className="flex cursor-pointer justify-between"
+                className="pointer-events-auto flex cursor-pointer justify-between"
                 onClick={() => {
                   if (onSaleChecked) {
                     searchParams.delete("onSale");
