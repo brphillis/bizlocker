@@ -76,6 +76,7 @@ const App = () => {
   useEffect(() => {
     if (navigation.state === ("loading" || "submitting")) {
       console.log("load");
+      console.log("NAV", navigation);
     }
   }, [navigation]);
 
@@ -166,11 +167,12 @@ const App = () => {
           </div>
         )}
 
-        {navigation.state === ("loading" || "submitting") && (
-          <DarkOverlay>
-            <Spinner />
-          </DarkOverlay>
-        )}
+        {navigation.state === ("loading" || "submitting") &&
+          navigation.formAction !== "/products" && (
+            <DarkOverlay>
+              <Spinner />
+            </DarkOverlay>
+          )}
         <Outlet />
 
         <Footer />

@@ -10,8 +10,8 @@ const ArticleCard = ({ article, hasDescription }: Props) => {
   const navigate = useNavigate();
   const image = article?.thumbnail?.url;
   return (
-    <article
-      className="group flex min-h-[270px] w-full cursor-pointer flex-col"
+    <div
+      className="group relative flex min-h-[270px] w-full cursor-pointer flex-col"
       onClick={() => navigate(`/article/${article.title}`)}
     >
       <div className="relative min-h-full w-full max-w-full drop-shadow-xl">
@@ -33,20 +33,16 @@ const ArticleCard = ({ article, hasDescription }: Props) => {
           </div>
 
           <div className="flex flex-col items-center gap-y-2 md:flex-row md:gap-x-2">
-            <>
-              {article.articleCategories?.map(
-                ({ id, name }: ArticleCategory) => {
-                  return (
-                    <div
-                      key={id + name}
-                      className="rounded-full bg-primary px-3 py-1 text-center text-sm font-semibold text-white"
-                    >
-                      <p>{name}</p>
-                    </div>
-                  );
-                }
-              )}
-            </>
+            {article.articleCategories?.map(({ id, name }: ArticleCategory) => {
+              return (
+                <div
+                  key={id + name}
+                  className="rounded-full bg-primary px-3 py-1 text-center text-sm font-semibold text-white"
+                >
+                  <p>{name}</p>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -62,7 +58,7 @@ const ArticleCard = ({ article, hasDescription }: Props) => {
           </p>
         </div>
       )}
-    </article>
+    </div>
   );
 };
 

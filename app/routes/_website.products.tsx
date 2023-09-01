@@ -20,7 +20,6 @@ import { searchProducts } from "~/models/products.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
-
   const { products, totalPages } = await searchProducts(undefined, url);
   const productCategories = await getProductCategories();
   const productSubCategories = await getProductSubCategories();
