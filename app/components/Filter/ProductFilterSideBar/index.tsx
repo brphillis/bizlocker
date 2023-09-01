@@ -27,7 +27,7 @@ const ProductFilterSideBar = ({
   const searchedColor = searchParams.get("color");
   const onSaleChecked = searchParams.get("onSale");
 
-  const [menuIsExpanded, setMenuIsExpanded] = useState(true);
+  const [menuIsExpanded, setMenuIsExpanded] = useState<boolean>(true);
 
   const filterProductSubCategories = (productSubCategoryId: number) => {
     const filteredCats = productSubCategories.filter(
@@ -42,17 +42,20 @@ const ProductFilterSideBar = ({
   };
 
   useEffect(() => {
-    const handleResize = () => {
-      const isExpanded = window.innerWidth > 1280;
-      setMenuIsExpanded(isExpanded);
+    const mediaQuery = window.matchMedia("(min-width: 1280px)");
+
+    const handleResize = (
+      event: MediaQueryListEvent | MediaQueryListEventInit
+    ) => {
+      setMenuIsExpanded(event.matches as boolean);
     };
 
-    window.addEventListener("resize", handleResize);
+    handleResize(mediaQuery);
 
-    handleResize();
+    mediaQuery.addEventListener("change", handleResize);
 
     return () => {
-      window.removeEventListener("resize", handleResize);
+      mediaQuery.removeEventListener("change", handleResize);
     };
   }, []);
 
@@ -69,12 +72,9 @@ const ProductFilterSideBar = ({
         </div>
       )}
       {menuIsExpanded && (
-        <ul className="menu collapse pointer-events-none mx-3 w-full rounded-none bg-base-200/50 px-0 xl:mx-0 xl:block xl:w-96">
+        <ul className="menu collapse mx-3 w-full rounded-none bg-base-200/50 px-0 xl:mx-0 xl:block xl:w-96">
           <div className="collapse-title px-3 py-3 xl:hidden">
-            <div
-              className="text-md pointer-events-auto flex items-center justify-center gap-3 font-semibold text-brand-black"
-              onClick={() => setMenuIsExpanded(false)}
-            >
+            <div className="text-md flex items-center justify-center gap-3 font-semibold text-brand-black">
               <p>FILTERS</p> <IoChevronUp />
             </div>
             <div className="my-2 w-full border-b-2 border-brand-black/5" />
@@ -90,7 +90,6 @@ const ProductFilterSideBar = ({
               <details
                 open
                 onClick={(e) => searchedGender && e.preventDefault()}
-                className="pointer-events-auto"
               >
                 <summary
                   className={`font-semibold text-brand-black 
@@ -99,7 +98,7 @@ const ProductFilterSideBar = ({
                   Gender
                 </summary>
                 <div
-                  className="pointer-events-auto ml-3 flex cursor-pointer gap-2 py-1 pt-3"
+                  className="ml-3 flex cursor-pointer gap-2 py-1 pt-3"
                   onClick={() => {
                     const selectedGender = searchedGender;
                     if (selectedGender === "MALE") {
@@ -114,7 +113,7 @@ const ProductFilterSideBar = ({
                   }}
                 >
                   <input
-                    id={"checkBox_productSubCategory_MENS"}
+                    id="checkBox_productSubCategory_MENS"
                     type="checkbox"
                     checked={searchedGender === "MALE"}
                     className="checkbox checkbox-xs"
@@ -123,7 +122,7 @@ const ProductFilterSideBar = ({
                   <p>Mens</p>
                 </div>
                 <div
-                  className="pointer-events-auto ml-3 flex cursor-pointer gap-2 py-1 pt-3"
+                  className="ml-3 flex cursor-pointer gap-2 py-1 pt-3"
                   onClick={() => {
                     const selectedGender = searchedGender;
                     if (selectedGender === "FEMALE") {
@@ -138,7 +137,7 @@ const ProductFilterSideBar = ({
                   }}
                 >
                   <input
-                    id={"checkBox_productSubCategory_FEMALE"}
+                    id="checkBox_productSubCategory_FEMALE"
                     type="checkbox"
                     checked={searchedGender === "FEMALE"}
                     className="checkbox checkbox-xs"
@@ -147,7 +146,7 @@ const ProductFilterSideBar = ({
                   <p>Womans</p>
                 </div>
                 <div
-                  className="pointer-events-auto ml-3 flex cursor-pointer gap-2 py-1 pt-3"
+                  className="ml-3 flex cursor-pointer gap-2 py-1 pt-3"
                   onClick={() => {
                     const selectedGender = searchedGender;
                     if (selectedGender === "KIDS") {
@@ -162,7 +161,7 @@ const ProductFilterSideBar = ({
                   }}
                 >
                   <input
-                    id={"checkBox_productSubCategory_KIDS"}
+                    id="checkBox_productSubCategory_KIDS"
                     type="checkbox"
                     checked={searchedGender === "KIDS"}
                     className="checkbox checkbox-xs"
@@ -177,7 +176,6 @@ const ProductFilterSideBar = ({
               <details
                 open
                 onClick={(e) => searchedProdCat && e.preventDefault()}
-                className="pointer-events-auto"
               >
                 <summary className="font-semibold text-brand-black">
                   Category
@@ -187,7 +185,7 @@ const ProductFilterSideBar = ({
                     return (
                       <div
                         key={"productCategory_sideFilter_" + id}
-                        className="pointer-events-auto ml-3 flex cursor-pointer gap-2 py-1 pt-3"
+                        className="ml-3 flex cursor-pointer gap-2 py-1 pt-3"
                         onClick={() => {
                           filterProductSubCategories(id);
                           searchParams.delete("productSubCategory");
@@ -222,7 +220,6 @@ const ProductFilterSideBar = ({
               <details
                 open
                 onClick={(e) => searchedProdCat && e.preventDefault()}
-                className="pointer-events-auto"
               >
                 <summary className="font-semibold text-brand-black">
                   Sub-Category
@@ -233,7 +230,7 @@ const ProductFilterSideBar = ({
                       return (
                         <div
                           key={"productSubCategory_sideFilter_" + id}
-                          className="pointer-events-auto ml-3 flex cursor-pointer gap-2 py-1 pt-3"
+                          className="ml-3 flex cursor-pointer gap-2 py-1 pt-3"
                           onClick={() => {
                             const selectedProductSubCategory = searchedProdCat;
                             if (selectedProductSubCategory === name) {
@@ -264,10 +261,7 @@ const ProductFilterSideBar = ({
             </li>
             <div className="my-2 w-full border-b-2 border-brand-black/5" />
             <li>
-              <details
-                onClick={(e) => searchedBrand && e.preventDefault()}
-                className="pointer-events-auto"
-              >
+              <details onClick={(e) => searchedBrand && e.preventDefault()}>
                 <summary className="font-semibold text-brand-black">
                   Brand
                 </summary>
@@ -276,7 +270,7 @@ const ProductFilterSideBar = ({
                     return (
                       <div
                         key={"brand_sideFilter_" + id}
-                        className="pointer-events-auto ml-3 flex cursor-pointer gap-2 py-1 pt-3"
+                        className="ml-3 flex cursor-pointer gap-2 py-1 pt-3"
                         onClick={() => {
                           const selectedBrand = searchedBrand;
                           if (selectedBrand === name) {
@@ -306,10 +300,7 @@ const ProductFilterSideBar = ({
             </li>
             <div className="my-2 w-full border-b-2 border-brand-black/5" />
             <li>
-              <details
-                onClick={(e) => searchedColor && e.preventDefault()}
-                className="pointer-events-auto"
-              >
+              <details onClick={(e) => searchedColor && e.preventDefault()}>
                 <summary className="font-semibold text-brand-black">
                   Color
                 </summary>
@@ -318,7 +309,7 @@ const ProductFilterSideBar = ({
                     return (
                       <div
                         key={"color_sideFilter_" + colorName}
-                        className="pointer-events-auto ml-3 flex cursor-pointer gap-2 py-1 pt-3"
+                        className="ml-3 flex cursor-pointer gap-2 py-1 pt-3"
                         onClick={() => {
                           const selectedColor = searchedColor;
                           if (selectedColor === colorName) {
@@ -349,7 +340,7 @@ const ProductFilterSideBar = ({
             <div className="my-2 w-full border-b-2 border-brand-black/5" />
             <li>
               <div
-                className="pointer-events-auto flex cursor-pointer justify-between"
+                className="flex cursor-pointer justify-between"
                 onClick={() => {
                   if (onSaleChecked) {
                     searchParams.delete("onSale");
