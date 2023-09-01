@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import stylesheet from "~/tailwind.css";
 import SearchBar from "~/components/SearchBar";
 import { getCart } from "~/models/cart.server";
@@ -16,10 +16,13 @@ import {
   useLoaderData,
   useLocation,
   useNavigate,
+  useNavigation,
   useSubmit,
 } from "@remix-run/react";
 
 import "sweetalert2/dist/sweetalert2.css";
+import DarkOverlay from "~/components/Layout/DarkOverlay";
+import Spinner from "~/components/Spinner";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
@@ -40,6 +43,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 const App = () => {
   const navigate = useNavigate();
+  const navigation = useNavigation();
   const location = useLocation();
   const submit = useSubmit();
 
@@ -68,6 +72,12 @@ const App = () => {
       </button>
     );
   };
+
+  useEffect(() => {
+    if (navigation.state === ("loading" || "submitting")) {
+      console.log("load");
+    }
+  }, [navigation]);
 
   return (
     <div className="drawer" data-theme="brand-light">
@@ -156,6 +166,11 @@ const App = () => {
           </div>
         )}
 
+        {navigation.state === ("loading" || "submitting") && (
+          <DarkOverlay>
+            <Spinner />
+          </DarkOverlay>
+        )}
         <Outlet />
 
         <Footer />

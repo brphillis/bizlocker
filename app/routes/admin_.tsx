@@ -6,6 +6,7 @@ import {
   useLoaderData,
   useLocation,
   useNavigate,
+  useNavigation,
   useSubmit,
 } from "@remix-run/react";
 import {
@@ -17,6 +18,8 @@ import {
   IoPlanet,
   IoPricetag,
 } from "react-icons/io5";
+import DarkOverlay from "~/components/Layout/DarkOverlay";
+import Spinner from "~/components/Spinner";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const user = await getUserObject(request);
@@ -27,6 +30,7 @@ const Admin = () => {
   const { user } = useLoaderData();
   const submit = useSubmit();
   const navigate = useNavigate();
+  const navigation = useNavigation();
   const location = useLocation();
   const isLoginPage = location.pathname === "/admin/login";
 
@@ -68,6 +72,19 @@ const Admin = () => {
             CLUTCH.
           </h1>
         </div>
+
+        {location.state === ("loading" || "submitting") && (
+          <DarkOverlay>
+            <div>LOADING...</div>
+          </DarkOverlay>
+        )}
+
+        {navigation.state === ("loading" || "submitting") && (
+          <DarkOverlay>
+            <Spinner />
+          </DarkOverlay>
+        )}
+
         <Outlet />
       </div>
 
