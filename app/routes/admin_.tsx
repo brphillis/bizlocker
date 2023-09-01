@@ -74,7 +74,7 @@ const Admin = () => {
         </div>
 
         {location.state === ("loading" || "submitting") && (
-          <DarkOverlay>
+          <DarkOverlay fadeIn={true}>
             <div>LOADING...</div>
           </DarkOverlay>
         )}

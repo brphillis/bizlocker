@@ -9,7 +9,7 @@ const SelectBrand = ({ productCategories, defaultValue }: Props) => {
       <label className="label text-sm">Root Category</label>
       <select
         name="productCategory"
-        className=" select w-[95vw] text-brand-black/75 sm:w-[215px]"
+        className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
         defaultValue={defaultValue}
       >
         <option value="">Select a Root Category</option>

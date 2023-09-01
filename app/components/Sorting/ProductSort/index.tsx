@@ -22,7 +22,7 @@ const ProductSort = ({ totalCount }: Props) => {
           onChange={(e) => {
             searchParams.set("sortBy", e.target.value);
             const sortOrder = searchParams.get("sortOrder");
-            searchParams.set("sortOrder", sortOrder || "desc");
+            searchParams.set("sortOrder", sortOrder || "asc");
             submit(searchParams, {
               method: "GET",
               action: pathname,

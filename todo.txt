@@ -1,3 +1,7 @@
-Add ArticleBlock to ArticleBuilder for recommendations
-Add SearchInput to all forms that require.
-Finish Validation on forms.
+[ ] Add Meta Title and Desc to Page Types Builders
+[ ] Add another method to close cart popup
+[ ] Forms Validation
+[ ] Find out why articles block is glitchty on some browsers
+[ ] Add Accounts Page
+[ ] Finish Mobile Nav Slideout
+[ ] Add Promo to product filter

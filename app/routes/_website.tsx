@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import stylesheet from "~/tailwind.css";
 import SearchBar from "~/components/SearchBar";
 import { getCart } from "~/models/cart.server";
@@ -72,13 +72,6 @@ const App = () => {
       </button>
     );
   };
-
-  useEffect(() => {
-    if (navigation.state === ("loading" || "submitting")) {
-      console.log("load");
-      console.log("NAV", navigation);
-    }
-  }, [navigation]);
 
   return (
     <div className="drawer" data-theme="brand-light">
@@ -169,7 +162,7 @@ const App = () => {
 
         {navigation.state === ("loading" || "submitting") &&
           navigation.formAction !== "/products" && (
-            <DarkOverlay>
+            <DarkOverlay fadeIn={true}>
               <Spinner />
             </DarkOverlay>
           )}

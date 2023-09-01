@@ -37,26 +37,26 @@ const ManageOrders = () => {
 
         <div className="mt-3 flex flex-col">
           <div className="flex flex-row flex-wrap gap-3 sm:gap-6">
-            <div className="form-control w-full max-w-xs">
+            <div className="form-control w-full sm:w-[215px]">
               <label className="label">
                 <span className="label-text">Order Id</span>
               </label>
               <input
                 name="orderId"
-                className="input input-bordered w-full max-w-xs"
+                className="input input-bordered w-full"
                 placeholder="ID"
                 type="text"
               />
             </div>
 
-            <div className="form-control w-full max-w-xs">
+            <div className="form-control w-full sm:w-[215px]">
               <label className="label">
                 <span className="label-text">By Status</span>
               </label>
               <select
                 name="status"
                 title="status"
-                className=" select w-full max-w-xs"
+                className="input input-bordered w-full"
                 placeholder="Select a Value"
               >
                 <option value="">Select a Status</option>
@@ -68,13 +68,13 @@ const ManageOrders = () => {
               </select>
             </div>
 
-            <div className="form-control w-full max-w-xs">
+            <div className="form-control w-full sm:w-[215px]">
               <label className="label">
                 <span className="label-text">User Email</span>
               </label>
               <input
                 name="userEmail"
-                className="input input-bordered w-full max-w-xs"
+                className="input input-bordered w-full"
                 placeholder="Email"
                 type="text"
               />
