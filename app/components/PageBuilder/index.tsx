@@ -95,12 +95,17 @@ const PageBuilder = ({
   };
 
   useEffect(() => {
-    if (updateSuccess) reset();
+    if (updateSuccess) {
+      reset();
+    }
+    setLoading(false);
   }, [updateSuccess]);
 
   useEffect(() => {
     setSelectedItems([]);
   }, [contentType]);
+
+  const [loading, setLoading] = useState<boolean>(false);
 
   return (
     <Form className="w-full" method="POST">
@@ -295,8 +300,9 @@ const PageBuilder = ({
               name="_action"
               value="update"
               className="btn-primary btn-md"
+              onClick={() => setLoading(true)}
             >
-              Submit
+              {loading ? "Loading..." : "Submit"}
             </button>
           </div>
         </div>

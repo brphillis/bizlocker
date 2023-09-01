@@ -6,6 +6,7 @@ import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { deleteBrand, getBrand, upsertBrand } from "~/models/brands.server";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
 import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node";
+import { useState } from "react";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const id = params?.id;
@@ -53,6 +54,8 @@ const ModifyBrand = () => {
     (useActionData() as { validationError: string }) || {};
   const mode = brand ? "edit" : "add";
 
+  const [loading, setLoading] = useState<boolean>(false);
+
   return (
     <DarkOverlay>
       <Form
@@ -90,7 +93,7 @@ const ModifyBrand = () => {
           )}
         </div>
 
-        <BackSubmitButtons />
+        <BackSubmitButtons loading={loading} setLoading={setLoading} />
       </Form>
     </DarkOverlay>
   );

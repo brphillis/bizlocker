@@ -14,6 +14,7 @@ import {
   getProductSubCategory,
   upsertProductSubCategory,
 } from "~/models/productSubCategories.server";
+import { useState } from "react";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const id = params?.id;
@@ -54,6 +55,8 @@ const ModifyProductSubCategory = () => {
     (useActionData() as { validationError: string }) || {};
   const mode = productSubCategory ? "edit" : "add";
 
+  const [loading, setLoading] = useState<boolean>(false);
+
   return (
     <DarkOverlay>
       <Form
@@ -91,7 +94,7 @@ const ModifyProductSubCategory = () => {
           )}
         </div>
 
-        <BackSubmitButtons />
+        <BackSubmitButtons loading={loading} setLoading={setLoading} />
       </Form>
     </DarkOverlay>
   );

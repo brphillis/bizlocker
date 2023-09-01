@@ -14,6 +14,7 @@ import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node";
 import { deleteImage, getImage, upsertImage } from "~/models/images.server";
 import { IoCaretForwardCircleSharp } from "react-icons/io5";
 import { handleResourceSubmit } from "~/utility/formHelpers";
+import { useState } from "react";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const id = params?.id;
@@ -90,6 +91,8 @@ const ModifyImage = () => {
   };
 
   const isConnected = determineIfConnected();
+
+  const [loading, setLoading] = useState<boolean>(false);
 
   return (
     <DarkOverlay>
@@ -286,7 +289,7 @@ const ModifyImage = () => {
           )}
         </div>
 
-        <BackSubmitButtons />
+        <BackSubmitButtons loading={loading} setLoading={setLoading} />
       </Form>
     </DarkOverlay>
   );

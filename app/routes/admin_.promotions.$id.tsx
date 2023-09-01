@@ -10,6 +10,7 @@ import {
   useLoaderData,
   useNavigate,
 } from "@remix-run/react";
+import { useState } from "react";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
 import FormHeader from "~/components/Forms/Headers/FormHeader";
 import SelectDepartment from "~/components/Forms/Select/SelectDepartment";
@@ -91,6 +92,8 @@ const ModifyPromotion = () => {
   const { validationError } =
     (useActionData() as { validationError: string }) || {};
   const mode = promotion ? "edit" : "add";
+
+  const [loading, setLoading] = useState<boolean>(false);
 
   return (
     <DarkOverlay>
@@ -214,7 +217,7 @@ const ModifyPromotion = () => {
           )}
         </div>
 
-        <BackSubmitButtons />
+        <BackSubmitButtons loading={loading} setLoading={setLoading} />
       </Form>
     </DarkOverlay>
   );

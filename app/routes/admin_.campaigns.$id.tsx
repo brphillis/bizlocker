@@ -5,6 +5,7 @@ import {
   type ActionArgs,
 } from "@remix-run/node";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
+import { useState } from "react";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
 import FormHeader from "~/components/Forms/Headers/FormHeader";
 import SelectBrands from "~/components/Forms/Select/SelectBrands";
@@ -94,6 +95,8 @@ const ModifyCampaign = () => {
   const { validationError } =
     (useActionData() as { validationError: string }) || {};
   const mode = campaign ? "edit" : "add";
+
+  const [loading, setLoading] = useState<boolean>(false);
 
   return (
     <DarkOverlay>
@@ -202,7 +205,7 @@ const ModifyCampaign = () => {
           )}
         </div>
 
-        <BackSubmitButtons />
+        <BackSubmitButtons loading={loading} setLoading={setLoading} />
       </Form>
     </DarkOverlay>
   );

@@ -13,6 +13,7 @@ import {
   getArticleCategories,
   upsertArticleCategories,
 } from "~/models/articleCategories.server";
+import { useState } from "react";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const id = params?.id;
@@ -60,6 +61,8 @@ const ModifyArticleCategory = () => {
     (useActionData() as { validationError: string }) || {};
   const mode = articleCategory ? "edit" : "add";
 
+  const [loading, setLoading] = useState<boolean>(false);
+
   return (
     <DarkOverlay>
       <Form
@@ -79,7 +82,7 @@ const ModifyArticleCategory = () => {
             name="name"
             type="text"
             placeholder="Name"
-            className="input-bordered input w-full max-w-xs"
+            className="input input-bordered w-full max-w-xs"
             defaultValue={articleCategory?.name || undefined}
           />
 
@@ -89,7 +92,7 @@ const ModifyArticleCategory = () => {
             </p>
           )}
 
-          <BackSubmitButtons />
+          <BackSubmitButtons loading={loading} setLoading={setLoading} />
         </div>
       </Form>
     </DarkOverlay>

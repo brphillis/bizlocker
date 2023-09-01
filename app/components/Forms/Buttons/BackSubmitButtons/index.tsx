@@ -1,6 +1,11 @@
 import { useNavigate } from "@remix-run/react";
 
-const BackSubmitButtons = () => {
+type Props = {
+  loading?: boolean;
+  setLoading?: Function;
+};
+
+const BackSubmitButtons = ({ loading = false, setLoading }: Props) => {
   const navigate = useNavigate();
   return (
     <>
@@ -8,7 +13,7 @@ const BackSubmitButtons = () => {
       <div className="flex flex-row items-center justify-center gap-3">
         <button
           type="button"
-          className="btn-primary btn w-max"
+          className="btn btn-primary w-max"
           onClick={() => navigate("..")}
         >
           Back
@@ -17,9 +22,10 @@ const BackSubmitButtons = () => {
           type="submit"
           name="_action"
           value="upsert"
-          className="btn-primary btn w-max"
+          className="btn btn-primary w-max"
+          onClick={() => setLoading && setLoading(true)}
         >
-          Submit
+          {loading ? "Loading..." : "Submit"}
         </button>
       </div>
     </>

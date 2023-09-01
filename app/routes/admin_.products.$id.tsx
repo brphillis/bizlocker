@@ -127,6 +127,7 @@ const Product = () => {
   const mode = product ? "edit" : "add";
 
   const [richText, setRichText] = useState<string>(product?.description);
+  const [loading, setLoading] = useState<boolean>(false);
 
   return (
     <DarkOverlay>
@@ -225,7 +226,7 @@ const Product = () => {
             </p>
           )}
 
-          <BackSubmitButtons />
+          <BackSubmitButtons loading={loading} setLoading={setLoading} />
         </div>
       </Form>
     </DarkOverlay>
