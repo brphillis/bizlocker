@@ -8,21 +8,23 @@ datasource db {
 }
 
 model HomePage {
-  id        Int      @id @default(autoincrement())
-  blocks    Block[]  @relation("HomePageToBlocks")
-  title     String   @default("Homepage")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          Int      @id @default(autoincrement())
+  title       String   @default("Homepage")
+  description String   @default("HomePage Description")
+  blocks      Block[]  @relation("HomePageToBlocks")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model WebPage {
-  id        Int      @id @default(autoincrement())
-  title     String   @unique
-  blocks    Block[]  @relation("WebPagesToBlocks")
-  thumbnail Image?   @relation("WebPageImage")
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          Int      @id @default(autoincrement())
+  title       String   @unique
+  description String   @default("Page Description")
+  blocks      Block[]  @relation("WebPagesToBlocks")
+  thumbnail   Image?   @relation("WebPageImage")
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Block {
@@ -330,6 +332,7 @@ model ProductSubCategory {
 model Article {
   id                Int               @id @default(autoincrement())
   title             String            @unique
+  description       String            @default("Article Description")
   blocks            Block[]           @relation("ArticlesToBlocks")
   thumbnail         Image?            @relation("ArticleImage")
   isActive          Boolean           @default(true)

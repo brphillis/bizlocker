@@ -184,6 +184,7 @@ type ProductCategory = {
 type Article = {
   id: number;
   title: string;
+  description: string;
   blocks: Block[];
   thumbnail?: Image;
   isActive?: boolean;
@@ -359,8 +360,9 @@ type BlockContentType = "campaign" | "promotion" | "image";
 
 interface HomePage {
   id: number;
-  blocks: Block[];
   title: string;
+  description: string;
+  blocks: Block[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -368,6 +370,7 @@ interface HomePage {
 interface WebPage {
   id: number;
   title: string;
+  description: string;
   blocks: Block[];
   thumbnail?: Image;
   isActive?: boolean;

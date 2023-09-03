@@ -1,6 +1,6 @@
-import type { ActionArgs } from "@remix-run/node";
-import { getHomePage } from "~/models/homePage.server";
-import { useActionData, useLoaderData } from "@remix-run/react";
+import { redirect, type ActionArgs } from "@remix-run/node";
+import { getHomePage, upsertHomePageInfo } from "~/models/homePage.server";
+import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import AdminPageWrapper from "~/components/Layout/AdminPageWrapper";
 import PageBuilder from "~/components/PageBuilder";
 import {
@@ -8,7 +8,6 @@ import {
   removeBlock,
   updatePageBlock,
 } from "~/models/pageBuilder.server";
-import Icon from "~/components/Icon";
 import LargeCollapse from "~/components/Collapse/LargeCollapse";
 import { getBrands } from "~/models/brands.server";
 import { getProductCategories } from "~/models/productCategories.server";
@@ -38,7 +37,7 @@ export const loader = async () => {
 
 export const action = async ({ request }: ActionArgs) => {
   const form = Object.fromEntries(await request.formData());
-  const { pageId, itemIndex, contentType, name } = form;
+  const { title, description, pageId, itemIndex, contentType, name } = form;
 
   const blockOptions: NewBlockOptions = getFormBlockOptions(form);
 
@@ -50,6 +49,16 @@ export const action = async ({ request }: ActionArgs) => {
       );
 
     case "update":
+      if (title || description) {
+        await upsertHomePageInfo(
+          title as string,
+          description as string,
+          pageId ? parseInt(pageId.toString()) : undefined
+        );
+
+        return redirect("/admin/home-page");
+      }
+
       const newBlockData: NewBlockData = getBlockUpdateValues(form);
 
       const updateSuccess = await updatePageBlock(
@@ -98,11 +107,56 @@ const ManageHomePage = () => {
     <AdminPageWrapper>
       <div className="relative h-full bg-base-200 p-6 max-sm:p-3 sm:w-full">
         <div className="flex w-full justify-center">
-          <div className="flex flex-col gap-6 rounded-none bg-brand-black text-brand-white">
-            <div className="flex justify-center gap-3 pt-6 text-center text-2xl font-bold">
-              <Icon iconName="IoHomeSharp" size={24} styles="mt-[5px]" />
-              Home Page Editor
+          <div className="flex flex-col gap-6 rounded-none text-brand-white">
+            <div className="flex justify-center gap-3 pt-6 text-center text-2xl font-bold text-brand-black">
+              Edit Home Page
             </div>
+
+            <LargeCollapse
+              title="Meta Information"
+              content={
+                <Form
+                  method="POST"
+                  className="flex w-full flex-col items-center gap-6"
+                >
+                  <div className="form-control">
+                    <label className="label">
+                      <span className="label-text text-brand-white">Title</span>
+                    </label>
+                    <input
+                      name="title"
+                      type="text"
+                      placeholder="Title"
+                      defaultValue={homePage?.title}
+                      className="input input-bordered w-[95vw] text-brand-black sm:w-[320px]"
+                    />
+                  </div>
+
+                  <div className="form-control">
+                    <label className="label">
+                      <span className="label-text text-brand-white">
+                        Description
+                      </span>
+                    </label>
+                    <textarea
+                      name="description"
+                      placeholder="Description"
+                      defaultValue={homePage?.description}
+                      className="textarea textarea-bordered flex w-[95vw] rounded-none text-brand-black sm:w-[320px]"
+                    />
+                  </div>
+
+                  <input name="pageId" value={homePage.id} hidden readOnly />
+                  <input name="_action" value="update" hidden readOnly />
+                  <button
+                    type="submit"
+                    className="btn-primary btn-md mx-auto block w-max"
+                  >
+                    {homePage ? "Submit" : "Next Step"}
+                  </button>
+                </Form>
+              }
+            />
 
             <LargeCollapse
               title="Page Content"

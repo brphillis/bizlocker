@@ -69,7 +69,7 @@ export const loader = async ({ params }: LoaderArgs) => {
 export const action = async ({ request, params }: ActionArgs) => {
   const id = params.id === "add" ? undefined : params.id;
   const form = Object.fromEntries(await request.formData());
-  const { title, thumbnail, itemIndex, contentType, name } = form;
+  const { title, description, thumbnail, itemIndex, contentType, name } = form;
 
   const blockOptions: NewBlockOptions = getFormBlockOptions(form);
 
@@ -85,6 +85,7 @@ export const action = async ({ request, params }: ActionArgs) => {
       if (title || thumbnail) {
         const webPageId = await upsertWebPageInfo(
           title as string,
+          description as string,
           thumbnail ? JSON.parse(thumbnail as string) : undefined,
           id ? parseInt(id) : undefined
         );
@@ -164,14 +165,13 @@ const ModifyWebPage = () => {
             </div>
 
             <LargeCollapse
-              title="Information"
+              title="Meta Information"
               forceOpen={!webPage}
               content={
                 <Form
                   method="POST"
                   className="flex w-full flex-col items-center gap-6"
                 >
-                  <div className="divider mb-0 w-full pb-0" />
                   <div className="form-control">
                     <label className="label">
                       <span className="label-text text-brand-white">Title</span>
@@ -182,6 +182,20 @@ const ModifyWebPage = () => {
                       placeholder="Title"
                       defaultValue={webPage?.title}
                       className="input input-bordered w-[95vw] text-brand-black sm:w-[320px]"
+                    />
+                  </div>
+
+                  <div className="form-control">
+                    <label className="label">
+                      <span className="label-text text-brand-white">
+                        Description
+                      </span>
+                    </label>
+                    <textarea
+                      name="description"
+                      placeholder="Description"
+                      defaultValue={webPage?.description}
+                      className="textarea textarea-bordered flex w-[95vw] rounded-none text-brand-black sm:w-[320px]"
                     />
                   </div>
 

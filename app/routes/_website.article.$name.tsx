@@ -9,26 +9,41 @@ import {
 } from "~/models/blockHelpers.server";
 import { getBlocks } from "~/utility/blockHelpers";
 
-export const meta: V2_MetaFunction = ({ data }) => [
-  { title: data.articleName },
-];
+export const meta: V2_MetaFunction = ({ data }) => {
+  return [
+    { title: data.title },
+    {
+      name: "description",
+      content: data.description,
+    },
+  ];
+};
 
 export const loader = async ({ params }: LoaderArgs) => {
   const articleName = params.name;
   const article = await getArticle(undefined, articleName);
 
-  let blocks;
+  let title, description, blocks;
   let productBlockProducts: Product[][] = [];
   let articleBlockArticles: Article[][] = [];
 
   if (article) {
     blocks = getBlocks(article as any);
+    title = article.title;
+    description = article.description;
   }
   if (blocks) {
     productBlockProducts = await getProductsForPage(blocks);
     articleBlockArticles = await getArticlesForPage(blocks);
   }
-  return { blocks, productBlockProducts, articleBlockArticles, articleName };
+  return {
+    title,
+    description,
+    blocks,
+    productBlockProducts,
+    articleBlockArticles,
+    articleName,
+  };
 };
 
 const Home = () => {
