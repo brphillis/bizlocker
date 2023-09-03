@@ -16,6 +16,17 @@ import { getProductSubCategories } from "~/models/productSubCategories.server";
 import { searchProducts } from "~/models/products.server";
 import { getPromotion } from "~/models/promotions.server";
 import { getProductCategories } from "~/models/productCategories.server";
+import type { V2_MetaFunction } from "@remix-run/node";
+
+export const meta: V2_MetaFunction = ({ data }) => {
+  return [
+    { title: data.promotionName },
+    {
+      name: "description",
+      content: data.promotionName,
+    },
+  ];
+};
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const url = new URL(request.url);
@@ -33,9 +44,11 @@ export const loader = async ({ request, params }: LoaderArgs) => {
       const productSubCategories = await getProductSubCategories();
       const brands = await getBrands();
       const colors = await getAvailableColors();
+      const promotionName = promotion.name;
 
       return {
         promotion,
+        promotionName,
         products,
         totalPages,
         productCategories,
