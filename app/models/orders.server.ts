@@ -11,6 +11,7 @@ import {
   createSquarePaymentLink,
   squareClient,
 } from "~/integrations/square/square.server";
+import { getCart } from "./cart.server";
 
 export const getOrder = async (orderId: string) => {
   return await prisma.order.findUnique({
@@ -74,37 +75,12 @@ export const getOrderShippingDetails = async (orderId: string) => {
 };
 
 export const createOrder = async (request: Request) => {
+  const cart = await getCart(request);
   const userData = (await getUserObject(request)) as User;
-
-  const cartId = userData?.cart?.id;
-
-  //retrieve the cart from the database based on the provided cartId
-  const cart = await prisma.cart.findUnique({
-    where: {
-      id: cartId,
-    },
-    include: {
-      cartItems: {
-        include: {
-          variant: {
-            include: {
-              product: true,
-            },
-          },
-        },
-      },
-    },
-  });
 
   if (!cart) {
     throw new Error("Cart not found");
   }
-
-  //   if (cart.userId !== req.cookies.current_user.id) {
-  //     return res
-  //       .status(401)
-  //       .json({ error: "Unauthorized. You do not own this Cart." });
-  //   }
 
   const cartItems = cart?.cartItems as unknown as CartItem[];
   const userId = userData.id;
@@ -158,13 +134,13 @@ export const createOrder = async (request: Request) => {
     //order is successful, delete the cart
     await prisma.cartItem.deleteMany({
       where: {
-        cartId: cartId,
+        cartId: cart.id,
       },
     });
 
     await prisma.cart.delete({
       where: {
-        id: cartId,
+        id: cart.id,
       },
     });
 
