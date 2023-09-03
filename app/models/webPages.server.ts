@@ -81,6 +81,7 @@ export const getWebPage = async (id?: string, title?: string) => {
 
 export const upsertWebPageInfo = async (
   title: string,
+  description: string,
   thumbnail: Image,
   webPageId?: number
 ) => {
@@ -90,6 +91,7 @@ export const upsertWebPageInfo = async (
     webPage = await prisma.webPage.create({
       data: {
         title: title,
+        description: description,
         thumbnail: thumbnail
           ? {
               create: {
@@ -119,6 +121,7 @@ export const upsertWebPageInfo = async (
       },
       data: {
         title: title,
+        description: description,
         thumbnail: {
           upsert: {
             create: {

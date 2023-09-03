@@ -9,22 +9,38 @@ import {
 import { getHomePage } from "~/models/homePage.server";
 import { getBlocks } from "~/utility/blockHelpers";
 
-export const meta: V2_MetaFunction = () => [{ title: "CLUTCH - clothing." }];
+export const meta: V2_MetaFunction = ({ data }) => {
+  return [
+    { title: data.title },
+    {
+      name: "description",
+      content: data.description,
+    },
+  ];
+};
 
 export const loader = async () => {
   const homePage = await getHomePage();
-  let blocks;
+  let title, description, blocks;
   let productBlockProducts: Product[][] = [];
   let articleBlockArticles: Article[][] = [];
 
   if (homePage) {
     blocks = getBlocks(homePage as any);
+    title = homePage.title;
+    description = homePage.description;
   }
   if (blocks) {
     productBlockProducts = await getProductsForPage(blocks);
     articleBlockArticles = await getArticlesForPage(blocks);
   }
-  return { blocks, productBlockProducts, articleBlockArticles };
+  return {
+    blocks,
+    productBlockProducts,
+    articleBlockArticles,
+    title,
+    description,
+  };
 };
 
 const Home = () => {

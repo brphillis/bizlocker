@@ -97,6 +97,7 @@ export const getArticle = async (id?: string, title?: string) => {
 
 export const upsertArticleInfo = async (
   title: string,
+  description: string,
   articleCategories: string[],
   thumbnail: Image,
   articleId?: number
@@ -108,10 +109,13 @@ export const upsertArticleInfo = async (
       // Provide the desired properties for the new article
       data: {
         title: title,
+        description: description,
         articleCategories: {
-          connect: articleCategories.map((category: string) => ({
-            id: parseInt(category),
-          })),
+          connect: articleCategories
+            ? articleCategories.map((category: string) => ({
+                id: parseInt(category),
+              }))
+            : undefined,
         },
         thumbnail: {
           create: {
@@ -148,10 +152,13 @@ export const upsertArticleInfo = async (
       },
       data: {
         title: title,
+        description: description,
         articleCategories: {
-          connect: articleCategories.map((category: string) => ({
-            id: parseInt(category),
-          })),
+          connect: articleCategories
+            ? articleCategories?.map((category: string) => ({
+                id: parseInt(category),
+              }))
+            : undefined,
         },
         thumbnail: {
           upsert: {

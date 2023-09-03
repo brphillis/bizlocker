@@ -71,8 +71,15 @@ export const loader = async ({ params }: LoaderArgs) => {
 export const action = async ({ request, params }: ActionArgs) => {
   const id = params.id === "add" ? undefined : params.id;
   const form = Object.fromEntries(await request.formData());
-  const { title, articleCategories, thumbnail, itemIndex, contentType, name } =
-    form;
+  const {
+    title,
+    description,
+    articleCategories,
+    thumbnail,
+    itemIndex,
+    contentType,
+    name,
+  } = form;
 
   const blockOptions: NewBlockOptions = getFormBlockOptions(form);
 
@@ -85,9 +92,10 @@ export const action = async ({ request, params }: ActionArgs) => {
 
     case "update":
       //we create a new article if ID is not provided
-      if (title || thumbnail || articleCategories) {
+      if (title || description || thumbnail || articleCategories) {
         const articleId = await upsertArticleInfo(
           title as string,
+          description as string,
           JSON.parse(articleCategories as string),
           JSON.parse(thumbnail as string),
           id ? parseInt(id) : undefined
@@ -170,14 +178,13 @@ const ModifyArticle = () => {
             </div>
 
             <LargeCollapse
-              title="Information"
+              title="Meta Information"
               forceOpen={!article}
               content={
                 <Form
                   method="POST"
                   className="flex w-full flex-col items-center gap-6"
                 >
-                  <div className="divider mb-0 w-full pb-0" />
                   <div className="form-control">
                     <label className="label">
                       <span className="label-text text-brand-white">Title</span>
@@ -188,6 +195,20 @@ const ModifyArticle = () => {
                       placeholder="Title"
                       defaultValue={article?.title}
                       className="input input-bordered w-[95vw] text-brand-black sm:w-[320px]"
+                    />
+                  </div>
+
+                  <div className="form-control">
+                    <label className="label">
+                      <span className="label-text text-brand-white">
+                        Description
+                      </span>
+                    </label>
+                    <textarea
+                      name="description"
+                      placeholder="Description"
+                      defaultValue={article?.description}
+                      className="textarea textarea-bordered flex w-[95vw] rounded-none text-brand-black sm:w-[320px]"
                     />
                   </div>
 
