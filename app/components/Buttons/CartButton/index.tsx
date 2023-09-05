@@ -1,4 +1,4 @@
-import { IoCartOutline } from "react-icons/io5";
+import { IoCartOutline, IoClose } from "react-icons/io5";
 import { useEffect, useState } from "react";
 import { Form, useNavigate } from "react-router-dom";
 import CartAddSubtractButton from "./CartAddSubtractButton";
@@ -12,6 +12,20 @@ const CartButton = ({ id: cartId, cartItems }: Cart) => {
 
   const [totalPrice, setTotalPrice] = useState<number>(0);
 
+  const handleOpen = () => {
+    const elementWithTabIndex1 = document.getElementById("CartContent");
+    if (elementWithTabIndex1) {
+      elementWithTabIndex1.style.display = "block";
+    }
+  };
+
+  const handleClose = () => {
+    const elementWithTabIndex1 = document.getElementById("CartContent");
+    if (elementWithTabIndex1) {
+      elementWithTabIndex1.style.display = "none";
+    }
+  };
+
   useEffect(() => {
     const total = calculateCartTotal(cartItems);
     setTotalPrice(total);
@@ -19,7 +33,11 @@ const CartButton = ({ id: cartId, cartItems }: Cart) => {
 
   return (
     <div className="dropdown dropdown-end relative z-10">
-      <label tabIndex={0} className="relative cursor-pointer marker:h-20">
+      <label
+        tabIndex={0}
+        onClick={handleOpen}
+        className="relative cursor-pointer marker:h-20"
+      >
         {cartItems?.length > 0 && (
           <div className="absolute right-[-6px] top-[-6px] flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">
             {cartItems?.length}
@@ -30,9 +48,18 @@ const CartButton = ({ id: cartId, cartItems }: Cart) => {
 
       {/* CART MODAL */}
       <div
+        id="CartContent"
         tabIndex={0}
         className="dropdown-content mr-2 mt-4 w-max min-w-[300px] overflow-hidden rounded-md border-2 border-base-200/75 bg-base-100 shadow-xl"
       >
+        <IoClose
+          onClick={handleClose}
+          className="
+          absolute right-2 top-2
+          cursor-pointer
+          rounded-full bg-primary p-[0.2rem] text-white"
+        />
+
         <Form method="POST" className="mb-6 flex flex-col gap-3">
           <div className="mt-3 text-center font-bold">Your Cart</div>
           <ul className="mb-12">

@@ -1,4 +1,3 @@
-[ ] Add another method to close cart popup
 [ ] Forms Validation
 [ ] Find out why articles block is glitchty on some browsers
 [ ] Add Accounts Page
@@ -7,3 +6,7 @@
 [ ] add meta title and description to product pages
 [ ] add shipping calculator
 [ ] send email when order is shipped
+
+Task Hisory
+
+001 - [x] Add another method to close cart popup
