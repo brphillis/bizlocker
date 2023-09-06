@@ -39,7 +39,7 @@ const TileBlock = ({ content, type, options }: Props) => {
             <img
               key={"tileImage_" + (name || i)}
               className={
-                "relative h-full w-full cursor-pointer object-cover transition duration-300 ease-in-out hover:scale-[1.01] " +
+                "relative h-auto w-auto cursor-pointer object-cover transition duration-300 ease-in-out hover:scale-[1.01] " +
                 (content.length % 2 !== 0 ? "max-sm:last:col-span-full" : "")
               }
               onClick={() => navigate(imageLink)}
