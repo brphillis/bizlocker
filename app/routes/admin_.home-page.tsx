@@ -1,7 +1,7 @@
 import { redirect, type ActionArgs } from "@remix-run/node";
 import { getHomePage, upsertHomePageInfo } from "~/models/homePage.server";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
-import AdminPageWrapper from "~/components/Layout/AdminPageWrapper";
+import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import PageBuilder from "~/components/PageBuilder";
 import {
   changeBlockOrder,

@@ -8,7 +8,7 @@ import { tokenAuth } from "~/auth.server";
 // import BannerBlock from "~/components/Blocks/BannerBlock";
 import ProductFilterSideBar from "~/components/Filter/ProductFilterSideBar";
 import ProductGrid from "~/components/Grids/ProductGrid";
-import PageWrapper from "~/components/Layout/PageWrapper";
+import PageWrapper from "~/components/Layout/_Website/PageWrapper";
 import ProductSort from "~/components/Sorting/ProductSort";
 import { getBrands } from "~/models/brands.server";
 import { getRandomCampaign } from "~/models/campaigns.server";

@@ -1,7 +1,7 @@
 [ ] Forms Validation
 [ ] Find out why articles block is glitchty on some browsers
 [ ] Add Accounts Page
-[ ] Finish Mobile Nav Slideout
+[ ] Finish Mobile Nav Slideout for AdminWeb
 [ ] Add Promo to product filter
 [ ] add meta title and description to product pages
 [ ] add shipping calculator
@@ -10,3 +10,4 @@
 Task Hisory
 
 001 - [x] Add another method to close cart popup
+002 - [x] Finish Mobile Nav Slideout for UserWeb

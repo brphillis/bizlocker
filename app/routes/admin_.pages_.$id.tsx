@@ -15,8 +15,8 @@ import { getArticleCategories } from "~/models/articleCategories.server";
 
 import swiper from "../../node_modules/swiper/swiper.css";
 import swiperNav from "../../node_modules/swiper/modules/navigation/navigation.min.css";
-import AdminPageWrapper from "~/components/Layout/AdminPageWrapper";
-import AdminPageHeader from "~/components/Layout/AdminPageHeader";
+import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
+import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import Icon from "~/components/Icon";
 import PageBuilder from "~/components/PageBuilder";
 import {

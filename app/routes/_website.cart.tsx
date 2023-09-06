@@ -5,8 +5,7 @@ import {
 } from "@remix-run/server-runtime";
 import { Form, useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
-import CartAddSubtractButton from "~/components/Buttons/CartButton/CartAddSubtractButton";
-import PageWrapper from "~/components/Layout/PageWrapper";
+import PageWrapper from "~/components/Layout/_Website/PageWrapper";
 import squareLogo from "../assets/logos/square-logo.svg";
 import googlePayLogo from "../assets/logos/googlePay-logo.svg";
 import applePayLogo from "../assets/logos/applePay-logo.svg";
@@ -18,6 +17,7 @@ import {
   calculateCartTotal,
   getVariantUnitPrice,
 } from "~/utility/numberHelpers";
+import CartAddSubtractButton from "~/components/Layout/_Website/Navigation/Buttons/CartButton/CartAddSubtractButton";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const cart = await getCart(request);

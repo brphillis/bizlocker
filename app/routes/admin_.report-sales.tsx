@@ -1,8 +1,8 @@
 import type { LoaderArgs } from "@remix-run/node";
 import { Form, Outlet, useLoaderData } from "@remix-run/react";
 import PieReChart from "~/components/Charts/PieChart";
-import AdminPageHeader from "~/components/Layout/AdminPageHeader";
-import AdminPageWrapper from "~/components/Layout/AdminPageWrapper";
+import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
+import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import { getSalesToday } from "~/models/saleReports.server";
 import { calculatePercentageChange } from "~/utility/numberHelpers";
 

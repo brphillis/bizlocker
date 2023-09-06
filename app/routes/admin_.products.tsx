@@ -8,8 +8,8 @@ import {
 import { json, type LoaderArgs } from "@remix-run/server-runtime";
 import SelectBrand from "~/components/Forms/Select/SelectBrand";
 import SelectProductSubCategory from "~/components/Forms/Select/SelectProductSubCategory";
-import AdminPageHeader from "~/components/Layout/AdminPageHeader";
-import AdminPageWrapper from "~/components/Layout/AdminPageWrapper";
+import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
+import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import Pagination from "~/components/Pagination";
 import ProductSort from "~/components/Sorting/ProductSort";
 import { getBrands } from "~/models/brands.server";

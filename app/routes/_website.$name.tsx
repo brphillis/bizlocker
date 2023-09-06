@@ -1,7 +1,7 @@
 import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import BlockRenderer from "~/components/BlockRenderer";
-import PageWrapper from "~/components/Layout/PageWrapper";
+import PageWrapper from "~/components/Layout/_Website/PageWrapper";
 import {
   getArticlesForPage,
   getProductsForPage,
