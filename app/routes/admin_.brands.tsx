@@ -2,8 +2,8 @@ import Pagination from "~/components/Pagination";
 import { searchBrands } from "~/models/brands.server";
 import { json, type LoaderArgs } from "@remix-run/node";
 import { capitalizeFirst } from "~/utility/stringHelpers";
-import AdminPageHeader from "~/components/Layout/AdminPageHeader";
-import AdminPageWrapper from "~/components/Layout/AdminPageWrapper";
+import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
+import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import {
   Form,
   Outlet,

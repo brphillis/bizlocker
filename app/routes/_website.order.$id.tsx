@@ -1,7 +1,7 @@
 import { type ActionArgs } from "@remix-run/server-runtime";
 import { Link, useLoaderData, useLocation } from "@remix-run/react";
 import { getOrderShippingDetails } from "~/models/orders.server";
-import PageWrapper from "~/components/Layout/PageWrapper";
+import PageWrapper from "~/components/Layout/_Website/PageWrapper";
 import OrderStatusSteps from "~/components/Indicators/OrderStatusSteps";
 import ShippingDetailsCollapse from "~/components/Forms/Misc/ShippingDetailsCollapse";
 
@@ -38,7 +38,7 @@ const Order = () => {
             <Link
               to={order.paymentUrl}
               target="_blank"
-              className="btn-primary btn"
+              className="btn btn-primary"
             >
               Pay Now
             </Link>

@@ -2,7 +2,7 @@ import { useLoaderData, useNavigate } from "@remix-run/react";
 import { type ActionArgs } from "@remix-run/server-runtime";
 import { useEffect } from "react";
 import { IoCheckmarkCircle } from "react-icons/io5";
-import PageWrapper from "~/components/Layout/PageWrapper";
+import PageWrapper from "~/components/Layout/_Website/PageWrapper";
 import { verifyUserAccount } from "~/models/auth/verification.server";
 
 export const loader = async ({ params, request }: ActionArgs) => {

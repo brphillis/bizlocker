@@ -7,8 +7,8 @@ import {
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
-import AdminPageHeader from "~/components/Layout/AdminPageHeader";
-import AdminPageWrapper from "~/components/Layout/AdminPageWrapper";
+import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
+import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import Pagination from "~/components/Pagination";
 import { searchUsers } from "~/models/auth/users.server";
 import { placeholderAvatar } from "~/utility/placeholderAvatar";

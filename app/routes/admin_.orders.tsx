@@ -6,8 +6,8 @@ import {
   useSearchParams,
 } from "@remix-run/react";
 import { type LoaderArgs } from "@remix-run/server-runtime";
-import AdminPageHeader from "~/components/Layout/AdminPageHeader";
-import AdminPageWrapper from "~/components/Layout/AdminPageWrapper";
+import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
+import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import Pagination from "~/components/Pagination";
 import { searchOrders } from "~/models/orders.server";
 

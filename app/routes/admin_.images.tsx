@@ -1,7 +1,7 @@
 import type { LoaderArgs } from "@remix-run/node";
 import { Form, Outlet, useLoaderData, useNavigate } from "@remix-run/react";
-import AdminPageHeader from "~/components/Layout/AdminPageHeader";
-import AdminPageWrapper from "~/components/Layout/AdminPageWrapper";
+import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
+import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import Pagination from "~/components/Pagination";
 import { searchImages } from "~/models/images.server";
 

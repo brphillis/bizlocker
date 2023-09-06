@@ -1,7 +1,7 @@
 import { type ActionArgs } from "@remix-run/server-runtime";
 import { useLoaderData } from "@remix-run/react";
 import { confirmPayment } from "~/models/orders.server";
-import PageWrapper from "~/components/Layout/PageWrapper";
+import PageWrapper from "~/components/Layout/_Website/PageWrapper";
 import { IoCheckmarkCircle } from "react-icons/io5";
 
 export const loader = async ({ params }: ActionArgs) => {

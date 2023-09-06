@@ -2,7 +2,7 @@ import { Link, useLoaderData, useSubmit } from "@remix-run/react";
 import { type LoaderArgs } from "@remix-run/server-runtime";
 import parse from "html-react-parser";
 import { parseOptions } from "~/utility/parseOptions";
-import PageWrapper from "~/components/Layout/PageWrapper";
+import PageWrapper from "~/components/Layout/_Website/PageWrapper";
 import { getBrand } from "~/models/brands.server";
 import { getProduct } from "~/models/products.server";
 import { getVariantUnitPrice } from "~/utility/numberHelpers";
