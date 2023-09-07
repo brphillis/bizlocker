@@ -31,6 +31,7 @@ const ProductVariantFormModule = ({
         updatedActiveVariant = {
           ...activeVariant,
           name: "BASE",
+          isActive: true,
         };
       }
 

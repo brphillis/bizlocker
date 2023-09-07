@@ -1,5 +1,6 @@
 import type { Gender } from "@prisma/client";
 import { prisma } from "~/db.server";
+import { getRandomOneOrTwo } from "~/utility/numberHelpers";
 
 export function getCampaigns(inDetail?: boolean) {
   if (inDetail) {
@@ -246,7 +247,7 @@ export const searchCampaigns = async (
   return { campaigns, totalPages };
 };
 
-export const getRandomCampaign = async (
+export const getRandomCampaignOrPromotion = async (
   productSubCategoryIdOrName?: string
 ) => {
   let productSubCategory;
@@ -284,8 +285,7 @@ export const getRandomCampaign = async (
   }
 
   if (!productSubCategory) {
-    const randomCampaignAnyCategory = await getRandomCampaignAnyCategory();
-
+    const randomCampaignAnyCategory = await getAnyCampaignOrPromotion();
     if (randomCampaignAnyCategory) {
       return randomCampaignAnyCategory;
     }
@@ -294,8 +294,7 @@ export const getRandomCampaign = async (
   const { campaigns } = productSubCategory || {};
 
   if (campaigns?.length === 0 || !campaigns) {
-    const randomCampaignAnyCategory = await getRandomCampaignAnyCategory();
-
+    const randomCampaignAnyCategory = await getAnyCampaignOrPromotion();
     if (randomCampaignAnyCategory) {
       return randomCampaignAnyCategory;
     }
@@ -307,20 +306,32 @@ export const getRandomCampaign = async (
   }
 };
 
-const getRandomCampaignAnyCategory = async () => {
-  const campaigns = await prisma.campaign.findMany({
-    include: {
-      bannerImage: true,
-      tileImage: true,
-    },
-  });
+const getAnyCampaignOrPromotion = async () => {
+  let campaignOrPromotion;
+  const oneOrTwo = getRandomOneOrTwo();
 
-  if (!campaigns || campaigns.length === 0) {
+  if (oneOrTwo === 1) {
+    campaignOrPromotion = await prisma.campaign.findMany({
+      include: {
+        bannerImage: true,
+        tileImage: true,
+      },
+    });
+  } else {
+    campaignOrPromotion = await prisma.promotion.findMany({
+      include: {
+        bannerImage: true,
+        tileImage: true,
+      },
+    });
+  }
+
+  if (!campaignOrPromotion || campaignOrPromotion.length === 0) {
     return null;
   }
 
-  const randomIndex = Math.floor(Math.random() * campaigns.length);
-  const randomCampaign = campaigns[randomIndex];
+  const randomIndex = Math.floor(Math.random() * campaignOrPromotion.length);
+  const randomCampaign = campaignOrPromotion[randomIndex];
 
   return randomCampaign;
 };
