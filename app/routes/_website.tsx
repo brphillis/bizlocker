@@ -105,7 +105,7 @@ const App = () => {
         {navigation.state === ("loading" || "submitting") &&
           navigation.formAction !== "/products" && (
             <DarkOverlay fadeIn={true}>
-              <Spinner />
+              <Spinner mode="shirt" extendStyle={"mt-16"} />
             </DarkOverlay>
           )}
         <Outlet />
