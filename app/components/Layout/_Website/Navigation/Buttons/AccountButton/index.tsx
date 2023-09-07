@@ -1,27 +1,27 @@
 import { useSubmit } from "@remix-run/react";
+import { useRef } from "react";
 import { IoClose, IoPersonOutline } from "react-icons/io5";
 import { NavLink } from "react-router-dom";
 
 const AccountButton = (user: User) => {
   const submit = useSubmit();
   const { email } = user;
+  const accountModalRef = useRef<HTMLDivElement | null>(null);
 
   const handleOpen = () => {
-    const elementWithTabIndex1 = document.getElementById("AccountContent");
-    if (elementWithTabIndex1) {
-      elementWithTabIndex1.style.display = "block";
+    if (accountModalRef.current) {
+      accountModalRef.current.focus();
     }
   };
 
   const handleClose = () => {
-    const elementWithTabIndex1 = document.getElementById("AccountContent");
-    if (elementWithTabIndex1) {
-      elementWithTabIndex1.style.display = "none";
+    if (accountModalRef.current) {
+      accountModalRef.current.blur();
     }
   };
 
   return (
-    <div className="dropdown dropdown-end relative z-10">
+    <div className="dropdown dropdown-end relative">
       <label
         tabIndex={1}
         onClick={handleOpen}
@@ -32,9 +32,9 @@ const AccountButton = (user: User) => {
 
       {/* ACCOUNT MODAL */}
       <div
-        id="AccountContent"
+        ref={accountModalRef}
         tabIndex={1}
-        className="dropdown-content mr-2 mt-4 w-max min-w-[300px] overflow-hidden rounded-md border-2 border-base-200/75 bg-base-100 pb-3 shadow-xl"
+        className="dropdown-content z-10 mr-2 mt-4 w-max min-w-[300px] overflow-hidden rounded-md border-2 border-base-200/75 bg-base-100 pb-3 shadow-xl"
       >
         <IoClose
           onClick={handleClose}

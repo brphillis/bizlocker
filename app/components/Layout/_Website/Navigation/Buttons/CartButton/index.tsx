@@ -1,5 +1,5 @@
 import { IoCartOutline, IoClose } from "react-icons/io5";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Form, useNavigate } from "react-router-dom";
 import CartAddSubtractButton from "./CartAddSubtractButton";
 import {
@@ -9,20 +9,19 @@ import {
 
 const CartButton = ({ id: cartId, cartItems }: Cart) => {
   const navigate = useNavigate();
+  const cartModalRef = useRef<HTMLDivElement | null>(null);
 
   const [totalPrice, setTotalPrice] = useState<number>(0);
 
   const handleOpen = () => {
-    const elementWithTabIndex1 = document.getElementById("CartContent");
-    if (elementWithTabIndex1) {
-      elementWithTabIndex1.style.display = "block";
+    if (cartModalRef.current) {
+      cartModalRef.current.focus();
     }
   };
 
   const handleClose = () => {
-    const elementWithTabIndex1 = document.getElementById("CartContent");
-    if (elementWithTabIndex1) {
-      elementWithTabIndex1.style.display = "none";
+    if (cartModalRef.current) {
+      cartModalRef.current.blur();
     }
   };
 
@@ -32,7 +31,7 @@ const CartButton = ({ id: cartId, cartItems }: Cart) => {
   }, [cartItems]);
 
   return (
-    <div className="dropdown dropdown-end relative z-10">
+    <div className="dropdown dropdown-end relative">
       <label
         tabIndex={0}
         onClick={handleOpen}
@@ -48,9 +47,9 @@ const CartButton = ({ id: cartId, cartItems }: Cart) => {
 
       {/* CART MODAL */}
       <div
-        id="CartContent"
+        ref={cartModalRef}
         tabIndex={0}
-        className="dropdown-content mr-2 mt-4 w-max min-w-[300px] overflow-hidden rounded-md border-2 border-base-200/75 bg-base-100 shadow-xl"
+        className="dropdown-content z-10 mr-2 mt-4 w-max min-w-[300px] overflow-hidden rounded-md border-2 border-base-200/75 bg-base-100 shadow-xl"
       >
         <IoClose
           onClick={handleClose}

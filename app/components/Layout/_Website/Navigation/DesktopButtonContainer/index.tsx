@@ -2,6 +2,7 @@ import { IoSearchOutline } from "react-icons/io5";
 import AccountButton from "../Buttons/AccountButton";
 import CartButton from "../Buttons/CartButton";
 import LoginButton from "~/components/Buttons/LoginButton";
+import { useLocation } from "@remix-run/react";
 
 type Props = {
   user: User;
@@ -16,10 +17,12 @@ const DesktopButtonContainer = ({
   setSearchState,
   searchState,
 }: Props) => {
+  const location = useLocation();
+
   return (
-    <div className="hidden items-center gap-6 lg:flex">
+    <div className="hidden h-[60px] items-center gap-6 lg:flex">
       {user && <AccountButton {...user} />}
-      {cart && <CartButton {...cart} />}
+      {cart && location.pathname !== "/cart" && <CartButton {...cart} />}
 
       <IoSearchOutline
         size={24}
