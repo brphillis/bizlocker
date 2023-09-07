@@ -119,30 +119,6 @@ export const upsertProduct = async (productData: any) => {
         : undefined,
   };
 
-  if (brand !== undefined) {
-    if (brand) {
-      data.brand = {
-        connect: { id: parseInt(brand) },
-      };
-    } else {
-      data.brand = {
-        disconnect: true,
-      };
-    }
-  }
-
-  if (promotion !== undefined) {
-    if (promotion) {
-      data.promotion = {
-        connect: { id: parseInt(promotion) },
-      };
-    } else {
-      data.promotion = {
-        disconnect: true,
-      };
-    }
-  }
-
   if (!id) {
     // Create a new product with variants
     data.variants = {
@@ -192,7 +168,7 @@ export const upsertProduct = async (productData: any) => {
       });
     }
 
-    // Disconnect existing productSubCategories
+    // Disconnect existing connections
     await prisma.product.update({
       where: { id: parseInt(id) },
       data: {
@@ -200,6 +176,12 @@ export const upsertProduct = async (productData: any) => {
           disconnect: existingProduct.productSubCategories.map((category) => ({
             id: category.id,
           })),
+        },
+        brand: {
+          disconnect: true,
+        },
+        promotion: {
+          disconnect: true,
         },
       },
     });
@@ -240,6 +222,17 @@ export const upsertProduct = async (productData: any) => {
           },
         })),
     };
+
+    if (brand) {
+      data.brand = {
+        connect: { id: parseInt(brand) },
+      };
+    }
+    if (promotion) {
+      data.promotion = {
+        connect: { id: parseInt(promotion) },
+      };
+    }
 
     product = await prisma.product.update({
       where: { id: parseInt(id) },

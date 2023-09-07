@@ -72,3 +72,13 @@ export const getVariantUnitPrice = (
 
   return unitPrice?.toFixed(2);
 };
+
+export const getRandomOneOrTwo = (): number => {
+  const randomValue = Math.random();
+
+  if (randomValue < 0.5) {
+    return 1;
+  } else {
+    return 2;
+  }
+};

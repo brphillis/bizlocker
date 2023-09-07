@@ -65,7 +65,7 @@ const DesktopMenu = ({ productCategories }: Props) => {
         </ul>
       </div>
 
-      {activeSubCategories && (
+      {activeSubCategories && activeSubCategories.subCategories.length > 0 && (
         <div className="relative hidden h-[50px] w-full justify-center xl:flex">
           <ul className="menu menu-horizontal h-full items-center !py-0">
             {activeSubCategories?.subCategories.map(

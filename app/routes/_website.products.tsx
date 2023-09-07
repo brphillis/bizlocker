@@ -1,3 +1,4 @@
+import type { V2_MetaFunction } from "@remix-run/node";
 import {
   redirect,
   type LoaderArgs,
@@ -5,18 +6,34 @@ import {
 } from "@remix-run/server-runtime";
 import { useLoaderData } from "react-router-dom";
 import { tokenAuth } from "~/auth.server";
-// import BannerBlock from "~/components/Blocks/BannerBlock";
+import BannerBlock from "~/components/Blocks/BannerBlock";
 import ProductFilterSideBar from "~/components/Filter/ProductFilterSideBar";
 import ProductGrid from "~/components/Grids/ProductGrid";
 import PageWrapper from "~/components/Layout/_Website/PageWrapper";
 import ProductSort from "~/components/Sorting/ProductSort";
 import { getBrands } from "~/models/brands.server";
-import { getRandomCampaign } from "~/models/campaigns.server";
+import { getRandomCampaignOrPromotion } from "~/models/campaigns.server";
 import { addToCart } from "~/models/cart.server";
 import { getAvailableColors } from "~/models/enums.server";
 import { getProductCategories } from "~/models/productCategories.server";
 import { getProductSubCategories } from "~/models/productSubCategories.server";
 import { searchProducts } from "~/models/products.server";
+
+export const meta: V2_MetaFunction = ({ data }) => {
+  const url = new URL(data.url);
+  const paramsArray = Array.from(url.searchParams.entries());
+  const specificParam = paramsArray[paramsArray.length - 1];
+  return [
+    { title: "CLUTCH Clothing | " + specificParam[1] },
+    {
+      name: "description",
+      content:
+        "Shopping at CLUTCH clothing not only ensures the best quality fashion in Australia but we also have all the latest " +
+        specificParam[1] +
+        " in stock today available to be shipped straight to your door.",
+    },
+  ];
+};
 
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
@@ -29,7 +46,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   const productSubCategory = url.searchParams
     .get("productSubCategory")
     ?.toString();
-  const campaign = await getRandomCampaign(productSubCategory);
+  const campaign = await getRandomCampaignOrPromotion(productSubCategory);
 
   return {
     campaign,
@@ -39,6 +56,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     productSubCategories,
     brands,
     colors,
+    url,
   };
 };
 
@@ -57,7 +75,7 @@ export const action = async ({ request }: ActionArgs) => {
 
 const Products = () => {
   const {
-    // campaign,
+    campaign,
     products,
     totalPages,
     productCategories,
@@ -76,7 +94,7 @@ const Products = () => {
 
   return (
     <PageWrapper>
-      {/* {campaign && <BannerBlock content={campaign?.bannerImage as Image} />} */}
+      {campaign && <BannerBlock content={campaign} size="small" />}
 
       <div className="w-[1280px] max-w-[100vw]">
         <ProductSort totalCount={products.length * totalPages} />

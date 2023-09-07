@@ -2,16 +2,19 @@ import { useNavigate } from "@remix-run/react";
 
 type Props = {
   content: Campaign | Promotion | ContentImage | Image;
-  type: string;
-  options: BlockOptions;
+  type?: string;
+  options?: BlockOptions;
+  size?: "small" | "medium" | "large" | "native";
 };
 
-const BannerBlock = ({ content, type, options }: Props) => {
+const BannerBlock = ({ content, type, options, size }: Props) => {
   const navigate = useNavigate();
 
   const { bannerImage, name } = content as Promotion | Campaign;
   const { image, href } = content as ContentImage;
-  const { size } = options;
+  if (options?.size) {
+    size = options.size;
+  }
 
   const generateImageLink = () => {
     if (type === "promotion") {
