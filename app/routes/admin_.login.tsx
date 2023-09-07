@@ -1,6 +1,5 @@
 import type { ActionArgs } from "@remix-run/node";
 import {
-  Form,
   Link,
   useActionData,
   useLocation,
@@ -12,6 +11,7 @@ import { createUserSession } from "~/session.server";
 import { safeRedirect } from "~/utils";
 import AuthPageWrapper from "~/components/Layout/AuthPageWrapper";
 import { isValidEmail, isValidPassword } from "~/utility/validate";
+import AuthContainer from "~/components/Layout/AuthContainer";
 
 export const action = async ({ request }: ActionArgs) => {
   const formData = await request.formData();
@@ -68,18 +68,8 @@ const AdminLogin = () => {
 
   return (
     <AuthPageWrapper>
-      <Form
-        method="POST"
-        className="w-max-content form-control relative w-[24rem] max-w-[98vw] rounded-lg bg-brand-black p-8 text-brand-white"
-      >
-        <div className="flex flex-col items-center">
-          <h1 className="select-none pb-6 pt-3 text-center text-6xl font-bold tracking-wide text-white/90">
-            CLUTCH.
-          </h1>
-          <p className="mt-[-20px] select-none text-xs">Admin Login</p>
-        </div>
-        {/* <img src={image} className="mb-1 mt-1 h-[80px] select-none p-2" /> */}
-        <div className="form-control">
+      <AuthContainer sloganText="Admin Portal">
+        <div className="form-control relative">
           <label className="label">
             <span className="label-text text-brand-white">Email</span>
           </label>
@@ -109,20 +99,22 @@ const AdminLogin = () => {
           </Link>
         </div>
 
-        {validationError?.length > 0 && (
-          <div>
-            {validationError.map((error: string, i) => {
-              return (
-                <p
-                  key={error + i}
-                  className="mb-4 text-center text-xs text-red-500"
-                >
-                  {error}
-                </p>
-              );
-            })}
-          </div>
-        )}
+        <>
+          {validationError?.length > 0 && (
+            <div>
+              {validationError.map((error: string, i) => {
+                return (
+                  <p
+                    key={error + i}
+                    className="mb-4 text-center text-xs text-red-500"
+                  >
+                    {error}
+                  </p>
+                );
+              })}
+            </div>
+          )}
+        </>
 
         <div className="form-control gap-3">
           <button type="submit" className="btn btn-primary">
@@ -133,7 +125,7 @@ const AdminLogin = () => {
             Powered by BizLocker v0.1
           </p>
         </div>
-      </Form>
+      </AuthContainer>
     </AuthPageWrapper>
   );
 };

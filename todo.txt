@@ -1,9 +1,13 @@
+To Do
+
 [ ] Forms Validation
 [ ] Add Accounts Page
 [ ] Finish Mobile Nav Slideout for AdminWeb
 [ ] Add Promo to product filter
 [ ] add shipping calculator
 [ ] send email when order is shipped
+
+
 
 Task Hisory
 
@@ -12,3 +16,9 @@ Task Hisory
 003 - [x] Fix tile block appearance on safari browsers
 004 - [x] Find out why articles block is glitchy on some browsers
 005 - [x] add meta title and description to product pages
+
+
+
+Feat history
+
+001 - Add Loading Spinner Style

@@ -192,7 +192,7 @@ const ModifyOrder = () => {
 
               {!shippingDetails && viewingShippingDetails && (
                 <div className="flex justify-center">
-                  <Spinner />
+                  <Spinner mode="circle" />
                 </div>
               )}
 

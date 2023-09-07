@@ -82,3 +82,17 @@ export const getRandomOneOrTwo = (): number => {
     return 2;
   }
 };
+
+export const extractNumbersFromString = (inputString: string): number => {
+  const matches: RegExpMatchArray | null = inputString.match(/\d+/g);
+
+  if (!matches) {
+    return 0;
+  }
+
+  const numericString: string = matches.join("");
+
+  const numericValue: number = parseInt(numericString, 10);
+
+  return numericValue;
+};

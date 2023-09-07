@@ -7,29 +7,107 @@ type Props = {
 
 const DesktopMenu = ({ productCategories }: Props) => {
   const navigate = useNavigate();
-
   const [activeSubCategories, setActiveSubCategories] = useState<
     { parentCategory: string; subCategories: ProductSubCategory[] } | undefined
   >();
 
+  const [growTimeoutId, setGrowTimeoutId] = useState<NodeJS.Timeout | null>(
+    null
+  );
+  const [shrinkTimeoutId, setShrinkTimeoutId] = useState<NodeJS.Timeout | null>(
+    null
+  );
+
+  const [height, setHeight] = useState<number>(0);
+  const [shrinking, setShrinking] = useState<boolean>(false);
+
+  const growSubNav = () => {
+    const targetHeight = 50;
+    const duration = 450;
+    const interval = 10;
+    const steps = duration / interval;
+    const increment = targetHeight / steps;
+
+    const grow = () => {
+      setHeight((prevHeight) => {
+        if (prevHeight < targetHeight) {
+          const newHeight = prevHeight + increment;
+          return newHeight > targetHeight ? targetHeight : newHeight;
+        } else {
+          return prevHeight;
+        }
+      });
+
+      if (growTimeoutId) {
+        clearTimeout(growTimeoutId);
+      }
+
+      if (height < targetHeight) {
+        const timeoutId = setTimeout(grow, interval);
+        setGrowTimeoutId(timeoutId);
+      }
+    };
+
+    if (shrinkTimeoutId) {
+      clearTimeout(shrinkTimeoutId);
+    }
+    grow();
+  };
+
   useEffect(() => {
-    const navBar = document.getElementById("NavigationBar");
+    const shrinkSubNav = () => {
+      const targetHeight = 0;
+      const duration = 450;
+      const interval = 10;
+      const steps = duration / interval;
+      const decrement = height / steps;
 
-    const handleMouseLeave = () => {
-      setTimeout(() => {
-        setActiveSubCategories(undefined);
-      }, 2000);
+      const shrink = () => {
+        setHeight((prevHeight) => {
+          if (prevHeight < 1) {
+            setActiveSubCategories(undefined);
+          }
+
+          if (prevHeight > targetHeight) {
+            const newHeight = prevHeight - decrement;
+            return newHeight < targetHeight ? targetHeight : newHeight;
+          } else {
+            return prevHeight;
+          }
+        });
+
+        if (shrinkTimeoutId) {
+          clearTimeout(shrinkTimeoutId);
+        }
+
+        if (height > targetHeight) {
+          const timeoutId = setTimeout(shrink, interval);
+          setShrinkTimeoutId(timeoutId);
+
+          if (!shrinking) {
+            setShrinking(true);
+          }
+        }
+      };
+      if (growTimeoutId) {
+        clearTimeout(growTimeoutId);
+      }
+      shrink();
     };
 
-    navBar?.addEventListener("mouseleave", handleMouseLeave);
+    const navigationBar = document.getElementById("NavigationBar");
 
-    return () => {
-      navBar?.removeEventListener("mouseleave", handleMouseLeave);
-    };
-  }, []);
+    if (navigationBar) {
+      navigationBar.addEventListener("mouseleave", shrinkSubNav);
+
+      return () => {
+        navigationBar.removeEventListener("mouseleave", shrinkSubNav);
+      };
+    }
+  }, [height, shrinking, growTimeoutId, shrinkTimeoutId]);
 
   return (
-    <div className="m-0 flex h-max flex-col items-center justify-center p-0">
+    <div className="flex h-max flex-col items-center justify-center">
       <div className="relative hidden h-[60px] xl:block">
         <ul className="menu menu-horizontal h-full items-center !py-0">
           {productCategories?.map(
@@ -54,6 +132,7 @@ const DesktopMenu = ({ productCategories }: Props) => {
                         parentCategory: name,
                         subCategories: productSubCategories,
                       });
+                      growSubNav();
                     }
                   }}
                 >
@@ -66,8 +145,13 @@ const DesktopMenu = ({ productCategories }: Props) => {
       </div>
 
       {activeSubCategories && activeSubCategories.subCategories.length > 0 && (
-        <div className="relative hidden h-[50px] w-full justify-center xl:flex">
-          <ul className="menu menu-horizontal h-full items-center !py-0">
+        <div
+          style={{
+            height: height + "px",
+          }}
+          className="relative hidden w-full justify-center xl:flex"
+        >
+          <ul className="menu menu-horizontal !h-full items-center !py-0">
             {activeSubCategories?.subCategories.map(
               ({ id, name }: ProductSubCategory) => {
                 return (

@@ -44,7 +44,7 @@ const ProductBlock = ({ content, options, products }: Props) => {
 
       {!products && (
         <div className="flex w-full items-center justify-center">
-          <Spinner />
+          <Spinner mode="circle" />
         </div>
       )}
     </>
