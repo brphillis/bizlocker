@@ -27,8 +27,8 @@ const MobileNavigation = ({ productCategories, user }: Props) => {
                 className="cursor-pointer border-b-2 border-primary-content/0 px-3 text-sm font-bold tracking-wide !opacity-100"
               >
                 <div className="collapse !visible w-full !auto-cols-auto !gap-0 !p-0">
-                  <input type="checkbox" className="peer absolute top-0" />
-                  <div className="relative flex w-full items-center justify-between py-3 peer-checked:text-primary">
+                  <input type="checkbox" className="absolute top-0" />
+                  <div className="relative flex w-full items-center justify-between py-3">
                     <div className="text-sm font-semibold">{name}</div>
                     <IoMenu />
                   </div>

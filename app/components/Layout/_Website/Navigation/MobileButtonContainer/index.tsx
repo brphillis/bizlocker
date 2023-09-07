@@ -1,6 +1,7 @@
 import { IoMenu, IoSearchOutline } from "react-icons/io5";
 import AccountButton from "../Buttons/AccountButton";
 import CartButton from "../Buttons/CartButton";
+import { useLocation } from "@remix-run/react";
 
 type Props = {
   user: User;
@@ -15,8 +16,10 @@ const MobileButtonContainer = ({
   setSearchState,
   searchState,
 }: Props) => {
+  const location = useLocation();
+
   return (
-    <div className="flex items-center lg:hidden">
+    <div className="flex h-[60px] items-center lg:hidden">
       <label
         htmlFor="my-drawer-3"
         className="btn btn-square btn-ghost text-brand-white/50"
@@ -26,7 +29,7 @@ const MobileButtonContainer = ({
 
       <div className="absolute right-3 flex gap-6">
         {user && <AccountButton {...user} />}
-        {cart && <CartButton {...cart} />}
+        {cart && location.pathname !== "/cart" && <CartButton {...cart} />}
 
         <IoSearchOutline
           className="cursor-pointer text-brand-white"

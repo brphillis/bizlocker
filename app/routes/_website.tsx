@@ -54,8 +54,11 @@ const App = () => {
     <div className="drawer" data-theme="brand-light">
       <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content relative flex min-h-[calc(100vh-64px)] flex-col items-center justify-start overflow-x-hidden">
-        <div className="navbar relative !min-h-[60px] w-full justify-center bg-brand-black !py-0">
-          <div className="flex h-full w-[1280px] max-w-full flex-row justify-between">
+        <div
+          id="NavigationBar"
+          className="navbar relative !min-h-[60px] w-full justify-center bg-brand-black !py-0"
+        >
+          <div className="flex h-full w-[1280px] max-w-full flex-row items-start justify-between">
             <MobileButtonContainer
               user={user}
               cart={cart}
@@ -64,10 +67,10 @@ const App = () => {
             />
 
             <div
-              className="absolute left-16 flex h-full flex-row items-center gap-4 px-2 font-bold lg:relative lg:left-0"
+              className="absolute left-16 flex h-[60px] flex-row items-center gap-4 px-2 font-bold lg:relative lg:left-0"
               onClick={() => navigate("/home")}
             >
-              <h1 className="-mt-1 cursor-pointer select-none text-xl font-bold tracking-widest text-white">
+              <h1 className="cursor-pointer select-none text-xl font-bold tracking-widest text-white">
                 CLUTCH.
               </h1>
             </div>
