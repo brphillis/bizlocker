@@ -104,7 +104,7 @@ const Product = () => {
       <div className="mx-auto cursor-auto px-3">
         <div className="mx-auto flex justify-center max-xl:flex-wrap">
           <div className="flex h-[740px] gap-3 max-xl:h-[70vh] max-xl:flex-col max-xl:gap-6">
-            <div className="scrollbar-hide flex h-full flex-col justify-start gap-3 overflow-auto max-xl:order-2 max-xl:h-1/3 max-xl:flex-row">
+            <div className="scrollbar-hide flex h-full flex-col justify-start gap-3 overflow-auto max-xl:order-2 max-xl:h-[200px] max-xl:flex-row">
               {images?.map(({ url }: Image, i: number) => {
                 return (
                   <img
