@@ -98,6 +98,7 @@ export const getArticle = async (id?: string, title?: string) => {
 export const upsertArticleInfo = async (
   title: string,
   description: string,
+  isActive: string,
   articleCategories: string[],
   thumbnail: Image,
   articleId?: number
@@ -153,6 +154,7 @@ export const upsertArticleInfo = async (
       data: {
         title: title,
         description: description,
+        isActive: isActive ? true : false,
         articleCategories: {
           connect: articleCategories
             ? articleCategories?.map((category: string) => ({

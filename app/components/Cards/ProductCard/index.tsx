@@ -67,7 +67,7 @@ const ProductCard = (product: Product) => {
         </div>
       </div>
       <div className="mt-2 text-left">
-        {brand && brand.name !== "Generic" && (
+        {brand && brand.name.toLowerCase() !== "none" && (
           <h5 className="font-semibold tracking-tight text-gray-500">
             {brand.name}
           </h5>

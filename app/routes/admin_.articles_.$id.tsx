@@ -42,6 +42,7 @@ import {
   searchContentData,
 } from "~/utility/pageBuilder";
 import { HiTrash } from "react-icons/hi2";
+import { useState } from "react";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: swiper },
@@ -74,6 +75,7 @@ export const action = async ({ request, params }: ActionArgs) => {
   const {
     title,
     description,
+    isActive,
     articleCategories,
     thumbnail,
     itemIndex,
@@ -92,10 +94,11 @@ export const action = async ({ request, params }: ActionArgs) => {
 
     case "update":
       //we create a new article if ID is not provided
-      if (title || description || thumbnail || articleCategories) {
+      if (title || description || isActive || thumbnail || articleCategories) {
         const articleId = await upsertArticleInfo(
           title as string,
           description as string,
+          isActive as string,
           JSON.parse(articleCategories as string),
           JSON.parse(thumbnail as string),
           id ? parseInt(id) : undefined
@@ -151,6 +154,10 @@ const ModifyArticle = () => {
 
   const { searchResults, updateSuccess } = useActionData() || {};
 
+  const [isActive, setIsActive] = useState<string | undefined>(
+    "isActive" in article && article?.isActive ? " " : ""
+  );
+
   return (
     <AdminPageWrapper>
       <div className="relative h-full w-full bg-base-200 p-6 sm:w-full">
@@ -185,6 +192,28 @@ const ModifyArticle = () => {
                   method="POST"
                   className="flex w-full flex-col items-center gap-6"
                 >
+                  <>
+                    <label className="label absolute right-[8%] top-[1.8rem] z-10 mt-0 h-1 cursor-pointer sm:mt-1">
+                      <input
+                        type="checkbox"
+                        className="toggle toggle-sm ml-3"
+                        checked={isActive ? true : false}
+                        onChange={(e) =>
+                          setIsActive(e.target.checked ? "true" : undefined)
+                        }
+                      />
+                      <span className="label-text ml-3 text-brand-white">
+                        Active
+                      </span>
+                    </label>
+                    <input
+                      name="isActive"
+                      value={isActive || ""}
+                      readOnly
+                      hidden
+                    />
+                  </>
+
                   <div className="form-control">
                     <label className="label">
                       <span className="label-text text-brand-white">Title</span>

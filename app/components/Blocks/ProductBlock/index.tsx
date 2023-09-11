@@ -11,6 +11,20 @@ type Props = {
 
 const ProductBlock = ({ content, options, products }: Props) => {
   const determineSortPhrase = (sortBy: SortBy) => {
+    if (
+      sortBy === "createdAt" &&
+      content?.[0]?.brand?.name.toLowerCase() === "none"
+    ) {
+      return "Shop by Newest";
+    }
+
+    if (
+      sortBy === "totalSold" &&
+      content?.[0]?.brand?.name.toLowerCase() === "none"
+    ) {
+      return "Shop by Most Popular";
+    }
+
     if (sortBy === "createdAt") {
       return "Shop New In  ";
     }
@@ -20,6 +34,10 @@ const ProductBlock = ({ content, options, products }: Props) => {
   };
 
   const determineDisplayedFilter = (content: ProductBlockContent) => {
+    if (content?.brand?.name.toLowerCase() === "none") {
+      return;
+    }
+
     if (content?.brand?.name) {
       return content?.brand?.name;
     }

@@ -139,9 +139,11 @@ const Product = () => {
               <h1 className="mb-1 text-3xl font-medium text-gray-900">
                 {name}
               </h1>
-              <h2 className="ml-1 text-sm tracking-widest text-gray-500">
-                {brandName}
-              </h2>
+              {brandName?.toLowerCase() !== "none" && (
+                <h2 className="ml-1 text-sm tracking-widest text-gray-500">
+                  {brandName}
+                </h2>
+              )}
             </div>
 
             <div className="flex py-3 max-sm:justify-between">
