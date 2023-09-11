@@ -293,6 +293,8 @@ export const searchProducts = async (
   const brand = formData?.brand || url?.searchParams.get("brand") || "";
   const gender = formData?.gender || url?.searchParams.get("gender") || "";
   const color = formData?.color || url?.searchParams.get("color") || "";
+  const isActive =
+    formData?.isActive || url?.searchParams.get("isActive") || "";
   const onSale = formData?.onSale || url?.searchParams.get("onSale") || "";
   const promotionId =
     formData?.promotionId || url?.searchParams.get("promotionId") || "";
@@ -406,6 +408,10 @@ export const searchProducts = async (
 
   if (gender) {
     filter.gender = gender as string;
+  }
+
+  if (isActive) {
+    filter.isActive = true;
   }
 
   if (color) {

@@ -25,6 +25,7 @@ export const getProductsForBlock = async (
 
   const formDataObject: { [key: string]: string } = {};
 
+  formDataObject.isActive = "true";
   formDataObject.productCategory = productCategoryId
     ? productCategoryId.toString()
     : "";
@@ -64,6 +65,7 @@ export const getArticlesForBlock = async (
 
   const formDataObject: { [key: string]: string } = {};
 
+  formDataObject.isActive = "true";
   formDataObject.articleCategory = articleCategoryId
     ? articleCategoryId.toString()
     : "";

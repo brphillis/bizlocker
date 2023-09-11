@@ -142,7 +142,7 @@ const Product = () => {
           type="Product"
           mode={mode}
           hasIsActive={true}
-          hasDelete={false}
+          hasDelete={true}
         />
 
         <div className="form-control">

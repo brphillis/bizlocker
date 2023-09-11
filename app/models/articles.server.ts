@@ -251,6 +251,8 @@ export const searchArticles = async (
     formData?.title || (url && url.searchParams.get("title")?.toString()) || "";
   const articleCategory =
     formData?.articleCategory || url?.searchParams.get("articleCategory") || "";
+  const isActive =
+    formData?.isActive || url?.searchParams.get("isActive") || "";
 
   const sortBy = formData?.sortBy || url?.searchParams.get("sortBy") || "";
   const sortOrder =
@@ -276,6 +278,10 @@ export const searchArticles = async (
       contains: title,
       mode: "insensitive",
     };
+  }
+
+  if (isActive) {
+    filter.isActive = true;
   }
 
   if (articleCategory) {
