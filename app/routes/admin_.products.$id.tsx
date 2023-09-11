@@ -65,6 +65,7 @@ export const action = async ({ request, params }: ActionArgs) => {
     name,
     productSubCategories,
     description,
+    infoURL,
     gender,
     isActive,
     variants,
@@ -92,6 +93,7 @@ export const action = async ({ request, params }: ActionArgs) => {
         productSubCategories:
           productSubCategories && JSON.parse(productSubCategories as string),
         variants: variantData,
+        infoURL: infoURL as string,
         description: description as string,
         gender: gender as string,
         isActive: isActive ? true : false,
@@ -183,7 +185,18 @@ const Product = () => {
                 valueToChange={product}
               />
 
-              <div className="w-[95vw] sm:w-[215px]" />
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text">Info URL</span>
+                </label>
+                <input
+                  name="infoURL"
+                  type="text"
+                  placeholder="Info URL"
+                  className="input input-bordered w-[95vw] sm:w-[215px]"
+                  defaultValue={product?.infoURL}
+                />
+              </div>
             </div>
           </div>
 

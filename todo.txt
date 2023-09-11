@@ -22,3 +22,5 @@ Task Hisory
 Feat history
 
 001 - Add Loading Spinner Style
+002 - Add navbar transitions
+003 - add infoURL to products

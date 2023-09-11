@@ -69,6 +69,7 @@ export const upsertProduct = async (productData: any) => {
   const {
     name,
     description,
+    infoURL,
     productSubCategories,
     gender,
     isActive,
@@ -97,6 +98,7 @@ export const upsertProduct = async (productData: any) => {
   const data: any = {
     name,
     description,
+    infoURL,
     gender,
     isActive,
     discountPercentageHigh,

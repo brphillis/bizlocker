@@ -388,6 +388,7 @@ model Product {
   id                     Int                  @id @default(autoincrement())
   name                   String
   description            String
+  infoURL                String?
   images                 Image[]
   productSubCategories   ProductSubCategory[] @relation("ProductSubCategoryToProduct")
   brand                  Brand?               @relation("BrandToProduct", fields: [brandId], references: [id])
