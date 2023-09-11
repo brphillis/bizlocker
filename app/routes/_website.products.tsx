@@ -24,12 +24,16 @@ export const meta: V2_MetaFunction = ({ data }) => {
   const paramsArray = Array.from(url.searchParams.entries());
   const specificParam = paramsArray[paramsArray.length - 1];
   return [
-    { title: "CLUTCH Clothing | " + specificParam[1] },
+    {
+      title:
+        "CLUTCH Clothing | " +
+        (specificParam?.[1] ? specificParam?.[1] : "Products"),
+    },
     {
       name: "description",
       content:
         "Shopping at CLUTCH clothing not only ensures the best quality fashion in Australia but we also have all the latest " +
-        specificParam[1] +
+        (specificParam?.[1] ? specificParam?.[1] : "products") +
         " in stock today available to be shipped straight to your door.",
     },
   ];
