@@ -13,6 +13,8 @@ const ProductBlock = ({ content, options, products }: Props) => {
   const determineSortPhrase = (sortBy: SortBy) => {
     if (
       sortBy === "createdAt" &&
+      !content?.[0]?.productSubCategory?.name &&
+      !content?.[0]?.productCategory?.name &&
       content?.[0]?.brand?.name.toLowerCase() === "none"
     ) {
       return "Shop by Newest";
@@ -20,6 +22,8 @@ const ProductBlock = ({ content, options, products }: Props) => {
 
     if (
       sortBy === "totalSold" &&
+      !content?.[0]?.productSubCategory?.name &&
+      !content?.[0]?.productCategory?.name &&
       content?.[0]?.brand?.name.toLowerCase() === "none"
     ) {
       return "Shop by Most Popular";
@@ -34,11 +38,15 @@ const ProductBlock = ({ content, options, products }: Props) => {
   };
 
   const determineDisplayedFilter = (content: ProductBlockContent) => {
-    if (content?.brand?.name.toLowerCase() === "none") {
+    if (
+      content?.brand?.name.toLowerCase() === "none" &&
+      !content?.productSubCategory?.name &&
+      !content?.productCategory?.name
+    ) {
       return;
     }
 
-    if (content?.brand?.name) {
+    if (content?.brand?.name && content?.brand?.name.toLowerCase() !== "none") {
       return content?.brand?.name;
     }
     if (content?.productSubCategory?.name) {
