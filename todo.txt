@@ -17,7 +17,7 @@ Bug Hisory
 004 - [x] Find out why articles block is glitchy on some browsers
 005 - [x] add meta title and description to product pages
 006 - [x] fix product page with no filters
-
+007 - [x] fix product images mobile
 
 
 Feat history
