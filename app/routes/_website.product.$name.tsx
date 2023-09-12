@@ -101,9 +101,9 @@ const Product = () => {
 
   return (
     <PageWrapper>
-      <div className="mx-auto cursor-auto px-3">
+      <div className="mx-auto cursor-auto px-3 max-xl:px-0">
         <div className="mx-auto flex justify-center max-xl:flex-wrap">
-          <div className="flex h-[740px] gap-3 max-xl:h-[70vh] max-xl:flex-col max-xl:gap-6">
+          <div className="flex h-[740px] gap-3 max-xl:h-max max-xl:flex-col max-xl:gap-6">
             <div className="scrollbar-hide flex h-full flex-col justify-start gap-3 overflow-auto max-xl:order-2 max-xl:h-[200px] max-xl:flex-row">
               {images?.map(({ url }: Image, i: number) => {
                 return (
@@ -120,7 +120,7 @@ const Product = () => {
             <div className="relative mx-auto block h-full w-max max-w-[100vw] max-xl:order-1 max-xl:h-2/3">
               <img
                 alt={name + "_focusedImage"}
-                className="h-full w-auto object-cover object-center shadow-md"
+                className="h-full w-auto object-cover object-center shadow-md max-xl:px-3 max-xl:shadow-none"
                 src={selectedImage?.url}
               />
 
@@ -134,7 +134,7 @@ const Product = () => {
             </div>
           </div>
 
-          <div className="mt-6 w-full lg:mt-0 lg:w-1/2 lg:py-6 lg:pl-10">
+          <div className="mt-6 w-full max-xl:px-3 lg:mt-0 lg:w-1/2 lg:py-6 lg:pl-10">
             <div className="pb-3">
               <h1 className="mb-1 text-3xl font-medium text-gray-900">
                 {name}
