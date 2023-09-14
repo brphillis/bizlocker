@@ -92,7 +92,6 @@ const ManageProducts = () => {
                     {
                       id,
                       name,
-                      description,
                       productSubCategories,
                       brand,
                       totalSold,

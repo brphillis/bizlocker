@@ -180,6 +180,11 @@ const Admin = () => {
                       Products
                     </label>
                   </li>
+                  <li onClick={() => navigate("/admin/departments")}>
+                    <label htmlFor="my-drawer-2" className="hover:text-white">
+                      Departments
+                    </label>
+                  </li>
                   <li onClick={() => navigate("/admin/product-categories")}>
                     <label htmlFor="my-drawer-2" className="hover:text-white">
                       Categories

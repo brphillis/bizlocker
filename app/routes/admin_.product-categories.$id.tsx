@@ -96,6 +96,8 @@ const ModifyProductCategory = () => {
     setSelectedArticleCategories(selectedOptions);
   };
 
+  const [loading, setLoading] = useState<boolean>(false);
+
   return (
     <DarkOverlay>
       <Form
@@ -251,7 +253,7 @@ const ModifyProductCategory = () => {
           </p>
         )}
 
-        <BackSubmitButtons />
+        <BackSubmitButtons loading={loading} setLoading={setLoading} />
       </Form>
     </DarkOverlay>
   );

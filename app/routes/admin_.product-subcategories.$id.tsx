@@ -3,12 +3,7 @@ import FormHeader from "~/components/Forms/Headers/FormHeader";
 import UploadImage from "~/components/Forms/Upload/UploadImage";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
-import {
-  json,
-  redirect,
-  type ActionArgs,
-  type LoaderArgs,
-} from "@remix-run/node";
+import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node";
 import {
   deleteProductSubCategory,
   getProductSubCategory,
@@ -20,7 +15,7 @@ export const loader = async ({ params }: LoaderArgs) => {
   const id = params?.id;
   const productSubCategory =
     id && id !== "add" && (await getProductSubCategory(id));
-  return json(productSubCategory);
+  return productSubCategory;
 };
 
 export const action = async ({ request, params }: ActionArgs) => {

@@ -18,6 +18,7 @@ type Props = {
     | Image;
   type:
     | "Promotion"
+    | "Department"
     | "Product"
     | "Brand"
     | "Article"
@@ -37,7 +38,6 @@ const FormHeader = ({
   mode,
   hasIsActive,
   hasDelete,
-  hasConnections,
 }: Props) => {
   const navigate = useNavigate();
 
@@ -52,14 +52,14 @@ const FormHeader = ({
   return (
     <>
       <div className="flex max-w-[100vw] flex-row justify-end sm:justify-between">
-        <h1 className="absolute left-3 top-[1.2rem] sm:relative sm:top-0">
+        <h1 className="absolute left-0 top-[1.2rem] sm:relative sm:top-0">
           {mode && capitalizeFirst(mode)} {type}
         </h1>
 
         <div className="mr-3 flex gap-6 sm:mr-0">
           {hasIsActive && (
             <>
-              <label className="label relative mt-0 h-1 cursor-pointer sm:mt-1">
+              <label className="max-xs:mt-0 label relative mt-[5px] h-1 cursor-pointer">
                 <input
                   type="checkbox"
                   className="toggle toggle-sm ml-3"

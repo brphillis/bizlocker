@@ -23,6 +23,7 @@ import MobileMenu from "~/components/Layout/_Website/Navigation/MobileMenu";
 import DesktopMenu from "~/components/Layout/_Website/Navigation/DesktopMenu";
 import MobileButtonContainer from "~/components/Layout/_Website/Navigation/MobileButtonContainer";
 import DesktopButtonContainer from "~/components/Layout/_Website/Navigation/DesktopButtonContainer";
+import { getDepartments } from "~/models/departments.server";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
@@ -35,10 +36,11 @@ export const loader = async ({ request }: LoaderArgs) => {
   if (user) {
     cart = await getCart(request);
   }
-  const productCategories = await getProductCategories();
+  const departments = await getDepartments();
   const brands = await getBrands();
+  const productCategories = await getProductCategories();
 
-  return { user, cart, productCategories, brands };
+  return { user, cart, departments, productCategories, brands };
 };
 
 const App = () => {
@@ -46,7 +48,8 @@ const App = () => {
   const navigation = useNavigation();
   const location = useLocation();
 
-  const { user, cart, productCategories, brands } = useLoaderData();
+  const { user, cart, departments, brands, productCategories } =
+    useLoaderData();
 
   const [searchActive, setSearchActive] = useState<boolean | null>(false);
 
@@ -75,7 +78,10 @@ const App = () => {
               </h1>
             </div>
 
-            <DesktopMenu productCategories={productCategories} />
+            <DesktopMenu
+              departments={departments}
+              productCategories={productCategories}
+            />
 
             <DesktopButtonContainer
               user={user}
