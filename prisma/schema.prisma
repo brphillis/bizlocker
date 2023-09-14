@@ -292,6 +292,7 @@ model ContentImage {
 model Department {
   id                Int               @id @default(autoincrement())
   name              String            @unique
+  isActive          Boolean           @default(true)
   productCategories ProductCategory[] @relation("DepartmentToProductCategory")
   campaigns         Campaign[]
   promotions        Promotion[]
@@ -300,8 +301,8 @@ model Department {
 model ProductCategory {
   id                   Int                   @id @default(autoincrement())
   name                 String                @unique
-  department           Department            @relation("DepartmentToProductCategory", fields: [departmentId], references: [id])
-  departmentId         Int
+  department           Department?           @relation("DepartmentToProductCategory", fields: [departmentId], references: [id])
+  departmentId         Int?
   articleCategories    ArticleCategory[]     @relation("ProductCategoryToArticleCategory")
   productSubCategories ProductSubCategory[]  @relation("ProductCategoryToProductSubCategory")
   productBlockContent  ProductBlockContent[] @relation("ProductCategoryToProductBlock")

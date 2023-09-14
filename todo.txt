@@ -6,6 +6,7 @@ To Do
 [ ] Add Promo to product filter
 [ ] add shipping calculator
 [ ] send email when order is shipped
+[ ] add department selection to mobile navigation
 
 
 
@@ -27,3 +28,4 @@ Feat history
 003 - add infoURL to products
 004 - add filter to product blocks
 005 - add filter to article blocks
+006 - add department management

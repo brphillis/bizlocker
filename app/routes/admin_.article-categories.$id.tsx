@@ -2,12 +2,7 @@ import DarkOverlay from "~/components/Layout/DarkOverlay";
 import FormHeader from "~/components/Forms/Headers/FormHeader";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
-import {
-  json,
-  redirect,
-  type ActionArgs,
-  type LoaderArgs,
-} from "@remix-run/node";
+import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node";
 import {
   deleteArticleCategory,
   getArticleCategories,
@@ -22,7 +17,7 @@ export const loader = async ({ params }: LoaderArgs) => {
     return null;
   } else {
     const articleCategory = (await getArticleCategories(id)) as ArticleCategory;
-    return json({ articleCategory });
+    return { articleCategory };
   }
 };
 

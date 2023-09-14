@@ -2,11 +2,16 @@ import { useNavigate } from "@remix-run/react";
 import { useEffect, useState } from "react";
 
 type Props = {
+  departments: Department[];
   productCategories: ProductCategory[];
 };
 
-const DesktopMenu = ({ productCategories }: Props) => {
+const DesktopMenu = ({ departments, productCategories }: Props) => {
   const navigate = useNavigate();
+
+  const [selectedDepartment, setSelectedDepartment] = useState<number>(
+    departments?.[0].id
+  );
   const [activeSubCategories, setActiveSubCategories] = useState<
     { parentCategory: string; subCategories: ProductSubCategory[] } | undefined
   >();
@@ -16,6 +21,10 @@ const DesktopMenu = ({ productCategories }: Props) => {
   );
   const [shrinkTimeoutId, setShrinkTimeoutId] = useState<NodeJS.Timeout | null>(
     null
+  );
+
+  const matchingProductCategories = productCategories.filter(
+    (e: ProductCategory) => e.departmentId === selectedDepartment
   );
 
   const [height, setHeight] = useState<number>(0);
@@ -110,7 +119,24 @@ const DesktopMenu = ({ productCategories }: Props) => {
     <div className="flex h-max flex-col items-center justify-center">
       <div className="relative hidden h-[60px] xl:block">
         <ul className="menu menu-horizontal h-full items-center !py-0">
-          {productCategories?.map(
+          <div className="relative ml-6">
+            <select
+              name="department"
+              className="select mr-6 w-[148px] border-l border-r border-l-white/50 border-r-white/50 bg-brand-black pl-6 pt-[0.125rem] tracking-wider text-brand-white"
+              defaultValue={departments?.[0].name.toUpperCase() || ""}
+              onChange={(e) => setSelectedDepartment(parseInt(e.target.value))}
+            >
+              {departments?.map(({ id, name }: Department) => {
+                return (
+                  <option key={"department_" + id} value={id}>
+                    {name.toUpperCase()}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+
+          {matchingProductCategories?.map(
             ({ id, name, productSubCategories }: ProductCategory) => {
               return (
                 <li

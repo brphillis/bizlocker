@@ -20,18 +20,21 @@ const DesktopButtonContainer = ({
   const location = useLocation();
 
   return (
-    <div className="hidden h-[60px] items-center gap-6 lg:flex">
-      {user && <AccountButton {...user} />}
-      {cart && location.pathname !== "/cart" && <CartButton {...cart} />}
+    <>
+      <div className="grow"></div>
+      <div className="hidden h-[60px] items-center gap-6 lg:flex">
+        {user && <AccountButton {...user} />}
+        {cart && location.pathname !== "/cart" && <CartButton {...cart} />}
 
-      <IoSearchOutline
-        size={24}
-        onClick={() => setSearchState(!searchState)}
-        className="cursor-pointer !text-brand-white"
-      />
+        <IoSearchOutline
+          size={24}
+          onClick={() => setSearchState(!searchState)}
+          className="cursor-pointer !text-brand-white"
+        />
 
-      {!user && <LoginButton />}
-    </div>
+        {!user && <LoginButton />}
+      </div>
+    </>
   );
 };
 

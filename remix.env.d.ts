@@ -168,6 +168,7 @@ interface CartItem {
 interface Department {
   id: number;
   name: string;
+  isActive: boolean;
   productCategories: ProductCategory[];
   campaigns: Campaign[];
   promotions: Promotion[];
@@ -177,6 +178,7 @@ type ProductCategory = {
   id: number;
   name: string;
   department: Department;
+  departmentId: number;
   articleCategories?: ArticleCategory[];
   productSubCategories?: ProductSubCategory[];
 };
