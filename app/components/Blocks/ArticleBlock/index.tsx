@@ -23,7 +23,7 @@ const ArticleBlock = ({ content, options, articles }: Props) => {
   };
 
   return (
-    <div className="h-max w-full">
+    <>
       {options.sortBy && content?.[0].articleCategory?.name && (
         <p className="self-start pl-3 text-xl font-bold md:pl-1">
           {options.sortBy ? determineSortPhrase(options.sortBy) : null}
@@ -34,7 +34,7 @@ const ArticleBlock = ({ content, options, articles }: Props) => {
       )}
 
       {articles && <ArticleGrid articles={articles} />}
-    </div>
+    </>
   );
 };
 

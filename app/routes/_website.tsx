@@ -119,7 +119,11 @@ const App = () => {
         <Footer />
       </div>
 
-      <MobileMenu productCategories={productCategories} user={user} />
+      <MobileMenu
+        departments={departments}
+        productCategories={productCategories}
+        user={user}
+      />
     </div>
   );
 };

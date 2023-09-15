@@ -66,7 +66,13 @@ const ProductBlock = ({ content, options, products }: Props) => {
         <span className="text-2xl">{determineDisplayedFilter(content[0])}</span>
       </p>
 
-      {products && <ProductGrid products={products} cols={columns} />}
+      {products && (
+        <ProductGrid
+          products={products}
+          cols={columns}
+          enablePlaceHolder={true}
+        />
+      )}
 
       {!products && (
         <div className="flex w-full items-center justify-center">

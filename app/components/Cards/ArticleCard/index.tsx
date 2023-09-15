@@ -11,16 +11,19 @@ const ArticleCard = ({ article, hasDescription }: Props) => {
   const image = article?.thumbnail?.url;
   return (
     <div
-      className="group relative flex h-[248px] w-auto cursor-pointer flex-col"
+      className="group relative flex h-[248px] w-full cursor-pointer flex-col"
       onClick={() => navigate(`/article/${article.title}`)}
     >
       <div className="relative h-full w-auto drop-shadow-xl">
-        <img
-          className="h-full w-full object-cover object-top"
-          src={image || ""}
-          alt={article.title + "_image"}
-        />
-        <div className="absolute bottom-0 flex w-full justify-between rounded bg-black bg-opacity-20 px-4 py-3 text-white drop-shadow-lg backdrop-blur-lg">
+        {image && (
+          <img
+            className="h-full w-full object-cover"
+            src={image}
+            alt={article.title + "_image"}
+          />
+        )}
+        <div className="absolute bottom-0 flex w-full justify-between rounded-b bg-black/80 px-4 py-3 text-white">
+          {/* drop-shadow-lg backdrop-blur-lg */}
           <div>
             <p className="font-bold">{article.title}</p>
             <div>
