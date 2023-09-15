@@ -77,11 +77,9 @@ const ProductCard = (product: Product) => {
         <div>
           <p>
             {(isOnSale || isPromoted) && (
-              <>
-                <span className="mr-2 text-sm text-gray-400 line-through">
-                  ${price.toFixed(2)}
-                </span>
-              </>
+              <span className="mr-2 text-sm text-gray-400 line-through">
+                ${price.toFixed(2)}
+              </span>
             )}
             <span className="text-sm font-bold text-gray-900">
               ${getVariantUnitPrice(variants[0], product)}&nbsp;
