@@ -29,3 +29,4 @@ Feat history
 005 - add filter to article blocks
 006 - add department management
 007 - add department selection to mobile navigation
+008 - add menu order indexing

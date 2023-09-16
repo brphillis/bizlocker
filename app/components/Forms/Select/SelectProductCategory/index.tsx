@@ -6,13 +6,13 @@ type Props = {
 const SelectBrand = ({ productCategories, defaultValue }: Props) => {
   return (
     <div className="form-control">
-      <label className="label text-sm">Root Category</label>
+      <label className="label text-sm">Product Category</label>
       <select
         name="productCategory"
         className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
         defaultValue={defaultValue}
       >
-        <option value="">Select a Root Category</option>
+        <option value="">Select a Category</option>
         {productCategories?.map(({ id, name }: ProductCategory) => {
           return (
             <option key={"productCategory_" + id} value={id}>

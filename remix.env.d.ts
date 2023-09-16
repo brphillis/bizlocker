@@ -168,6 +168,8 @@ interface CartItem {
 interface Department {
   id: number;
   name: string;
+  index: number;
+  displayInNavigation: boolean;
   isActive: boolean;
   productCategories: ProductCategory[];
   campaigns: Campaign[];
@@ -181,7 +183,27 @@ type ProductCategory = {
   departmentId: number;
   articleCategories?: ArticleCategory[];
   productSubCategories?: ProductSubCategory[];
+  index: number;
+  displayInNavigation: boolean;
+  isActive: boolean;
 };
+
+interface ProductSubCategory {
+  id: number;
+  name: string;
+  productCategory?: ProductCategory;
+  productCategoryId?: number;
+  productSubCategory?: ProductCategory;
+  productSubCategoryId?: number;
+  products: Product[];
+  productBlockContent: ProductBlockContent[];
+  image?: Image;
+  imageId?: number;
+  campaigns: Campaign[];
+  index: number;
+  displayInNavigation: boolean;
+  isActive: boolean;
+}
 
 type Article = {
   id: number;
@@ -201,6 +223,27 @@ type ArticleCategory = {
   articles?: Article[];
   productCategory?: ProductCategory | null;
 };
+
+interface Product {
+  id: number;
+  name: string;
+  description: string;
+  images: Image[];
+  productSubCategories: ProductSubCategory[];
+  brand?: Brand;
+  brandId?: number;
+  variants: ProductVariant[];
+  discountPercentageHigh: number;
+  discountPercentageLow: number;
+  totalSold: number;
+  isActive: boolean;
+  gender?: Gender;
+  campaigns: Campaign[];
+  promotion?: Promotion;
+  promotionId?: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
 interface ProductVariant {
   id: number;
@@ -239,41 +282,6 @@ type NewProductVariant = {
   isActive?: boolean;
   isPromoted?: boolean;
 };
-
-interface Product {
-  id: number;
-  name: string;
-  description: string;
-  images: Image[];
-  productSubCategories: ProductSubCategory[];
-  brand?: Brand;
-  brandId?: number;
-  variants: ProductVariant[];
-  discountPercentageHigh: number;
-  discountPercentageLow: number;
-  totalSold: number;
-  isActive: boolean;
-  gender?: Gender;
-  campaigns: Campaign[];
-  promotion?: Promotion;
-  promotionId?: number;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-interface ProductSubCategory {
-  id: number;
-  name: string;
-  productCategory?: ProductCategory;
-  productCategoryId?: number;
-  productSubCategory?: ProductCategory;
-  productSubCategoryId?: number;
-  products: Product[];
-  productBlockContent: ProductBlockContent[];
-  image?: Image;
-  imageId?: number;
-  campaigns: Campaign[];
-}
 
 interface Brand {
   id: number;
@@ -343,6 +351,7 @@ type BasicSearchArgs = {
   articlecategoryname?: string;
   departmentName?: string;
   brand?: string;
+  department?: string;
   promotion?: string;
   productCategory?: string;
   articleCategory?: string;
@@ -354,7 +363,7 @@ type BasicSearchArgs = {
   sortOrder?: string;
 };
 
-type SortBy = "createdAt" | "totalSold" | "price" | "name" | "title";
+type SortBy = "createdAt" | "totalSold" | "price" | "name" | "title" | "index";
 type SortOrder = "asc" | "desc";
 
 type BlockName = "banner" | "tile" | "text" | "product" | "article";

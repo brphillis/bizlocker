@@ -6,15 +6,17 @@ import { findFirstNotNullInputValue } from "~/utility/formHelpers";
 type Props = {
   defaultValue: Image | undefined | null;
   name?: string;
+  label?: string;
 };
 
-const UploadImage = ({ defaultValue, name }: Props) => {
+const UploadImage = ({ defaultValue, name, label }: Props) => {
   const [image, setImage] = useState<Image | undefined>(
     defaultValue || undefined
   );
 
   return (
     <>
+      {label && <label className="label text-sm">{label}</label>}
       {image && (
         <div className="relative my-6 flex max-w-full flex-col items-center">
           <div className="relative h-max w-max max-w-full">

@@ -74,14 +74,25 @@ const ManageDepartments = () => {
           <table className="table table-sm my-3">
             <thead className="sticky top-0">
               <tr>
-                {currentPage && <th>#</th>}
-                <th>Name</th>
-                <th>Active</th>
+                {currentPage && <th className="w-[10%]">#</th>}
+                <th className="w-[30%]">Name</th>
+                <th className="w-[20%]">Index</th>
+                <th className="w-[20%]">In Navigation</th>
+                <th className="w-[20%]">Active</th>
               </tr>
             </thead>
             <tbody>
               {departments?.map(
-                ({ id, name, isActive }: Department, i: number) => {
+                (
+                  {
+                    id,
+                    name,
+                    index,
+                    displayInNavigation,
+                    isActive,
+                  }: Department,
+                  i: number
+                ) => {
                   return (
                     <tr
                       className="cursor-pointer transition-colors duration-200 hover:bg-base-100"
@@ -94,6 +105,15 @@ const ManageDepartments = () => {
                         </td>
                       )}
                       <td>{name}</td>
+                      <td>{index}</td>
+                      <td>
+                        {!displayInNavigation && (
+                          <div className="ml-4 h-3 w-3 rounded-full bg-red-500" />
+                        )}
+                        {displayInNavigation && (
+                          <div className="ml-4 h-3 w-3 self-center rounded-full bg-success" />
+                        )}
+                      </td>
                       <td>
                         {!isActive && (
                           <div className="ml-4 h-3 w-3 rounded-full bg-red-500" />

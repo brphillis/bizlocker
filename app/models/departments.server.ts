@@ -16,11 +16,14 @@ export const getDepartments = async () => {
 };
 
 export const upsertDepartment = async (departmentData: any) => {
-  const { id, name, isActive, productCategories } = departmentData;
+  const { id, name, index, isActive, displayInNavigation, productCategories } =
+    departmentData;
 
   const data: any = {
     name,
+    index,
     isActive,
+    displayInNavigation,
   };
 
   if (!id) {

@@ -1,15 +1,20 @@
 import DarkOverlay from "~/components/Layout/DarkOverlay";
 import FormHeader from "~/components/Forms/Headers/FormHeader";
 import UploadImage from "~/components/Forms/Upload/UploadImage";
-import { Form, useActionData, useLoaderData } from "@remix-run/react";
+import {
+  Form,
+  useActionData,
+  useLoaderData,
+  useNavigate,
+} from "@remix-run/react";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
-import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node";
+import { type ActionArgs, type LoaderArgs } from "@remix-run/node";
 import {
   deleteProductSubCategory,
   getProductSubCategory,
   upsertProductSubCategory,
 } from "~/models/productSubCategories.server";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const id = params?.id;
@@ -21,7 +26,7 @@ export const loader = async ({ params }: LoaderArgs) => {
 export const action = async ({ request, params }: ActionArgs) => {
   const id = params.id === "add" ? undefined : params.id;
   const form = Object.fromEntries(await request.formData());
-  const { name, image } = form;
+  const { name, index, displayInNavigation, isActive, image } = form;
 
   switch (form._action) {
     case "upsert":
@@ -34,23 +39,39 @@ export const action = async ({ request, params }: ActionArgs) => {
         ? (JSON.parse(image?.toString()) as Image)
         : undefined;
 
-      await upsertProductSubCategory(name as string, parsedImage, id);
+      const categoryData = {
+        name: name as string,
+        image: parsedImage,
+        index: parseInt(index as string),
+        displayInNavigation: displayInNavigation ? true : false,
+        isActive: isActive ? true : false,
+        id: id,
+      };
 
-      return redirect("/admin/product-subcategories");
+      await upsertProductSubCategory(categoryData);
+
+      return { success: true };
 
     case "delete":
       await deleteProductSubCategory(id as string);
-      return redirect("/admin/product-subcategories");
+      return { success: true };
   }
 };
 
 const ModifyProductSubCategory = () => {
+  const navigate = useNavigate();
   const productSubCategory = useLoaderData() || {};
-  const { validationError } =
-    (useActionData() as { validationError: string }) || {};
+  const { statusText, success } =
+    (useActionData() as { statusText: string; success: boolean }) || {};
   const mode = productSubCategory ? "edit" : "add";
 
   const [loading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (success) {
+      navigate(-1);
+    }
+  }, [success, navigate]);
 
   return (
     <DarkOverlay>
@@ -66,28 +87,64 @@ const ModifyProductSubCategory = () => {
           hasDelete={true}
         />
 
-        <div className="form-control w-full max-w-xs gap-3">
-          <div className="form-control w-full max-w-xs ">
-            <label className="label">
-              <span className="label-text">Name</span>
-            </label>
-            <input
-              name="name"
-              type="text"
-              placeholder="Name"
-              className="input input-bordered w-full max-w-xs"
-              defaultValue={productSubCategory?.name || undefined}
-            />
+        <div className="form-control  gap-3">
+          <div className="flex flex-wrap justify-evenly gap-3">
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">Name</span>
+              </label>
+              <input
+                name="name"
+                type="text"
+                placeholder="Name"
+                className="input input-bordered w-[95vw] sm:w-[215px]"
+                defaultValue={productSubCategory?.name || ""}
+              />
+            </div>
+
+            <div className="w-[95vw] sm:w-[215px]"></div>
           </div>
 
-          <UploadImage defaultValue={productSubCategory?.image} />
+          <div className="mb-6 flex flex-wrap justify-evenly gap-3">
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">Index</span>
+              </label>
+              <input
+                name="index"
+                type="number"
+                placeholder="Index"
+                className="input input-bordered w-[95vw] sm:w-[215px]"
+                defaultValue={productSubCategory?.index || ""}
+              />
+            </div>
 
-          {validationError && (
-            <p className="h-0 py-3 text-center text-sm text-red-500/75">
-              {validationError}
-            </p>
-          )}
+            <div className="form-control w-full sm:w-[215px]">
+              <label className="label text-sm">In Navigation</label>
+              <select
+                name="displayInNavigation"
+                className="select w-full text-brand-black/75"
+                defaultValue={
+                  productSubCategory.displayInNavigation ? "true" : ""
+                }
+              >
+                <option value="true">Yes</option>
+                <option value="">No</option>
+              </select>
+            </div>
+          </div>
+
+          <UploadImage
+            defaultValue={productSubCategory?.image}
+            label={"Image"}
+          />
         </div>
+
+        {statusText && (
+          <p className="pt-6 text-center text-sm text-red-500/75">
+            {statusText}
+          </p>
+        )}
 
         <BackSubmitButtons loading={loading} setLoading={setLoading} />
       </Form>

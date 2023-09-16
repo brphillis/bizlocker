@@ -1,4 +1,5 @@
 import { prisma } from "~/db.server";
+import { getOrderBy } from "~/utility/sortHelpers";
 
 export const getProductSubCategories = async (inDetail?: boolean) => {
   if (inDetail) {
@@ -25,17 +26,19 @@ export const getProductSubCategory = async (id: string) => {
   });
 };
 
-export const upsertProductSubCategory = async (
-  name: string,
-  image?: Image,
-  id?: string
-) => {
+export const upsertProductSubCategory = async (categoryData: any) => {
+  const { id, index, displayInNavigation, isActive, name, image } =
+    categoryData;
+
   let updatedProductSubCategory;
 
   if (!id && image) {
     updatedProductSubCategory = await prisma.productSubCategory.create({
       data: {
         name: name,
+        index,
+        displayInNavigation,
+        isActive,
         image: {
           create: {
             url: image.url,
@@ -49,6 +52,9 @@ export const upsertProductSubCategory = async (
     updatedProductSubCategory = await prisma.productSubCategory.create({
       data: {
         name: name,
+        index,
+        displayInNavigation,
+        isActive,
       },
     });
   } else if (id) {
@@ -58,7 +64,7 @@ export const upsertProductSubCategory = async (
           id: parseInt(id),
         },
         include: {
-          image: true, // Include the existing image
+          image: true,
         },
       });
 
@@ -96,10 +102,13 @@ export const upsertProductSubCategory = async (
       },
       data: {
         name: name,
+        index,
+        displayInNavigation,
+        isActive,
         image: imageData,
       },
       include: {
-        image: true, // Include the image in the updated response
+        image: true,
       },
     });
   }
@@ -131,6 +140,16 @@ export const searchProductSubCategories = async (
 ) => {
   const name =
     formData?.name || (url && url.searchParams.get("name")?.toString()) || "";
+  const productCategory =
+    formData?.name ||
+    (url && url.searchParams.get("productCategory")?.toString()) ||
+    "";
+  const sortBy =
+    formData?.name || (url && url.searchParams.get("sortBy")?.toString()) || "";
+  const sortOrder =
+    formData?.name ||
+    (url && url.searchParams.get("sortOrder")?.toString()) ||
+    "";
   const pageNumber =
     (formData?.pageNumber && parseInt(formData.pageNumber as string)) ||
     (url && Number(url.searchParams.get("pageNumber"))) ||
@@ -140,63 +159,41 @@ export const searchProductSubCategories = async (
     (url && Number(url.searchParams.get("perPage"))) ||
     10;
 
-  let productSubCategories;
-  let totalProductSubCategories;
-
   const skip = (pageNumber - 1) * perPage;
   let take = perPage;
-  if (perPage !== undefined) {
-    if (name) {
-      productSubCategories = await prisma.productSubCategory.findMany({
-        where: {
-          OR: [
-            {
-              name: {
-                contains: (name as string) || "",
-                mode: "insensitive",
-              },
-            },
-          ],
-        },
-        skip,
-        take,
-      });
 
-      const totalCount = await prisma.productSubCategory.count({
-        where: {
-          OR: [
-            {
-              name: {
-                contains: (name as string) || "",
-                mode: "insensitive",
-              },
-            },
-          ],
-        },
-      });
-
-      totalProductSubCategories = totalCount;
-    } else {
-      productSubCategories = await prisma.productSubCategory.findMany({
-        skip,
-        take,
-      });
-
-      totalProductSubCategories = await prisma.productSubCategory.count();
-    }
-    // Update `take` for the last page if needed
-    if (skip + take > totalProductSubCategories) {
-      take = totalProductSubCategories - skip;
-    }
-  } else {
-    // Retrieve all productSubCategories without pagination
-    productSubCategories = await prisma.productSubCategory.findMany();
-    totalProductSubCategories = productSubCategories.length;
+  const whereClause: { [key: string]: any } = {};
+  console.log("CURR", productCategory);
+  if (name) {
+    whereClause.name = {
+      contains: name,
+      mode: "insensitive",
+    };
   }
 
-  const totalPages = Math.ceil(
-    totalProductSubCategories / (Number(perPage) || 10)
-  );
+  if (productCategory) {
+    whereClause.productCategory = {
+      id: parseInt(productCategory as string),
+    };
+  }
+
+  // Find and count the root categories
+  const [productSubCategories, totalProductSubCategories] = await Promise.all([
+    prisma.productSubCategory.findMany({
+      where: whereClause,
+      include: {
+        productCategory: true,
+      },
+      skip,
+      take,
+      orderBy: getOrderBy(sortBy as SortBy, sortOrder as SortOrder),
+    }),
+    prisma.productSubCategory.count({
+      where: whereClause,
+    }),
+  ]);
+
+  const totalPages = Math.ceil(totalProductSubCategories / perPage);
 
   return { productSubCategories, totalPages };
 };
