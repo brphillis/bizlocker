@@ -120,7 +120,7 @@ const ModifyDepartment = () => {
                 type="number"
                 placeholder="Index"
                 className="input input-bordered w-[95vw] sm:w-[215px]"
-                defaultValue={department?.index || ""}
+                defaultValue={department?.index || 0}
               />
             </div>
 

@@ -9,7 +9,7 @@ const SelectDepartment = ({ departments, defaultValue }: Props) => {
       <label className="label text-sm">Department</label>
       <select
         name="department"
-        className=" select w-[95vw] sm:w-[215px]"
+        className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
         defaultValue={defaultValue || ""}
       >
         <option value="">Select a Department</option>

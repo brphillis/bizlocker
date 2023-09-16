@@ -99,6 +99,11 @@ const Product = () => {
     }
   }, [selectedColor, selectedSize, variants]);
 
+  console.log(availableColors);
+
+  const hasSizes = availableSizes && availableSizes[0] !== null;
+  const hasColors = availableColors && availableColors[0] !== null;
+
   return (
     <PageWrapper>
       <div className="mx-auto cursor-auto px-3 max-xl:px-0">
@@ -146,57 +151,61 @@ const Product = () => {
               )}
             </div>
 
-            <div className="flex py-3 max-sm:justify-between">
-              <div className="mr-6 flex items-center">
-                <span className="mr-3">Size</span>
-                <div className="relative">
-                  <select
-                    className="select border border-brand-black/20 text-brand-black"
-                    onChange={(e) => {
-                      setSelectedSize(e.target.value);
-                      updateColors(e.target.value, false);
-                    }}
-                  >
-                    {availableSizes?.map((size) => {
+            {(hasSizes || hasColors) && (
+              <div className="flex py-3 max-sm:justify-between">
+                {hasSizes && (
+                  <div className="mr-6 flex items-center">
+                    <span className="mr-3">Size</span>
+                    <div className="relative">
+                      <select
+                        className="select border border-brand-black/20 text-brand-black"
+                        onChange={(e) => {
+                          setSelectedSize(e.target.value);
+                          updateColors(e.target.value, false);
+                        }}
+                      >
+                        {availableSizes?.map((size) => {
+                          return (
+                            <option key={size} value={size}>
+                              {size}
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </div>
+                  </div>
+                )}
+
+                {hasColors && (
+                  <div className="flex max-w-[205px] items-center justify-center">
+                    <span className="mr-3">Available in</span>
+
+                    {availableColors?.map((color) => {
                       return (
-                        <option key={size} value={size}>
-                          {size}
-                        </option>
+                        <button
+                          key={color}
+                          style={{
+                            backgroundColor: generateColor(color),
+                            border:
+                              selectedColor === color
+                                ? "3px solid #FFFFFF80"
+                                : "none",
+                          }}
+                          className="ml-2 h-6 w-6 rounded-full border-2 border-gray-300 focus:outline-none"
+                          onClick={() => setSelectedColor(color)}
+                        ></button>
                       );
                     })}
-                  </select>
-                </div>
+                  </div>
+                )}
               </div>
-
-              {availableColors && (
-                <div className="flex max-w-[205px] items-center justify-center">
-                  <span className="mr-3">Available in</span>
-
-                  {availableColors?.map((color) => {
-                    return (
-                      <button
-                        key={color}
-                        style={{
-                          backgroundColor: generateColor(color),
-                          border:
-                            selectedColor === color
-                              ? "3px solid #FFFFFF80"
-                              : "none",
-                        }}
-                        className="ml-2 h-6 w-6 rounded-full border-2 border-gray-300 focus:outline-none"
-                        onClick={() => setSelectedColor(color)}
-                      ></button>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
+            )}
 
             <div className="my-3 w-full border-b border-brand-black/20" />
 
             <div className="flex items-center justify-between py-3">
               <div>
-                <div className="mb-3 flex items-center gap-3 text-xs">
+                <div className=" flex items-center gap-3 text-xs">
                   {selectedSize && selectedSize}
                   {selectedColor && "/" + selectedColor}
                   {selectedVariant.isPromoted && (
@@ -258,17 +267,19 @@ const Product = () => {
 
             <div className="my-3 w-full border-b border-brand-black/20" />
 
-            <div className="leading-relaxed">
-              <div>
-                <b>Size Guide</b>
+            {hasSizes && (
+              <div className="leading-relaxed">
+                <div>
+                  <b>Size Guide</b>
+                </div>
+                <Link
+                  to="/return-policy"
+                  className="max-w-full px-3 text-sm text-primary hover:underline sm:px-0"
+                >
+                  Check out the size guide.
+                </Link>
               </div>
-              <Link
-                to="/return-policy"
-                className="max-w-full px-3 text-sm text-primary hover:underline sm:px-0"
-              >
-                Check out the size guide.
-              </Link>
-            </div>
+            )}
           </div>
         </div>
       </div>

@@ -18,6 +18,7 @@ Bug Hisory
 005 - [x] add meta title and description to product pages
 006 - [x] fix product page with no filters
 007 - [x] fix product images mobile
+008 - [x] fix category index default values when adding
 
 
 Feat history
