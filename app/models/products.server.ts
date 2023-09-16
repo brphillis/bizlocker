@@ -1,4 +1,5 @@
 import { prisma } from "~/db.server";
+import { getOrderBy } from "~/utility/sortHelpers";
 
 export const getProducts = async (count?: string) => {
   if (count) {
@@ -502,22 +503,4 @@ export const searchProducts = async (
   const totalPages = Math.ceil(totalProducts / (perPage || 1));
 
   return { products, totalPages };
-};
-
-export const getOrderBy = (sortBy?: SortBy, sortOrder?: SortOrder) => {
-  if (sortBy && sortOrder) {
-    switch (sortBy) {
-      case "createdAt":
-        return { createdAt: sortOrder };
-      case "totalSold":
-        return { totalSold: sortOrder };
-      case "name":
-        return { name: sortOrder };
-      case "title":
-        return { title: sortOrder };
-      default:
-        return undefined;
-    }
-  }
-  return undefined;
 };

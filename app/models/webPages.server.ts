@@ -1,6 +1,6 @@
 import { redirect } from "@remix-run/server-runtime";
 import { prisma } from "~/db.server";
-import { getOrderBy } from "./products.server";
+import { getOrderBy } from "~/utility/sortHelpers";
 
 export const getWebPage = async (id?: string, title?: string) => {
   let whereClause;

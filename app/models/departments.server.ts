@@ -1,4 +1,5 @@
 import { prisma } from "~/db.server";
+import { getOrderBy } from "~/utility/sortHelpers";
 
 export const getDepartment = async (id: string) => {
   return prisma.department.findUnique({
@@ -16,11 +17,14 @@ export const getDepartments = async () => {
 };
 
 export const upsertDepartment = async (departmentData: any) => {
-  const { id, name, isActive, productCategories } = departmentData;
+  const { id, name, index, isActive, displayInNavigation, productCategories } =
+    departmentData;
 
   const data: any = {
     name,
+    index,
     isActive,
+    displayInNavigation,
   };
 
   if (!id) {
@@ -68,7 +72,7 @@ export const upsertDepartment = async (departmentData: any) => {
 };
 
 export const searchDepartments = async (searchArgs: BasicSearchArgs) => {
-  const { name, page, perPage } = searchArgs;
+  const { name, sortBy, sortOrder, page, perPage } = searchArgs;
 
   let departments;
   let totalDepartments;
@@ -110,6 +114,7 @@ export const searchDepartments = async (searchArgs: BasicSearchArgs) => {
       departments = await prisma.department.findMany({
         skip,
         take,
+        orderBy: getOrderBy(sortBy as CategorySortBy, sortOrder as SortOrder),
       });
 
       totalDepartments = await prisma.department.count();

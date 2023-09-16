@@ -1,9 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getDepartments } from "~/models/departments.server";
 import { getArticleCategories } from "~/models/articleCategories.server";
 import { getProductSubCategories } from "~/models/productSubCategories.server";
-import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node";
-import { Form, useActionData, useLoaderData } from "@remix-run/react";
+import { type ActionArgs, type LoaderArgs } from "@remix-run/node";
+import {
+  Form,
+  useActionData,
+  useLoaderData,
+  useNavigate,
+} from "@remix-run/react";
 import SelectDepartment from "~/components/Forms/Select/SelectDepartment";
 import FormHeader from "~/components/Forms/Headers/FormHeader";
 import DarkOverlay from "~/components/Layout/DarkOverlay";
@@ -31,13 +36,24 @@ export const loader = async ({ params }: LoaderArgs) => {
 export const action = async ({ request, params }: ActionArgs) => {
   const id = params.id === "add" ? undefined : params.id;
   const form = Object.fromEntries(await request.formData());
-  const { name, department, articleCategories, productSubCategories } = form;
+  const {
+    name,
+    index,
+    department,
+    displayInNavigation,
+    isActive,
+    articleCategories,
+    productSubCategories,
+  } = form;
 
   switch (form._action) {
     case "upsert":
       const categoryData = {
         name: name as string,
+        index: parseInt(index as string),
         department: department as string,
+        displayInNavigation: displayInNavigation ? true : false,
+        isActive: isActive ? true : false,
         productSubCategories:
           productSubCategories && JSON.parse(productSubCategories as string),
         articleCategories:
@@ -47,20 +63,22 @@ export const action = async ({ request, params }: ActionArgs) => {
 
       await upsertProductCategory(categoryData);
 
-      return redirect("/admin/product-categories");
+      return { success: true };
 
     case "delete":
   }
 };
 
 const ModifyProductCategory = () => {
+  const navigate = useNavigate();
   const {
     productCategory,
     departments,
     productSubCategories,
     articleCategories,
   } = useLoaderData() || {};
-  const { statusText } = (useActionData() as { statusText: string }) || {};
+  const { validationError, success } =
+    (useActionData() as { validationError: string; success: boolean }) || {};
   const mode = productCategory ? "edit" : "add";
 
   const [selectedProductSubCategories, setSelectedProductSubCategories] =
@@ -98,6 +116,12 @@ const ModifyProductCategory = () => {
 
   const [loading, setLoading] = useState<boolean>(false);
 
+  useEffect(() => {
+    if (success) {
+      navigate(-1);
+    }
+  }, [success, navigate]);
+
   return (
     <DarkOverlay>
       <Form
@@ -106,7 +130,7 @@ const ModifyProductCategory = () => {
       >
         <FormHeader
           hasDelete={false}
-          hasIsActive={false}
+          hasIsActive={true}
           mode={mode}
           type="Category"
           valueToChange={productCategory}
@@ -136,7 +160,34 @@ const ModifyProductCategory = () => {
           <div className="flex flex-wrap justify-evenly gap-3">
             <div className="form-control">
               <label className="label">
-                <span className="label-text">Product Categories</span>
+                <span className="label-text">Index</span>
+              </label>
+              <input
+                name="index"
+                type="number"
+                placeholder="Index"
+                className="input input-bordered w-[95vw] sm:w-[215px]"
+                defaultValue={productCategory?.index || ""}
+              />
+            </div>
+
+            <div className="form-control w-full sm:w-[215px]">
+              <label className="label text-sm">In Navigation</label>
+              <select
+                name="displayInNavigation"
+                className="select w-full text-brand-black/75"
+                defaultValue={productCategory.displayInNavigation ? "true" : ""}
+              >
+                <option value="true">Yes</option>
+                <option value="">No</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap justify-evenly gap-3">
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">Sub Categories</span>
               </label>
               <select
                 className=" select !h-40 w-[95vw] sm:w-[215px]"
@@ -247,9 +298,9 @@ const ModifyProductCategory = () => {
           </div>
         </div>
 
-        {statusText && (
+        {validationError && (
           <p className="pt-6 text-center text-sm text-red-500/75">
-            {statusText}
+            {validationError}
           </p>
         )}
 

@@ -23,7 +23,7 @@ const MobileNavigation = ({ departments, productCategories, user }: Props) => {
   return (
     <div className="drawer-side">
       <label htmlFor="my-drawer-3" className="drawer-overlay"></label>
-      <ul className="z-100 menu min-h-[100vh] w-64 bg-brand-black p-4 text-brand-white">
+      <ul className="z-100 menu !h-[100dvh] w-64 bg-brand-black p-4 text-brand-white">
         <div className="mx-auto block">
           <h1 className="cursor-pointer select-none text-3xl font-bold tracking-widest text-white">
             CLUTCH.
@@ -37,60 +37,83 @@ const MobileNavigation = ({ departments, productCategories, user }: Props) => {
           defaultValue={departments?.[0].name.toUpperCase() || ""}
           onChange={(e) => setSelectedDepartment(parseInt(e.target.value))}
         >
-          {departments?.map(({ id, name }: Department) => {
-            return (
-              <option key={"department_" + id} value={id}>
-                {name.toUpperCase()}
-              </option>
-            );
-          })}
+          {departments
+            ?.sort((a, b) => a.index - b.index)
+            .map(({ id, name, displayInNavigation }: Department) => {
+              if (displayInNavigation) {
+                return (
+                  <option key={"department_" + id} value={id}>
+                    {name.toUpperCase()}
+                  </option>
+                );
+              } else return null;
+            })}
         </select>
 
-        {matchingProductCategories?.map(
-          ({ id, name, productSubCategories }: ProductCategory) => {
-            return (
-              <li
-                key={"mobileMenu_productCategory_" + id}
-                className="cursor-pointer border-b-2 border-primary-content/0 px-3 text-sm font-bold tracking-wide !opacity-100"
-              >
-                <div className="collapse !visible w-full !auto-cols-auto !gap-0 !p-0">
-                  <input type="checkbox" className="absolute top-0" />
-                  <div className="relative flex w-full items-center justify-between py-3">
-                    <div className="text-sm font-semibold">{name}</div>
-                    {productSubCategories &&
-                      productSubCategories.length > 0 && <IoMenu />}
-                  </div>
-                  <div className="collapse-content">
-                    {productSubCategories?.map(
-                      ({ name: subCatName }: ProductSubCategory, i: number) => {
-                        return (
-                          <div
-                            key={"mobileMenu_productSubCategory" + i}
-                            className="flex justify-between py-3"
-                            onClick={() =>
-                              navigate({
-                                pathname: "/products",
-                                search: `?productCategory=${name}&productSubCategory=${subCatName}`,
-                              })
+        {matchingProductCategories
+          ?.sort((a, b) => a.index - b.index)
+          .map(
+            ({
+              displayInNavigation,
+              id,
+              name,
+              productSubCategories,
+            }: ProductCategory) => {
+              if (displayInNavigation) {
+                return (
+                  <li
+                    key={"mobileMenu_productCategory_" + id}
+                    className="cursor-pointer border-b-2 border-primary-content/0 px-3 text-sm font-bold tracking-wide !opacity-100"
+                  >
+                    <div className="collapse !visible w-full !auto-cols-auto !gap-0 !p-0">
+                      <input type="checkbox" className="absolute top-0" />
+                      <div className="relative flex w-full items-center justify-between py-3">
+                        <div className="text-sm font-semibold">{name}</div>
+                        {productSubCategories &&
+                          productSubCategories.length > 0 && <IoMenu />}
+                      </div>
+                      <div className="collapse-content">
+                        {productSubCategories
+                          ?.sort((a, b) => a.index - b.index)
+                          .map(
+                            (
+                              {
+                                name: subCatName,
+                                displayInNavigation: displaySubCat,
+                              }: ProductSubCategory,
+                              i: number
+                            ) => {
+                              if (displaySubCat) {
+                                return (
+                                  <div
+                                    key={"mobileMenu_productSubCategory" + i}
+                                    className="flex justify-between py-3"
+                                    onClick={() =>
+                                      navigate({
+                                        pathname: "/products",
+                                        search: `?productCategory=${name}&productSubCategory=${subCatName}`,
+                                      })
+                                    }
+                                  >
+                                    <label
+                                      htmlFor="my-drawer-3"
+                                      className="pl-3 text-sm font-normal"
+                                    >
+                                      {subCatName}
+                                    </label>
+                                    <IoChevronForward />
+                                  </div>
+                                );
+                              } else return null;
                             }
-                          >
-                            <label
-                              htmlFor="my-drawer-3"
-                              className="pl-3 text-sm font-normal"
-                            >
-                              {subCatName}
-                            </label>
-                            <IoChevronForward />
-                          </div>
-                        );
-                      }
-                    )}
-                  </div>
-                </div>
-              </li>
-            );
-          }
-        )}
+                          )}
+                      </div>
+                    </div>
+                  </li>
+                );
+              } else return null;
+            }
+          )}
 
         {user && (
           <div

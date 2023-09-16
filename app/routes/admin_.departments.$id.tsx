@@ -1,10 +1,15 @@
 import DarkOverlay from "~/components/Layout/DarkOverlay";
 import FormHeader from "~/components/Forms/Headers/FormHeader";
-import { Form, useActionData, useLoaderData } from "@remix-run/react";
+import {
+  Form,
+  useActionData,
+  useLoaderData,
+  useNavigate,
+} from "@remix-run/react";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
-import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node";
+import { type ActionArgs, type LoaderArgs } from "@remix-run/node";
 import {} from "~/models/productSubCategories.server";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getDepartment, upsertDepartment } from "~/models/departments.server";
 import { HiTrash } from "react-icons/hi2";
 
@@ -19,7 +24,8 @@ export const loader = async ({ params }: LoaderArgs) => {
 export const action = async ({ request, params }: ActionArgs) => {
   const id = params.id === "add" ? undefined : params.id;
   const form = Object.fromEntries(await request.formData());
-  const { name, isActive, productCategories } = form;
+  const { name, isActive, index, displayInNavigation, productCategories } =
+    form;
 
   switch (form._action) {
     case "upsert":
@@ -30,21 +36,24 @@ export const action = async ({ request, params }: ActionArgs) => {
 
       const departmentData = {
         name: name as string,
+        index: parseInt(index as string),
         isActive: isActive ? true : false,
+        displayInNavigation: displayInNavigation ? true : false,
         productCategories:
           productCategories && JSON.parse(productCategories as string),
         id: id,
       };
 
       await upsertDepartment(departmentData);
-      return redirect("/admin/departments");
+      return { success: true };
   }
 };
 
 const ModifyDepartment = () => {
+  const navigate = useNavigate();
   const department = useLoaderData();
-  const { validationError } =
-    (useActionData() as { validationError: string }) || {};
+  const { validationError, success } =
+    (useActionData() as { validationError: string; success: boolean }) || {};
   const mode = department ? "edit" : "add";
 
   const { productCategories } = department || {};
@@ -63,6 +72,12 @@ const ModifyDepartment = () => {
     }
   };
 
+  useEffect(() => {
+    if (success) {
+      navigate(-1);
+    }
+  }, [success, navigate]);
+
   return (
     <DarkOverlay>
       <Form
@@ -78,17 +93,48 @@ const ModifyDepartment = () => {
         />
 
         <div className="form-control min-w-[400px] gap-3 max-sm:min-w-full">
-          <div className="form-control w-full max-w-xs ">
-            <label className="label">
-              <span className="label-text">Name</span>
-            </label>
-            <input
-              name="name"
-              type="text"
-              placeholder="Name"
-              className="input input-bordered w-full max-w-xs"
-              defaultValue={department?.name || undefined}
-            />
+          <div className="flex flex-wrap justify-evenly gap-3">
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">Name</span>
+              </label>
+              <input
+                name="name"
+                type="text"
+                placeholder="Name"
+                className="input input-bordered w-[95vw] sm:w-[215px]"
+                defaultValue={department?.name || ""}
+              />
+            </div>
+
+            <div className="w-[95vw] sm:w-[215px]"></div>
+          </div>
+
+          <div className="flex flex-wrap justify-evenly gap-3">
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">Index</span>
+              </label>
+              <input
+                name="index"
+                type="number"
+                placeholder="Index"
+                className="input input-bordered w-[95vw] sm:w-[215px]"
+                defaultValue={department?.index || ""}
+              />
+            </div>
+
+            <div className="form-control w-full sm:w-[215px]">
+              <label className="label text-sm">In Navigation</label>
+              <select
+                name="displayInNavigation"
+                className="select w-full text-brand-black/75"
+                defaultValue={department.displayInNavigation ? "true" : ""}
+              >
+                <option value="true">Yes</option>
+                <option value="">No</option>
+              </select>
+            </div>
           </div>
 
           {department && currentProductCategories?.length > 0 && (
@@ -130,6 +176,12 @@ const ModifyDepartment = () => {
             </p>
           )}
         </div>
+
+        {validationError && (
+          <p className="pt-6 text-center text-sm text-red-500/75">
+            {validationError}
+          </p>
+        )}
 
         <BackSubmitButtons loading={loading} setLoading={setLoading} />
       </Form>

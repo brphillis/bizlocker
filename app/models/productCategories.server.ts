@@ -1,4 +1,5 @@
 import { prisma } from "~/db.server";
+import { getOrderBy } from "~/utility/sortHelpers";
 export type { ProductCategory } from "@prisma/client";
 
 export const getProductCategories = async () => {
@@ -25,11 +26,22 @@ export const getProductCategory = async (id: string) => {
 };
 
 export const upsertProductCategory = async (categoryData: any) => {
-  const { id, name, department, articleCategories, productSubCategories } =
-    categoryData;
+  const {
+    id,
+    index,
+    name,
+    displayInNavigation,
+    isActive,
+    department,
+    articleCategories,
+    productSubCategories,
+  } = categoryData;
 
   const data: any = {
     name,
+    index,
+    displayInNavigation,
+    isActive,
   };
 
   if (department) {
@@ -114,10 +126,12 @@ export const upsertProductCategory = async (categoryData: any) => {
 export const searchProductCategories = async (searchArgs: BasicSearchArgs) => {
   const {
     name,
+    department,
     productSubCategory,
-    articleCategory,
     page = 1,
     perPage = 10,
+    sortBy,
+    sortOrder,
   } = searchArgs;
 
   const skip = (page - 1) * perPage;
@@ -132,19 +146,16 @@ export const searchProductCategories = async (searchArgs: BasicSearchArgs) => {
       mode: "insensitive",
     };
   }
+  if (department) {
+    whereClause.department = {
+      id: parseInt(department),
+    };
+  }
 
   if (productSubCategory) {
     whereClause.productSubCategories = {
       some: {
         id: parseInt(productSubCategory),
-      },
-    };
-  }
-
-  if (articleCategory) {
-    whereClause.articleCategories = {
-      some: {
-        id: parseInt(articleCategory),
       },
     };
   }
@@ -160,6 +171,7 @@ export const searchProductCategories = async (searchArgs: BasicSearchArgs) => {
       },
       skip,
       take,
+      orderBy: getOrderBy(sortBy as CategorySortBy, sortOrder as SortOrder),
     }),
     prisma.productCategory.count({
       where: whereClause,

@@ -290,12 +290,14 @@ model ContentImage {
 }
 
 model Department {
-  id                Int               @id @default(autoincrement())
-  name              String            @unique
-  isActive          Boolean           @default(true)
-  productCategories ProductCategory[] @relation("DepartmentToProductCategory")
-  campaigns         Campaign[]
-  promotions        Promotion[]
+  id                  Int               @id @default(autoincrement())
+  name                String            @unique
+  isActive            Boolean           @default(true)
+  productCategories   ProductCategory[] @relation("DepartmentToProductCategory")
+  campaigns           Campaign[]
+  promotions          Promotion[]
+  displayInNavigation Boolean           @default(true)
+  index               Int               @default(0)
 }
 
 model ProductCategory {
@@ -307,6 +309,9 @@ model ProductCategory {
   productSubCategories ProductSubCategory[]  @relation("ProductCategoryToProductSubCategory")
   productBlockContent  ProductBlockContent[] @relation("ProductCategoryToProductBlock")
   productBlockId       String?               @unique
+  isActive             Boolean               @default(true)
+  displayInNavigation  Boolean               @default(true)
+  index                Int                   @default(0)
 }
 
 model ArticleCategory {
@@ -316,6 +321,7 @@ model ArticleCategory {
   subProductCategoryId Int?
   articles             Article[]             @relation("ArticleCategoryToArticle")
   articleBlockContent  ArticleBlockContent[] @relation("ArticleCategoryToArticleBlock")
+  isActive             Boolean               @default(true)
 }
 
 model ProductSubCategory {
@@ -328,6 +334,9 @@ model ProductSubCategory {
   image                Image?                @relation("ProductSubCategoryImage")
   imageId              Int?
   campaigns            Campaign[]            @relation("ProductSubCategoryToCampaign")
+  isActive             Boolean               @default(true)
+  displayInNavigation  Boolean               @default(true)
+  index                Int                   @default(0)
 }
 
 model Article {
