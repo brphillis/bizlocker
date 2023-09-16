@@ -171,7 +171,7 @@ export const searchProductCategories = async (searchArgs: BasicSearchArgs) => {
       },
       skip,
       take,
-      orderBy: getOrderBy(sortBy as SortBy, sortOrder as SortOrder),
+      orderBy: getOrderBy(sortBy as CategorySortBy, sortOrder as SortOrder),
     }),
     prisma.productCategory.count({
       where: whereClause,

@@ -363,7 +363,8 @@ type BasicSearchArgs = {
   sortOrder?: string;
 };
 
-type SortBy = "createdAt" | "totalSold" | "price" | "name" | "title" | "index";
+type SortBy = "createdAt" | "totalSold" | "price" | "name" | "title";
+type CategorySortBy = "createdAt" | "name" | "index";
 type SortOrder = "asc" | "desc";
 
 type BlockName = "banner" | "tile" | "text" | "product" | "article";

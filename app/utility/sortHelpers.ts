@@ -1,4 +1,7 @@
-export const getOrderBy = (sortBy?: SortBy, sortOrder?: SortOrder) => {
+export const getOrderBy = (
+  sortBy?: SortBy | CategorySortBy,
+  sortOrder?: SortOrder
+) => {
   if (sortBy && sortOrder) {
     switch (sortBy) {
       case "createdAt":

@@ -9,6 +9,7 @@ import { type LoaderArgs } from "@remix-run/server-runtime";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import Pagination from "~/components/Pagination";
+import CategorySort from "~/components/Sorting/CategorySort";
 import { searchDepartments } from "~/models/departments.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
@@ -16,6 +17,8 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   const searchQuery = {
     name: url.searchParams.get("name")?.toString() || undefined,
+    sortBy: url.searchParams.get("sortBy")?.toString() || undefined,
+    sortOrder: url.searchParams.get("sortOrder")?.toString() || undefined,
     page: Number(url.searchParams.get("pageNumber")) || 1,
     perPage: Number(url.searchParams.get("perPage")) || 10,
   };
@@ -69,6 +72,8 @@ const ManageDepartments = () => {
         </div>
 
         <div className="divider w-full" />
+
+        <CategorySort />
 
         <div className="w-full max-w-[89vw] overflow-x-auto">
           <table className="table table-sm my-3">
