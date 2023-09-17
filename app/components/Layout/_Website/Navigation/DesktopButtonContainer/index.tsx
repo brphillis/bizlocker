@@ -23,7 +23,9 @@ const DesktopButtonContainer = ({
     <>
       <div className="grow"></div>
       <div className="hidden h-[60px] items-center gap-6 lg:flex">
-        {user && <AccountButton {...user} />}
+        {user && !location.pathname.includes("/account") && (
+          <AccountButton {...user} />
+        )}
         {cart && location.pathname !== "/cart" && <CartButton {...cart} />}
 
         <IoSearchOutline

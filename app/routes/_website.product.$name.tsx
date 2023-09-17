@@ -99,8 +99,6 @@ const Product = () => {
     }
   }, [selectedColor, selectedSize, variants]);
 
-  console.log(availableColors);
-
   const hasSizes = availableSizes && availableSizes[0] !== null;
   const hasColors = availableColors && availableColors[0] !== null;
 

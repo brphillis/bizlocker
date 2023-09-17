@@ -9,6 +9,9 @@ export const getProductCategories = async () => {
       articleCategories: true,
       department: true,
     },
+    orderBy: {
+      index: "asc",
+    },
   });
 };
 

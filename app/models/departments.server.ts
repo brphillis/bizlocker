@@ -13,7 +13,11 @@ export const getDepartment = async (id: string) => {
 };
 
 export const getDepartments = async () => {
-  return await prisma.department.findMany();
+  return await prisma.department.findMany({
+    orderBy: {
+      index: "asc",
+    },
+  });
 };
 
 export const upsertDepartment = async (departmentData: any) => {

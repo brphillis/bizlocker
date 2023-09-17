@@ -45,9 +45,9 @@ const Cart = () => {
 
   return (
     <PageWrapper>
-      <div className="relative flex h-max flex-row flex-wrap items-start justify-center gap-3 py-0 md:py-6 lg:gap-6">
-        <div className="order-2 max-w-full py-6 md:order-1 md:py-0">
-          <div className="mb-6 block select-none text-center md:hidden">
+      <div className="relative flex h-max max-w-full flex-row flex-wrap items-start justify-center gap-3 py-0 max-md:px-3 md:py-6 lg:gap-6">
+        <div className="max-w-full py-0 max-md:py-6">
+          <div className="mb-6 hidden select-none text-center max-md:block">
             <h1 className="text-3xl">Your Cart</h1>
             <div className="opacity-50">Track your Order History</div>
           </div>
@@ -68,7 +68,7 @@ const Cart = () => {
                     key={"cartItem-" + name}
                   >
                     <img
-                      className="h-20 w-20  border border-base-300 object-cover md:h-[8.8rem] md:w-[8.8rem]"
+                      className="h-20 w-20 border border-base-300 object-cover md:h-[8.8rem] md:w-[8.8rem]"
                       src={images[0].url}
                       alt={name + "_cartImage"}
                     />
@@ -112,9 +112,9 @@ const Cart = () => {
             <div className="opacity-50">Track your Order History</div>
           </div>
 
-          <div className="mt-6 h-1 w-full border-t border-brand-black/10" />
+          <div className="mt-6 hidden h-1 w-full border-t border-brand-black/10 md:block" />
 
-          <div className="flex flex-col py-3 text-center">
+          <div className="flex flex-col py-3 text-center max-md:pt-0">
             <div>Sub Total: $ {orderTotal.toFixed(2)} </div>
 
             <div className="my-0">+</div>

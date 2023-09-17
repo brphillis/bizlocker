@@ -32,9 +32,9 @@ const Order = () => {
         <div className="divider w-full" />
 
         <div className="flex flex-col items-center gap-6">
-          <OrderStatusSteps status={order?.status} />
+          {order && <OrderStatusSteps status={order?.status} />}
 
-          {order?.status === "created" && (
+          {order && order?.status === "created" && (
             <Link
               to={order.paymentUrl}
               target="_blank"
@@ -47,13 +47,13 @@ const Order = () => {
 
         <div className="divider w-full" />
 
-        {order?.status !== ("created" || "cancelled") && (
+        {order && order?.status !== ("created" || "cancelled") && (
           <>
             <ShippingDetailsCollapse shippingDetails={shippingDetails} />
+
+            <div className="divider w-full" />
           </>
         )}
-
-        <div className="divider w-full" />
 
         <div className="flex flex-col flex-wrap items-center justify-center gap-3">
           {items
@@ -66,7 +66,7 @@ const Order = () => {
 
               return (
                 <div
-                  className="relative flex w-full max-w-full flex-row items-center bg-base-300 p-3"
+                  className="relative flex w-full max-w-full flex-row items-center bg-brand-black p-3 text-brand-white"
                   key={"cartItem-" + product.name}
                 >
                   <div className="relative w-full text-center">

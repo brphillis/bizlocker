@@ -104,7 +104,7 @@ const Products = () => {
         <ProductSort totalCount={products.length * totalPages} />
         <div className="my-3 w-full border-b border-brand-black/20" />
 
-        <div className="flex w-full flex-wrap items-start justify-center gap-3 px-0 sm:w-full xl:flex-nowrap">
+        <div className="flex w-full flex-wrap items-start justify-center gap-6 px-0 sm:w-full xl:flex-nowrap">
           <ProductFilterSideBar
             productCategories={productCategories}
             productSubCategories={productSubCategories}

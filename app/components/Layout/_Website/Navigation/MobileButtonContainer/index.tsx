@@ -28,7 +28,9 @@ const MobileButtonContainer = ({
       </label>
 
       <div className="absolute right-3 flex gap-6">
-        {user && <AccountButton {...user} />}
+        {user && !location.pathname.includes("/account") && (
+          <AccountButton {...user} />
+        )}
         {cart && location.pathname !== "/cart" && <CartButton {...cart} />}
 
         <IoSearchOutline

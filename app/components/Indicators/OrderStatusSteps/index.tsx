@@ -6,12 +6,18 @@ type Props = {
 
 const OrderStatusSteps = ({ status }: Props) => {
   const getStepClass = (status: string, stepStatus: string) => {
-    return ["step", "mx-2", status === stepStatus && "step-primary"].join(" ");
+    return [
+      "step",
+      "mx-2",
+      "before:!bg-base-200",
+      "after:!bg-base-200",
+      status === stepStatus ? "!step-primary" : "",
+    ].join(" ");
   };
 
   if (status !== "cancelled") {
     return (
-      <ul className="steps">
+      <ul className="steps z-0">
         <li className={getStepClass(status, "created")}>Created</li>
         <li className={getStepClass(status, "paid")}>Paid</li>
         <li className={getStepClass(status, "shipped")}>Shipped</li>
