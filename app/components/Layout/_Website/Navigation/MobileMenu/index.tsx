@@ -23,7 +23,7 @@ const MobileNavigation = ({ departments, productCategories, user }: Props) => {
   return (
     <div className="drawer-side">
       <label htmlFor="my-drawer-3" className="drawer-overlay"></label>
-      <ul className="z-100 menu !h-[100dvh] w-64 bg-brand-black p-4 text-brand-white">
+      <ul className="z-100 menu relative !h-[100dvh] w-64 bg-brand-black p-4 text-brand-white">
         <div className="mx-auto block">
           <h1 className="cursor-pointer select-none text-3xl font-bold tracking-widest text-white">
             CLUTCH.
@@ -37,22 +37,19 @@ const MobileNavigation = ({ departments, productCategories, user }: Props) => {
           defaultValue={departments?.[0].name.toUpperCase() || ""}
           onChange={(e) => setSelectedDepartment(parseInt(e.target.value))}
         >
-          {departments
-            ?.sort((a, b) => a.index - b.index)
-            .map(({ id, name, displayInNavigation }: Department) => {
-              if (displayInNavigation) {
-                return (
-                  <option key={"department_" + id} value={id}>
-                    {name.toUpperCase()}
-                  </option>
-                );
-              } else return null;
-            })}
+          {departments.map(({ id, name, displayInNavigation }: Department) => {
+            if (displayInNavigation) {
+              return (
+                <option key={"department_" + id} value={id}>
+                  {name.toUpperCase()}
+                </option>
+              );
+            } else return null;
+          })}
         </select>
 
-        {matchingProductCategories
-          ?.sort((a, b) => a.index - b.index)
-          .map(
+        <div className="relative max-h-[67dvh] overflow-y-auto">
+          {matchingProductCategories.map(
             ({
               displayInNavigation,
               id,
@@ -73,40 +70,38 @@ const MobileNavigation = ({ departments, productCategories, user }: Props) => {
                           productSubCategories.length > 0 && <IoMenu />}
                       </div>
                       <div className="collapse-content">
-                        {productSubCategories
-                          ?.sort((a, b) => a.index - b.index)
-                          .map(
-                            (
-                              {
-                                name: subCatName,
-                                displayInNavigation: displaySubCat,
-                              }: ProductSubCategory,
-                              i: number
-                            ) => {
-                              if (displaySubCat) {
-                                return (
-                                  <div
-                                    key={"mobileMenu_productSubCategory" + i}
-                                    className="flex justify-between py-3"
-                                    onClick={() =>
-                                      navigate({
-                                        pathname: "/products",
-                                        search: `?productCategory=${name}&productSubCategory=${subCatName}`,
-                                      })
-                                    }
+                        {productSubCategories?.map(
+                          (
+                            {
+                              name: subCatName,
+                              displayInNavigation: displaySubCat,
+                            }: ProductSubCategory,
+                            i: number
+                          ) => {
+                            if (displaySubCat) {
+                              return (
+                                <div
+                                  key={"mobileMenu_productSubCategory" + i}
+                                  className="flex justify-between py-3"
+                                  onClick={() =>
+                                    navigate({
+                                      pathname: "/products",
+                                      search: `?productCategory=${name}&productSubCategory=${subCatName}`,
+                                    })
+                                  }
+                                >
+                                  <label
+                                    htmlFor="my-drawer-3"
+                                    className="pl-3 text-sm font-normal"
                                   >
-                                    <label
-                                      htmlFor="my-drawer-3"
-                                      className="pl-3 text-sm font-normal"
-                                    >
-                                      {subCatName}
-                                    </label>
-                                    <IoChevronForward />
-                                  </div>
-                                );
-                              } else return null;
-                            }
-                          )}
+                                    {subCatName}
+                                  </label>
+                                  <IoChevronForward />
+                                </div>
+                              );
+                            } else return null;
+                          }
+                        )}
                       </div>
                     </div>
                   </li>
@@ -114,6 +109,7 @@ const MobileNavigation = ({ departments, productCategories, user }: Props) => {
               } else return null;
             }
           )}
+        </div>
 
         {user && (
           <div

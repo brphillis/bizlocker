@@ -7,9 +7,17 @@ type Props = {
   auto?: boolean;
   delay?: number;
   action?: string;
+  styles?: string;
 };
 
-const SearchInput = ({ name, placeholder, auto, delay, action }: Props) => {
+const SearchInput = ({
+  name,
+  placeholder,
+  auto,
+  delay,
+  action,
+  styles,
+}: Props) => {
   const [searchParams] = useSearchParams();
   const submit = useSubmit();
   const [searchTerm, setSearchTerm] = useState("");
@@ -48,7 +56,10 @@ const SearchInput = ({ name, placeholder, auto, delay, action }: Props) => {
   return (
     <input
       name={name}
-      className="input input-bordered max-h-full w-[95vw] text-brand-black/50 sm:w-[215px]"
+      className={
+        "input input-bordered max-h-full w-[95vw] text-brand-black/50 sm:w-[215px] " +
+        styles
+      }
       placeholder={placeholder}
       type="text"
       onChange={handleChange}

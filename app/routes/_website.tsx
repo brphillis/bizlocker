@@ -73,7 +73,7 @@ const App = () => {
               className="absolute left-16 flex h-[60px] flex-row items-center gap-4 px-2 font-bold lg:relative lg:left-0"
               onClick={() => navigate("/home")}
             >
-              <h1 className="cursor-pointer select-none text-xl font-bold tracking-widest text-white">
+              <h1 className="cursor-pointer select-none text-xl font-bold tracking-widest text-brand-white">
                 CLUTCH.
               </h1>
             </div>
@@ -93,7 +93,11 @@ const App = () => {
         </div>
 
         {searchActive && (
-          <SearchBar productCategories={productCategories} brands={brands} />
+          <SearchBar
+            departments={departments}
+            productCategories={productCategories}
+            brands={brands}
+          />
         )}
 
         {!(

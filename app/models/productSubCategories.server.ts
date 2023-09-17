@@ -11,6 +11,9 @@ export const getProductSubCategories = async (inDetail?: boolean) => {
           },
         },
       },
+      orderBy: {
+        index: "asc",
+      },
     });
   } else return await prisma.productSubCategory.findMany();
 };
@@ -163,7 +166,7 @@ export const searchProductSubCategories = async (
   let take = perPage;
 
   const whereClause: { [key: string]: any } = {};
-  console.log("CURR", productCategory);
+
   if (name) {
     whereClause.name = {
       contains: name,

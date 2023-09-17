@@ -1,5 +1,4 @@
 import type { LoaderArgs } from "@remix-run/node";
-import { json } from "@remix-run/node";
 import {
   Form,
   Outlet,
@@ -27,7 +26,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   const { users, totalPages } = await searchUsers(searchQuery, true);
 
-  return json({ users, totalPages });
+  return { users, totalPages };
 };
 
 const Articles = () => {

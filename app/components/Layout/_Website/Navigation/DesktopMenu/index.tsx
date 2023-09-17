@@ -126,60 +126,58 @@ const DesktopMenu = ({ departments, productCategories }: Props) => {
               defaultValue={departments?.[0].name.toUpperCase() || ""}
               onChange={(e) => setSelectedDepartment(parseInt(e.target.value))}
             >
-              {departments
-                ?.sort((a, b) => a.index - b.index)
-                .map(({ id, name, displayInNavigation }: Department) => {
+              {departments.map(
+                ({ id, name, displayInNavigation }: Department) => {
                   if (displayInNavigation) {
                     return (
-                      <option key={"department_" + id} value={id}>
+                      <option key={"menu_department_" + id} value={id}>
                         {name.toUpperCase()}
                       </option>
                     );
                   } else return null;
-                })}
+                }
+              )}
             </select>
           </div>
 
-          {matchingProductCategories
-            ?.sort((a, b) => a.index - b.index)
-            .map(
-              ({
-                displayInNavigation,
-                id,
-                name,
-                productSubCategories,
-              }: ProductCategory) => {
-                if (displayInNavigation) {
-                  return (
-                    <li
-                      key={"menu_productCategory_" + id}
-                      className={`flex h-full cursor-pointer items-center justify-center px-3 py-3 text-sm font-bold tracking-wide text-brand-white hover:bg-primary-content/10 
+          {matchingProductCategories.map(
+            ({
+              displayInNavigation,
+              id,
+              name,
+              productSubCategories,
+            }: ProductCategory) => {
+              if (displayInNavigation) {
+                return (
+                  <li
+                    key={"menu_productCategory_" + id + name}
+                    className={`flex h-full cursor-pointer items-center justify-center px-3 py-3 text-sm font-bold tracking-wide text-brand-white hover:bg-primary-content/10 
                   ${
                     activeSubCategories?.parentCategory === name &&
                     "border-b-2 border-b-brand-white"
                   }`}
-                      onClick={() =>
-                        navigate({
-                          pathname: "/products",
-                          search: `?productCategory=${name}`,
-                        })
+                    onClick={() =>
+                      navigate({
+                        pathname: "/products",
+                        search: `?productCategory=${name}`,
+                      })
+                    }
+                    onMouseOver={() => {
+                      if (productSubCategories) {
+                        setActiveSubCategories({
+                          parentCategory: name,
+                          subCategories: productSubCategories,
+                        });
+                        growSubNav();
                       }
-                      onMouseOver={() => {
-                        if (productSubCategories) {
-                          setActiveSubCategories({
-                            parentCategory: name,
-                            subCategories: productSubCategories,
-                          });
-                          growSubNav();
-                        }
-                      }}
-                    >
-                      {name.toUpperCase()}
-                    </li>
-                  );
-                } else return null;
-              }
-            )}
+                    }}
+                  >
+                    {name.toUpperCase()}
+                  </li>
+                );
+              } else return null;
+            }
+          )}
         </ul>
       </div>
 
@@ -191,9 +189,8 @@ const DesktopMenu = ({ departments, productCategories }: Props) => {
           className="relative hidden w-full justify-center xl:flex"
         >
           <ul className="menu menu-horizontal !h-full items-center !py-0">
-            {activeSubCategories?.subCategories
-              .sort((a, b) => a.index - b.index)
-              .map(({ id, name, displayInNavigation }: ProductSubCategory) => {
+            {activeSubCategories?.subCategories.map(
+              ({ id, name, displayInNavigation }: ProductSubCategory) => {
                 if (displayInNavigation) {
                   return (
                     <li
@@ -210,7 +207,8 @@ const DesktopMenu = ({ departments, productCategories }: Props) => {
                     </li>
                   );
                 } else return null;
-              })}
+              }
+            )}
           </ul>
         </div>
       )}

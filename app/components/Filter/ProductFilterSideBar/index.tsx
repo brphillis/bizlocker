@@ -26,6 +26,7 @@ const ProductFilterSideBar = ({
   const searchedBrand = searchParams.get("brand");
   const searchedColor = searchParams.get("color");
   const onSaleChecked = searchParams.get("onSale");
+  const isPromotedChecked = searchParams.get("isPromoted");
 
   const [menuIsExpanded, setMenuIsExpanded] = useState<boolean>(true);
 
@@ -361,6 +362,30 @@ const ProductFilterSideBar = ({
                   readOnly
                 />
               </div>
+
+              <div
+                className="flex cursor-pointer justify-between"
+                onClick={() => {
+                  if (isPromotedChecked) {
+                    searchParams.delete("isPromoted");
+                  } else {
+                    searchParams.set("isPromoted", "true");
+                  }
+                  submit(searchParams, {
+                    method: "GET",
+                    preventScrollReset: true,
+                  });
+                }}
+              >
+                <span className="label-text mr-6">Promo Only</span>
+                <input
+                  type="checkbox"
+                  className="toggle toggle-sm !self-end"
+                  checked={isPromotedChecked ? true : false}
+                  readOnly
+                />
+              </div>
+
               <div className="flex cursor-pointer justify-between">
                 <span className="label-text mr-6">New Only</span>
                 <input type="checkbox" className="toggle toggle-sm !self-end" />

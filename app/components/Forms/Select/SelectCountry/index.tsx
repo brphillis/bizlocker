@@ -2,15 +2,16 @@ import { ISO3166Countries } from "~/utility/countryList";
 
 type Props = {
   defaultValue: string | undefined;
+  styles?: string;
 };
 
-const index = ({ defaultValue }: Props) => {
+const index = ({ defaultValue, styles }: Props) => {
   return (
-    <div className="form-control">
+    <div className={`form-control max-sm:w-[95vw] sm:w-[215px] ${styles}`}>
       <label className="label text-sm">Country</label>
       <select
         name="country"
-        className=" select w-[95vw] sm:w-[215px]"
+        className="select w-full"
         defaultValue={defaultValue}
         placeholder="Select a Value"
       >

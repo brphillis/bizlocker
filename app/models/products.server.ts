@@ -297,6 +297,8 @@ export const searchProducts = async (
   const isActive =
     formData?.isActive || url?.searchParams.get("isActive") || "";
   const onSale = formData?.onSale || url?.searchParams.get("onSale") || "";
+  const isPromoted =
+    formData?.isPromoted || url?.searchParams.get("isPromoted") || "";
   const promotionId =
     formData?.promotionId || url?.searchParams.get("promotionId") || "";
   const sortBy = formData?.sortBy || url?.searchParams.get("sortBy") || "";
@@ -429,6 +431,14 @@ export const searchProducts = async (
     filter.variants = {
       some: {
         isOnSale: true,
+      },
+    };
+  }
+
+  if (isPromoted) {
+    filter.variants = {
+      some: {
+        isPromoted: true,
       },
     };
   }

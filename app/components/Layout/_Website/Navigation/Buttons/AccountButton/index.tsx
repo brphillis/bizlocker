@@ -51,7 +51,7 @@ const AccountButton = (user: User) => {
 
         <NavLink
           className="relative mx-3 mb-1 flex cursor-pointer items-center justify-center gap-3 border border-base-300 bg-base-200/50 px-3 py-3 text-brand-black"
-          to="/account"
+          to="/account/profile"
         >
           Account
         </NavLink>
