@@ -36,26 +36,26 @@ const Home = () => {
           <div className="flex flex-row flex-wrap items-center justify-center gap-3">
             <div className="flex flex-row gap-x-3">
               <div
-                className="flex h-28 w-28 cursor-pointer flex-col items-center justify-center gap-3 rounded-md border-b-4 border-l-4 border-primary-focus bg-primary p-3"
+                className="flex h-28 w-28 cursor-pointer flex-col items-center justify-center gap-3 rounded-md bg-primary p-3"
                 onClick={() => navigate("/home")}
               >
                 <IoGlobeOutline size={36} />
                 <p className="font-semibold">Website</p>
               </div>
 
-              <div className="flex h-28 w-28 cursor-pointer flex-col items-center justify-center gap-3 rounded-md border-b-4 border-l-4 border-primary-focus bg-primary p-3">
+              <div className="flex h-28 w-28 cursor-pointer flex-col items-center justify-center gap-3 rounded-md bg-primary p-3">
                 <IoPersonOutline size={36} />
                 <p className="font-semibold">Profile</p>
               </div>
             </div>
 
             <div className="flex flex-row gap-x-3">
-              <div className="flex h-28 w-28 cursor-pointer flex-col items-center justify-center gap-3 rounded-md border-b-4 border-l-4 border-primary-focus bg-primary p-3">
+              <div className="flex h-28 w-28 cursor-pointer flex-col items-center justify-center gap-3 rounded-md bg-primary p-3">
                 <IoDocumentTextOutline size={36} />
                 <p className="font-semibold">Docs</p>
               </div>
 
-              <div className="flex h-28 w-28 cursor-pointer flex-col items-center justify-center gap-3 rounded-md border-b-4 border-l-4 border-primary-focus bg-primary p-3">
+              <div className="flex h-28 w-28 cursor-pointer flex-col items-center justify-center gap-3 rounded-md bg-primary p-3">
                 <IoCallOutline size={36} />
                 <p className="font-semibold">Support</p>
               </div>

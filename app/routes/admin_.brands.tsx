@@ -48,7 +48,7 @@ const Brands = () => {
                 name="name"
                 type="text"
                 placeholder="Name"
-                className="input input-bordered w-full"
+                className="input w-full"
               />
             </div>
           </div>

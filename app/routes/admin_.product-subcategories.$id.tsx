@@ -28,6 +28,16 @@ export const action = async ({ request, params }: ActionArgs) => {
   const form = Object.fromEntries(await request.formData());
   const { name, index, displayInNavigation, isActive, image } = form;
 
+  let validationError: string[] = [];
+
+  if (!name) {
+    validationError.push("Name is Required");
+  }
+
+  if (validationError.length > 0) {
+    return { validationError };
+  }
+
   switch (form._action) {
     case "upsert":
       if (!name || name.length < 3) {
@@ -61,8 +71,8 @@ export const action = async ({ request, params }: ActionArgs) => {
 const ModifyProductSubCategory = () => {
   const navigate = useNavigate();
   const productSubCategory = useLoaderData() || {};
-  const { statusText, success } =
-    (useActionData() as { statusText: string; success: boolean }) || {};
+  const { validationError, success } =
+    (useActionData() as { success: boolean; validationError: string[] }) || {};
   const mode = productSubCategory ? "edit" : "add";
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -140,13 +150,11 @@ const ModifyProductSubCategory = () => {
           />
         </div>
 
-        {statusText && (
-          <p className="pt-6 text-center text-sm text-red-500/75">
-            {statusText}
-          </p>
-        )}
-
-        <BackSubmitButtons loading={loading} setLoading={setLoading} />
+        <BackSubmitButtons
+          loading={loading}
+          setLoading={setLoading}
+          validationErrors={validationError}
+        />
       </Form>
     </DarkOverlay>
   );

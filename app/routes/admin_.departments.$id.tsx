@@ -27,6 +27,16 @@ export const action = async ({ request, params }: ActionArgs) => {
   const { name, isActive, index, displayInNavigation, productCategories } =
     form;
 
+  let validationError: string[] = [];
+
+  if (!name) {
+    validationError.push("Name is Required");
+  }
+
+  if (validationError.length > 0) {
+    return { validationError };
+  }
+
   switch (form._action) {
     case "upsert":
       if (!name || name.length < 3) {
@@ -53,7 +63,7 @@ const ModifyDepartment = () => {
   const navigate = useNavigate();
   const department = useLoaderData();
   const { validationError, success } =
-    (useActionData() as { validationError: string; success: boolean }) || {};
+    (useActionData() as { success: boolean; validationError: string[] }) || {};
   const mode = department ? "edit" : "add";
 
   const { productCategories } = department || {};
@@ -129,7 +139,7 @@ const ModifyDepartment = () => {
               <select
                 name="displayInNavigation"
                 className="select w-full text-brand-black/75"
-                defaultValue={department.displayInNavigation ? "true" : ""}
+                defaultValue={department?.displayInNavigation ? "true" : ""}
               >
                 <option value="true">Yes</option>
                 <option value="">No</option>
@@ -169,21 +179,13 @@ const ModifyDepartment = () => {
             name="productCategories"
             value={JSON.stringify(currentProductCategories) || ""}
           />
-
-          {validationError && (
-            <p className="h-0 py-3 text-center text-sm text-red-500/75">
-              {validationError}
-            </p>
-          )}
         </div>
 
-        {validationError && (
-          <p className="pt-6 text-center text-sm text-red-500/75">
-            {validationError}
-          </p>
-        )}
-
-        <BackSubmitButtons loading={loading} setLoading={setLoading} />
+        <BackSubmitButtons
+          loading={loading}
+          setLoading={setLoading}
+          validationErrors={validationError}
+        />
       </Form>
     </DarkOverlay>
   );

@@ -48,17 +48,30 @@ export const action = async ({ request }: ActionArgs) => {
         (name as string) || undefined
       );
 
-    case "update":
-      if (title || description) {
-        await upsertHomePageInfo(
-          title as string,
-          description as string,
-          pageId ? parseInt(pageId.toString()) : undefined
-        );
+    case "updateMeta":
+      let validationError: string[] = [];
 
-        return redirect("/admin/home-page");
+      if (!title) {
+        validationError.push("Title is Required");
       }
 
+      if (!description) {
+        validationError.push("Description is Required");
+      }
+
+      if (validationError.length > 0) {
+        return { validationError };
+      }
+
+      await upsertHomePageInfo(
+        title as string,
+        description as string,
+        pageId ? parseInt(pageId.toString()) : undefined
+      );
+
+      return redirect("/admin/home-page");
+
+    case "update":
       const newBlockData: NewBlockData = getBlockUpdateValues(form);
 
       const updateSuccess = await updatePageBlock(
@@ -101,7 +114,8 @@ const ManageHomePage = () => {
     brands,
   } = useLoaderData() || {};
 
-  const { searchResults, updateSuccess } = useActionData() || {};
+  const { searchResults, updateSuccess, validationError } =
+    useActionData() || {};
 
   return (
     <AdminPageWrapper>
@@ -147,7 +161,23 @@ const ManageHomePage = () => {
                   </div>
 
                   <input name="pageId" value={homePage.id} hidden readOnly />
-                  <input name="_action" value="update" hidden readOnly />
+                  <input name="_action" value="updateMeta" hidden readOnly />
+
+                  {validationError && validationError?.length > 0 && (
+                    <div className="pb-3">
+                      {validationError.map((error: string, i: number) => {
+                        return (
+                          <p
+                            key={error + i}
+                            className="my-2 text-center text-xs text-red-500"
+                          >
+                            {error}
+                          </p>
+                        );
+                      })}
+                    </div>
+                  )}
+
                   <button
                     type="submit"
                     className="btn-primary btn-md mx-auto block w-max"

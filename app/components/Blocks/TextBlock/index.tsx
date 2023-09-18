@@ -7,7 +7,7 @@ type Props = {
 
 const TextBlock = ({ content }: Props) => {
   return (
-    <div className="w-full max-w-full sm:w-[1280px]">
+    <div className="w-full max-w-full py-3 sm:w-[920px]">
       {parse(content[0], parseOptions)}
     </div>
   );

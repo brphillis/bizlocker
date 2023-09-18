@@ -43,21 +43,17 @@ const ManageOrders = () => {
               </label>
               <input
                 name="orderId"
-                className="input input-bordered w-full"
+                className="input w-full text-brand-black/75"
                 placeholder="ID"
                 type="text"
               />
             </div>
 
             <div className="form-control w-full sm:w-[215px]">
-              <label className="label">
-                <span className="label-text">By Status</span>
-              </label>
+              <label className="label text-sm">By Status</label>
               <select
                 name="status"
-                title="status"
-                className="input input-bordered w-full"
-                placeholder="Select a Value"
+                className="select w-full text-brand-black/75"
               >
                 <option value="">Select a Status</option>
                 <option value="created">Created</option>
@@ -69,12 +65,10 @@ const ManageOrders = () => {
             </div>
 
             <div className="form-control w-full sm:w-[215px]">
-              <label className="label">
-                <span className="label-text">User Email</span>
-              </label>
+              <label className="label text-sm">User Email</label>
               <input
                 name="userEmail"
-                className="input input-bordered w-full"
+                className="input w-full text-brand-black/75"
                 placeholder="Email"
                 type="text"
               />

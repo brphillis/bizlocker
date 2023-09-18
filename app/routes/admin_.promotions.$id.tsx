@@ -1,16 +1,11 @@
-import {
-  json,
-  redirect,
-  type LoaderArgs,
-  type ActionArgs,
-} from "@remix-run/node";
+import { type LoaderArgs, type ActionArgs } from "@remix-run/node";
 import {
   Form,
   useActionData,
   useLoaderData,
   useNavigate,
 } from "@remix-run/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
 import FormHeader from "~/components/Forms/Headers/FormHeader";
 import SelectDepartment from "~/components/Forms/Select/SelectDepartment";
@@ -30,7 +25,7 @@ export const loader = async ({ params }: LoaderArgs) => {
     promotion = await getPromotion(id);
   }
 
-  return json({ promotion, departments });
+  return { promotion, departments };
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
@@ -47,13 +42,26 @@ export const action = async ({ request, params }: ActionArgs) => {
     isActive,
   } = form;
 
+  let validationError: string[] = [];
+
+  if (!name) {
+    validationError.push("Name is Required");
+  }
+
+  if (!department) {
+    validationError.push("Department is Required");
+  }
+
+  if (!discountPercentage) {
+    validationError.push("Disacount % is Required");
+  }
+
+  if (validationError.length > 0) {
+    return { validationError };
+  }
+
   switch (form._action) {
     case "upsert":
-      if (!name || name.length < 3) {
-        const validationError = "name must be at least 3 chars.";
-        return { validationError };
-      }
-
       const parsedBanner = bannerImage
         ? (JSON.parse(bannerImage?.toString()) as Image)
         : undefined;
@@ -76,24 +84,30 @@ export const action = async ({ request, params }: ActionArgs) => {
 
       await upsertPromotion(updateData);
 
-      return redirect("/admin/promotions");
+      return { success: true };
 
     case "delete":
-      return redirect("/admin/promotions");
+      return { success: true };
   }
 };
 
 const ModifyPromotion = () => {
   const navigate = useNavigate();
   const { promotion, departments } = useLoaderData();
+  const { validationError, success } =
+    (useActionData() as { success: boolean; validationError: string[] }) || {};
 
   const { products } = (promotion as { products: Product[] }) || {};
 
-  const { validationError } =
-    (useActionData() as { validationError: string }) || {};
   const mode = promotion ? "edit" : "add";
 
   const [loading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (success) {
+      navigate(-1);
+    }
+  }, [success, navigate]);
 
   return (
     <DarkOverlay>
@@ -209,15 +223,13 @@ const ModifyPromotion = () => {
           <div className="divider w-full pt-4" />
 
           <UploadTileImage valueToChange={promotion} />
-
-          {validationError && (
-            <p className="h-0 py-3 text-center text-sm text-red-500/75">
-              {validationError}
-            </p>
-          )}
         </div>
 
-        <BackSubmitButtons loading={loading} setLoading={setLoading} />
+        <BackSubmitButtons
+          loading={loading}
+          setLoading={setLoading}
+          validationErrors={validationError}
+        />
       </Form>
     </DarkOverlay>
   );

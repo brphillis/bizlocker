@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { IoChevronDown, IoChevronUp } from "react-icons/io5";
 
 type Props = {
+  departments: Department[];
   productCategories: ProductCategory[];
   productSubCategories: ProductSubCategory[];
   brands: Brand[];
@@ -10,6 +11,7 @@ type Props = {
 };
 
 const ProductFilterSideBar = ({
+  departments,
   productCategories,
   productSubCategories,
   brands,
@@ -18,9 +20,14 @@ const ProductFilterSideBar = ({
   const [searchParams] = useSearchParams();
   const submit = useSubmit();
 
+  const [filteredProductCategories, setFilteredProductCategories] =
+    useState<ProductCategory[]>(productCategories);
+
   const [filteredProductSubCategories, setFilteredProductSubCategories] =
     useState<ProductSubCategory[]>(productSubCategories);
+
   const searchedGender = searchParams.get("gender");
+  const searchedDepartment = searchParams.get("department");
   const searchedRootCat = searchParams.get("productCategory");
   const searchedProdCat = searchParams.get("productSubCategory");
   const searchedBrand = searchParams.get("brand");
@@ -30,12 +37,26 @@ const ProductFilterSideBar = ({
 
   const [menuIsExpanded, setMenuIsExpanded] = useState<boolean>(true);
 
-  const filterProductSubCategories = (productSubCategoryId: number) => {
-    const filteredCats = productSubCategories.filter(
-      (e) => e.productSubCategoryId === productSubCategoryId
-    );
+  const filterProductCategories = (departmentId?: number) => {
+    if (departmentId) {
+      const filteredCats = productCategories.filter(
+        (e) => e.department.id === departmentId
+      );
+      setFilteredProductCategories(filteredCats);
+    } else {
+      setFilteredProductCategories(productCategories);
+    }
+  };
 
-    setFilteredProductSubCategories(filteredCats);
+  const filterProductSubCategories = (productCategoryId?: number) => {
+    if (productCategoryId) {
+      const filteredCats = productSubCategories.filter(
+        (e) => e.productCategory?.id === productCategoryId
+      );
+      setFilteredProductSubCategories(filteredCats);
+    } else {
+      setFilteredProductSubCategories(productSubCategories);
+    }
   };
 
   const handleExpandMenu = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -173,6 +194,53 @@ const ProductFilterSideBar = ({
               </details>
             </li>
             <div className="my-2 w-full border-b-2 border-brand-black/5" />
+
+            <li>
+              <details
+                open
+                onClick={(e) => searchedDepartment && e.preventDefault()}
+              >
+                <summary className="font-semibold text-brand-black">
+                  Department
+                </summary>
+                <div className="max-h-[300px] overflow-y-auto">
+                  {departments?.map(({ id, name }: Department) => {
+                    return (
+                      <div
+                        key={"department_sideFilter_" + id}
+                        className="ml-3 flex cursor-pointer gap-2 py-1 pt-3"
+                        onClick={() => {
+                          searchParams.delete("productCategory");
+                          const selectedDepartment = searchedDepartment;
+                          if (selectedDepartment === name) {
+                            filterProductCategories();
+                            searchParams.delete("department");
+                          } else {
+                            filterProductCategories(id);
+                            searchParams.set("department", name);
+                          }
+                          submit(searchParams, {
+                            method: "GET",
+                            preventScrollReset: true,
+                          });
+                        }}
+                      >
+                        <input
+                          id={"checkBox_department_" + name}
+                          type="checkbox"
+                          checked={searchedDepartment === name}
+                          className="checkbox checkbox-xs"
+                          readOnly
+                        />
+                        <p>{name}</p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </details>
+            </li>
+            <div className="my-2 w-full border-b-2 border-brand-black/5" />
+
             <li>
               <details
                 open
@@ -182,37 +250,40 @@ const ProductFilterSideBar = ({
                   Category
                 </summary>
                 <div className="max-h-[300px] overflow-y-auto">
-                  {productCategories?.map(({ id, name }: ProductCategory) => {
-                    return (
-                      <div
-                        key={"productCategory_sideFilter_" + id}
-                        className="ml-3 flex cursor-pointer gap-2 py-1 pt-3"
-                        onClick={() => {
-                          filterProductSubCategories(id);
-                          searchParams.delete("productSubCategory");
-                          const selectedProductCategory = searchedRootCat;
-                          if (selectedProductCategory === name) {
-                            searchParams.delete("productCategory");
-                          } else {
-                            searchParams.set("productCategory", name);
-                          }
-                          submit(searchParams, {
-                            method: "GET",
-                            preventScrollReset: true,
-                          });
-                        }}
-                      >
-                        <input
-                          id={"checkBox_productCategory_" + name}
-                          type="checkbox"
-                          checked={searchedRootCat === name}
-                          className="checkbox checkbox-xs"
-                          readOnly
-                        />
-                        <p>{name}</p>
-                      </div>
-                    );
-                  })}
+                  {filteredProductCategories?.map(
+                    ({ id, name }: ProductCategory) => {
+                      return (
+                        <div
+                          key={"productCategory_sideFilter_" + id}
+                          className="ml-3 flex cursor-pointer gap-2 py-1 pt-3"
+                          onClick={() => {
+                            searchParams.delete("productSubCategory");
+                            const selectedProductCategory = searchedRootCat;
+                            if (selectedProductCategory === name) {
+                              filterProductSubCategories();
+                              searchParams.delete("productCategory");
+                            } else {
+                              filterProductSubCategories(id);
+                              searchParams.set("productCategory", name);
+                            }
+                            submit(searchParams, {
+                              method: "GET",
+                              preventScrollReset: true,
+                            });
+                          }}
+                        >
+                          <input
+                            id={"checkBox_productCategory_" + name}
+                            type="checkbox"
+                            checked={searchedRootCat === name}
+                            className="checkbox checkbox-xs"
+                            readOnly
+                          />
+                          <p>{name}</p>
+                        </div>
+                      );
+                    }
+                  )}
                 </div>
               </details>
             </li>

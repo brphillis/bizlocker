@@ -40,7 +40,7 @@ const Campaigns = () => {
               </label>
               <input
                 name="name"
-                className="input input-bordered w-full"
+                className="input w-full"
                 placeholder="Name"
                 type="text"
               />

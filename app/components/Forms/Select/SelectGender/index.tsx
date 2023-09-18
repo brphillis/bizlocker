@@ -15,10 +15,9 @@ const SelectGender = ({ defaultValue, label }: Props) => {
       <select
         name="gender"
         className=" select w-[95vw] sm:w-[215px]"
-        defaultValue={defaultValue}
+        defaultValue={defaultValue || "UNISEX"}
         placeholder="Select a Gender"
       >
-        <option value="">Select gender</option>
         <option value="MALE">Male</option>
         <option value="FEMALE">Female</option>
         <option value="KIDS">Kids</option>

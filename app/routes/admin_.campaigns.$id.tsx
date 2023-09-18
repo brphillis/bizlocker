@@ -1,11 +1,11 @@
+import { type LoaderArgs, type ActionArgs } from "@remix-run/node";
 import {
-  json,
-  redirect,
-  type LoaderArgs,
-  type ActionArgs,
-} from "@remix-run/node";
-import { Form, useActionData, useLoaderData } from "@remix-run/react";
-import { useState } from "react";
+  Form,
+  useActionData,
+  useLoaderData,
+  useNavigate,
+} from "@remix-run/react";
+import { useEffect, useState } from "react";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
 import FormHeader from "~/components/Forms/Headers/FormHeader";
 import SelectBrands from "~/components/Forms/Select/SelectBrands";
@@ -31,7 +31,7 @@ export const loader = async ({ params }: LoaderArgs) => {
     campaign = await getCampaign(id);
   }
 
-  return json({ campaign, departments, productSubCategories, brands });
+  return { campaign, departments, productSubCategories, brands };
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
@@ -50,13 +50,26 @@ export const action = async ({ request, params }: ActionArgs) => {
     isActive,
   } = form;
 
+  let validationError: string[] = [];
+
+  if (!name) {
+    validationError.push("Name is Required");
+  }
+
+  if (!department) {
+    validationError.push("Department is Required");
+  }
+
+  if (!minSaleRange || !maxSaleRange) {
+    validationError.push("Sale Ranges are Required");
+  }
+
+  if (validationError.length > 0) {
+    return { validationError };
+  }
+
   switch (form._action) {
     case "upsert":
-      if (!name || name.length < 3) {
-        const validationError = "name must be at least 3 chars.";
-        return { validationError };
-      }
-
       const parsedBanner = bannerImage
         ? (JSON.parse(bannerImage?.toString()) as Image)
         : undefined;
@@ -82,21 +95,28 @@ export const action = async ({ request, params }: ActionArgs) => {
 
       await upsertCampaign(updateData);
 
-      return redirect("/admin/campaigns");
+      return { success: true };
 
     case "delete":
-      return redirect("/admin/campaigns");
+      return { success: true };
   }
 };
 
 const ModifyCampaign = () => {
+  const navigate = useNavigate();
   const { campaign, departments, productSubCategories, brands } =
     useLoaderData() || {};
-  const { validationError } =
-    (useActionData() as { validationError: string }) || {};
+  const { validationError, success } =
+    (useActionData() as { success: boolean; validationError: string[] }) || {};
   const mode = campaign ? "edit" : "add";
 
   const [loading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (success) {
+      navigate(-1);
+    }
+  }, [success, navigate]);
 
   return (
     <DarkOverlay>
@@ -197,15 +217,13 @@ const ModifyCampaign = () => {
           <div className="divider w-full pt-4" />
 
           <UploadTileImage valueToChange={campaign} />
-
-          {validationError && (
-            <p className="h-0 py-3 text-center text-sm text-red-500/75">
-              {validationError}
-            </p>
-          )}
         </div>
 
-        <BackSubmitButtons loading={loading} setLoading={setLoading} />
+        <BackSubmitButtons
+          loading={loading}
+          setLoading={setLoading}
+          validationErrors={validationError}
+        />
       </Form>
     </DarkOverlay>
   );

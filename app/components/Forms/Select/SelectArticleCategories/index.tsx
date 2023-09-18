@@ -15,7 +15,9 @@ const SelectArticleCategories = ({
 }: Props) => {
   const [selectedArticleCategories, setSelectedArticleCategories] = useState<
     string[]
-  >(valueToChange?.articleCategories?.map((e) => e?.name) || [""]);
+  >(
+    valueToChange?.articleCategories?.map((e) => e?.id.toString()) || undefined
+  );
 
   const handleOptionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedOptions = Array.from(
@@ -33,7 +35,7 @@ const SelectArticleCategories = ({
           styles ? styles : "w-[95vw] sm:w-[215px]"
         }`}
         onChange={handleOptionChange}
-        value={selectedArticleCategories}
+        value={selectedArticleCategories || undefined}
         multiple
       >
         {articleCategories?.map(({ id, name }: ArticleCategory) => (

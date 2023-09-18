@@ -1,8 +1,9 @@
 import { type LoaderArgs, type ActionArgs } from "@remix-run/server-runtime";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { getUserObject } from "~/session.server";
-import { getUserDetails, updateUserDetails } from "~/models/auth/userDetails";
+import { getUserDetails, upsertUserDetails } from "~/models/auth/userDetails";
 import { useEffect, useState } from "react";
+import { isValidMobileNumber } from "~/utility/validate";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const { id, email } = ((await getUserObject(request)) as User) || {};
@@ -12,25 +13,52 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 export const action = async ({ request }: ActionArgs) => {
   const { id } = ((await getUserObject(request)) as User) || {};
-  const { firstName, lastName, dateofbirth, phonenumber } = Object.fromEntries(
+  const { firstName, lastName, dateofbirth, phoneNumber } = Object.fromEntries(
     await request.formData()
   );
+
+  let validationError: string[] = [];
+
+  if (!firstName) {
+    validationError.push("First Name is Required");
+  }
+
+  if (!lastName) {
+    validationError.push("Last Name is Required");
+  }
+
+  if (!phoneNumber) {
+    validationError.push("Phone Number is Required");
+  }
+  if (phoneNumber && !isValidMobileNumber(phoneNumber as string)) {
+    validationError.push("Phone Number is Invalid (+614)");
+  }
+
+  if (!dateofbirth) {
+    validationError.push("Date of Birth is Required");
+  }
+
+  if (validationError.length > 0) {
+    return { validationError };
+  }
 
   const updateData = {
     id,
     firstName: firstName as string,
     lastName: lastName as string,
     dateOfBirth: new Date(dateofbirth as string),
-    phoneNumber: phonenumber as string,
+    phoneNumber: phoneNumber as string,
   };
-  await updateUserDetails(updateData);
+  await upsertUserDetails(updateData);
 
-  return { success: true };
+  return { success: "Profile Updated" };
 };
 
 const Account = () => {
   const { userDetails, email } = useLoaderData();
-  const { success } = useActionData() || {};
+  const { success, validationError } =
+    (useActionData() as { success: string; validationError: string[] }) || {};
+
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -39,9 +67,17 @@ const Account = () => {
     }
   }, [success]);
 
+  useEffect(() => {
+    if (validationError) {
+      setLoading(false);
+    }
+  }, [validationError]);
+
   return (
     <Form method="POST" id="AccountPanel">
-      <h2 className="pb-3 pl-1 text-xl font-bold max-md:pl-3">Profile</h2>
+      <h2 className="pb-3 pl-1 text-xl font-bold max-md:pb-6 max-md:pl-3">
+        Profile
+      </h2>
       <div className="flex h-max w-[520px] max-w-[100vw] flex-col items-center gap-3 bg-base-200 p-3">
         <div className="form-control w-full">
           <label className="label">
@@ -114,19 +150,45 @@ const Account = () => {
         </div>
 
         <div className="flex w-full items-center justify-center pt-3 text-xs sm:w-[215px]">
-          Birthday Coupons sent annually.
+          Birthday Coupons sent Annually.
         </div>
 
         <div className="divider m-0 w-full p-0 pt-3" />
-        <div className="flex flex-row items-center justify-center gap-3 py-3">
-          <button
-            type="submit"
-            className="btn btn-primary w-max"
-            onClick={() => setLoading && setLoading(true)}
-          >
-            {loading ? "Loading..." : "Update"}
-          </button>
-        </div>
+
+        {validationError?.length > 0 && (
+          <div>
+            {validationError.map((error: string, i) => {
+              return (
+                <p
+                  key={error + i}
+                  className="my-2 text-center text-xs text-red-500"
+                >
+                  {error}
+                </p>
+              );
+            })}
+          </div>
+        )}
+
+        {success && (
+          <div>
+            <p className="my-2 text-center text-xs font-bold text-green-500">
+              {success}
+            </p>
+          </div>
+        )}
+
+        {!success && (
+          <div className="flex flex-row items-center justify-center gap-3 py-3">
+            <button
+              type="submit"
+              className="btn btn-primary w-max"
+              onClick={() => setLoading && setLoading(true)}
+            >
+              {loading ? "Loading..." : "Update"}
+            </button>
+          </div>
+        )}
       </div>
     </Form>
   );

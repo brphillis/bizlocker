@@ -8,7 +8,7 @@ type Props = {
 
 const SelectBrands = ({ brands, valueToChange, title }: Props) => {
   const [selectedBrands, setSelectedBrands] = useState<string[]>(
-    valueToChange?.brands?.map((e) => e?.name) || [""]
+    valueToChange?.brands?.map((e) => e?.name) || undefined
   );
 
   const handleOptionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {

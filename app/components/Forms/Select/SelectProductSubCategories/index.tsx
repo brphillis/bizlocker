@@ -12,7 +12,8 @@ const SelectProductSubCategories = ({
   title,
 }: Props) => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
-    valueToChange?.productSubCategories?.map((e) => e?.id.toString()) || [""]
+    valueToChange?.productSubCategories?.map((e) => e?.id.toString()) ||
+      undefined
   );
 
   const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {

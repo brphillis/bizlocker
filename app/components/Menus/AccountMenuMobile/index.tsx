@@ -1,5 +1,5 @@
 import { NavLink, useSubmit } from "@remix-run/react";
-import { IoChevronForward } from "react-icons/io5";
+import { IoChevronForward, IoLogOutOutline } from "react-icons/io5";
 
 const AccountMenuMobile = () => {
   const submit = useSubmit();
@@ -57,12 +57,13 @@ const AccountMenuMobile = () => {
             </NavLink>
 
             <div
-              className="my-1 flex cursor-pointer items-center justify-start rounded-md p-3 hover:bg-brand-white/10"
+              className="my-1 flex cursor-pointer items-center justify-between rounded-md p-3 hover:bg-brand-white/10"
               onClick={() =>
                 submit(null, { method: "POST", action: "/logout" })
               }
             >
               <div>Log Out</div>
+              <IoLogOutOutline size={16} />
             </div>
           </ul>
         </div>

@@ -18,3 +18,9 @@ export const isValidPassword = (password: string): boolean => {
   // Testing the provided email against the pattern
   return regexPattern.test(password);
 };
+
+export const isValidMobileNumber = (mobileNumber: string) => {
+  if (mobileNumber.startsWith("614") && mobileNumber.length === 11) {
+    return true;
+  }
+};

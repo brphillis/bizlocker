@@ -1,6 +1,5 @@
 import {
   type ActionArgs,
-  json,
   type LoaderArgs,
   type LinksFunction,
   redirect,
@@ -59,14 +58,14 @@ export const loader = async ({ params }: LoaderArgs) => {
 
   if (id && id !== "add") {
     const article = await getArticle(id);
-    return json({
+    return {
       article,
       articleCategories,
       productCategories,
       productSubCategories,
       brands,
-    });
-  } else return json({ articleCategories });
+    };
+  } else return { articleCategories };
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
@@ -92,23 +91,40 @@ export const action = async ({ request, params }: ActionArgs) => {
         (name as string) || undefined
       );
 
-    case "update":
-      //we create a new article if ID is not provided
-      if (title || description || isActive || thumbnail || articleCategories) {
-        const articleId = await upsertArticleInfo(
-          title as string,
-          description as string,
-          isActive as string,
-          JSON.parse(articleCategories as string),
-          JSON.parse(thumbnail as string),
-          id ? parseInt(id) : undefined
-        );
+    case "updateMeta":
+      let validationError: string[] = [];
 
-        if (params.id === "add") {
-          return redirect(`/admin/articles/${articleId}`);
-        } else return null;
+      if (!title) {
+        validationError.push("Title is Required");
       }
 
+      if (!description) {
+        validationError.push("Description is Required");
+      }
+
+      if (!articleCategories) {
+        validationError.push("Category is Required");
+      }
+
+      if (validationError.length > 0) {
+        return { validationError };
+      }
+
+      //we create a new article if ID is not provided
+      const articleId = await upsertArticleInfo(
+        title as string,
+        description as string,
+        isActive as string,
+        JSON.parse(articleCategories as string),
+        JSON.parse(thumbnail as string),
+        id ? parseInt(id) : undefined
+      );
+
+      if (params.id === "add") {
+        return redirect(`/admin/articles/${articleId}`);
+      } else return null;
+
+    case "update":
       const newBlockData: NewBlockData = getBlockUpdateValues(form);
 
       const updateSuccess = await updatePageBlock(
@@ -152,10 +168,11 @@ const ModifyArticle = () => {
     brands,
   } = useLoaderData() || {};
 
-  const { searchResults, updateSuccess } = useActionData() || {};
+  const { searchResults, updateSuccess, validationError } =
+    useActionData() || {};
 
   const [isActive, setIsActive] = useState<string | undefined>(
-    "isActive" in article && article?.isActive ? " " : ""
+    article?.isActive ? " " : ""
   );
 
   return (
@@ -261,7 +278,23 @@ const ModifyArticle = () => {
                     </div>
                   </div>
 
-                  <input name="_action" value="update" hidden readOnly />
+                  <input name="_action" value="updateMeta" hidden readOnly />
+
+                  {validationError && validationError?.length > 0 && (
+                    <div className="pb-3">
+                      {validationError.map((error: string, i: number) => {
+                        return (
+                          <p
+                            key={error + i}
+                            className="my-2 text-center text-xs text-red-500"
+                          >
+                            {error}
+                          </p>
+                        );
+                      })}
+                    </div>
+                  )}
+
                   <button
                     type="submit"
                     className="btn-primary btn-md mx-auto block w-max"

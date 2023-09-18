@@ -1,21 +1,20 @@
 import { prisma } from "~/db.server";
 import { getOrderBy } from "~/utility/sortHelpers";
 
-export const getProductSubCategories = async (inDetail?: boolean) => {
-  if (inDetail) {
-    return await prisma.productSubCategory.findMany({
-      include: {
-        productCategory: {
-          include: {
-            productSubCategories: true,
-          },
+export const getProductSubCategories = async () => {
+  return await prisma.productSubCategory.findMany({
+    include: {
+      productCategory: {
+        include: {
+          productSubCategories: true,
+          department: true,
         },
       },
-      orderBy: {
-        index: "asc",
-      },
-    });
-  } else return await prisma.productSubCategory.findMany();
+    },
+    orderBy: {
+      index: "asc",
+    },
+  });
 };
 
 export const getProductSubCategory = async (id: string) => {

@@ -1,9 +1,9 @@
 To Do
 
-[ ] Forms Validation
 [ ] Finish Mobile Nav Slideout for AdminWeb
 [ ] add shipping calculator
 [ ] send email when order is shipped
+[ ] add internation phone code validations
 
 
 Bug Hisory
@@ -29,3 +29,4 @@ Feat history
 007 - add department selection to mobile navigation
 008 - add menu order indexing
 009 - add accounts page / add promo filter to product page
+010 - basic/necessary form validation added to all forms
