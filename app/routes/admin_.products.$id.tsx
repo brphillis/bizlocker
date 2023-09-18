@@ -1,11 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getBrands } from "~/models/brands.server";
 import DarkOverlay from "~/components/Layout/DarkOverlay";
 import { getPromotions } from "~/models/promotions.server";
 import FormHeader from "~/components/Forms/Headers/FormHeader";
 import SelectBrand from "~/components/Forms/Select/SelectBrand";
 import SelectGender from "~/components/Forms/Select/SelectGender";
-import { Form, useActionData, useLoaderData } from "@remix-run/react";
+import {
+  Form,
+  useActionData,
+  useLoaderData,
+  useNavigate,
+} from "@remix-run/react";
 import SelectPromotion from "~/components/Forms/Select/SelectPromotion";
 import { getProductSubCategories } from "~/models/productSubCategories.server";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
@@ -18,8 +23,6 @@ import {
 } from "~/models/products.server";
 import SelectProductSubCategories from "~/components/Forms/Select/SelectProductSubCategories";
 import {
-  json,
-  redirect,
   type ActionArgs,
   type LinksFunction,
   type LoaderArgs,
@@ -48,14 +51,14 @@ export const loader = async ({ params }: LoaderArgs) => {
     product = await getProduct(id);
   }
 
-  return json({
+  return {
     product,
     productSubCategories,
     brands,
     promotions,
     availableColors,
     availableSizes,
-  });
+  };
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
@@ -74,6 +77,32 @@ export const action = async ({ request, params }: ActionArgs) => {
     promotion,
   } = form;
 
+  let validationError: string[] = [];
+
+  if (!name) {
+    validationError.push("Name is Required");
+  }
+
+  if (!productSubCategories) {
+    validationError.push("Category is Required");
+  }
+
+  if (!description) {
+    validationError.push("Description is Required");
+  }
+
+  if (!gender) {
+    validationError.push("Gender is Required");
+  }
+
+  if (!variants) {
+    validationError.push("Confirm the Variant");
+  }
+
+  if (validationError.length > 0) {
+    return { validationError };
+  }
+
   //if single variant we set its name to base
   let variantData = variants && JSON.parse(variants?.toString());
   if (!Array.isArray(variantData)) {
@@ -83,11 +112,6 @@ export const action = async ({ request, params }: ActionArgs) => {
 
   switch (form._action) {
     case "upsert":
-      if (!name || name.length < 3) {
-        const validationError = "name must be at least 3 chars.";
-        return { validationError };
-      }
-
       const updateData = {
         name: name as string,
         productSubCategories:
@@ -106,11 +130,11 @@ export const action = async ({ request, params }: ActionArgs) => {
 
       await upsertProduct(updateData);
 
-      return redirect("/admin/products");
+      return { success: true };
 
     case "delete":
       await deleteProduct(id as string);
-      return redirect("/admin/products");
+      return { success: true };
   }
 };
 
@@ -123,13 +147,21 @@ const Product = () => {
     availableColors,
     availableSizes,
   } = useLoaderData();
+  const { validationError, success } =
+    (useActionData() as { validationError: string[]; success: boolean }) || {};
 
-  const { statusText } = (useActionData() as { statusText: string }) || {};
+  const navigate = useNavigate();
 
   const mode = product ? "edit" : "add";
 
   const [richText, setRichText] = useState<string>(product?.description);
   const [loading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (success) {
+      navigate(-1);
+    }
+  }, [success, navigate]);
 
   return (
     <DarkOverlay>
@@ -164,6 +196,7 @@ const Product = () => {
               <SelectBrand
                 brands={brands}
                 defaultValue={product?.brandId?.toString()}
+                defaultToNone={true}
               />
             </div>
 
@@ -233,13 +266,11 @@ const Product = () => {
             />
           </div>
 
-          {statusText && (
-            <p className="my-2 text-center text-sm text-red-500/75">
-              {statusText}
-            </p>
-          )}
-
-          <BackSubmitButtons loading={loading} setLoading={setLoading} />
+          <BackSubmitButtons
+            loading={loading}
+            setLoading={setLoading}
+            validationErrors={validationError}
+          />
         </div>
       </Form>
     </DarkOverlay>

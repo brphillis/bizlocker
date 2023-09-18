@@ -14,7 +14,7 @@ import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node";
 import { deleteImage, getImage, upsertImage } from "~/models/images.server";
 import { IoCaretForwardCircleSharp } from "react-icons/io5";
 import { handleResourceSubmit } from "~/utility/formHelpers";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const id = params?.id;
@@ -35,24 +35,29 @@ export const action = async ({ request, params }: ActionArgs) => {
   const form = Object.fromEntries(await request.formData());
   const { altText, image } = form;
 
+  let validationError: string[] = [];
+
+  if (!altText) {
+    validationError.push("Title is Required");
+  }
+
+  if (validationError.length > 0) {
+    return { validationError };
+  }
+
   switch (form._action) {
     case "upsert":
-      if (!altText || altText.length < 3) {
-        const validationError = "title must be at least 3 chars.";
-        return { validationError };
-      }
-
       const parsedImage = image
         ? (JSON.parse(image?.toString()) as Image)
         : undefined;
 
       upsertImage(altText as string, parsedImage, id);
 
-      return redirect("/admin/images");
+      return { success: true };
 
     case "delete":
       await deleteImage(id as string);
-      return redirect("/admin/images");
+      return { success: true };
   }
 };
 
@@ -60,8 +65,8 @@ const ModifyImage = () => {
   const navigate = useNavigate();
   let submit = useSubmit();
   const image = useLoaderData();
-  const { validationError } =
-    (useActionData() as { validationError: string }) || {};
+  const { validationError, success } =
+    (useActionData() as { success: boolean; validationError: string[] }) || {};
   const mode = image ? "edit" : "add";
   const {
     altText,
@@ -93,6 +98,12 @@ const ModifyImage = () => {
   const isConnected = determineIfConnected();
 
   const [loading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (success) {
+      navigate(-1);
+    }
+  }, [success, navigate]);
 
   return (
     <DarkOverlay>
@@ -281,15 +292,13 @@ const ModifyImage = () => {
               )}
             </tbody>
           </table>
-
-          {validationError && (
-            <p className="h-0 py-3 text-center text-sm text-red-500/75">
-              {validationError}
-            </p>
-          )}
         </div>
 
-        <BackSubmitButtons loading={loading} setLoading={setLoading} />
+        <BackSubmitButtons
+          loading={loading}
+          setLoading={setLoading}
+          validationErrors={validationError}
+        />
       </Form>
     </DarkOverlay>
   );

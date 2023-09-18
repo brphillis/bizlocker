@@ -1,4 +1,4 @@
-import { useNavigate } from "@remix-run/react";
+import { useLocation, useNavigate, useSearchParams } from "@remix-run/react";
 import { useEffect, useState } from "react";
 
 type Props = {
@@ -8,10 +8,14 @@ type Props = {
 
 const DesktopMenu = ({ departments, productCategories }: Props) => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const [searchParams] = useSearchParams();
 
   const [selectedDepartment, setSelectedDepartment] = useState<number>(
     departments?.[0].id
   );
+
   const [activeSubCategories, setActiveSubCategories] = useState<
     { parentCategory: string; subCategories: ProductSubCategory[] } | undefined
   >();
@@ -115,6 +119,17 @@ const DesktopMenu = ({ departments, productCategories }: Props) => {
     }
   }, [height, shrinking, growTimeoutId, shrinkTimeoutId]);
 
+  //if user searches a department the navbar will stay in sync with the filters
+  useEffect(() => {
+    const departmentNameFromURL = searchParams.get("department");
+    const userSelectedDepartment = departments.find(
+      (e) => e.name === departmentNameFromURL
+    );
+    if (userSelectedDepartment) {
+      setSelectedDepartment(userSelectedDepartment.id);
+    }
+  }, [location, departments, searchParams]);
+
   return (
     <div className="flex h-max flex-col items-center justify-center">
       <div className="relative hidden h-[60px] xl:block">
@@ -123,7 +138,7 @@ const DesktopMenu = ({ departments, productCategories }: Props) => {
             <select
               name="department"
               className="select mr-6 w-[148px] border-l border-r border-l-white/50 border-r-white/50 bg-brand-black pl-6 pt-[0.125rem] tracking-wider text-brand-white"
-              defaultValue={departments?.[0].name.toUpperCase() || ""}
+              value={selectedDepartment}
               onChange={(e) => setSelectedDepartment(parseInt(e.target.value))}
             >
               {departments.map(

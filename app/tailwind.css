@@ -9,7 +9,7 @@
 
 .input,
 .select {
-  @apply h-[2.6rem] min-h-[2.6rem] rounded-none;
+  @apply h-[2.6rem] min-h-[2.6rem] rounded-sm;
 }
 
 .collapse-content {

@@ -42,6 +42,18 @@ export const getProduct = async (id: string) => {
         select: {
           id: true,
           name: true,
+          productCategory: {
+            select: {
+              id: true,
+              name: true,
+              department: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+            },
+          },
         },
       },
       images: true,
@@ -285,9 +297,11 @@ export const searchProducts = async (
 ) => {
   const name =
     formData?.name || (url && url.searchParams.get("name")?.toString()) || "";
-  const productCategory =
-    formData?.productCategory || url?.searchParams.get("productCategory") || "";
+  const department =
+    formData?.department || url?.searchParams.get("department") || "";
   const category =
+    formData?.productCategory || url?.searchParams.get("productCategory") || "";
+  const subCategory =
     formData?.productSubCategory ||
     url?.searchParams.get("productSubCategory") ||
     "";
@@ -314,6 +328,9 @@ export const searchProducts = async (
     Number(url?.searchParams.get("perPage")) ||
     8;
 
+  const excludeId =
+    formData?.excludeId || url?.searchParams.get("excludeId") || "";
+
   const skip = (pageNumber - 1) * perPage;
   const take = perPage;
 
@@ -327,14 +344,39 @@ export const searchProducts = async (
     };
   }
 
-  if (productCategory && !category) {
-    if (isNaN(parseInt(productCategory as string))) {
+  if (department) {
+    const productSubCategories = await prisma.productSubCategory.findMany({
+      where: {
+        productCategory: {
+          department: {
+            name: {
+              equals: department as string,
+              mode: "insensitive",
+            },
+          },
+        },
+      },
+      select: {
+        name: true,
+      },
+    });
+    filter.productSubCategories = {
+      some: {
+        name: {
+          in: productSubCategories.map((category) => category.name),
+        },
+      },
+    };
+  }
+
+  if (category && !subCategory) {
+    if (isNaN(parseInt(category as string))) {
       const productSubCategories = await prisma.productSubCategory.findMany({
         where: {
           productCategory: {
             name: {
-              equals: productCategory as string,
-              mode: "insensitive", // Use 'insensitive' mode for case-insensitive comparison
+              equals: category as string,
+              mode: "insensitive",
             },
           },
         },
@@ -354,7 +396,7 @@ export const searchProducts = async (
         where: {
           productCategory: {
             id: {
-              equals: parseInt(productCategory as string),
+              equals: parseInt(category as string),
             },
           },
         },
@@ -363,7 +405,7 @@ export const searchProducts = async (
         },
       });
 
-      filter.productSubCategories = {
+      filter.productCategories = {
         some: {
           id: {
             in: productSubCategories.map((category) => category.id),
@@ -373,18 +415,18 @@ export const searchProducts = async (
     }
   }
 
-  if (category) {
-    if (isNaN(parseInt(category as string))) {
+  if (subCategory) {
+    if (isNaN(parseInt(subCategory as string))) {
       filter.productSubCategories = {
         some: {
           name: {
-            equals: category as string,
+            equals: subCategory as string,
             mode: "insensitive", // Use 'insensitive' mode for case-insensitive comparison
           },
         },
       };
     } else {
-      const categoryId = parseInt(category as string);
+      const categoryId = parseInt(subCategory as string);
       filter.productSubCategories = {
         some: {
           id: categoryId,
@@ -452,6 +494,14 @@ export const searchProducts = async (
     };
   }
 
+  if (excludeId) {
+    filter.id = {
+      not: {
+        equals: parseInt(excludeId as string),
+      },
+    };
+  }
+
   // Find and count the products
   const [fetchedProducts, totalProducts] = await Promise.all([
     prisma.product.findMany({
@@ -461,6 +511,11 @@ export const searchProducts = async (
           select: {
             id: true,
             name: true,
+            productCategory: {
+              include: {
+                department: true,
+              },
+            },
           },
         },
         brand: {

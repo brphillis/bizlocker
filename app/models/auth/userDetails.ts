@@ -8,14 +8,21 @@ export const getUserDetails = async (id: string) => {
   });
 };
 
-export const updateUserDetails = async (updateData: any) => {
+export const upsertUserDetails = async (updateData: any) => {
   const { id, firstName, lastName, dateOfBirth, phoneNumber } = updateData;
 
-  return await prisma.userDetails.update({
+  return await prisma.userDetails.upsert({
     where: {
       userId: id,
     },
-    data: {
+    update: {
+      firstName,
+      lastName,
+      phoneNumber,
+      dateOfBirth,
+    },
+    create: {
+      userId: id,
       firstName,
       lastName,
       phoneNumber,

@@ -56,7 +56,7 @@ const ArticleCategories = () => {
                 name="name"
                 type="text"
                 placeholder="Name"
-                className="input input-bordered w-full sm:w-[215px]"
+                className="input w-full sm:w-[215px]"
               />
             </div>
           </div>

@@ -15,10 +15,10 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 const Account = () => {
   return (
-    <PageWrapper>
+    <PageWrapper noTopPadding={true}>
       <AccountMenuMobile />
 
-      <div className="mt-3 flex items-start justify-center gap-6">
+      <div className="mt-6 flex items-start justify-center gap-6 max-md:mt-3">
         <AccountMenuDesktop />
 
         <Outlet />

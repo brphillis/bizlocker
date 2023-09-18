@@ -35,7 +35,7 @@ export const createInitialDeveloper = async () => {
 export const createSeedData = async () => {
   try {
     await createHomePage();
-    await createRandomBrands();
+    await createBrand();
     await createRandomProductSubCategories();
     await createRandomProducts();
   } catch (error) {
@@ -56,7 +56,7 @@ const createHomePage = async () => {
   await prisma.homePage.create({ data: {} });
 };
 
-const createRandomBrands = async () => {
+const createBrand = async () => {
   const existingDepartments = await prisma.department.findMany();
   if (existingDepartments.length > 0) {
     console.log("brands already exist. Skipping seed creation.");
@@ -64,13 +64,12 @@ const createRandomBrands = async () => {
   }
 
   try {
-    for (let i = 0; i < 5; i++) {
-      await prisma.brand.create({
-        data: {
-          name: `Brand ${i + 1}`,
-        },
-      });
-    }
+    await prisma.brand.create({
+      data: {
+        name: "None",
+      },
+    });
+
     console.log("Random brands created successfully.");
   } catch (error) {
     console.error("Error creating random brands:", error);

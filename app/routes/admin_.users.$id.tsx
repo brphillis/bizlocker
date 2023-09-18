@@ -1,11 +1,18 @@
-import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node";
-import { Form, useLoaderData } from "@remix-run/react";
+import type { ActionArgs, LoaderArgs } from "@remix-run/node";
+import {
+  Form,
+  useActionData,
+  useLoaderData,
+  useNavigate,
+} from "@remix-run/react";
+import { useEffect, useState } from "react";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
 import FormHeader from "~/components/Forms/Headers/FormHeader";
 import SelectCountry from "~/components/Forms/Select/SelectCountry";
 import UploadAvatar from "~/components/Forms/Upload/UploadAvatar";
 import DarkOverlay from "~/components/Layout/DarkOverlay";
 import { getUser, upsertUser } from "~/models/auth/users.server";
+import { isValidMobileNumber } from "~/utility/validate";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const id = params?.id;
@@ -23,7 +30,7 @@ export const action = async ({ request, params }: ActionArgs) => {
     firstName,
     lastName,
     dateofbirth,
-    phonenumber,
+    phoneNumber,
     address1,
     address2,
     postcode,
@@ -34,12 +41,34 @@ export const action = async ({ request, params }: ActionArgs) => {
     isActive,
   } = Object.fromEntries(await request.formData());
 
+  let validationError: string[] = [];
+
+  if (!firstName) {
+    validationError.push("First Name is Required");
+  }
+
+  if (!lastName) {
+    validationError.push("Last Name is Required");
+  }
+
+  if (!phoneNumber) {
+    validationError.push("Phone Number is Required");
+  }
+
+  if (phoneNumber && !isValidMobileNumber(phoneNumber as string)) {
+    validationError.push("Phone Number is Invalid (+614)");
+  }
+
+  if (validationError.length > 0) {
+    return { validationError };
+  }
+
   const updateData = {
     email: email as string,
     firstName: firstName as string,
     lastName: lastName as string,
     dateOfBirth: new Date(dateofbirth as string),
-    phoneNumber: phonenumber as string,
+    phoneNumber: phoneNumber as string,
     addressLine1: address1 as string,
     addressLine2: address2 as string,
     postcode: postcode as string,
@@ -53,13 +82,24 @@ export const action = async ({ request, params }: ActionArgs) => {
 
   await upsertUser(updateData);
 
-  return redirect("/admin/users");
+  return { success: true };
 };
 
 const ModifyUser = () => {
+  const navigate = useNavigate();
   const user = useLoaderData();
+  const { validationError, success } =
+    (useActionData() as { success: boolean; validationError: string[] }) || {};
 
   const mode = user ? "edit" : "add";
+
+  const [loading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (success) {
+      navigate(-1);
+    }
+  }, [success, navigate]);
 
   return (
     <DarkOverlay>
@@ -125,7 +165,7 @@ const ModifyUser = () => {
                     <span className="label-text">Phone Number</span>
                   </label>
                   <input
-                    name="phonenumber"
+                    name="phoneNumber"
                     type="text"
                     placeholder="Phone Number"
                     className="input input-bordered w-[95vw] sm:w-[215px]"
@@ -224,7 +264,11 @@ const ModifyUser = () => {
             </div>
           </div>
         </div>
-        <BackSubmitButtons />
+        <BackSubmitButtons
+          loading={loading}
+          setLoading={setLoading}
+          validationErrors={validationError}
+        />
       </Form>
     </DarkOverlay>
   );

@@ -19,19 +19,9 @@ import { getDepartments } from "~/models/departments.server";
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
 
-  const searchQuery = {
-    name: url.searchParams.get("productCategory")?.toString() || undefined,
-    productSubCategory:
-      url.searchParams.get("productSubCategory")?.toString() || undefined,
-    department: url.searchParams.get("department")?.toString() || undefined,
-    sortBy: url.searchParams.get("sortBy")?.toString() || undefined,
-    sortOrder: url.searchParams.get("sortOrder")?.toString() || undefined,
-    page: Number(url.searchParams.get("pageNumber")) || 1,
-    perPage: Number(url.searchParams.get("perPage")) || 10,
-  };
-
   const { productCategories, totalPages } = await searchProductCategories(
-    searchQuery
+    undefined,
+    url
   );
   const departments = await getDepartments();
   const productSubCategories = await getProductSubCategories();
@@ -70,7 +60,7 @@ const ManageProductCategories = () => {
                 <span className="label-text">Category Name</span>
               </label>
               <input
-                name="productCategory"
+                name="name"
                 className="input w-full text-brand-black/50"
                 placeholder="Name"
                 type="text"

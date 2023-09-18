@@ -14,6 +14,7 @@ import ProductSort from "~/components/Sorting/ProductSort";
 import { getBrands } from "~/models/brands.server";
 import { getRandomCampaignOrPromotion } from "~/models/campaigns.server";
 import { addToCart } from "~/models/cart.server";
+import { getDepartments } from "~/models/departments.server";
 import { getAvailableColors } from "~/models/enums.server";
 import { getProductCategories } from "~/models/productCategories.server";
 import { getProductSubCategories } from "~/models/productSubCategories.server";
@@ -42,6 +43,7 @@ export const meta: V2_MetaFunction = ({ data }) => {
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
   const { products, totalPages } = await searchProducts(undefined, url);
+  const departments = await getDepartments();
   const productCategories = await getProductCategories();
   const productSubCategories = await getProductSubCategories();
   const brands = await getBrands();
@@ -56,6 +58,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     campaign,
     products,
     totalPages,
+    departments,
     productCategories,
     productSubCategories,
     brands,
@@ -82,6 +85,7 @@ const Products = () => {
     campaign,
     products,
     totalPages,
+    departments,
     productCategories,
     productSubCategories,
     brands,
@@ -90,6 +94,7 @@ const Products = () => {
     campaign: Campaign;
     products: Product[];
     totalPages: number;
+    departments: Department[];
     productCategories: ProductCategory[];
     productSubCategories: ProductSubCategory[];
     brands: Brand[];
@@ -106,6 +111,7 @@ const Products = () => {
 
         <div className="flex w-full flex-wrap items-start justify-center gap-6 px-0 sm:w-full xl:flex-nowrap">
           <ProductFilterSideBar
+            departments={departments}
             productCategories={productCategories}
             productSubCategories={productSubCategories}
             brands={brands}

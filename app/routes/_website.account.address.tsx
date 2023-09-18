@@ -2,7 +2,7 @@ import { type LoaderArgs, type ActionArgs } from "@remix-run/server-runtime";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { getUserObject } from "~/session.server";
 import { useEffect, useState } from "react";
-import { getUserAddress, updateUserAddress } from "~/models/auth/userAddress";
+import { getUserAddress, upsertUserAddress } from "~/models/auth/userAddress";
 import SelectCountry from "~/components/Forms/Select/SelectCountry";
 
 export const loader = async ({ request }: LoaderArgs) => {
@@ -16,6 +16,32 @@ export const action = async ({ request }: ActionArgs) => {
   const { addressLine1, addressLine2, suburb, postcode, state, country } =
     Object.fromEntries(await request.formData());
 
+  let validationError: string[] = [];
+
+  if (!addressLine1) {
+    validationError.push("Adresss Line 1 is Required");
+  }
+
+  if (!suburb) {
+    validationError.push("Suburb is Required");
+  }
+
+  if (!postcode) {
+    validationError.push("Post Code is Required");
+  }
+
+  if (!state) {
+    validationError.push("State is Required");
+  }
+
+  if (!country) {
+    validationError.push("Country is Required");
+  }
+
+  if (validationError.length > 0) {
+    return { validationError };
+  }
+
   const updateData = {
     id,
     addressLine1: addressLine1 as string,
@@ -25,14 +51,16 @@ export const action = async ({ request }: ActionArgs) => {
     state: state as string,
     country: country as string,
   };
-  await updateUserAddress(updateData);
+  await upsertUserAddress(updateData);
 
-  return { success: true };
+  return { success: "Address Updated" };
 };
 
 const Address = () => {
   const { userAddress } = useLoaderData();
-  const { success } = useActionData() || {};
+  const { success, validationError } =
+    (useActionData() as { success: string; validationError: string[] }) || {};
+
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -41,9 +69,17 @@ const Address = () => {
     }
   }, [success]);
 
+  useEffect(() => {
+    if (validationError) {
+      setLoading(false);
+    }
+  }, [validationError]);
+
   return (
     <Form method="POST" id="AddressPanel">
-      <h2 className="pb-3 pl-1 text-xl font-bold max-md:pl-3">Address</h2>
+      <h2 className="pb-3 pl-1 text-xl font-bold max-md:pb-6 max-md:pl-3">
+        Address
+      </h2>
       <div className="flex h-max w-[520px] max-w-[100vw] flex-col items-center gap-3 bg-base-200 p-3">
         <div className="form-control w-full">
           <label className="label">
@@ -113,15 +149,41 @@ const Address = () => {
         <SelectCountry defaultValue={userAddress?.country} styles="!w-full" />
 
         <div className="divider m-0 w-full p-0 pt-3" />
-        <div className="flex flex-row items-center justify-center gap-3 py-3">
-          <button
-            type="submit"
-            className="btn btn-primary w-max"
-            onClick={() => setLoading && setLoading(true)}
-          >
-            {loading ? "Loading..." : "Update"}
-          </button>
-        </div>
+
+        {validationError?.length > 0 && (
+          <div>
+            {validationError.map((error: string, i) => {
+              return (
+                <p
+                  key={error + i}
+                  className="my-2 text-center text-xs text-red-500"
+                >
+                  {error}
+                </p>
+              );
+            })}
+          </div>
+        )}
+
+        {success && (
+          <div>
+            <p className="my-2 text-center text-xs font-bold text-green-500">
+              {success}
+            </p>
+          </div>
+        )}
+
+        {!success && (
+          <div className="flex flex-row items-center justify-center gap-3 py-3">
+            <button
+              type="submit"
+              className="btn btn-primary w-max"
+              onClick={() => setLoading && setLoading(true)}
+            >
+              {loading ? "Loading..." : "Update"}
+            </button>
+          </div>
+        )}
       </div>
     </Form>
   );

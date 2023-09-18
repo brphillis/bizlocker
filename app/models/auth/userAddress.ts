@@ -8,15 +8,24 @@ export const getUserAddress = async (id: string) => {
   });
 };
 
-export const updateUserAddress = async (updateData: any) => {
+export const upsertUserAddress = async (updateData: any) => {
   const { id, addressLine1, addressLine2, suburb, postcode, state, country } =
     updateData;
 
-  return await prisma.address.update({
+  return await prisma.address.upsert({
     where: {
       userId: id,
     },
-    data: {
+    update: {
+      addressLine1,
+      addressLine2,
+      suburb,
+      postcode,
+      state,
+      country,
+    },
+    create: {
+      userId: id,
       addressLine1,
       addressLine2,
       suburb,

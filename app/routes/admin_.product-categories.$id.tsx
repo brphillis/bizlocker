@@ -22,7 +22,7 @@ export const loader = async ({ params }: LoaderArgs) => {
   const id = params.id;
   const productCategory = id && id !== "add" && (await getProductCategory(id));
   const departments = await getDepartments();
-  const productSubCategories = await getProductSubCategories(true);
+  const productSubCategories = await getProductSubCategories();
   const articleCategories = await getArticleCategories();
 
   return {
@@ -46,6 +46,20 @@ export const action = async ({ request, params }: ActionArgs) => {
     productSubCategories,
   } = form;
 
+  let validationError: string[] = [];
+
+  if (!name) {
+    validationError.push("Name is Required");
+  }
+
+  if (!department) {
+    validationError.push("Department is Required");
+  }
+
+  if (validationError.length > 0) {
+    return { validationError };
+  }
+
   switch (form._action) {
     case "upsert":
       const categoryData = {
@@ -64,8 +78,6 @@ export const action = async ({ request, params }: ActionArgs) => {
       await upsertProductCategory(categoryData);
 
       return { success: true };
-
-    case "delete":
   }
 };
 
@@ -77,21 +89,22 @@ const ModifyProductCategory = () => {
     productSubCategories,
     articleCategories,
   } = useLoaderData() || {};
-  const { validationError, success } =
-    (useActionData() as { validationError: string; success: boolean }) || {};
+  const { success, validationError } =
+    (useActionData() as { success: boolean; validationError: string[] }) || {};
   const mode = productCategory ? "edit" : "add";
 
   const [selectedProductSubCategories, setSelectedProductSubCategories] =
     useState<string[]>(
-      productCategory?.productSubCategories?.map(
-        (e: ProductSubCategory) => e?.name
+      productCategory?.productSubCategories?.map((e: ProductSubCategory) =>
+        e?.id.toString()
       ) || []
     );
   const [selectedArticleCategories, setSelectedArticleCategories] = useState<
     string[]
   >(
-    productCategory?.articleCategories?.map((e: ArticleCategory) => e?.name) ||
-      []
+    productCategory?.articleCategories?.map((e: ArticleCategory) =>
+      e?.id.toString()
+    ) || []
   );
 
   const handleProductSubCategoryChange = (
@@ -298,13 +311,11 @@ const ModifyProductCategory = () => {
           </div>
         </div>
 
-        {validationError && (
-          <p className="pt-6 text-center text-sm text-red-500/75">
-            {validationError}
-          </p>
-        )}
-
-        <BackSubmitButtons loading={loading} setLoading={setLoading} />
+        <BackSubmitButtons
+          loading={loading}
+          setLoading={setLoading}
+          validationErrors={validationError}
+        />
       </Form>
     </DarkOverlay>
   );

@@ -4,7 +4,7 @@ import parse from "html-react-parser";
 import { parseOptions } from "~/utility/parseOptions";
 import PageWrapper from "~/components/Layout/_Website/PageWrapper";
 import { getBrand } from "~/models/brands.server";
-import { getProduct } from "~/models/products.server";
+import { getProduct, searchProducts } from "~/models/products.server";
 import { getVariantUnitPrice } from "~/utility/numberHelpers";
 import { generateColor } from "~/utility/colors";
 import { useEffect, useState } from "react";
@@ -14,22 +14,39 @@ import {
   getAvailableSizes,
 } from "~/utility/productHelpers";
 import { IoHeart } from "react-icons/io5";
+import ProductGrid from "~/components/Grids/ProductGrid";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
   const productId = url.searchParams.get("id");
-  const product = productId && (await getProduct(productId));
+  const product =
+    productId && ((await getProduct(productId)) as unknown as Product);
   const { brandId } = product || {};
   let brand;
   if (brandId) {
     brand = await getBrand(brandId.toString());
   }
 
-  return { product, brand };
+  // get recommended products
+  const recommendCategory = (product as Product).productSubCategories?.[0]
+    .productCategory?.name;
+  const recommendGender = (product as Product).gender;
+
+  const formData = new FormData();
+  formData.set("productCategory", recommendCategory!);
+  formData.set("gender", recommendGender!);
+  formData.set("excludeId", productId!);
+  formData.set("perPage", "5");
+
+  const { products: similarProducts } = await searchProducts(
+    Object.fromEntries(formData)
+  );
+
+  return { product, brand, similarProducts };
 };
 
 const Product = () => {
-  const { product, brand } = useLoaderData();
+  const { product, brand, similarProducts } = useLoaderData();
   const submit = useSubmit();
   const { name, images, variants, description } = product as Product;
   const { name: brandName, image: brandImage } = brand;
@@ -104,7 +121,7 @@ const Product = () => {
 
   return (
     <PageWrapper>
-      <div className="mx-auto cursor-auto px-3 max-xl:px-0">
+      <div className="mx-auto cursor-auto px-3 pt-3 max-xl:px-0 max-xl:pt-0">
         <div className="mx-auto flex justify-center max-xl:flex-wrap">
           <div className="flex h-[740px] gap-3 max-xl:h-max max-xl:flex-col max-xl:gap-6">
             <div className="scrollbar-hide flex h-full flex-col justify-start gap-3 overflow-auto max-xl:order-2 max-xl:h-[200px] max-xl:flex-row">
@@ -283,6 +300,19 @@ const Product = () => {
       </div>
 
       <div className="my-3 w-full border-b border-brand-black/20" />
+
+      {similarProducts && (
+        <>
+          <p className="self-start pb-3 pl-3 text-xl font-bold md:pl-1">
+            You might also like...
+          </p>
+          <ProductGrid
+            products={similarProducts}
+            cols={5}
+            enablePlaceHolder={true}
+          />
+        </>
+      )}
     </PageWrapper>
   );
 };

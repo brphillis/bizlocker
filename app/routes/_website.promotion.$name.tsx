@@ -17,6 +17,7 @@ import { searchProducts } from "~/models/products.server";
 import { getPromotion } from "~/models/promotions.server";
 import { getProductCategories } from "~/models/productCategories.server";
 import type { V2_MetaFunction } from "@remix-run/node";
+import { getDepartments } from "~/models/departments.server";
 
 export const meta: V2_MetaFunction = ({ data }) => {
   return [
@@ -40,6 +41,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
       url
     );
     if (promotion?.isActive) {
+      const departments = await getDepartments();
       const productCategories = await getProductCategories();
       const productSubCategories = await getProductSubCategories();
       const brands = await getBrands();
@@ -51,6 +53,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
         promotionName,
         products,
         totalPages,
+        departments,
         productCategories,
         productSubCategories,
         brands,
@@ -74,6 +77,7 @@ const Promotion = () => {
     promotion,
     products,
     totalPages,
+    departments,
     productCategories,
     productSubCategories,
     brands,
@@ -83,6 +87,7 @@ const Promotion = () => {
       promotion: Promotion;
       products: Product[];
       totalPages: number;
+      departments: Department[];
       productCategories: ProductCategory[];
       productSubCategories: ProductSubCategory[];
       brands: Brand[];
@@ -98,6 +103,7 @@ const Promotion = () => {
 
         <div className="flex flex-wrap items-start justify-center gap-6 px-0 sm:w-full xl:flex-nowrap">
           <ProductFilterSideBar
+            departments={departments}
             productCategories={productCategories}
             productSubCategories={productSubCategories}
             brands={brands}

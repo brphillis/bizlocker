@@ -51,7 +51,7 @@ const Articles = () => {
                 name="firstName"
                 type="text"
                 placeholder="First Name"
-                className="input input-bordered w-full"
+                className="input w-full"
               />
             </div>
 
@@ -63,7 +63,7 @@ const Articles = () => {
                 name="lastName"
                 type="text"
                 placeholder="Last Name"
-                className="input input-bordered w-full"
+                className="input w-full"
               />
             </div>
 
@@ -75,7 +75,7 @@ const Articles = () => {
                 name="email"
                 type="text"
                 placeholder="Email Address"
-                className="input input-bordered w-full"
+                className="input w-full"
               />
             </div>
           </div>

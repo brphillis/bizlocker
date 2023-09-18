@@ -126,18 +126,31 @@ export const upsertProductCategory = async (categoryData: any) => {
   }
 };
 
-export const searchProductCategories = async (searchArgs: BasicSearchArgs) => {
-  const {
-    name,
-    department,
-    productSubCategory,
-    page = 1,
-    perPage = 10,
-    sortBy,
-    sortOrder,
-  } = searchArgs;
+export const searchProductCategories = async (
+  formData?: { [k: string]: FormDataEntryValue },
+  url?: URL
+) => {
+  const name =
+    formData?.name || (url && url.searchParams.get("name")?.toString()) || "";
+  const department =
+    formData?.department || url?.searchParams.get("department") || "";
+  const productSubCategory =
+    formData?.productSubCategory ||
+    url?.searchParams.get("productSubCategory") ||
+    "";
+  const pageNumber =
+    (formData?.pageNumber && parseInt(formData.pageNumber as string)) ||
+    (url && Number(url.searchParams.get("pageNumber"))) ||
+    1;
+  const perPage =
+    (formData?.perPage && parseInt(formData.perPage as string)) ||
+    (url && Number(url.searchParams.get("perPage"))) ||
+    10;
+  const sortBy = formData?.sortBy || url?.searchParams.get("sortBy") || "";
+  const sortOrder =
+    formData?.sortOrder || url?.searchParams.get("sortOrder") || "";
 
-  const skip = (page - 1) * perPage;
+  const skip = (pageNumber - 1) * perPage;
   const take = perPage;
 
   // Construct a where clause based on the search parameters provided
@@ -151,14 +164,14 @@ export const searchProductCategories = async (searchArgs: BasicSearchArgs) => {
   }
   if (department) {
     whereClause.department = {
-      id: parseInt(department),
+      id: parseInt(department as string),
     };
   }
 
   if (productSubCategory) {
     whereClause.productSubCategories = {
       some: {
-        id: parseInt(productSubCategory),
+        id: parseInt(productSubCategory as string),
       },
     };
   }

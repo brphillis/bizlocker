@@ -5,7 +5,7 @@ import {
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
-import { json, type LoaderArgs } from "@remix-run/server-runtime";
+import { type LoaderArgs } from "@remix-run/server-runtime";
 import SelectBrand from "~/components/Forms/Select/SelectBrand";
 import SelectProductSubCategory from "~/components/Forms/Select/SelectProductSubCategory";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
@@ -23,12 +23,12 @@ export const loader = async ({ request }: LoaderArgs) => {
   const brands = await getBrands();
   const productSubCategories = await getProductSubCategories();
 
-  return json({
+  return {
     products,
     brands,
     productSubCategories,
     totalPages,
-  });
+  };
 };
 
 const ManageProducts = () => {
@@ -53,7 +53,7 @@ const ManageProducts = () => {
                 name="name"
                 type="text"
                 placeholder="Name"
-                className="input input-bordered w-full"
+                className="input w-full"
               />
             </div>
 
