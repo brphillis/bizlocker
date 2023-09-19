@@ -57,6 +57,7 @@ export const getProduct = async (id: string) => {
         },
       },
       images: true,
+      heroImage: true,
       brand: true,
       variants: true,
       promotion: true,
@@ -87,6 +88,7 @@ export const upsertProduct = async (productData: any) => {
     gender,
     isActive,
     images,
+    heroImage,
     brand,
     promotion,
     variants,
@@ -132,6 +134,12 @@ export const upsertProduct = async (productData: any) => {
             })),
           }
         : undefined,
+    heroImage: {
+      create: {
+        url: heroImage.url,
+        altText: heroImage.altText,
+      },
+    },
   };
 
   if (!id) {
@@ -330,6 +338,9 @@ export const searchProducts = async (
 
   const excludeId =
     formData?.excludeId || url?.searchParams.get("excludeId") || "";
+
+  // const includeVariants =
+  //   formData?.includeVariants || url?.searchParams.get("includeVariants") || "";
 
   const skip = (pageNumber - 1) * perPage;
   const take = perPage;

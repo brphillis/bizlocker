@@ -32,6 +32,7 @@ import swiper from "../../node_modules/swiper/swiper.css";
 import swiperNav from "../../node_modules/swiper/modules/navigation/navigation.min.css";
 import UploadMultipleImages from "~/components/Forms/Upload/UploadMultipleImages/index.client";
 import RichTextInput from "~/components/Forms/Input/RichTextInput/index.client";
+import UploadHeroImage from "~/components/Forms/Upload/UploadHeroImage";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: swiper },
@@ -73,6 +74,7 @@ export const action = async ({ request, params }: ActionArgs) => {
     isActive,
     variants,
     images,
+    heroImage,
     brand,
     promotion,
   } = form;
@@ -112,6 +114,10 @@ export const action = async ({ request, params }: ActionArgs) => {
 
   switch (form._action) {
     case "upsert":
+      const parsedHeroImage = heroImage
+        ? (JSON.parse(heroImage?.toString()) as Image)
+        : undefined;
+
       const updateData = {
         name: name as string,
         productSubCategories:
@@ -123,6 +129,7 @@ export const action = async ({ request, params }: ActionArgs) => {
         isActive: isActive ? true : false,
         images:
           images && (JSON.parse(images as string).filter(Boolean) as Image[]),
+        heroImage: parsedHeroImage,
         brand: brand as string,
         promotion: promotion as string,
         id: id,
@@ -236,6 +243,10 @@ const Product = () => {
           <div className="divider w-full pt-4" />
 
           <UploadMultipleImages defaultImages={product?.images} />
+
+          <div className="divider w-full pt-4" />
+
+          <UploadHeroImage valueToChange={product} />
 
           <div className="divider w-full pt-4" />
 

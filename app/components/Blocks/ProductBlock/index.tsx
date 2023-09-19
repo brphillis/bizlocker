@@ -41,7 +41,8 @@ const ProductBlock = ({ content, options, products }: Props) => {
     if (
       content?.brand?.name.toLowerCase() === "none" &&
       !content?.productSubCategory?.name &&
-      !content?.productCategory?.name
+      !content?.productCategory?.name &&
+      !content?.gender
     ) {
       return;
     }
@@ -53,6 +54,22 @@ const ProductBlock = ({ content, options, products }: Props) => {
       return content?.productSubCategory?.name;
     }
     if (content?.productCategory?.name) {
+      return content?.productCategory?.name;
+    }
+    if (content?.gender) {
+      if (content?.gender === "FEMALE") {
+        return "Womans";
+      }
+      if (content?.gender === "MALE") {
+        return "Mens";
+      }
+      if (content?.gender === "KIDS") {
+        return "Kids";
+      }
+      if (content?.gender === "UNISEX") {
+        return "All Ranges";
+      }
+
       return content?.productCategory?.name;
     }
   };

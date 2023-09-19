@@ -1,4 +1,5 @@
 import SelectBrand from "~/components/Forms/Select/SelectBrand";
+import SelectGender from "~/components/Forms/Select/SelectGender";
 import SelectProductCategory from "~/components/Forms/Select/SelectProductCategory";
 import SelectProductSubCategory from "~/components/Forms/Select/SelectProductSubCategory";
 
@@ -25,20 +26,29 @@ const ProductBlockOptions = ({
             Filters
           </p>
           <div className="flex flex-wrap gap-3 !text-brand-white">
-            <SelectProductCategory
-              productCategories={productCategories}
-              defaultValue={defaultValues?.productCategoryId?.toString()}
-            />
+            <div className="flex w-full justify-start gap-3">
+              <SelectProductCategory
+                productCategories={productCategories}
+                defaultValue={defaultValues?.productCategoryId?.toString()}
+              />
 
-            <SelectProductSubCategory
-              productSubCategories={productSubCategories}
-              defaultValue={defaultValues?.productSubCategoryId?.toString()}
-            />
+              <SelectProductSubCategory
+                productSubCategories={productSubCategories}
+                defaultValue={defaultValues?.productSubCategoryId?.toString()}
+              />
+            </div>
 
-            <SelectBrand
-              brands={brands}
-              defaultValue={defaultValues?.brandId?.toString()}
-            />
+            <div className="flex w-full justify-start gap-3">
+              <SelectBrand
+                brands={brands}
+                defaultValue={defaultValues?.brandId?.toString()}
+              />
+
+              <SelectGender
+                label="Gender"
+                defaultValue={defaultValues?.gender?.toString()}
+              />
+            </div>
           </div>
         </div>
       )}

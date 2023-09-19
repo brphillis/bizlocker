@@ -9,7 +9,7 @@ type Props = {
 const ArticleGrid = ({ articles, hasDescription }: Props) => {
   const cols = 3;
   return (
-    <div className="h-full w-full">
+    <div className="h-max w-full">
       <div
         style={{
           gridTemplateColumns: cols

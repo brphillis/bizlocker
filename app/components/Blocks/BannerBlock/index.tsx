@@ -36,7 +36,7 @@ const BannerBlock = ({ content, type, options, size }: Props) => {
           style={{ cursor: imageLink ? "pointer" : "auto" }}
           src={bannerImage?.url || image?.url}
           alt={name || href}
-          className="mx-auto block h-[146px] w-full max-w-full object-cover max-xl:h-[124px] max-lg:h-[100px] max-md:h-[88px]"
+          className="mx-auto block h-[146px] w-full max-w-[1280px] overflow-hidden object-cover max-xl:h-[124px] max-lg:h-[100px] max-md:h-[88px]"
         />
       )}
 
@@ -46,7 +46,7 @@ const BannerBlock = ({ content, type, options, size }: Props) => {
           style={{ cursor: imageLink ? "pointer" : "auto" }}
           src={bannerImage?.url || image?.url}
           alt={name || href}
-          className="mx-auto block h-[219px] w-full max-w-full object-cover max-xl:h-[186px] max-lg:h-[125px] max-md:h-[132px]"
+          className="mx-auto block h-[219px] w-full max-w-[1280px] object-cover max-xl:h-[186px] max-lg:h-[125px] max-md:h-[132px]"
         />
       )}
 
@@ -56,7 +56,7 @@ const BannerBlock = ({ content, type, options, size }: Props) => {
           style={{ cursor: imageLink ? "pointer" : "auto" }}
           src={bannerImage?.url || image?.url}
           alt={name || href}
-          className="h-[292px] w-[1400px] max-w-max object-cover max-xl:h-[248px] max-lg:h-[224px] max-md:h-[196px]"
+          className="h-[292px] w-[1400px] max-w-[1280px] object-cover max-xl:h-[248px] max-lg:h-[224px] max-md:h-[196px]"
         />
       )}
 

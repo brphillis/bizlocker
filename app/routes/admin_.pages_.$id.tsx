@@ -40,6 +40,7 @@ import {
   getWebPage,
   upsertWebPageInfo,
 } from "~/models/webPages.server";
+import { getAvailableColors } from "~/models/enums.server";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: swiper },
@@ -53,6 +54,7 @@ export const loader = async ({ params }: LoaderArgs) => {
   const productCategories = await getProductCategories();
   const productSubCategories = await getProductSubCategories();
   const brands = await getBrands();
+  const colors = await getAvailableColors();
 
   if (id && id !== "add") {
     const webPage = await getWebPage(id);
@@ -62,6 +64,7 @@ export const loader = async ({ params }: LoaderArgs) => {
       productCategories,
       productSubCategories,
       brands,
+      colors,
     };
   } else return null;
 };
@@ -80,21 +83,33 @@ export const action = async ({ request, params }: ActionArgs) => {
         (name as string) || undefined
       );
 
-    case "update":
-      //we create a new webPage if ID is not provided
-      if (title || thumbnail) {
-        const webPageId = await upsertWebPageInfo(
-          title as string,
-          description as string,
-          thumbnail ? JSON.parse(thumbnail as string) : undefined,
-          id ? parseInt(id) : undefined
-        );
+    case "updateMeta":
+      let metaValidationError: string[] = [];
 
-        if (params.id === "add") {
-          return redirect(`/admin/pages/${webPageId}`);
-        } else return null;
+      if (!title) {
+        metaValidationError.push("Title is Required");
       }
 
+      if (!description) {
+        metaValidationError.push("Description is Required");
+      }
+
+      if (metaValidationError.length > 0) {
+        return { metaValidationError };
+      }
+
+      const webPageId = await upsertWebPageInfo(
+        title as string,
+        description as string,
+        thumbnail ? JSON.parse(thumbnail as string) : undefined,
+        id ? parseInt(id) : undefined
+      );
+
+      if (params.id === "add") {
+        return redirect(`/admin/pages/${webPageId}`);
+      } else return null;
+
+    case "update":
       const newBlockData: NewBlockData = getBlockUpdateValues(form);
 
       const updateSuccess = await updatePageBlock(
@@ -136,9 +151,15 @@ const ModifyWebPage = () => {
     articleCategories,
     productSubCategories,
     brands,
+    colors,
   } = useLoaderData() || {};
 
-  const { searchResults, updateSuccess } = useActionData() || {};
+  const {
+    searchResults,
+    updateSuccess,
+    metaValidationError,
+    blockValidationError,
+  } = useActionData() || {};
 
   return (
     <AdminPageWrapper>
@@ -213,7 +234,23 @@ const ModifyWebPage = () => {
                     </div>
                   </div>
 
-                  <input name="_action" value="update" hidden readOnly />
+                  <input name="_action" value="updateMeta" hidden readOnly />
+
+                  {metaValidationError && metaValidationError?.length > 0 && (
+                    <div className="pb-3">
+                      {metaValidationError.map((error: string, i: number) => {
+                        return (
+                          <p
+                            key={error + i}
+                            className="my-2 text-center text-xs text-red-500"
+                          >
+                            {error}
+                          </p>
+                        );
+                      })}
+                    </div>
+                  )}
+
                   <button
                     type="submit"
                     className="btn-primary btn-md mx-auto block w-max"
@@ -235,8 +272,10 @@ const ModifyWebPage = () => {
                     updateSuccess={updateSuccess}
                     productCategories={productCategories}
                     productSubCategories={productSubCategories}
-                    brands={brands}
                     articleCategories={articleCategories}
+                    brands={brands}
+                    colors={colors}
+                    blockValidationError={blockValidationError}
                   />
                 }
               />

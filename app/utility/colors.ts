@@ -3,7 +3,7 @@ export const generateColor = (colorName: string) => {
     case "RED":
       return "#FF0000";
     case "BLUE":
-      return "#0000FF";
+      return "#3B82F6";
     case "GREEN":
       return "#008000";
     case "YELLOW":
@@ -15,9 +15,9 @@ export const generateColor = (colorName: string) => {
     case "PINK":
       return "#FFC0CB";
     case "BLACK":
-      return "#000000";
+      return "#232227";
     case "WHITE":
-      return "#FFFFFF";
+      return "#F0F0F0";
     case "GRAY":
       return "#808080";
     case "BROWN":

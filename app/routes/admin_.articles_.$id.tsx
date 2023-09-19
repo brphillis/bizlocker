@@ -42,6 +42,7 @@ import {
 } from "~/utility/pageBuilder";
 import { HiTrash } from "react-icons/hi2";
 import { useState } from "react";
+import { getAvailableColors } from "~/models/enums.server";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: swiper },
@@ -55,6 +56,7 @@ export const loader = async ({ params }: LoaderArgs) => {
   const productCategories = await getProductCategories();
   const productSubCategories = await getProductSubCategories();
   const brands = await getBrands();
+  const colors = await getAvailableColors();
 
   if (id && id !== "add") {
     const article = await getArticle(id);
@@ -64,6 +66,7 @@ export const loader = async ({ params }: LoaderArgs) => {
       productCategories,
       productSubCategories,
       brands,
+      colors,
     };
   } else return { articleCategories };
 };
@@ -92,22 +95,22 @@ export const action = async ({ request, params }: ActionArgs) => {
       );
 
     case "updateMeta":
-      let validationError: string[] = [];
+      let metaValidationError: string[] = [];
 
       if (!title) {
-        validationError.push("Title is Required");
+        metaValidationError.push("Title is Required");
       }
 
       if (!description) {
-        validationError.push("Description is Required");
+        metaValidationError.push("Description is Required");
       }
 
       if (!articleCategories) {
-        validationError.push("Category is Required");
+        metaValidationError.push("Category is Required");
       }
 
-      if (validationError.length > 0) {
-        return { validationError };
+      if (metaValidationError.length > 0) {
+        return { metaValidationError };
       }
 
       //we create a new article if ID is not provided
@@ -126,6 +129,16 @@ export const action = async ({ request, params }: ActionArgs) => {
 
     case "update":
       const newBlockData: NewBlockData = getBlockUpdateValues(form);
+
+      let blockValidationError: string[] = [];
+
+      if (newBlockData.contentType && !newBlockData.contentData) {
+        blockValidationError.push("Content Selection is Required.");
+      }
+
+      if (blockValidationError.length > 0) {
+        return { blockValidationError };
+      }
 
       const updateSuccess = await updatePageBlock(
         "article",
@@ -166,10 +179,15 @@ const ModifyArticle = () => {
     articleCategories,
     productSubCategories,
     brands,
+    colors,
   } = useLoaderData() || {};
 
-  const { searchResults, updateSuccess, validationError } =
-    useActionData() || {};
+  const {
+    searchResults,
+    updateSuccess,
+    metaValidationError,
+    blockValidationError,
+  } = useActionData() || {};
 
   const [isActive, setIsActive] = useState<string | undefined>(
     article?.isActive ? " " : ""
@@ -280,9 +298,9 @@ const ModifyArticle = () => {
 
                   <input name="_action" value="updateMeta" hidden readOnly />
 
-                  {validationError && validationError?.length > 0 && (
+                  {metaValidationError && metaValidationError?.length > 0 && (
                     <div className="pb-3">
-                      {validationError.map((error: string, i: number) => {
+                      {metaValidationError.map((error: string, i: number) => {
                         return (
                           <p
                             key={error + i}
@@ -316,8 +334,10 @@ const ModifyArticle = () => {
                     updateSuccess={updateSuccess}
                     productCategories={productCategories}
                     productSubCategories={productSubCategories}
-                    brands={brands}
                     articleCategories={articleCategories}
+                    brands={brands}
+                    colors={colors}
+                    blockValidationError={blockValidationError}
                   />
                 }
               />

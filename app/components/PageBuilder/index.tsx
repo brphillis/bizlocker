@@ -16,6 +16,7 @@ import {
 } from "react-icons/hi2";
 import ArticleBlockOptions from "./ArticleBlockOptions";
 import BlockContentImageResults from "./BlockContentImageResults";
+import BackSubmitButtons from "../Forms/Buttons/BackSubmitButtons";
 
 type Props = {
   page: HomePage | Article;
@@ -25,6 +26,8 @@ type Props = {
   productSubCategories: ProductSubCategory[];
   brands: Brand[];
   articleCategories: ArticleCategory[];
+  colors: string[];
+  blockValidationError: string[];
 };
 
 const PageBuilder = ({
@@ -35,6 +38,8 @@ const PageBuilder = ({
   productSubCategories,
   brands,
   articleCategories,
+  colors,
+  blockValidationError,
 }: Props) => {
   const submit = useSubmit();
 
@@ -45,22 +50,25 @@ const PageBuilder = ({
   const [editingContent, setEditingContent] = useState<boolean>(false);
   const [editingIndex, setEditingIndex] = useState<number>(1);
   const [selectedItems, setSelectedItems] = useState<
-    (Campaign | Promotion | ContentImage)[]
-  >(blocks[editingIndex]?.content as Campaign[] | Promotion[]);
+    (Campaign | Promotion | ContentImage | Product)[]
+  >(blocks[editingIndex]?.content as Campaign[] | Promotion[] | Product[]);
 
   const reset = () => {
     setEditingContent(false);
     setSelectedBlock(undefined);
     setSelectedItems([]);
+    setValidationError([]);
   };
 
   const editBlock = (i: number) => {
     setEditingContent(true);
     setEditingIndex(i);
 
-    if (blocks[i].name === "banner" || "tile") {
-      setSelectedBlock((blocks[i].name as "banner") || "tile");
-      setSelectedItems(blocks[i].content as Campaign[] | Promotion[]);
+    if (blocks[i].name === "banner" || "tile" || "hero") {
+      setSelectedItems(
+        blocks[i].content as Campaign[] | Promotion[] | Product[]
+      );
+      setSelectedBlock((blocks[i].name as "banner") || "tile" || "hero");
     }
     if (blocks[i].name === "text") {
       setSelectedBlock("text");
@@ -101,11 +109,14 @@ const PageBuilder = ({
     setLoading(false);
   }, [updateSuccess]);
 
-  useEffect(() => {
-    setSelectedItems([]);
-  }, [contentType]);
-
   const [loading, setLoading] = useState<boolean>(false);
+  const [validationError, setValidationError] = useState<string[]>();
+
+  useEffect(() => {
+    if (blockValidationError) {
+      setValidationError(blockValidationError);
+    }
+  }, [blockValidationError]);
 
   return (
     <Form className="w-full" method="POST">
@@ -218,12 +229,13 @@ const PageBuilder = ({
                   defaultValue={selectedBlock}
                   placeholder="Select Block"
                   onChange={(e) => {
-                    setSelectedBlock(e.target.value as BlockName);
                     setSelectedItems([]);
+                    setSelectedBlock(e.target.value as BlockName);
                   }}
                 >
                   <option value="">Select Block</option>
                   <option value="banner">Banner</option>
+                  <option value="hero">Hero</option>
                   <option value="tile">Tile</option>
                   <option value="text">Text</option>
                   <option value="product">Product</option>
@@ -236,6 +248,8 @@ const PageBuilder = ({
           <BlockOptions
             selectedBlock={selectedBlock}
             defaultValues={blocks[editingIndex]?.blockOptions}
+            contentType={contentType}
+            colors={colors}
           />
 
           <BlockContentSearch
@@ -243,6 +257,7 @@ const PageBuilder = ({
             defaultValue={blocks[editingIndex]?.type as BlockContentType}
             contentType={contentType}
             setContentType={setContentType}
+            setSelectedItems={setSelectedItems}
           />
 
           <ProductBlockOptions
@@ -286,25 +301,14 @@ const PageBuilder = ({
             />
           )}
 
-          <div className="flex flex-row justify-center gap-3">
-            <button
-              type="button"
-              className="btn-primary btn-md"
-              onClick={reset}
-            >
-              Back
-            </button>
-
-            <button
-              type="submit"
-              name="_action"
-              value="update"
-              className="btn-primary btn-md"
-              onClick={() => setLoading(true)}
-            >
-              {loading ? "Loading..." : "Submit"}
-            </button>
-          </div>
+          <BackSubmitButtons
+            value="update"
+            divider={false}
+            loading={loading}
+            setLoading={setLoading}
+            backFunction={reset}
+            validationErrors={validationError}
+          />
         </div>
       )}
     </Form>

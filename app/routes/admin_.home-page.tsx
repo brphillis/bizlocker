@@ -18,6 +18,7 @@ import {
   searchContentData,
 } from "~/utility/pageBuilder";
 import { getArticleCategories } from "~/models/articleCategories.server";
+import { getAvailableColors } from "~/models/enums.server";
 
 export const loader = async () => {
   const homePage = await getHomePage();
@@ -25,6 +26,7 @@ export const loader = async () => {
   const productSubCategories = await getProductSubCategories();
   const articleCategories = await getArticleCategories();
   const brands = await getBrands();
+  const colors = await getAvailableColors();
 
   return {
     homePage,
@@ -32,6 +34,7 @@ export const loader = async () => {
     productSubCategories,
     articleCategories,
     brands,
+    colors,
   };
 };
 
@@ -49,18 +52,18 @@ export const action = async ({ request }: ActionArgs) => {
       );
 
     case "updateMeta":
-      let validationError: string[] = [];
+      let metaValidationError: string[] = [];
 
       if (!title) {
-        validationError.push("Title is Required");
+        metaValidationError.push("Title is Required");
       }
 
       if (!description) {
-        validationError.push("Description is Required");
+        metaValidationError.push("Description is Required");
       }
 
-      if (validationError.length > 0) {
-        return { validationError };
+      if (metaValidationError.length > 0) {
+        return { metaValidationError };
       }
 
       await upsertHomePageInfo(
@@ -73,6 +76,16 @@ export const action = async ({ request }: ActionArgs) => {
 
     case "update":
       const newBlockData: NewBlockData = getBlockUpdateValues(form);
+
+      let blockValidationError: string[] = [];
+
+      if (newBlockData.contentType && !newBlockData.contentData) {
+        blockValidationError.push("Content Selection is Required.");
+      }
+
+      if (blockValidationError.length > 0) {
+        return { blockValidationError };
+      }
 
       const updateSuccess = await updatePageBlock(
         "homePage",
@@ -112,10 +125,15 @@ const ManageHomePage = () => {
     productSubCategories,
     articleCategories,
     brands,
+    colors,
   } = useLoaderData() || {};
 
-  const { searchResults, updateSuccess, validationError } =
-    useActionData() || {};
+  const {
+    searchResults,
+    updateSuccess,
+    metaValidationError,
+    blockValidationError,
+  } = useActionData() || {};
 
   return (
     <AdminPageWrapper>
@@ -163,9 +181,9 @@ const ManageHomePage = () => {
                   <input name="pageId" value={homePage.id} hidden readOnly />
                   <input name="_action" value="updateMeta" hidden readOnly />
 
-                  {validationError && validationError?.length > 0 && (
+                  {metaValidationError && metaValidationError?.length > 0 && (
                     <div className="pb-3">
-                      {validationError.map((error: string, i: number) => {
+                      {metaValidationError.map((error: string, i: number) => {
                         return (
                           <p
                             key={error + i}
@@ -199,6 +217,8 @@ const ManageHomePage = () => {
                   productSubCategories={productSubCategories}
                   articleCategories={articleCategories}
                   brands={brands}
+                  colors={colors}
+                  blockValidationError={blockValidationError}
                 />
               }
             />

@@ -6,6 +6,9 @@ type Props = {
   defaultValue: BlockContentType | undefined;
   contentType: BlockContentType | undefined;
   setContentType: Function;
+  setSelectedItems: (
+    prevSelectedItems: (Campaign | Promotion | Product)[]
+  ) => void;
 };
 
 const BlockContentSearch = ({
@@ -13,6 +16,7 @@ const BlockContentSearch = ({
   defaultValue,
   contentType,
   setContentType,
+  setSelectedItems,
 }: Props) => {
   const submit = useSubmit();
   const [searchParams] = useSearchParams();
@@ -44,7 +48,9 @@ const BlockContentSearch = ({
 
   return (
     <>
-      {(selectedBlock === "banner" || selectedBlock === "tile") && (
+      {(selectedBlock === "banner" ||
+        selectedBlock === "tile" ||
+        selectedBlock === "hero") && (
         <div className=" w-full py-3">
           <p className="pb-3 font-semibold text-brand-white">Content Options</p>
           <div className="flex flex-wrap gap-3">
@@ -58,6 +64,7 @@ const BlockContentSearch = ({
                 defaultValue={defaultValue}
                 placeholder="Select a Type"
                 onChange={(e) => {
+                  setSelectedItems([]);
                   handleSearchSubmit(e.target.value, undefined);
                   setContentType(e.target.value);
                 }}
@@ -66,6 +73,7 @@ const BlockContentSearch = ({
                 <option value="promotion">Promotion</option>
                 <option value="campaign">Campaign</option>
                 <option value="image">Image</option>
+                <option value="product">Product</option>
               </select>
             </div>
 

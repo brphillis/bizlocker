@@ -229,6 +229,8 @@ interface Product {
   name: string;
   description: string;
   images: Image[];
+  heroImage?: Image;
+  heroImageId?: number;
   productSubCategories: ProductSubCategory[];
   brand?: Brand;
   brandId?: number;
@@ -367,8 +369,8 @@ type SortBy = "createdAt" | "totalSold" | "price" | "name" | "title";
 type CategorySortBy = "createdAt" | "name" | "index";
 type SortOrder = "asc" | "desc";
 
-type BlockName = "banner" | "tile" | "text" | "product" | "article";
-type BlockContentType = "campaign" | "promotion" | "image";
+type BlockName = "banner" | "hero" | "tile" | "text" | "product" | "article";
+type BlockContentType = "campaign" | "promotion" | "image" | "product";
 
 interface HomePage {
   id: number;
@@ -407,6 +409,7 @@ interface Block extends BannerBlock, TileBlock, TextBlock, ProductBlock {
   content:
     | Campaign[]
     | Promotion[]
+    | Product[]
     | ContentImage[]
     | string[]
     | ProductBlockContent[];
@@ -427,12 +430,25 @@ interface ContentImage {
 }
 
 interface NewBlockOptions {
+  backgroundColor?: Color | null;
+  borderColor?: string | null;
+  borderDisplay?: string | null;
+  borderRadius?: string | null;
+  borderSize?: string | null;
   columns?: number | null;
-  rows?: number | null;
   count?: number | null;
+  margin?: string | null;
+  primaryLink?: string | null;
+  rows?: number | null;
+  secondaryLink?: string | null;
+  shortText?: string | null;
+  shortTextColor?: Color | null;
   size: "small" | "medium" | "large" | "native";
   sortBy?: SortBy | null;
   sortOrder?: SortOrder | null;
+  style?: string | null;
+  title?: string | null;
+  titleColor?: Color | null;
 }
 
 interface BlockOptions extends NewBlockOptions {
@@ -441,6 +457,17 @@ interface BlockOptions extends NewBlockOptions {
   updatedAt: DateTime;
   block?: Block | null;
   blockOptionsId: string;
+}
+
+interface HeroBlock {
+  id: string;
+  name: string;
+  type: string;
+  block?: Block;
+  product?: Product;
+  productId?: string;
+  contentImage?: ContentImage;
+  contentImageId?: string;
 }
 
 interface BannerBlock {
@@ -452,6 +479,8 @@ interface BannerBlock {
   campaignId?: string;
   promotion?: Promotion;
   promotionId?: string;
+  contentImage?: ContentImage;
+  contentImageId?: string;
 }
 
 interface TileBlock {
@@ -463,6 +492,7 @@ interface TileBlock {
   campaignId?: string;
   promotion: Promotion[];
   promotionId?: string;
+  contentImages?: ContentImage[];
 }
 
 interface TextBlock {
@@ -491,6 +521,7 @@ interface ProductBlockContent {
   productSubCategoryId?: number;
   brand?: Brand;
   brandId?: number;
+  gender?: Gender;
 
   createdAt: Date;
   updatedAt: Date;
@@ -506,10 +537,25 @@ interface ArticleBlockContent {
   updatedAt: Date;
 }
 
+// interface HeroBlockContent {
+//   id: string;
+//   productBlock?: ProductBlock;
+//   productBlockId?: string;
+//   backgroundColor?: string;
+//   title?: string;
+//   titleColor?: string;
+//   description?: string;
+//   descriptionColor?: string;
+
+//   createdAt: Date;
+//   updatedAt: Date;
+// }
+
 type NewProductBlockContent = {
   productCategory?: string;
   productSubCategory?: string;
   brand?: string;
+  gender?: Gender;
 };
 
 type NewArticleBlockContent = {

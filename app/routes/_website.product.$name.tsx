@@ -49,7 +49,7 @@ const Product = () => {
   const { product, brand, similarProducts } = useLoaderData();
   const submit = useSubmit();
   const { name, images, variants, description } = product as Product;
-  const { name: brandName, image: brandImage } = brand;
+  const { name: brandName, image: brandImage } = brand || {};
 
   const [selectedSize, setSelectedSize] = useState<string>(variants[0].size);
   const [selectedColor, setSelectedColor] = useState<string>(variants[0].color);

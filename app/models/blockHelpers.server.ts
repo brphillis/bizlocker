@@ -19,7 +19,7 @@ export const getProductsForBlock = async (
   productBlockContent: ProductBlockContent,
   blockOptions: BlockOptions
 ) => {
-  const { brandId, productCategoryId, productSubCategoryId } =
+  const { brandId, gender, productCategoryId, productSubCategoryId } =
     productBlockContent || {};
   const { count, sortBy, sortOrder } = blockOptions || {};
 
@@ -33,6 +33,7 @@ export const getProductsForBlock = async (
     ? productSubCategoryId.toString()
     : "";
   formDataObject.brand = brandId ? brandId.toString() : "";
+  formDataObject.gender = gender ? gender.toString() : "";
   formDataObject.perPage = count ? count.toString() : "";
   formDataObject.sortBy = sortBy ? sortBy.toString() : "";
   formDataObject.sortOrder = sortOrder ? sortOrder.toString() : "";

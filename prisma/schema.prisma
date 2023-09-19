@@ -17,26 +17,28 @@ model HomePage {
 }
 
 model WebPage {
-  id          Int      @id @default(autoincrement())
-  title       String   @unique
-  description String   @default("Page Description")
-  blocks      Block[]  @relation("WebPagesToBlocks")
-  thumbnail   Image?   @relation("WebPageImage")
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id          Int     @id @default(autoincrement())
+  title       String  @unique
+  description String  @default("Page Description")
+  blocks      Block[] @relation("WebPagesToBlocks")
+  thumbnail   Image?  @relation("WebPageImage")
+  isActive    Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Block {
-  id         String    @id @unique @default(cuid())
-  order      Int
-  homePage   HomePage? @relation("HomePageToBlocks", fields: [homePageId], references: [id])
-  homePageId Int?
-  webPage    WebPage?  @relation("WebPagesToBlocks", fields: [webPageId], references: [id])
-  webPageId  Int?
-  article    Article?  @relation("ArticlesToBlocks", fields: [articleId], references: [id])
-  articleId  Int?
-
+  id             String        @id @unique @default(cuid())
+  order          Int
+  homePage       HomePage?     @relation("HomePageToBlocks", fields: [homePageId], references: [id])
+  homePageId     Int?
+  webPage        WebPage?      @relation("WebPagesToBlocks", fields: [webPageId], references: [id])
+  webPageId      Int?
+  article        Article?      @relation("ArticlesToBlocks", fields: [articleId], references: [id])
+  articleId      Int?
+  heroBlock      HeroBlock?    @relation("BlockToHeroBlock", fields: [heroBlockId], references: [id])
+  heroBlockId    String?       @unique
   bannerBlock    BannerBlock?  @relation("BlockToBannerBlock", fields: [bannerBlockId], references: [id])
   bannerBlockId  String?       @unique
   tileBlock      TileBlock?    @relation("BlockToTileBlock", fields: [tileBlockId], references: [id])
@@ -47,24 +49,52 @@ model Block {
   productBlockId String?       @unique
   articleBlock   ArticleBlock? @relation("BlockToArticleBlock", fields: [articleBlockId], references: [id])
   articleBlockId String?       @unique
-
   blockOptions   BlockOptions? @relation(fields: [blockOptionsId], references: [id])
   blockOptionsId String?       @unique
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model BlockOptions {
-  id        String     @id @unique @default(cuid())
-  columns   Int?
-  rows      Int?
-  count     Int?
-  size      String?
-  sortBy    SortBy?
-  sortOrder SortOrder?
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  id              String     @id @unique @default(cuid())
+  backgroundColor Color?
+  borderDisplay   String?
+  borderColor     Color?
+  borderRadius    String?
+  borderSize      String?
+  columns         Int?
+  count           Int?
+  margin          String?
+  primaryLink     String?
+  rows            Int?
+  secondaryLink   String?
+  shortText       String?
+  shortTextColor  Color?
+  size            String?
+  sortBy          SortBy?
+  sortOrder       SortOrder?
+  style           String?
+  title           String?
+  titleColor      Color?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   block     Block?
+}
+
+model HeroBlock {
+  id             String        @id @unique @default(cuid())
+  name           String        @default("hero")
+  type           String
+  block          Block?        @relation("BlockToHeroBlock")
+  product        Product?      @relation(fields: [productId], references: [id])
+  productId      Int?
+  contentImage   ContentImage? @relation(fields: [contentImageId], references: [id])
+  contentImageId Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model BannerBlock {
@@ -124,6 +154,7 @@ model ProductBlockContent {
   productSubCategoryId Int?
   brand                Brand?              @relation("BrandToProductBlock", fields: [brandId], references: [id])
   brandId              Int?
+  gender               Gender?
   createdAt            DateTime            @default(now())
   updatedAt            DateTime            @updatedAt
 }
@@ -272,21 +303,22 @@ model Image {
   campaignBanner       Campaign[]          @relation("BannerImageToCampaign")
   promotionTile        Promotion[]         @relation("TileImageToPromotion")
   promotionBanner      Promotion[]         @relation("BannerImageToPromotion")
+  productHero          Product[]           @relation("ProductHeroToProduct")
   contentImage         ContentImage[]      @relation("ContentImageToImage")
   createdAt            DateTime            @default(now())
   updatedAt            DateTime            @updatedAt
 }
 
 model ContentImage {
-  id      Int    @id @default(autoincrement())
-  href    String
-  image   Image  @relation("ContentImageToImage", fields: [imageId], references: [id])
-  imageId Int    @unique
-
+  id           Int           @id @default(autoincrement())
+  href         String
+  image        Image         @relation("ContentImageToImage", fields: [imageId], references: [id])
+  imageId      Int           @unique
   bannerBlocks BannerBlock[]
   tileBlocks   TileBlock[]
   createdAt    DateTime      @default(now())
   updatedAt    DateTime?     @default(now()) @updatedAt
+  HeroBlocks   HeroBlock[]
 }
 
 model Department {
@@ -400,6 +432,8 @@ model Product {
   description            String
   infoURL                String?
   images                 Image[]
+  heroImage              Image?               @relation("ProductHeroToProduct", fields: [heroImageId], references: [id])
+  heroImageId            Int?                 @unique
   productSubCategories   ProductSubCategory[] @relation("ProductSubCategoryToProduct")
   brand                  Brand?               @relation("BrandToProduct", fields: [brandId], references: [id])
   brandId                Int?
@@ -414,6 +448,7 @@ model Product {
   promotionId            Int?
   createdAt              DateTime             @default(now())
   updatedAt              DateTime             @updatedAt
+  HeroBlocks             HeroBlock[]
 }
 
 model ProductVariant {

@@ -1,19 +1,53 @@
 import { searchCampaigns } from "~/models/campaigns.server";
 import { searchImages } from "~/models/images.server";
+import { searchProducts } from "~/models/products.server";
 import { searchPromotions } from "~/models/promotions.server";
 
 export const getFormBlockOptions = (form: {
   [k: string]: FormDataEntryValue;
 }): NewBlockOptions => {
-  const { sortBy, sortOrder, size, count, rows, columns } = form;
+  const {
+    backgroundColor,
+    borderColor,
+    borderDisplay,
+    borderRadius,
+    borderSize,
+    columns,
+    count,
+    margin,
+    primaryLink,
+    rows,
+    secondaryLink,
+    shortText,
+    shortTextColor,
+    size,
+    sortBy,
+    sortOrder,
+    style,
+    title,
+    titleColor,
+  } = form;
 
   const blockOptions = {
+    backgroundColor: backgroundColor ? (backgroundColor as string) : undefined,
+    borderColor: borderColor ? (borderColor as string) : undefined,
+    borderDisplay: borderDisplay ? (borderDisplay as string) : undefined,
+    borderRadius: borderRadius ? (borderRadius as string) : undefined,
+    borderSize: borderSize ? (borderSize as string) : undefined,
+    columns: columns ? parseInt(columns as string) : undefined,
+    count: count ? parseInt(count as string) : undefined,
+    margin: margin ? (margin as string) : undefined,
+    primaryLink: primaryLink ? (primaryLink as string) : undefined,
+    rows: rows ? parseInt(rows as string) : undefined,
+    secondaryLink: secondaryLink ? (secondaryLink as string) : undefined,
+    shortText: shortText ? (shortText as string) : undefined,
+    shortTextColor: shortTextColor ? (shortTextColor as string) : undefined,
+    size: size as "small" | "medium" | "large",
     sortBy: sortBy as SortBy,
     sortOrder: sortOrder as SortOrder,
-    size: size as "small" | "medium" | "large",
-    count: count ? parseInt(count as string) : undefined,
-    rows: rows ? parseInt(rows as string) : undefined,
-    columns: columns ? parseInt(columns as string) : undefined,
+    style: style ? (style as string) : undefined,
+    title: title ? (title as string) : undefined,
+    titleColor: titleColor ? (titleColor as string) : undefined,
   } as NewBlockOptions;
 
   return blockOptions;
@@ -75,11 +109,12 @@ export const parseObjectData = (
   let objectData;
 
   if (blockName === "product") {
-    const { productCategory, productSubCategory, brand } = form;
+    const { productCategory, productSubCategory, brand, gender } = form;
     objectData = {
       productCategory: productCategory,
       productSubCategory: productSubCategory,
       brand: brand,
+      gender: gender,
     };
   }
   if (blockName === "article") {
@@ -122,6 +157,12 @@ export const searchContentData = async (
     case "image":
       const { images } = await searchImages(Object.fromEntries(formData));
       searchResults = images;
+
+      return { searchResults };
+
+    case "product":
+      const { products } = await searchProducts(Object.fromEntries(formData));
+      searchResults = products;
 
       return { searchResults };
 

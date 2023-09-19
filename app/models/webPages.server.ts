@@ -19,6 +19,18 @@ export const getWebPage = async (id?: string, title?: string) => {
       blocks: {
         include: {
           blockOptions: true,
+          heroBlock: {
+            include: {
+              product: {
+                include: {
+                  images: true,
+                  heroImage: true,
+                  variants: true,
+                },
+              },
+              contentImage: true,
+            },
+          },
           bannerBlock: {
             include: {
               campaign: {

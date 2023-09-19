@@ -3,9 +3,11 @@ import { capitalizeFirst } from "~/utility/stringHelpers";
 
 type Props = {
   selectedBlock: BlockName | undefined;
-  searchResults: Campaign[] | Promotion[];
-  selectedItems: (Campaign | Promotion)[];
-  setSelectedItems: (prevSelectedItems: (Campaign | Promotion)[]) => void;
+  searchResults: Campaign[] | Promotion[] | Product[];
+  selectedItems: (Campaign | Promotion | Product)[];
+  setSelectedItems: (
+    prevSelectedItems: (Campaign | Promotion | Product)[]
+  ) => void;
 };
 
 const BlockContentResultsTable = ({
@@ -14,9 +16,9 @@ const BlockContentResultsTable = ({
   selectedItems,
   setSelectedItems,
 }: Props) => {
-  const selectItem = (item: Campaign | Promotion) => {
+  const selectItem = (item: Campaign | Promotion | Product) => {
     setSelectedItems(
-      ((prevSelectedItems: (Campaign | Promotion)[]) => [
+      ((prevSelectedItems: (Campaign | Promotion | Product)[]) => [
         ...prevSelectedItems,
         item,
       ])(selectedItems)
@@ -33,7 +35,9 @@ const BlockContentResultsTable = ({
       />
 
       {searchResults &&
-        (selectedBlock === "banner" || selectedBlock === "tile") && (
+        (selectedBlock === "banner" ||
+          selectedBlock === "tile" ||
+          selectedBlock === "hero") && (
           <div className="w-full overflow-x-auto">
             <p className="my-3 text-sm font-bold">Select an Item</p>
             <table className="table table-sm">
@@ -48,12 +52,12 @@ const BlockContentResultsTable = ({
               <tbody>
                 {searchResults?.map(
                   (
-                    { name, createdAt }: Promotion | Campaign,
+                    { name, createdAt }: Promotion | Campaign | Product,
                     index: number
                   ) => {
                     return (
                       <tr
-                        key={"promotionOrCampaign_" + name + index}
+                        key={"tableContentResult_" + name + index}
                         onClick={() => {
                           selectItem(searchResults[index]);
                         }}
@@ -84,8 +88,10 @@ const BlockContentResultsTable = ({
         )}
 
       {selectedItems &&
-        selectedItems?.length > 0 &&
-        (selectedBlock === "banner" || selectedBlock === "tile") && (
+        selectedItems.length > 0 &&
+        (selectedBlock === "banner" ||
+          selectedBlock === "tile" ||
+          selectedBlock === "hero") && (
           <div className="max-w-3xl overflow-x-auto">
             <div className="divider my-0 w-full py-0" />
             <p className="my-3 text-sm font-bold">Selected Items</p>
@@ -100,7 +106,10 @@ const BlockContentResultsTable = ({
               </thead>
               <tbody>
                 {selectedItems?.map(
-                  ({ name, createdAt }: Promotion | Campaign, index) => {
+                  (
+                    { name, createdAt }: Promotion | Campaign | Product,
+                    index
+                  ) => {
                     return (
                       <tr
                         key={"promotionOrCampaign_" + name + index}

@@ -71,6 +71,7 @@ export const updatePageBlock = async (
           contentImages: true,
         },
       },
+      heroBlock: true,
       textBlock: true,
       productBlock: true,
       articleBlock: true,
@@ -82,9 +83,70 @@ export const updatePageBlock = async (
     throw new Error(`Invalid itemIndex: ${itemIndex}`);
   }
 
+  ///UPDATE BLOCK
+  ///UPDATE BLOCK
+  ///UPDATE BLOCK
+  ///UPDATE BLOCK
+  ///UPDATE BLOCK
   const blockToUpdate = blocks.find((e) => e.order === itemIndex);
   if (blockToUpdate) {
-    if (blockName === "banner" && contentData) {
+    // Update Hero Block
+    if (blockName === "hero" && contentData) {
+      const heroBlock = blockToUpdate.heroBlock;
+      if (heroBlock) {
+        // Disconnect existing content
+        await prisma.heroBlock.update({
+          where: { id: heroBlock.id },
+          data: {
+            contentImage: { disconnect: true },
+            product: { disconnect: true },
+          },
+        });
+
+        if (heroBlock.contentImageId) {
+          await prisma.contentImage.delete({
+            where: { id: heroBlock.contentImageId },
+          });
+        }
+
+        const updatedHeroBlock = await prisma.heroBlock.update({
+          where: { id: heroBlock.id },
+          data: {
+            type: contentType,
+            product:
+              contentType === "product"
+                ? { connect: { id: contentData[0].id } }
+                : undefined,
+            contentImage:
+              contentType === "image"
+                ? {
+                    create: {
+                      href: (contentData[0] as ContentImage).href,
+                      imageId: (contentData[0] as ContentImage).image.id!,
+                    },
+                  }
+                : undefined,
+          },
+        });
+
+        await prisma.block.update({
+          where: { id: blockToUpdate.id },
+          data: {
+            order: itemIndex === 0 ? 0 : itemIndex,
+            heroBlock: { connect: { id: updatedHeroBlock.id } },
+
+            bannerBlock: { disconnect: true },
+            textBlock: { disconnect: true },
+            tileBlock: { disconnect: true },
+            articleBlock: { disconnect: true },
+            productBlock: { disconnect: true },
+          },
+        });
+      }
+    }
+
+    // Update Banner Block
+    else if (blockName === "banner" && contentData) {
       const bannerBlock = blockToUpdate.bannerBlock;
       if (bannerBlock) {
         // Disconnect existing content
@@ -133,6 +195,7 @@ export const updatePageBlock = async (
             order: itemIndex === 0 ? 0 : itemIndex,
             bannerBlock: { connect: { id: updatedBannerBlock.id } },
 
+            heroBlock: { disconnect: true },
             textBlock: { disconnect: true },
             tileBlock: { disconnect: true },
             articleBlock: { disconnect: true },
@@ -140,7 +203,10 @@ export const updatePageBlock = async (
           },
         });
       }
-    } else if (blockName === "tile" && contentData) {
+    }
+
+    // Update Tile Block
+    else if (blockName === "tile" && contentData) {
       const tileBlock = blockToUpdate.tileBlock;
       if (tileBlock) {
         // Find the current connected content to disconnect them
@@ -160,7 +226,6 @@ export const updatePageBlock = async (
           data: {
             promotions: { disconnect: existingPromotions },
             campaigns: { disconnect: existingCampaigns },
-            // contentImages: { disconnect: existingContentImages },
           },
         });
 
@@ -217,6 +282,7 @@ export const updatePageBlock = async (
             order: itemIndex === 0 ? 0 : itemIndex,
             tileBlock: { connect: { id: updatedTileBlock.id } },
 
+            heroBlock: { disconnect: true },
             bannerBlock: { disconnect: true },
             textBlock: { disconnect: true },
             productBlock: { disconnect: true },
@@ -224,7 +290,10 @@ export const updatePageBlock = async (
           },
         });
       }
-    } else if (blockName === "text" && stringData) {
+    }
+
+    // Update Text Block
+    else if (blockName === "text" && stringData) {
       const textBlock = blockToUpdate.textBlock;
       if (textBlock) {
         const updatedTextBlock = await prisma.textBlock.update({
@@ -238,6 +307,7 @@ export const updatePageBlock = async (
             order: itemIndex === 0 ? 0 : itemIndex,
             textBlock: { connect: { id: updatedTextBlock.id } },
 
+            heroBlock: { disconnect: true },
             bannerBlock: { disconnect: true },
             tileBlock: { disconnect: true },
             productBlock: { disconnect: true },
@@ -245,14 +315,17 @@ export const updatePageBlock = async (
           },
         });
       }
-    } else if (blockName === "product" && objectData) {
+    }
+
+    // Update Product Block
+    else if (blockName === "product" && objectData) {
       const productBlock = blockToUpdate.productBlockId;
 
       const productBlockContent = await prisma.productBlockContent.findFirst({
         where: { productBlockId: blockToUpdate.productBlockId },
       });
 
-      const { productCategory, productSubCategory, brand } =
+      const { productCategory, productSubCategory, brand, gender } =
         objectData as NewProductBlockContent;
 
       if (productBlock && productBlockContent) {
@@ -269,6 +342,7 @@ export const updatePageBlock = async (
               brand: brand
                 ? { connect: { id: parseInt(brand) } }
                 : { disconnect: true },
+              gender: gender ? gender : undefined,
             },
           });
 
@@ -285,6 +359,7 @@ export const updatePageBlock = async (
             order: itemIndex === 0 ? 0 : itemIndex,
             productBlock: { connect: { id: updatedProductBlock.id } },
 
+            heroBlock: { disconnect: true },
             bannerBlock: { disconnect: true },
             tileBlock: { disconnect: true },
             textBlock: { disconnect: true },
@@ -292,7 +367,10 @@ export const updatePageBlock = async (
           },
         });
       }
-    } else if (blockName === "article" && objectData) {
+    }
+
+    // Update Article Block
+    else if (blockName === "article" && objectData) {
       const articleBlock = blockToUpdate.articleBlockId;
 
       const articleBlockContent = await prisma.articleBlockContent.findFirst({
@@ -325,6 +403,7 @@ export const updatePageBlock = async (
             order: itemIndex === 0 ? 0 : itemIndex,
             articleBlock: { connect: { id: updatedArticleBlock.id } },
 
+            heroBlock: { disconnect: true },
             bannerBlock: { disconnect: true },
             tileBlock: { disconnect: true },
             textBlock: { disconnect: true },
@@ -342,6 +421,12 @@ export const updatePageBlock = async (
       await updateOrCreateBlockOptions(blockToUpdate.id, blockOptions);
     }
   } else {
+    ///CREATE NEW BLOCK
+    ///CREATE NEW BLOCK
+    ///CREATE NEW BLOCK
+    ///CREATE NEW BLOCK
+    ///CREATE NEW BLOCK
+
     const newBlock = await prisma.block.create({
       data: {
         order: itemIndex === 0 ? 0 : itemIndex,
@@ -354,7 +439,41 @@ export const updatePageBlock = async (
       await updateOrCreateBlockOptions(newBlock.id, blockOptions);
     }
 
-    if (blockName === "banner" && contentData) {
+    //Create Hero Block
+    if (blockName === "hero" && contentData) {
+      if (contentType === "product") {
+        await prisma.heroBlock.create({
+          data: {
+            type: contentType,
+            product: { connect: { id: contentData[0].id } },
+            block: { connect: { id: newBlock.id } },
+          },
+        });
+      } else if (contentType === "image" && contentData) {
+        const { href, image } = contentData[0] as ContentImage;
+
+        const newContentImage = await prisma.contentImage.create({
+          data: {
+            href: href,
+            image: { connect: { id: image.id } },
+          },
+        });
+
+        await prisma.heroBlock.create({
+          data: {
+            type: contentType,
+            contentImage: { connect: { id: newContentImage.id } },
+            block: { connect: { id: newBlock.id } },
+          },
+        });
+      } else {
+        await deleteBlockIfInvalid(newBlock.id);
+        throw new Error(`Invalid data type: ${contentType}`);
+      }
+    }
+
+    //Create Banner Block
+    else if (blockName === "banner" && contentData) {
       if (contentType === "promotion") {
         await prisma.bannerBlock.create({
           data: {
@@ -371,14 +490,7 @@ export const updatePageBlock = async (
             block: { connect: { id: newBlock.id } },
           },
         });
-      }
-      ///////////////////////////////////////////
-      ///////////////////////////////////////////
-      ///////////////////////////////////////////
-      ///////////////////////////////////////////
-      ///////////////////////////////////////////
-      ///////////////////////////////////////////
-      else if (contentType === "image" && contentData) {
+      } else if (contentType === "image" && contentData) {
         const { href, image } = contentData[0] as ContentImage;
 
         // Create a new ProductBlock with the new ProductBlockContent
@@ -396,18 +508,14 @@ export const updatePageBlock = async (
             block: { connect: { id: newBlock.id } },
           },
         });
-      }
-      ///////////////////////////////////////////
-      ///////////////////////////////////////////
-      ///////////////////////////////////////////
-      ///////////////////////////////////////////
-      ///////////////////////////////////////////
-      ///////////////////////////////////////////
-      else {
+      } else {
         await deleteBlockIfInvalid(newBlock.id);
         throw new Error(`Invalid data type: ${contentType}`);
       }
-    } else if (blockName === "tile" && contentData) {
+    }
+
+    //Create Tile Block
+    else if (blockName === "tile" && contentData) {
       if (contentType === "promotion") {
         await prisma.tileBlock.create({
           data: {
@@ -428,15 +536,7 @@ export const updatePageBlock = async (
             block: { connect: { id: newBlock.id } },
           },
         });
-      }
-
-      ///////////////////////////////////////////
-      ///////////////////////////////////////////
-      ///////////////////////////////////////////
-      ///////////////////////////////////////////
-      ///////////////////////////////////////////
-      ///////////////////////////////////////////
-      else if (contentType === "image" && contentData) {
+      } else if (contentType === "image" && contentData) {
         const imagesToCreate = contentData as ContentImage[];
 
         const createdContentImages: ContentImage[] = [];
@@ -463,19 +563,14 @@ export const updatePageBlock = async (
             block: { connect: { id: newBlock.id } },
           },
         });
-      }
-
-      ///////////////////////////////////////////
-      ///////////////////////////////////////////
-      ///////////////////////////////////////////
-      ///////////////////////////////////////////
-      ///////////////////////////////////////////
-      ///////////////////////////////////////////
-      else {
+      } else {
         await deleteBlockIfInvalid(newBlock.id);
         throw new Error(`Invalid data type: ${contentType}`);
       }
-    } else if (blockName === "text" && stringData) {
+    }
+
+    //Create Text Block
+    else if (blockName === "text" && stringData) {
       const newTextBlock = await prisma.textBlock.create({
         data: {
           content: [stringData],
@@ -488,15 +583,18 @@ export const updatePageBlock = async (
         data: {
           order: itemIndex === 0 ? 0 : itemIndex,
           textBlock: { connect: { id: newTextBlock.id } },
-
+          heroBlock: { disconnect: true },
           bannerBlock: { disconnect: true },
           tileBlock: { disconnect: true },
           productBlock: { disconnect: true },
           articleBlock: { disconnect: true },
         },
       });
-    } else if (blockName === "product" && objectData) {
-      const { productCategory, productSubCategory, brand } =
+    }
+
+    //Create Product Block
+    else if (blockName === "product" && objectData) {
+      const { productCategory, productSubCategory, brand, gender } =
         objectData as NewProductBlockContent;
 
       // Create a new ProductBlock with the new ProductBlockContent
@@ -509,6 +607,7 @@ export const updatePageBlock = async (
             ? { connect: { id: parseInt(productSubCategory) } }
             : undefined,
           brand: brand ? { connect: { id: parseInt(brand) } } : undefined,
+          gender: gender ? gender : undefined,
         },
       });
 
@@ -526,13 +625,17 @@ export const updatePageBlock = async (
           order: itemIndex === 0 ? 0 : itemIndex,
           productBlock: { connect: { id: newProductBlock.id } },
 
+          heroBlock: { disconnect: true },
           bannerBlock: { disconnect: true },
           tileBlock: { disconnect: true },
           textBlock: { disconnect: true },
           articleBlock: { disconnect: true },
         },
       });
-    } else if (blockName === "article" && objectData) {
+    }
+
+    //Create Article Block
+    else if (blockName === "article" && objectData) {
       const { articleCategory } = objectData as NewArticleBlockContent;
 
       // Create a new ArticleBlock with the new ArticleBlockContent
@@ -558,6 +661,7 @@ export const updatePageBlock = async (
           order: itemIndex === 0 ? 0 : itemIndex,
           articleBlock: { connect: { id: newArticleBlock.id } },
 
+          heroBlock: { disconnect: true },
           productBlock: { disconnect: true },
           bannerBlock: { disconnect: true },
           tileBlock: { disconnect: true },
@@ -736,83 +840,56 @@ export const removeBlock = async (
     });
   }
 
+  const includeToRemoveOptions = {
+    heroBlock: {
+      include: {
+        contentImage: true,
+      },
+    },
+    bannerBlock: {
+      include: {
+        contentImage: true,
+      },
+    },
+    tileBlock: {
+      include: {
+        contentImages: true,
+      },
+    },
+    textBlock: true,
+    productBlock: {
+      include: {
+        content: true,
+      },
+    },
+    articleBlock: {
+      include: {
+        content: true,
+      },
+    },
+    blockOptions: true,
+  };
+
   if (isHomePage) {
     page = isHomePage;
     blocks = await prisma.block.findMany({
       where: { homePageId: page.id },
       orderBy: { order: "asc" },
-      include: {
-        bannerBlock: true,
-        tileBlock: {
-          include: {
-            contentImages: true,
-          },
-        },
-        textBlock: true,
-        productBlock: {
-          include: {
-            content: true,
-          },
-        },
-        articleBlock: {
-          include: {
-            content: true,
-          },
-        },
-        blockOptions: true,
-      },
+      include: includeToRemoveOptions,
     });
   } else if (isWebPage) {
     page = isWebPage;
     blocks = await prisma.block.findMany({
       where: { webPageId: page.id },
       orderBy: { order: "asc" },
-      include: {
-        bannerBlock: true,
-        tileBlock: {
-          include: {
-            contentImages: true,
-          },
-        },
-        textBlock: true,
-        productBlock: {
-          include: {
-            content: true,
-          },
-        },
-        articleBlock: {
-          include: {
-            content: true,
-          },
-        },
-        blockOptions: true,
-      },
+      include: includeToRemoveOptions,
     });
   } else if (isArticlePage) {
     page = isArticlePage;
     blocks = await prisma.block.findMany({
       where: { articleId: page.id },
       orderBy: { order: "asc" },
-      include: {
-        bannerBlock: true,
-        tileBlock: {
-          include: {
-            contentImages: true,
-          },
-        },
-        textBlock: true,
-        productBlock: {
-          include: {
-            content: true,
-          },
-        },
-        articleBlock: {
-          include: {
-            content: true,
-          },
-        },
-        blockOptions: true,
-      },
+      include: includeToRemoveOptions,
     });
   } else {
     throw new Error(`Page not found for pageId: ${pageId}`);
@@ -838,6 +915,20 @@ export const removeBlock = async (
   }
 
   const transaction = [];
+
+  if (blockToRemove.heroBlock) {
+    const deleteHeroBlockPromise = prisma.heroBlock.delete({
+      where: { id: blockToRemove.heroBlock.id },
+    });
+    transaction.push(deleteHeroBlockPromise);
+
+    if (blockToRemove.heroBlock.contentImageId) {
+      const deleteContentImagePromise = prisma.contentImage.delete({
+        where: { id: blockToRemove.heroBlock.contentImageId },
+      });
+      transaction.push(deleteContentImagePromise);
+    }
+  }
 
   if (blockToRemove.bannerBlock) {
     const deleteBannerBlockPromise = prisma.bannerBlock.delete({
@@ -939,6 +1030,7 @@ export const deleteBlockIfInvalid = async (blockId: string) => {
   const block = await prisma.block.findUnique({
     where: { id: blockId },
     include: {
+      heroBlock: true,
       bannerBlock: true,
       tileBlock: true,
       textBlock: true,
@@ -950,11 +1042,12 @@ export const deleteBlockIfInvalid = async (blockId: string) => {
 
   if (
     block &&
+    !block.heroBlock &&
+    !block.bannerBlock &&
     !block.tileBlock &&
     !block.textBlock &&
     !block.productBlock &&
-    !block.articleBlock &&
-    !block.bannerBlock
+    !block.articleBlock
   ) {
     if (block.blockOptionsId) {
       await prisma.blockOptions.delete({ where: { id: block.blockOptionsId } });

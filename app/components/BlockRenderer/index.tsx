@@ -4,6 +4,7 @@ import TileBlock from "../Blocks/TileBlock";
 import TextBlock from "../Blocks/TextBlock";
 import ProductBlock from "../Blocks/ProductBlock";
 import ArticleBlock from "../Blocks/ArticleBlock";
+import HeroBlock from "../Blocks/HeroBlock";
 
 type Props = {
   blocks: Block[];
@@ -18,13 +19,24 @@ const BlockRenderer = ({
 }: Props) => {
   let productBlockCount = 0;
   let articleBlockCount = 0;
-
+  console.log(blocks);
   return (
     <>
       {blocks?.map((_, i: number) => {
         const { name, content, blockOptions, type } = blocks[i] || {};
 
         switch (name) {
+          case "hero":
+            return (
+              <React.Fragment key={"heroBlock_" + i}>
+                <HeroBlock
+                  content={content[0] as Product | ContentImage}
+                  type={type}
+                  options={blockOptions as BlockOptions}
+                />
+              </React.Fragment>
+            );
+
           case "banner":
             return (
               <React.Fragment key={"bannerBlock_" + i}>

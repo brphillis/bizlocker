@@ -5,12 +5,18 @@ type Props = {
   loading?: boolean;
   setLoading?: Function;
   validationErrors?: string[];
+  value?: string;
+  divider?: boolean;
+  backFunction?: () => void;
 };
 
 const BackSubmitButtons = ({
   loading = false,
   setLoading,
   validationErrors,
+  value = "upsert",
+  divider = true,
+  backFunction,
 }: Props) => {
   const navigate = useNavigate();
 
@@ -22,7 +28,7 @@ const BackSubmitButtons = ({
 
   return (
     <>
-      <div className="divider w-full" />
+      {divider && <div className="divider w-full" />}
 
       {validationErrors && validationErrors?.length > 0 && (
         <div className="pb-3">
@@ -42,16 +48,16 @@ const BackSubmitButtons = ({
       <div className="flex flex-row items-center justify-center gap-3">
         <button
           type="button"
-          className="btn btn-primary w-max"
-          onClick={() => navigate("..")}
+          className="btn btn-primary w-max !rounded-sm"
+          onClick={() => (backFunction ? backFunction() : navigate(".."))}
         >
           Back
         </button>
         <button
           type="submit"
           name="_action"
-          value="upsert"
-          className="btn btn-primary w-max"
+          value={value}
+          className="btn btn-primary w-max !rounded-sm"
           onClick={() => setLoading && setLoading(true)}
         >
           {loading ? "Loading..." : "Submit"}

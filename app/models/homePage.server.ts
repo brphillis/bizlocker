@@ -6,6 +6,18 @@ export const getHomePage = async () => {
       blocks: {
         include: {
           blockOptions: true,
+          heroBlock: {
+            include: {
+              product: {
+                include: {
+                  images: true,
+                  heroImage: true,
+                  variants: true,
+                },
+              },
+              contentImage: true,
+            },
+          },
           bannerBlock: {
             include: {
               campaign: {
