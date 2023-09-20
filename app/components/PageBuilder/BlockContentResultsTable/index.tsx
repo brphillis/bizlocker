@@ -1,21 +1,22 @@
+import { useEffect, useState } from "react";
 import { IoCaretForwardCircleSharp, IoCloseCircle } from "react-icons/io5";
 import { capitalizeFirst } from "~/utility/stringHelpers";
 
 type Props = {
   selectedBlock: BlockName | undefined;
   searchResults: Campaign[] | Promotion[] | Product[];
-  selectedItems: (Campaign | Promotion | Product)[];
-  setSelectedItems: (
-    prevSelectedItems: (Campaign | Promotion | Product)[]
-  ) => void;
+  contentType: BlockContentType | undefined;
 };
 
 const BlockContentResultsTable = ({
   selectedBlock,
   searchResults,
-  selectedItems,
-  setSelectedItems,
+  contentType,
 }: Props) => {
+  const [selectedItems, setSelectedItems] = useState<
+    (Campaign | Promotion | Product)[]
+  >([]);
+
   const selectItem = (item: Campaign | Promotion | Product) => {
     setSelectedItems(
       ((prevSelectedItems: (Campaign | Promotion | Product)[]) => [
@@ -25,11 +26,28 @@ const BlockContentResultsTable = ({
     );
   };
 
+  const stringlifyIfArray = (items: (Campaign | Promotion | Product)[]) => {
+    if (selectedItems?.length === 1) {
+      return items[0].id;
+    } else {
+      const itemsIdArray = items.map((item) => item.id);
+      return JSON.stringify(itemsIdArray);
+    }
+  };
+
+  useEffect(() => {
+    console.log(searchResults);
+  }, [searchResults]);
+
   return (
     <>
       <input
-        name="contentData"
-        value={selectedItems && JSON.stringify(selectedItems)}
+        name={contentType}
+        value={
+          selectedItems && selectedItems.length > 0
+            ? stringlifyIfArray(selectedItems)
+            : ""
+        }
         hidden
         readOnly
       />
@@ -37,7 +55,10 @@ const BlockContentResultsTable = ({
       {searchResults &&
         (selectedBlock === "banner" ||
           selectedBlock === "tile" ||
-          selectedBlock === "hero") && (
+          selectedBlock === "hero") &&
+        (contentType === "campaign" ||
+          contentType === "promotion" ||
+          contentType === "product") && (
           <div className="w-full overflow-x-auto">
             <p className="my-3 text-sm font-bold">Select an Item</p>
             <table className="table table-sm">
@@ -94,7 +115,7 @@ const BlockContentResultsTable = ({
           selectedBlock === "hero") && (
           <div className="max-w-3xl overflow-x-auto">
             <div className="divider my-0 w-full py-0" />
-            <p className="my-3 text-sm font-bold">Selected Items</p>
+            <p className="my-3 text-sm font-bold">Selected Content</p>
             <table className="table table-sm">
               <thead>
                 <tr>

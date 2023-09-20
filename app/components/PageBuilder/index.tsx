@@ -49,14 +49,14 @@ const PageBuilder = ({
   const [contentType, setContentType] = useState<BlockContentType>();
   const [editingContent, setEditingContent] = useState<boolean>(false);
   const [editingIndex, setEditingIndex] = useState<number>(1);
-  const [selectedItems, setSelectedItems] = useState<
-    (Campaign | Promotion | ContentImage | Product)[]
+  const [, setSelectedItems] = useState<
+    (Campaign | Promotion | Image | Product)[]
   >(blocks[editingIndex]?.content as Campaign[] | Promotion[] | Product[]);
 
   const reset = () => {
     setEditingContent(false);
     setSelectedBlock(undefined);
-    setSelectedItems([]);
+    // setSelectedItems([]);
     setValidationError([]);
   };
 
@@ -65,9 +65,7 @@ const PageBuilder = ({
     setEditingIndex(i);
 
     if (blocks[i].name === "banner" || "tile" || "hero") {
-      setSelectedItems(
-        blocks[i].content as Campaign[] | Promotion[] | Product[]
-      );
+      setSelectedItems(blocks[i].content as any);
       setSelectedBlock((blocks[i].name as "banner") || "tile" || "hero");
     }
     if (blocks[i].name === "text") {
@@ -229,7 +227,7 @@ const PageBuilder = ({
                   defaultValue={selectedBlock}
                   placeholder="Select Block"
                   onChange={(e) => {
-                    setSelectedItems([]);
+                    // setSelectedItems([]);
                     setSelectedBlock(e.target.value as BlockName);
                   }}
                 >
@@ -247,7 +245,7 @@ const PageBuilder = ({
 
           <BlockOptions
             selectedBlock={selectedBlock}
-            defaultValues={blocks[editingIndex]?.blockOptions}
+            defaultValues={blocks[editingIndex]?.blockOptions[0]}
             contentType={contentType}
             colors={colors}
           />
@@ -266,7 +264,7 @@ const PageBuilder = ({
             productSubCategories={productSubCategories}
             brands={brands}
             defaultValues={
-              blocks[editingIndex]?.content[0] as ProductBlockContent
+              blocks[editingIndex]?.content as ProductBlockContent[]
             }
           />
 
@@ -274,7 +272,7 @@ const PageBuilder = ({
             selectedBlock={selectedBlock}
             articleCategories={articleCategories}
             defaultValues={
-              blocks[editingIndex]?.content[0] as ProductBlockContent
+              blocks[editingIndex]?.content as ArticleBlockContent[]
             }
           />
 
@@ -283,23 +281,17 @@ const PageBuilder = ({
             defaultValue={blocks[editingIndex]?.content as string[]}
           />
 
-          {(contentType === "campaign" || contentType === "promotion") && (
-            <BlockContentResultsTable
-              selectedBlock={selectedBlock}
-              searchResults={searchResults as Campaign[] | Promotion[]}
-              selectedItems={selectedItems as (Campaign | Promotion)[]}
-              setSelectedItems={setSelectedItems}
-            />
-          )}
+          <BlockContentResultsTable
+            selectedBlock={selectedBlock}
+            searchResults={searchResults as Campaign[] | Promotion[]}
+            contentType={contentType}
+          />
 
-          {contentType === "image" && (
-            <BlockContentImageResults
-              selectedBlock={selectedBlock}
-              searchResults={searchResults as Image[]}
-              selectedItems={selectedItems as ContentImage[]}
-              setSelectedItems={setSelectedItems}
-            />
-          )}
+          <BlockContentImageResults
+            selectedBlock={selectedBlock}
+            searchResults={searchResults as Image[]}
+            contentType={contentType}
+          />
 
           <BackSubmitButtons
             value="update"

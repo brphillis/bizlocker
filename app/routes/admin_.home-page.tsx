@@ -75,7 +75,8 @@ export const action = async ({ request }: ActionArgs) => {
       return redirect("/admin/home-page");
 
     case "update":
-      const newBlockData: NewBlockData = getBlockUpdateValues(form);
+      const newBlockData = getBlockUpdateValues(form);
+      // console.log("NEWBLOCKDATA", newBlockData);
 
       let blockValidationError: string[] = [];
 
@@ -90,7 +91,7 @@ export const action = async ({ request }: ActionArgs) => {
       const updateSuccess = await updatePageBlock(
         "homePage",
         parseInt(pageId as string),
-        newBlockData,
+        newBlockData as NewBlockData,
         blockOptions
       );
 

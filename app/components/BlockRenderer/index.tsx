@@ -19,20 +19,19 @@ const BlockRenderer = ({
 }: Props) => {
   let productBlockCount = 0;
   let articleBlockCount = 0;
-  console.log(blocks);
+
   return (
     <>
       {blocks?.map((_, i: number) => {
-        const { name, content, blockOptions, type } = blocks[i] || {};
+        const { name, content, blockOptions } = blocks[i] || {};
 
         switch (name) {
           case "hero":
             return (
               <React.Fragment key={"heroBlock_" + i}>
                 <HeroBlock
-                  content={content[0] as Product | ContentImage}
-                  type={type}
-                  options={blockOptions as BlockOptions}
+                  content={content as Product | Image}
+                  options={blockOptions[i] as BlockOptions}
                 />
               </React.Fragment>
             );
@@ -40,11 +39,7 @@ const BlockRenderer = ({
           case "banner":
             return (
               <React.Fragment key={"bannerBlock_" + i}>
-                <BannerBlock
-                  content={content[0] as Campaign | Promotion | ContentImage}
-                  type={type}
-                  options={blockOptions as BlockOptions}
-                />
+                <BannerBlock content={content} options={blockOptions} />
               </React.Fragment>
             );
 
@@ -53,8 +48,7 @@ const BlockRenderer = ({
               <React.Fragment key={"tileBlock_" + i}>
                 <TileBlock
                   content={content as Campaign[] | Promotion[]}
-                  type={type}
-                  options={blockOptions as BlockOptions}
+                  options={blockOptions}
                 />
               </React.Fragment>
             );
@@ -73,7 +67,7 @@ const BlockRenderer = ({
                 <ProductBlock
                   products={productBlockProducts?.[productBlockCount - 1]}
                   content={content as ProductBlockContent[]}
-                  options={blockOptions as BlockOptions}
+                  options={blockOptions[i] as BlockOptions}
                 />
               </React.Fragment>
             );
@@ -85,7 +79,7 @@ const BlockRenderer = ({
                 <ArticleBlock
                   articles={articleBlockArticles?.[articleBlockCount - 1]}
                   content={content as ArticleBlockContent[]}
-                  options={blockOptions as BlockOptions}
+                  options={blockOptions[i] as BlockOptions}
                 />
               </React.Fragment>
             );

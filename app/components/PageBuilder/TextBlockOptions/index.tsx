@@ -7,19 +7,21 @@ type Props = {
 };
 
 const TextBlockOptions = ({ selectedBlock, defaultValue }: Props) => {
-  const [stringData, setStringData] = useState<string>(defaultValue?.[0] || "");
-
+  const [contentData, setContentData] = useState<string>(
+    defaultValue?.[0] || ""
+  );
+  console.log("CONT", contentData);
   return (
     <>
       {selectedBlock === "text" && (
         <div className="w-full overflow-x-auto">
           <RichTextInput
-            value={stringData}
-            onChange={setStringData}
+            value={contentData}
+            onChange={setContentData}
             className="mb-12 mt-3 h-[320px]"
           />
 
-          <input name="stringData" value={stringData} hidden readOnly />
+          <input name="richText" value={contentData} hidden readOnly />
         </div>
       )}
     </>

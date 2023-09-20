@@ -19,60 +19,9 @@ export const getArticle = async (id?: string, title?: string) => {
       blocks: {
         include: {
           blockOptions: true,
-          heroBlock: {
-            include: {
-              product: {
-                include: {
-                  images: true,
-                  heroImage: true,
-                  variants: true,
-                },
-              },
-              contentImage: true,
-            },
-          },
-          bannerBlock: {
-            include: {
-              campaign: {
-                include: {
-                  bannerImage: true,
-                  tileImage: true,
-                },
-              },
-              promotion: {
-                include: {
-                  bannerImage: true,
-                  tileImage: true,
-                },
-              },
-              contentImage: {
-                include: {
-                  image: true,
-                },
-              },
-            },
-          },
-          tileBlock: {
-            include: {
-              campaigns: {
-                include: {
-                  bannerImage: true,
-                  tileImage: true,
-                },
-              },
-              promotions: {
-                include: {
-                  bannerImage: true,
-                  tileImage: true,
-                },
-              },
-              contentImages: {
-                include: {
-                  image: true,
-                },
-              },
-            },
-          },
+          heroBlock: true,
+          bannerBlock: true,
+          tileBlock: true,
           textBlock: true,
           productBlock: {
             include: {

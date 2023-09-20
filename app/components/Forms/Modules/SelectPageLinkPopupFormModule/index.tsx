@@ -7,7 +7,7 @@ type Props = {
   itemIndexToUpdate: number | undefined;
   setItemIndexToUpdate: Function;
   updateItemsFunction: Function;
-  items: ContentImage[];
+  items: Image[];
 };
 
 const SelectPageLinkPopupFormModule = ({
@@ -74,7 +74,7 @@ const SelectPageLinkPopupFormModule = ({
   const handleUpdateItem = (pageTitle: string) => {
     if (itemIndexToUpdate !== undefined) {
       const newItems = [...items];
-      newItems[itemIndexToUpdate].href = `/${pageTitle}`;
+      newItems[itemIndexToUpdate].url = `/${pageTitle}`;
 
       updateItemsFunction(newItems);
       setItemIndexToUpdate(undefined);

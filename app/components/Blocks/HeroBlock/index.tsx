@@ -1,12 +1,12 @@
 import { generateColor } from "~/utility/colors";
 
 type Props = {
-  content: Product | ContentImage;
-  type?: string;
+  content: any;
   options?: BlockOptions;
 };
 
-const HeroBlock = ({ content, type, options }: Props) => {
+const HeroBlock = ({ content: contentArray, options }: Props) => {
+  const content = contentArray[0];
   const {
     title,
     titleColor,
@@ -20,11 +20,11 @@ const HeroBlock = ({ content, type, options }: Props) => {
     borderRadius,
   } = options || {};
 
-  const product = content as Product;
+  const product = content.product as Product;
   const productImage = product.heroImage?.url;
 
   const getProductLowestPrice = (product: Product, decimals?: boolean) => {
-    const prices = product.variants.map((e, i) => e.price);
+    const prices = product.variants.map(({ price }: ProductVariant) => price);
     const lowestPrice = Math.min(...prices);
     if (decimals) {
       return lowestPrice.toFixed(2);

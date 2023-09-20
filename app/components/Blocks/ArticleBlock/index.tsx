@@ -8,10 +8,10 @@ type Props = {
 
 const ArticleBlock = ({ content, options, articles }: Props) => {
   const determineSortPhrase = (sortBy: SortBy) => {
-    if (sortBy === "createdAt") {
+    if (sortBy && sortBy === "createdAt") {
       return "Latest Article in  ";
     }
-    if (sortBy === "title") {
+    if (sortBy && sortBy === "title") {
       return "Articles about  ";
     }
   };
@@ -24,9 +24,9 @@ const ArticleBlock = ({ content, options, articles }: Props) => {
 
   return (
     <>
-      {options.sortBy && content?.[0].articleCategory?.name && (
+      {options?.sortBy && content?.[0].articleCategory?.name && (
         <p className="self-start pl-3 text-xl font-bold md:pl-1">
-          {options.sortBy ? determineSortPhrase(options.sortBy) : null}
+          {options.sortBy ? determineSortPhrase(options?.sortBy) : null}
           <span className="text-2xl">
             {determineDisplayedFilter(content[0])}
           </span>

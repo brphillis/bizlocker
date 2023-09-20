@@ -65,10 +65,8 @@ type NewBlockData = {
 export const getBlockUpdateValues = (form: {
   [k: string]: FormDataEntryValue;
 }): NewBlockData => {
-  const { pageId, blockName, itemIndex, contentType, contentData, stringData } =
-    form;
+  const { pageId, blockName, itemIndex, contentType } = form;
 
-  const parsedContentData = parseContentData(contentData);
   const parsedObjectData = parseObjectData(blockName as string, form);
 
   const blockUpdateValues = {
@@ -76,28 +74,10 @@ export const getBlockUpdateValues = (form: {
     blockName: blockName as BlockName,
     itemIndex: parseInt(itemIndex as string),
     contentType: contentType as BlockContentType,
-    contentData: parsedContentData,
-    stringData: stringData as string,
-    objectData: parsedObjectData,
+    contentData: parsedObjectData,
   } as NewBlockData;
 
   return blockUpdateValues;
-};
-
-export const parseContentData = (contentData: FormDataEntryValue) => {
-  let contentDataParsed;
-
-  if (contentData) {
-    contentDataParsed = JSON.parse(contentData as string) as
-      | Campaign[]
-      | Promotion[];
-
-    contentDataParsed = Array.isArray(contentDataParsed)
-      ? contentDataParsed
-      : [contentDataParsed];
-
-    return contentDataParsed;
-  }
 };
 
 export const parseObjectData = (
@@ -121,6 +101,34 @@ export const parseObjectData = (
     const { articleCategory } = form;
     objectData = {
       articleCategory: articleCategory,
+    };
+  }
+  if (blockName === "banner") {
+    const { promotion, campaign, image } = form;
+    objectData = {
+      promotion: promotion,
+      campaign: campaign,
+      image: image ? JSON.parse(image as string) : undefined,
+    };
+  }
+  if (blockName === "tile") {
+    const { promotion, campaign, image } = form;
+    objectData = {
+      promotion: promotion,
+      campaign: campaign,
+      image: image ? JSON.parse(image as string) : undefined,
+    };
+  }
+  if (blockName === "hero") {
+    const { product } = form;
+    objectData = {
+      product: product ? JSON.parse(product as string) : undefined,
+    };
+  }
+  if (blockName === "text") {
+    const { richText } = form;
+    objectData = {
+      richText: richText,
     };
   }
 

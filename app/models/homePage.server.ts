@@ -8,66 +8,75 @@ export const getHomePage = async () => {
           blockOptions: true,
           heroBlock: {
             include: {
-              product: {
+              content: {
                 include: {
-                  images: true,
-                  heroImage: true,
-                  variants: true,
+                  product: {
+                    include: {
+                      variants: true,
+                      heroImage: true,
+                      brand: {
+                        include: {
+                          image: true,
+                        },
+                      },
+                    },
+                  },
                 },
               },
-              contentImage: true,
             },
           },
           bannerBlock: {
             include: {
-              campaign: {
-                include: {
-                  bannerImage: true,
-                  tileImage: true,
-                },
-              },
-              promotion: {
-                include: {
-                  bannerImage: true,
-                  tileImage: true,
-                },
-              },
-              contentImage: {
+              content: {
                 include: {
                   image: true,
+                  promotion: {
+                    include: {
+                      bannerImage: true,
+                    },
+                  },
+                  campaign: {
+                    include: {
+                      bannerImage: true,
+                    },
+                  },
                 },
               },
             },
           },
           tileBlock: {
             include: {
-              campaigns: {
-                include: {
-                  bannerImage: true,
-                  tileImage: true,
-                },
-              },
-              promotions: {
-                include: {
-                  bannerImage: true,
-                  tileImage: true,
-                },
-              },
-              contentImages: {
+              content: {
                 include: {
                   image: true,
+                  promotion: {
+                    include: {
+                      tileBlockContent: true,
+                      tileImage: true,
+                    },
+                  },
+                  campaign: {
+                    include: {
+                      tileBlockContent: true,
+                      tileImage: true,
+                    },
+                  },
                 },
               },
             },
           },
-          textBlock: true,
+          textBlock: {
+            include: {
+              content: true,
+            },
+          },
           productBlock: {
             include: {
               content: {
                 include: {
+                  brand: true,
                   productCategory: true,
                   productSubCategory: true,
-                  brand: true,
                 },
               },
             },

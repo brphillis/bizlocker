@@ -396,10 +396,24 @@ interface NewBlockData {
   blockName: BlockName;
   itemIndex: number;
   contentType?: BlockContentType;
-  contentData?: Promotion[] | Campaign[] | ContentImage[];
-  stringData?: string;
-  objectData?: ProductBlockContent;
+  contentData?: ContentData;
 }
+
+interface BlockMaster {
+  name: "banner" | "tile" | "hero" | "text" | "product" | "article";
+  content?: ContentData[];
+}
+
+type ContentData = {
+  productCategory?: ProductCategory[] | ProductCategory;
+  productSubCategory?: ProductSubCategory[] | ProductSubCategory;
+  articleCategory?: ArticleCategory[] | ArticleCategory;
+  brand?: Brand[] | Brand;
+  image?: Image | Image[];
+  product?: Product[] | Product;
+  promotion?: Promotion[] | Promotion;
+  campaign?: Campaign[] | Campaign;
+};
 
 interface Block extends BannerBlock, TileBlock, TextBlock, ProductBlock {
   id: string;
@@ -410,28 +424,20 @@ interface Block extends BannerBlock, TileBlock, TextBlock, ProductBlock {
     | Campaign[]
     | Promotion[]
     | Product[]
-    | ContentImage[]
+    | Image
+    | Image[]
     | string[]
     | ProductBlockContent[];
-  blockOptions: BlockOptions;
+  blockOptions: BlockOptions[];
   bannerBlock?: BannerBlock;
   bannerBlockId?: string;
   tileBlock?: TileBlock;
   tileBlockId?: string;
 }
 
-interface ContentImage {
-  id?: number;
-  image: Image;
-  href: string;
-  imageId?: number;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-
 interface NewBlockOptions {
   backgroundColor?: Color | null;
-  borderColor?: string | null;
+  borderColor?: Color | null;
   borderDisplay?: string | null;
   borderRadius?: string | null;
   borderSize?: string | null;
@@ -449,6 +455,7 @@ interface NewBlockOptions {
   style?: string | null;
   title?: string | null;
   titleColor?: Color | null;
+  order?: int | null;
 }
 
 interface BlockOptions extends NewBlockOptions {
@@ -466,8 +473,8 @@ interface HeroBlock {
   block?: Block;
   product?: Product;
   productId?: string;
-  contentImage?: ContentImage;
-  contentImageId?: string;
+  image?: Image;
+  imageId?: Number;
 }
 
 interface BannerBlock {
@@ -479,8 +486,8 @@ interface BannerBlock {
   campaignId?: string;
   promotion?: Promotion;
   promotionId?: string;
-  contentImage?: ContentImage;
-  contentImageId?: string;
+  image?: Image;
+  imageId?: Number;
 }
 
 interface TileBlock {
@@ -492,7 +499,7 @@ interface TileBlock {
   campaignId?: string;
   promotion: Promotion[];
   promotionId?: string;
-  contentImages?: ContentImage[];
+  image?: Image[];
 }
 
 interface TextBlock {

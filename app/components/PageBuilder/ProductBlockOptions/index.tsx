@@ -8,7 +8,7 @@ type Props = {
   productCategories: ProductCategory[];
   productSubCategories: ProductSubCategory[];
   brands: Brand[];
-  defaultValues: ProductBlockContent;
+  defaultValues: ProductBlockContent[];
 };
 
 const ProductBlockOptions = ({
@@ -29,24 +29,24 @@ const ProductBlockOptions = ({
             <div className="flex w-full justify-start gap-3">
               <SelectProductCategory
                 productCategories={productCategories}
-                defaultValue={defaultValues?.productCategoryId?.toString()}
+                defaultValue={defaultValues?.[0].productCategoryId?.toString()}
               />
 
               <SelectProductSubCategory
                 productSubCategories={productSubCategories}
-                defaultValue={defaultValues?.productSubCategoryId?.toString()}
+                defaultValue={defaultValues?.[0].productSubCategoryId?.toString()}
               />
             </div>
 
             <div className="flex w-full justify-start gap-3">
               <SelectBrand
                 brands={brands}
-                defaultValue={defaultValues?.brandId?.toString()}
+                defaultValue={defaultValues?.[0].brandId?.toString()}
               />
 
               <SelectGender
                 label="Gender"
-                defaultValue={defaultValues?.gender?.toString()}
+                defaultValue={defaultValues?.[0].gender?.toString()}
               />
             </div>
           </div>

@@ -3,7 +3,7 @@ import SelectArticleCategory from "~/components/Forms/Select/SelectArticleCatego
 type Props = {
   selectedBlock: BlockName | undefined;
   articleCategories: ArticleCategory[];
-  defaultValues: ArticleBlockContent;
+  defaultValues: ArticleBlockContent[];
 };
 
 const ArticleBlockOptions = ({
@@ -21,7 +21,7 @@ const ArticleBlockOptions = ({
           <div className="flex flex-wrap gap-3 !text-brand-white">
             <SelectArticleCategory
               articleCategories={articleCategories}
-              defaultValue={defaultValues?.articleCategoryId?.toString()}
+              defaultValue={defaultValues?.[0].articleCategoryId?.toString()}
             />
           </div>
         </div>

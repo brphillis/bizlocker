@@ -2,13 +2,14 @@ import { parseOptions } from "~/utility/parseOptions";
 import parse from "html-react-parser";
 
 type Props = {
-  content: string[];
+  content: any;
 };
 
-const TextBlock = ({ content }: Props) => {
+const TextBlock = ({ content: contentArray }: Props) => {
+  const content = contentArray[0].richText;
   return (
     <div className="w-full max-w-full py-3 sm:w-[920px]">
-      {parse(content[0], parseOptions)}
+      {parse(content, parseOptions)}
     </div>
   );
 };
