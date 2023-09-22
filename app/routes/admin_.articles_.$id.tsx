@@ -43,6 +43,7 @@ import {
 import { HiTrash } from "react-icons/hi2";
 import { useState } from "react";
 import { getAvailableColors } from "~/models/enums.server";
+import { getBlocks } from "~/utility/blockHelpers";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: swiper },
@@ -60,8 +61,15 @@ export const loader = async ({ params }: LoaderArgs) => {
 
   if (id && id !== "add") {
     const article = await getArticle(id);
+    let blocks;
+
+    if (article) {
+      blocks = await getBlocks(article as any);
+    }
+
     return {
       article,
+      blocks,
       articleCategories,
       productCategories,
       productSubCategories,
@@ -81,11 +89,13 @@ export const action = async ({ request, params }: ActionArgs) => {
     articleCategories,
     thumbnail,
     itemIndex,
+    blockId,
+    blockName,
     contentType,
     name,
   } = form;
 
-  const blockOptions: NewBlockOptions = getFormBlockOptions(form);
+  const blockOptions: BlockOptions = getFormBlockOptions(form);
 
   switch (form._action) {
     case "search":
@@ -160,11 +170,7 @@ export const action = async ({ request, params }: ActionArgs) => {
       );
 
     case "delete":
-      return await removeBlock(
-        parseInt(id as string),
-        parseInt(itemIndex as string),
-        "article"
-      );
+      return await removeBlock(blockId as string, blockName as BlockName);
 
     case "deleteArticle":
       return await deleteArticle(parseInt(id as string));
@@ -175,6 +181,7 @@ const ModifyArticle = () => {
   const submit = useSubmit();
   const {
     article,
+    blocks,
     productCategories,
     articleCategories,
     productSubCategories,
@@ -330,6 +337,7 @@ const ModifyArticle = () => {
                 content={
                   <PageBuilder
                     page={article}
+                    blocks={blocks}
                     searchResults={searchResults}
                     updateSuccess={updateSuccess}
                     productCategories={productCategories}

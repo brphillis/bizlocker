@@ -118,7 +118,7 @@ export const searchDepartments = async (searchArgs: BasicSearchArgs) => {
       departments = await prisma.department.findMany({
         skip,
         take,
-        orderBy: getOrderBy(sortBy as CategorySortBy, sortOrder as SortOrder),
+        orderBy: getOrderBy(sortBy as SortBy, sortOrder as SortOrder),
       });
 
       totalDepartments = await prisma.department.count();

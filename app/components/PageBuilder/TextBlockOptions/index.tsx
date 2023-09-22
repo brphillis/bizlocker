@@ -10,7 +10,7 @@ const TextBlockOptions = ({ selectedBlock, defaultValue }: Props) => {
   const [contentData, setContentData] = useState<string>(
     defaultValue?.[0] || ""
   );
-  console.log("CONT", contentData);
+
   return (
     <>
       {selectedBlock === "text" && (

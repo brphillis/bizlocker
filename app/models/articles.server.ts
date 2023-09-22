@@ -1,5 +1,6 @@
 import { redirect } from "@remix-run/server-runtime";
 import { prisma } from "~/db.server";
+import { includeBlocksData } from "~/utility/blockMaster";
 import { getOrderBy } from "~/utility/sortHelpers";
 
 export const getArticle = async (id?: string, title?: string) => {
@@ -16,35 +17,7 @@ export const getArticle = async (id?: string, title?: string) => {
   return await prisma.article.findUnique({
     where: whereClause,
     include: {
-      blocks: {
-        include: {
-          blockOptions: true,
-          heroBlock: true,
-          bannerBlock: true,
-          tileBlock: true,
-          textBlock: true,
-          productBlock: {
-            include: {
-              content: {
-                include: {
-                  productCategory: true,
-                  productSubCategory: true,
-                  brand: true,
-                },
-              },
-            },
-          },
-          articleBlock: {
-            include: {
-              content: {
-                include: {
-                  articleCategory: true,
-                },
-              },
-            },
-          },
-        },
-      },
+      blocks: includeBlocksData,
       articleCategories: {
         select: {
           id: true,
@@ -166,13 +139,13 @@ export const deleteArticle = async (id: number) => {
   }
 
   // Delete blockOptions associated with each block
-  for (const block of article.blocks) {
-    if (block.blockOptions) {
-      await prisma.blockOptions.delete({
-        where: { id: block.blockOptions.id },
-      });
-    }
-  }
+  // for (const block of article.blocks) {
+  //   if (block.blockOptions) {
+  //     await prisma.blockOptions.delete({
+  //       where: { id: block.blockOptions.id },
+  //     });
+  //   }
+  // }
 
   // Delete bannerBlocks, tileBlocks, and textBlocks associated with each block
   for (const block of article.blocks) {

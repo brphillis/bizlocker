@@ -1,3 +1,5 @@
+import { blockMaster } from "~/utility/blockMaster";
+
 type Props = {
   selectedBlock: BlockName | undefined;
   defaultValues: BlockOptions;
@@ -21,6 +23,7 @@ const BlockOptions = ({
     count,
     margin,
     primaryLink,
+    rows,
     secondaryLink,
     shortText,
     shortTextColor,
@@ -31,6 +34,10 @@ const BlockOptions = ({
     title,
     titleColor,
   } = defaultValues || {};
+
+  const selectedBlockOptions = blockMaster.find(
+    (e) => e.name === selectedBlock
+  )?.options;
 
   return (
     <>
@@ -43,8 +50,9 @@ const BlockOptions = ({
             {/* STYLE */}
             {/* STYLE */}
             {/* STYLE */}
-            {selectedBlock === "hero" && (
-              <div className="flex w-full flex-wrap justify-start gap-3">
+
+            <div className="flex w-full flex-wrap justify-start gap-3 empty:hidden">
+              {selectedBlockOptions?.style && (
                 <div className="form-control">
                   <label className="label">
                     <span className="label-text text-brand-white">Style</span>
@@ -58,14 +66,15 @@ const BlockOptions = ({
                     <option value={undefined}>Default</option>
                   </select>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
 
             {/* TITLE */}
             {/* TITLE */}
             {/* TITLE */}
-            {selectedBlock === "hero" && (
-              <div className="flex w-full flex-wrap justify-start gap-3">
+
+            <div className="flex w-full flex-wrap justify-start gap-3 empty:hidden">
+              {selectedBlockOptions?.title && (
                 <div className="form-control">
                   <label className="label">
                     <span className="label-text text-brand-white">Title</span>
@@ -78,7 +87,9 @@ const BlockOptions = ({
                     defaultValue={!title ? undefined : title}
                   />
                 </div>
+              )}
 
+              {selectedBlockOptions?.titleColor && (
                 <div className="form-control">
                   <label className="label text-sm">Title Color</label>
                   <select
@@ -97,14 +108,15 @@ const BlockOptions = ({
                     })}
                   </select>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
 
             {/* SHORT TEXT */}
             {/* SHORT TEXT */}
             {/* SHORT TEXT */}
-            {selectedBlock === "hero" && (
-              <div className="flex w-full flex-wrap justify-start gap-3">
+
+            <div className="flex w-full flex-wrap justify-start gap-3 empty:hidden">
+              {selectedBlockOptions?.shortText && (
                 <div className="form-control">
                   <label className="label">
                     <span className="label-text text-brand-white">
@@ -118,10 +130,11 @@ const BlockOptions = ({
                     defaultValue={!shortText ? undefined : shortText}
                   />
                 </div>
-              </div>
-            )}
-            {selectedBlock === "hero" && (
-              <div className="flex w-full justify-start gap-3">
+              )}
+            </div>
+
+            <div className="flex w-full justify-start gap-3 empty:hidden">
+              {selectedBlockOptions?.shortTextColor && (
                 <div className="form-control">
                   <label className="label text-sm">Short Text Color</label>
                   <select
@@ -140,14 +153,14 @@ const BlockOptions = ({
                     })}
                   </select>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
 
             {/* BACKGROUND */}
             {/* BACKGROUND */}
             {/* BACKGROUND */}
-            {(selectedBlock === "banner" || selectedBlock === "hero") && (
-              <div className="flex w-full flex-wrap justify-start gap-3">
+            <div className="flex w-full flex-wrap justify-start gap-3 empty:hidden">
+              {selectedBlockOptions?.backgroundColor && (
                 <div className="form-control">
                   <label className="label text-sm">Background Color</label>
                   <select
@@ -168,14 +181,15 @@ const BlockOptions = ({
                     })}
                   </select>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
 
             {/* BORDER */}
             {/* BORDER */}
             {/* BORDER */}
-            {selectedBlock === "hero" && (
-              <div className="flex w-full flex-wrap justify-start gap-3">
+
+            <div className="flex w-full flex-wrap justify-start gap-3 empty:hidden">
+              {selectedBlockOptions?.borderDisplay && (
                 <div className="form-control">
                   <label className="label text-sm">Border Display</label>
                   <select
@@ -189,7 +203,9 @@ const BlockOptions = ({
                     <option value=" md:!border-none">Hide Desktop</option>
                   </select>
                 </div>
+              )}
 
+              {selectedBlockOptions?.borderSize && (
                 <div className="form-control">
                   <label className="label text-sm">Border Size</label>
                   <select
@@ -218,7 +234,9 @@ const BlockOptions = ({
                     <option value="24px">24px</option>
                   </select>
                 </div>
+              )}
 
+              {selectedBlockOptions?.borderColor && (
                 <div className="form-control">
                   <label className="label text-sm">Border Color</label>
                   <select
@@ -237,7 +255,9 @@ const BlockOptions = ({
                     })}
                   </select>
                 </div>
+              )}
 
+              {selectedBlockOptions?.borderRadius && (
                 <div className="form-control">
                   <label className="label text-sm">Border Radius</label>
                   <select
@@ -268,15 +288,15 @@ const BlockOptions = ({
                     <option value="100%">100%</option>
                   </select>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
 
             {/* // SORT AND ORDER */}
             {/* // SORT AND ORDER */}
             {/* // SORT AND ORDER */}
 
-            {(selectedBlock === "product" || selectedBlock === "article") && (
-              <div className="flex w-full flex-wrap justify-start gap-3">
+            <div className="flex w-full flex-wrap justify-start gap-3 empty:hidden">
+              {selectedBlockOptions?.sortBy && (
                 <div className="form-control">
                   <label className="label">
                     <span className="label-text text-brand-white">Sort By</span>
@@ -310,7 +330,9 @@ const BlockOptions = ({
                     )}
                   </select>
                 </div>
+              )}
 
+              {selectedBlockOptions?.sortOrder && (
                 <div className="form-control">
                   <label className="label">
                     <span className="label-text text-brand-white">
@@ -328,14 +350,15 @@ const BlockOptions = ({
                     <option value="desc">Descending</option>
                   </select>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
 
             {/* SIZE */}
             {/* SIZE */}
             {/* SIZE */}
-            {selectedBlock === "banner" && (
-              <div className="flex w-full flex-wrap justify-start gap-3">
+
+            <div className="flex w-full flex-wrap justify-start gap-3 empty:hidden">
+              {selectedBlockOptions?.size && (
                 <div className="form-control">
                   <label className="label">
                     <span className="label-text text-brand-white">Size</span>
@@ -354,14 +377,15 @@ const BlockOptions = ({
                     )}
                   </select>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
 
             {/* COUNT */}
             {/* COUNT */}
             {/* COUNT */}
-            {selectedBlock === "product" && (
-              <div className="flex w-full flex-wrap justify-start gap-3">
+
+            <div className="flex w-full flex-wrap justify-start gap-3 empty:hidden">
+              {selectedBlockOptions?.count && (
                 <div className="form-control">
                   <label className="label">
                     <span className="label-text text-brand-white">Count</span>
@@ -374,14 +398,15 @@ const BlockOptions = ({
                     defaultValue={!count ? undefined : count}
                   />
                 </div>
-              </div>
-            )}
+              )}
+            </div>
 
             {/* MARGIN AND PADDING */}
             {/* MARGIN AND PADDING */}
             {/* MARGIN AND PADDING */}
-            {(selectedBlock === "banner" || selectedBlock === "hero") && (
-              <div className="flex w-full flex-wrap justify-start gap-3">
+
+            <div className="flex w-full flex-wrap justify-start gap-3 empty:hidden">
+              {selectedBlockOptions?.margin && (
                 <div className="form-control">
                   <label className="label">
                     <span className="label-text text-brand-white">Margin</span>
@@ -410,29 +435,15 @@ const BlockOptions = ({
                     <option value=" md:!-mx-6">No X Desktop</option>
                   </select>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
 
-            {/*      
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text">Rows</span>
-                </label>
-                <input
-                  name="rows"
-                  type="number"
-                  className="input-bordered input w-[95vw] max-w-full text-brand-black sm:w-[215px]"
-                  placeholder="Rows"
-                  defaultValue={rows as number}
-                />
-              </div> */}
+            {/* COLUMNS AND ROWS */}
+            {/* COLUMNS AND ROWS */}
+            {/* COLUMNS AND ROWS */}
 
-            {/* COLUMNS */}
-            {/* COLUMNS */}
-            {/* COLUMNS */}
-
-            {(selectedBlock === "tile" || selectedBlock === "product") && (
-              <div className="flex w-full flex-wrap justify-start gap-3">
+            <div className="flex w-full flex-wrap justify-start gap-3 empty:hidden">
+              {selectedBlockOptions?.columns && (
                 <div className="form-control">
                   <label className="label">
                     <span className="label-text text-brand-white">Columns</span>
@@ -445,28 +456,43 @@ const BlockOptions = ({
                     defaultValue={columns || undefined}
                   />
                 </div>
-              </div>
-            )}
+              )}
 
-            {selectedBlock === "hero" && (
-              <div className="flex w-full flex-wrap justify-start gap-3">
-                {contentType !== "product" && (
-                  <div className="form-control">
-                    <label className="label">
-                      <span className="label-text text-brand-white">
-                        Primary Link
-                      </span>
-                    </label>
-                    <input
-                      name="primaryLink"
-                      type="string"
-                      className="input input-bordered w-[95vw] max-w-full text-brand-black  sm:w-[215px]"
-                      placeholder="URL"
-                      defaultValue={!primaryLink ? undefined : primaryLink}
-                    />
-                  </div>
-                )}
+              {selectedBlockOptions?.rows && (
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text text-brand-white">Rows</span>
+                  </label>
+                  <input
+                    name="rows"
+                    type="number"
+                    className="input input-bordered w-[95vw] max-w-full text-brand-black sm:w-[215px]"
+                    placeholder="Rows"
+                    defaultValue={rows || undefined}
+                  />
+                </div>
+              )}
+            </div>
 
+            <div className="flex w-full flex-wrap justify-start gap-3 empty:hidden">
+              {selectedBlockOptions?.primaryLink && (
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text text-brand-white">
+                      Primary Link
+                    </span>
+                  </label>
+                  <input
+                    name="primaryLink"
+                    type="string"
+                    className="input input-bordered w-[95vw] max-w-full text-brand-black  sm:w-[215px]"
+                    placeholder="URL"
+                    defaultValue={!primaryLink ? undefined : primaryLink}
+                  />
+                </div>
+              )}
+
+              {selectedBlockOptions?.secondaryLink && (
                 <div className="form-control">
                   <label className="label">
                     <span className="label-text text-brand-white">
@@ -481,8 +507,8 @@ const BlockOptions = ({
                     defaultValue={!secondaryLink ? undefined : secondaryLink}
                   />
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
       )}

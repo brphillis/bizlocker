@@ -1,6 +1,23 @@
-export const getBlocks = (page: HomePage) => {
+import {
+  fetchBlockArticles,
+  fetchBlockProducts,
+} from "~/models/blockHelpers.server";
+
+export const getBlocks = async (page: HomePage) => {
+  // populate the page with the active block types
   const blocks = getPageBlocks(page);
   const activeBlocks = getActiveBlocks(blocks);
+
+  for (let i = 0; i < activeBlocks.length; i++) {
+    const block = activeBlocks[i];
+    if (block.name === "product") {
+      block.content.product = (await fetchBlockProducts(block)) as any;
+    }
+    if (block.name === "article") {
+      block.content.article = (await fetchBlockArticles(block)) as any;
+    }
+  }
+
   return activeBlocks;
 };
 
@@ -87,7 +104,7 @@ export const getActiveBlocks = (blocks: Block[]): Block[] => {
       } else {
         // If it's an object, merge it with the specific properties and add
         firstPopulatedItems.push({
-          content: [{ ...firstPopulated }],
+          content: { ...firstPopulated },
           blockOptions: blockOptions,
           name,
           type,

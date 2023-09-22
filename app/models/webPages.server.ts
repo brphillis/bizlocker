@@ -1,5 +1,6 @@
 import { redirect } from "@remix-run/server-runtime";
 import { prisma } from "~/db.server";
+import { includeBlocksData } from "~/utility/blockMaster";
 import { getOrderBy } from "~/utility/sortHelpers";
 
 export const getWebPage = async (id?: string, title?: string) => {
@@ -16,76 +17,7 @@ export const getWebPage = async (id?: string, title?: string) => {
   return await prisma.webPage.findUnique({
     where: whereClause,
     include: {
-      blocks: {
-        include: {
-          blockOptions: true,
-          heroBlock: {
-            include: {
-              product: {
-                include: {
-                  images: true,
-                  heroImage: true,
-                  variants: true,
-                },
-              },
-              contentImage: true,
-            },
-          },
-          bannerBlock: {
-            include: {
-              campaign: {
-                include: {
-                  bannerImage: true,
-                  tileImage: true,
-                },
-              },
-              promotion: {
-                include: {
-                  bannerImage: true,
-                  tileImage: true,
-                },
-              },
-            },
-          },
-          tileBlock: {
-            include: {
-              campaigns: {
-                include: {
-                  bannerImage: true,
-                  tileImage: true,
-                },
-              },
-              promotions: {
-                include: {
-                  bannerImage: true,
-                  tileImage: true,
-                },
-              },
-            },
-          },
-          textBlock: true,
-          productBlock: {
-            include: {
-              content: {
-                include: {
-                  productCategory: true,
-                  productSubCategory: true,
-                  brand: true,
-                },
-              },
-            },
-          },
-          articleBlock: {
-            include: {
-              content: {
-                include: {
-                  articleCategory: true,
-                },
-              },
-            },
-          },
-        },
-      },
+      blocks: includeBlocksData,
       thumbnail: true,
     },
   });
@@ -177,13 +109,13 @@ export const deleteWebPage = async (id: number) => {
   }
 
   // Delete blockOptions associated with each block
-  for (const block of webPage.blocks) {
-    if (block.blockOptions) {
-      await prisma.blockOptions.delete({
-        where: { id: block.blockOptions.id },
-      });
-    }
-  }
+  // for (const block of webPage.blocks) {
+  //   if (block.blockOptions) {
+  //     await prisma.blockOptions.delete({
+  //       where: { id: block.blockOptions.id },
+  //     });
+  //   }
+  // }
 
   // Delete bannerBlocks, tileBlocks, and textBlocks associated with each block
   for (const block of webPage.blocks) {

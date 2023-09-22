@@ -1,97 +1,10 @@
 import { prisma } from "~/db.server";
+import { includeBlocksData } from "~/utility/blockMaster";
 
 export const getHomePage = async () => {
   return prisma.homePage.findFirst({
     include: {
-      blocks: {
-        include: {
-          blockOptions: true,
-          heroBlock: {
-            include: {
-              content: {
-                include: {
-                  product: {
-                    include: {
-                      variants: true,
-                      heroImage: true,
-                      brand: {
-                        include: {
-                          image: true,
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-          bannerBlock: {
-            include: {
-              content: {
-                include: {
-                  image: true,
-                  promotion: {
-                    include: {
-                      bannerImage: true,
-                    },
-                  },
-                  campaign: {
-                    include: {
-                      bannerImage: true,
-                    },
-                  },
-                },
-              },
-            },
-          },
-          tileBlock: {
-            include: {
-              content: {
-                include: {
-                  image: true,
-                  promotion: {
-                    include: {
-                      tileBlockContent: true,
-                      tileImage: true,
-                    },
-                  },
-                  campaign: {
-                    include: {
-                      tileBlockContent: true,
-                      tileImage: true,
-                    },
-                  },
-                },
-              },
-            },
-          },
-          textBlock: {
-            include: {
-              content: true,
-            },
-          },
-          productBlock: {
-            include: {
-              content: {
-                include: {
-                  brand: true,
-                  productCategory: true,
-                  productSubCategory: true,
-                },
-              },
-            },
-          },
-          articleBlock: {
-            include: {
-              content: {
-                include: {
-                  articleCategory: true,
-                },
-              },
-            },
-          },
-        },
-      },
+      blocks: includeBlocksData,
     },
   });
 };

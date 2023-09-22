@@ -21,7 +21,7 @@ const ArticleBlockOptions = ({
           <div className="flex flex-wrap gap-3 !text-brand-white">
             <SelectArticleCategory
               articleCategories={articleCategories}
-              defaultValue={defaultValues?.[0].articleCategoryId?.toString()}
+              defaultValue={defaultValues?.[0]?.articleCategoryId?.toString()}
             />
           </div>
         </div>

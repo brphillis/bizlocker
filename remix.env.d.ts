@@ -366,11 +366,19 @@ type BasicSearchArgs = {
 };
 
 type SortBy = "createdAt" | "totalSold" | "price" | "name" | "title";
-type CategorySortBy = "createdAt" | "name" | "index";
+// type CategorySortBy = "createdAt" | "name" | "index";
 type SortOrder = "asc" | "desc";
 
+type PageType = "homePage" | "article" | "webPage";
+
 type BlockName = "banner" | "hero" | "tile" | "text" | "product" | "article";
-type BlockContentType = "campaign" | "promotion" | "image" | "product";
+
+type BlockContentType =
+  | "campaign"
+  | "promotion"
+  | "image"
+  | "product"
+  | "article";
 
 interface HomePage {
   id: number;
@@ -393,15 +401,11 @@ interface WebPage {
 }
 
 interface NewBlockData {
+  pageId: number;
   blockName: BlockName;
   itemIndex: number;
-  contentType?: BlockContentType;
-  contentData?: ContentData;
-}
-
-interface BlockMaster {
-  name: "banner" | "tile" | "hero" | "text" | "product" | "article";
-  content?: ContentData[];
+  contentType: BlockContentType;
+  contentData: ContentData;
 }
 
 type ContentData = {
@@ -415,27 +419,62 @@ type ContentData = {
   campaign?: Campaign[] | Campaign;
 };
 
+type BlockContent = {
+  richText?: string;
+  productCategory?: ProductCategory[] | ProductCategory;
+  productSubCategory?: ProductSubCategory[] | ProductSubCategory;
+  articleCategory?: ArticleCategory[] | ArticleCategory;
+  gender?: Gender[] | Gender;
+  brand?: Brand[] | Brand;
+  promotion?: Promotion[] | Promotion;
+  campaign?: Campaign[] | Campaign;
+  image?: Image[] | Image;
+  product?: Product[] | Product;
+  article?: Article[] | Article;
+};
+
+type BlockMaster = {
+  name: BlockName;
+  component: React.ComponentType<any>;
+  options: BlockMasterOptions;
+  content: Object;
+};
+
+interface BlockMasterOptions {
+  backgroundColor?: boolean;
+  borderColor?: boolean;
+  borderDisplay?: boolean;
+  borderRadius?: boolean;
+  borderSize?: boolean;
+  columns?: boolean;
+  count?: boolean;
+  margin?: boolean;
+  primaryLink?: boolean;
+  rows?: boolean;
+  secondaryLink?: boolean;
+  shortText?: boolean;
+  shortTextColor?: boolean;
+  size?: boolean;
+  sortBy?: boolean;
+  sortOrder?: boolean;
+  style?: boolean;
+  title?: boolean;
+  titleColor?: boolean;
+  order?: boolean;
+}
+
 interface Block extends BannerBlock, TileBlock, TextBlock, ProductBlock {
   id: string;
   order: number;
   page: Page;
   pageId: number;
-  content:
-    | Campaign[]
-    | Promotion[]
-    | Product[]
-    | Image
-    | Image[]
-    | string[]
-    | ProductBlockContent[];
+  content: BlockContent;
+  name: BlockName;
   blockOptions: BlockOptions[];
-  bannerBlock?: BannerBlock;
-  bannerBlockId?: string;
-  tileBlock?: TileBlock;
-  tileBlockId?: string;
 }
 
-interface NewBlockOptions {
+interface BlockOptions {
+  id: string;
   backgroundColor?: Color | null;
   borderColor?: Color | null;
   borderDisplay?: string | null;
@@ -458,13 +497,13 @@ interface NewBlockOptions {
   order?: int | null;
 }
 
-interface BlockOptions extends NewBlockOptions {
-  id: string;
-  createdAt: DateTime;
-  updatedAt: DateTime;
-  block?: Block | null;
-  blockOptionsId: string;
-}
+// interface BlockOptions extends NewBlockOptions {
+//   id: string;
+//   createdAt: DateTime;
+//   updatedAt: DateTime;
+//   block?: Block | null;
+//   blockOptionsId: string;
+// }
 
 interface HeroBlock {
   id: string;
@@ -474,7 +513,7 @@ interface HeroBlock {
   product?: Product;
   productId?: string;
   image?: Image;
-  imageId?: Number;
+  imageId?: number;
 }
 
 interface BannerBlock {
@@ -487,7 +526,7 @@ interface BannerBlock {
   promotion?: Promotion;
   promotionId?: string;
   image?: Image;
-  imageId?: Number;
+  imageId?: number;
 }
 
 interface TileBlock {
@@ -543,20 +582,6 @@ interface ArticleBlockContent {
   createdAt: Date;
   updatedAt: Date;
 }
-
-// interface HeroBlockContent {
-//   id: string;
-//   productBlock?: ProductBlock;
-//   productBlockId?: string;
-//   backgroundColor?: string;
-//   title?: string;
-//   titleColor?: string;
-//   description?: string;
-//   descriptionColor?: string;
-
-//   createdAt: Date;
-//   updatedAt: Date;
-// }
 
 type NewProductBlockContent = {
   productCategory?: string;

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { capitalizeFirst } from "~/utility/stringHelpers";
 import { Form, useSubmit } from "@remix-run/react";
-import { getBlocks } from "~/utility/blockHelpers";
 import BlockIcon from "~/components/Blocks/BlockIcon";
 import BlockOptions from "./BlockOptions";
 import ProductBlockOptions from "./ProductBlockOptions";
@@ -17,9 +16,11 @@ import {
 import ArticleBlockOptions from "./ArticleBlockOptions";
 import BlockContentImageResults from "./BlockContentImageResults";
 import BackSubmitButtons from "../Forms/Buttons/BackSubmitButtons";
+import { blockMaster } from "~/utility/blockMaster";
 
 type Props = {
   page: HomePage | Article;
+  blocks: Block[];
   searchResults: Campaign[] | Promotion[] | Image[] | undefined;
   updateSuccess: boolean;
   productCategories: ProductCategory[];
@@ -32,6 +33,7 @@ type Props = {
 
 const PageBuilder = ({
   page,
+  blocks,
   searchResults,
   updateSuccess,
   productCategories,
@@ -42,8 +44,6 @@ const PageBuilder = ({
   blockValidationError,
 }: Props) => {
   const submit = useSubmit();
-
-  const blocks = getBlocks(page);
 
   const [selectedBlock, setSelectedBlock] = useState<BlockName | undefined>();
   const [contentType, setContentType] = useState<BlockContentType>();
@@ -56,7 +56,6 @@ const PageBuilder = ({
   const reset = () => {
     setEditingContent(false);
     setSelectedBlock(undefined);
-    // setSelectedItems([]);
     setValidationError([]);
   };
 
@@ -74,12 +73,12 @@ const PageBuilder = ({
     }
   };
 
-  const deleteBlock = (i: number) => {
+  const deleteBlock = (blockId: string, blockName: string) => {
     const formData = new FormData();
 
     formData.set("_action", "delete");
-    formData.set("pageId", page.id.toString() || "");
-    formData.set("itemIndex", i.toString() || "");
+    formData.set("blockId", blockId.toString() || "");
+    formData.set("blockName", blockName.toString() || "");
 
     submit(formData, {
       method: "POST",
@@ -135,7 +134,7 @@ const PageBuilder = ({
               <tbody>
                 {blocks
                   ?.sort((a: Block, b: Block) => a.order - b.order)
-                  .map((e: Block, i) => {
+                  .map(({ id, name }: Block, i) => {
                     return (
                       <tr
                         className="border-b-0"
@@ -159,32 +158,36 @@ const PageBuilder = ({
                             capitalizeFirst(blocks?.[i]?.type)}
                         </td>
                         <td>
-                          <div className="flex h-full flex-row items-center justify-center gap-3">
-                            <HiMiniArrowDown
-                              size={24}
-                              className="cursor-pointer rounded-full bg-primary p-[0.3rem] text-primary-content"
-                              onClick={() => changeBlockOrder(i, "down")}
-                            />
+                          <div className="flex h-full flex-row items-center justify-start gap-3">
+                            {i < blocks.length - 1 && (
+                              <HiMiniArrowDown
+                                size={26}
+                                className="cursor-pointer rounded-md bg-primary p-[0.3rem] text-primary-content"
+                                onClick={() => changeBlockOrder(i, "down")}
+                              />
+                            )}
 
-                            <HiMiniArrowUp
-                              size={24}
-                              className="cursor-pointer rounded-full bg-primary p-[0.3rem] text-primary-content"
-                              onClick={() => changeBlockOrder(i, "up")}
-                            />
+                            {i > 0 && (
+                              <HiMiniArrowUp
+                                size={26}
+                                className="cursor-pointer rounded-md bg-primary p-[0.3rem] text-primary-content"
+                                onClick={() => changeBlockOrder(i, "up")}
+                              />
+                            )}
 
                             <HiPencil
-                              size={24}
-                              className="cursor-pointer rounded-full bg-primary p-[0.3rem] text-primary-content"
+                              size={26}
+                              className="cursor-pointer rounded-md bg-primary p-[0.3rem] text-primary-content"
                               onClick={() => {
                                 editBlock(i);
                               }}
                             />
                             {i > 0 && (
                               <HiTrash
-                                size={24}
-                                className="cursor-pointer rounded-full bg-error p-[0.3rem] text-primary-content"
+                                size={26}
+                                className="cursor-pointer rounded-md bg-error p-[0.3rem] text-primary-content"
                                 onClick={() => {
-                                  deleteBlock(i);
+                                  deleteBlock(id, name);
                                 }}
                               />
                             )}
@@ -227,17 +230,18 @@ const PageBuilder = ({
                   defaultValue={selectedBlock}
                   placeholder="Select Block"
                   onChange={(e) => {
-                    // setSelectedItems([]);
                     setSelectedBlock(e.target.value as BlockName);
                   }}
                 >
                   <option value="">Select Block</option>
-                  <option value="banner">Banner</option>
-                  <option value="hero">Hero</option>
-                  <option value="tile">Tile</option>
-                  <option value="text">Text</option>
-                  <option value="product">Product</option>
-                  <option value="article">Articles</option>
+
+                  {blockMaster.map(({ name }: BlockMaster) => {
+                    return (
+                      <option key={"blockSelect_" + name} value={name}>
+                        {capitalizeFirst(name)}
+                      </option>
+                    );
+                  })}
                 </select>
               </div>
             </div>

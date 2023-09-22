@@ -1,30 +1,34 @@
-// import { useFetcher } from "@remix-run/react";
-// import { useEffect, useState } from "react";
 import ProductGrid from "~/components/Grids/ProductGrid";
 import Spinner from "~/components/Spinner";
 
 type Props = {
-  content: ProductBlockContent[];
-  options: BlockOptions;
-  products: Product[] | undefined;
+  content: BlockContent;
+  options: BlockOptions[];
 };
 
-const ProductBlock = ({ content, options, products }: Props) => {
+const ProductBlock = ({ content, options: optionsArray }: Props) => {
+  const options = optionsArray[0];
+  const products = content?.product as Product[];
+  const productSubCategory = content?.productSubCategory as ProductSubCategory;
+  const productCategory = content?.productCategory as ProductCategory;
+  const brand = content?.brand as Brand;
+  const gender = content.gender;
+
   const determineSortPhrase = (sortBy: SortBy) => {
     if (
       sortBy === "createdAt" &&
-      !content?.[0]?.productSubCategory?.name &&
-      !content?.[0]?.productCategory?.name &&
-      content?.[0]?.brand?.name.toLowerCase() === "none"
+      productSubCategory?.name &&
+      productCategory?.name &&
+      brand?.name.toLowerCase() === "none"
     ) {
       return "Shop by Newest";
     }
 
     if (
       sortBy === "totalSold" &&
-      !content?.[0]?.productSubCategory?.name &&
-      !content?.[0]?.productCategory?.name &&
-      content?.[0]?.brand?.name.toLowerCase() === "none"
+      productSubCategory?.name &&
+      productCategory?.name &&
+      brand?.name.toLowerCase() === "none"
     ) {
       return "Shop by Most Popular";
     }
@@ -37,40 +41,40 @@ const ProductBlock = ({ content, options, products }: Props) => {
     } else return null;
   };
 
-  const determineDisplayedFilter = (content: ProductBlockContent) => {
+  const determineDisplayedFilter = () => {
     if (
-      content?.brand?.name.toLowerCase() === "none" &&
-      !content?.productSubCategory?.name &&
-      !content?.productCategory?.name &&
-      !content?.gender
+      brand?.name.toLowerCase() === "none" &&
+      productSubCategory?.name &&
+      productCategory?.name &&
+      gender
     ) {
       return;
     }
 
-    if (content?.brand?.name && content?.brand?.name.toLowerCase() !== "none") {
-      return content?.brand?.name;
+    if (brand?.name && brand?.name.toLowerCase() !== "none") {
+      return brand?.name;
     }
-    if (content?.productSubCategory?.name) {
-      return content?.productSubCategory?.name;
+    if (productSubCategory?.name) {
+      return productSubCategory?.name;
     }
-    if (content?.productCategory?.name) {
-      return content?.productCategory?.name;
+    if (productCategory?.name) {
+      return productCategory?.name;
     }
-    if (content?.gender) {
-      if (content?.gender === "FEMALE") {
+    if (gender) {
+      if (gender === "FEMALE") {
         return "Womans";
       }
-      if (content?.gender === "MALE") {
+      if (gender === "MALE") {
         return "Mens";
       }
-      if (content?.gender === "KIDS") {
+      if (gender === "KIDS") {
         return "Kids";
       }
-      if (content?.gender === "UNISEX") {
+      if (gender === "UNISEX") {
         return "All Ranges";
       }
 
-      return content?.productCategory?.name;
+      return productCategory?.name;
     }
   };
 
@@ -80,7 +84,7 @@ const ProductBlock = ({ content, options, products }: Props) => {
     <>
       <p className="self-start pl-3 text-xl font-bold md:pl-1">
         {options?.sortBy ? determineSortPhrase(options?.sortBy) : null}
-        <span className="text-2xl">{determineDisplayedFilter(content[0])}</span>
+        <span className="text-2xl">{determineDisplayedFilter()}</span>
       </p>
 
       {products && (

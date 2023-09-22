@@ -2,15 +2,20 @@ import { parseOptions } from "~/utility/parseOptions";
 import parse from "html-react-parser";
 
 type Props = {
-  content: any;
+  content: BlockContent;
+  options: BlockOptions[];
 };
 
-const TextBlock = ({ content: contentArray }: Props) => {
-  const content = contentArray[0].richText;
+const TextBlock = ({ content, options: optionsArray }: Props) => {
+  const { richText } = content || {};
   return (
-    <div className="w-full max-w-full py-3 sm:w-[920px]">
-      {parse(content, parseOptions)}
-    </div>
+    <>
+      {richText && (
+        <div className="w-full max-w-full py-3 sm:w-[920px]">
+          {parse(richText, parseOptions)}
+        </div>
+      )}
+    </>
   );
 };
 

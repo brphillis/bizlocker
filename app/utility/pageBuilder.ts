@@ -5,7 +5,7 @@ import { searchPromotions } from "~/models/promotions.server";
 
 export const getFormBlockOptions = (form: {
   [k: string]: FormDataEntryValue;
-}): NewBlockOptions => {
+}): BlockOptions => {
   const {
     backgroundColor,
     borderColor,
@@ -48,18 +48,9 @@ export const getFormBlockOptions = (form: {
     style: style ? (style as string) : undefined,
     title: title ? (title as string) : undefined,
     titleColor: titleColor ? (titleColor as string) : undefined,
-  } as NewBlockOptions;
+  } as BlockOptions;
 
   return blockOptions;
-};
-
-type NewBlockData = {
-  pageId: number;
-  blockName: BlockName;
-  itemIndex: number;
-  contentType?: BlockContentType;
-  contentData?: Promotion[] | Campaign[];
-  stringData?: string;
 };
 
 export const getBlockUpdateValues = (form: {
@@ -91,48 +82,65 @@ export const parseObjectData = (
   if (blockName === "product") {
     const { productCategory, productSubCategory, brand, gender } = form;
     objectData = {
-      productCategory: productCategory,
-      productSubCategory: productSubCategory,
-      brand: brand,
-      gender: gender,
+      productCategory: parseIfStringlifiedArray(productCategory),
+      productSubCategory: parseIfStringlifiedArray(productSubCategory),
+      brand: parseIfStringlifiedArray(brand),
+      gender: parseIfStringlifiedArray(gender),
     };
   }
   if (blockName === "article") {
     const { articleCategory } = form;
     objectData = {
-      articleCategory: articleCategory,
+      articleCategory: parseIfStringlifiedArray(articleCategory),
     };
   }
   if (blockName === "banner") {
     const { promotion, campaign, image } = form;
     objectData = {
-      promotion: promotion,
-      campaign: campaign,
-      image: image ? JSON.parse(image as string) : undefined,
+      promotion: parseIfStringlifiedArray(promotion),
+      campaign: parseIfStringlifiedArray(campaign),
+      image: parseIfStringlifiedArray(image),
     };
   }
   if (blockName === "tile") {
     const { promotion, campaign, image } = form;
     objectData = {
-      promotion: promotion,
-      campaign: campaign,
-      image: image ? JSON.parse(image as string) : undefined,
+      promotion: parseIfStringlifiedArray(promotion),
+      campaign: parseIfStringlifiedArray(campaign),
+      image: parseIfStringlifiedArray(image),
     };
   }
   if (blockName === "hero") {
     const { product } = form;
     objectData = {
-      product: product ? JSON.parse(product as string) : undefined,
+      product: parseIfStringlifiedArray(product),
     };
   }
   if (blockName === "text") {
     const { richText } = form;
     objectData = {
-      richText: richText,
+      richText: parseIfStringlifiedArray(richText),
     };
   }
 
   return objectData;
+};
+
+const parseIfStringlifiedArray = (inputString?: FormDataEntryValue) => {
+  if (!inputString) {
+    return undefined;
+  } else {
+    try {
+      const parsedArray = JSON.parse(inputString as string);
+      if (Array.isArray(parsedArray)) {
+        return parsedArray;
+      } else {
+        return inputString;
+      }
+    } catch (error) {
+      return inputString;
+    }
+  }
 };
 
 export const searchContentData = async (

@@ -1,22 +1,17 @@
 import { useNavigate } from "@remix-run/react";
 
 type Props = {
-  content: any;
+  content: BlockContent;
   type?: string;
   options?: BlockOptions[];
 };
 
-const BannerBlock = ({
-  content: ArrayContent,
-  type,
-  options: ArrayOptions,
-}: Props) => {
+const BannerBlock = ({ content, type, options: ArrayOptions }: Props) => {
   const navigate = useNavigate();
-  const content = ArrayContent[0];
   const options = ArrayOptions && ArrayOptions[0];
-  const promotionImage = content?.promotion?.bannerImage?.url;
-  const campaignImage = content?.campaign?.bannerImage?.url;
-  const contentImage = content?.image?.url;
+  const promotionImage = (content?.promotion as Promotion)?.bannerImage?.url;
+  const campaignImage = (content?.campaign as Campaign)?.bannerImage?.url;
+  const contentImage = (content?.image as Image)?.url;
   const bannerImage = contentImage || promotionImage || campaignImage;
 
   const { name } = content as Promotion | Campaign;

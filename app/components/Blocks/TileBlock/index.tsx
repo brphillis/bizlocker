@@ -1,23 +1,27 @@
 // import { useNavigate } from "@remix-run/react";
 
 type Props = {
-  content: any;
+  content: ContentData;
   options: BlockOptions[];
 };
 
-const TileBlock = ({ content: ArrayContent, options: ArrayOptions }: Props) => {
-  let content: any = [];
+const TileBlock = ({ content, options: ArrayOptions }: Props) => {
+  const joinedContent: any = [];
   const options = ArrayOptions[0];
   const columns = options?.columns || 2;
 
-  if (ArrayContent[0].image.length > 0) {
-    ArrayContent[0].image.forEach((e: any) => content.push(e));
+  if ((content?.image as Image[])?.length > 0) {
+    (content?.image as Image[])?.forEach((e: any) => joinedContent.push(e));
   }
-  if (ArrayContent[0].promotion.length > 0) {
-    ArrayContent[0].promotion.forEach((e: any) => content.push(e));
+  if ((content?.promotion as Promotion[])?.length > 0) {
+    (content?.promotion as Promotion[]).forEach((e: any) =>
+      joinedContent.push(e)
+    );
   }
-  if (ArrayContent[0].campaign.length > 0) {
-    ArrayContent[0].campaign.forEach((e: any) => content.push(e));
+  if ((content?.campaign as Campaign[])?.length > 0) {
+    (content?.campaign as Campaign[])?.forEach((e: any) =>
+      joinedContent.push(e)
+    );
   }
 
   return (
@@ -29,15 +33,14 @@ const TileBlock = ({ content: ArrayContent, options: ArrayOptions }: Props) => {
           : "repeat(2, minmax(0, 1fr))",
       }}
     >
-      {content?.map((contentData: any, i: number) => {
+      {joinedContent?.map((contentData: any, i: number) => {
         const { name } = contentData as any;
         const { url, altText } = contentData as Image;
-        console.log("TILEDATA", contentData);
 
         const promotionOrCampaignImage = contentData?.tileImage?.url;
         const contentImage = contentData?.image?.url;
         const tileImage = contentImage || promotionOrCampaignImage;
-        // console.log("HERE", contentData);
+
         // const generateImageLink = () => {
         //   if (type === "promotion") {
         //     return `/promotion/${name}`;
@@ -55,7 +58,9 @@ const TileBlock = ({ content: ArrayContent, options: ArrayOptions }: Props) => {
             key={"tileImage_" + (name || i)}
             className={
               "relative h-auto w-auto cursor-pointer object-cover transition duration-300 ease-in-out hover:scale-[1.01] " +
-              (content.length % 2 !== 0 ? "max-sm:last:col-span-full" : "")
+              (joinedContent.length % 2 !== 0
+                ? "max-sm:last:col-span-full"
+                : "")
             }
             // onClick={() => navigate(imageLink)}
             src={tileImage || url}

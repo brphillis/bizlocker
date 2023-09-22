@@ -1,12 +1,12 @@
 import { generateColor } from "~/utility/colors";
 
 type Props = {
-  content: any;
-  options?: BlockOptions;
+  content: BlockContent;
+  options: BlockOptions[];
 };
 
-const HeroBlock = ({ content: contentArray, options }: Props) => {
-  const content = contentArray[0];
+const HeroBlock = ({ content, options: optionsArray }: Props) => {
+  const options = optionsArray[0];
   const {
     title,
     titleColor,

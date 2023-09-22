@@ -41,6 +41,7 @@ import {
   upsertWebPageInfo,
 } from "~/models/webPages.server";
 import { getAvailableColors } from "~/models/enums.server";
+import { getBlocks } from "~/utility/blockHelpers";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: swiper },
@@ -58,8 +59,15 @@ export const loader = async ({ params }: LoaderArgs) => {
 
   if (id && id !== "add") {
     const webPage = await getWebPage(id);
+    let blocks;
+
+    if (webPage) {
+      blocks = await getBlocks(webPage as any);
+    }
+
     return {
       webPage,
+      blocks,
       articleCategories,
       productCategories,
       productSubCategories,
@@ -72,9 +80,18 @@ export const loader = async ({ params }: LoaderArgs) => {
 export const action = async ({ request, params }: ActionArgs) => {
   const id = params.id === "add" ? undefined : params.id;
   const form = Object.fromEntries(await request.formData());
-  const { title, description, thumbnail, itemIndex, contentType, name } = form;
+  const {
+    title,
+    description,
+    thumbnail,
+    itemIndex,
+    blockId,
+    blockName,
+    contentType,
+    name,
+  } = form;
 
-  const blockOptions: NewBlockOptions = getFormBlockOptions(form);
+  const blockOptions: BlockOptions = getFormBlockOptions(form);
 
   switch (form._action) {
     case "search":
@@ -132,11 +149,7 @@ export const action = async ({ request, params }: ActionArgs) => {
       );
 
     case "delete":
-      return await removeBlock(
-        parseInt(id as string),
-        parseInt(itemIndex as string),
-        "webPage"
-      );
+      return await removeBlock(blockId as string, blockName as BlockName);
 
     case "deleteWebPage":
       return await deleteWebPage(parseInt(id as string));
@@ -147,6 +160,7 @@ const ModifyWebPage = () => {
   const submit = useSubmit();
   const {
     webPage,
+    blocks,
     productCategories,
     articleCategories,
     productSubCategories,
@@ -268,6 +282,7 @@ const ModifyWebPage = () => {
                 content={
                   <PageBuilder
                     page={webPage}
+                    blocks={blocks}
                     searchResults={searchResults}
                     updateSuccess={updateSuccess}
                     productCategories={productCategories}

@@ -19,9 +19,14 @@ import {
 } from "~/utility/pageBuilder";
 import { getArticleCategories } from "~/models/articleCategories.server";
 import { getAvailableColors } from "~/models/enums.server";
+import { getBlocks } from "~/utility/blockHelpers";
 
 export const loader = async () => {
   const homePage = await getHomePage();
+  let blocks;
+  if (homePage) {
+    blocks = await getBlocks(homePage as any);
+  }
   const productCategories = await getProductCategories();
   const productSubCategories = await getProductSubCategories();
   const articleCategories = await getArticleCategories();
@@ -30,6 +35,7 @@ export const loader = async () => {
 
   return {
     homePage,
+    blocks,
     productCategories,
     productSubCategories,
     articleCategories,
@@ -40,9 +46,18 @@ export const loader = async () => {
 
 export const action = async ({ request }: ActionArgs) => {
   const form = Object.fromEntries(await request.formData());
-  const { title, description, pageId, itemIndex, contentType, name } = form;
+  const {
+    title,
+    description,
+    pageId,
+    itemIndex,
+    blockId,
+    blockName,
+    contentType,
+    name,
+  } = form;
 
-  const blockOptions: NewBlockOptions = getFormBlockOptions(form);
+  const blockOptions: BlockOptions = getFormBlockOptions(form);
 
   switch (form._action) {
     case "search":
@@ -76,7 +91,6 @@ export const action = async ({ request }: ActionArgs) => {
 
     case "update":
       const newBlockData = getBlockUpdateValues(form);
-      // console.log("NEWBLOCKDATA", newBlockData);
 
       let blockValidationError: string[] = [];
 
@@ -108,11 +122,7 @@ export const action = async ({ request }: ActionArgs) => {
       );
 
     case "delete":
-      return await removeBlock(
-        parseInt(pageId as string),
-        parseInt(itemIndex as string),
-        "homePage"
-      );
+      return await removeBlock(blockId as string, blockName as BlockName);
 
     default:
       return null;
@@ -122,6 +132,7 @@ export const action = async ({ request }: ActionArgs) => {
 const ManageHomePage = () => {
   const {
     homePage,
+    blocks,
     productCategories,
     productSubCategories,
     articleCategories,
@@ -212,6 +223,7 @@ const ManageHomePage = () => {
               content={
                 <PageBuilder
                   page={homePage}
+                  blocks={blocks}
                   searchResults={searchResults}
                   updateSuccess={updateSuccess}
                   productCategories={productCategories}

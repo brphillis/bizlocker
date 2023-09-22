@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { IoCaretForwardCircleSharp, IoCloseCircle } from "react-icons/io5";
 import { capitalizeFirst } from "~/utility/stringHelpers";
 
@@ -34,10 +34,6 @@ const BlockContentResultsTable = ({
       return JSON.stringify(itemsIdArray);
     }
   };
-
-  useEffect(() => {
-    console.log(searchResults);
-  }, [searchResults]);
 
   return (
     <>
