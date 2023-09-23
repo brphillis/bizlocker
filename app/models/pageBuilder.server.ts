@@ -62,7 +62,7 @@ export const updatePageBlock = async (
   /// select the block we are going to edit
   const existingBlock = blocks.find((e) => e.order === itemIndex);
 
-  if (existingBlock) {
+  if (existingBlock && blockOptions) {
     // Update Existing Block
 
     // if there is a block at that index, we edit it
@@ -140,6 +140,9 @@ export const updatePageBlock = async (
             content: { connect: { id: updatedBlockContent.id } },
           },
         });
+
+        // update the BlockOptions
+        await updateOrCreateBlockOptions(existingBlock.id, blockOptions);
 
         // update the PageBlock
         await prisma.block.update({

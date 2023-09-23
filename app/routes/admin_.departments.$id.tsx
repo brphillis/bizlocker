@@ -12,6 +12,8 @@ import {} from "~/models/productSubCategories.server";
 import { useEffect, useState } from "react";
 import { getDepartment, upsertDepartment } from "~/models/departments.server";
 import { HiTrash } from "react-icons/hi2";
+import BasicInput from "~/components/Forms/Input/BasicInput";
+import { validateForm } from "~/utility/validate";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const id = params?.id;
@@ -27,21 +29,11 @@ export const action = async ({ request, params }: ActionArgs) => {
   const { name, isActive, index, displayInNavigation, productCategories } =
     form;
 
-  let validationError: string[] = [];
-
-  if (!name) {
-    validationError.push("Name is Required");
-  }
-
-  if (validationError.length > 0) {
-    return { validationError };
-  }
-
   switch (form._action) {
     case "upsert":
-      if (!name || name.length < 3) {
-        const validationError = "name must be at least 3 chars.";
-        return { validationError };
+      const validationErrors = validateForm(form);
+      if (validationErrors) {
+        return { validationErrors };
       }
 
       const departmentData = {
@@ -62,8 +54,11 @@ export const action = async ({ request, params }: ActionArgs) => {
 const ModifyDepartment = () => {
   const navigate = useNavigate();
   const department = useLoaderData();
-  const { validationError, success } =
-    (useActionData() as { success: boolean; validationError: string[] }) || {};
+  const { validationErrors, success } =
+    (useActionData() as {
+      success: boolean;
+      validationErrors: ValidationErrors;
+    }) || {};
   const mode = department ? "edit" : "add";
 
   const { productCategories } = department || {};
@@ -102,37 +97,29 @@ const ModifyDepartment = () => {
           hasDelete={false}
         />
 
-        <div className="form-control min-w-[400px] gap-3 max-sm:min-w-full">
+        <div className="form-control min-w-[400px] gap-3 max-md:gap-0 max-sm:min-w-full">
           <div className="flex flex-wrap justify-evenly gap-3">
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Name</span>
-              </label>
-              <input
-                name="name"
-                type="text"
-                placeholder="Name"
-                className="input input-bordered w-[95vw] sm:w-[215px]"
-                defaultValue={department?.name || ""}
-              />
-            </div>
+            <BasicInput
+              label="Name"
+              type="text"
+              name="name"
+              placeholder="Name"
+              defaultValue={department?.name || ""}
+              validationErrors={validationErrors}
+            />
 
-            <div className="w-[95vw] sm:w-[215px]"></div>
+            <div className="w-full sm:w-[215px]"></div>
           </div>
 
           <div className="flex flex-wrap justify-evenly gap-3">
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Index</span>
-              </label>
-              <input
-                name="index"
-                type="number"
-                placeholder="Index"
-                className="input input-bordered w-[95vw] sm:w-[215px]"
-                defaultValue={department?.index || 0}
-              />
-            </div>
+            <BasicInput
+              label="Index"
+              type="number"
+              name="index"
+              placeholder="Index"
+              defaultValue={department?.index || 0}
+              validationErrors={validationErrors}
+            />
 
             <div className="form-control w-full sm:w-[215px]">
               <label className="label text-sm">In Navigation</label>
@@ -181,11 +168,7 @@ const ModifyDepartment = () => {
           />
         </div>
 
-        <BackSubmitButtons
-          loading={loading}
-          setLoading={setLoading}
-          validationErrors={validationError}
-        />
+        <BackSubmitButtons loading={loading} setLoading={setLoading} />
       </Form>
     </DarkOverlay>
   );

@@ -1,7 +1,5 @@
-import SelectBrand from "~/components/Forms/Select/SelectBrand";
+import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import SelectGender from "~/components/Forms/Select/SelectGender";
-import SelectProductCategory from "~/components/Forms/Select/SelectProductCategory";
-import SelectProductSubCategory from "~/components/Forms/Select/SelectProductSubCategory";
 
 type Props = {
   selectedBlock: BlockName | undefined;
@@ -27,20 +25,29 @@ const ProductBlockOptions = ({
           </p>
           <div className="flex flex-wrap gap-3 !text-brand-white">
             <div className="flex w-full justify-start gap-3">
-              <SelectProductCategory
-                productCategories={productCategories}
+              <BasicSelect
+                name="productCategory"
+                label="Product Category"
+                placeholder="Product Category"
+                selections={productCategories as unknown as SelectValue[]}
                 defaultValue={defaultValues?.[0]?.productCategoryId?.toString()}
               />
 
-              <SelectProductSubCategory
-                productSubCategories={productSubCategories}
+              <BasicSelect
+                name="productSubCategory"
+                label="Product  SubCategory"
+                placeholder="Product SubCategory"
+                selections={productSubCategories as unknown as SelectValue[]}
                 defaultValue={defaultValues?.[0]?.productSubCategoryId?.toString()}
               />
             </div>
 
             <div className="flex w-full justify-start gap-3">
-              <SelectBrand
-                brands={brands}
+              <BasicSelect
+                name="brand"
+                label="Brand"
+                placeholder="Brand"
+                selections={brands as unknown as SelectValue[]}
                 defaultValue={defaultValues?.[0]?.brandId?.toString()}
               />
 

@@ -1,5 +1,4 @@
 import type { LoaderArgs } from "@remix-run/node";
-import { json } from "@remix-run/node";
 import {
   Form,
   Outlet,
@@ -7,6 +6,7 @@ import {
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
+import BasicInput from "~/components/Forms/Input/BasicInput";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import Pagination from "~/components/Pagination";
@@ -17,7 +17,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   const { campaigns, totalPages } = await searchCampaigns(undefined, url);
 
-  return json({ campaigns, totalPages });
+  return { campaigns, totalPages };
 };
 
 const Campaigns = () => {
@@ -33,19 +33,7 @@ const Campaigns = () => {
         <AdminPageHeader title="Manage Campaign" addButtonText="Add Campaign" />
 
         <div className="mt-3 flex flex-col">
-          <div className="flex flex-row gap-6">
-            <div className="form-control w-full sm:w-[215px]">
-              <label className="label">
-                <span className="label-text">Name</span>
-              </label>
-              <input
-                name="name"
-                className="input w-full"
-                placeholder="Name"
-                type="text"
-              />
-            </div>
-          </div>
+          <BasicInput label="Name" name="name" placeholder="Name" type="text" />
 
           <div className="flex flex-row justify-end sm:justify-start">
             <button type="submit" className="btn btn-primary mt-6 w-max">
@@ -68,54 +56,51 @@ const Campaigns = () => {
               </tr>
             </thead>
             <tbody>
-              {campaigns &&
-                campaigns.map(
-                  (
-                    { id, name, updatedAt, createdAt, isActive }: Campaign,
-                    i: number
-                  ) => {
-                    return (
-                      <tr
-                        className="cursor-pointer transition-colors duration-200 hover:bg-base-100"
-                        key={id}
-                        onClick={() => navigate(`/admin/campaigns/${id}`)}
-                      >
-                        {currentPage && (
-                          <td>
-                            {i + 1 + (currentPage - 1) * campaigns?.length}
-                          </td>
-                        )}
-                        <td>{name}</td>
-                        <td>
-                          {new Date(updatedAt as Date).toLocaleDateString(
-                            "en-US",
-                            {
-                              day: "numeric",
-                              month: "long",
-                              year: "numeric",
-                            }
-                          )}
-                        </td>
-                        <td>
-                          {new Date(createdAt).toLocaleDateString("en-US", {
+              {campaigns?.map(
+                (
+                  { id, name, updatedAt, createdAt, isActive }: Campaign,
+                  i: number
+                ) => {
+                  return (
+                    <tr
+                      className="cursor-pointer transition-colors duration-200 hover:bg-base-100"
+                      key={id}
+                      onClick={() => navigate(`/admin/campaigns/${id}`)}
+                    >
+                      {currentPage && (
+                        <td>{i + 1 + (currentPage - 1) * campaigns?.length}</td>
+                      )}
+                      <td>{name}</td>
+                      <td>
+                        {new Date(updatedAt as Date).toLocaleDateString(
+                          "en-US",
+                          {
                             day: "numeric",
                             month: "long",
                             year: "numeric",
-                          })}
-                        </td>
+                          }
+                        )}
+                      </td>
+                      <td>
+                        {new Date(createdAt).toLocaleDateString("en-US", {
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                        })}
+                      </td>
 
-                        <td>
-                          {!isActive && (
-                            <div className="ml-4 h-3 w-3 rounded-full bg-red-500" />
-                          )}
-                          {isActive && (
-                            <div className="ml-4 h-3 w-3 self-center rounded-full bg-success" />
-                          )}
-                        </td>
-                      </tr>
-                    );
-                  }
-                )}
+                      <td>
+                        {!isActive && (
+                          <div className="ml-4 h-3 w-3 rounded-full bg-red-500" />
+                        )}
+                        {isActive && (
+                          <div className="ml-4 h-3 w-3 self-center rounded-full bg-success" />
+                        )}
+                      </td>
+                    </tr>
+                  );
+                }
+              )}
             </tbody>
           </table>
         </div>

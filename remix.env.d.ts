@@ -24,7 +24,16 @@ interface Verifier {
   updatedAt: DateTime | null;
 }
 
+type ValidationErrors = {
+  name?: string;
+};
+
 type VerifyTypes = "email" | "password";
+
+type SelectValue = {
+  id: string;
+  name: string;
+};
 
 interface Image {
   id?: number;

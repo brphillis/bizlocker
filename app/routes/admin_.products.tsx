@@ -1,3 +1,13 @@
+import Pagination from "~/components/Pagination";
+import { getBrands } from "~/models/brands.server";
+import { searchProducts } from "~/models/products.server";
+import ProductSort from "~/components/Sorting/ProductSort";
+import { type LoaderArgs } from "@remix-run/server-runtime";
+import BasicInput from "~/components/Forms/Input/BasicInput";
+import BasicSelect from "~/components/Forms/Select/BasicSelect";
+import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
+import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
+import { getProductSubCategories } from "~/models/productSubCategories.server";
 import {
   Form,
   Outlet,
@@ -5,16 +15,6 @@ import {
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
-import { type LoaderArgs } from "@remix-run/server-runtime";
-import SelectBrand from "~/components/Forms/Select/SelectBrand";
-import SelectProductSubCategory from "~/components/Forms/Select/SelectProductSubCategory";
-import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
-import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
-import Pagination from "~/components/Pagination";
-import ProductSort from "~/components/Sorting/ProductSort";
-import { getBrands } from "~/models/brands.server";
-import { getProductSubCategories } from "~/models/productSubCategories.server";
-import { searchProducts } from "~/models/products.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
@@ -45,22 +45,26 @@ const ManageProducts = () => {
 
         <div className="mt-3 flex flex-col">
           <div className="flex flex-row flex-wrap gap-6">
-            <div className="form-control w-full sm:w-[215px]">
-              <label className="label">
-                <span className="label-text">Name</span>
-              </label>
-              <input
-                name="name"
-                type="text"
-                placeholder="Name"
-                className="input w-full"
-              />
-            </div>
-
-            <SelectProductSubCategory
-              productSubCategories={productSubCategories}
+            <BasicInput
+              name="name"
+              label="Name"
+              placeholder="Name"
+              type="text"
             />
-            <SelectBrand brands={brands} />
+
+            <BasicSelect
+              label="Category"
+              name="productSubCategory"
+              placeholder="Select a Category"
+              selections={productSubCategories}
+            />
+
+            <BasicSelect
+              label="Brand"
+              name="brand"
+              placeholder="Brand"
+              selections={brands}
+            />
           </div>
           <div className="flex flex-row justify-end sm:justify-start">
             <button type="submit" className="btn btn-primary mt-6 w-max">

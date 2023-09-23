@@ -12,6 +12,8 @@ import { deleteBrand, getBrand, upsertBrand } from "~/models/brands.server";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
 import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node";
 import { useEffect, useState } from "react";
+import BasicInput from "~/components/Forms/Input/BasicInput";
+import { validateForm } from "~/utility/validate";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const id = params?.id;
@@ -32,21 +34,11 @@ export const action = async ({ request, params }: ActionArgs) => {
   const form = Object.fromEntries(await request.formData());
   const { name, image } = form;
 
-  let validationError: string[] = [];
-
-  if (!name) {
-    validationError.push("Name is Required");
-  }
-
-  if (validationError.length > 0) {
-    return { validationError };
-  }
-
   switch (form._action) {
     case "upsert":
-      if (!name || name.length < 3) {
-        const validationError = "name must be at least 3 chars.";
-        return { validationError };
+      const validationErrors = validateForm(form);
+      if (validationErrors) {
+        return { validationErrors };
       }
 
       const parsedImage = image
@@ -66,8 +58,11 @@ export const action = async ({ request, params }: ActionArgs) => {
 const ModifyBrand = () => {
   const navigate = useNavigate();
   const brand = useLoaderData();
-  const { validationError, success } =
-    (useActionData() as { success: boolean; validationError: string[] }) || {};
+  const { validationErrors, success } =
+    (useActionData() as {
+      success: boolean;
+      validationErrors: ValidationErrors;
+    }) || {};
   const mode = brand ? "edit" : "add";
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -93,27 +88,19 @@ const ModifyBrand = () => {
         />
 
         <div className="form-control w-full max-w-xs gap-3">
-          <div className="form-control w-full max-w-xs ">
-            <label className="label">
-              <span className="label-text">Name</span>
-            </label>
-            <input
-              name="name"
-              type="text"
-              placeholder="Name"
-              className="input input-bordered w-full max-w-xs"
-              defaultValue={brand?.name || undefined}
-            />
-          </div>
+          <BasicInput
+            name="name"
+            label="Name"
+            placeholder="Name"
+            type="text"
+            defaultValue={brand?.name || undefined}
+            validationErrors={validationErrors}
+          />
 
           <UploadImage defaultValue={brand?.image} />
         </div>
 
-        <BackSubmitButtons
-          loading={loading}
-          setLoading={setLoading}
-          validationErrors={validationError}
-        />
+        <BackSubmitButtons loading={loading} setLoading={setLoading} />
       </Form>
     </DarkOverlay>
   );

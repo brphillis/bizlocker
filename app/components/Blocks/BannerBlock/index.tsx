@@ -1,7 +1,7 @@
 import { useNavigate } from "@remix-run/react";
 
 type Props = {
-  content: BlockContent;
+  content: BlockContent | Campaign | Promotion;
   type?: string;
   options?: BlockOptions[];
 };
@@ -9,9 +9,13 @@ type Props = {
 const BannerBlock = ({ content, type, options: ArrayOptions }: Props) => {
   const navigate = useNavigate();
   const options = ArrayOptions && ArrayOptions[0];
-  const promotionImage = (content?.promotion as Promotion)?.bannerImage?.url;
-  const campaignImage = (content?.campaign as Campaign)?.bannerImage?.url;
-  const contentImage = (content?.image as Image)?.url;
+  const promotionImage =
+    ((content as BlockContent)?.promotion as Promotion)?.bannerImage?.url ||
+    (content as Campaign)?.bannerImage?.url;
+  const campaignImage =
+    ((content as BlockContent)?.campaign as Campaign)?.bannerImage?.url ||
+    (content as Promotion)?.bannerImage?.url;
+  const contentImage = ((content as BlockContent)?.image as Image)?.url;
   const bannerImage = contentImage || promotionImage || campaignImage;
 
   const { name } = content as Promotion | Campaign;
@@ -31,7 +35,7 @@ const BannerBlock = ({ content, type, options: ArrayOptions }: Props) => {
   const imageLink = generateImageLink();
   return (
     <div className="max-w-[100vw] overflow-visible sm:w-max">
-      {size === "small" && (
+      {(size === "small" || !size) && (
         <img
           // onClick={() => imageLink && navigate(imageLink)}
           style={{ cursor: imageLink ? "pointer" : "auto" }}

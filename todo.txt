@@ -33,3 +33,4 @@ Feat history
 009 - add accounts page / add promo filter to product page
 010 - basic/necessary form validation added to all forms
 011 - continuation redesign of content block development
+012 - input and select field reusable components

@@ -1,4 +1,4 @@
-import { json, type LoaderArgs } from "@remix-run/node";
+import type { LoaderArgs } from "@remix-run/node";
 import {
   Form,
   Outlet,
@@ -6,6 +6,7 @@ import {
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
+import BasicInput from "~/components/Forms/Input/BasicInput";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import Pagination from "~/components/Pagination";
@@ -25,7 +26,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     searchQuery
   );
 
-  return json({ articleCategories, totalPages });
+  return { articleCategories, totalPages };
 };
 
 const ArticleCategories = () => {
@@ -48,17 +49,12 @@ const ArticleCategories = () => {
 
         <div className="mt-3 flex flex-col">
           <div className="flex flex-row">
-            <div className="form-control w-full">
-              <label className="label">
-                <span className="label-text">Category Name</span>
-              </label>
-              <input
-                name="name"
-                type="text"
-                placeholder="Name"
-                className="input w-full sm:w-[215px]"
-              />
-            </div>
+            <BasicInput
+              label="Name"
+              name="name"
+              type="text"
+              placeholder="Name"
+            />
           </div>
 
           <div className="flex flex-row justify-end sm:justify-start">

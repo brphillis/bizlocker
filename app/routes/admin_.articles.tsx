@@ -1,13 +1,12 @@
 import type { LoaderArgs } from "@remix-run/node";
-import { json } from "@remix-run/node";
 import {
   Form,
   useLoaderData,
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
-import SelectArticleCategory from "~/components/Forms/Select/SelectArticleCategory";
-
+import BasicInput from "~/components/Forms/Input/BasicInput";
+import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import Pagination from "~/components/Pagination";
@@ -20,7 +19,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   const { articles, totalPages } = await searchArticles(undefined, url);
   const articleCategories = await getArticleCategories();
 
-  return json({ articles, totalPages, articleCategories });
+  return { articles, totalPages, articleCategories };
 };
 
 const Articles = () => {
@@ -37,21 +36,19 @@ const Articles = () => {
 
         <div className="mt-3 flex flex-col">
           <div className="flex flex-row flex-wrap gap-6">
-            <div className="flex w-full flex-row gap-6 sm:w-[215px]">
-              <div className="form-control w-full">
-                <label className="label">
-                  <span className="label-text">Article Title</span>
-                </label>
-                <input
-                  name="title"
-                  className="input w-full text-brand-black/50"
-                  placeholder="Name"
-                  type="text"
-                />
-              </div>
-            </div>
+            <BasicInput
+              label="Article Title"
+              name="title"
+              type="text"
+              placeholder="Name"
+            />
 
-            <SelectArticleCategory articleCategories={articleCategories} />
+            <BasicSelect
+              label="Category"
+              name="articleCategory"
+              placeholder="Select a Category"
+              selections={articleCategories}
+            />
           </div>
 
           <div className="flex flex-row justify-end sm:justify-start">

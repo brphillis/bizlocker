@@ -1,4 +1,4 @@
-import SelectArticleCategory from "~/components/Forms/Select/SelectArticleCategory";
+import BasicSelect from "~/components/Forms/Select/BasicSelect";
 
 type Props = {
   selectedBlock: BlockName | undefined;
@@ -19,8 +19,11 @@ const ArticleBlockOptions = ({
             Filters
           </p>
           <div className="flex flex-wrap gap-3 !text-brand-white">
-            <SelectArticleCategory
-              articleCategories={articleCategories}
+            <BasicSelect
+              label="Category"
+              name="articleCategory"
+              placeholder="Select a Category"
+              selections={articleCategories as unknown as SelectValue[]}
               defaultValue={defaultValues?.[0]?.articleCategoryId?.toString()}
             />
           </div>

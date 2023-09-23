@@ -15,6 +15,8 @@ import { deleteImage, getImage, upsertImage } from "~/models/images.server";
 import { IoCaretForwardCircleSharp } from "react-icons/io5";
 import { handleResourceSubmit } from "~/utility/formHelpers";
 import { useEffect, useState } from "react";
+import { validateForm } from "~/utility/validate";
+import BasicInput from "~/components/Forms/Input/BasicInput";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const id = params?.id;
@@ -35,18 +37,13 @@ export const action = async ({ request, params }: ActionArgs) => {
   const form = Object.fromEntries(await request.formData());
   const { altText, image } = form;
 
-  let validationError: string[] = [];
-
-  if (!altText) {
-    validationError.push("Title is Required");
-  }
-
-  if (validationError.length > 0) {
-    return { validationError };
-  }
-
   switch (form._action) {
     case "upsert":
+      const validationErrors = validateForm(form);
+      if (validationErrors) {
+        return { validationErrors };
+      }
+
       const parsedImage = image
         ? (JSON.parse(image?.toString()) as Image)
         : undefined;
@@ -65,8 +62,11 @@ const ModifyImage = () => {
   const navigate = useNavigate();
   let submit = useSubmit();
   const image = useLoaderData();
-  const { validationError, success } =
-    (useActionData() as { success: boolean; validationError: string[] }) || {};
+  const { validationErrors, success } =
+    (useActionData() as {
+      success: boolean;
+      validationErrors: ValidationErrors;
+    }) || {};
   const mode = image ? "edit" : "add";
   const {
     altText,
@@ -123,18 +123,14 @@ const ModifyImage = () => {
         <div className="form-control w-full items-center gap-3">
           <UploadImage defaultValue={image} />
 
-          <div className="form-control w-full max-w-xs ">
-            <label className="label">
-              <span className="label-text">Title</span>
-            </label>
-            <input
-              name="altText"
-              type="text"
-              placeholder="Title"
-              className="input input-bordered w-full max-w-xs"
-              defaultValue={altText || undefined}
-            />
-          </div>
+          <BasicInput
+            label="Title"
+            name="altText"
+            placeholder="Title"
+            defaultValue={altText || undefined}
+            type="text"
+            validationErrors={validationErrors}
+          />
 
           <div className="mt-6 text-sm">Existing Connections</div>
 
@@ -294,11 +290,7 @@ const ModifyImage = () => {
           </table>
         </div>
 
-        <BackSubmitButtons
-          loading={loading}
-          setLoading={setLoading}
-          validationErrors={validationError}
-        />
+        <BackSubmitButtons loading={loading} setLoading={setLoading} />
       </Form>
     </DarkOverlay>
   );

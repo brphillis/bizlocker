@@ -6,6 +6,7 @@ import {
   useSearchParams,
 } from "@remix-run/react";
 import { type LoaderArgs } from "@remix-run/server-runtime";
+import BasicInput from "~/components/Forms/Input/BasicInput";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import Pagination from "~/components/Pagination";
@@ -50,19 +51,12 @@ const ManageDepartments = () => {
         />
 
         <div className="mt-3 flex w-full flex-wrap items-end gap-6">
-          <div className="flex w-full flex-row gap-6 sm:w-[215px]">
-            <div className="form-control w-full">
-              <label className="label">
-                <span className="label-text">Department Name</span>
-              </label>
-              <input
-                name="name"
-                className="input w-full text-brand-black/50"
-                placeholder="Name"
-                type="text"
-              />
-            </div>
-          </div>
+          <BasicInput
+            label="Department Name"
+            type="text"
+            name="name"
+            placeholder="Name"
+          />
         </div>
 
         <div className="flex flex-row justify-end sm:justify-start">

@@ -15,6 +15,8 @@ import {
   upsertProductSubCategory,
 } from "~/models/productSubCategories.server";
 import { useEffect, useState } from "react";
+import BasicInput from "~/components/Forms/Input/BasicInput";
+import { validateForm } from "~/utility/validate";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const id = params?.id;
@@ -28,23 +30,12 @@ export const action = async ({ request, params }: ActionArgs) => {
   const form = Object.fromEntries(await request.formData());
   const { name, index, displayInNavigation, isActive, image } = form;
 
-  let validationError: string[] = [];
-
-  if (!name) {
-    validationError.push("Name is Required");
-  }
-
-  if (validationError.length > 0) {
-    return { validationError };
-  }
-
   switch (form._action) {
     case "upsert":
-      if (!name || name.length < 3) {
-        const validationError = "name must be at least 3 chars.";
-        return { validationError };
+      const validationErrors = validateForm(form);
+      if (validationErrors) {
+        return { validationErrors };
       }
-
       const parsedImage = image
         ? (JSON.parse(image?.toString()) as Image)
         : undefined;
@@ -71,8 +62,11 @@ export const action = async ({ request, params }: ActionArgs) => {
 const ModifyProductSubCategory = () => {
   const navigate = useNavigate();
   const productSubCategory = useLoaderData() || {};
-  const { validationError, success } =
-    (useActionData() as { success: boolean; validationError: string[] }) || {};
+  const { validationErrors, success } =
+    (useActionData() as {
+      success: boolean;
+      validationErrors: ValidationErrors;
+    }) || {};
   const mode = productSubCategory ? "edit" : "add";
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -99,35 +93,27 @@ const ModifyProductSubCategory = () => {
 
         <div className="form-control  gap-3">
           <div className="flex flex-wrap justify-evenly gap-3">
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Name</span>
-              </label>
-              <input
-                name="name"
-                type="text"
-                placeholder="Name"
-                className="input input-bordered w-[95vw] sm:w-[215px]"
-                defaultValue={productSubCategory?.name || ""}
-              />
-            </div>
+            <BasicInput
+              label="Name"
+              type="text"
+              name="name"
+              placeholder="Name"
+              defaultValue={productSubCategory?.name || ""}
+              validationErrors={validationErrors}
+            />
 
             <div className="w-[95vw] sm:w-[215px]"></div>
           </div>
 
           <div className="mb-6 flex flex-wrap justify-evenly gap-3">
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Index</span>
-              </label>
-              <input
-                name="index"
-                type="number"
-                placeholder="Index"
-                className="input input-bordered w-[95vw] sm:w-[215px]"
-                defaultValue={productSubCategory?.index || 0}
-              />
-            </div>
+            <BasicInput
+              label="Index"
+              type="number"
+              name="index"
+              placeholder="Index"
+              defaultValue={productSubCategory?.index || 0}
+              validationErrors={validationErrors}
+            />
 
             <div className="form-control w-full sm:w-[215px]">
               <label className="label text-sm">In Navigation</label>
@@ -150,11 +136,7 @@ const ModifyProductSubCategory = () => {
           />
         </div>
 
-        <BackSubmitButtons
-          loading={loading}
-          setLoading={setLoading}
-          validationErrors={validationError}
-        />
+        <BackSubmitButtons loading={loading} setLoading={setLoading} />
       </Form>
     </DarkOverlay>
   );

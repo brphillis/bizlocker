@@ -11,6 +11,7 @@ import {
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
+import BasicInput from "~/components/Forms/Input/BasicInput";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
@@ -40,17 +41,12 @@ const Brands = () => {
 
         <div className="mt-3 flex flex-col">
           <div className="flex flex-row">
-            <div className="form-control w-full sm:w-[215px]">
-              <label className="label">
-                <span className="label-text">Brand Name</span>
-              </label>
-              <input
-                name="name"
-                type="text"
-                placeholder="Name"
-                className="input w-full"
-              />
-            </div>
+            <BasicInput
+              label="Brand Name"
+              name="name"
+              placeholder="Name"
+              type="text"
+            />
           </div>
 
           <div className="flex flex-row justify-end sm:justify-start">

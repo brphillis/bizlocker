@@ -1,50 +1,48 @@
-import {
-  type ActionArgs,
-  type LoaderArgs,
-  type LinksFunction,
-  redirect,
-} from "@remix-run/node";
+import { useState } from "react";
+import Icon from "~/components/Icon";
+import { HiTrash } from "react-icons/hi2";
+import PageBuilder from "~/components/PageBuilder";
+import { getBrands } from "~/models/brands.server";
+import { getBlocks } from "~/utility/blockHelpers";
+import { getAvailableColors } from "~/models/enums.server";
+import UploadImage from "~/components/Forms/Upload/UploadImage";
+import LargeCollapse from "~/components/Collapse/LargeCollapse";
+import { getArticleCategories } from "~/models/articleCategories.server";
+import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
+import { getProductCategories } from "~/models/productCategories.server";
+import BasicMultiSelect from "~/components/Forms/Select/BasicMultiSelect";
+import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
+import { getProductSubCategories } from "~/models/productSubCategories.server";
 import {
   Form,
   useActionData,
   useLoaderData,
   useSubmit,
 } from "@remix-run/react";
-
-import { getArticleCategories } from "~/models/articleCategories.server";
 import {
   deleteArticle,
   getArticle,
   upsertArticleInfo,
 } from "~/models/articles.server";
-
-import swiper from "../../node_modules/swiper/swiper.css";
-import swiperNav from "../../node_modules/swiper/modules/navigation/navigation.min.css";
-import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
-import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
-import Icon from "~/components/Icon";
-import PageBuilder from "~/components/PageBuilder";
 import {
   changeBlockOrder,
   removeBlock,
   updatePageBlock,
 } from "~/models/pageBuilder.server";
-import UploadImage from "~/components/Forms/Upload/UploadImage";
-import SelectArticleCategories from "~/components/Forms/Select/SelectArticleCategories";
-import LargeCollapse from "~/components/Collapse/LargeCollapse";
-import { getProductCategories } from "~/models/productCategories.server";
-import { getProductSubCategories } from "~/models/productSubCategories.server";
-import { getBrands } from "~/models/brands.server";
 import {
-  getFormBlockOptions,
+  redirect,
+  type ActionArgs,
+  type LinksFunction,
+  type LoaderArgs,
+} from "@remix-run/node";
+import {
   getBlockUpdateValues,
+  getFormBlockOptions,
   searchContentData,
 } from "~/utility/pageBuilder";
-import { HiTrash } from "react-icons/hi2";
-import { useState } from "react";
-import { getAvailableColors } from "~/models/enums.server";
-import { getBlocks } from "~/utility/blockHelpers";
 
+import swiper from "../../node_modules/swiper/swiper.css";
+import swiperNav from "../../node_modules/swiper/modules/navigation/navigation.min.css";
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: swiper },
   { rel: "stylesheet", href: swiperNav },
@@ -283,10 +281,11 @@ const ModifyArticle = () => {
                     />
                   </div>
 
-                  <SelectArticleCategories
-                    articleCategories={articleCategories}
-                    valueToChange={article}
-                    styles="w-[95vw] sm:w-[320px]"
+                  <BasicMultiSelect
+                    name="articleCategories"
+                    title="Categories"
+                    selections={articleCategories}
+                    defaultValues={article?.articleCategories}
                   />
 
                   <div className="form-control w-full max-w-xs">

@@ -1,47 +1,46 @@
-import {
-  type ActionArgs,
-  type LoaderArgs,
-  type LinksFunction,
-  redirect,
-} from "@remix-run/node";
+import Icon from "~/components/Icon";
+import { HiTrash } from "react-icons/hi2";
+import PageBuilder from "~/components/PageBuilder";
+import { getBrands } from "~/models/brands.server";
+import { getBlocks } from "~/utility/blockHelpers";
+import { getAvailableColors } from "~/models/enums.server";
+import BasicInput from "~/components/Forms/Input/BasicInput";
+import UploadImage from "~/components/Forms/Upload/UploadImage";
+import LargeCollapse from "~/components/Collapse/LargeCollapse";
+import { getArticleCategories } from "~/models/articleCategories.server";
+import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
+import { getProductCategories } from "~/models/productCategories.server";
+import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
+import { getProductSubCategories } from "~/models/productSubCategories.server";
 import {
   Form,
   useActionData,
   useLoaderData,
   useSubmit,
 } from "@remix-run/react";
-
-import { getArticleCategories } from "~/models/articleCategories.server";
-
-import swiper from "../../node_modules/swiper/swiper.css";
-import swiperNav from "../../node_modules/swiper/modules/navigation/navigation.min.css";
-import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
-import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
-import Icon from "~/components/Icon";
-import PageBuilder from "~/components/PageBuilder";
-import {
-  changeBlockOrder,
-  removeBlock,
-  updatePageBlock,
-} from "~/models/pageBuilder.server";
-import UploadImage from "~/components/Forms/Upload/UploadImage";
-import LargeCollapse from "~/components/Collapse/LargeCollapse";
-import { getProductCategories } from "~/models/productCategories.server";
-import { getProductSubCategories } from "~/models/productSubCategories.server";
-import { getBrands } from "~/models/brands.server";
-import {
-  getFormBlockOptions,
-  getBlockUpdateValues,
-  searchContentData,
-} from "~/utility/pageBuilder";
-import { HiTrash } from "react-icons/hi2";
 import {
   deleteWebPage,
   getWebPage,
   upsertWebPageInfo,
 } from "~/models/webPages.server";
-import { getAvailableColors } from "~/models/enums.server";
-import { getBlocks } from "~/utility/blockHelpers";
+import {
+  changeBlockOrder,
+  removeBlock,
+  updatePageBlock,
+} from "~/models/pageBuilder.server";
+import {
+  redirect,
+  type ActionArgs,
+  type LinksFunction,
+  type LoaderArgs,
+} from "@remix-run/node";
+import {
+  getBlockUpdateValues,
+  getFormBlockOptions,
+  searchContentData,
+} from "~/utility/pageBuilder";
+import swiper from "../../node_modules/swiper/swiper.css";
+import swiperNav from "../../node_modules/swiper/modules/navigation/navigation.min.css";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: swiper },
@@ -207,18 +206,13 @@ const ModifyWebPage = () => {
                   method="POST"
                   className="flex w-full flex-col items-center gap-6"
                 >
-                  <div className="form-control">
-                    <label className="label">
-                      <span className="label-text text-brand-white">Title</span>
-                    </label>
-                    <input
-                      name="title"
-                      type="text"
-                      placeholder="Title"
-                      defaultValue={webPage?.title}
-                      className="input input-bordered w-[95vw] text-brand-black sm:w-[320px]"
-                    />
-                  </div>
+                  <BasicInput
+                    name="title"
+                    label="Title"
+                    placeholder="Title"
+                    type="text"
+                    defaultValue={webPage?.title}
+                  />
 
                   <div className="form-control">
                     <label className="label">

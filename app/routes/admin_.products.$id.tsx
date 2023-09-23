@@ -1,27 +1,31 @@
 import { useEffect, useState } from "react";
+import { validateForm } from "~/utility/validate";
 import { getBrands } from "~/models/brands.server";
 import DarkOverlay from "~/components/Layout/DarkOverlay";
 import { getPromotions } from "~/models/promotions.server";
+import BasicInput from "~/components/Forms/Input/BasicInput";
 import FormHeader from "~/components/Forms/Headers/FormHeader";
-import SelectBrand from "~/components/Forms/Select/SelectBrand";
+import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import SelectGender from "~/components/Forms/Select/SelectGender";
+import UploadHeroImage from "~/components/Forms/Upload/UploadHeroImage";
+import BasicMultiSelect from "~/components/Forms/Select/BasicMultiSelect";
+import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
+import { getAvailableColors, getAvailableSizes } from "~/models/enums.server";
+import { getProductSubCategories } from "~/models/productSubCategories.server";
+import RichTextInput from "~/components/Forms/Input/RichTextInput/index.client";
 import {
   Form,
   useActionData,
   useLoaderData,
   useNavigate,
 } from "@remix-run/react";
-import SelectPromotion from "~/components/Forms/Select/SelectPromotion";
-import { getProductSubCategories } from "~/models/productSubCategories.server";
-import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
-import { getAvailableColors, getAvailableSizes } from "~/models/enums.server";
-import ProductVariantFormModule from "~/components/Forms/Modules/ProductVariantFormModule";
 import {
   deleteProduct,
   getProduct,
   upsertProduct,
 } from "~/models/products.server";
-import SelectProductSubCategories from "~/components/Forms/Select/SelectProductSubCategories";
+import ProductVariantFormModule from "~/components/Forms/Modules/ProductVariantFormModule";
+import UploadMultipleImages from "~/components/Forms/Upload/UploadMultipleImages/index.client";
 import {
   type ActionArgs,
   type LinksFunction,
@@ -30,9 +34,6 @@ import {
 
 import swiper from "../../node_modules/swiper/swiper.css";
 import swiperNav from "../../node_modules/swiper/modules/navigation/navigation.min.css";
-import UploadMultipleImages from "~/components/Forms/Upload/UploadMultipleImages/index.client";
-import RichTextInput from "~/components/Forms/Input/RichTextInput/index.client";
-import UploadHeroImage from "~/components/Forms/Upload/UploadHeroImage";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: swiper },
@@ -79,32 +80,6 @@ export const action = async ({ request, params }: ActionArgs) => {
     promotion,
   } = form;
 
-  let validationError: string[] = [];
-
-  if (!name) {
-    validationError.push("Name is Required");
-  }
-
-  if (!productSubCategories) {
-    validationError.push("Category is Required");
-  }
-
-  if (!description) {
-    validationError.push("Description is Required");
-  }
-
-  if (!gender) {
-    validationError.push("Gender is Required");
-  }
-
-  if (!variants) {
-    validationError.push("Confirm the Variant");
-  }
-
-  if (validationError.length > 0) {
-    return { validationError };
-  }
-
   //if single variant we set its name to base
   let variantData = variants && JSON.parse(variants?.toString());
   if (!Array.isArray(variantData)) {
@@ -114,6 +89,11 @@ export const action = async ({ request, params }: ActionArgs) => {
 
   switch (form._action) {
     case "upsert":
+      const validationErrors = validateForm(form);
+      if (validationErrors) {
+        return { validationErrors };
+      }
+
       const parsedHeroImage = heroImage
         ? (JSON.parse(heroImage?.toString()) as Image)
         : undefined;
@@ -154,8 +134,11 @@ const Product = () => {
     availableColors,
     availableSizes,
   } = useLoaderData();
-  const { validationError, success } =
-    (useActionData() as { validationError: string[]; success: boolean }) || {};
+  const { validationErrors, success } =
+    (useActionData() as {
+      validationErrors: ValidationErrors;
+      success: boolean;
+    }) || {};
 
   const navigate = useNavigate();
 
@@ -187,23 +170,21 @@ const Product = () => {
         <div className="form-control">
           <div className="form-control gap-3">
             <div className="flex flex-wrap justify-evenly gap-3">
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text">Name</span>
-                </label>
-                <input
-                  name="name"
-                  type="text"
-                  placeholder="Name"
-                  className="input input-bordered w-[95vw] sm:w-[215px]"
-                  defaultValue={product?.name}
-                />
-              </div>
+              <BasicInput
+                label="Name"
+                type="text"
+                name="name"
+                placeholder="Name"
+                defaultValue={product?.name}
+                validationErrors={validationErrors}
+              />
 
-              <SelectBrand
-                brands={brands}
+              <BasicSelect
+                name="brand"
+                label="Brand"
+                placeholder="Brand"
+                selections={brands}
                 defaultValue={product?.brandId?.toString()}
-                defaultToNone={true}
               />
             </div>
 
@@ -213,30 +194,31 @@ const Product = () => {
                 label="Product is Gendered?"
               />
 
-              <SelectPromotion
-                promotions={promotions}
-                valueToChange={product}
+              <BasicSelect
+                name="promotion"
+                label="Promotion"
+                placeholder="Promotion"
+                selections={promotions}
+                defaultValue={product?.promotionId?.toString()}
               />
             </div>
 
             <div className="flex flex-wrap justify-evenly gap-3">
-              <SelectProductSubCategories
-                productSubCategories={productSubCategories}
-                valueToChange={product}
+              <BasicMultiSelect
+                name="productSubCategories"
+                title="Categories"
+                selections={productSubCategories}
+                defaultValues={product?.productSubCategories}
               />
 
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text">Info URL</span>
-                </label>
-                <input
-                  name="infoURL"
-                  type="text"
-                  placeholder="Info URL"
-                  className="input input-bordered w-[95vw] sm:w-[215px]"
-                  defaultValue={product?.infoURL}
-                />
-              </div>
+              <BasicInput
+                label="Info URL"
+                type="text"
+                name="infoURL"
+                placeholder="Index"
+                defaultValue={product?.infoURL}
+                validationErrors={validationErrors}
+              />
             </div>
           </div>
 
@@ -277,11 +259,7 @@ const Product = () => {
             />
           </div>
 
-          <BackSubmitButtons
-            loading={loading}
-            setLoading={setLoading}
-            validationErrors={validationError}
-          />
+          <BackSubmitButtons loading={loading} setLoading={setLoading} />
         </div>
       </Form>
     </DarkOverlay>

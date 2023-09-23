@@ -9,7 +9,7 @@ const SelectGender = ({ defaultValue, label }: Props) => {
   return (
     <div className="form-control">
       <label className="label">
-        <span className="label-text text-brand-white">{label}</span>
+        <span className="label-text text-brand-black">{label}</span>
       </label>
 
       <select

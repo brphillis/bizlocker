@@ -6,6 +6,7 @@ import {
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
+import BasicInput from "~/components/Forms/Input/BasicInput";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import Pagination from "~/components/Pagination";
@@ -43,41 +44,26 @@ const Articles = () => {
 
         <div className="mt-3 flex flex-col">
           <div className="flex flex-row flex-wrap gap-6">
-            <div className="form-control w-full sm:w-[215px]">
-              <label className="label">
-                <span className="label-text">First Name</span>
-              </label>
-              <input
-                name="firstName"
-                type="text"
-                placeholder="First Name"
-                className="input w-full"
-              />
-            </div>
+            <BasicInput
+              name="firstName"
+              label="First Name"
+              placeholder="First Name"
+              type="text"
+            />
 
-            <div className="form-control w-full sm:w-[215px]">
-              <label className="label">
-                <span className="label-text">Last Name</span>
-              </label>
-              <input
-                name="lastName"
-                type="text"
-                placeholder="Last Name"
-                className="input w-full"
-              />
-            </div>
+            <BasicInput
+              name="lastName"
+              label="Last Name"
+              placeholder="Last Name"
+              type="text"
+            />
 
-            <div className="form-control w-full sm:w-[215px]">
-              <label className="label">
-                <span className="label-text">Email Address</span>
-              </label>
-              <input
-                name="email"
-                type="text"
-                placeholder="Email Address"
-                className="input w-full"
-              />
-            </div>
+            <BasicInput
+              name="email"
+              label="Email Address"
+              placeholder="Email Address"
+              type="text"
+            />
           </div>
 
           <div className="flex flex-row justify-end sm:justify-start">
@@ -102,48 +88,47 @@ const Articles = () => {
               </tr>
             </thead>
             <tbody>
-              {users &&
-                users.map(
-                  (
-                    { id, email, avatar, userDetails, isActive }: User,
-                    i: number
-                  ) => {
-                    const { firstName, lastName } = userDetails || {};
+              {users?.map(
+                (
+                  { id, email, avatar, userDetails, isActive }: User,
+                  i: number
+                ) => {
+                  const { firstName, lastName } = userDetails || {};
 
-                    return (
-                      <tr
-                        className="cursor-pointer transition-colors duration-200 hover:bg-base-100"
-                        key={id}
-                        onClick={() => navigate(`/admin/users/${id}`)}
-                      >
-                        {currentPage && (
-                          <td>{i + 1 + (currentPage - 1) * users?.length}</td>
-                        )}
-                        <td className="flex items-center justify-center">
-                          <div className="avatar mx-[-10px]">
-                            <div className="w-8 rounded-full">
-                              <img
-                                src={avatar?.url || placeholderAvatar.url}
-                                alt="user_avatar"
-                              />
-                            </div>
+                  return (
+                    <tr
+                      className="cursor-pointer transition-colors duration-200 hover:bg-base-100"
+                      key={id}
+                      onClick={() => navigate(`/admin/users/${id}`)}
+                    >
+                      {currentPage && (
+                        <td>{i + 1 + (currentPage - 1) * users?.length}</td>
+                      )}
+                      <td className="flex items-center justify-center">
+                        <div className="avatar mx-[-10px]">
+                          <div className="w-8 rounded-full">
+                            <img
+                              src={avatar?.url || placeholderAvatar.url}
+                              alt="user_avatar"
+                            />
                           </div>
-                        </td>
-                        <td>{firstName && capitalizeFirst(firstName)}</td>
-                        <td>{lastName && capitalizeFirst(lastName)}</td>
-                        <td>{email}</td>
-                        <td>
-                          {!isActive && (
-                            <div className="ml-4 h-3 w-3 rounded-full bg-red-500" />
-                          )}
-                          {isActive && (
-                            <div className="ml-4 h-3 w-3 self-center rounded-full bg-success" />
-                          )}
-                        </td>
-                      </tr>
-                    );
-                  }
-                )}
+                        </div>
+                      </td>
+                      <td>{firstName && capitalizeFirst(firstName)}</td>
+                      <td>{lastName && capitalizeFirst(lastName)}</td>
+                      <td>{email}</td>
+                      <td>
+                        {!isActive && (
+                          <div className="ml-4 h-3 w-3 rounded-full bg-red-500" />
+                        )}
+                        {isActive && (
+                          <div className="ml-4 h-3 w-3 self-center rounded-full bg-success" />
+                        )}
+                      </td>
+                    </tr>
+                  );
+                }
+              )}
             </tbody>
           </table>
         </div>

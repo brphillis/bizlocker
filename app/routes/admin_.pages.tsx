@@ -5,6 +5,7 @@ import {
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
+import BasicInput from "~/components/Forms/Input/BasicInput";
 
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
@@ -33,19 +34,12 @@ const Pages = () => {
 
         <div className="mt-3 flex flex-col">
           <div className="flex flex-row flex-wrap gap-6">
-            <div className="flex w-full flex-row gap-6 sm:w-[215px]">
-              <div className="form-control w-full">
-                <label className="label">
-                  <span className="label-text">Page Title</span>
-                </label>
-                <input
-                  name="title"
-                  className="input w-full text-brand-black/50"
-                  placeholder="Name"
-                  type="text"
-                />
-              </div>
-            </div>
+            <BasicInput
+              label="Page Title"
+              name="title"
+              placeholder="Title"
+              type="text"
+            />
           </div>
 
           <div className="flex flex-row justify-end sm:justify-start">
@@ -97,7 +91,6 @@ const Pages = () => {
 
         <Pagination totalPages={totalPages} />
       </Form>
-      {/* <Outlet /> */}
     </AdminPageWrapper>
   );
 };

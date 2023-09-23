@@ -9,6 +9,8 @@ import {
   upsertArticleCategories,
 } from "~/models/articleCategories.server";
 import { useState } from "react";
+import BasicInput from "~/components/Forms/Input/BasicInput";
+import { validateForm } from "~/utility/validate";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const id = params?.id;
@@ -28,14 +30,9 @@ export const action = async ({ request, params }: ActionArgs) => {
 
   switch (form._action) {
     case "upsert":
-      if (!name || name.length < 3) {
-        const validationError = "name must be at least 3 chars.";
-        return { validationError };
-      }
-
-      if (!name || name.length < 3) {
-        const validationError = "name must be at least 3 chars.";
-        return { validationError };
+      const validationErrors = validateForm(form);
+      if (validationErrors) {
+        return { validationErrors };
       }
 
       await upsertArticleCategories(name as string, id);
@@ -52,8 +49,8 @@ const ModifyArticleCategory = () => {
     (useLoaderData() as {
       articleCategory: ArticleCategory;
     }) || {};
-  const { validationError } =
-    (useActionData() as { validationError: string }) || {};
+  const { validationErrors } =
+    (useActionData() as { validationErrors: ValidationErrors }) || {};
   const mode = articleCategory ? "edit" : "add";
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -73,19 +70,14 @@ const ModifyArticleCategory = () => {
         />
 
         <div className="form-control mt-6 w-full max-w-xs">
-          <input
+          <BasicInput
+            label="Name"
             name="name"
             type="text"
             placeholder="Name"
-            className="input input-bordered w-full max-w-xs"
             defaultValue={articleCategory?.name || undefined}
+            validationErrors={validationErrors}
           />
-
-          {validationError && (
-            <p className="h-0 py-3 text-center text-sm text-red-500/75">
-              {validationError}
-            </p>
-          )}
 
           <BackSubmitButtons loading={loading} setLoading={setLoading} />
         </div>

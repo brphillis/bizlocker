@@ -1,20 +1,21 @@
-import { type LoaderArgs, type ActionArgs } from "@remix-run/node";
+import { useEffect, useState } from "react";
+import { validateForm } from "~/utility/validate";
+import DarkOverlay from "~/components/Layout/DarkOverlay";
+import BasicInput from "~/components/Forms/Input/BasicInput";
+import { getDepartments } from "~/models/departments.server";
+import FormHeader from "~/components/Forms/Headers/FormHeader";
+import BasicSelect from "~/components/Forms/Select/BasicSelect";
+import SelectGender from "~/components/Forms/Select/SelectGender";
+import { type ActionArgs, type LoaderArgs } from "@remix-run/node";
+import { getPromotion, upsertPromotion } from "~/models/promotions.server";
+import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
 import {
   Form,
   useActionData,
   useLoaderData,
   useNavigate,
 } from "@remix-run/react";
-import { useEffect, useState } from "react";
-import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
-import FormHeader from "~/components/Forms/Headers/FormHeader";
-import SelectDepartment from "~/components/Forms/Select/SelectDepartment";
-import SelectGender from "~/components/Forms/Select/SelectGender";
-import UploadBannerImage from "~/components/Forms/Upload/UploadBannerImage";
-import UploadTileImage from "~/components/Forms/Upload/UploadTileImage";
-import DarkOverlay from "~/components/Layout/DarkOverlay";
-import { getDepartments } from "~/models/departments.server";
-import { getPromotion, upsertPromotion } from "~/models/promotions.server";
+import UploadImageCollapse from "~/components/Forms/Upload/UploadImageCollapse";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const id = params?.id;
@@ -42,26 +43,13 @@ export const action = async ({ request, params }: ActionArgs) => {
     isActive,
   } = form;
 
-  let validationError: string[] = [];
-
-  if (!name) {
-    validationError.push("Name is Required");
-  }
-
-  if (!department) {
-    validationError.push("Department is Required");
-  }
-
-  if (!discountPercentage) {
-    validationError.push("Disacount % is Required");
-  }
-
-  if (validationError.length > 0) {
-    return { validationError };
-  }
-
   switch (form._action) {
     case "upsert":
+      const validationErrors = validateForm(form);
+      if (validationErrors) {
+        return { validationErrors };
+      }
+
       const parsedBanner = bannerImage
         ? (JSON.parse(bannerImage?.toString()) as Image)
         : undefined;
@@ -94,8 +82,11 @@ export const action = async ({ request, params }: ActionArgs) => {
 const ModifyPromotion = () => {
   const navigate = useNavigate();
   const { promotion, departments } = useLoaderData();
-  const { validationError, success } =
-    (useActionData() as { success: boolean; validationError: string[] }) || {};
+  const { validationErrors, success } =
+    (useActionData() as {
+      success: boolean;
+      validationErrors: ValidationErrors;
+    }) || {};
 
   const { products } = (promotion as { products: Product[] }) || {};
 
@@ -126,21 +117,20 @@ const ModifyPromotion = () => {
         <div className="form-control">
           <div className="form-control gap-3">
             <div className="flex flex-wrap justify-evenly gap-3">
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text">Name</span>
-                </label>
-                <input
-                  name="name"
-                  type="text"
-                  placeholder="Name"
-                  className="input input-bordered w-[95vw] sm:w-[215px]"
-                  defaultValue={promotion?.name || undefined}
-                />
-              </div>
+              <BasicInput
+                label="Name"
+                name="name"
+                type="text"
+                placeholder="Name"
+                defaultValue={promotion?.name || undefined}
+                validationErrors={validationErrors}
+              />
 
-              <SelectDepartment
-                departments={departments}
+              <BasicSelect
+                name="department"
+                label="Department"
+                selections={departments}
+                placeholder="Department"
                 defaultValue={promotion?.department?.id.toString()}
               />
             </div>
@@ -150,18 +140,14 @@ const ModifyPromotion = () => {
             <div className="text-center">Promotion Paramters</div>
 
             <div className="flex flex-wrap justify-evenly gap-3">
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text">Discount %</span>
-                </label>
-                <input
-                  name="discountPercentage"
-                  type="number"
-                  placeholder="Discount %"
-                  className="input input-bordered w-[95vw] sm:w-[215px]"
-                  defaultValue={promotion?.discountPercentage || ""}
-                />
-              </div>
+              <BasicInput
+                name="discountPercentage"
+                label="Discount %"
+                placeholder="Discount %"
+                type="number"
+                defaultValue={promotion?.discountPercentage || ""}
+                validationErrors={validationErrors}
+              />
 
               <SelectGender
                 defaultValue={promotion?.targetGender}
@@ -218,18 +204,24 @@ const ModifyPromotion = () => {
 
           <div className="divider w-full pt-8" />
 
-          <UploadBannerImage valueToChange={promotion} />
+          <UploadImageCollapse
+            name="bannerImage"
+            label="Banner Image"
+            tooltip="Optimal 8.09:1 Aspect Ratio"
+            defaultValue={promotion.bannerImage}
+          />
 
           <div className="divider w-full pt-4" />
 
-          <UploadTileImage valueToChange={promotion} />
+          <UploadImageCollapse
+            name="tileImage"
+            label="Tile Image"
+            tooltip="Optimal Square Image"
+            defaultValue={promotion.tileImage}
+          />
         </div>
 
-        <BackSubmitButtons
-          loading={loading}
-          setLoading={setLoading}
-          validationErrors={validationError}
-        />
+        <BackSubmitButtons loading={loading} setLoading={setLoading} />
       </Form>
     </DarkOverlay>
   );
