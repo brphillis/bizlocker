@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import { USER_SESSION_KEY, getSession } from "./session.server";
+import { getCookies } from "./helpers/cookieHelpers";
 
 const accessTokenExpiry = "20m";
 const refreshTokenExpiry = "7d";
@@ -21,21 +22,22 @@ export const generateRefreshToken = (user: any) => {
 
 export const tokenAuth = async (request: Request) => {
   const session = await getSession(request);
-  const cookie = request.headers.get("Cookie");
 
   let accessToken, refreshToken;
 
-  if (cookie) {
-    const cookies = Object.fromEntries(
-      cookie.split("; ").map((c) => {
-        const [key, ...v] = c.split("=");
-        return [key, v.join("=")];
-      })
-    );
+  const cookies = getCookies(request);
 
-    accessToken = cookies["access_token"];
-    refreshToken = cookies["refresh_token"];
-  }
+  // if (cookie) {
+  //   const cookies = Object.fromEntries(
+  //     cookie.split("; ").map((c) => {
+  //       const [key, ...v] = c.split("=");
+  //       return [key, v.join("=")];
+  //     })
+  //   );
+  // }
+
+  accessToken = cookies["access_token"];
+  refreshToken = cookies["refresh_token"];
 
   if (accessToken && refreshToken) {
     try {

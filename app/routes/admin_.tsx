@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import type { LoaderArgs } from "@remix-run/server-runtime";
-import { getUserObject } from "~/session.server";
 import {
   Outlet,
   useLoaderData,
@@ -20,9 +19,10 @@ import {
 } from "react-icons/io5";
 import DarkOverlay from "~/components/Layout/DarkOverlay";
 import Spinner from "~/components/Spinner";
+import { getUserDataFromSession } from "~/session.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
-  const user = await getUserObject(request);
+  const user = await getUserDataFromSession(request);
   return { user };
 };
 

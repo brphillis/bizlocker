@@ -21,10 +21,15 @@ const BlockOptions = ({
     borderSize,
     columns,
     count,
+    flipX,
     margin,
-    primaryLink,
+    linkOne,
+    linkTwo,
+    linkThree,
+    linkFour,
+    linkFive,
+    linkSix,
     rows,
-    secondaryLink,
     shortText,
     shortTextColor,
     size,
@@ -380,6 +385,29 @@ const BlockOptions = ({
               )}
             </div>
 
+            {/* ROTATION */}
+            {/* ROTATION */}
+            {/* ROTATION */}
+
+            <div className="flex w-full flex-wrap justify-start gap-3 empty:hidden">
+              {selectedBlockOptions?.flipX && (
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text text-brand-white">Flip X</span>
+                  </label>
+                  <select
+                    name="flipX"
+                    className=" select w-[95vw] max-w-full text-brand-black/75 sm:w-[215px]"
+                    placeholder="Select a Type"
+                    defaultValue={!flipX ? undefined : flipX}
+                  >
+                    <option value="false">No</option>
+                    <option value="-scale-x-100">Yes</option>
+                  </select>
+                </div>
+              )}
+            </div>
+
             {/* COUNT */}
             {/* COUNT */}
             {/* COUNT */}
@@ -475,36 +503,92 @@ const BlockOptions = ({
             </div>
 
             <div className="flex w-full flex-wrap justify-start gap-3 empty:hidden">
-              {selectedBlockOptions?.primaryLink && (
+              {selectedBlockOptions?.linkOne && contentType !== "product" && (
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text text-brand-white">
-                      Primary Link
-                    </span>
+                    <span className="label-text text-brand-white">Url 1</span>
                   </label>
                   <input
-                    name="primaryLink"
+                    name="linkOne"
                     type="string"
                     className="input input-bordered w-[95vw] max-w-full text-brand-black  sm:w-[215px]"
                     placeholder="URL"
-                    defaultValue={!primaryLink ? undefined : primaryLink}
+                    defaultValue={!linkOne ? undefined : linkOne}
                   />
                 </div>
               )}
 
-              {selectedBlockOptions?.secondaryLink && (
+              {selectedBlockOptions?.linkTwo && (
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text text-brand-white">
-                      Secondary Link
-                    </span>
+                    <span className="label-text text-brand-white">Url 2</span>
                   </label>
                   <input
-                    name="secondaryLink"
+                    name="linkTwo"
                     type="string"
                     className="input input-bordered w-[95vw] max-w-full text-brand-black  sm:w-[215px]"
                     placeholder="URL"
-                    defaultValue={!secondaryLink ? undefined : secondaryLink}
+                    defaultValue={!linkTwo ? undefined : linkTwo}
+                  />
+                </div>
+              )}
+
+              {selectedBlockOptions?.linkThree && (
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text text-brand-white">Url 3</span>
+                  </label>
+                  <input
+                    name="linkThree"
+                    type="string"
+                    className="input input-bordered w-[95vw] max-w-full text-brand-black  sm:w-[215px]"
+                    placeholder="URL"
+                    defaultValue={!linkThree ? undefined : linkThree}
+                  />
+                </div>
+              )}
+
+              {selectedBlockOptions?.linkFour && (
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text text-brand-white">Url 4</span>
+                  </label>
+                  <input
+                    name="linkFour"
+                    type="string"
+                    className="input input-bordered w-[95vw] max-w-full text-brand-black  sm:w-[215px]"
+                    placeholder="URL"
+                    defaultValue={!linkFour ? undefined : linkFour}
+                  />
+                </div>
+              )}
+
+              {selectedBlockOptions?.linkFive && (
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text text-brand-white">Url 5</span>
+                  </label>
+                  <input
+                    name="linkFive"
+                    type="string"
+                    className="input input-bordered w-[95vw] max-w-full text-brand-black  sm:w-[215px]"
+                    placeholder="URL"
+                    defaultValue={!linkFive ? undefined : linkFive}
+                  />
+                </div>
+              )}
+
+              {selectedBlockOptions?.linkSix && (
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text text-brand-white">Url 6</span>
+                  </label>
+                  <input
+                    name="linkSix"
+                    type="string"
+                    className="input input-bordered w-[95vw] max-w-full text-brand-black  sm:w-[215px]"
+                    placeholder="URL"
+                    defaultValue={!linkSix ? undefined : linkSix}
                   />
                 </div>
               )}

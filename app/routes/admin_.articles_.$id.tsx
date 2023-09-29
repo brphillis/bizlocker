@@ -3,7 +3,7 @@ import Icon from "~/components/Icon";
 import { HiTrash } from "react-icons/hi2";
 import PageBuilder from "~/components/PageBuilder";
 import { getBrands } from "~/models/brands.server";
-import { getBlocks } from "~/utility/blockHelpers";
+import { getBlocks } from "~/helpers/blockHelpers";
 import { getAvailableColors } from "~/models/enums.server";
 import UploadImage from "~/components/Forms/Upload/UploadImage";
 import LargeCollapse from "~/components/Collapse/LargeCollapse";
@@ -43,6 +43,9 @@ import {
 
 import swiper from "../../node_modules/swiper/swiper.css";
 import swiperNav from "../../node_modules/swiper/modules/navigation/navigation.min.css";
+import { limitString } from "~/helpers/stringHelpers";
+import BasicInput from "~/components/Forms/Input/BasicInput";
+import BasicSelect from "~/components/Forms/Select/BasicSelect";
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: swiper },
   { rel: "stylesheet", href: swiperNav },
@@ -81,16 +84,17 @@ export const action = async ({ request, params }: ActionArgs) => {
   const id = params.id === "add" ? undefined : params.id;
   const form = Object.fromEntries(await request.formData());
   const {
-    title,
-    description,
-    isActive,
     articleCategories,
-    thumbnail,
-    itemIndex,
+    backgroundColor,
     blockId,
     blockName,
     contentType,
+    description,
+    isActive,
+    itemIndex,
     name,
+    thumbnail,
+    title,
   } = form;
 
   const blockOptions: BlockOptions = getFormBlockOptions(form);
@@ -125,6 +129,7 @@ export const action = async ({ request, params }: ActionArgs) => {
       const articleId = await upsertArticleInfo(
         title as string,
         description as string,
+        backgroundColor as string,
         isActive as string,
         JSON.parse(articleCategories as string),
         JSON.parse(thumbnail as string),
@@ -137,16 +142,6 @@ export const action = async ({ request, params }: ActionArgs) => {
 
     case "update":
       const newBlockData: NewBlockData = getBlockUpdateValues(form);
-
-      let blockValidationError: string[] = [];
-
-      if (newBlockData.contentType && !newBlockData.contentData) {
-        blockValidationError.push("Content Selection is Required.");
-      }
-
-      if (blockValidationError.length > 0) {
-        return { blockValidationError };
-      }
 
       const updateSuccess = await updatePageBlock(
         "article",
@@ -187,12 +182,8 @@ const ModifyArticle = () => {
     colors,
   } = useLoaderData() || {};
 
-  const {
-    searchResults,
-    updateSuccess,
-    metaValidationError,
-    blockValidationError,
-  } = useActionData() || {};
+  const { searchResults, updateSuccess, metaValidationError } =
+    useActionData() || {};
 
   const [isActive, setIsActive] = useState<string | undefined>(
     article?.isActive ? " " : ""
@@ -211,7 +202,9 @@ const ModifyArticle = () => {
           <div className="flex flex-col gap-6">
             <div className="relative flex justify-center gap-3 text-center text-2xl font-bold">
               <Icon iconName="IoNewspaper" size={24} styles="mt-[5px]" />
-              {article ? article.title : "Create Article"}
+              {article
+                ? limitString(article.title, 21, true)
+                : "Create Article"}
 
               <HiTrash
                 size={24}
@@ -225,7 +218,7 @@ const ModifyArticle = () => {
             </div>
 
             <LargeCollapse
-              title="Meta Information"
+              title="Page Options"
               forceOpen={!article}
               content={
                 <Form
@@ -254,18 +247,15 @@ const ModifyArticle = () => {
                     />
                   </>
 
-                  <div className="form-control">
-                    <label className="label">
-                      <span className="label-text text-brand-white">Title</span>
-                    </label>
-                    <input
-                      name="title"
-                      type="text"
-                      placeholder="Title"
-                      defaultValue={article?.title}
-                      className="input input-bordered w-[95vw] text-brand-black sm:w-[320px]"
-                    />
-                  </div>
+                  <BasicInput
+                    name="title"
+                    label="Title"
+                    placeholder="Title"
+                    type="text"
+                    defaultValue={article?.title}
+                    customWidth="w-[320px]"
+                    labelColor="text-brand-white"
+                  />
 
                   <div className="form-control">
                     <label className="label">
@@ -283,9 +273,24 @@ const ModifyArticle = () => {
 
                   <BasicMultiSelect
                     name="articleCategories"
-                    title="Categories"
+                    label="Categories"
                     selections={articleCategories}
                     defaultValues={article?.articleCategories}
+                    customWidth="w-[320px]"
+                    labelColor="text-brand-white"
+                  />
+
+                  <BasicSelect
+                    label="Background Color"
+                    labelColor="text-brand-white"
+                    customWidth="w-[320px]"
+                    name="backgroundColor"
+                    placeholder="Select a Color"
+                    defaultValue={article?.backgroundColor}
+                    selections={colors.map((color: string) => ({
+                      id: color,
+                      name: color,
+                    }))}
                   />
 
                   <div className="form-control w-full max-w-xs">
@@ -321,7 +326,7 @@ const ModifyArticle = () => {
 
                   <button
                     type="submit"
-                    className="btn-primary btn-md mx-auto block w-max"
+                    className="btn-primary btn-md mx-auto block w-max rounded-sm"
                   >
                     {article ? "Submit" : "Next Step"}
                   </button>
@@ -344,7 +349,6 @@ const ModifyArticle = () => {
                     articleCategories={articleCategories}
                     brands={brands}
                     colors={colors}
-                    blockValidationError={blockValidationError}
                   />
                 }
               />

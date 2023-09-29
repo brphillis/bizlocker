@@ -1,7 +1,9 @@
 import { redirect } from "@remix-run/server-runtime";
 import { prisma } from "~/db.server";
 import { includeBlocksData } from "~/utility/blockMaster";
-import { getOrderBy } from "~/utility/sortHelpers";
+import { getOrderBy } from "~/helpers/sortHelpers";
+import { getBlocks } from "~/helpers/blockHelpers";
+import { removeBlock } from "./pageBuilder.server";
 
 export const getWebPage = async (id?: string, title?: string) => {
   let whereClause;
@@ -27,6 +29,7 @@ export const upsertWebPageInfo = async (
   title: string,
   description: string,
   thumbnail: Image,
+  backgroundColor: string,
   webPageId?: number
 ) => {
   let webPage;
@@ -34,8 +37,9 @@ export const upsertWebPageInfo = async (
   if (!webPageId) {
     webPage = await prisma.webPage.create({
       data: {
-        title: title,
-        description: description,
+        title,
+        description,
+        backgroundColor,
         thumbnail: thumbnail
           ? {
               create: {
@@ -64,8 +68,9 @@ export const upsertWebPageInfo = async (
         id: webPage.id,
       },
       data: {
-        title: title,
-        description: description,
+        title,
+        description,
+        backgroundColor,
         thumbnail: {
           upsert: {
             create: {
@@ -108,36 +113,10 @@ export const deleteWebPage = async (id: number) => {
     return false;
   }
 
-  // Delete blockOptions associated with each block
-  // for (const block of webPage.blocks) {
-  //   if (block.blockOptions) {
-  //     await prisma.blockOptions.delete({
-  //       where: { id: block.blockOptions.id },
-  //     });
-  //   }
-  // }
+  //find and delete the associated blocks
+  const webPageBlocks = await getBlocks(webPage as any);
 
-  // Delete bannerBlocks, tileBlocks, and textBlocks associated with each block
-  for (const block of webPage.blocks) {
-    if (block.bannerBlock) {
-      await prisma.bannerBlock.delete({ where: { id: block.bannerBlock.id } });
-    }
-    if (block.tileBlock) {
-      await prisma.tileBlock.delete({ where: { id: block.tileBlock.id } });
-    }
-    if (block.textBlock) {
-      await prisma.textBlock.delete({ where: { id: block.textBlock.id } });
-    }
-    if (block.productBlock) {
-      await prisma.textBlock.delete({ where: { id: block.productBlock.id } });
-    }
-    if (block.articleBlock) {
-      await prisma.textBlock.delete({ where: { id: block.articleBlock.id } });
-    }
-  }
-
-  // Delete blocks associated with the webPage
-  await prisma.block.deleteMany({ where: { webPageId: id } });
+  webPageBlocks.map((e: Block) => removeBlock(e.id, e.name));
 
   // Delete the webPage
   await prisma.webPage.delete({

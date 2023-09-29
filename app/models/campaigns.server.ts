@@ -1,6 +1,6 @@
 import type { Gender } from "@prisma/client";
 import { prisma } from "~/db.server";
-import { getRandomOneOrTwo } from "~/utility/numberHelpers";
+import { getRandomOneOrTwo } from "~/helpers/numberHelpers";
 
 export function getCampaigns(inDetail?: boolean) {
   if (inDetail) {

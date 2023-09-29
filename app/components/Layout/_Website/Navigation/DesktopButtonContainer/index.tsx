@@ -1,8 +1,8 @@
-import { IoSearchOutline } from "react-icons/io5";
-import AccountButton from "../Buttons/AccountButton";
-import CartButton from "../Buttons/CartButton";
-import LoginButton from "~/components/Buttons/LoginButton";
 import { useLocation } from "@remix-run/react";
+import { IoSearchOutline } from "react-icons/io5";
+import LoginButton from "~/components/Buttons/LoginButton";
+import CartButton from "../Buttons/CartButton";
+import AccountButton from "../Buttons/AccountButton";
 
 type Props = {
   user: User;

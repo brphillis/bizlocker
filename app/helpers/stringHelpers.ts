@@ -9,6 +9,22 @@ export const capitalizeFirst = (str: string): string => {
   return firstLetter + resOfWord;
 };
 
+export const limitString = (
+  inputString: string,
+  maxLength: number,
+  addDots?: boolean
+) => {
+  if (inputString.length <= maxLength) {
+    return inputString;
+  } else {
+    if (addDots) {
+      return inputString.slice(0, maxLength) + "...";
+    } else {
+      return inputString.slice(0, maxLength);
+    }
+  }
+};
+
 export const createVerificationCode = (length: number): string => {
   const characters =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";

@@ -1,6 +1,6 @@
 import { type ActionArgs } from "@remix-run/server-runtime";
 import { Link, useLoaderData, useLocation } from "@remix-run/react";
-import { getOrderShippingDetails } from "~/models/orders.server";
+import { getSquareOrderDetails } from "~/models/orders.server";
 import PageWrapper from "~/components/Layout/_Website/PageWrapper";
 import OrderStatusSteps from "~/components/Indicators/OrderStatusSteps";
 import ShippingDetailsCollapse from "~/components/Forms/Misc/ShippingDetailsCollapse";
@@ -10,7 +10,8 @@ export const loader = async ({ request, params }: ActionArgs) => {
   const status = url.searchParams.get("status");
   const orderId = params.id;
   if (status !== ("created" || "cancelled") && orderId) {
-    return await getOrderShippingDetails(orderId);
+    const { shippingDetails } = (await getSquareOrderDetails(orderId)) || {};
+    return shippingDetails;
   } else {
     return null;
   }

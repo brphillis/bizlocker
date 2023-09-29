@@ -94,7 +94,7 @@ const ManageOrders = () => {
                 orders.map(({ orderId, status, user }: Order, i: number) => {
                   return (
                     <tr
-                      className="hover cursor-pointer"
+                      className="cursor-pointer transition-colors duration-200 hover:bg-base-100"
                       key={orderId}
                       onClick={() => navigate(`/admin/orders/${orderId}`)}
                     >

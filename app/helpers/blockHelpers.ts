@@ -1,26 +1,31 @@
-import {
-  fetchBlockArticles,
-  fetchBlockProducts,
-} from "~/models/blockHelpers.server";
+import { fetchBlockArticles, fetchBlockProducts } from "~/models/blocks.server";
+import { getBlockContentTypes } from "../utility/blockMaster";
 
-export const getBlocks = async (page: HomePage) => {
+//returns the object array nessesery for populating a page in the blockrenderer
+//gets the page blocks, filters out the inactive blocks, then fetches nessesery data
+export const getBlocks = async (
+  page: HomePage | Article | WebPage,
+  dontFetch?: boolean
+) => {
   // populate the page with the active block types
   const blocks = getPageBlocks(page);
   const activeBlocks = getActiveBlocks(blocks);
 
-  for (let i = 0; i < activeBlocks.length; i++) {
-    const block = activeBlocks[i];
-    if (block.name === "product") {
-      block.content.product = (await fetchBlockProducts(block)) as any;
-    }
-    if (block.name === "article") {
-      block.content.article = (await fetchBlockArticles(block)) as any;
+  if (dontFetch) {
+    for (let i = 0; i < activeBlocks.length; i++) {
+      const block = activeBlocks[i];
+      if (block.name === "product") {
+        block.content.product = (await fetchBlockProducts(block)) as any;
+      }
+      if (block.name === "article") {
+        block.content.article = (await fetchBlockArticles(block)) as any;
+      }
     }
   }
-
   return activeBlocks;
 };
 
+//returns an array of ACTIVE and INACTIVE content blocks for a page
 export const getPageBlocks = (
   page: HomePage | Article,
   getFirst?: boolean
@@ -69,7 +74,7 @@ export const getPageBlocks = (
   return firstPopulatedObjects;
 };
 
-//assigns the populated content from a page block and creates a block
+//filters out inactive content blocks
 export const getActiveBlocks = (blocks: Block[]): Block[] => {
   let firstPopulatedItems: any[] = [];
   for (let item of blocks) {
@@ -116,4 +121,46 @@ export const getActiveBlocks = (blocks: Block[]): Block[] => {
   }
 
   return firstPopulatedItems;
+};
+
+//returns the default content selection values for a block (example:selected Products)
+export const getBlockDefaultValues = (block: Block): ContentSelection[] => {
+  const blockContentTypes = getBlockContentTypes(block.name);
+
+  const defaultValues: ContentSelection[] = [];
+
+  blockContentTypes.map((contentName: BlockContentType) => {
+    if (
+      !block.content[contentName] ||
+      (Array.isArray(block.content[contentName]) &&
+        (block.content[contentName] as Product[])?.length === 0)
+    ) {
+      return null;
+    }
+
+    // if multiple content selection loop through array and push each defaultvalue
+    if (Array.isArray(block.content[contentName])) {
+      (block.content[contentName] as Product[]).map((j) =>
+        defaultValues.push({
+          type: contentName,
+          contentId: j.id,
+          name: j.name,
+        })
+      );
+    } else {
+      const content = (block.content[contentName] as Product).id;
+
+      const name =
+        (block.content[contentName] as Product).name ||
+        (block.content[contentName] as Article).title;
+
+      defaultValues.push({
+        type: contentName,
+        contentId: content,
+        name: name,
+      });
+    }
+  });
+
+  return defaultValues.filter((notNull) => notNull) as ContentSelection[];
 };

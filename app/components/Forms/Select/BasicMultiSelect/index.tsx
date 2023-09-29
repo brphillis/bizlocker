@@ -2,18 +2,22 @@ import { useState } from "react";
 
 type Props = {
   name: string;
-  title: string;
+  label: string;
   selections: Array<SelectValue>;
   defaultValues: Array<SelectValue>;
   styles?: string;
+  customWidth?: string;
+  labelColor?: string;
 };
 
 const BasicMultiSelect = ({
   name,
-  title,
+  label,
   selections,
   defaultValues,
   styles,
+  customWidth,
+  labelColor,
 }: Props) => {
   const [selectedValues, setSelectedValues] = useState<string[]>(
     defaultValues?.map((e) => e?.id.toString()) || undefined
@@ -28,10 +32,22 @@ const BasicMultiSelect = ({
   };
 
   return (
-    <div className="form-control w-full sm:w-[215px]">
-      <label className="label text-sm">{title}</label>
+    <div
+      className={`form-control max-md:w-full ${
+        customWidth ? customWidth : "w-[215px]"
+      }`}
+    >
+      <label className="label">
+        <span
+          className={`label-text  ${
+            labelColor ? labelColor : "text-brand-black"
+          }`}
+        >
+          {label}
+        </span>
+      </label>
       <select
-        className={`select text-brand-black ${styles ? styles : ""}`}
+        className={`select text-brand-black/75 ${styles ? styles : ""}`}
         onChange={handleOptionChange}
         value={selectedValues || undefined}
         multiple

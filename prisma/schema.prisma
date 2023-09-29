@@ -8,22 +8,24 @@ datasource db {
 }
 
 model HomePage {
-  id          Int     @id @default(autoincrement())
-  blocks      Block[] @relation("HomePageToBlocks")
-  description String  @default("HomePage Description")
-  title       String  @default("Homepage")
+  id              Int     @id @default(autoincrement())
+  blocks          Block[] @relation("HomePageToBlocks")
+  description     String  @default("HomePage Description")
+  title           String  @default("Homepage")
+  backgroundColor String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model WebPage {
-  id          Int     @id @default(autoincrement())
-  blocks      Block[] @relation("WebPagesToBlocks")
-  description String  @default("Page Description")
-  isActive    Boolean @default(true)
-  thumbnail   Image?  @relation("WebPageImage")
-  title       String  @unique
+  id              Int     @id @default(autoincrement())
+  blocks          Block[] @relation("WebPagesToBlocks")
+  description     String  @default("Page Description")
+  isActive        Boolean @default(true)
+  thumbnail       Image?  @relation("WebPageImage")
+  title           String  @unique
+  backgroundColor String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -68,10 +70,15 @@ model BlockOptions {
   borderSize      String?
   columns         Int?
   count           Int?
+  flipX           String?
   margin          String?
-  primaryLink     String?
+  linkOne         String?
+  linkTwo         String?
+  linkThree       String?
+  linkFour        String?
+  linkFive        String?
+  linkSix         String?
   rows            Int?
-  secondaryLink   String?
   shortText       String?
   shortTextColor  Color?
   size            String?
@@ -289,8 +296,8 @@ model Address {
 model Cart {
   id        Int        @id @default(autoincrement())
   cartItems CartItem[]
-  user      User       @relation(fields: [userId], references: [id])
-  userId    String     @unique
+  user      User?      @relation(fields: [userId], references: [id])
+  userId    String?    @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -309,15 +316,16 @@ model CartItem {
 }
 
 model Order {
-  orderId       String      @id @unique @default(cuid())
-  items         OrderItem[]
-  paymentCode   String
-  paymentLinkId String
-  paymentUrl    String
-  status        OrderStatus
-  totalPrice    Float
-  user          User        @relation(fields: [userId], references: [id])
-  userId        String
+  orderId             String      @id @unique @default(cuid())
+  items               OrderItem[]
+  rememberInformation Boolean     @default(false)
+  paymentCode         String
+  paymentLinkId       String
+  paymentUrl          String
+  status              OrderStatus
+  totalPrice          Float
+  user                User?       @relation(fields: [userId], references: [id])
+  userId              String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -431,6 +439,7 @@ model Article {
   articleCategories ArticleCategory[] @relation("ArticleCategoryToArticle")
   blocks            Block[]           @relation("ArticlesToBlocks")
   description       String            @default("Article Description")
+  backgroundColor   String?
   isActive          Boolean           @default(true)
   thumbnail         Image?            @relation("ArticleImage")
   title             String            @unique

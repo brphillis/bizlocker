@@ -19,7 +19,9 @@ import {
 } from "~/utility/pageBuilder";
 import { getArticleCategories } from "~/models/articleCategories.server";
 import { getAvailableColors } from "~/models/enums.server";
-import { getBlocks } from "~/utility/blockHelpers";
+import { getBlocks } from "~/helpers/blockHelpers";
+import BasicInput from "~/components/Forms/Input/BasicInput";
+import BasicSelect from "~/components/Forms/Select/BasicSelect";
 
 export const loader = async () => {
   const homePage = await getHomePage();
@@ -47,14 +49,15 @@ export const loader = async () => {
 export const action = async ({ request }: ActionArgs) => {
   const form = Object.fromEntries(await request.formData());
   const {
-    title,
-    description,
-    pageId,
-    itemIndex,
+    backgroundColor,
     blockId,
     blockName,
     contentType,
+    description,
+    itemIndex,
     name,
+    pageId,
+    title,
   } = form;
 
   const blockOptions: BlockOptions = getFormBlockOptions(form);
@@ -84,6 +87,7 @@ export const action = async ({ request }: ActionArgs) => {
       await upsertHomePageInfo(
         title as string,
         description as string,
+        backgroundColor as string,
         pageId ? parseInt(pageId.toString()) : undefined
       );
 
@@ -91,16 +95,6 @@ export const action = async ({ request }: ActionArgs) => {
 
     case "update":
       const newBlockData = getBlockUpdateValues(form);
-
-      let blockValidationError: string[] = [];
-
-      if (newBlockData.contentType && !newBlockData.contentData) {
-        blockValidationError.push("Content Selection is Required.");
-      }
-
-      if (blockValidationError.length > 0) {
-        return { blockValidationError };
-      }
 
       const updateSuccess = await updatePageBlock(
         "homePage",
@@ -140,41 +134,34 @@ const ManageHomePage = () => {
     colors,
   } = useLoaderData() || {};
 
-  const {
-    searchResults,
-    updateSuccess,
-    metaValidationError,
-    blockValidationError,
-  } = useActionData() || {};
+  const { searchResults, updateSuccess, metaValidationError } =
+    useActionData() || {};
 
   return (
     <AdminPageWrapper>
       <div className="relative h-full bg-base-200 p-6 max-sm:p-3 sm:w-full">
         <div className="flex w-full justify-center">
           <div className="flex flex-col gap-6 rounded-none text-brand-white">
-            <div className="flex justify-center gap-3 pt-6 text-center text-2xl font-bold text-brand-black">
+            <div className="flex justify-center gap-3 pt-6 text-center text-2xl font-bold text-brand-black max-md:pt-3">
               Edit Home Page
             </div>
 
             <LargeCollapse
-              title="Meta Information"
+              title="Page Options"
               content={
                 <Form
                   method="POST"
                   className="flex w-full flex-col items-center gap-6"
                 >
-                  <div className="form-control">
-                    <label className="label">
-                      <span className="label-text text-brand-white">Title</span>
-                    </label>
-                    <input
-                      name="title"
-                      type="text"
-                      placeholder="Title"
-                      defaultValue={homePage?.title}
-                      className="input input-bordered w-[95vw] text-brand-black sm:w-[320px]"
-                    />
-                  </div>
+                  <BasicInput
+                    name="title"
+                    label="Title"
+                    labelColor="text-brand-white"
+                    placeholder="Title"
+                    type="text"
+                    defaultValue={homePage?.title}
+                    customWidth="w-[320px]"
+                  />
 
                   <div className="form-control">
                     <label className="label">
@@ -186,9 +173,22 @@ const ManageHomePage = () => {
                       name="description"
                       placeholder="Description"
                       defaultValue={homePage?.description}
-                      className="textarea textarea-bordered flex w-[95vw] rounded-none text-brand-black sm:w-[320px]"
+                      className="textarea textarea-bordered flex w-[95vw] rounded-sm text-brand-black sm:w-[320px]"
                     />
                   </div>
+
+                  <BasicSelect
+                    label="Background Color"
+                    labelColor="text-brand-white"
+                    customWidth="w-[320px]"
+                    name="backgroundColor"
+                    placeholder="Select a Color"
+                    defaultValue={homePage?.backgroundColor}
+                    selections={colors.map((color: string) => ({
+                      id: color,
+                      name: color,
+                    }))}
+                  />
 
                   <input name="pageId" value={homePage.id} hidden readOnly />
                   <input name="_action" value="updateMeta" hidden readOnly />
@@ -231,7 +231,6 @@ const ManageHomePage = () => {
                   articleCategories={articleCategories}
                   brands={brands}
                   colors={colors}
-                  blockValidationError={blockValidationError}
                 />
               }
             />

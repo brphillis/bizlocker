@@ -26,6 +26,7 @@ interface Verifier {
 
 type ValidationErrors = {
   name?: string;
+  contentSelection?: string;
 };
 
 type VerifyTypes = "email" | "password";
@@ -35,8 +36,14 @@ type SelectValue = {
   name: string;
 };
 
+type ContentSelection = {
+  type: BlockContentType;
+  name: string;
+  contentId: number | string;
+};
+
 interface Image {
-  id?: number;
+  id: number;
   url: string;
   altText?: string;
   user?: User;
@@ -53,8 +60,8 @@ interface Image {
   campaignBanner?: Campaign;
   promotionTile?: Promotion;
   promotionBanner?: Promotion;
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt?: DateTime;
+  updatedAt?: DateTime;
 }
 
 type LoginData = {
@@ -88,16 +95,19 @@ type UserDetails = {
   userId?: string;
 };
 
-type Address = {
-  id: string;
+interface Address extends NewAddress {
+  id?: string;
+  userId?: string;
+  user?: User;
+}
+
+type NewAddress = {
   addressLine1?: string;
   addressLine2?: string;
   postcode?: string;
   suburb?: string;
   state?: string;
   country?: string;
-  userId?: string;
-  user?: User;
 };
 
 type CountrySelect = {
@@ -214,24 +224,25 @@ interface ProductSubCategory {
   isActive: boolean;
 }
 
-type Article = {
+interface Article {
   id: number;
   title: string;
   description: string;
+  backgroundColor: string;
   blocks: Block[];
   thumbnail?: Image;
   isActive?: boolean;
   articleCategories: ArticleCategory[];
   createdAt: Date;
   updatedAt: Date;
-};
+}
 
-type ArticleCategory = {
+interface ArticleCategory {
   id: number;
   name: string;
   articles?: Article[];
   productCategory?: ProductCategory | null;
-};
+}
 
 interface Product {
   id: number;
@@ -375,24 +386,27 @@ type BasicSearchArgs = {
 };
 
 type SortBy = "createdAt" | "totalSold" | "price" | "name" | "title";
-// type CategorySortBy = "createdAt" | "name" | "index";
 type SortOrder = "asc" | "desc";
-
 type PageType = "homePage" | "article" | "webPage";
-
 type BlockName = "banner" | "hero" | "tile" | "text" | "product" | "article";
-
 type BlockContentType =
   | "campaign"
   | "promotion"
   | "image"
   | "product"
-  | "article";
+  | "productCategory"
+  | "productSubCategory"
+  | "brand"
+  | "article"
+  | "articleCategory"
+  | "richText"
+  | "gender";
 
 interface HomePage {
   id: number;
   title: string;
   description: string;
+  backgroundColor: string;
   blocks: Block[];
   createdAt: Date;
   updatedAt: Date;
@@ -402,6 +416,7 @@ interface WebPage {
   id: number;
   title: string;
   description: string;
+  backgroundColor: string;
   blocks: Block[];
   thumbnail?: Image;
   isActive?: boolean;
@@ -447,6 +462,8 @@ type BlockMaster = {
   component: React.ComponentType<any>;
   options: BlockMasterOptions;
   content: Object;
+  hasMultipleContent?: boolean;
+  maxContentItems?: number;
 };
 
 interface BlockMasterOptions {
@@ -457,10 +474,15 @@ interface BlockMasterOptions {
   borderSize?: boolean;
   columns?: boolean;
   count?: boolean;
+  flipX?: boolean;
   margin?: boolean;
-  primaryLink?: boolean;
+  linkOne?: boolean;
+  linkTwo?: boolean;
+  linkThree?: boolean;
+  linkFour?: boolean;
+  linkFive?: boolean;
+  linkSix?: boolean;
   rows?: boolean;
-  secondaryLink?: boolean;
   shortText?: boolean;
   shortTextColor?: boolean;
   size?: boolean;
@@ -491,10 +513,15 @@ interface BlockOptions {
   borderSize?: string | null;
   columns?: number | null;
   count?: number | null;
+  flipX?: string | null;
   margin?: string | null;
-  primaryLink?: string | null;
+  linkOne?: string | null;
+  linkTwo?: string | null;
+  linkThree?: string | null;
+  linkFour?: string | null;
+  linkFive?: string | null;
+  linkSix?: string | null;
   rows?: number | null;
-  secondaryLink?: string | null;
   shortText?: string | null;
   shortTextColor?: Color | null;
   size: "small" | "medium" | "large" | "native";
@@ -588,6 +615,13 @@ interface ArticleBlockContent {
   articleBlockId?: string;
   articleCategory?: ArticleCategory;
   articleCategoryId?: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface TextBlockContent {
+  id: string;
+  richText: string;
   createdAt: Date;
   updatedAt: Date;
 }

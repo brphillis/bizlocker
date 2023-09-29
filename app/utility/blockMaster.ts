@@ -33,11 +33,17 @@ export const blockMaster: BlockMaster[] = [
   {
     name: "tile",
     component: TileBlock,
+    hasMultipleContent: true,
+    maxContentItems: 6,
     options: {
       columns: true,
       size: true,
-      primaryLink: true,
-      secondaryLink: true,
+      linkOne: true,
+      linkTwo: true,
+      linkThree: true,
+      linkFour: true,
+      linkFive: true,
+      linkSix: true,
     },
     content: {
       include: {
@@ -65,6 +71,7 @@ export const blockMaster: BlockMaster[] = [
       title: true,
       titleColor: true,
       shortText: true,
+      flipX: true,
       shortTextColor: true,
       backgroundColor: true,
       borderDisplay: true,
@@ -72,8 +79,8 @@ export const blockMaster: BlockMaster[] = [
       borderColor: true,
       borderRadius: true,
       margin: true,
-      primaryLink: true,
-      secondaryLink: true,
+      linkOne: true,
+      linkTwo: true,
     },
     content: {
       include: {
@@ -141,4 +148,38 @@ export const includeBlocksData = {
       ])
     ),
   },
+};
+
+export const getBlockContentTypes = (
+  blockName: BlockName
+): BlockContentType[] => {
+  const block = blockMaster.find((b) => b.name === blockName);
+
+  if (!block) {
+    return [];
+  }
+
+  if (blockName === "text") {
+    return ["richText"];
+  }
+
+  const contentTypes: string[] = [];
+
+  const processContent = (content: any, parentName = "") => {
+    for (const key in content) {
+      if (key === "include" && typeof content[key] === "object") {
+        for (const subKey in content[key]) {
+          contentTypes.push(subKey);
+        }
+      } else if (typeof content[key] === "object") {
+        processContent(content[key], parentName);
+      }
+    }
+  };
+
+  if (block.content) {
+    processContent(block.content);
+  }
+
+  return contentTypes as BlockContentType[];
 };

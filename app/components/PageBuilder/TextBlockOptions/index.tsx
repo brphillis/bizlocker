@@ -3,13 +3,30 @@ import RichTextInput from "~/components/Forms/Input/RichTextInput/index.client";
 
 type Props = {
   selectedBlock: BlockName | undefined;
-  defaultValue: string[];
+  selectedItems: ContentSelection[];
+  setSelectedItems: Function;
+  defaultValue: TextBlockContent;
 };
 
-const TextBlockOptions = ({ selectedBlock, defaultValue }: Props) => {
-  const [contentData, setContentData] = useState<string>(
-    defaultValue?.[0] || ""
-  );
+const TextBlockOptions = ({
+  selectedBlock,
+  defaultValue,
+  selectedItems,
+  setSelectedItems,
+}: Props) => {
+  const [contentData] = useState<string>(defaultValue?.richText || "");
+
+  const selectItem = (
+    type: BlockContentType = "richText",
+    contentId: string
+  ) => {
+    setSelectedItems((prevSelectedItems: any) => {
+      if (!Array.isArray(prevSelectedItems)) {
+        prevSelectedItems = [];
+      }
+      return [{ type, contentId }];
+    });
+  };
 
   return (
     <>
@@ -17,11 +34,11 @@ const TextBlockOptions = ({ selectedBlock, defaultValue }: Props) => {
         <div className="w-full overflow-x-auto">
           <RichTextInput
             value={contentData}
-            onChange={setContentData}
+            onChange={(selectedValue) => {
+              selectItem("richText", selectedValue);
+            }}
             className="mb-12 mt-3 h-[320px]"
           />
-
-          <input name="richText" value={contentData} hidden readOnly />
         </div>
       )}
     </>

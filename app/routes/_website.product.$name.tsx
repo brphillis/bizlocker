@@ -1,20 +1,20 @@
-import { Link, useLoaderData, useSubmit } from "@remix-run/react";
-import { type LoaderArgs } from "@remix-run/server-runtime";
-import parse from "html-react-parser";
-import { parseOptions } from "~/utility/parseOptions";
-import PageWrapper from "~/components/Layout/_Website/PageWrapper";
-import { getBrand } from "~/models/brands.server";
-import { getProduct, searchProducts } from "~/models/products.server";
-import { getVariantUnitPrice } from "~/utility/numberHelpers";
-import { generateColor } from "~/utility/colors";
 import { useEffect, useState } from "react";
+import parse from "html-react-parser";
+import { IoHeart } from "react-icons/io5";
+import { generateColor } from "~/utility/colors";
+import { getBrand } from "~/models/brands.server";
+import { parseOptions } from "~/utility/parseOptions";
 import { Toast } from "~/components/Notifications/Toast";
+import ProductGrid from "~/components/Grids/ProductGrid";
+import { type LoaderArgs } from "@remix-run/server-runtime";
+import { getVariantUnitPrice } from "~/helpers/numberHelpers";
+import { Link, useLoaderData, useSubmit } from "@remix-run/react";
+import PageWrapper from "~/components/Layout/_Website/PageWrapper";
+import { getProduct, searchProducts } from "~/models/products.server";
 import {
   getAvailableColors,
   getAvailableSizes,
-} from "~/utility/productHelpers";
-import { IoHeart } from "react-icons/io5";
-import ProductGrid from "~/components/Grids/ProductGrid";
+} from "~/helpers/productHelpers";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
@@ -115,6 +115,10 @@ const Product = () => {
       setSelectedVariant(selection);
     }
   }, [selectedColor, selectedSize, variants]);
+
+  useEffect(() => {
+    setSelectedImage(images[0]);
+  }, [images]);
 
   const hasSizes = availableSizes && availableSizes[0] !== null;
   const hasColors = availableColors && availableColors[0] !== null;
@@ -301,7 +305,7 @@ const Product = () => {
 
       <div className="my-3 w-full border-b border-brand-black/20" />
 
-      {similarProducts && (
+      {similarProducts && similarProducts.length > 0 && (
         <>
           <p className="self-start pb-3 pl-3 text-xl font-bold md:pl-1">
             You might also like...

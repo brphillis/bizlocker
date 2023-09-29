@@ -12,7 +12,7 @@ import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import Pagination from "~/components/Pagination";
 import { searchUsers } from "~/models/auth/users.server";
 import { placeholderAvatar } from "~/utility/placeholderAvatar";
-import { capitalizeFirst } from "~/utility/stringHelpers";
+import { capitalizeFirst } from "~/helpers/stringHelpers";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);

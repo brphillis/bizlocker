@@ -1,10 +1,18 @@
+import { generateColor } from "~/utility/colors";
+
 type Props = {
   children: JSX.Element | JSX.Element[];
   gap?: "small" | "medium" | "large";
   noTopPadding?: boolean;
+  backgroundColor?: string;
 };
 
-const PageWrapper = ({ children, gap, noTopPadding }: Props) => {
+const PageWrapper = ({
+  children,
+  gap,
+  noTopPadding,
+  backgroundColor,
+}: Props) => {
   let amount = "gap-3";
 
   switch (gap) {
@@ -26,7 +34,12 @@ const PageWrapper = ({ children, gap, noTopPadding }: Props) => {
 
   return (
     <div
-      className={`flex w-full flex-col items-center justify-center bg-base-100 pb-3 pt-6 max-xl:pt-3 lg:pb-12 ${
+      style={{
+        backgroundColor: backgroundColor
+          ? generateColor(backgroundColor)
+          : generateColor("white"),
+      }}
+      className={`flex w-full flex-col items-center justify-center pb-3 pt-6 max-xl:pt-3 lg:pb-12 ${
         noTopPadding && "!pt-0"
       }`}
     >

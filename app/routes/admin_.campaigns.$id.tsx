@@ -150,14 +150,14 @@ const ModifyCampaign = () => {
             <div className="flex flex-wrap justify-evenly gap-3">
               <BasicMultiSelect
                 name="productSubCategories"
-                title="Categories"
+                label="Categories"
                 selections={productSubCategories}
                 defaultValues={campaign?.productSubCategories}
               />
 
               <BasicMultiSelect
                 name="brands"
-                title="Targets Brands?"
+                label="Targets Brands?"
                 selections={brands}
                 defaultValues={campaign?.brands}
               />

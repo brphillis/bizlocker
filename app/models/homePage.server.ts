@@ -12,6 +12,7 @@ export const getHomePage = async () => {
 export const upsertHomePageInfo = async (
   title: string,
   description: string,
+  backgroundColor: string,
   homePageId?: number
 ) => {
   let homePage;
@@ -20,8 +21,9 @@ export const upsertHomePageInfo = async (
     homePage = await prisma.homePage.create({
       // Provide the desired properties for the new homePage
       data: {
-        title: title,
-        description: description,
+        title,
+        description,
+        backgroundColor,
       },
     });
   } else {
@@ -42,8 +44,9 @@ export const upsertHomePageInfo = async (
         id: homePage.id,
       },
       data: {
-        title: title,
-        description: description,
+        title,
+        description,
+        backgroundColor,
       },
     });
   }

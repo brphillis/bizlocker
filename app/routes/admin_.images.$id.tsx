@@ -13,7 +13,7 @@ import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
 import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node";
 import { deleteImage, getImage, upsertImage } from "~/models/images.server";
 import { IoCaretForwardCircleSharp } from "react-icons/io5";
-import { handleResourceSubmit } from "~/utility/formHelpers";
+import { handleResourceSubmit } from "~/helpers/formHelpers";
 import { useEffect, useState } from "react";
 import { validateForm } from "~/utility/validate";
 import BasicInput from "~/components/Forms/Input/BasicInput";

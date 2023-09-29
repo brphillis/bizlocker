@@ -1,22 +1,19 @@
 import { useSearchParams, useSubmit } from "@remix-run/react";
 import { useEffect } from "react";
+import BasicInput from "~/components/Forms/Input/BasicInput";
+import { capitalizeFirst } from "~/helpers/stringHelpers";
+import { getBlockContentTypes } from "~/utility/blockMaster";
 
 type Props = {
   selectedBlock: BlockName | undefined;
   defaultValue: BlockContentType | undefined;
-  contentType: BlockContentType | undefined;
   setContentType: Function;
-  setSelectedItems: (
-    prevSelectedItems: (Campaign | Promotion | Product)[]
-  ) => void;
 };
 
 const BlockContentSearch = ({
   selectedBlock,
   defaultValue,
-  contentType,
   setContentType,
-  setSelectedItems,
 }: Props) => {
   const submit = useSubmit();
   const [searchParams] = useSearchParams();
@@ -64,35 +61,36 @@ const BlockContentSearch = ({
                 defaultValue={defaultValue}
                 placeholder="Select a Type"
                 onChange={(e) => {
-                  setSelectedItems([]);
                   handleSearchSubmit(e.target.value, undefined);
                   setContentType(e.target.value);
                 }}
               >
                 <option value="">Select Content Type</option>
-                <option value="promotion">Promotion</option>
-                <option value="campaign">Campaign</option>
-                <option value="image">Image</option>
-                <option value="product">Product</option>
+                {getBlockContentTypes(selectedBlock).map(
+                  (contentType: string) => {
+                    return (
+                      <option
+                        key={"contentTypeSelect_" + contentType}
+                        value={contentType}
+                      >
+                        {capitalizeFirst(contentType)}
+                      </option>
+                    );
+                  }
+                )}
               </select>
             </div>
 
-            <div className="flex flex-row gap-6">
-              <div className="form-control w-[95vw] sm:w-[215px]">
-                <label className="label text-sm text-brand-white">
-                  Search Content
-                </label>
-                <input
-                  name="name"
-                  placeholder="Search Name"
-                  className="input input-bordered w-[95vw] text-brand-black/75 sm:w-[215px]"
-                  type="text"
-                  onChange={(e) => {
-                    handleSearchSubmit(undefined, e.target.value);
-                  }}
-                />
-              </div>
-            </div>
+            <BasicInput
+              labelColor="text-brand-white"
+              label="Search Content"
+              name="name"
+              placeholder="Search Name"
+              type="text"
+              onChange={(e) => {
+                handleSearchSubmit(undefined, e as string);
+              }}
+            />
           </div>
         </div>
       )}

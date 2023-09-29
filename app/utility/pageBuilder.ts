@@ -2,7 +2,9 @@ import { searchCampaigns } from "~/models/campaigns.server";
 import { searchImages } from "~/models/images.server";
 import { searchProducts } from "~/models/products.server";
 import { searchPromotions } from "~/models/promotions.server";
+import { blockMaster, getBlockContentTypes } from "./blockMaster";
 
+// a register for the blockoptions so the function knows which keys to look for in the formdata
 export const getFormBlockOptions = (form: {
   [k: string]: FormDataEntryValue;
 }): BlockOptions => {
@@ -14,10 +16,15 @@ export const getFormBlockOptions = (form: {
     borderSize,
     columns,
     count,
+    flipX,
+    linkFive,
+    linkFour,
+    linkOne,
+    linkSix,
+    linkThree,
+    linkTwo,
     margin,
-    primaryLink,
     rows,
-    secondaryLink,
     shortText,
     shortTextColor,
     size,
@@ -36,10 +43,15 @@ export const getFormBlockOptions = (form: {
     borderSize: borderSize ? (borderSize as string) : undefined,
     columns: columns ? parseInt(columns as string) : undefined,
     count: count ? parseInt(count as string) : undefined,
+    flipX: flipX ? (flipX as string) : undefined,
     margin: margin ? (margin as string) : undefined,
-    primaryLink: primaryLink ? (primaryLink as string) : undefined,
+    linkOne: linkOne ? (linkOne as string) : undefined,
+    linkTwo: linkTwo ? (linkTwo as string) : undefined,
+    linkThree: linkThree ? (linkThree as string) : undefined,
+    linkFour: linkFour ? (linkFour as string) : undefined,
+    linkFive: linkFive ? (linkFive as string) : undefined,
+    linkSix: linkSix ? (linkSix as string) : undefined,
     rows: rows ? parseInt(rows as string) : undefined,
-    secondaryLink: secondaryLink ? (secondaryLink as string) : undefined,
     shortText: shortText ? (shortText as string) : undefined,
     shortTextColor: shortTextColor ? (shortTextColor as string) : undefined,
     size: size as "small" | "medium" | "large",
@@ -53,12 +65,13 @@ export const getFormBlockOptions = (form: {
   return blockOptions;
 };
 
+// builds the object required for updating the block in the backend
 export const getBlockUpdateValues = (form: {
   [k: string]: FormDataEntryValue;
 }): NewBlockData => {
   const { pageId, blockName, itemIndex, contentType } = form;
 
-  const parsedObjectData = parseObjectData(blockName as string, form);
+  const parsedObjectData = buildNewBlockData(blockName as BlockName, form);
 
   const blockUpdateValues = {
     pageId: parseInt(pageId as string),
@@ -71,78 +84,51 @@ export const getBlockUpdateValues = (form: {
   return blockUpdateValues;
 };
 
-export const parseObjectData = (
-  blockName: string,
+export const buildNewBlockData = (
+  blockName: BlockName,
   form: {
     [k: string]: FormDataEntryValue;
   }
 ) => {
-  let objectData;
+  let newData: any = {};
 
-  if (blockName === "product") {
-    const { productCategory, productSubCategory, brand, gender } = form;
-    objectData = {
-      productCategory: parseIfStringlifiedArray(productCategory),
-      productSubCategory: parseIfStringlifiedArray(productSubCategory),
-      brand: parseIfStringlifiedArray(brand),
-      gender: parseIfStringlifiedArray(gender),
-    };
-  }
-  if (blockName === "article") {
-    const { articleCategory } = form;
-    objectData = {
-      articleCategory: parseIfStringlifiedArray(articleCategory),
-    };
-  }
-  if (blockName === "banner") {
-    const { promotion, campaign, image } = form;
-    objectData = {
-      promotion: parseIfStringlifiedArray(promotion),
-      campaign: parseIfStringlifiedArray(campaign),
-      image: parseIfStringlifiedArray(image),
-    };
-  }
-  if (blockName === "tile") {
-    const { promotion, campaign, image } = form;
-    objectData = {
-      promotion: parseIfStringlifiedArray(promotion),
-      campaign: parseIfStringlifiedArray(campaign),
-      image: parseIfStringlifiedArray(image),
-    };
-  }
-  if (blockName === "hero") {
-    const { product } = form;
-    objectData = {
-      product: parseIfStringlifiedArray(product),
-    };
-  }
-  if (blockName === "text") {
-    const { richText } = form;
-    objectData = {
-      richText: parseIfStringlifiedArray(richText),
-    };
-  }
+  // we go through the blockmaster object getting the relevant data
+  blockMaster.map(({ name, hasMultipleContent }: BlockMaster) => {
+    if (blockName === name) {
+      // we get the types of content by key that the block requires
+      const blockContentTypes = getBlockContentTypes(name);
 
-  return objectData;
-};
+      // in newData we set the keys recieved from getBlockContentTypes
+      blockContentTypes?.map(
+        (contentTypeName) =>
+          (newData[contentTypeName] = hasMultipleContent ? [] : undefined)
+      );
 
-const parseIfStringlifiedArray = (inputString?: FormDataEntryValue) => {
-  if (!inputString) {
-    return undefined;
-  } else {
-    try {
-      const parsedArray = JSON.parse(inputString as string);
-      if (Array.isArray(parsedArray)) {
-        return parsedArray;
-      } else {
-        return inputString;
-      }
-    } catch (error) {
-      return inputString;
+      let { contentSelection } = form;
+
+      contentSelection = JSON.parse(contentSelection as string);
+
+      // we then assign the data to each key
+      (contentSelection as unknown as ContentSelection[]).forEach(
+        ({ type, contentId }: ContentSelection) => {
+          blockContentTypes?.map((contentName: any) => {
+            if (type === contentName && hasMultipleContent) {
+              newData[contentName] = [...newData[contentName], contentId];
+            } else if (type === contentName && !hasMultipleContent) {
+              newData[contentName] = contentId;
+            }
+            return null;
+          });
+        }
+      );
     }
-  }
+    return null;
+  });
+
+  return newData;
 };
 
+// returns content data that a user searches for in the pagebuilder
 export const searchContentData = async (
   contentType: BlockContentType,
   name?: string

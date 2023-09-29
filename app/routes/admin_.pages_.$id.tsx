@@ -2,7 +2,7 @@ import Icon from "~/components/Icon";
 import { HiTrash } from "react-icons/hi2";
 import PageBuilder from "~/components/PageBuilder";
 import { getBrands } from "~/models/brands.server";
-import { getBlocks } from "~/utility/blockHelpers";
+import { getBlocks } from "~/helpers/blockHelpers";
 import { getAvailableColors } from "~/models/enums.server";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import UploadImage from "~/components/Forms/Upload/UploadImage";
@@ -41,6 +41,8 @@ import {
 } from "~/utility/pageBuilder";
 import swiper from "../../node_modules/swiper/swiper.css";
 import swiperNav from "../../node_modules/swiper/modules/navigation/navigation.min.css";
+import { limitString } from "~/helpers/stringHelpers";
+import BasicSelect from "~/components/Forms/Select/BasicSelect";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: swiper },
@@ -80,14 +82,15 @@ export const action = async ({ request, params }: ActionArgs) => {
   const id = params.id === "add" ? undefined : params.id;
   const form = Object.fromEntries(await request.formData());
   const {
-    title,
-    description,
-    thumbnail,
-    itemIndex,
+    backgroundColor,
     blockId,
     blockName,
     contentType,
+    description,
+    itemIndex,
     name,
+    thumbnail,
+    title,
   } = form;
 
   const blockOptions: BlockOptions = getFormBlockOptions(form);
@@ -118,6 +121,7 @@ export const action = async ({ request, params }: ActionArgs) => {
         title as string,
         description as string,
         thumbnail ? JSON.parse(thumbnail as string) : undefined,
+        backgroundColor as string,
         id ? parseInt(id) : undefined
       );
 
@@ -167,12 +171,8 @@ const ModifyWebPage = () => {
     colors,
   } = useLoaderData() || {};
 
-  const {
-    searchResults,
-    updateSuccess,
-    metaValidationError,
-    blockValidationError,
-  } = useActionData() || {};
+  const { searchResults, updateSuccess, metaValidationError } =
+    useActionData() || {};
 
   return (
     <AdminPageWrapper>
@@ -185,7 +185,7 @@ const ModifyWebPage = () => {
           <div className="flex flex-col gap-6">
             <div className="relative flex justify-center gap-3 text-center text-2xl font-bold">
               <Icon iconName="IoNewspaper" size={24} styles="mt-[5px]" />
-              {webPage ? webPage.title : "Create Page"}
+              {webPage ? limitString(webPage.title, 21, true) : "Create Page"}
 
               <HiTrash
                 size={24}
@@ -199,7 +199,7 @@ const ModifyWebPage = () => {
             </div>
 
             <LargeCollapse
-              title="Meta Information"
+              title="Page Options"
               forceOpen={!webPage}
               content={
                 <Form
@@ -210,8 +210,10 @@ const ModifyWebPage = () => {
                     name="title"
                     label="Title"
                     placeholder="Title"
+                    customWidth="w-[320px]"
                     type="text"
                     defaultValue={webPage?.title}
+                    labelColor="text-brand-white"
                   />
 
                   <div className="form-control">
@@ -224,7 +226,7 @@ const ModifyWebPage = () => {
                       name="description"
                       placeholder="Description"
                       defaultValue={webPage?.description}
-                      className="textarea textarea-bordered flex w-[95vw] rounded-none text-brand-black sm:w-[320px]"
+                      className="textarea textarea-bordered flex w-[95vw] rounded-sm text-brand-black sm:w-[320px]"
                     />
                   </div>
 
@@ -241,6 +243,19 @@ const ModifyWebPage = () => {
                       />
                     </div>
                   </div>
+
+                  <BasicSelect
+                    label="Background Color"
+                    labelColor="text-brand-white"
+                    customWidth="w-[320px]"
+                    name="backgroundColor"
+                    placeholder="Select a Color"
+                    defaultValue={webPage?.backgroundColor}
+                    selections={colors.map((color: string) => ({
+                      id: color,
+                      name: color,
+                    }))}
+                  />
 
                   <input name="_action" value="updateMeta" hidden readOnly />
 
@@ -261,7 +276,7 @@ const ModifyWebPage = () => {
 
                   <button
                     type="submit"
-                    className="btn-primary btn-md mx-auto block w-max"
+                    className="btn-primary btn-md mx-auto block w-max rounded-sm"
                   >
                     {webPage ? "Submit" : "Next Step"}
                   </button>
@@ -284,7 +299,6 @@ const ModifyWebPage = () => {
                     articleCategories={articleCategories}
                     brands={brands}
                     colors={colors}
-                    blockValidationError={blockValidationError}
                   />
                 }
               />

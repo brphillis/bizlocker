@@ -2,7 +2,7 @@ import { useNavigate } from "@remix-run/react";
 import { useState } from "react";
 import { IoMdTrash } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
-import { capitalizeFirst } from "~/utility/stringHelpers";
+import { capitalizeFirst } from "~/helpers/stringHelpers";
 
 type Props = {
   valueToChange:

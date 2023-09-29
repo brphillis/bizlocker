@@ -1,7 +1,9 @@
 import { redirect } from "@remix-run/server-runtime";
 import { prisma } from "~/db.server";
 import { includeBlocksData } from "~/utility/blockMaster";
-import { getOrderBy } from "~/utility/sortHelpers";
+import { getOrderBy } from "~/helpers/sortHelpers";
+import { removeBlock } from "./pageBuilder.server";
+import { getBlocks } from "~/helpers/blockHelpers";
 
 export const getArticle = async (id?: string, title?: string) => {
   let whereClause;
@@ -32,6 +34,7 @@ export const getArticle = async (id?: string, title?: string) => {
 export const upsertArticleInfo = async (
   title: string,
   description: string,
+  backgroundColor: string,
   isActive: string,
   articleCategories: string[],
   thumbnail: Image,
@@ -43,8 +46,9 @@ export const upsertArticleInfo = async (
     article = await prisma.article.create({
       // Provide the desired properties for the new article
       data: {
-        title: title,
-        description: description,
+        title,
+        description,
+        backgroundColor,
         articleCategories: {
           connect: articleCategories
             ? articleCategories.map((category: string) => ({
@@ -86,8 +90,9 @@ export const upsertArticleInfo = async (
         id: article.id,
       },
       data: {
-        title: title,
-        description: description,
+        title,
+        description,
+        backgroundColor,
         isActive: isActive ? true : false,
         articleCategories: {
           connect: articleCategories
@@ -121,16 +126,7 @@ export const deleteArticle = async (id: number) => {
       id,
     },
     include: {
-      blocks: {
-        include: {
-          bannerBlock: true,
-          tileBlock: true,
-          textBlock: true,
-          productBlock: true,
-          articleBlock: true,
-          blockOptions: true,
-        },
-      },
+      blocks: includeBlocksData,
     },
   });
 
@@ -138,36 +134,10 @@ export const deleteArticle = async (id: number) => {
     return false;
   }
 
-  // Delete blockOptions associated with each block
-  // for (const block of article.blocks) {
-  //   if (block.blockOptions) {
-  //     await prisma.blockOptions.delete({
-  //       where: { id: block.blockOptions.id },
-  //     });
-  //   }
-  // }
+  //find and delete the associated blocks
+  const articleBlocks = await getBlocks(article as any);
 
-  // Delete bannerBlocks, tileBlocks, and textBlocks associated with each block
-  for (const block of article.blocks) {
-    if (block.bannerBlock) {
-      await prisma.bannerBlock.delete({ where: { id: block.bannerBlock.id } });
-    }
-    if (block.tileBlock) {
-      await prisma.tileBlock.delete({ where: { id: block.tileBlock.id } });
-    }
-    if (block.textBlock) {
-      await prisma.textBlock.delete({ where: { id: block.textBlock.id } });
-    }
-    if (block.productBlock) {
-      await prisma.textBlock.delete({ where: { id: block.productBlock.id } });
-    }
-    if (block.articleBlock) {
-      await prisma.textBlock.delete({ where: { id: block.articleBlock.id } });
-    }
-  }
-
-  // Delete blocks associated with the article
-  await prisma.block.deleteMany({ where: { articleId: id } });
+  articleBlocks.map((e: Block) => removeBlock(e.id, e.name));
 
   // Delete the article
   await prisma.article.delete({

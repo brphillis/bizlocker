@@ -8,7 +8,7 @@ const LoginButton = ({ style }: Props) => {
   const navigate = useNavigate();
   return (
     <button
-      className={"btn-primary btn-md " + style}
+      className={"btn-primary btn-md rounded-sm " + style}
       onClick={() => navigate("/login")}
     >
       Login

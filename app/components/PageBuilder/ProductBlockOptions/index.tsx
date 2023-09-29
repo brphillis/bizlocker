@@ -1,59 +1,93 @@
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import SelectGender from "~/components/Forms/Select/SelectGender";
+// import SelectGender from "~/components/Forms/Select/SelectGender";
 
 type Props = {
   selectedBlock: BlockName | undefined;
+  selectedItems: ContentSelection[];
+  setSelectedItems: Function;
   productCategories: ProductCategory[];
   productSubCategories: ProductSubCategory[];
   brands: Brand[];
-  defaultValues: ProductBlockContent[];
+  defaultValues: ProductBlockContent;
 };
 
 const ProductBlockOptions = ({
+  selectedItems,
+  setSelectedItems,
   selectedBlock,
   productCategories,
   productSubCategories,
   brands,
   defaultValues,
 }: Props) => {
+  const selectItem = (type: BlockContentType, contentId: number | string) => {
+    setSelectedItems((prevSelectedItems: any) => {
+      if (!Array.isArray(prevSelectedItems)) {
+        prevSelectedItems = [];
+      } else {
+        prevSelectedItems = prevSelectedItems.filter((e) => e.type !== type);
+      }
+      return [...prevSelectedItems, { type, contentId }];
+    });
+  };
+
   return (
     <>
       {selectedBlock === "product" && (
         <div className="w-full pb-3">
-          <p className="mb-3 px-1 pt-3 font-semibold text-brand-white">
-            Filters
-          </p>
-          <div className="flex flex-wrap gap-3 !text-brand-white">
-            <div className="flex w-full justify-start gap-3">
+          <p className="mb-3 px-1 pt-3 font-semibold">Filters</p>
+          <div className="flex flex-wrap gap-6">
+            <div className="flex w-full flex-wrap justify-start gap-3 empty:hidden">
               <BasicSelect
                 name="productCategory"
                 label="Product Category"
+                labelColor="text-brand-white"
                 placeholder="Product Category"
                 selections={productCategories as unknown as SelectValue[]}
-                defaultValue={defaultValues?.[0]?.productCategoryId?.toString()}
+                defaultValue={defaultValues?.productCategoryId?.toString()}
+                onChange={(selectedValue) => {
+                  selectItem(
+                    "productCategory",
+                    parseInt(selectedValue as string)
+                  );
+                }}
               />
 
               <BasicSelect
                 name="productSubCategory"
-                label="Product  SubCategory"
+                label="Product SubCategory"
+                labelColor="text-brand-white"
                 placeholder="Product SubCategory"
                 selections={productSubCategories as unknown as SelectValue[]}
-                defaultValue={defaultValues?.[0]?.productSubCategoryId?.toString()}
+                defaultValue={defaultValues?.productSubCategoryId?.toString()}
+                onChange={(selectedValue) =>
+                  selectItem(
+                    "productSubCategory",
+                    parseInt(selectedValue as string)
+                  )
+                }
               />
-            </div>
 
-            <div className="flex w-full justify-start gap-3">
               <BasicSelect
                 name="brand"
                 label="Brand"
+                labelColor="text-brand-white"
                 placeholder="Brand"
                 selections={brands as unknown as SelectValue[]}
-                defaultValue={defaultValues?.[0]?.brandId?.toString()}
+                defaultValue={defaultValues?.brandId?.toString()}
+                onChange={(selectedValue) =>
+                  selectItem("brand", parseInt(selectedValue as string))
+                }
               />
 
               <SelectGender
                 label="Gender"
-                defaultValue={defaultValues?.[0]?.gender?.toString()}
+                labelColor="text-brand-white"
+                defaultValue={defaultValues?.gender?.toString()}
+                onChange={(selectedValue) =>
+                  selectItem("gender", selectedValue as string)
+                }
               />
             </div>
           </div>

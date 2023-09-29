@@ -1,70 +1,39 @@
-import { useState } from "react";
-import {
-  IoAdd,
-  IoCloseCircle,
-  IoEllipsisVertical,
-  IoLink,
-} from "react-icons/io5";
-import SelectPageLinkPopupFormModule from "~/components/Forms/Modules/SelectPageLinkPopupFormModule";
+import { IoAdd, IoEllipsisVertical } from "react-icons/io5";
 
 type Props = {
   selectedBlock: BlockName | undefined;
+  selectedItems: ContentSelection[];
+  setSelectedItems: Function;
   searchResults: Image[];
   contentType: BlockContentType | undefined;
 };
 
 const BlockContentImageResults = ({
+  selectedItems,
+  setSelectedItems,
   selectedBlock,
   searchResults,
   contentType,
 }: Props) => {
-  const [selectedItems, setSelectedItems] = useState<Image[]>([]);
-
-  const [itemIndexToUpdate, setItemIndexToUpdate] = useState<
-    number | undefined
-  >(undefined);
-
-  const selectItem = (item: Image) => {
-    setSelectedItems(
-      ((prevSelectedItems: Image[]) => [...prevSelectedItems, item])(
-        selectedItems
-      )
-    );
-  };
-
-  const stringlifyIfArray = (items: Image[]) => {
-    if (selectedItems.length === 1) {
-      return items[0].id;
-    } else {
-      const itemsIdArray = items.map((item) => item.id);
-      return JSON.stringify(itemsIdArray);
-    }
+  const selectItems = (
+    type: BlockContentType,
+    contentId: number,
+    name: string
+  ) => {
+    setSelectedItems((prevSelectedItems: any) => {
+      if (!Array.isArray(prevSelectedItems)) {
+        prevSelectedItems = [];
+      } else {
+        prevSelectedItems = prevSelectedItems.filter((e) => e.type !== type);
+      }
+      return [...prevSelectedItems, { type, contentId, name }];
+    });
   };
 
   return (
     <>
-      <input
-        name="image"
-        value={
-          selectedItems && selectedItems.length > 0
-            ? stringlifyIfArray(selectedItems)
-            : ""
-        }
-        hidden
-        readOnly
-      />
-
       {contentType === "image" && (
         <>
-          {!isNaN(itemIndexToUpdate!) && (
-            <SelectPageLinkPopupFormModule
-              itemIndexToUpdate={itemIndexToUpdate}
-              setItemIndexToUpdate={setItemIndexToUpdate}
-              updateItemsFunction={setSelectedItems}
-              items={selectedItems}
-            />
-          )}
-
           {searchResults &&
             (selectedBlock === "banner" ||
               selectedBlock === "tile" ||
@@ -79,7 +48,13 @@ const BlockContentImageResults = ({
                       >
                         <div
                           className="absolute bottom-3 right-3 flex h-6 w-6 cursor-pointer select-none items-center justify-center rounded-full bg-primary text-brand-white transition hover:bg-primary-focus"
-                          onClick={() => selectItem(searchResults[index])}
+                          onClick={() => {
+                            selectItems(
+                              contentType,
+                              searchResults[index].id,
+                              altText || ""
+                            );
+                          }}
                         >
                           <IoAdd size={12} />
                         </div>
@@ -100,59 +75,6 @@ const BlockContentImageResults = ({
             )}
         </>
       )}
-
-      {selectedItems &&
-        selectedItems?.length > 0 &&
-        (selectedBlock === "banner" || selectedBlock === "tile") && (
-          <div className="max-w-3xl overflow-x-auto">
-            <p className="mb-3 text-sm font-bold">Selected Items</p>
-            <table className="table table-sm">
-              <thead className="text-brand-white">
-                <tr>
-                  <th className="w-1/4"></th>
-                  <th className="w-1/4">Name</th>
-                  <th className="w-1/4">Link</th>
-                  <th className="w-1/4">Delete</th>
-                </tr>
-              </thead>
-              <tbody>
-                {selectedItems?.map(({ url, altText }: Image, index) => {
-                  return (
-                    <tr key={"imageTile" + altText + index}>
-                      <td className="w-1/4">{index + 1}</td>
-                      <td className="w-1/4">{altText}</td>
-                      <td className="w-1/4">
-                        <div
-                          className="ml-1 flex items-center gap-3"
-                          onClick={() => {
-                            setItemIndexToUpdate(index);
-                          }}
-                        >
-                          <IoLink size={18} className="cursor-pointer" />
-                          <span>{url}</span>
-                        </div>
-                      </td>
-                      <td className="w-1/4">
-                        <div
-                          className="ml-2"
-                          onClick={() =>
-                            setSelectedItems(
-                              selectedItems.filter((_, i) => i !== index)
-                            )
-                          }
-                        >
-                          <IoCloseCircle size={18} className="cursor-pointer" />
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-
-            <div className="divider w-full" />
-          </div>
-        )}
     </>
   );
 };

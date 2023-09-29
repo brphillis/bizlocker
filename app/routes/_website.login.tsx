@@ -127,11 +127,15 @@ export default function LoginPage() {
             type="submit"
             name="_action"
             value="login"
-            className="btn btn-primary"
+            className="btn btn-primary !rounded-sm"
           >
             Login
           </button>
-          <Link to="/register" type="button" className="btn btn-primary">
+          <Link
+            to="/register"
+            type="button"
+            className="btn btn-primary !rounded-sm"
+          >
             Create Account
           </Link>
           <div className="my-2 w-full border-b-2 border-brand-white/10" />

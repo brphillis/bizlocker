@@ -206,7 +206,7 @@ const Product = () => {
             <div className="flex flex-wrap justify-evenly gap-3">
               <BasicMultiSelect
                 name="productSubCategories"
-                title="Categories"
+                label="Categories"
                 selections={productSubCategories}
                 defaultValues={product?.productSubCategories}
               />
@@ -215,7 +215,7 @@ const Product = () => {
                 label="Info URL"
                 type="text"
                 name="infoURL"
-                placeholder="Index"
+                placeholder="Info URL"
                 defaultValue={product?.infoURL}
                 validationErrors={validationErrors}
               />

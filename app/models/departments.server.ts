@@ -1,5 +1,5 @@
 import { prisma } from "~/db.server";
-import { getOrderBy } from "~/utility/sortHelpers";
+import { getOrderBy } from "~/helpers/sortHelpers";
 
 export const getDepartment = async (id: string) => {
   return prisma.department.findUnique({

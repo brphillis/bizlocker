@@ -5,7 +5,7 @@ import CartAddSubtractButton from "./CartAddSubtractButton";
 import {
   calculateCartTotal,
   getVariantUnitPrice,
-} from "~/utility/numberHelpers";
+} from "~/helpers/numberHelpers";
 
 const CartButton = ({ id: cartId, cartItems }: Cart) => {
   const navigate = useNavigate();
@@ -83,7 +83,14 @@ const CartButton = ({ id: cartId, cartItems }: Cart) => {
                       />
                     )}
 
-                    <div>{product?.name}</div>
+                    <div
+                      className="cursor-pointer hover:font-semibold"
+                      onClick={() =>
+                        navigate(`/product/${product?.name}?id=${product.id}`)
+                      }
+                    >
+                      {product?.name}
+                    </div>
 
                     <div className="flex flex-row gap-3">
                       <div>${getVariantUnitPrice(variant, product)}</div>

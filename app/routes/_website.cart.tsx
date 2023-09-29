@@ -16,13 +16,16 @@ import { createOrder } from "~/models/orders.server";
 import {
   calculateCartTotal,
   getVariantUnitPrice,
-} from "~/utility/numberHelpers";
+} from "~/helpers/numberHelpers";
 import CartAddSubtractButton from "~/components/Layout/_Website/Navigation/Buttons/CartButton/CartAddSubtractButton";
+import { getUserDataFromSession } from "~/session.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
-  const cart = await getCart(request);
-  if (cart) {
-    return cart;
+  let cart, user;
+  cart = await getCart(request);
+  user = await getUserDataFromSession(request);
+  if (cart || user) {
+    return { cart, user };
   } else {
     return redirect("/products");
   }
@@ -34,7 +37,7 @@ export const action = async ({ request }: ActionArgs) => {
 };
 
 const Cart = () => {
-  const cart = useLoaderData();
+  const { cart, user } = useLoaderData() || {};
   const { cartItems } = (cart as { cartItems: CartItem[] }) || {};
   const [orderTotal, setOrderTotal] = useState<number>(0);
 
@@ -135,10 +138,26 @@ const Cart = () => {
             </select>
           </div>
 
+          {user && (
+            <div className="form-control pb-3">
+              <label className="label cursor-pointer">
+                <span className="label-text mr-3">
+                  Save Shipping Information
+                </span>
+                <input
+                  name="rememberInformation"
+                  type="checkbox"
+                  defaultChecked={true}
+                  className="checkbox-primary checkbox checkbox-sm"
+                />
+              </label>
+            </div>
+          )}
+
           <input name="cartId" value={cart?.id || ""} readOnly hidden />
           <button
             type="submit"
-            className="btn btn-success relative font-bold tracking-wide !text-white"
+            className="btn btn-primary relative !rounded-sm font-bold tracking-wide !text-white"
           >
             Continue to Checkout
           </button>

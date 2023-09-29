@@ -3,7 +3,7 @@ import { useLoaderData } from "@remix-run/react";
 import BlockRenderer from "~/components/BlockRenderer";
 import PageWrapper from "~/components/Layout/_Website/PageWrapper";
 import { getHomePage } from "~/models/homePage.server";
-import { getBlocks } from "~/utility/blockHelpers";
+import { getBlocks } from "~/helpers/blockHelpers";
 
 export const meta: V2_MetaFunction = ({ data }) => {
   return [
@@ -17,26 +17,28 @@ export const meta: V2_MetaFunction = ({ data }) => {
 
 export const loader = async () => {
   const homePage = await getHomePage();
-  let title, description, blocks;
+  let title, description, backgroundColor, blocks;
 
   if (homePage) {
     blocks = await getBlocks(homePage as any);
     title = homePage.title;
     description = homePage.description;
+    backgroundColor = homePage.backgroundColor;
   }
 
   return {
     blocks,
     title,
     description,
+    backgroundColor,
   };
 };
 
 const Home = () => {
-  const { blocks } = useLoaderData() || {};
+  const { blocks, backgroundColor } = useLoaderData() || {};
 
   return (
-    <PageWrapper gap="medium">
+    <PageWrapper gap="medium" backgroundColor={backgroundColor}>
       <BlockRenderer blocks={blocks} />
     </PageWrapper>
   );

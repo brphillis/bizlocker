@@ -3,7 +3,8 @@ import { searchProducts } from "./products.server";
 
 export const fetchBlockProducts = async (block: any) => {
   const { brandId, gender, productCategoryId, productSubCategoryId } =
-    block.content[0] || {};
+    block.content || {};
+
   const { count, sortBy, sortOrder } = block.blockOptions[0] || {};
 
   const formDataObject: { [key: string]: string } = {};
@@ -26,7 +27,7 @@ export const fetchBlockProducts = async (block: any) => {
 };
 
 export const fetchBlockArticles = async (block: any) => {
-  const { articleCategoryId } = block.content[0] || {};
+  const { articleCategoryId } = block.content || {};
   const { count, sortBy, sortOrder } = block.blockOptions[0] || {};
 
   const formDataObject: { [key: string]: string } = {};

@@ -1,6 +1,6 @@
 import Pagination from "~/components/Pagination";
 import { type LoaderArgs } from "@remix-run/node";
-import { capitalizeFirst } from "~/utility/stringHelpers";
+import { capitalizeFirst } from "~/helpers/stringHelpers";
 import CategorySort from "~/components/Sorting/CategorySort";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";

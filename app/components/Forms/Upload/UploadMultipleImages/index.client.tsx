@@ -3,7 +3,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper";
 import { ConvertToBase64 } from "~/utility/fileHelpers";
 import { IoClose } from "react-icons/io5";
-import { findFirstNotNullInputValue } from "~/utility/formHelpers";
+import { findFirstNotNullInputValue } from "~/helpers/formHelpers";
 
 type ImageUploadSliderProps = {
   defaultImages: Image[] | undefined;
@@ -23,11 +23,12 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
+      <div className="text-center">Upload Images</div>
       {images && images?.some((image) => image) ? (
         <Swiper
           modules={[Navigation]}
           onSlideChange={(swiper) => setActiveSlide(swiper.activeIndex)}
-          className="mx-auto mt-10 block h-max w-full"
+          className="mx-auto mt-6 block h-max w-full"
           spaceBetween={12}
           slidesPerView={1}
           centeredSlides={true}
@@ -41,10 +42,10 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
                     <IoClose
                       size={20}
                       className="
-                    absolute right-2 top-2
-                    -mr-2 -mt-2 cursor-pointer
-                    rounded-bl-md bg-primary p-[0.2rem] text-white
-                  "
+                        absolute right-2 top-2
+                        -mr-2 -mt-2 cursor-pointer
+                        rounded-bl-md bg-primary p-[0.2rem] text-white
+                      "
                       onClick={() => handleRemoveImage(i)}
                     />
                     <img
@@ -101,7 +102,7 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
                 />
                 <label
                   htmlFor={`image${i + 1}`}
-                  className={`h-4 w-4 rounded-full ${
+                  className={`h-4 w-4 cursor-pointer rounded-full ${
                     image ? "bg-success" : "bg-gray-500"
                   }
                   ${
