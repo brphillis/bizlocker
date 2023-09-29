@@ -49,11 +49,10 @@ const BlockContentImageResults = ({
                         <div
                           className="absolute bottom-3 right-3 flex h-6 w-6 cursor-pointer select-none items-center justify-center rounded-full bg-primary text-brand-white transition hover:bg-primary-focus"
                           onClick={() => {
-                            selectItems(
-                              contentType,
-                              searchResults[index].id,
-                              altText || ""
-                            );
+                            const imageId = searchResults[index].id;
+                            if (imageId) {
+                              selectItems(contentType, imageId, altText || "");
+                            }
                           }}
                         >
                           <IoAdd size={12} />
