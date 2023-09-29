@@ -5,11 +5,12 @@ import { getCookies } from "~/helpers/cookieHelpers";
 
 const visitorCartCookieKey = "visitor_cart_id";
 
-export const getVisitorCartId = (request: Request): number => {
+export const getVisitorCartId = (request: Request): number | undefined => {
   const cookies = getCookies(request);
-  const visitorCart = cookies[visitorCartCookieKey];
-
-  return parseInt(visitorCart);
+  if (cookies) {
+    const visitorCart = cookies[visitorCartCookieKey];
+    return parseInt(visitorCart);
+  }
 };
 
 export const getCart = async (request: Request) => {
