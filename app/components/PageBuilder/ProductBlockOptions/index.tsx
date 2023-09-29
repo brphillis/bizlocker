@@ -1,6 +1,5 @@
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import SelectGender from "~/components/Forms/Select/SelectGender";
-// import SelectGender from "~/components/Forms/Select/SelectGender";
 
 type Props = {
   selectedBlock: BlockName | undefined;

@@ -5,13 +5,13 @@ import { getBlockContentTypes } from "../utility/blockMaster";
 //gets the page blocks, filters out the inactive blocks, then fetches nessesery data
 export const getBlocks = async (
   page: HomePage | Article | WebPage,
-  dontFetch?: boolean
+  fetchNestedContent?: boolean
 ) => {
   // populate the page with the active block types
   const blocks = getPageBlocks(page);
   const activeBlocks = getActiveBlocks(blocks);
 
-  if (dontFetch) {
+  if (fetchNestedContent) {
     for (let i = 0; i < activeBlocks.length; i++) {
       const block = activeBlocks[i];
       if (block.name === "product") {

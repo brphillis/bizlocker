@@ -370,7 +370,7 @@ const ModifyOrder = () => {
           <div className="flex flex-row justify-center gap-6">
             <button
               type="button"
-              className="btn btn-primary mt-6 w-max"
+              className="btn btn-primary mt-6 w-max !rounded-sm"
               onClick={() => navigate("..")}
             >
               Back

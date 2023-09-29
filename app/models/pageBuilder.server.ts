@@ -128,7 +128,7 @@ export const updatePageBlock = async (
           where: { id: blockContent.id },
           data: updates,
         });
-
+        console.log("UPDATING BLOCK CONTENT", updates);
         // update the BlockType
         const updateBlock = prisma[`${blockName}Block`].update as (
           args: any // Replace 'any' with the appropriate argument type for your update method
@@ -143,7 +143,6 @@ export const updatePageBlock = async (
 
         // update the BlockOptions
         await updateOrCreateBlockOptions(existingBlock.id, blockOptions);
-
         // update the PageBlock
         await prisma.block.update({
           where: { id: existingBlock.id },

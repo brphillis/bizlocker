@@ -51,7 +51,7 @@ const PageBuilder = ({
   const [editingIndex, setEditingIndex] = useState<number>(1);
   const [selectedItems, setSelectedItems] = useState<ContentSelection[]>([]);
 
-  const handleItemSelect = (items: ContentSelection[]) => {
+  const handleLimitedItemSelect = (items: ContentSelection[]) => {
     //check to see if we are at the content limit for the block before adding content
     const selectedBlocksContentLimit = blockMaster.find(
       (e) => selectedBlock === e.name
@@ -253,7 +253,7 @@ const PageBuilder = ({
           <ProductBlockOptions
             selectedBlock={selectedBlock}
             selectedItems={selectedItems}
-            setSelectedItems={handleItemSelect}
+            setSelectedItems={setSelectedItems}
             productCategories={productCategories}
             productSubCategories={productSubCategories}
             brands={brands}
@@ -263,7 +263,7 @@ const PageBuilder = ({
           <ArticleBlockOptions
             selectedBlock={selectedBlock}
             selectedItems={selectedItems}
-            setSelectedItems={handleItemSelect}
+            setSelectedItems={setSelectedItems}
             articleCategories={articleCategories}
             defaultValues={blocks[editingIndex]?.content as ArticleBlockContent}
           />
@@ -278,7 +278,7 @@ const PageBuilder = ({
           <BlockContentResultsTable
             selectedBlock={selectedBlock}
             selectedItems={selectedItems}
-            setSelectedItems={handleItemSelect}
+            setSelectedItems={handleLimitedItemSelect}
             searchResults={searchResults as Campaign[] | Promotion[]}
             contentType={contentType}
           />
@@ -286,7 +286,7 @@ const PageBuilder = ({
           <BlockContentImageResults
             selectedBlock={selectedBlock}
             selectedItems={selectedItems}
-            setSelectedItems={handleItemSelect}
+            setSelectedItems={handleLimitedItemSelect}
             searchResults={searchResults as Image[]}
             contentType={contentType}
           />

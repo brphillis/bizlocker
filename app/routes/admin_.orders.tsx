@@ -70,7 +70,10 @@ const ManageOrders = () => {
 
           <div className="flex flex-row flex-wrap justify-between">
             <div className="mr-10 flex flex-row flex-wrap gap-2">
-              <button type="submit" className="btn btn-primary mt-6 w-max">
+              <button
+                type="submit"
+                className="btn btn-primary mt-6 w-max !rounded-sm"
+              >
                 Search
               </button>
             </div>

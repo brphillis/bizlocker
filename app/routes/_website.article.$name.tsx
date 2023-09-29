@@ -22,7 +22,7 @@ export const loader = async ({ params }: LoaderArgs) => {
   let title, description, backgroundColor, blocks;
 
   if (article) {
-    blocks = await getBlocks(article as any);
+    blocks = await getBlocks(article as any, true);
     title = article.title;
     description = article.description;
     backgroundColor = article.backgroundColor;

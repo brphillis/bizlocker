@@ -36,7 +36,10 @@ const Campaigns = () => {
           <BasicInput label="Name" name="name" placeholder="Name" type="text" />
 
           <div className="flex flex-row justify-end sm:justify-start">
-            <button type="submit" className="btn btn-primary mt-6 w-max">
+            <button
+              type="submit"
+              className="btn btn-primary mt-6 w-max !rounded-sm"
+            >
               Search
             </button>
           </div>

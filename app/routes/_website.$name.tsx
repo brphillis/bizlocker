@@ -21,7 +21,7 @@ export const loader = async ({ params }: LoaderArgs) => {
   let title, description, backgroundColor, blocks;
 
   if (webPage) {
-    blocks = await getBlocks(webPage as any);
+    blocks = await getBlocks(webPage as any, true);
     title = webPage.title;
     description = webPage.description;
     backgroundColor = webPage.backgroundColor;

@@ -20,7 +20,7 @@ export const loader = async () => {
   let title, description, backgroundColor, blocks;
 
   if (homePage) {
-    blocks = await getBlocks(homePage as any);
+    blocks = await getBlocks(homePage as any, true);
     title = homePage.title;
     description = homePage.description;
     backgroundColor = homePage.backgroundColor;

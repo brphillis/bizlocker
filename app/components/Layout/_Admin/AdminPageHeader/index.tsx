@@ -14,7 +14,7 @@ const AdminPageHeader = ({ title, addButtonText }: Props) => {
         {addButtonText && (
           <button
             type="button"
-            className="btn-primary btn-md w-max"
+            className="btn-primary btn-md w-max !rounded-sm"
             onClick={() => navigate("add")}
           >
             {addButtonText}

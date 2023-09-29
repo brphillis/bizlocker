@@ -37,7 +37,7 @@ const Admin = () => {
   const LogoutButton = (style?: string) => {
     return (
       <button
-        className={"btn-primary btn-md " + style}
+        className={"btn-primary btn-md !rounded-sm " + style}
         onClick={() => submit(null, { method: "post", action: "/logout" })}
       >
         Log Out

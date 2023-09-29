@@ -210,7 +210,7 @@ const ManageHomePage = () => {
 
                   <button
                     type="submit"
-                    className="btn-primary btn-md mx-auto block w-max"
+                    className="btn-primary btn-md mx-auto block w-max !rounded-sm"
                   >
                     {homePage ? "Submit" : "Next Step"}
                   </button>
