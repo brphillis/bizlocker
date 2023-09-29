@@ -1,5 +1,5 @@
 import { prisma } from "~/db.server";
-import { getOrderBy } from "~/utility/sortHelpers";
+import { getOrderBy } from "~/helpers/sortHelpers";
 export type { ProductCategory } from "@prisma/client";
 
 export const getProductCategories = async () => {
@@ -187,7 +187,7 @@ export const searchProductCategories = async (
       },
       skip,
       take,
-      orderBy: getOrderBy(sortBy as CategorySortBy, sortOrder as SortOrder),
+      orderBy: getOrderBy(sortBy as SortBy, sortOrder as SortOrder),
     }),
     prisma.productCategory.count({
       where: whereClause,

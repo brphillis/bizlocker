@@ -1,31 +1,51 @@
-import { redirect } from "@remix-run/server-runtime";
 import { prisma } from "~/db.server";
-import { getUserObject } from "~/session.server";
+import { redirect } from "@remix-run/server-runtime";
+import { getUserDataFromSession } from "~/session.server";
+import { getCookies } from "~/helpers/cookieHelpers";
+
+const visitorCartCookieKey = "visitor_cart_id";
+
+export const getVisitorCartId = (request: Request): number => {
+  const cookies = getCookies(request);
+  const visitorCart = cookies[visitorCartCookieKey];
+
+  return parseInt(visitorCart);
+};
 
 export const getCart = async (request: Request) => {
-  const { id } = ((await getUserObject(request)) as User) || {};
+  const { id } = ((await getUserDataFromSession(request)) as User) || {};
+  let visitorCartId;
+  let whereClause;
 
   if (!id) {
-    console.error("Logged in user required.");
-    return null;
-  }
-  return await prisma.cart.findUnique({
-    where: {
+    visitorCartId = getVisitorCartId(request);
+
+    whereClause = {
+      id: visitorCartId,
+    };
+  } else {
+    whereClause = {
       userId: id,
-    },
-    include: {
-      cartItems: {
-        include: {
-          variant: {
-            include: {
-              product: {
-                select: {
-                  id: true,
-                  name: true,
-                  images: true,
-                  promotion: {
-                    select: {
-                      discountPercentage: true,
+    };
+  }
+
+  if (id || visitorCartId) {
+    const cart = await prisma.cart.findUnique({
+      where: whereClause,
+      include: {
+        cartItems: {
+          include: {
+            variant: {
+              include: {
+                product: {
+                  select: {
+                    id: true,
+                    name: true,
+                    images: true,
+                    promotion: {
+                      select: {
+                        discountPercentage: true,
+                      },
                     },
                   },
                 },
@@ -34,8 +54,9 @@ export const getCart = async (request: Request) => {
           },
         },
       },
-    },
-  });
+    });
+    return cart;
+  } else return null;
 };
 
 export const addToCart = async (
@@ -43,34 +64,17 @@ export const addToCart = async (
   variantId: string,
   quantity: string
 ) => {
+  const headers = new Headers();
   const referer = request.headers.get("referer");
-  const userData = await getUserObject(request);
+  const userData = await getUserDataFromSession(request);
   const userId = userData?.id;
+  let cartToUpdate;
 
-  let userCart = await prisma.cart.findFirst({
-    where: {
-      userId: userId,
-    },
-    include: {
-      cartItems: {
-        include: {
-          variant: {
-            select: { id: true },
-          },
-        },
-      },
-      user: {
-        select: {
-          id: true,
-        },
-      },
-    },
-  });
-
-  if (!userCart) {
-    userCart = await prisma.cart.create({
-      data: {
-        user: { connect: { id: userId } },
+  // handling logged in user
+  if (userData) {
+    cartToUpdate = await prisma.cart.findFirst({
+      where: {
+        userId: userId,
       },
       include: {
         cartItems: {
@@ -87,9 +91,81 @@ export const addToCart = async (
         },
       },
     });
+    //create new cart for logged in user if none exists
+    if (!cartToUpdate) {
+      cartToUpdate = await prisma.cart.create({
+        data: {
+          user: { connect: { id: userId } },
+        },
+        include: {
+          cartItems: {
+            include: {
+              variant: {
+                select: { id: true },
+              },
+            },
+          },
+          user: {
+            select: {
+              id: true,
+            },
+          },
+        },
+      });
+    }
+  } else {
+    //handling non logged in user
+    const visitorCartId = getVisitorCartId(request);
+
+    if (visitorCartId) {
+      // handle adding to existing visitor cart
+      cartToUpdate = await prisma.cart.findFirst({
+        where: {
+          id: visitorCartId,
+        },
+        include: {
+          cartItems: {
+            include: {
+              variant: {
+                select: { id: true },
+              },
+            },
+          },
+          user: {
+            select: {
+              id: true,
+            },
+          },
+        },
+      });
+    }
+
+    if (!cartToUpdate) {
+      // handle creating new visitor cart and adding item to it
+      cartToUpdate = await prisma.cart.create({
+        data: {},
+        include: {
+          cartItems: {
+            include: {
+              variant: {
+                select: { id: true },
+              },
+            },
+          },
+        },
+      });
+
+      // store the visitor cart ID in the cookie
+      headers.append("Set-Cookie", cartToUpdate.id.toString());
+      headers.append(
+        "Set-Cookie",
+        `${visitorCartCookieKey}=${cartToUpdate.id.toString()}; HttpOnly; SameSite=Lax; Path=/;`
+      );
+    }
   }
 
-  const existingCartItem = userCart.cartItems.find(
+  //Update the cart
+  const existingCartItem = cartToUpdate.cartItems.find(
     (item) => item.variantId === parseInt(variantId)
   );
 
@@ -108,7 +184,7 @@ export const addToCart = async (
       // Check if there are any remaining items in the cart
       const remainingItems = await prisma.cartItem.findMany({
         where: {
-          cartId: userCart.id,
+          cartId: cartToUpdate.id,
         },
       });
 
@@ -116,7 +192,7 @@ export const addToCart = async (
       if (remainingItems.length === 0) {
         await prisma.cart.delete({
           where: {
-            id: userCart.id,
+            id: cartToUpdate.id,
           },
         });
       }
@@ -153,7 +229,7 @@ export const addToCart = async (
         quantity: parseInt(quantity),
         cart: {
           connect: {
-            id: userCart.id,
+            id: cartToUpdate.id,
           },
         },
         variant: {
@@ -169,6 +245,9 @@ export const addToCart = async (
       },
     });
   }
-
-  return redirect(referer || "/products");
+  if (userData) {
+    return redirect(referer || "/products");
+  } else {
+    return redirect(referer || "/products", { headers });
+  }
 };

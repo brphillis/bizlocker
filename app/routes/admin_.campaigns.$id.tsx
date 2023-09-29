@@ -8,17 +8,17 @@ import {
 import { useEffect, useState } from "react";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
 import FormHeader from "~/components/Forms/Headers/FormHeader";
-import SelectBrands from "~/components/Forms/Select/SelectBrands";
-import SelectDepartment from "~/components/Forms/Select/SelectDepartment";
+import BasicInput from "~/components/Forms/Input/BasicInput";
+import BasicMultiSelect from "~/components/Forms/Select/BasicMultiSelect";
+import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import SelectGender from "~/components/Forms/Select/SelectGender";
-import SelectProductSubCategories from "~/components/Forms/Select/SelectProductSubCategories";
-import UploadBannerImage from "~/components/Forms/Upload/UploadBannerImage";
-import UploadTileImage from "~/components/Forms/Upload/UploadTileImage";
+import UploadImageCollapse from "~/components/Forms/Upload/UploadImageCollapse";
 import DarkOverlay from "~/components/Layout/DarkOverlay";
 import { getBrands } from "~/models/brands.server";
 import { getCampaign, upsertCampaign } from "~/models/campaigns.server";
 import { getDepartments } from "~/models/departments.server";
 import { getProductSubCategories } from "~/models/productSubCategories.server";
+import { validateForm } from "~/utility/validate";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const id = params?.id;
@@ -50,26 +50,13 @@ export const action = async ({ request, params }: ActionArgs) => {
     isActive,
   } = form;
 
-  let validationError: string[] = [];
-
-  if (!name) {
-    validationError.push("Name is Required");
-  }
-
-  if (!department) {
-    validationError.push("Department is Required");
-  }
-
-  if (!minSaleRange || !maxSaleRange) {
-    validationError.push("Sale Ranges are Required");
-  }
-
-  if (validationError.length > 0) {
-    return { validationError };
-  }
-
   switch (form._action) {
     case "upsert":
+      const validationErrors = validateForm(form);
+      if (validationErrors) {
+        return { validationErrors };
+      }
+
       const parsedBanner = bannerImage
         ? (JSON.parse(bannerImage?.toString()) as Image)
         : undefined;
@@ -106,8 +93,11 @@ const ModifyCampaign = () => {
   const navigate = useNavigate();
   const { campaign, departments, productSubCategories, brands } =
     useLoaderData() || {};
-  const { validationError, success } =
-    (useActionData() as { success: boolean; validationError: string[] }) || {};
+  const { validationErrors, success } =
+    (useActionData() as {
+      success: boolean;
+      validationErrors: ValidationErrors;
+    }) || {};
   const mode = campaign ? "edit" : "add";
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -135,21 +125,20 @@ const ModifyCampaign = () => {
         <div className="form-control">
           <div className="form-control gap-3">
             <div className="flex flex-wrap justify-evenly gap-3">
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text">Name</span>
-                </label>
-                <input
-                  name="name"
-                  type="text"
-                  placeholder="Name"
-                  className="input input-bordered w-[95vw] sm:w-[215px]"
-                  defaultValue={campaign?.name || undefined}
-                />
-              </div>
+              <BasicInput
+                label="Name"
+                type="text"
+                name="name"
+                placeholder="Name"
+                defaultValue={campaign?.name || ""}
+                validationErrors={validationErrors}
+              />
 
-              <SelectDepartment
-                departments={departments}
+              <BasicSelect
+                name="department"
+                label="Department"
+                selections={departments}
+                placeholder="Department"
                 defaultValue={campaign?.department?.id.toString()}
               />
             </div>
@@ -159,45 +148,39 @@ const ModifyCampaign = () => {
             <div className="text-center">Campaign Filters</div>
 
             <div className="flex flex-wrap justify-evenly gap-3">
-              <SelectProductSubCategories
-                productSubCategories={productSubCategories}
-                valueToChange={campaign}
-                title="Targets Categories?"
+              <BasicMultiSelect
+                name="productSubCategories"
+                label="Categories"
+                selections={productSubCategories}
+                defaultValues={campaign?.productSubCategories}
               />
 
-              <SelectBrands
-                brands={brands}
-                valueToChange={campaign}
-                title="Targets Brands?"
+              <BasicMultiSelect
+                name="brands"
+                label="Targets Brands?"
+                selections={brands}
+                defaultValues={campaign?.brands}
               />
             </div>
 
             <div className="flex flex-wrap justify-evenly gap-3">
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text">Min Discount Range %</span>
-                </label>
-                <input
-                  name="minSaleRange"
-                  type="number"
-                  placeholder="Discount %"
-                  className="input input-bordered w-[95vw] sm:w-[215px]"
-                  defaultValue={campaign?.minSaleRange || ""}
-                />
-              </div>
+              <BasicInput
+                label="Min Discount Range %"
+                type="number"
+                name="minSaleRange"
+                placeholder="Discount %"
+                defaultValue={campaign?.minSaleRange || ""}
+                validationErrors={validationErrors}
+              />
 
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text">Max Discount Range %</span>
-                </label>
-                <input
-                  name="maxSaleRange"
-                  type="number"
-                  placeholder="Discount %"
-                  className="input input-bordered w-[95vw] sm:w-[215px]"
-                  defaultValue={campaign?.maxSaleRange || ""}
-                />
-              </div>
+              <BasicInput
+                label="Max Discount Range %"
+                type="number"
+                name="maxSaleRange"
+                placeholder="Discount %"
+                defaultValue={campaign?.maxSaleRange || ""}
+                validationErrors={validationErrors}
+              />
             </div>
 
             <div className="flex flex-wrap justify-evenly gap-3">
@@ -212,18 +195,24 @@ const ModifyCampaign = () => {
 
           <div className="divider w-full pt-8" />
 
-          <UploadBannerImage valueToChange={campaign} />
+          <UploadImageCollapse
+            name="bannerImage"
+            label="Banner Image"
+            tooltip="Optimal 8.09:1 Aspect Ratio"
+            defaultValue={campaign.bannerImage}
+          />
 
           <div className="divider w-full pt-4" />
 
-          <UploadTileImage valueToChange={campaign} />
+          <UploadImageCollapse
+            name="tileImage"
+            label="Tile Image"
+            tooltip="Optimal Square Image"
+            defaultValue={campaign.tileImage}
+          />
         </div>
 
-        <BackSubmitButtons
-          loading={loading}
-          setLoading={setLoading}
-          validationErrors={validationError}
-        />
+        <BackSubmitButtons loading={loading} setLoading={setLoading} />
       </Form>
     </DarkOverlay>
   );

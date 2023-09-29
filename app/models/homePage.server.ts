@@ -1,76 +1,10 @@
 import { prisma } from "~/db.server";
+import { includeBlocksData } from "~/utility/blockMaster";
 
 export const getHomePage = async () => {
   return prisma.homePage.findFirst({
     include: {
-      blocks: {
-        include: {
-          blockOptions: true,
-          bannerBlock: {
-            include: {
-              campaign: {
-                include: {
-                  bannerImage: true,
-                  tileImage: true,
-                },
-              },
-              promotion: {
-                include: {
-                  bannerImage: true,
-                  tileImage: true,
-                },
-              },
-              contentImage: {
-                include: {
-                  image: true,
-                },
-              },
-            },
-          },
-          tileBlock: {
-            include: {
-              campaigns: {
-                include: {
-                  bannerImage: true,
-                  tileImage: true,
-                },
-              },
-              promotions: {
-                include: {
-                  bannerImage: true,
-                  tileImage: true,
-                },
-              },
-              contentImages: {
-                include: {
-                  image: true,
-                },
-              },
-            },
-          },
-          textBlock: true,
-          productBlock: {
-            include: {
-              content: {
-                include: {
-                  productCategory: true,
-                  productSubCategory: true,
-                  brand: true,
-                },
-              },
-            },
-          },
-          articleBlock: {
-            include: {
-              content: {
-                include: {
-                  articleCategory: true,
-                },
-              },
-            },
-          },
-        },
-      },
+      blocks: includeBlocksData,
     },
   });
 };
@@ -78,6 +12,7 @@ export const getHomePage = async () => {
 export const upsertHomePageInfo = async (
   title: string,
   description: string,
+  backgroundColor: string,
   homePageId?: number
 ) => {
   let homePage;
@@ -86,8 +21,9 @@ export const upsertHomePageInfo = async (
     homePage = await prisma.homePage.create({
       // Provide the desired properties for the new homePage
       data: {
-        title: title,
-        description: description,
+        title,
+        description,
+        backgroundColor,
       },
     });
   } else {
@@ -108,8 +44,9 @@ export const upsertHomePageInfo = async (
         id: homePage.id,
       },
       data: {
-        title: title,
-        description: description,
+        title,
+        description,
+        backgroundColor,
       },
     });
   }

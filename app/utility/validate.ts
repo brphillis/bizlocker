@@ -1,3 +1,21 @@
+export const validateForm = (formEntries: {
+  [k: string]: FormDataEntryValue;
+}): ValidationErrors | null => {
+  const validationError: ValidationErrors = {};
+
+  const { name } = formEntries;
+
+  if (!name) {
+    validationError.name = "Name is invalid";
+  }
+
+  if (Object.keys(validationError).length > 0) {
+    return validationError;
+  } else {
+    return null;
+  }
+};
+
 export const isValidEmail = (email: string): boolean => {
   // Defining the email regex pattern
   const regexPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;

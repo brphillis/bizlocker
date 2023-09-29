@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { IoClose } from "react-icons/io5";
-import { ConvertToBase64 } from "~/utility/fileHelpers";
-import { findFirstNotNullInputValue } from "~/utility/formHelpers";
+import { ConvertToBase64 } from "~/helpers/fileHelpers";
+import { findFirstNotNullInputValue } from "~/helpers/formHelpers";
 
 type Props = {
   defaultValue: Image | undefined | null;

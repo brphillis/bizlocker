@@ -9,8 +9,8 @@ const LargeCollapse = ({ content, title, forceOpen, forceClose }: Props) => {
   return (
     <div
       className={`collapse collapse-plus w-full max-w-full rounded-none bg-brand-black py-3 text-brand-white md:w-[800px] 
-        ${forceOpen && " collapse-open "} 
-        ${forceClose && " collapse-close "}
+        ${forceOpen ? " collapse-open " : ""} 
+        ${forceClose ? " collapse-close " : ""}
         `}
     >
       <input type="checkbox" readOnly />

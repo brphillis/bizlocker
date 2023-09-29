@@ -103,7 +103,7 @@ const Products = () => {
 
   return (
     <PageWrapper>
-      {campaign && <BannerBlock content={campaign} size="small" />}
+      {campaign && <BannerBlock content={campaign} />}
 
       <div className="w-[1280px] max-w-[100vw]">
         <ProductSort totalCount={products.length * totalPages} />

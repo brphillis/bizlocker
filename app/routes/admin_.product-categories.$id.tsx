@@ -1,18 +1,20 @@
 import { useEffect, useState } from "react";
+import { validateForm } from "~/utility/validate";
+import DarkOverlay from "~/components/Layout/DarkOverlay";
 import { getDepartments } from "~/models/departments.server";
-import { getArticleCategories } from "~/models/articleCategories.server";
-import { getProductSubCategories } from "~/models/productSubCategories.server";
+import BasicInput from "~/components/Forms/Input/BasicInput";
+import FormHeader from "~/components/Forms/Headers/FormHeader";
+import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import { type ActionArgs, type LoaderArgs } from "@remix-run/node";
+import { getArticleCategories } from "~/models/articleCategories.server";
+import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
+import { getProductSubCategories } from "~/models/productSubCategories.server";
 import {
   Form,
   useActionData,
   useLoaderData,
   useNavigate,
 } from "@remix-run/react";
-import SelectDepartment from "~/components/Forms/Select/SelectDepartment";
-import FormHeader from "~/components/Forms/Headers/FormHeader";
-import DarkOverlay from "~/components/Layout/DarkOverlay";
-import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
 import {
   getProductCategory,
   upsertProductCategory,
@@ -46,22 +48,13 @@ export const action = async ({ request, params }: ActionArgs) => {
     productSubCategories,
   } = form;
 
-  let validationError: string[] = [];
-
-  if (!name) {
-    validationError.push("Name is Required");
-  }
-
-  if (!department) {
-    validationError.push("Department is Required");
-  }
-
-  if (validationError.length > 0) {
-    return { validationError };
-  }
-
   switch (form._action) {
     case "upsert":
+      const validationErrors = validateForm(form);
+      if (validationErrors) {
+        return { validationErrors };
+      }
+
       const categoryData = {
         name: name as string,
         index: parseInt(index as string),
@@ -89,8 +82,11 @@ const ModifyProductCategory = () => {
     productSubCategories,
     articleCategories,
   } = useLoaderData() || {};
-  const { success, validationError } =
-    (useActionData() as { success: boolean; validationError: string[] }) || {};
+  const { success, validationErrors } =
+    (useActionData() as {
+      success: boolean;
+      validationErrors: ValidationErrors;
+    }) || {};
   const mode = productCategory ? "edit" : "add";
 
   const [selectedProductSubCategories, setSelectedProductSubCategories] =
@@ -151,38 +147,33 @@ const ModifyProductCategory = () => {
 
         <div className="form-control gap-3">
           <div className="flex flex-wrap justify-evenly gap-3">
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Name</span>
-              </label>
-              <input
-                name="name"
-                type="text"
-                placeholder="Name"
-                className="input input-bordered w-[95vw] sm:w-[215px]"
-                defaultValue={productCategory?.name || ""}
-              />
-            </div>
+            <BasicInput
+              name="name"
+              label="Name"
+              placeholder="Name"
+              type="text"
+              defaultValue={productCategory?.name || ""}
+              validationErrors={validationErrors}
+            />
 
-            <SelectDepartment
-              departments={departments}
+            <BasicSelect
+              name="department"
+              label="Department"
+              selections={departments}
+              placeholder="Department"
               defaultValue={productCategory?.department?.id.toString()}
             />
           </div>
 
           <div className="flex flex-wrap justify-evenly gap-3">
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Index</span>
-              </label>
-              <input
-                name="index"
-                type="number"
-                placeholder="Index"
-                className="input input-bordered w-[95vw] sm:w-[215px]"
-                defaultValue={productCategory?.index || 0}
-              />
-            </div>
+            <BasicInput
+              label="Index"
+              type="number"
+              name="index"
+              placeholder="Index"
+              defaultValue={productCategory?.index || 0}
+              validationErrors={validationErrors}
+            />
 
             <div className="form-control w-full sm:w-[215px]">
               <label className="label text-sm">In Navigation</label>
@@ -311,11 +302,7 @@ const ModifyProductCategory = () => {
           </div>
         </div>
 
-        <BackSubmitButtons
-          loading={loading}
-          setLoading={setLoading}
-          validationErrors={validationError}
-        />
+        <BackSubmitButtons loading={loading} setLoading={setLoading} />
       </Form>
     </DarkOverlay>
   );

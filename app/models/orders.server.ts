@@ -1,16 +1,17 @@
-import { redirect } from "@remix-run/server-runtime";
 import { randomUUID } from "crypto";
 import { prisma } from "~/db.server";
-import {
-  USER_SESSION_KEY,
-  getSession,
-  getUserObject,
-  sessionStorage,
-} from "~/session.server";
+import { redirect } from "@remix-run/server-runtime";
+import { SquareAddressToAddress } from "~/helpers/addressHelpers";
 import {
   createSquarePaymentLink,
   squareClient,
 } from "~/integrations/square/square.server";
+import {
+  getSession,
+  getUserDataFromSession,
+  sessionStorage,
+  USER_SESSION_KEY,
+} from "~/session.server";
 import { getCart } from "./cart.server";
 
 export const getOrder = async (orderId: string) => {
@@ -34,7 +35,7 @@ export const getOrder = async (orderId: string) => {
 };
 
 export const getOrdersCurrentUser = async (request: Request) => {
-  const userData = (await getUserObject(request)) as User;
+  const userData = (await getUserDataFromSession(request)) as User;
   const userId = userData?.id;
 
   return await prisma.order.findMany({
@@ -56,34 +57,38 @@ export const getOrdersCurrentUser = async (request: Request) => {
   });
 };
 
-export const getOrderShippingDetails = async (orderId: string) => {
+export const getSquareOrderDetails = async (
+  orderId: string
+): Promise<{ shippingDetails: SquareShippingDetails; email: string }> => {
   const response = await squareClient.ordersApi.retrieveOrder(orderId);
 
-  if (!response || !response.result || !response.result.order) {
-    return null;
-  }
+  // if (!response || !response.result || !response.result.order) {
+  //   return null;
+  // }
 
-  const shippingDetails = response.result.order.fulfillments?.find(
+  const shippingDetails = response?.result?.order?.fulfillments?.find(
     (fulfillment) => fulfillment.type === "SHIPMENT"
-  )?.shipmentDetails?.recipient?.address;
+  )?.shipmentDetails?.recipient?.address as SquareShippingDetails;
 
-  if (!shippingDetails) {
-    return null;
-  }
+  const email = response?.result?.order?.fulfillments?.find(
+    (fulfillment) => fulfillment.type === "SHIPMENT"
+  )?.shipmentDetails?.recipient?.emailAddress as string;
 
-  return shippingDetails;
+  return { shippingDetails, email };
 };
 
 export const createOrder = async (request: Request) => {
   const cart = await getCart(request);
-  const userData = (await getUserObject(request)) as User;
+  const userData = (await getUserDataFromSession(request)) as User;
+  const form = Object.fromEntries(await request.formData());
+  const { rememberInformation } = form;
 
   if (!cart) {
     throw new Error("Cart not found");
   }
 
   const cartItems = cart?.cartItems as unknown as CartItem[];
-  const userId = userData.id;
+  const userId = userData?.id || undefined;
 
   const { createPaymentLinkResponse, confirmCode } =
     await createSquarePaymentLink(cartItems, userId);
@@ -114,15 +119,18 @@ export const createOrder = async (request: Request) => {
       data: {
         orderId: paymentLink.orderId,
         status: "created",
+        rememberInformation: rememberInformation ? true : false,
         paymentCode: confirmCode,
         totalPrice: totalPrice,
         paymentUrl: paymentLink.url!,
         paymentLinkId: paymentLink.id!,
-        user: {
-          connect: {
-            id: userId,
-          },
-        },
+        user: userId
+          ? {
+              connect: {
+                id: userId,
+              },
+            }
+          : undefined,
         items: {
           createMany: {
             data: orderItems,
@@ -219,6 +227,28 @@ export const confirmPayment = async (paymentCode: string) => {
             },
           },
         },
+      },
+    });
+  }
+
+  // handling upserting user data
+  if (order.rememberInformation && order.userId) {
+    const { shippingDetails } =
+      (await getSquareOrderDetails(order.orderId)) || {};
+
+    const address = SquareAddressToAddress(shippingDetails);
+
+    await prisma.address.upsert({
+      where: {
+        userId: order.userId,
+      },
+      create: {
+        ...address,
+        user: { connect: { id: order.userId } },
+      },
+      update: {
+        ...address,
+        user: { connect: { id: order.userId } },
       },
     });
   }

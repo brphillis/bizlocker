@@ -6,6 +6,7 @@ import {
   useSearchParams,
 } from "@remix-run/react";
 import { type LoaderArgs } from "@remix-run/server-runtime";
+import BasicInput from "~/components/Forms/Input/BasicInput";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import Pagination from "~/components/Pagination";
@@ -37,17 +38,12 @@ const ManageOrders = () => {
 
         <div className="mt-3 flex flex-col">
           <div className="flex flex-row flex-wrap gap-3 sm:gap-6">
-            <div className="form-control w-full sm:w-[215px]">
-              <label className="label">
-                <span className="label-text">Order Id</span>
-              </label>
-              <input
-                name="orderId"
-                className="input w-full text-brand-black/75"
-                placeholder="ID"
-                type="text"
-              />
-            </div>
+            <BasicInput
+              name="orderId"
+              label="ID"
+              placeholder="ID"
+              type="text"
+            />
 
             <div className="form-control w-full sm:w-[215px]">
               <label className="label text-sm">By Status</label>
@@ -64,15 +60,12 @@ const ManageOrders = () => {
               </select>
             </div>
 
-            <div className="form-control w-full sm:w-[215px]">
-              <label className="label text-sm">User Email</label>
-              <input
-                name="userEmail"
-                className="input w-full text-brand-black/75"
-                placeholder="Email"
-                type="text"
-              />
-            </div>
+            <BasicInput
+              name="userEmail"
+              label="User Email"
+              placeholder="User Email"
+              type="text"
+            />
           </div>
 
           <div className="flex flex-row flex-wrap justify-between">
@@ -101,7 +94,7 @@ const ManageOrders = () => {
                 orders.map(({ orderId, status, user }: Order, i: number) => {
                   return (
                     <tr
-                      className="hover cursor-pointer"
+                      className="cursor-pointer transition-colors duration-200 hover:bg-base-100"
                       key={orderId}
                       onClick={() => navigate(`/admin/orders/${orderId}`)}
                     >

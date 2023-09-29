@@ -1,7 +1,7 @@
 import { type ActionArgs } from "@remix-run/server-runtime";
 import { Form, useLoaderData, useNavigate } from "@remix-run/react";
 import PageWrapper from "~/components/Layout/_Website/PageWrapper";
-import { capitalizeFirst } from "~/utility/stringHelpers";
+import { capitalizeFirst } from "~/helpers/stringHelpers";
 import { getOrdersCurrentUser } from "~/models/orders.server";
 
 export const loader = async ({ request }: ActionArgs) => {

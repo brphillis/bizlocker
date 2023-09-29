@@ -8,11 +8,12 @@ import {
 import { useEffect, useState } from "react";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
 import FormHeader from "~/components/Forms/Headers/FormHeader";
+import BasicInput from "~/components/Forms/Input/BasicInput";
 import SelectCountry from "~/components/Forms/Select/SelectCountry";
 import UploadAvatar from "~/components/Forms/Upload/UploadAvatar";
 import DarkOverlay from "~/components/Layout/DarkOverlay";
 import { getUser, upsertUser } from "~/models/auth/users.server";
-import { isValidMobileNumber } from "~/utility/validate";
+import { validateForm } from "~/utility/validate";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const id = params?.id;
@@ -25,6 +26,7 @@ export const loader = async ({ params }: LoaderArgs) => {
 
 export const action = async ({ request, params }: ActionArgs) => {
   const id = params.id === "add" ? undefined : params.id;
+  const form = Object.fromEntries(await request.formData());
   const {
     email,
     firstName,
@@ -39,28 +41,11 @@ export const action = async ({ request, params }: ActionArgs) => {
     country,
     avatar,
     isActive,
-  } = Object.fromEntries(await request.formData());
+  } = form;
 
-  let validationError: string[] = [];
-
-  if (!firstName) {
-    validationError.push("First Name is Required");
-  }
-
-  if (!lastName) {
-    validationError.push("Last Name is Required");
-  }
-
-  if (!phoneNumber) {
-    validationError.push("Phone Number is Required");
-  }
-
-  if (phoneNumber && !isValidMobileNumber(phoneNumber as string)) {
-    validationError.push("Phone Number is Invalid (+614)");
-  }
-
-  if (validationError.length > 0) {
-    return { validationError };
+  const validationErrors = validateForm(form);
+  if (validationErrors) {
+    return { validationErrors };
   }
 
   const updateData = {
@@ -88,8 +73,11 @@ export const action = async ({ request, params }: ActionArgs) => {
 const ModifyUser = () => {
   const navigate = useNavigate();
   const user = useLoaderData();
-  const { validationError, success } =
-    (useActionData() as { success: boolean; validationError: string[] }) || {};
+  const { validationErrors, success } =
+    (useActionData() as {
+      success: boolean;
+      validationErrors: ValidationErrors;
+    }) || {};
 
   const mode = user ? "edit" : "add";
 
@@ -121,154 +109,110 @@ const ModifyUser = () => {
 
             <div className="flex flex-row flex-wrap justify-center gap-6">
               <div className="form-control gap-3">
-                <div className="form-control">
-                  <label className="label">
-                    <span className="label-text">Email Address</span>
-                  </label>
-                  <input
-                    name="email"
-                    type="text"
-                    placeholder="Email Address"
-                    className="input input-bordered w-[95vw] sm:w-[215px]"
-                    defaultValue={user?.email || undefined}
-                  />
-                </div>
+                <BasicInput
+                  name="email"
+                  label="Email Address"
+                  placeholder="Email Address"
+                  type="text"
+                  defaultValue={user?.email || undefined}
+                  validationErrors={validationErrors}
+                />
 
-                <div className="form-control">
-                  <label className="label">
-                    <span className="label-text">First Name</span>
-                  </label>
-                  <input
-                    name="firstName"
-                    type="text"
-                    placeholder="First Name"
-                    className="input input-bordered w-[95vw] sm:w-[215px]"
-                    defaultValue={user?.userDetails?.firstName || undefined}
-                  />
-                </div>
+                <BasicInput
+                  name="firstName"
+                  label="First Name"
+                  placeholder="First Name"
+                  type="text"
+                  defaultValue={user?.userDetails?.firstName || undefined}
+                  validationErrors={validationErrors}
+                />
 
-                <div className="form-control">
-                  <label className="label">
-                    <span className="label-text">Last Name</span>
-                  </label>
-                  <input
-                    name="lastName"
-                    type="text"
-                    placeholder="Last Name"
-                    className="input input-bordered w-[95vw] sm:w-[215px]"
-                    defaultValue={user?.userDetails?.lastName || undefined}
-                  />
-                </div>
+                <BasicInput
+                  name="lastName"
+                  label="Last Name"
+                  placeholder="Last Name"
+                  type="text"
+                  defaultValue={user?.userDetails?.lastName || undefined}
+                  validationErrors={validationErrors}
+                />
 
-                <div className="form-control">
-                  <label className="label">
-                    <span className="label-text">Phone Number</span>
-                  </label>
-                  <input
-                    name="phoneNumber"
-                    type="text"
-                    placeholder="Phone Number"
-                    className="input input-bordered w-[95vw] sm:w-[215px]"
-                    defaultValue={user?.userDetails?.phoneNumber || undefined}
-                  />
-                </div>
+                <BasicInput
+                  name="phoneNumber"
+                  label="Phone Number"
+                  placeholder="Phone Number"
+                  type="text"
+                  defaultValue={user?.userDetails?.phoneNumber || undefined}
+                  validationErrors={validationErrors}
+                />
 
-                <div className="form-control">
-                  <label className="label">
-                    <span className="label-text">Date of Birth</span>
-                  </label>
-                  <input
-                    name="dateofbirth"
-                    type="date"
-                    placeholder="Date of Birth"
-                    className="input input-bordered w-[95vw] min-w-[215px] cursor-pointer sm:w-full"
-                    defaultValue={
-                      user?.userDetails?.dateOfBirth
-                        ? new Date(user?.userDetails?.dateOfBirth)
-                            .toISOString()
-                            .split("T")[0]
-                        : undefined
-                    }
-                  />
-                </div>
+                <BasicInput
+                  name="dateofbirth"
+                  label="Date of Birth"
+                  placeholder="Date of Birth"
+                  type="date"
+                  defaultValue={
+                    user?.userDetails?.dateOfBirth
+                      ? new Date(user?.userDetails?.dateOfBirth)
+                          .toISOString()
+                          .split("T")[0]
+                      : undefined
+                  }
+                  validationErrors={validationErrors}
+                />
               </div>
 
               <div className="form-control gap-3">
-                <div className="form-control">
-                  <label className="label">
-                    <span className="label-text">Address Line 1</span>
-                  </label>
-                  <input
-                    name="address1"
-                    type="text"
-                    placeholder="Address Line 1"
-                    className="input input-bordered w-[95vw] sm:w-[215px]"
-                    defaultValue={user?.address?.addressLine1 || undefined}
-                  />
-                </div>
+                <BasicInput
+                  name="address1"
+                  label="Address Line 1"
+                  placeholder="Address Line 1"
+                  type="text"
+                  defaultValue={user?.address?.addressLine1 || undefined}
+                  validationErrors={validationErrors}
+                />
 
-                <div className="form-control">
-                  <label className="label">
-                    <span className="label-text">Address Line 2</span>
-                  </label>
-                  <input
-                    name="address2"
-                    type="text"
-                    placeholder="Address Line 2"
-                    className="input input-bordered w-[95vw] sm:w-[215px]"
-                    defaultValue={user?.address?.addressLine2 || undefined}
-                  />
-                </div>
+                <BasicInput
+                  name="address2"
+                  label="Address Line 2"
+                  placeholder="Address Line 2"
+                  type="text"
+                  defaultValue={user?.address?.addressLine2 || undefined}
+                  validationErrors={validationErrors}
+                />
 
-                <div className="form-control">
-                  <label className="label">
-                    <span className="label-text">Suburb</span>
-                  </label>
-                  <input
-                    name="suburb"
-                    type="text"
-                    placeholder="Suburb"
-                    className="input input-bordered w-[95vw] sm:w-[215px]"
-                    defaultValue={user?.address?.suburb || undefined}
-                  />
-                </div>
+                <BasicInput
+                  name="suburb"
+                  label="Suburb"
+                  placeholder="Suburb"
+                  type="text"
+                  defaultValue={user?.address?.suburb || undefined}
+                  validationErrors={validationErrors}
+                />
 
-                <div className="form-control">
-                  <label className="label">
-                    <span className="label-text">Post Code</span>
-                  </label>
-                  <input
-                    name="postcode"
-                    type="text"
-                    placeholder="Post Code"
-                    className="input input-bordered w-[95vw] sm:w-[215px]"
-                    defaultValue={user?.address?.postcode || undefined}
-                  />
-                </div>
+                <BasicInput
+                  name="postcode"
+                  label="PostCode"
+                  placeholder="PostCode"
+                  type="text"
+                  defaultValue={user?.address?.postcode || undefined}
+                  validationErrors={validationErrors}
+                />
 
-                <div className="form-control">
-                  <label className="label">
-                    <span className="label-text">State</span>
-                  </label>
-                  <input
-                    name="state"
-                    type="text"
-                    placeholder="State"
-                    className="input input-bordered w-[95vw] sm:w-[215px]"
-                    defaultValue={user?.address?.state || undefined}
-                  />
-                </div>
+                <BasicInput
+                  name="state"
+                  label="State"
+                  placeholder="State"
+                  type="text"
+                  defaultValue={user?.address?.state || undefined}
+                  validationErrors={validationErrors}
+                />
 
                 <SelectCountry defaultValue={user?.address?.country} />
               </div>
             </div>
           </div>
         </div>
-        <BackSubmitButtons
-          loading={loading}
-          setLoading={setLoading}
-          validationErrors={validationError}
-        />
+        <BackSubmitButtons loading={loading} setLoading={setLoading} />
       </Form>
     </DarkOverlay>
   );

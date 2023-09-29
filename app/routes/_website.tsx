@@ -3,7 +3,6 @@ import stylesheet from "~/tailwind.css";
 import SearchBar from "~/components/SearchBar";
 import { getCart } from "~/models/cart.server";
 import Footer from "~/components/Layout/_Website/Footer";
-import { getUserObject } from "~/session.server";
 import { getBrands } from "~/models/brands.server";
 import { cssBundleHref } from "@remix-run/css-bundle";
 import type { LinksFunction, LoaderArgs } from "@remix-run/node";
@@ -24,6 +23,7 @@ import DesktopMenu from "~/components/Layout/_Website/Navigation/DesktopMenu";
 import MobileButtonContainer from "~/components/Layout/_Website/Navigation/MobileButtonContainer";
 import DesktopButtonContainer from "~/components/Layout/_Website/Navigation/DesktopButtonContainer";
 import { getDepartments } from "~/models/departments.server";
+import { getUserDataFromSession } from "~/session.server";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
@@ -31,11 +31,9 @@ export const links: LinksFunction = () => [
 ];
 
 export const loader = async ({ request }: LoaderArgs) => {
-  const user = await getUserObject(request);
-  let cart;
-  if (user) {
-    cart = await getCart(request);
-  }
+  const user = await getUserDataFromSession(request);
+  let cart = await getCart(request);
+
   const departments = await getDepartments();
   const brands = await getBrands();
   const productCategories = await getProductCategories();

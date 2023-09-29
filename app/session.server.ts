@@ -1,6 +1,7 @@
-import { createCookieSessionStorage, redirect } from "@remix-run/node";
-import invariant from "tiny-invariant";
 import type { User } from "~/models/auth/login.server";
+import invariant from "tiny-invariant";
+import { createCookieSessionStorage, redirect } from "@remix-run/node";
+
 import { generateAccessToken, generateRefreshToken } from "./auth.server";
 
 invariant(process.env.SESSION_SECRET, "SESSION_SECRET must be set");
@@ -20,11 +21,11 @@ export const USER_SESSION_KEY = "userData";
 
 export async function getSession(request: Request) {
   const cookie = request.headers.get("Cookie");
-
-  return sessionStorage.getSession(cookie);
+  const session = await sessionStorage.getSession(cookie);
+  return session;
 }
 
-export async function getUserObject(
+export async function getUserDataFromSession(
   request: Request
 ): Promise<User | undefined | null> {
   const session = await getSession(request);

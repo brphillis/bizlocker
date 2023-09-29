@@ -1,79 +1,91 @@
 import { useEffect, useState } from "react";
-import { capitalizeFirst } from "~/utility/stringHelpers";
 import { Form, useSubmit } from "@remix-run/react";
-import { getBlocks } from "~/utility/blockHelpers";
+import { blockMaster } from "~/utility/blockMaster";
 import BlockIcon from "~/components/Blocks/BlockIcon";
-import BlockOptions from "./BlockOptions";
-import ProductBlockOptions from "./ProductBlockOptions";
-import TextBlockOptions from "./TextBlockOptions";
-import BlockContentSearch from "./BlockContentSearch";
-import BlockContentResultsTable from "./BlockContentResultsTable";
+import { capitalizeFirst } from "~/helpers/stringHelpers";
+import { getBlockDefaultValues } from "~/helpers/blockHelpers";
 import {
   HiMiniArrowDown,
   HiMiniArrowUp,
   HiPencil,
   HiTrash,
 } from "react-icons/hi2";
+import BlockOptions from "./BlockOptions";
+import SelectedContent from "./SelectedContent";
+import TextBlockOptions from "./TextBlockOptions";
+import BlockContentSearch from "./BlockContentSearch";
+import ProductBlockOptions from "./ProductBlockOptions";
 import ArticleBlockOptions from "./ArticleBlockOptions";
+import BlockContentResultsTable from "./BlockContentResultsTable";
 import BlockContentImageResults from "./BlockContentImageResults";
+import BackSubmitButtons from "../Forms/Buttons/BackSubmitButtons";
 
 type Props = {
   page: HomePage | Article;
+  blocks: Block[];
   searchResults: Campaign[] | Promotion[] | Image[] | undefined;
   updateSuccess: boolean;
   productCategories: ProductCategory[];
   productSubCategories: ProductSubCategory[];
   brands: Brand[];
   articleCategories: ArticleCategory[];
+  colors: string[];
 };
 
 const PageBuilder = ({
   page,
+  blocks,
   searchResults,
   updateSuccess,
   productCategories,
   productSubCategories,
   brands,
   articleCategories,
+  colors,
 }: Props) => {
   const submit = useSubmit();
-
-  const blocks = getBlocks(page);
 
   const [selectedBlock, setSelectedBlock] = useState<BlockName | undefined>();
   const [contentType, setContentType] = useState<BlockContentType>();
   const [editingContent, setEditingContent] = useState<boolean>(false);
   const [editingIndex, setEditingIndex] = useState<number>(1);
-  const [selectedItems, setSelectedItems] = useState<
-    (Campaign | Promotion | ContentImage)[]
-  >(blocks[editingIndex]?.content as Campaign[] | Promotion[]);
+  const [selectedItems, setSelectedItems] = useState<ContentSelection[]>([]);
+
+  const handleItemSelect = (items: ContentSelection[]) => {
+    //check to see if we are at the content limit for the block before adding content
+    const selectedBlocksContentLimit = blockMaster.find(
+      (e) => selectedBlock === e.name
+    )?.maxContentItems;
+
+    if (
+      (selectedBlocksContentLimit &&
+        selectedItems.length >= selectedBlocksContentLimit) ||
+      (!selectedBlocksContentLimit && selectedItems.length === 1)
+    ) {
+      return;
+    }
+
+    setSelectedItems(items);
+  };
 
   const reset = () => {
     setEditingContent(false);
     setSelectedBlock(undefined);
-    setSelectedItems([]);
   };
 
   const editBlock = (i: number) => {
     setEditingContent(true);
     setEditingIndex(i);
-
-    if (blocks[i].name === "banner" || "tile") {
-      setSelectedBlock((blocks[i].name as "banner") || "tile");
-      setSelectedItems(blocks[i].content as Campaign[] | Promotion[]);
-    }
-    if (blocks[i].name === "text") {
-      setSelectedBlock("text");
-      setSelectedItems([]);
-    }
+    setSelectedItems(getBlockDefaultValues(blocks[i]));
+    setSelectedBlock(blocks[i].name);
   };
 
-  const deleteBlock = (i: number) => {
+  const deleteBlock = (blockId: string, blockName: string) => {
     const formData = new FormData();
 
     formData.set("_action", "delete");
-    formData.set("pageId", page.id.toString() || "");
-    formData.set("itemIndex", i.toString() || "");
+    formData.set("blockId", blockId.toString() || "");
+    formData.set("blockName", blockName.toString() || "");
 
     submit(formData, {
       method: "POST",
@@ -101,10 +113,6 @@ const PageBuilder = ({
     setLoading(false);
   }, [updateSuccess]);
 
-  useEffect(() => {
-    setSelectedItems([]);
-  }, [contentType]);
-
   const [loading, setLoading] = useState<boolean>(false);
 
   return (
@@ -112,86 +120,80 @@ const PageBuilder = ({
       <input name="pageId" value={page.id} hidden readOnly />
       <input name="itemIndex" value={editingIndex.toString()} hidden readOnly />
       {!editingContent && (
-        <div className="flex w-full max-w-full flex-col items-center overflow-x-hidden">
-          <div className="scrollbar-hide w-full overflow-x-auto">
-            <table className="table">
-              <thead>
-                <tr className="border-b-0 text-brand-white/50">
-                  <th className="w-1/4">#</th>
-                  <th className="w-1/4">Block</th>
-                  <th className="w-1/4">Type</th>
-                  <th className="w-1/4"></th>
-                </tr>
-              </thead>
-              <tbody>
-                {blocks
-                  ?.sort((a: Block, b: Block) => a.order - b.order)
-                  .map((e: Block, i) => {
-                    return (
-                      <tr
-                        className="border-b-0"
-                        key={"block_" + blocks?.[i]?.name + blocks?.[i]?.id + i}
-                      >
-                        <td>{blocks?.[i]?.order + 1}</td>
-                        <td>
-                          <div className="flex gap-3">
-                            <BlockIcon
-                              blockName={blocks[i].name}
-                              size={18}
-                              styles={"mt-[1px]"}
-                            />
+        <div className="flex w-full max-w-full flex-col items-center gap-3 overflow-x-hidden">
+          <div className="scrollbar-hide">
+            {blocks
+              ?.sort((a: Block, b: Block) => a.order - b.order)
+              .map(({ id, name }: Block, i) => {
+                return (
+                  <div
+                    key={"block_" + i}
+                    className="max-w-screen my-3 flex w-[400px] cursor-pointer justify-between rounded-sm border border-brand-white/50 px-3 py-3 transition duration-300 ease-in-out hover:scale-[1.01] max-md:w-[360px]"
+                  >
+                    <div
+                      className="flex items-center gap-3"
+                      onClick={() => {
+                        editBlock(i);
+                      }}
+                    >
+                      {/* NUMBER */}
+                      <div className="text-xs"># {blocks[i]?.order + 1}</div>
+                      {/* ICON */}
+                      <div className="flex gap-3">
+                        <BlockIcon
+                          blockName={blocks[i].name}
+                          size={18}
+                          styles={"mt-[3px]"}
+                        />
+                        <p className="font-bold">
+                          {capitalizeFirst(blocks[i]?.name)}
+                        </p>
+                      </div>
+                    </div>
 
-                            <p>{capitalizeFirst(blocks[i]?.name)}</p>
-                          </div>
-                        </td>
+                    {/* BUTTONS */}
+                    <div className="flex h-full flex-row items-center justify-start gap-3">
+                      {i < blocks.length - 1 && (
+                        <HiMiniArrowDown
+                          size={28}
+                          className="cursor-pointer rounded-md bg-primary p-[0.3rem] text-primary-content hover:bg-primary-focus"
+                          onClick={() => changeBlockOrder(i, "down")}
+                        />
+                      )}
 
-                        <td>
-                          {blocks?.[i]?.type &&
-                            capitalizeFirst(blocks?.[i]?.type)}
-                        </td>
-                        <td>
-                          <div className="flex h-full flex-row items-center justify-center gap-3">
-                            <HiMiniArrowDown
-                              size={24}
-                              className="cursor-pointer rounded-full bg-primary p-[0.3rem] text-primary-content"
-                              onClick={() => changeBlockOrder(i, "down")}
-                            />
+                      {i > 0 && (
+                        <HiMiniArrowUp
+                          size={28}
+                          className="cursor-pointer rounded-md bg-primary p-[0.3rem] text-primary-content hover:bg-primary-focus"
+                          onClick={() => changeBlockOrder(i, "up")}
+                        />
+                      )}
 
-                            <HiMiniArrowUp
-                              size={24}
-                              className="cursor-pointer rounded-full bg-primary p-[0.3rem] text-primary-content"
-                              onClick={() => changeBlockOrder(i, "up")}
-                            />
-
-                            <HiPencil
-                              size={24}
-                              className="cursor-pointer rounded-full bg-primary p-[0.3rem] text-primary-content"
-                              onClick={() => {
-                                editBlock(i);
-                              }}
-                            />
-                            {i > 0 && (
-                              <HiTrash
-                                size={24}
-                                className="cursor-pointer rounded-full bg-error p-[0.3rem] text-primary-content"
-                                onClick={() => {
-                                  deleteBlock(i);
-                                }}
-                              />
-                            )}
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-              </tbody>
-            </table>
+                      <HiPencil
+                        size={28}
+                        className="cursor-pointer rounded-md bg-primary p-[0.3rem] text-primary-content hover:bg-primary-focus"
+                        onClick={() => {
+                          editBlock(i);
+                        }}
+                      />
+                      {i > 0 && (
+                        <HiTrash
+                          size={28}
+                          className="cursor-pointer rounded-md bg-error p-[0.3rem] text-primary-content hover:bg-red-500"
+                          onClick={() => {
+                            deleteBlock(id, name);
+                          }}
+                        />
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
           </div>
-          <div className="divider w-full" />
 
           <button
             type="button"
-            className="btn-primary btn-md"
+            className="btn-primary btn-md rounded-sm"
             onClick={() => {
               setEditingIndex(blocks.length);
               setEditingContent(true);
@@ -203,7 +205,7 @@ const PageBuilder = ({
       )}
 
       {editingContent && (
-        <div className="mt-3 flex w-full flex-col gap-6">
+        <div className="mt-3 flex w-full flex-col gap-6 px-3 max-md:px-0">
           <div className="flex w-full flex-row flex-wrap justify-center gap-3 sm:justify-start">
             <div className="w-full pb-3">
               <div className="form-control">
@@ -219,15 +221,17 @@ const PageBuilder = ({
                   placeholder="Select Block"
                   onChange={(e) => {
                     setSelectedBlock(e.target.value as BlockName);
-                    setSelectedItems([]);
                   }}
                 >
                   <option value="">Select Block</option>
-                  <option value="banner">Banner</option>
-                  <option value="tile">Tile</option>
-                  <option value="text">Text</option>
-                  <option value="product">Product</option>
-                  <option value="article">Articles</option>
+
+                  {blockMaster.map(({ name }: BlockMaster) => {
+                    return (
+                      <option key={"blockSelect_" + name} value={name}>
+                        {capitalizeFirst(name)}
+                      </option>
+                    );
+                  })}
                 </select>
               </div>
             </div>
@@ -235,76 +239,81 @@ const PageBuilder = ({
 
           <BlockOptions
             selectedBlock={selectedBlock}
-            defaultValues={blocks[editingIndex]?.blockOptions}
+            defaultValues={blocks[editingIndex]?.blockOptions[0]}
+            contentType={contentType}
+            colors={colors}
           />
 
           <BlockContentSearch
             selectedBlock={selectedBlock}
             defaultValue={blocks[editingIndex]?.type as BlockContentType}
-            contentType={contentType}
             setContentType={setContentType}
           />
 
           <ProductBlockOptions
             selectedBlock={selectedBlock}
+            selectedItems={selectedItems}
+            setSelectedItems={handleItemSelect}
             productCategories={productCategories}
             productSubCategories={productSubCategories}
             brands={brands}
-            defaultValues={
-              blocks[editingIndex]?.content[0] as ProductBlockContent
-            }
+            defaultValues={blocks[editingIndex]?.content as ProductBlockContent}
           />
 
           <ArticleBlockOptions
             selectedBlock={selectedBlock}
+            selectedItems={selectedItems}
+            setSelectedItems={handleItemSelect}
             articleCategories={articleCategories}
-            defaultValues={
-              blocks[editingIndex]?.content[0] as ProductBlockContent
-            }
+            defaultValues={blocks[editingIndex]?.content as ArticleBlockContent}
           />
 
           <TextBlockOptions
             selectedBlock={selectedBlock}
-            defaultValue={blocks[editingIndex]?.content as string[]}
+            selectedItems={selectedItems}
+            setSelectedItems={setSelectedItems}
+            defaultValue={blocks[editingIndex]?.content as TextBlockContent}
           />
 
-          {(contentType === "campaign" || contentType === "promotion") && (
-            <BlockContentResultsTable
-              selectedBlock={selectedBlock}
-              searchResults={searchResults as Campaign[] | Promotion[]}
-              selectedItems={selectedItems as (Campaign | Promotion)[]}
-              setSelectedItems={setSelectedItems}
+          <BlockContentResultsTable
+            selectedBlock={selectedBlock}
+            selectedItems={selectedItems}
+            setSelectedItems={handleItemSelect}
+            searchResults={searchResults as Campaign[] | Promotion[]}
+            contentType={contentType}
+          />
+
+          <BlockContentImageResults
+            selectedBlock={selectedBlock}
+            selectedItems={selectedItems}
+            setSelectedItems={handleItemSelect}
+            searchResults={searchResults as Image[]}
+            contentType={contentType}
+          />
+
+          <SelectedContent
+            selectedBlock={selectedBlock}
+            selectedItems={selectedItems}
+            setSelectedItems={setSelectedItems}
+          />
+          {selectedItems && (
+            <input
+              name="contentSelection"
+              value={JSON.stringify(selectedItems)}
+              hidden
+              readOnly
             />
           )}
 
-          {contentType === "image" && (
-            <BlockContentImageResults
-              selectedBlock={selectedBlock}
-              searchResults={searchResults as Image[]}
-              selectedItems={selectedItems as ContentImage[]}
-              setSelectedItems={setSelectedItems}
-            />
-          )}
-
-          <div className="flex flex-row justify-center gap-3">
-            <button
-              type="button"
-              className="btn-primary btn-md"
-              onClick={reset}
-            >
-              Back
-            </button>
-
-            <button
-              type="submit"
-              name="_action"
-              value="update"
-              className="btn-primary btn-md"
-              onClick={() => setLoading(true)}
-            >
-              {loading ? "Loading..." : "Submit"}
-            </button>
-          </div>
+          <BackSubmitButtons
+            value="update"
+            divider={false}
+            loading={loading}
+            setLoading={setLoading}
+            backFunction={reset}
+            requiredValueToSubmit={selectedItems && selectedItems.length > 0}
+            validationMessage="Content is Required."
+          />
         </div>
       )}
     </Form>
@@ -312,19 +321,3 @@ const PageBuilder = ({
 };
 
 export default PageBuilder;
-
-export const parseContentData = (contentData: FormDataEntryValue) => {
-  let contentDataParsed;
-
-  if (contentData) {
-    contentDataParsed = JSON.parse(contentData as string) as
-      | Campaign[]
-      | Promotion[];
-
-    contentDataParsed = Array.isArray(contentDataParsed)
-      ? contentDataParsed
-      : [contentDataParsed];
-
-    return contentDataParsed;
-  }
-};

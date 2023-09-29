@@ -1,9 +1,10 @@
+import Pagination from "~/components/Pagination";
 import type { LoaderArgs } from "@remix-run/node";
-import { Form, Outlet, useLoaderData, useNavigate } from "@remix-run/react";
+import { searchImages } from "~/models/images.server";
+import BasicInput from "~/components/Forms/Input/BasicInput";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
-import Pagination from "~/components/Pagination";
-import { searchImages } from "~/models/images.server";
+import { Form, Outlet, useLoaderData, useNavigate } from "@remix-run/react";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
@@ -24,19 +25,12 @@ const Images = () => {
 
         <div className="mt-6 flex flex-col">
           <div className="flex flex-row flex-wrap gap-6">
-            <div className="flex w-full flex-row gap-6 sm:w-[215px]">
-              <div className="form-control w-full">
-                <label className="label">
-                  <span className="label-text">Search Alt Text</span>
-                </label>
-                <input
-                  name="title"
-                  className="input w-full text-brand-black/50"
-                  placeholder="Search Alt Text"
-                  type="text"
-                />
-              </div>
-            </div>
+            <BasicInput
+              label="Title"
+              name="title"
+              placeholder="Search Alt Text"
+              type="text"
+            />
 
             <div className="form-control w-full sm:w-[215px]">
               <label className="label text-sm">Search Connection</label>

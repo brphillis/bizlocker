@@ -1,7 +1,7 @@
 import { useNavigate, useSubmit } from "@remix-run/react";
 import { IoCart } from "react-icons/io5";
 import { Toast } from "~/components/Notifications/Toast";
-import { getVariantUnitPrice } from "~/utility/numberHelpers";
+import { getVariantUnitPrice } from "~/helpers/numberHelpers";
 
 const ProductCard = (product: Product) => {
   const submit = useSubmit();

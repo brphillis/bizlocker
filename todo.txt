@@ -5,6 +5,8 @@ To Do
 [ ] send email when order is shipped
 [ ] add internation phone code validations
 
+[ ] cleanup block content typing
+
 
 Bug Hisory
 
@@ -30,3 +32,5 @@ Feat history
 008 - add menu order indexing
 009 - add accounts page / add promo filter to product page
 010 - basic/necessary form validation added to all forms
+011 - continuation redesign of content block development
+012 - input and select field reusable components

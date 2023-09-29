@@ -1,28 +1,37 @@
 import { useNavigate } from "@remix-run/react";
-import { useEffect } from "react";
+import { useState } from "react";
 
 type Props = {
   loading?: boolean;
   setLoading?: Function;
-  validationErrors?: string[];
+  value?: string;
+  divider?: boolean;
+  backFunction?: () => void;
+  requiredValueToSubmit?: boolean;
+  validationMessage?: string;
 };
 
 const BackSubmitButtons = ({
   loading = false,
   setLoading,
-  validationErrors,
+  value = "upsert",
+  divider = true,
+  requiredValueToSubmit = true,
+  validationMessage,
+  backFunction,
 }: Props) => {
   const navigate = useNavigate();
+  const [validationErrors, setValidationErrors] = useState<string[]>();
 
-  useEffect(() => {
-    if (validationErrors && setLoading) {
-      setLoading(false);
+  const checkValidation = () => {
+    if (!requiredValueToSubmit && validationMessage) {
+      setValidationErrors([validationMessage]);
     }
-  }, [validationErrors, setLoading]);
+  };
 
   return (
     <>
-      <div className="divider w-full" />
+      {divider && <div className="divider w-full" />}
 
       {validationErrors && validationErrors?.length > 0 && (
         <div className="pb-3">
@@ -42,17 +51,20 @@ const BackSubmitButtons = ({
       <div className="flex flex-row items-center justify-center gap-3">
         <button
           type="button"
-          className="btn btn-primary w-max"
-          onClick={() => navigate("..")}
+          className="btn btn-primary w-max !rounded-sm"
+          onClick={() => (backFunction ? backFunction() : navigate(".."))}
         >
           Back
         </button>
         <button
-          type="submit"
+          type={requiredValueToSubmit ? "submit" : "button"}
           name="_action"
-          value="upsert"
-          className="btn btn-primary w-max"
-          onClick={() => setLoading && setLoading(true)}
+          value={value}
+          className="btn btn-primary w-max !rounded-sm"
+          onClick={() => {
+            checkValidation();
+            setLoading && requiredValueToSubmit && setLoading(true);
+          }}
         >
           {loading ? "Loading..." : "Submit"}
         </button>

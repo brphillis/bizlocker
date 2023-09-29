@@ -6,11 +6,14 @@ import type {
   OrderLineItem,
 } from "square";
 import { prisma } from "~/db.server";
+import { AddressToSquareAddress } from "~/helpers/addressHelpers";
 
 export const squareClient = new Client({
   environment: Environment.Sandbox, // Use Environment.Production when you're ready to go live
   accessToken: process.env.SQUARE_ACCESS,
 });
+
+export const squareLocationId = "LB9PSX20NJ5X8";
 
 export const CartItemsToSquareApiLineItems = (
   cartItems: CartItem[]
@@ -35,30 +38,35 @@ export const CartItemsToSquareApiLineItems = (
 
 export const createSquarePaymentLink = async (
   cartItems: CartItem[],
-  userId: string
+  userId?: string
 ): Promise<{
   createPaymentLinkResponse: CreatePaymentLinkResponse;
   confirmCode: string;
 }> => {
   const squareLineItems = CartItemsToSquareApiLineItems(cartItems);
   const confirmCode = randomUUID();
+  let user = undefined;
 
-  const user = await prisma.user.findUnique({
-    where: {
-      id: userId,
-    },
-    include: {
-      address: true,
-      userDetails: true,
-    },
-  });
+  if (userId) {
+    user = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      include: {
+        address: true,
+        userDetails: true,
+      },
+    });
+  }
+
   const { email, address, userDetails } = user || {};
+  const squareAddress = AddressToSquareAddress(address as Address);
 
   // Create the Square API order request object
   const orderRequest: CreatePaymentLinkRequest = {
     idempotencyKey: randomUUID(),
     order: {
-      locationId: "LB9PSX20NJ5X8",
+      locationId: squareLocationId,
       lineItems: squareLineItems,
     },
     checkoutOptions: {
@@ -71,17 +79,12 @@ export const createSquarePaymentLink = async (
     },
 
     prePopulatedData: {
-      buyerEmail: email,
-      buyerPhoneNumber: userDetails?.phoneNumber,
+      buyerEmail: email || undefined,
+      buyerPhoneNumber: userDetails?.phoneNumber || undefined,
       buyerAddress: {
-        addressLine1: address?.addressLine1,
-        addressLine2: address?.addressLine2,
-        locality: address?.suburb,
-        administrativeDistrictLevel1: address?.state,
-        postalCode: address?.postcode,
-        country: address?.country || undefined,
-        firstName: userDetails?.firstName,
-        lastName: userDetails?.lastName,
+        ...squareAddress,
+        firstName: userDetails?.firstName || undefined,
+        lastName: userDetails?.lastName || undefined,
       },
     },
   };

@@ -2,12 +2,8 @@ import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import BlockRenderer from "~/components/BlockRenderer";
 import PageWrapper from "~/components/Layout/_Website/PageWrapper";
-import {
-  getArticlesForPage,
-  getProductsForPage,
-} from "~/models/blockHelpers.server";
 import { getWebPage } from "~/models/webPages.server";
-import { getBlocks } from "~/utility/blockHelpers";
+import { getBlocks } from "~/helpers/blockHelpers";
 
 export const meta: V2_MetaFunction = ({ data }) => {
   return [
@@ -22,40 +18,30 @@ export const meta: V2_MetaFunction = ({ data }) => {
 export const loader = async ({ params }: LoaderArgs) => {
   const pageName = params.name;
   const webPage = await getWebPage(undefined, pageName);
-  let title, description, blocks;
-  let productBlockProducts: Product[][] = [];
-  let articleBlockArticles: Article[][] = [];
+  let title, description, backgroundColor, blocks;
 
   if (webPage) {
-    blocks = getBlocks(webPage as any);
+    blocks = await getBlocks(webPage as any);
     title = webPage.title;
     description = webPage.description;
+    backgroundColor = webPage.backgroundColor;
   }
-  if (blocks) {
-    productBlockProducts = await getProductsForPage(blocks);
-    articleBlockArticles = await getArticlesForPage(blocks);
-  }
+
   return {
+    blocks,
     title,
     description,
-    blocks,
-    productBlockProducts,
-    articleBlockArticles,
+    backgroundColor,
     pageName,
   };
 };
 
 const WebPage = () => {
-  const { blocks, productBlockProducts, articleBlockArticles } =
-    useLoaderData();
+  const { blocks, backgroundColor } = useLoaderData();
 
   return (
-    <PageWrapper gap="medium">
-      <BlockRenderer
-        blocks={blocks}
-        productBlockProducts={productBlockProducts}
-        articleBlockArticles={articleBlockArticles}
-      />
+    <PageWrapper gap="medium" backgroundColor={backgroundColor}>
+      <BlockRenderer blocks={blocks} />
     </PageWrapper>
   );
 };

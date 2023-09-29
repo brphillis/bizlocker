@@ -1,97 +1,134 @@
 import { searchCampaigns } from "~/models/campaigns.server";
 import { searchImages } from "~/models/images.server";
+import { searchProducts } from "~/models/products.server";
 import { searchPromotions } from "~/models/promotions.server";
+import { blockMaster, getBlockContentTypes } from "./blockMaster";
 
+// a register for the blockoptions so the function knows which keys to look for in the formdata
 export const getFormBlockOptions = (form: {
   [k: string]: FormDataEntryValue;
-}): NewBlockOptions => {
-  const { sortBy, sortOrder, size, count, rows, columns } = form;
+}): BlockOptions => {
+  const {
+    backgroundColor,
+    borderColor,
+    borderDisplay,
+    borderRadius,
+    borderSize,
+    columns,
+    count,
+    flipX,
+    linkFive,
+    linkFour,
+    linkOne,
+    linkSix,
+    linkThree,
+    linkTwo,
+    margin,
+    rows,
+    shortText,
+    shortTextColor,
+    size,
+    sortBy,
+    sortOrder,
+    style,
+    title,
+    titleColor,
+  } = form;
 
   const blockOptions = {
+    backgroundColor: backgroundColor ? (backgroundColor as string) : undefined,
+    borderColor: borderColor ? (borderColor as string) : undefined,
+    borderDisplay: borderDisplay ? (borderDisplay as string) : undefined,
+    borderRadius: borderRadius ? (borderRadius as string) : undefined,
+    borderSize: borderSize ? (borderSize as string) : undefined,
+    columns: columns ? parseInt(columns as string) : undefined,
+    count: count ? parseInt(count as string) : undefined,
+    flipX: flipX ? (flipX as string) : undefined,
+    margin: margin ? (margin as string) : undefined,
+    linkOne: linkOne ? (linkOne as string) : undefined,
+    linkTwo: linkTwo ? (linkTwo as string) : undefined,
+    linkThree: linkThree ? (linkThree as string) : undefined,
+    linkFour: linkFour ? (linkFour as string) : undefined,
+    linkFive: linkFive ? (linkFive as string) : undefined,
+    linkSix: linkSix ? (linkSix as string) : undefined,
+    rows: rows ? parseInt(rows as string) : undefined,
+    shortText: shortText ? (shortText as string) : undefined,
+    shortTextColor: shortTextColor ? (shortTextColor as string) : undefined,
+    size: size as "small" | "medium" | "large",
     sortBy: sortBy as SortBy,
     sortOrder: sortOrder as SortOrder,
-    size: size as "small" | "medium" | "large",
-    count: count ? parseInt(count as string) : undefined,
-    rows: rows ? parseInt(rows as string) : undefined,
-    columns: columns ? parseInt(columns as string) : undefined,
-  } as NewBlockOptions;
+    style: style ? (style as string) : undefined,
+    title: title ? (title as string) : undefined,
+    titleColor: titleColor ? (titleColor as string) : undefined,
+  } as BlockOptions;
 
   return blockOptions;
 };
 
-type NewBlockData = {
-  pageId: number;
-  blockName: BlockName;
-  itemIndex: number;
-  contentType?: BlockContentType;
-  contentData?: Promotion[] | Campaign[];
-  stringData?: string;
-};
-
+// builds the object required for updating the block in the backend
 export const getBlockUpdateValues = (form: {
   [k: string]: FormDataEntryValue;
 }): NewBlockData => {
-  const { pageId, blockName, itemIndex, contentType, contentData, stringData } =
-    form;
+  const { pageId, blockName, itemIndex, contentType } = form;
 
-  const parsedContentData = parseContentData(contentData);
-  const parsedObjectData = parseObjectData(blockName as string, form);
+  const parsedObjectData = buildNewBlockData(blockName as BlockName, form);
 
   const blockUpdateValues = {
     pageId: parseInt(pageId as string),
     blockName: blockName as BlockName,
     itemIndex: parseInt(itemIndex as string),
     contentType: contentType as BlockContentType,
-    contentData: parsedContentData,
-    stringData: stringData as string,
-    objectData: parsedObjectData,
+    contentData: parsedObjectData,
   } as NewBlockData;
 
   return blockUpdateValues;
 };
 
-export const parseContentData = (contentData: FormDataEntryValue) => {
-  let contentDataParsed;
-
-  if (contentData) {
-    contentDataParsed = JSON.parse(contentData as string) as
-      | Campaign[]
-      | Promotion[];
-
-    contentDataParsed = Array.isArray(contentDataParsed)
-      ? contentDataParsed
-      : [contentDataParsed];
-
-    return contentDataParsed;
-  }
-};
-
-export const parseObjectData = (
-  blockName: string,
+export const buildNewBlockData = (
+  blockName: BlockName,
   form: {
     [k: string]: FormDataEntryValue;
   }
 ) => {
-  let objectData;
+  let newData: any = {};
 
-  if (blockName === "product") {
-    const { productCategory, productSubCategory, brand } = form;
-    objectData = {
-      productCategory: productCategory,
-      productSubCategory: productSubCategory,
-      brand: brand,
-    };
-  }
-  if (blockName === "article") {
-    const { articleCategory } = form;
-    objectData = {
-      articleCategory: articleCategory,
-    };
-  }
+  // we go through the blockmaster object getting the relevant data
+  blockMaster.map(({ name, hasMultipleContent }: BlockMaster) => {
+    if (blockName === name) {
+      // we get the types of content by key that the block requires
+      const blockContentTypes = getBlockContentTypes(name);
 
-  return objectData;
+      // in newData we set the keys recieved from getBlockContentTypes
+      blockContentTypes?.map(
+        (contentTypeName) =>
+          (newData[contentTypeName] = hasMultipleContent ? [] : undefined)
+      );
+
+      let { contentSelection } = form;
+
+      contentSelection = JSON.parse(contentSelection as string);
+
+      // we then assign the data to each key
+      (contentSelection as unknown as ContentSelection[]).forEach(
+        ({ type, contentId }: ContentSelection) => {
+          blockContentTypes?.map((contentName: any) => {
+            if (type === contentName && hasMultipleContent) {
+              newData[contentName] = [...newData[contentName], contentId];
+            } else if (type === contentName && !hasMultipleContent) {
+              newData[contentName] = contentId;
+            }
+            return null;
+          });
+        }
+      );
+    }
+    return null;
+  });
+
+  return newData;
 };
 
+// returns content data that a user searches for in the pagebuilder
 export const searchContentData = async (
   contentType: BlockContentType,
   name?: string
@@ -122,6 +159,12 @@ export const searchContentData = async (
     case "image":
       const { images } = await searchImages(Object.fromEntries(formData));
       searchResults = images;
+
+      return { searchResults };
+
+    case "product":
+      const { products } = await searchProducts(Object.fromEntries(formData));
+      searchResults = products;
 
       return { searchResults };
 

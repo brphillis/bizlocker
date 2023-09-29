@@ -128,10 +128,14 @@ export const RegisterPage = () => {
             By subscribing and / or creating an account you agree to CLUTCH
             Terms and Conditions, and Privacy Policy.
           </p>
-          <button type="submit" className="btn btn-primary mb-3">
+          <button type="submit" className="btn btn-primary mb-3 !rounded-sm">
             Register
           </button>
-          <NavLink to="/login" type="button" className="btn btn-primary">
+          <NavLink
+            to="/login"
+            type="button"
+            className="btn btn-primary !rounded-sm"
+          >
             Back
           </NavLink>
         </div>

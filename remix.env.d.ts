@@ -24,7 +24,23 @@ interface Verifier {
   updatedAt: DateTime | null;
 }
 
+type ValidationErrors = {
+  name?: string;
+  contentSelection?: string;
+};
+
 type VerifyTypes = "email" | "password";
+
+type SelectValue = {
+  id: string;
+  name: string;
+};
+
+type ContentSelection = {
+  type: BlockContentType;
+  name: string;
+  contentId: number | string;
+};
 
 interface Image {
   id?: number;
@@ -44,8 +60,8 @@ interface Image {
   campaignBanner?: Campaign;
   promotionTile?: Promotion;
   promotionBanner?: Promotion;
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt?: DateTime;
+  updatedAt?: DateTime;
 }
 
 type LoginData = {
@@ -79,16 +95,19 @@ type UserDetails = {
   userId?: string;
 };
 
-type Address = {
-  id: string;
+interface Address extends NewAddress {
+  id?: string;
+  userId?: string;
+  user?: User;
+}
+
+type NewAddress = {
   addressLine1?: string;
   addressLine2?: string;
   postcode?: string;
   suburb?: string;
   state?: string;
   country?: string;
-  userId?: string;
-  user?: User;
 };
 
 type CountrySelect = {
@@ -205,30 +224,33 @@ interface ProductSubCategory {
   isActive: boolean;
 }
 
-type Article = {
+interface Article {
   id: number;
   title: string;
   description: string;
+  backgroundColor: string;
   blocks: Block[];
   thumbnail?: Image;
   isActive?: boolean;
   articleCategories: ArticleCategory[];
   createdAt: Date;
   updatedAt: Date;
-};
+}
 
-type ArticleCategory = {
+interface ArticleCategory {
   id: number;
   name: string;
   articles?: Article[];
   productCategory?: ProductCategory | null;
-};
+}
 
 interface Product {
   id: number;
   name: string;
   description: string;
   images: Image[];
+  heroImage?: Image;
+  heroImageId?: number;
   productSubCategories: ProductSubCategory[];
   brand?: Brand;
   brandId?: number;
@@ -364,16 +386,27 @@ type BasicSearchArgs = {
 };
 
 type SortBy = "createdAt" | "totalSold" | "price" | "name" | "title";
-type CategorySortBy = "createdAt" | "name" | "index";
 type SortOrder = "asc" | "desc";
-
-type BlockName = "banner" | "tile" | "text" | "product" | "article";
-type BlockContentType = "campaign" | "promotion" | "image";
+type PageType = "homePage" | "article" | "webPage";
+type BlockName = "banner" | "hero" | "tile" | "text" | "product" | "article";
+type BlockContentType =
+  | "campaign"
+  | "promotion"
+  | "image"
+  | "product"
+  | "productCategory"
+  | "productSubCategory"
+  | "brand"
+  | "article"
+  | "articleCategory"
+  | "richText"
+  | "gender";
 
 interface HomePage {
   id: number;
   title: string;
   description: string;
+  backgroundColor: string;
   blocks: Block[];
   createdAt: Date;
   updatedAt: Date;
@@ -383,6 +416,7 @@ interface WebPage {
   id: number;
   title: string;
   description: string;
+  backgroundColor: string;
   blocks: Block[];
   thumbnail?: Image;
   isActive?: boolean;
@@ -391,12 +425,73 @@ interface WebPage {
 }
 
 interface NewBlockData {
+  pageId: number;
   blockName: BlockName;
   itemIndex: number;
-  contentType?: BlockContentType;
-  contentData?: Promotion[] | Campaign[] | ContentImage[];
-  stringData?: string;
-  objectData?: ProductBlockContent;
+  contentType: BlockContentType;
+  contentData: ContentData;
+}
+
+type ContentData = {
+  productCategory?: ProductCategory[] | ProductCategory;
+  productSubCategory?: ProductSubCategory[] | ProductSubCategory;
+  articleCategory?: ArticleCategory[] | ArticleCategory;
+  brand?: Brand[] | Brand;
+  image?: Image | Image[];
+  product?: Product[] | Product;
+  promotion?: Promotion[] | Promotion;
+  campaign?: Campaign[] | Campaign;
+};
+
+type BlockContent = {
+  richText?: string;
+  productCategory?: ProductCategory[] | ProductCategory;
+  productSubCategory?: ProductSubCategory[] | ProductSubCategory;
+  articleCategory?: ArticleCategory[] | ArticleCategory;
+  gender?: Gender[] | Gender;
+  brand?: Brand[] | Brand;
+  promotion?: Promotion[] | Promotion;
+  campaign?: Campaign[] | Campaign;
+  image?: Image[] | Image;
+  product?: Product[] | Product;
+  article?: Article[] | Article;
+};
+
+type BlockMaster = {
+  name: BlockName;
+  component: React.ComponentType<any>;
+  options: BlockMasterOptions;
+  content: Object;
+  hasMultipleContent?: boolean;
+  maxContentItems?: number;
+};
+
+interface BlockMasterOptions {
+  backgroundColor?: boolean;
+  borderColor?: boolean;
+  borderDisplay?: boolean;
+  borderRadius?: boolean;
+  borderSize?: boolean;
+  columns?: boolean;
+  count?: boolean;
+  flipX?: boolean;
+  margin?: boolean;
+  linkOne?: boolean;
+  linkTwo?: boolean;
+  linkThree?: boolean;
+  linkFour?: boolean;
+  linkFive?: boolean;
+  linkSix?: boolean;
+  rows?: boolean;
+  shortText?: boolean;
+  shortTextColor?: boolean;
+  size?: boolean;
+  sortBy?: boolean;
+  sortOrder?: boolean;
+  style?: boolean;
+  title?: boolean;
+  titleColor?: boolean;
+  order?: boolean;
 }
 
 interface Block extends BannerBlock, TileBlock, TextBlock, ProductBlock {
@@ -404,43 +499,57 @@ interface Block extends BannerBlock, TileBlock, TextBlock, ProductBlock {
   order: number;
   page: Page;
   pageId: number;
-  content:
-    | Campaign[]
-    | Promotion[]
-    | ContentImage[]
-    | string[]
-    | ProductBlockContent[];
-  blockOptions: BlockOptions;
-  bannerBlock?: BannerBlock;
-  bannerBlockId?: string;
-  tileBlock?: TileBlock;
-  tileBlockId?: string;
+  content: BlockContent;
+  name: BlockName;
+  blockOptions: BlockOptions[];
 }
 
-interface ContentImage {
-  id?: number;
-  image: Image;
-  href: string;
-  imageId?: number;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-
-interface NewBlockOptions {
+interface BlockOptions {
+  id: string;
+  backgroundColor?: Color | null;
+  borderColor?: Color | null;
+  borderDisplay?: string | null;
+  borderRadius?: string | null;
+  borderSize?: string | null;
   columns?: number | null;
-  rows?: number | null;
   count?: number | null;
+  flipX?: string | null;
+  margin?: string | null;
+  linkOne?: string | null;
+  linkTwo?: string | null;
+  linkThree?: string | null;
+  linkFour?: string | null;
+  linkFive?: string | null;
+  linkSix?: string | null;
+  rows?: number | null;
+  shortText?: string | null;
+  shortTextColor?: Color | null;
   size: "small" | "medium" | "large" | "native";
   sortBy?: SortBy | null;
   sortOrder?: SortOrder | null;
+  style?: string | null;
+  title?: string | null;
+  titleColor?: Color | null;
+  order?: int | null;
 }
 
-interface BlockOptions extends NewBlockOptions {
+// interface BlockOptions extends NewBlockOptions {
+//   id: string;
+//   createdAt: DateTime;
+//   updatedAt: DateTime;
+//   block?: Block | null;
+//   blockOptionsId: string;
+// }
+
+interface HeroBlock {
   id: string;
-  createdAt: DateTime;
-  updatedAt: DateTime;
-  block?: Block | null;
-  blockOptionsId: string;
+  name: string;
+  type: string;
+  block?: Block;
+  product?: Product;
+  productId?: string;
+  image?: Image;
+  imageId?: number;
 }
 
 interface BannerBlock {
@@ -452,6 +561,8 @@ interface BannerBlock {
   campaignId?: string;
   promotion?: Promotion;
   promotionId?: string;
+  image?: Image;
+  imageId?: number;
 }
 
 interface TileBlock {
@@ -463,6 +574,7 @@ interface TileBlock {
   campaignId?: string;
   promotion: Promotion[];
   promotionId?: string;
+  image?: Image[];
 }
 
 interface TextBlock {
@@ -491,6 +603,7 @@ interface ProductBlockContent {
   productSubCategoryId?: number;
   brand?: Brand;
   brandId?: number;
+  gender?: Gender;
 
   createdAt: Date;
   updatedAt: Date;
@@ -506,10 +619,18 @@ interface ArticleBlockContent {
   updatedAt: Date;
 }
 
+interface TextBlockContent {
+  id: string;
+  richText: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 type NewProductBlockContent = {
   productCategory?: string;
   productSubCategory?: string;
   brand?: string;
+  gender?: Gender;
 };
 
 type NewArticleBlockContent = {

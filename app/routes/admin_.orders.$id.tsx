@@ -13,7 +13,7 @@ import DarkOverlay from "~/components/Layout/DarkOverlay";
 import Spinner from "~/components/Spinner";
 import {
   getOrder,
-  getOrderShippingDetails,
+  getSquareOrderDetails,
   updateOrderShippingDetails,
   updateOrderStatus,
 } from "~/models/orders.server";
@@ -34,7 +34,10 @@ export const action = async ({ request }: ActionArgs) => {
       return await updateOrderStatus(orderId as string, status as OrderStatus);
 
     case "loadShipping":
-      return await getOrderShippingDetails(orderId as string);
+      const { shippingDetails: _shippingDetails } =
+        (await getSquareOrderDetails(orderId as string)) || {};
+
+      return _shippingDetails;
 
     case "updateShipping":
       const {

@@ -1,45 +1,48 @@
-import {
-  type ActionArgs,
-  type LoaderArgs,
-  type LinksFunction,
-  redirect,
-} from "@remix-run/node";
+import Icon from "~/components/Icon";
+import { HiTrash } from "react-icons/hi2";
+import PageBuilder from "~/components/PageBuilder";
+import { getBrands } from "~/models/brands.server";
+import { getBlocks } from "~/helpers/blockHelpers";
+import { getAvailableColors } from "~/models/enums.server";
+import BasicInput from "~/components/Forms/Input/BasicInput";
+import UploadImage from "~/components/Forms/Upload/UploadImage";
+import LargeCollapse from "~/components/Collapse/LargeCollapse";
+import { getArticleCategories } from "~/models/articleCategories.server";
+import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
+import { getProductCategories } from "~/models/productCategories.server";
+import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
+import { getProductSubCategories } from "~/models/productSubCategories.server";
 import {
   Form,
   useActionData,
   useLoaderData,
   useSubmit,
 } from "@remix-run/react";
-
-import { getArticleCategories } from "~/models/articleCategories.server";
-
-import swiper from "../../node_modules/swiper/swiper.css";
-import swiperNav from "../../node_modules/swiper/modules/navigation/navigation.min.css";
-import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
-import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
-import Icon from "~/components/Icon";
-import PageBuilder from "~/components/PageBuilder";
-import {
-  changeBlockOrder,
-  removeBlock,
-  updatePageBlock,
-} from "~/models/pageBuilder.server";
-import UploadImage from "~/components/Forms/Upload/UploadImage";
-import LargeCollapse from "~/components/Collapse/LargeCollapse";
-import { getProductCategories } from "~/models/productCategories.server";
-import { getProductSubCategories } from "~/models/productSubCategories.server";
-import { getBrands } from "~/models/brands.server";
-import {
-  getFormBlockOptions,
-  getBlockUpdateValues,
-  searchContentData,
-} from "~/utility/pageBuilder";
-import { HiTrash } from "react-icons/hi2";
 import {
   deleteWebPage,
   getWebPage,
   upsertWebPageInfo,
 } from "~/models/webPages.server";
+import {
+  changeBlockOrder,
+  removeBlock,
+  updatePageBlock,
+} from "~/models/pageBuilder.server";
+import {
+  redirect,
+  type ActionArgs,
+  type LinksFunction,
+  type LoaderArgs,
+} from "@remix-run/node";
+import {
+  getBlockUpdateValues,
+  getFormBlockOptions,
+  searchContentData,
+} from "~/utility/pageBuilder";
+import swiper from "../../node_modules/swiper/swiper.css";
+import swiperNav from "../../node_modules/swiper/modules/navigation/navigation.min.css";
+import { limitString } from "~/helpers/stringHelpers";
+import BasicSelect from "~/components/Forms/Select/BasicSelect";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: swiper },
@@ -53,15 +56,24 @@ export const loader = async ({ params }: LoaderArgs) => {
   const productCategories = await getProductCategories();
   const productSubCategories = await getProductSubCategories();
   const brands = await getBrands();
+  const colors = await getAvailableColors();
 
   if (id && id !== "add") {
     const webPage = await getWebPage(id);
+    let blocks;
+
+    if (webPage) {
+      blocks = await getBlocks(webPage as any);
+    }
+
     return {
       webPage,
+      blocks,
       articleCategories,
       productCategories,
       productSubCategories,
       brands,
+      colors,
     };
   } else return null;
 };
@@ -69,9 +81,19 @@ export const loader = async ({ params }: LoaderArgs) => {
 export const action = async ({ request, params }: ActionArgs) => {
   const id = params.id === "add" ? undefined : params.id;
   const form = Object.fromEntries(await request.formData());
-  const { title, description, thumbnail, itemIndex, contentType, name } = form;
+  const {
+    backgroundColor,
+    blockId,
+    blockName,
+    contentType,
+    description,
+    itemIndex,
+    name,
+    thumbnail,
+    title,
+  } = form;
 
-  const blockOptions: NewBlockOptions = getFormBlockOptions(form);
+  const blockOptions: BlockOptions = getFormBlockOptions(form);
 
   switch (form._action) {
     case "search":
@@ -80,21 +102,34 @@ export const action = async ({ request, params }: ActionArgs) => {
         (name as string) || undefined
       );
 
-    case "update":
-      //we create a new webPage if ID is not provided
-      if (title || thumbnail) {
-        const webPageId = await upsertWebPageInfo(
-          title as string,
-          description as string,
-          thumbnail ? JSON.parse(thumbnail as string) : undefined,
-          id ? parseInt(id) : undefined
-        );
+    case "updateMeta":
+      let metaValidationError: string[] = [];
 
-        if (params.id === "add") {
-          return redirect(`/admin/pages/${webPageId}`);
-        } else return null;
+      if (!title) {
+        metaValidationError.push("Title is Required");
       }
 
+      if (!description) {
+        metaValidationError.push("Description is Required");
+      }
+
+      if (metaValidationError.length > 0) {
+        return { metaValidationError };
+      }
+
+      const webPageId = await upsertWebPageInfo(
+        title as string,
+        description as string,
+        thumbnail ? JSON.parse(thumbnail as string) : undefined,
+        backgroundColor as string,
+        id ? parseInt(id) : undefined
+      );
+
+      if (params.id === "add") {
+        return redirect(`/admin/pages/${webPageId}`);
+      } else return null;
+
+    case "update":
       const newBlockData: NewBlockData = getBlockUpdateValues(form);
 
       const updateSuccess = await updatePageBlock(
@@ -117,11 +152,7 @@ export const action = async ({ request, params }: ActionArgs) => {
       );
 
     case "delete":
-      return await removeBlock(
-        parseInt(id as string),
-        parseInt(itemIndex as string),
-        "webPage"
-      );
+      return await removeBlock(blockId as string, blockName as BlockName);
 
     case "deleteWebPage":
       return await deleteWebPage(parseInt(id as string));
@@ -132,13 +163,16 @@ const ModifyWebPage = () => {
   const submit = useSubmit();
   const {
     webPage,
+    blocks,
     productCategories,
     articleCategories,
     productSubCategories,
     brands,
+    colors,
   } = useLoaderData() || {};
 
-  const { searchResults, updateSuccess } = useActionData() || {};
+  const { searchResults, updateSuccess, metaValidationError } =
+    useActionData() || {};
 
   return (
     <AdminPageWrapper>
@@ -151,7 +185,7 @@ const ModifyWebPage = () => {
           <div className="flex flex-col gap-6">
             <div className="relative flex justify-center gap-3 text-center text-2xl font-bold">
               <Icon iconName="IoNewspaper" size={24} styles="mt-[5px]" />
-              {webPage ? webPage.title : "Create Page"}
+              {webPage ? limitString(webPage.title, 21, true) : "Create Page"}
 
               <HiTrash
                 size={24}
@@ -165,25 +199,22 @@ const ModifyWebPage = () => {
             </div>
 
             <LargeCollapse
-              title="Meta Information"
+              title="Page Options"
               forceOpen={!webPage}
               content={
                 <Form
                   method="POST"
                   className="flex w-full flex-col items-center gap-6"
                 >
-                  <div className="form-control">
-                    <label className="label">
-                      <span className="label-text text-brand-white">Title</span>
-                    </label>
-                    <input
-                      name="title"
-                      type="text"
-                      placeholder="Title"
-                      defaultValue={webPage?.title}
-                      className="input input-bordered w-[95vw] text-brand-black sm:w-[320px]"
-                    />
-                  </div>
+                  <BasicInput
+                    name="title"
+                    label="Title"
+                    placeholder="Title"
+                    customWidth="w-[320px]"
+                    type="text"
+                    defaultValue={webPage?.title}
+                    labelColor="text-brand-white"
+                  />
 
                   <div className="form-control">
                     <label className="label">
@@ -195,7 +226,7 @@ const ModifyWebPage = () => {
                       name="description"
                       placeholder="Description"
                       defaultValue={webPage?.description}
-                      className="textarea textarea-bordered flex w-[95vw] rounded-none text-brand-black sm:w-[320px]"
+                      className="textarea textarea-bordered flex w-[95vw] rounded-sm text-brand-black sm:w-[320px]"
                     />
                   </div>
 
@@ -213,10 +244,39 @@ const ModifyWebPage = () => {
                     </div>
                   </div>
 
-                  <input name="_action" value="update" hidden readOnly />
+                  <BasicSelect
+                    label="Background Color"
+                    labelColor="text-brand-white"
+                    customWidth="w-[320px]"
+                    name="backgroundColor"
+                    placeholder="Select a Color"
+                    defaultValue={webPage?.backgroundColor}
+                    selections={colors.map((color: string) => ({
+                      id: color,
+                      name: color,
+                    }))}
+                  />
+
+                  <input name="_action" value="updateMeta" hidden readOnly />
+
+                  {metaValidationError && metaValidationError?.length > 0 && (
+                    <div className="pb-3">
+                      {metaValidationError.map((error: string, i: number) => {
+                        return (
+                          <p
+                            key={error + i}
+                            className="my-2 text-center text-xs text-red-500"
+                          >
+                            {error}
+                          </p>
+                        );
+                      })}
+                    </div>
+                  )}
+
                   <button
                     type="submit"
-                    className="btn-primary btn-md mx-auto block w-max"
+                    className="btn-primary btn-md mx-auto block w-max rounded-sm"
                   >
                     {webPage ? "Submit" : "Next Step"}
                   </button>
@@ -231,12 +291,14 @@ const ModifyWebPage = () => {
                 content={
                   <PageBuilder
                     page={webPage}
+                    blocks={blocks}
                     searchResults={searchResults}
                     updateSuccess={updateSuccess}
                     productCategories={productCategories}
                     productSubCategories={productSubCategories}
-                    brands={brands}
                     articleCategories={articleCategories}
+                    brands={brands}
+                    colors={colors}
                   />
                 }
               />

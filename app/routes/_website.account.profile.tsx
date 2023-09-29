@@ -1,18 +1,18 @@
-import { type LoaderArgs, type ActionArgs } from "@remix-run/server-runtime";
-import { Form, useActionData, useLoaderData } from "@remix-run/react";
-import { getUserObject } from "~/session.server";
-import { getUserDetails, upsertUserDetails } from "~/models/auth/userDetails";
 import { useEffect, useState } from "react";
 import { isValidMobileNumber } from "~/utility/validate";
+import { getUserDataFromSession } from "~/session.server";
+import { Form, useActionData, useLoaderData } from "@remix-run/react";
+import { type ActionArgs, type LoaderArgs } from "@remix-run/server-runtime";
+import { getUserDetails, upsertUserDetails } from "~/models/auth/userDetails";
 
 export const loader = async ({ request }: LoaderArgs) => {
-  const { id, email } = ((await getUserObject(request)) as User) || {};
+  const { id, email } = ((await getUserDataFromSession(request)) as User) || {};
   const userDetails = await getUserDetails(id);
   return { userDetails, email };
 };
 
 export const action = async ({ request }: ActionArgs) => {
-  const { id } = ((await getUserObject(request)) as User) || {};
+  const { id } = ((await getUserDataFromSession(request)) as User) || {};
   const { firstName, lastName, dateofbirth, phoneNumber } = Object.fromEntries(
     await request.formData()
   );

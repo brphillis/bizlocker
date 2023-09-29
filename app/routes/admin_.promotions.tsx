@@ -7,6 +7,7 @@ import {
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
+import BasicInput from "~/components/Forms/Input/BasicInput";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import Pagination from "~/components/Pagination";
@@ -36,19 +37,7 @@ const Promotions = () => {
         />
 
         <div className="mt-3 flex flex-col">
-          <div className="flex flex-row gap-6">
-            <div className="form-control w-full sm:w-[215px]">
-              <label className="label">
-                <span className="label-text">Name</span>
-              </label>
-              <input
-                name="name"
-                className="input w-full"
-                placeholder="Name"
-                type="text"
-              />
-            </div>
-          </div>
+          <BasicInput name="name" label="Name" placeholder="Name" type="text" />
 
           <div className="flex flex-row justify-end sm:justify-start">
             <button type="submit" className="btn btn-primary mt-6 w-max">

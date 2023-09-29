@@ -1,5 +1,5 @@
 import { prisma } from "~/db.server";
-import { getOrderBy } from "~/utility/sortHelpers";
+import { getOrderBy } from "~/helpers/sortHelpers";
 
 export const getProductSubCategories = async () => {
   return await prisma.productSubCategory.findMany({
@@ -188,7 +188,7 @@ export const searchProductSubCategories = async (
       },
       skip,
       take,
-      orderBy: getOrderBy(sortBy as CategorySortBy, sortOrder as SortOrder),
+      orderBy: getOrderBy(sortBy as SortBy, sortOrder as SortOrder),
     }),
     prisma.productSubCategory.count({
       where: whereClause,

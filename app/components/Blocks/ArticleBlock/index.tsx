@@ -1,35 +1,30 @@
 import ArticleGrid from "~/components/Grids/ArticleGrid";
 
 type Props = {
-  content: ArticleBlockContent[];
-  options: BlockOptions;
-  articles: Article[] | undefined;
+  content: BlockContent;
+  options: BlockOptions[];
 };
 
-const ArticleBlock = ({ content, options, articles }: Props) => {
+const ArticleBlock = ({ content, options: optionsArray }: Props) => {
+  const options = optionsArray[0];
+  const articles = content?.article as Article[];
+  const articleCategory = content?.articleCategory as ArticleCategory;
+
   const determineSortPhrase = (sortBy: SortBy) => {
-    if (sortBy === "createdAt") {
+    if (sortBy && sortBy === "createdAt") {
       return "Latest Article in  ";
     }
-    if (sortBy === "title") {
+    if (sortBy && sortBy === "title") {
       return "Articles about  ";
-    }
-  };
-
-  const determineDisplayedFilter = (content: ArticleBlockContent) => {
-    if (content?.articleCategory?.name) {
-      return content?.articleCategory?.name;
     }
   };
 
   return (
     <>
-      {options.sortBy && content?.[0].articleCategory?.name && (
+      {options?.sortBy && articleCategory?.name && (
         <p className="self-start pl-3 text-xl font-bold md:pl-1">
-          {options.sortBy ? determineSortPhrase(options.sortBy) : null}
-          <span className="text-2xl">
-            {determineDisplayedFilter(content[0])}
-          </span>
+          {options.sortBy ? determineSortPhrase(options?.sortBy) : null}
+          <span className="text-2xl">{articleCategory?.name}</span>
         </p>
       )}
 

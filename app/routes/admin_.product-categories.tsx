@@ -1,3 +1,13 @@
+import Pagination from "~/components/Pagination";
+import { type LoaderArgs } from "@remix-run/server-runtime";
+import CategorySort from "~/components/Sorting/CategorySort";
+import { getDepartments } from "~/models/departments.server";
+import BasicInput from "~/components/Forms/Input/BasicInput";
+import BasicSelect from "~/components/Forms/Select/BasicSelect";
+import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
+import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
+import { searchProductCategories } from "~/models/productCategories.server";
+import { getProductSubCategories } from "~/models/productSubCategories.server";
 import {
   Form,
   Outlet,
@@ -5,16 +15,6 @@ import {
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
-import { type LoaderArgs } from "@remix-run/server-runtime";
-import SelectProductSubCategory from "~/components/Forms/Select/SelectProductSubCategory";
-import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
-import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
-import Pagination from "~/components/Pagination";
-import { getProductSubCategories } from "~/models/productSubCategories.server";
-import { searchProductCategories } from "~/models/productCategories.server";
-import CategorySort from "~/components/Sorting/CategorySort";
-import SelectDepartment from "~/components/Forms/Select/SelectDepartment";
-import { getDepartments } from "~/models/departments.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
@@ -54,24 +54,25 @@ const ManageProductCategories = () => {
         />
 
         <div className="mt-3 flex w-full flex-wrap items-end gap-6">
-          <div className="flex w-full flex-row gap-6 sm:w-[215px]">
-            <div className="form-control w-full">
-              <label className="label">
-                <span className="label-text">Category Name</span>
-              </label>
-              <input
-                name="name"
-                className="input w-full text-brand-black/50"
-                placeholder="Name"
-                type="text"
-              />
-            </div>
-          </div>
+          <BasicInput
+            label="Category Name"
+            type="text"
+            name="name"
+            placeholder="Name"
+          />
 
-          <SelectDepartment departments={departments} />
+          <BasicSelect
+            name="department"
+            label="Department"
+            selections={departments}
+            placeholder="Department"
+          />
 
-          <SelectProductSubCategory
-            productSubCategories={productSubCategories}
+          <BasicSelect
+            name="productSubCategory"
+            label="Category"
+            selections={productSubCategories}
+            placeholder="Category"
           />
         </div>
 

@@ -3,11 +3,7 @@ import { useLoaderData } from "@remix-run/react";
 import BlockRenderer from "~/components/BlockRenderer";
 import PageWrapper from "~/components/Layout/_Website/PageWrapper";
 import { getArticle } from "~/models/articles.server";
-import {
-  getArticlesForPage,
-  getProductsForPage,
-} from "~/models/blockHelpers.server";
-import { getBlocks } from "~/utility/blockHelpers";
+import { getBlocks } from "~/helpers/blockHelpers";
 
 export const meta: V2_MetaFunction = ({ data }) => {
   return [
@@ -23,40 +19,30 @@ export const loader = async ({ params }: LoaderArgs) => {
   const articleName = params.name;
   const article = await getArticle(undefined, articleName);
 
-  let title, description, blocks;
-  let productBlockProducts: Product[][] = [];
-  let articleBlockArticles: Article[][] = [];
+  let title, description, backgroundColor, blocks;
 
   if (article) {
-    blocks = getBlocks(article as any);
+    blocks = await getBlocks(article as any);
     title = article.title;
     description = article.description;
+    backgroundColor = article.backgroundColor;
   }
-  if (blocks) {
-    productBlockProducts = await getProductsForPage(blocks);
-    articleBlockArticles = await getArticlesForPage(blocks);
-  }
+
   return {
     title,
     description,
+    backgroundColor,
     blocks,
-    productBlockProducts,
-    articleBlockArticles,
     articleName,
   };
 };
 
 const Home = () => {
-  const { blocks, productBlockProducts, articleBlockArticles } =
-    useLoaderData();
+  const { blocks, backgroundColor } = useLoaderData();
 
   return (
-    <PageWrapper gap="medium">
-      <BlockRenderer
-        blocks={blocks}
-        productBlockProducts={productBlockProducts}
-        articleBlockArticles={articleBlockArticles}
-      />
+    <PageWrapper gap="medium" backgroundColor={backgroundColor}>
+      <BlockRenderer blocks={blocks} />
     </PageWrapper>
   );
 };
