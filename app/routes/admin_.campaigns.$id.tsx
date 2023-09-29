@@ -199,7 +199,7 @@ const ModifyCampaign = () => {
             name="bannerImage"
             label="Banner Image"
             tooltip="Optimal 8.09:1 Aspect Ratio"
-            defaultValue={campaign.bannerImage}
+            defaultValue={campaign?.bannerImage}
           />
 
           <div className="divider w-full pt-4" />
@@ -208,7 +208,7 @@ const ModifyCampaign = () => {
             name="tileImage"
             label="Tile Image"
             tooltip="Optimal Square Image"
-            defaultValue={campaign.tileImage}
+            defaultValue={campaign?.tileImage}
           />
         </div>
 

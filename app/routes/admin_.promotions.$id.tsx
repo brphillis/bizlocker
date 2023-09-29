@@ -208,7 +208,7 @@ const ModifyPromotion = () => {
             name="bannerImage"
             label="Banner Image"
             tooltip="Optimal 8.09:1 Aspect Ratio"
-            defaultValue={promotion.bannerImage}
+            defaultValue={promotion?.bannerImage}
           />
 
           <div className="divider w-full pt-4" />
@@ -217,7 +217,7 @@ const ModifyPromotion = () => {
             name="tileImage"
             label="Tile Image"
             tooltip="Optimal Square Image"
-            defaultValue={promotion.tileImage}
+            defaultValue={promotion?.tileImage}
           />
         </div>
 

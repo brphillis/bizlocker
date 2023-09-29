@@ -48,7 +48,7 @@ export const action = async ({ request, params }: ActionArgs) => {
         ? (JSON.parse(image?.toString()) as Image)
         : undefined;
 
-      upsertImage(altText as string, parsedImage, id);
+      await upsertImage(altText as string, parsedImage, id);
 
       return { success: true };
 
