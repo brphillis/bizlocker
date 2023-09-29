@@ -1,7 +1,7 @@
 import React, { Suspense, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper";
-import { ConvertToBase64 } from "~/utility/fileHelpers";
+import { ConvertToBase64 } from "~/helpers/fileHelpers";
 import { IoClose } from "react-icons/io5";
 import { findFirstNotNullInputValue } from "~/helpers/formHelpers";
 

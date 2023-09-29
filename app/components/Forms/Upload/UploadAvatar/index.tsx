@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ConvertToBase64 } from "~/utility/fileHelpers";
+import { ConvertToBase64 } from "~/helpers/fileHelpers";
 import { placeholderAvatar } from "~/utility/placeholderAvatar";
 
 type Props = {
@@ -24,7 +24,7 @@ const UploadAvatar = ({ avatar }: Props) => {
           <input
             type="file"
             accept="image/*"
-            className="file-input-bordered file-input w-full max-w-[50vw] bg-primary/50"
+            className="file-input file-input-bordered w-full max-w-[50vw] bg-primary/50"
             onChange={async (e) => {
               const convertedImage = await ConvertToBase64(e);
               convertedImage && setImage(convertedImage);

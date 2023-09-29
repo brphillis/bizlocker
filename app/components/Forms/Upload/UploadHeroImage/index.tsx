@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { IoIosCloseCircle } from "react-icons/io";
-import { ConvertToBase64 } from "~/utility/fileHelpers";
+import { ConvertToBase64 } from "~/helpers/fileHelpers";
 
 type Props = {
   valueToChange: Product;
@@ -12,7 +12,7 @@ const UploadHeroImage = ({ valueToChange }: Props) => {
   );
 
   return (
-    <div className="collapse collapse-arrow mt-6 rounded-none bg-base-100">
+    <div className="collapse-arrow collapse mt-6 rounded-none bg-base-100">
       <input type="checkbox" />
       <div className="collapse-title ml-3 mt-1 h-max text-center text-sm font-medium">
         Hero Image

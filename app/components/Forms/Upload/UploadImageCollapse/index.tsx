@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { IoIosCloseCircle } from "react-icons/io";
-import { ConvertToBase64 } from "~/utility/fileHelpers";
+import { ConvertToBase64 } from "~/helpers/fileHelpers";
 
 type Props = {
   label: string;

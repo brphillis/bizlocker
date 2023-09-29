@@ -43,7 +43,7 @@ type ContentSelection = {
 };
 
 interface Image {
-  id: number;
+  id?: number;
   url: string;
   altText?: string;
   user?: User;
