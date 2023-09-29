@@ -134,12 +134,14 @@ export const upsertProduct = async (productData: any) => {
             })),
           }
         : undefined,
-    heroImage: {
-      create: {
-        url: heroImage.url,
-        altText: heroImage.altText,
-      },
-    },
+    heroImage: heroImage
+      ? {
+          create: {
+            url: heroImage.url,
+            altText: heroImage.altText,
+          },
+        }
+      : undefined,
   };
 
   if (!id) {
@@ -304,7 +306,7 @@ export const searchProducts = async (
   url?: URL
 ) => {
   const name =
-    formData?.name || (url && url.searchParams.get("name")?.toString()) || "";
+    formData?.name || (url && url?.searchParams.get("name")?.toString()) || "";
   const department =
     formData?.department || url?.searchParams.get("department") || "";
   const category =

@@ -1,4 +1,4 @@
-app = "brockdev-prod"
+app = "brockdev"
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = []
