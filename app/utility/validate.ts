@@ -8,12 +8,15 @@ export const validateForm = (formEntries: {
   if (!name) {
     validationError.name = "Name is invalid";
   }
+  //TO DO
 
-  if (Object.keys(validationError).length > 0) {
-    return validationError;
-  } else {
-    return null;
-  }
+  // if (Object.keys(validationError).length > 0) {
+  //   return validationError;
+  // } else {
+  //   return null;
+  // }
+
+  return null;
 };
 
 export const isValidEmail = (email: string): boolean => {
