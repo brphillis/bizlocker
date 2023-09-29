@@ -251,7 +251,7 @@ const ModifyWebPage = () => {
                     name="backgroundColor"
                     placeholder="Select a Color"
                     defaultValue={webPage?.backgroundColor}
-                    selections={colors.map((color: string) => ({
+                    selections={colors?.map((color: string) => ({
                       id: color,
                       name: color,
                     }))}

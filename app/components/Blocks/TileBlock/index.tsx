@@ -1,4 +1,4 @@
-// import { useNavigate } from "@remix-run/react";
+import { useNavigate } from "@remix-run/react";
 
 type Props = {
   content: ContentData;
@@ -6,9 +6,14 @@ type Props = {
 };
 
 const TileBlock = ({ content, options: ArrayOptions }: Props) => {
+  const navigate = useNavigate();
   const joinedContent: any = [];
   const options = ArrayOptions[0];
   const columns = options?.columns || 2;
+  const { linkOne, linkTwo, linkThree, linkFour, linkFive, linkSix } =
+    options || {};
+
+  const links = [linkOne, linkTwo, linkThree, linkFour, linkFive, linkSix];
 
   if ((content?.image as Image[])?.length > 0) {
     (content?.image as Image[])?.forEach((e: any) => joinedContent.push(e));
@@ -41,18 +46,6 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
         const contentImage = contentData?.image?.url;
         const tileImage = contentImage || promotionOrCampaignImage;
 
-        // const generateImageLink = () => {
-        //   if (type === "promotion") {
-        //     return `/promotion/${name}`;
-        //   } else if (type === "campaign") {
-        //     return `/campaign/${name}`;
-        //   } else if (type === "image") {
-        //     return href;
-        //   } else return "";
-        // };
-
-        // const imageLink = generateImageLink();
-
         return (
           <img
             key={"tileImage_" + (name || i)}
@@ -62,7 +55,7 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
                 ? "max-sm:last:col-span-full"
                 : "")
             }
-            // onClick={() => navigate(imageLink)}
+            onClick={() => navigate(links[i] as string)}
             src={tileImage || url}
             alt={name || altText}
           />
