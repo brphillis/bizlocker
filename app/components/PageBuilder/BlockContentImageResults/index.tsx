@@ -23,8 +23,6 @@ const BlockContentImageResults = ({
     setSelectedItems((prevSelectedItems: any) => {
       if (!Array.isArray(prevSelectedItems)) {
         prevSelectedItems = [];
-      } else {
-        prevSelectedItems = prevSelectedItems.filter((e) => e.type !== type);
       }
       return [...prevSelectedItems, { type, contentId, name }];
     });

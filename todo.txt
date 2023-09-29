@@ -4,8 +4,7 @@ To Do
 [ ] add shipping calculator
 [ ] send email when order is shipped
 [ ] add internation phone code validations
-
-[ ] cleanup block content typing
+[ ] finish validations function
 
 
 Bug Hisory
