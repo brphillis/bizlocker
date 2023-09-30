@@ -244,18 +244,20 @@ const ModifyWebPage = () => {
                     </div>
                   </div>
 
-                  <BasicSelect
-                    label="Background Color"
-                    labelColor="text-brand-white"
-                    customWidth="w-[320px]"
-                    name="backgroundColor"
-                    placeholder="Select a Color"
-                    defaultValue={webPage?.backgroundColor}
-                    selections={colors?.map((color: string) => ({
-                      id: color,
-                      name: color,
-                    }))}
-                  />
+                  {colors && (
+                    <BasicSelect
+                      label="Background Color"
+                      labelColor="text-brand-white"
+                      customWidth="w-[320px]"
+                      name="backgroundColor"
+                      placeholder="Select a Color"
+                      defaultValue={webPage?.backgroundColor}
+                      selections={colors?.map((color: string) => ({
+                        id: color,
+                        name: color,
+                      }))}
+                    />
+                  )}
 
                   <input name="_action" value="updateMeta" hidden readOnly />
 

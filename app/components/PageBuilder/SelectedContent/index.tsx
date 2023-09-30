@@ -54,8 +54,8 @@ const SelectedContent = ({
                       className="cursor-pointer"
                     >
                       <td className="w-1/4">{index + 1}</td>
-                      <td className="w-1/4">{capitalizeFirst(name)}</td>
-                      <td className="w-1/4">{capitalizeFirst(type)}</td>
+                      <td className="w-1/4">{name && capitalizeFirst(name)}</td>
+                      <td className="w-1/4">{type && capitalizeFirst(type)}</td>
                       <td className="w-1/4">
                         <div
                           className="ml-2"

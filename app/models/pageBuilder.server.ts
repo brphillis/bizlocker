@@ -4,8 +4,18 @@ const updateOrCreateBlockOptions = async (
   blockId: string,
   blockOptions: BlockOptions
 ): Promise<void> => {
-  let existingBlockOptions;
+  // we set unndefined keys to null so the enum values can be removed/disconnected
+  const sanitizedBlockOptions: BlockOptions = { ...blockOptions };
+  for (const key in sanitizedBlockOptions) {
+    if (
+      sanitizedBlockOptions.hasOwnProperty(key) &&
+      sanitizedBlockOptions[key as keyof BlockOptions] === undefined
+    ) {
+      sanitizedBlockOptions[key as keyof BlockOptions] = null;
+    }
+  }
 
+  let existingBlockOptions;
   existingBlockOptions = await prisma.blockOptions.findFirst({
     where: { block: { id: blockId } },
   });
@@ -13,11 +23,11 @@ const updateOrCreateBlockOptions = async (
   if (existingBlockOptions) {
     await prisma.blockOptions.update({
       where: { id: existingBlockOptions.id },
-      data: blockOptions,
+      data: sanitizedBlockOptions,
     });
   } else {
     await prisma.blockOptions.create({
-      data: { block: { connect: { id: blockId } }, ...blockOptions },
+      data: { block: { connect: { id: blockId } }, ...sanitizedBlockOptions },
     });
   }
 };
@@ -128,7 +138,7 @@ export const updatePageBlock = async (
           where: { id: blockContent.id },
           data: updates,
         });
-        console.log("UPDATING BLOCK CONTENT", updates);
+
         // update the BlockType
         const updateBlock = prisma[`${blockName}Block`].update as (
           args: any // Replace 'any' with the appropriate argument type for your update method

@@ -17,7 +17,11 @@ Bug Hisory
 006 - [x] fix product page with no filters
 007 - [x] fix product images mobile
 008 - [x] fix category index default values when adding
-
+009 - [x] add currently selected department to querystring when selecting category in navbar
+009.1 - [x] fix product brands from not connecting when first adding a product
+009.2 - [x] fix links on tile block
+009.3 - [x] fix all purchases from being JWT user authenticated so guests can add to cart
+009.4 - [x] product prices appear striked out when variants are flagged but product does not have promotion selected
 
 Feat history
 

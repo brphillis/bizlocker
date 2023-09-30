@@ -171,12 +171,15 @@ const DesktopMenu = ({ departments, productCategories }: Props) => {
                     activeSubCategories?.parentCategory === name &&
                     "border-b-2 border-b-brand-white"
                   }`}
-                    onClick={() =>
+                    onClick={() => {
+                      const department = departments.find(
+                        (e) => e.id === selectedDepartment
+                      )?.name;
                       navigate({
                         pathname: "/products",
-                        search: `?productCategory=${name}`,
-                      })
-                    }
+                        search: `?department=${department}&productCategory=${name}`,
+                      });
+                    }}
                     onMouseOver={() => {
                       if (productSubCategories) {
                         setActiveSubCategories({
@@ -211,12 +214,15 @@ const DesktopMenu = ({ departments, productCategories }: Props) => {
                     <li
                       key={"menu_productSubCategory_" + id}
                       className="flex h-full cursor-pointer items-center justify-center border-primary-content/0 px-3 py-1 text-sm font-semibold tracking-wide text-brand-white hover:bg-primary-content/10"
-                      onClick={() =>
+                      onClick={() => {
+                        const department = departments.find(
+                          (e) => e.id === selectedDepartment
+                        )?.name;
                         navigate({
                           pathname: "/products",
-                          search: `?productCategory=${activeSubCategories.parentCategory}&productSubCategory=${name}`,
-                        })
-                      }
+                          search: `?department=${department}&productCategory=${activeSubCategories.parentCategory}&productSubCategory=${name}`,
+                        });
+                      }}
                     >
                       {name.toUpperCase()}
                     </li>

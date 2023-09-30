@@ -13,6 +13,11 @@ export const blockMaster: BlockMaster[] = [
       backgroundColor: true,
       size: true,
       margin: true,
+      linkOne: true,
+      borderColor: true,
+      borderSize: true,
+      borderRadius: true,
+      borderDisplay: true,
     },
     content: {
       include: {

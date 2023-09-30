@@ -249,7 +249,10 @@ export const searchCampaigns = async (
 
 export const getRandomCampaignOrPromotion = async (
   productSubCategoryIdOrName?: string
-) => {
+): Promise<
+  | { campaign: Campaign | undefined; promotion: Promotion | undefined }
+  | undefined
+> => {
   let productSubCategory;
 
   if (
@@ -285,53 +288,64 @@ export const getRandomCampaignOrPromotion = async (
   }
 
   if (!productSubCategory) {
-    const randomCampaignAnyCategory = await getAnyCampaignOrPromotion();
-    if (randomCampaignAnyCategory) {
-      return randomCampaignAnyCategory;
+    const { campaign, promotion } = await getAnyCampaignOrPromotion();
+    if (campaign || promotion) {
+      return { campaign, promotion };
     }
   }
 
   const { campaigns } = productSubCategory || {};
 
   if (campaigns?.length === 0 || !campaigns) {
-    const randomCampaignAnyCategory = await getAnyCampaignOrPromotion();
-    if (randomCampaignAnyCategory) {
-      return randomCampaignAnyCategory;
+    const { campaign, promotion } = await getAnyCampaignOrPromotion();
+    if (campaign || promotion) {
+      return { campaign, promotion };
     }
   } else {
     const randomIndex = Math.floor(Math.random() * campaigns.length);
-    const randomCampaign = campaigns[randomIndex];
+    const campaign = campaigns[randomIndex] as unknown as Campaign;
+    let promotion;
 
-    return randomCampaign;
+    return { campaign, promotion };
   }
 };
 
-const getAnyCampaignOrPromotion = async () => {
-  let campaignOrPromotion;
+const getAnyCampaignOrPromotion = async (): Promise<{
+  campaign: Campaign | undefined;
+  promotion: Promotion | undefined;
+}> => {
+  let campaign: Campaign | Campaign[] | undefined;
+  let promotion: Promotion | Promotion[] | undefined;
   const oneOrTwo = getRandomOneOrTwo();
 
   if (oneOrTwo === 1) {
-    campaignOrPromotion = await prisma.campaign.findMany({
+    campaign = (await prisma.campaign.findMany({
       include: {
         bannerImage: true,
         tileImage: true,
       },
-    });
+    })) as unknown as Campaign[];
   } else {
-    campaignOrPromotion = await prisma.promotion.findMany({
+    promotion = (await prisma.promotion.findMany({
       include: {
         bannerImage: true,
         tileImage: true,
       },
-    });
+    })) as unknown as Promotion[];
   }
 
-  if (!campaignOrPromotion || campaignOrPromotion.length === 0) {
-    return null;
+  if (campaign) {
+    const randomCampaignIndex = Math.floor(
+      Math.random() * (campaign as Campaign[]).length
+    );
+    campaign = (campaign as Campaign[])[randomCampaignIndex] as Campaign;
+  }
+  if (promotion) {
+    const randomPromotionIndex = Math.floor(
+      Math.random() * (promotion as Promotion[]).length
+    );
+    promotion = (promotion as Promotion[])[randomPromotionIndex] as Promotion;
   }
 
-  const randomIndex = Math.floor(Math.random() * campaignOrPromotion.length);
-  const randomCampaign = campaignOrPromotion[randomIndex];
-
-  return randomCampaign;
+  return { campaign, promotion };
 };
