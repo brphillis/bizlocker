@@ -58,6 +58,7 @@ const BlockContentResultsTable = ({
                     return (
                       <tr
                         key={"tableContentResult_" + name + index}
+                        className="cursor-pointer"
                         onClick={() => {
                           selectItems(
                             contentType,

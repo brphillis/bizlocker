@@ -410,7 +410,7 @@ const ProductVariantFormModule = ({
             </table>
 
             <button
-              className="btn-primary btn-md mx-auto mt-6 block"
+              className="btn-primary btn-md mx-auto mt-6 block !rounded-sm"
               onClick={() => handleNewVariant()}
             >
               Add Variant

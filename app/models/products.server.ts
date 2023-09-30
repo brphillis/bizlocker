@@ -118,6 +118,11 @@ export const upsertProduct = async (productData: any) => {
     isActive,
     discountPercentageHigh,
     discountPercentageLow,
+    brand: brand
+      ? {
+          connect: { id: parseInt(brand) },
+        }
+      : undefined,
     productSubCategories: {
       connect: productSubCategories
         .filter((categoryId: any) => !isNaN(parseInt(categoryId)))

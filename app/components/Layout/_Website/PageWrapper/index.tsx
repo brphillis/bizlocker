@@ -37,7 +37,7 @@ const PageWrapper = ({
       style={{
         backgroundColor: backgroundColor
           ? generateColor(backgroundColor)
-          : generateColor("white"),
+          : "hsl(var(--brand-white))",
       }}
       className={`flex w-full flex-col items-center justify-center pb-3 pt-6 max-xl:pt-3 lg:pb-12 ${
         noTopPadding && "!pt-0"

@@ -204,6 +204,7 @@ const BlockOptions = ({
                     defaultValue={!borderDisplay ? undefined : borderDisplay}
                   >
                     <option value=" !border-none">No Border</option>
+                    <option value=" border">Display Border</option>
                     <option value=" max-md:!border-none">Hide Mobile</option>
                     <option value=" md:!border-none">Hide Desktop</option>
                   </select>

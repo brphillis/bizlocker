@@ -1,11 +1,6 @@
 import type { V2_MetaFunction } from "@remix-run/node";
-import {
-  redirect,
-  type LoaderArgs,
-  type ActionArgs,
-} from "@remix-run/server-runtime";
+import { type LoaderArgs, type ActionArgs } from "@remix-run/server-runtime";
 import { useLoaderData } from "react-router-dom";
-import { tokenAuth } from "~/auth.server";
 import BannerBlock from "~/components/Blocks/BannerBlock";
 import ProductFilterSideBar from "~/components/Filter/ProductFilterSideBar";
 import ProductGrid from "~/components/Grids/ProductGrid";
@@ -52,10 +47,15 @@ export const loader = async ({ request }: LoaderArgs) => {
   const productSubCategory = url.searchParams
     .get("productSubCategory")
     ?.toString();
-  const campaign = await getRandomCampaignOrPromotion(productSubCategory);
+  const { campaign, promotion } =
+    ((await getRandomCampaignOrPromotion(productSubCategory)) as {
+      campaign: Campaign;
+      promotion: Promotion;
+    }) || {};
 
   return {
     campaign,
+    promotion,
     products,
     totalPages,
     departments,
@@ -68,10 +68,10 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 export const action = async ({ request }: ActionArgs) => {
-  const authenticated = await tokenAuth(request);
-  if (!authenticated.valid) {
-    return redirect("/login");
-  }
+  // const authenticated = await tokenAuth(request);
+  // if (!authenticated.valid) {
+  //   return redirect("/login");
+  // }
   const form = Object.fromEntries(await request.formData());
   const { variantId, quantity } = form;
   switch (form._action) {
@@ -83,6 +83,7 @@ export const action = async ({ request }: ActionArgs) => {
 const Products = () => {
   const {
     campaign,
+    promotion,
     products,
     totalPages,
     departments,
@@ -92,6 +93,7 @@ const Products = () => {
     colors,
   } = useLoaderData() as {
     campaign: Campaign;
+    promotion: Promotion;
     products: Product[];
     totalPages: number;
     departments: Department[];
@@ -103,7 +105,11 @@ const Products = () => {
 
   return (
     <PageWrapper>
-      {campaign && <BannerBlock content={campaign} />}
+      {(campaign || promotion) && (
+        <BannerBlock
+          content={{ campaign: campaign, promotion: promotion } as BlockContent}
+        />
+      )}
 
       <div className="w-[1280px] max-w-[100vw]">
         <ProductSort totalCount={products.length * totalPages} />

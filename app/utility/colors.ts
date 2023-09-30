@@ -40,8 +40,10 @@ export const generateColor = (colorName: string) => {
       return "#00FFFF";
     case "INDIGO":
       return "#4B0082";
+    case "TRANSPARENT":
+      return "#FFFFFFFF";
 
     default:
-      return "#FFFFFF";
+      return "#FFFFFFFF";
   }
 };

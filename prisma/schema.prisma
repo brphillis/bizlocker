@@ -614,6 +614,7 @@ enum Color {
   OLIVE
   AQUA
   INDIGO
+  TRANSPARENT
 }
 
 enum Size {

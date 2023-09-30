@@ -280,18 +280,20 @@ const ModifyArticle = () => {
                     labelColor="text-brand-white"
                   />
 
-                  <BasicSelect
-                    label="Background Color"
-                    labelColor="text-brand-white"
-                    customWidth="w-[320px]"
-                    name="backgroundColor"
-                    placeholder="Select a Color"
-                    defaultValue={article?.backgroundColor}
-                    selections={colors.map((color: string) => ({
-                      id: color,
-                      name: color,
-                    }))}
-                  />
+                  {colors && (
+                    <BasicSelect
+                      label="Background Color"
+                      labelColor="text-brand-white"
+                      customWidth="w-[320px]"
+                      name="backgroundColor"
+                      placeholder="Select a Color"
+                      defaultValue={article?.backgroundColor}
+                      selections={colors?.map((color: string) => ({
+                        id: color,
+                        name: color,
+                      }))}
+                    />
+                  )}
 
                   <div className="form-control w-full max-w-xs">
                     <label className="label">

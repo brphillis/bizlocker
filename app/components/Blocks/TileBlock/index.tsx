@@ -1,4 +1,5 @@
 import { useNavigate } from "@remix-run/react";
+import { determineSingleContentType } from "~/helpers/blockContentHelpers";
 
 type Props = {
   content: ContentData;
@@ -16,16 +17,18 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
   const links = [linkOne, linkTwo, linkThree, linkFour, linkFive, linkSix];
 
   if ((content?.image as Image[])?.length > 0) {
-    (content?.image as Image[])?.forEach((e: any) => joinedContent.push(e));
+    (content?.image as Image[])?.forEach((e: any) =>
+      joinedContent.push({ image: e })
+    );
   }
   if ((content?.promotion as Promotion[])?.length > 0) {
     (content?.promotion as Promotion[]).forEach((e: any) =>
-      joinedContent.push(e)
+      joinedContent.push({ promotion: e })
     );
   }
   if ((content?.campaign as Campaign[])?.length > 0) {
     (content?.campaign as Campaign[])?.forEach((e: any) =>
-      joinedContent.push(e)
+      joinedContent.push({ campaign: e })
     );
   }
 
@@ -39,12 +42,31 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
       }}
     >
       {joinedContent?.map((contentData: any, i: number) => {
-        const { name } = contentData as any;
-        const { url, altText } = contentData as Image;
+        const contentType = determineSingleContentType(
+          contentData as BlockContent
+        );
 
-        const promotionOrCampaignImage = contentData?.tileImage?.url;
-        const contentImage = contentData?.image?.url;
-        const tileImage = contentImage || promotionOrCampaignImage;
+        let name: string = "tileImage";
+        let link: string = "";
+        let imageSrc: string = "";
+        if (contentType === "promotion") {
+          const promotion = contentData?.promotion as Promotion;
+          name = promotion?.name || name;
+          link = `/promotion/${name}`;
+          imageSrc = promotion?.tileImage?.url || imageSrc;
+        } else if (contentType === "campaign") {
+          const campaign = contentData?.campaign as Campaign;
+          name = campaign?.name || name;
+          link = `/campaign/${name}`;
+          imageSrc = campaign?.tileImage?.url || imageSrc;
+        } else if (contentType === "image") {
+          if (links[i]) {
+            link = links[i]!;
+          }
+          imageSrc =
+            ((contentData as BlockContent)?.image as Image)?.url || imageSrc;
+          name = ((contentData as BlockContent)?.image as Image)?.altText || "";
+        }
 
         return (
           <img
@@ -55,9 +77,9 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
                 ? "max-sm:last:col-span-full"
                 : "")
             }
-            onClick={() => navigate(links[i] as string)}
-            src={tileImage || url}
-            alt={name || altText}
+            onClick={() => link && navigate(link)}
+            src={imageSrc}
+            alt={name}
           />
         );
       })}

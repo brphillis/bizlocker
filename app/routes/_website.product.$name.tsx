@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import parse from "html-react-parser";
-import { IoHeart } from "react-icons/io5";
 import { generateColor } from "~/utility/colors";
 import { getBrand } from "~/models/brands.server";
 import { parseOptions } from "~/utility/parseOptions";
@@ -15,7 +14,6 @@ import {
   getAvailableColors,
   getAvailableSizes,
 } from "~/helpers/productHelpers";
-
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
   const productId = url.searchParams.get("id");
@@ -33,9 +31,13 @@ export const loader = async ({ request }: LoaderArgs) => {
   const recommendGender = (product as Product).gender;
 
   const formData = new FormData();
-  formData.set("productCategory", recommendCategory!);
-  formData.set("gender", recommendGender!);
-  formData.set("excludeId", productId!);
+  if (recommendCategory) {
+    formData.set("productCategory", recommendCategory);
+  }
+  if (productId) {
+    formData.set("excludeId", productId);
+  }
+  formData.set("gender", recommendGender);
   formData.set("perPage", "5");
 
   const { products: similarProducts } = await searchProducts(
@@ -151,7 +153,7 @@ const Product = () => {
               {brandImage?.url && (
                 <img
                   alt={brandName + "_image"}
-                  className="absolute bottom-4 right-4 h-16 w-auto max-md:h-10"
+                  className="max-md:h-30 absolute bottom-2 right-4 h-16 w-auto max-md:bottom-2"
                   src={brandImage?.url}
                 />
               )}
@@ -222,22 +224,13 @@ const Product = () => {
 
             <div className="my-3 w-full border-b border-brand-black/20" />
 
-            <div className="flex items-center justify-between py-3">
+            <div className="flex items-end justify-between py-3">
               <div>
                 <div className=" flex items-center gap-3 text-xs">
                   {selectedSize && selectedSize}
                   {selectedColor && "/" + selectedColor}
-                  {selectedVariant.isPromoted && (
-                    <div className="mb-[0.125rem] w-max bg-green-500 px-2 py-1 text-xs text-brand-white">
-                      PROMO
-                    </div>
-                  )}
-                  {selectedVariant.isOnSale && (
-                    <div className="mb-[0.125rem] w-max bg-red-500 px-2 py-1 text-xs text-brand-white">
-                      SALE
-                    </div>
-                  )}
                 </div>
+
                 <div className="title-font flex items-end gap-3 text-2xl font-medium text-gray-900">
                   {(selectedVariant.isOnSale || selectedVariant.isPromoted) && (
                     <div className="text-sm text-gray-400 line-through">
@@ -245,20 +238,30 @@ const Product = () => {
                     </div>
                   )}
                   ${getVariantUnitPrice(selectedVariant, product)}
+                  {selectedVariant.isPromoted && (
+                    <div className="w-max rounded-sm bg-green-500 px-2 py-1 text-xs text-brand-white">
+                      PROMO
+                    </div>
+                  )}
+                  {selectedVariant.isOnSale && (
+                    <div className="w-max rounded-sm bg-red-500 px-2 py-1 text-xs text-brand-white">
+                      SALE
+                    </div>
+                  )}
                 </div>
               </div>
 
-              <div className="flex gap-3">
+              <div className="flex items-center gap-3">
                 <button
-                  className="ml-auto flex border-0 bg-primary px-3 py-2 text-white hover:bg-primary focus:outline-none max-sm:order-2"
+                  className="ml-auto flex !rounded-sm border-0 bg-primary px-3 py-2 text-white hover:bg-primary focus:outline-none max-sm:order-2"
                   onClick={handleAddToCart}
                 >
                   Add to Cart
                 </button>
 
-                <button className="ml-4 inline-flex h-10 w-10 items-center justify-center rounded-full border-0 bg-gray-200 p-0 text-gray-500">
+                {/* <button className="ml-4 inline-flex h-10 w-10 items-center justify-center rounded-full border-0 bg-gray-200 p-0 text-gray-500">
                   <IoHeart size={20} />
-                </button>
+                </button> */}
               </div>
             </div>
             <div className="my-3 w-full border-b border-brand-black/20" />

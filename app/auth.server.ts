@@ -27,15 +27,6 @@ export const tokenAuth = async (request: Request) => {
 
   const cookies = getCookies(request);
 
-  // if (cookie) {
-  //   const cookies = Object.fromEntries(
-  //     cookie.split("; ").map((c) => {
-  //       const [key, ...v] = c.split("=");
-  //       return [key, v.join("=")];
-  //     })
-  //   );
-  // }
-
   accessToken = cookies["access_token"];
   refreshToken = cookies["refresh_token"];
 

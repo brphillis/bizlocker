@@ -31,7 +31,7 @@ const ProductCard = (product: Product) => {
 
   return (
     <div className="group flex w-full flex-col overflow-hidden bg-brand-white">
-      <div className="relative flex h-60 w-full max-w-full cursor-pointer overflow-hidden sm:h-72">
+      <div className="relative flex h-60 w-full max-w-full cursor-pointer overflow-hidden shadow-sm sm:h-72">
         <img
           className="absolute right-0 top-0 h-full w-full transform object-cover hover:scale-[1.025]"
           src={displayImage}
@@ -39,13 +39,13 @@ const ProductCard = (product: Product) => {
           onClick={() => navigate(`/product/${name}?id=${id}`)}
         />
         {isOnSale && (
-          <span className="absolute left-2 top-2 mr-2 bg-red-500 px-2 py-1 text-xs text-brand-white opacity-30">
+          <span className="absolute left-2 top-2 mr-2 bg-red-500 px-2 py-1 text-xs text-brand-white opacity-75">
             SALE
           </span>
         )}
 
-        {isPromoted && promotion?.isActive && (
-          <span className="absolute left-2 top-2 mr-2 bg-green-500 px-2 py-1 text-xs text-brand-white opacity-30">
+        {promotion && isPromoted && promotion?.isActive && (
+          <span className="absolute left-2 top-2 mr-2 bg-green-500 px-2 py-1 text-xs text-brand-white opacity-75">
             PROMO
           </span>
         )}
@@ -54,7 +54,7 @@ const ProductCard = (product: Product) => {
           <div className="h-3 w-3 rounded-full border-2 border-brand-white bg-transparent"></div>
           <div className="h-3 w-3 rounded-full border-2 border-brand-white bg-transparent"></div>
         </div> */}
-        <div className="absolute bottom-0 right-0 mb-4 mr-2 space-y-2 transition-all duration-300 group-hover:right-0">
+        <div className="absolute -bottom-2 right-0 mb-4 mr-2 space-y-2 transition-all duration-300 group-hover:right-0">
           {/* <button className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-900 text-white transition hover:bg-gray-700">
             <IoHeart size={18} />
           </button> */}
@@ -76,7 +76,7 @@ const ProductCard = (product: Product) => {
 
         <div>
           <p>
-            {(isOnSale || isPromoted) && (
+            {(isOnSale || (promotion && isPromoted)) && (
               <span className="mr-2 text-sm text-gray-400 line-through">
                 ${price.toFixed(2)}
               </span>
