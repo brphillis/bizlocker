@@ -23,7 +23,7 @@ const Home = () => {
           patternColor={generateColor("WHITE")}
           patternOpacity={0.2}
           patternSize={140}
-          brightness="-1.5"
+          brightness={-1.5}
         />
         <div className="relative mb-[20vh] flex w-[520px] max-w-full flex-col items-center gap-3 rounded-md border-b-4 border-t-4 border-primary bg-brand-black px-3 py-6 text-brand-white">
           <div className="flex select-none flex-col items-center py-3 text-center">

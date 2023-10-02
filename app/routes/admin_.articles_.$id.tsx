@@ -200,7 +200,7 @@ const ModifyArticle = () => {
           patternColor={generateColor("WHITE")}
           patternOpacity={0.2}
           patternSize={140}
-          brightness="-1.5"
+          brightness={-1.5}
         />
 
         <div className="hidden sm:block">
