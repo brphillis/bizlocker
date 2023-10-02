@@ -11,7 +11,7 @@ const ArticleCard = ({ article, hasDescription }: Props) => {
   const image = article?.thumbnail?.url;
   return (
     <div
-      className="group relative flex h-[248px] w-full cursor-pointer flex-col"
+      className="group relative flex h-[248px] w-full cursor-pointer flex-col max-sm:h-[232px]"
       onClick={() => navigate(`/article/${article.title}`)}
     >
       <div className="relative h-full w-auto drop-shadow-xl">

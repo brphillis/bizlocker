@@ -7,7 +7,7 @@ type Props = {
   patternOpacity?: number;
   patternSize: number;
   screenWidth?: boolean;
-  brightness?: string;
+  brightness?: number;
 };
 
 const PatternBackground = ({
