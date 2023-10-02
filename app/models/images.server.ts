@@ -115,10 +115,14 @@ export const searchImages = async (
   if (connectionType === "promotion") {
     filter.OR = [
       {
-        promotionBanner: { isNot: null },
+        NOT: {
+          promotionBanner: null,
+        },
       },
       {
-        promotionTile: { isNot: null },
+        NOT: {
+          promotionTile: null,
+        },
       },
     ];
   }

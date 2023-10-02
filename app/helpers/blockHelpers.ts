@@ -148,7 +148,12 @@ export const getBlockDefaultValues = (block: Block): ContentSelection[] => {
         })
       );
     } else {
-      const content = (block.content[contentName] as Product).id;
+      let content;
+      if (block.name === "text") {
+        content = block.content.richText;
+      } else {
+        content = (block.content[contentName] as Product).id;
+      }
 
       const name =
         (block.content[contentName] as Product).name ||
@@ -156,7 +161,7 @@ export const getBlockDefaultValues = (block: Block): ContentSelection[] => {
 
       defaultValues.push({
         type: contentName,
-        contentId: content,
+        contentId: content || "",
         name: name,
       });
     }

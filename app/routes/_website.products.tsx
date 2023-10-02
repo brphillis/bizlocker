@@ -37,7 +37,7 @@ export const meta: V2_MetaFunction = ({ data }) => {
 
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
-  const { products, totalPages } = await searchProducts(undefined, url);
+  const { products, totalPages } = await searchProducts(undefined, url, true);
   const departments = await getDepartments();
   const productCategories = await getProductCategories();
   const productSubCategories = await getProductSubCategories();

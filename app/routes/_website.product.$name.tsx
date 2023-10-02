@@ -38,10 +38,14 @@ export const loader = async ({ request }: LoaderArgs) => {
     formData.set("excludeId", productId);
   }
   formData.set("gender", recommendGender);
+  formData.set("isActive", "true");
+
   formData.set("perPage", "5");
 
   const { products: similarProducts } = await searchProducts(
-    Object.fromEntries(formData)
+    Object.fromEntries(formData),
+    undefined,
+    true
   );
 
   return { product, brand, similarProducts };
@@ -271,7 +275,7 @@ const Product = () => {
 
             <div className="my-3 w-full border-b border-brand-black/20" />
 
-            <div className="leading-relaxed">
+            <div className="leading-relaxed max-md:px-3">
               <div>
                 <b>Return Policy</b>
               </div>
@@ -290,7 +294,7 @@ const Product = () => {
             <div className="my-3 w-full border-b border-brand-black/20" />
 
             {hasSizes && (
-              <div className="leading-relaxed">
+              <div className="leading-relaxed max-md:px-3">
                 <div>
                   <b>Size Guide</b>
                 </div>

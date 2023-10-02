@@ -1,5 +1,5 @@
 import { useSearchParams, useSubmit } from "@remix-run/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
 import { getBlockContentTypes } from "~/utility/blockMaster";
@@ -17,6 +17,7 @@ const BlockContentSearch = ({
 }: Props) => {
   const submit = useSubmit();
   const [searchParams] = useSearchParams();
+  const [searchValue, setSearchValue] = useState<string>();
 
   const handleSearchSubmit = (contentType?: string, name?: string) => {
     const searchForm = new FormData();
@@ -48,9 +49,11 @@ const BlockContentSearch = ({
       {(selectedBlock === "banner" ||
         selectedBlock === "tile" ||
         selectedBlock === "hero") && (
-        <div className=" w-full py-3">
-          <p className="pb-3 font-semibold text-brand-white">Content Options</p>
-          <div className="flex flex-wrap gap-3">
+        <div className="mt-10 hidden w-full flex-wrap justify-start gap-3 rounded-sm bg-brand-white/20 px-4 pb-4 pt-2 max-md:px-2 [&:has(div)]:flex">
+          <span className="absolute -mt-10 block font-bold">
+            Content Selection
+          </span>
+          <div className="flex flex-wrap items-end gap-3">
             <div className="form-control text-brand-black">
               <label className="label text-sm text-brand-white">
                 Content Selection
@@ -88,9 +91,16 @@ const BlockContentSearch = ({
               placeholder="Search Name"
               type="text"
               onChange={(e) => {
-                handleSearchSubmit(undefined, e as string);
+                setSearchValue(e as string);
               }}
             />
+
+            <button
+              className="btn-primary btn-sm !h-[42px] rounded-sm"
+              onClick={() => handleSearchSubmit(undefined, searchValue)}
+            >
+              Search
+            </button>
           </div>
         </div>
       )}

@@ -402,6 +402,8 @@ type BlockContentType =
   | "richText"
   | "gender";
 
+type BackgroundPatternName = "wavy" | "isometric";
+
 interface HomePage {
   id: number;
   title: string;
@@ -432,17 +434,6 @@ interface NewBlockData {
   contentData: ContentData;
 }
 
-type ContentData = {
-  productCategory?: ProductCategory[] | ProductCategory;
-  productSubCategory?: ProductSubCategory[] | ProductSubCategory;
-  articleCategory?: ArticleCategory[] | ArticleCategory;
-  brand?: Brand[] | Brand;
-  image?: Image | Image[];
-  product?: Product[] | Product;
-  promotion?: Promotion[] | Promotion;
-  campaign?: Campaign[] | Campaign;
-};
-
 type BlockContent = {
   richText?: string;
   productCategory?: ProductCategory[] | ProductCategory;
@@ -462,17 +453,33 @@ type BlockMaster = {
   component: React.ComponentType<any>;
   options: BlockMasterOptions;
   content: Object;
+  contentRequired?: boolean;
   hasMultipleContent?: boolean;
   maxContentItems?: number;
 };
 
 interface BlockMasterOptions {
+  autoplay?: boolean;
   backgroundColor?: boolean;
+  backgroundBrightness?: boolean;
+  backgroundBrightnessTwo?: boolean;
+  backgroundPatternName?: boolean;
+  backgroundPatternColor?: boolean;
+  backgroundPatternOpacity?: boolean;
+  backgroundPatternSize?: boolean;
+  backgroundPatternNameTwo?: boolean;
+  backgroundPatternColorTwo?: boolean;
+  backgroundPatternOpacityTwo?: boolean;
+  backgroundPatternSizeTwo?: boolean;
+  backgroundWidth?: boolean;
+  backgroundColorTwo?: boolean;
+  backgroundWidthTwo?: boolean;
   borderColor?: boolean;
   borderDisplay?: boolean;
   borderRadius?: boolean;
   borderSize?: boolean;
   columns?: boolean;
+  columnsMobile?: boolean;
   count?: boolean;
   flipX?: boolean;
   margin?: boolean;
@@ -482,12 +489,27 @@ interface BlockMasterOptions {
   linkFour?: boolean;
   linkFive?: boolean;
   linkSix?: boolean;
+  colorOne?: boolean;
+  colorTwo?: boolean;
+  colorThree?: boolean;
+  colorFour?: boolean;
+  colorFive?: boolean;
+  colorSix?: boolean;
+  filterOne?: boolean;
+  filterTwo?: boolean;
+  filterThree?: boolean;
+  filterFour?: booolean;
+  filterFive?: booolean;
+  filterSix?: boolean;
   rows?: boolean;
   shortText?: boolean;
   shortTextColor?: boolean;
   size?: boolean;
+  sizeMobile?: boolean;
   sortBy?: boolean;
+  padding?: boolean;
   sortOrder?: boolean;
+  speed?: boolean;
   style?: boolean;
   title?: boolean;
   titleColor?: boolean;
@@ -506,14 +528,36 @@ interface Block extends BannerBlock, TileBlock, TextBlock, ProductBlock {
 
 interface BlockOptions {
   id: string;
+  autoplay?: string | null;
   backgroundColor?: Color | null;
+  backgroundWidth?: string | null;
+  backgroundBrightness?: string | null;
+  backgroundBrightnessTwo?: string | null;
+  backgroundPatternName?: string | null;
+  backgroundPatternColor?: string | null;
+  backgroundPatternOpacity?: number | null;
+  backgroundPatternSize?: number | null;
+  backgroundPatternNameTwo?: string | null;
+  backgroundPatternColorTwo?: string | null;
+  backgroundPatternOpacityTwo?: number | null;
+  backgroundPatternSizeTwo?: number | null;
+  backgroundColorTwo?: Color | null;
+  backgroundWidthTwo?: string | null;
   borderColor?: Color | null;
   borderDisplay?: string | null;
   borderRadius?: string | null;
   borderSize?: string | null;
+  colorOne?: string | null;
+  colorTwo?: string | null;
+  colorThree?: string | null;
+  colorFour?: string | null;
+  colorFive?: string | null;
+  colorSix?: string | null;
   columns?: number | null;
+  columnsMobile?: number | null;
   count?: number | null;
   flipX?: string | null;
+  padding?: string | null;
   margin?: string | null;
   linkOne?: string | null;
   linkTwo?: string | null;
@@ -521,25 +565,25 @@ interface BlockOptions {
   linkFour?: string | null;
   linkFive?: string | null;
   linkSix?: string | null;
+  filterOne?: string | null;
+  filterTwo?: string | null;
+  filterThree?: string | null;
+  filterFour?: string | null;
+  filterFive?: string | null;
+  filterSix?: string | null;
   rows?: number | null;
   shortText?: string | null;
   shortTextColor?: Color | null;
-  size: "small" | "medium" | "large" | "native";
+  size?: "small" | "medium" | "large" | "native";
+  sizeMobile?: "small" | "medium" | "large" | "native";
   sortBy?: SortBy | null;
   sortOrder?: SortOrder | null;
+  speed?: string | null;
   style?: string | null;
   title?: string | null;
   titleColor?: Color | null;
   order?: int | null;
 }
-
-// interface BlockOptions extends NewBlockOptions {
-//   id: string;
-//   createdAt: DateTime;
-//   updatedAt: DateTime;
-//   block?: Block | null;
-//   blockOptionsId: string;
-// }
 
 interface HeroBlock {
   id: string;
@@ -592,6 +636,8 @@ interface ProductBlock {
   createdAt: DateTime;
   updatedAt: DateTime;
 }
+
+type ConcatenatedBlockContent = Array<Promotion | Campaign | Brand | Image>;
 
 interface ProductBlockContent {
   id: string;

@@ -28,6 +28,10 @@ const TextBlockOptions = ({
     });
   };
 
+  if (!selectedItems) {
+    selectItem("richText", defaultValue?.richText);
+  }
+
   return (
     <>
       {selectedBlock === "text" && (

@@ -38,7 +38,8 @@ export const loader = async ({ request, params }: LoaderArgs) => {
     formData.set("promotionId", promotion.id.toString());
     const { products, totalPages } = await searchProducts(
       Object.fromEntries(formData),
-      url
+      url,
+      true
     );
     if (promotion?.isActive) {
       const departments = await getDepartments();

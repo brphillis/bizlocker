@@ -59,34 +59,64 @@ model Block {
 }
 
 model BlockOptions {
-  id              String     @id @unique @default(cuid())
-  order           Int?
-  backgroundColor Color?
-  block           Block?     @relation("BlockToBlockOptions", fields: [blockId], references: [id])
-  blockId         String?
-  borderColor     Color?
-  borderDisplay   String?
-  borderRadius    String?
-  borderSize      String?
-  columns         Int?
-  count           Int?
-  flipX           String?
-  margin          String?
-  linkOne         String?
-  linkTwo         String?
-  linkThree       String?
-  linkFour        String?
-  linkFive        String?
-  linkSix         String?
-  rows            Int?
-  shortText       String?
-  shortTextColor  Color?
-  size            String?
-  sortBy          SortBy?
-  sortOrder       SortOrder?
-  style           String?
-  title           String?
-  titleColor      Color?
+  id                          String     @id @unique @default(cuid())
+  order                       Int?
+  autoplay                    String?
+  backgroundColor             Color?
+  backgroundWidth             String?
+  backgroundBrightness        String?
+  backgroundBrightnessTwo     String?
+  backgroundPatternName       String?
+  backgroundPatternColor      String?
+  backgroundPatternOpacity    String?
+  backgroundPatternSize       String?
+  backgroundPatternNameTwo    String?
+  backgroundPatternColorTwo   String?
+  backgroundPatternOpacityTwo String?
+  backgroundPatternSizeTwo    String?
+  backgroundColorTwo          Color?
+  backgroundWidthTwo          String?
+  block                       Block?     @relation("BlockToBlockOptions", fields: [blockId], references: [id])
+  blockId                     String?
+  borderColor                 Color?
+  borderDisplay               String?
+  borderRadius                String?
+  borderSize                  String?
+  colorOne                    String?
+  colorTwo                    String?
+  colorThree                  String?
+  colorFour                   String?
+  colorFive                   String?
+  colorSix                    String?
+  columns                     Int?
+  columnsMobile               Int?
+  count                       Int?
+  filterOne                   String?
+  filterTwo                   String?
+  filterThree                 String?
+  filterFour                  String?
+  filterFive                  String?
+  filterSix                   String?
+  flipX                       String?
+  margin                      String?
+  padding                     String?
+  linkOne                     String?
+  linkTwo                     String?
+  linkThree                   String?
+  linkFour                    String?
+  linkFive                    String?
+  linkSix                     String?
+  rows                        Int?
+  shortText                   String?
+  shortTextColor              Color?
+  size                        String?
+  sizeMobile                  String?
+  sortBy                      SortBy?
+  sortOrder                   SortOrder?
+  speed                       String?
+  style                       String?
+  title                       String?
+  titleColor                  Color?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -154,6 +184,7 @@ model TileBlockContent {
   id        String      @id @unique @default(cuid())
   campaign  Campaign[]  @relation("CampaignToTileBlockContent")
   promotion Promotion[] @relation("PromotionToTileBlockContent")
+  brand     Brand[]     @relation("BrandToTileBlockContent")
   image     Image[]     @relation("ImageToTileBlockContent")
 
   tileBlock   TileBlock? @relation("TileBlockContentToTileBlock", fields: [tileBlockId], references: [id])
@@ -549,8 +580,9 @@ model Brand {
   productBlockContent ProductBlockContent[] @relation("BrandToProductBlock")
   products            Product[]             @relation("BrandToProduct")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  tileBlockContent TileBlockContent[] @relation("BrandToTileBlockContent")
 }
 
 enum Role {
@@ -614,6 +646,9 @@ enum Color {
   OLIVE
   AQUA
   INDIGO
+  TRANSPARENTSM
+  TRANSPARENTMD
+  TRANSPARENTLG
   TRANSPARENT
 }
 

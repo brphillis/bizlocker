@@ -1,7 +1,8 @@
 import Pagination from "~/components/Pagination";
+import { type LoaderArgs } from "@remix-run/node";
 import { searchBrands } from "~/models/brands.server";
-import { json, type LoaderArgs } from "@remix-run/node";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
+import BasicInput from "~/components/Forms/Input/BasicInput";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import {
@@ -11,20 +12,13 @@ import {
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
-import BasicInput from "~/components/Forms/Input/BasicInput";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
 
-  const searchQuery = {
-    name: url.searchParams.get("name")?.toString() || undefined,
-    page: Number(url.searchParams.get("pageNumber")) || 1,
-    perPage: Number(url.searchParams.get("perPage")) || 10,
-  };
+  const { brands, totalPages } = await searchBrands(undefined, url);
 
-  const { brands, totalPages } = await searchBrands(searchQuery);
-
-  return json({ brands, totalPages });
+  return { brands, totalPages };
 };
 
 const Brands = () => {

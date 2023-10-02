@@ -1,5 +1,9 @@
 import { useNavigate } from "@remix-run/react";
-import { determineSingleContentType } from "~/helpers/blockContentHelpers";
+import PatternBackground from "~/components/Layout/PatternBackground";
+import {
+  buildContentImageFromContent,
+  determineSingleContentType,
+} from "~/helpers/blockContentHelpers";
 import { generateColor } from "~/utility/colors";
 
 type Props = {
@@ -12,38 +16,41 @@ const BannerBlock = ({ content, options: ArrayOptions }: Props) => {
   const options = ArrayOptions && ArrayOptions[0];
   const {
     backgroundColor,
+    backgroundBrightness,
     borderColor,
     borderDisplay,
     borderRadius,
     borderSize,
     margin,
+    padding,
     size,
     linkOne,
+    backgroundColorTwo,
+    title,
+    titleColor,
+    shortText,
+    shortTextColor,
+    backgroundPatternColor,
+    backgroundPatternName,
+    backgroundPatternOpacity,
+    backgroundPatternSize,
   } = options || {};
 
   const contentType = determineSingleContentType(content as BlockContent);
+  let name: string = "",
+    link: string = "",
+    imageSrc: string = "";
 
-  let name: string = "bannerImage";
-  let link: string = "";
-  let imageSrc: string = "";
-
-  if (contentType === "promotion") {
-    const promotion = content?.promotion as Promotion;
-    name = promotion?.name || name;
-    link = `/promotion/${name}`;
-    imageSrc = promotion?.bannerImage?.url || imageSrc;
-  } else if (contentType === "campaign") {
-    const campaign = content?.campaign as Campaign;
-    name = campaign?.name || name;
-    link = `/campaign/${name}`;
-    imageSrc = campaign?.bannerImage?.url || imageSrc;
-  } else if (contentType === "image") {
-    if (linkOne) {
-      link = linkOne;
-    }
-    imageSrc = ((content as BlockContent)?.image as Image)?.url || imageSrc;
-    name =
-      ((content as BlockContent)?.image as Image)?.altText || "bannerImage";
+  if (contentType) {
+    const imageProps = buildContentImageFromContent(
+      contentType!,
+      content,
+      "bannerImage",
+      linkOne as string
+    );
+    name = imageProps.name;
+    link = imageProps.link;
+    imageSrc = imageProps.imageSrc;
   }
 
   const imageStyle = {
@@ -57,48 +64,160 @@ const BannerBlock = ({ content, options: ArrayOptions }: Props) => {
 
   return (
     <div
+      className={`relative max-w-[100vw] overflow-visible sm:w-max ${margin} ${padding} ${borderDisplay}`}
       style={{
-        backgroundColor: generateColor(backgroundColor),
         borderRadius: borderRadius || "unset",
+        paddingTop: backgroundColor && !imageSrc ? "1.5rem" : "unset",
+        paddingBottom: backgroundColor && !imageSrc ? "1.5rem" : "unset",
       }}
-      className={`max-w-[100vw] overflow-visible sm:w-max ${margin} ${borderDisplay}`}
     >
-      {["small", undefined].includes(size) && (
+      <div
+        className="absolute left-[50%] top-0 z-0 h-full w-screen translate-x-[-50%]"
+        style={{ backgroundColor: generateColor(backgroundColorTwo) }}
+      ></div>
+
+      {["small", undefined].includes(size) && imageSrc && (
         <img
           onClick={() => link && navigate(link)}
           src={imageSrc}
           alt={name}
-          className="mx-auto block h-[146px] w-full max-w-[1280px] overflow-hidden object-cover max-xl:h-[124px] max-lg:h-[100px] max-md:h-[88px]"
+          className="relative mx-auto block h-[146px] w-full max-w-[1280px] overflow-hidden object-cover max-xl:h-[124px] max-lg:h-[100px] max-md:h-[88px]"
           style={imageStyle}
         />
       )}
 
-      {size === "medium" && (
+      {["small", undefined].includes(size) && !imageSrc && (
+        <div
+          onClick={() => link && navigate(link)}
+          className="relative mx-auto flex h-[146px] w-[1280px] max-w-full select-none items-center justify-center max-xl:h-[124px] max-lg:h-[100px] max-md:h-[88px]"
+          style={imageStyle}
+        >
+          <PatternBackground
+            name={backgroundPatternName as BackgroundPatternName}
+            backgroundColor={generateColor(backgroundColor)}
+            patternColor={
+              backgroundPatternColor
+                ? generateColor(backgroundPatternColor)
+                : ""
+            }
+            patternOpacity={backgroundPatternOpacity || 0.5}
+            patternSize={backgroundPatternSize || 32}
+            brightness={backgroundBrightness || undefined}
+          />
+          <div className="relative flex flex-col items-center">
+            <h1
+              className="text-4xl max-md:text-2xl"
+              style={{ color: generateColor(titleColor) }}
+            >
+              {title}
+            </h1>
+            <h2
+              className="text-2xl max-md:text-lg"
+              style={{ color: generateColor(shortTextColor) }}
+            >
+              {shortText}
+            </h2>
+          </div>
+        </div>
+      )}
+
+      {size === "medium" && imageSrc && (
         <img
           onClick={() => link && navigate(link)}
           src={imageSrc}
           alt={name}
-          className="mx-auto block h-[219px] w-full max-w-[1280px] object-cover max-xl:h-[186px] max-lg:h-[125px] max-md:h-[132px]"
+          className="relative mx-auto block h-[219px] w-full max-w-[1280px] object-cover max-xl:h-[186px] max-lg:h-[125px] max-md:h-[132px]"
           style={imageStyle}
         />
       )}
 
-      {size === "large" && (
+      {["medium", undefined].includes(size) && !imageSrc && (
+        <div
+          onClick={() => link && navigate(link)}
+          className="relative mx-auto flex h-[219px] w-[1280px] max-w-full select-none items-center justify-center max-xl:h-[186px] max-lg:h-[125px] max-md:h-[132px]"
+          style={imageStyle}
+        >
+          <PatternBackground
+            name={backgroundPatternName as BackgroundPatternName}
+            backgroundColor={generateColor(backgroundColor)}
+            patternColor={
+              backgroundPatternColor
+                ? generateColor(backgroundPatternColor)
+                : ""
+            }
+            patternOpacity={backgroundPatternOpacity || 0.5}
+            patternSize={backgroundPatternSize || 32}
+            brightness={backgroundBrightness || undefined}
+          />
+          <div className="relative flex flex-col items-center gap-2 max-md:gap-1">
+            <h1
+              className="text-6xl max-md:text-4xl"
+              style={{ color: generateColor(titleColor) }}
+            >
+              {title}
+            </h1>
+            <h2
+              className="text-3xl max-md:text-lg"
+              style={{ color: generateColor(shortTextColor) }}
+            >
+              {shortText}
+            </h2>
+          </div>
+        </div>
+      )}
+
+      {size === "large" && imageSrc && (
         <img
           onClick={() => link && navigate(link)}
           src={imageSrc}
           alt={name}
-          className="h-[292px] w-[1400px] max-w-[1280px] object-cover max-xl:h-[248px] max-lg:h-[224px] max-md:h-[196px]"
+          className="relative h-[292px] w-[1400px] max-w-[1280px] object-cover max-xl:h-[248px] max-lg:h-[224px] max-md:h-[196px]"
           style={imageStyle}
         />
       )}
 
-      {size === "native" && (
+      {["large", "native", undefined].includes(size) && !imageSrc && (
+        <div
+          onClick={() => link && navigate(link)}
+          className="relative mx-auto flex h-[292px] w-[1400px] max-w-full select-none items-center justify-center max-xl:h-[248px] max-lg:h-[224px] max-md:h-[196px]"
+          style={imageStyle}
+        >
+          <PatternBackground
+            name={backgroundPatternName as BackgroundPatternName}
+            backgroundColor={generateColor(backgroundColor)}
+            patternColor={
+              backgroundPatternColor
+                ? generateColor(backgroundPatternColor)
+                : ""
+            }
+            patternOpacity={backgroundPatternOpacity || 0.5}
+            patternSize={backgroundPatternSize || 32}
+            brightness={backgroundBrightness || undefined}
+          />
+
+          <div className="relative flex flex-col items-center gap-3 max-md:gap-2">
+            <h1
+              className="text-7xl max-md:text-4xl"
+              style={{ color: generateColor(titleColor) }}
+            >
+              {title}
+            </h1>
+            <h2
+              className="text-4xl max-md:text-lg"
+              style={{ color: generateColor(shortTextColor) }}
+            >
+              {shortText}
+            </h2>
+          </div>
+        </div>
+      )}
+
+      {size === "native" && imageSrc && (
         <img
           onClick={() => link && navigate(link)}
           src={imageSrc}
           alt={name}
-          className="object-cover shadow-md max-xl:h-[248px] max-lg:h-[224px] max-md:h-[148px]"
+          className="relative object-cover shadow-md max-xl:h-[248px] max-lg:h-[224px] max-md:h-[148px]"
           style={imageStyle}
         />
       )}

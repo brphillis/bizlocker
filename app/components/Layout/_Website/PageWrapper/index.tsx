@@ -44,11 +44,7 @@ const PageWrapper = ({
       }`}
     >
       <div
-        className={
-          "flex w-full max-w-full flex-col items-center gap-3 sm:w-[1280px] " +
-          "sm:" +
-          amount
-        }
+        className={`flex w-full max-w-full flex-col items-center max-md:gap-3 sm:w-[1280px] ${amount}`}
       >
         {children}
       </div>

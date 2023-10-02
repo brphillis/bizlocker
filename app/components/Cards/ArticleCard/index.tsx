@@ -22,8 +22,7 @@ const ArticleCard = ({ article, hasDescription }: Props) => {
             alt={article.title + "_image"}
           />
         )}
-        <div className="absolute bottom-0 flex w-full justify-between rounded-b bg-black/80 px-4 py-3 text-white">
-          {/* drop-shadow-lg backdrop-blur-lg */}
+        <div className="absolute bottom-0 flex w-full justify-between rounded-b bg-black/75 px-4 py-3 text-white">
           <div>
             <p className="font-bold">{article.title}</p>
             <div>
@@ -35,12 +34,12 @@ const ArticleCard = ({ article, hasDescription }: Props) => {
             </div>
           </div>
 
-          <div className="flex flex-col items-center gap-y-2 md:flex-row md:gap-x-2">
+          <div className="flex flex-col items-center justify-center gap-y-2 md:flex-row md:gap-x-2">
             {article.articleCategories?.map(({ id, name }: ArticleCategory) => {
               return (
                 <div
                   key={id + name}
-                  className="rounded-full bg-primary px-3 py-1 text-center text-sm font-semibold text-white"
+                  className="rounded-sm bg-primary px-3 py-1 text-center text-sm font-semibold text-white"
                 >
                   <p>{name}</p>
                 </div>

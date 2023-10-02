@@ -12,13 +12,14 @@ export default {
       colors: {
         "brand-black": "#232227",
         "brand-white": "#F0F0F0",
+        "brand-red": "#FF3A20",
       },
       scale: {
         "-100": "-1",
       },
     },
   },
-  plugins: [require("daisyui")],
+  plugins: [require("daisyui"), require("tailwindcss-bg-patterns")],
   daisyui: {
     themes: [
       // prettier-ignore

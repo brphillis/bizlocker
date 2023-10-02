@@ -1,19 +1,19 @@
 export const generateColor = (colorName: string) => {
   switch (colorName) {
     case "RED":
-      return "#FF0000";
+      return "#FF3A20";
     case "BLUE":
       return "#3B82F6";
     case "GREEN":
-      return "#008000";
+      return "#44AF69 ";
     case "YELLOW":
-      return "#FFFF00";
+      return "#F7C548";
     case "ORANGE":
       return "#FFA500";
     case "PURPLE":
-      return "#800080";
+      return "#694873";
     case "PINK":
-      return "#FFC0CB";
+      return "#F7567C";
     case "BLACK":
       return "#232227";
     case "WHITE":
@@ -21,9 +21,9 @@ export const generateColor = (colorName: string) => {
     case "GRAY":
       return "#808080";
     case "BROWN":
-      return "#A52A2A";
+      return "#A98743";
     case "SILVER":
-      return "#C0C0C0";
+      return "#D7D9D7";
     case "GOLD":
       return "#FFD700";
     case "NAVY":
@@ -33,7 +33,7 @@ export const generateColor = (colorName: string) => {
     case "MAROON":
       return "#800000";
     case "LIME":
-      return "#00FF00";
+      return "#61E786";
     case "OLIVE":
       return "#808000";
     case "AQUA":
@@ -41,9 +41,15 @@ export const generateColor = (colorName: string) => {
     case "INDIGO":
       return "#4B0082";
     case "TRANSPARENT":
-      return "#FFFFFFFF";
+      return "rgba(0, 0, 0, 0)";
+    case "TRANSPARENTSM":
+      return "rgba(0, 0, 0, 0.25)";
+    case "TRANSPARENTMD":
+      return "rgba(0, 0, 0, 0.50)";
+    case "TRANSPARENTLG":
+      return "rgba(0, 0, 0, 0.75)";
 
     default:
-      return "#FFFFFFFF";
+      return "rgba(0, 0, 0, 0)";
   }
 };
