@@ -531,8 +531,8 @@ interface BlockOptions {
   autoplay?: string | null;
   backgroundColor?: Color | null;
   backgroundWidth?: string | null;
-  backgroundBrightness?: string | null;
-  backgroundBrightnessTwo?: string | null;
+  backgroundBrightness?: number | null;
+  backgroundBrightnessTwo?: number | null;
   backgroundPatternName?: string | null;
   backgroundPatternColor?: string | null;
   backgroundPatternOpacity?: number | null;

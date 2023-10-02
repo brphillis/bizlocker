@@ -64,16 +64,16 @@ model BlockOptions {
   autoplay                    String?
   backgroundColor             Color?
   backgroundWidth             String?
-  backgroundBrightness        String?
-  backgroundBrightnessTwo     String?
+  backgroundBrightness        Int?
+  backgroundBrightnessTwo     Int?
   backgroundPatternName       String?
   backgroundPatternColor      String?
-  backgroundPatternOpacity    String?
-  backgroundPatternSize       String?
+  backgroundPatternOpacity    Int?
+  backgroundPatternSize       Int?
   backgroundPatternNameTwo    String?
   backgroundPatternColorTwo   String?
-  backgroundPatternOpacityTwo String?
-  backgroundPatternSizeTwo    String?
+  backgroundPatternOpacityTwo Int?
+  backgroundPatternSizeTwo    Int?
   backgroundColorTwo          Color?
   backgroundWidthTwo          String?
   block                       Block?     @relation("BlockToBlockOptions", fields: [blockId], references: [id])
