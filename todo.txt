@@ -5,6 +5,7 @@ To Do
 [ ] send email when order is shipped
 [ ] add internation phone code validations
 [ ] finish validations function
+[ ] fix image search with connections
 
 
 Bug Hisory

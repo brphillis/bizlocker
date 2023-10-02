@@ -308,7 +308,8 @@ export const deleteProduct = async (id: string) => {
 
 export const searchProducts = async (
   formData?: { [k: string]: FormDataEntryValue },
-  url?: URL
+  url?: URL,
+  activeOnly?: boolean
 ) => {
   const name =
     formData?.name || (url && url?.searchParams.get("name")?.toString()) || "";
@@ -473,7 +474,7 @@ export const searchProducts = async (
     filter.gender = gender as string;
   }
 
-  if (isActive) {
+  if (isActive || activeOnly) {
     filter.isActive = true;
   }
 

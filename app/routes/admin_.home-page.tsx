@@ -22,6 +22,8 @@ import { getAvailableColors } from "~/models/enums.server";
 import { getBlocks } from "~/helpers/blockHelpers";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
+import PatternBackground from "~/components/Layout/PatternBackground";
+import { generateColor } from "~/utility/colors";
 
 export const loader = async () => {
   const homePage = await getHomePage();
@@ -139,11 +141,21 @@ const ManageHomePage = () => {
 
   return (
     <AdminPageWrapper>
-      <div className="relative h-full bg-base-200 p-6 max-sm:p-3 sm:w-full">
+      <div className="relative h-full p-6 max-sm:p-3 sm:w-full">
+        <div className="absolute left-0 top-0 h-full w-full bg-brand-white"></div>
+        <PatternBackground
+          name="isometric"
+          backgroundColor={generateColor("BLACK")}
+          patternColor={generateColor("WHITE")}
+          patternOpacity={0.2}
+          patternSize={140}
+          brightness={-1.5}
+        />
+
         <div className="flex w-full justify-center">
           <div className="flex flex-col gap-6 rounded-none text-brand-white">
-            <div className="flex justify-center gap-3 pt-6 text-center text-2xl font-bold text-brand-black max-md:pt-3">
-              Edit Home Page
+            <div className="relative flex justify-center gap-3 bg-brand-black py-6 text-center text-xl font-bold text-brand-white">
+              <p>Edit Home Page</p>
             </div>
 
             <LargeCollapse
@@ -151,7 +163,7 @@ const ManageHomePage = () => {
               content={
                 <Form
                   method="POST"
-                  className="flex w-full flex-col items-center gap-6"
+                  className="relative flex w-full flex-col items-center gap-6"
                 >
                   <BasicInput
                     name="title"
@@ -220,6 +232,7 @@ const ManageHomePage = () => {
 
             <LargeCollapse
               title="Page Content"
+              forceOpen={true}
               content={
                 <PageBuilder
                   page={homePage}

@@ -68,9 +68,17 @@ const PageBuilder = ({
     setSelectedItems(items);
   };
 
+  const blockRequiresContent = (blockName: BlockName): boolean => {
+    const block = blockMaster.find((e) => blockName === e.name);
+    if (block?.contentRequired) {
+      return true;
+    } else return false;
+  };
+
   const reset = () => {
     setEditingContent(false);
     setSelectedBlock(undefined);
+    setSelectedItems([]);
   };
 
   const editBlock = (i: number) => {
@@ -116,7 +124,7 @@ const PageBuilder = ({
   const [loading, setLoading] = useState<boolean>(false);
 
   return (
-    <Form className="w-full" method="POST">
+    <Form className="relative w-full" method="POST">
       <input name="pageId" value={page.id} hidden readOnly />
       <input name="itemIndex" value={editingIndex.toString()} hidden readOnly />
       {!editingContent && (
@@ -205,7 +213,7 @@ const PageBuilder = ({
       )}
 
       {editingContent && (
-        <div className="mt-3 flex w-full flex-col gap-6 px-3 max-md:px-0">
+        <div className="relative mt-3 flex w-full flex-col gap-6 px-3 max-md:px-0">
           <div className="flex w-full flex-row flex-wrap justify-center gap-3 sm:justify-start">
             <div className="w-full pb-3">
               <div className="form-control">
@@ -240,6 +248,7 @@ const PageBuilder = ({
           <BlockOptions
             selectedBlock={selectedBlock}
             defaultValues={blocks[editingIndex]?.blockOptions[0]}
+            selectedItems={selectedItems}
             contentType={contentType}
             colors={colors}
           />
@@ -311,7 +320,11 @@ const PageBuilder = ({
             loading={loading}
             setLoading={setLoading}
             backFunction={reset}
-            requiredValueToSubmit={selectedItems && selectedItems.length > 0}
+            requiredValueToSubmit={
+              selectedBlock && blockRequiresContent(selectedBlock)
+                ? selectedItems && selectedItems.length > 0
+                : true
+            }
             validationMessage="Content is Required."
           />
         </div>

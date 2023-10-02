@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Icon from "~/components/Icon";
 import { HiTrash } from "react-icons/hi2";
 import PageBuilder from "~/components/PageBuilder";
 import { getBrands } from "~/models/brands.server";
@@ -46,6 +45,8 @@ import swiperNav from "../../node_modules/swiper/modules/navigation/navigation.m
 import { limitString } from "~/helpers/stringHelpers";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
+import PatternBackground from "~/components/Layout/PatternBackground";
+import { generateColor } from "~/utility/colors";
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: swiper },
   { rel: "stylesheet", href: swiperNav },
@@ -192,6 +193,16 @@ const ModifyArticle = () => {
   return (
     <AdminPageWrapper>
       <div className="relative h-full w-full bg-base-200 p-6 sm:w-full">
+        <div className="absolute left-0 top-0 h-full w-full bg-brand-white"></div>
+        <PatternBackground
+          name="isometric"
+          backgroundColor={generateColor("BLACK")}
+          patternColor={generateColor("WHITE")}
+          patternOpacity={0.2}
+          patternSize={140}
+          brightness={-1.5}
+        />
+
         <div className="hidden sm:block">
           <AdminPageHeader
             title={article ? "Edit Article" : "Create Article"}
@@ -200,15 +211,14 @@ const ModifyArticle = () => {
 
         <div className="flex w-full justify-center">
           <div className="flex flex-col gap-6">
-            <div className="relative flex justify-center gap-3 text-center text-2xl font-bold">
-              <Icon iconName="IoNewspaper" size={24} styles="mt-[5px]" />
+            <div className="relative flex justify-center gap-3 rounded-sm bg-brand-black py-6 text-center text-2xl font-bold text-brand-white">
               {article
                 ? limitString(article.title, 21, true)
                 : "Create Article"}
 
               <HiTrash
-                size={24}
-                className="bg-brand-lightest text-brand-lightest/50 absolute right-3 top-2 cursor-pointer rounded-full bg-error p-[0.3rem] text-brand-white"
+                size={28}
+                className="bg-brand-lightest text-brand-lightest/50 absolute right-6 top-7 cursor-pointer rounded-full bg-error p-[0.3rem] text-brand-white"
                 onClick={() => {
                   const formData = new FormData();
                   formData.set("_action", "deleteArticle");

@@ -17,7 +17,7 @@ export const action = async ({ request }: ActionArgs) => {
   const formData = await request.formData();
   const email = formData.get("email");
   const password = formData.get("password");
-  const redirectTo = safeRedirect(formData.get("redirectTo"), "/admin");
+  const redirectTo = safeRedirect(formData.get("redirectTo"), "/admin/home");
   const remember = formData.get("remember");
   let validationError: string[] = [];
 

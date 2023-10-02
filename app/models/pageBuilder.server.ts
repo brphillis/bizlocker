@@ -97,21 +97,21 @@ export const updatePageBlock = async (
 
         for (const field in contentData) {
           if (contentData.hasOwnProperty(field)) {
-            const value = contentData[field as keyof ContentData];
+            const value = contentData[field as keyof BlockContent];
 
             if (value && !Array.isArray(value) && isNaN(value as any)) {
               // if field is NaN(not an id) it will be an Enum, populate with enum value
-              updates[field as keyof ContentData] = value;
+              updates[field as keyof BlockContent] = value;
             } else if (value) {
               // If the value is truthy (not null or undefined)
               if (Array.isArray(value)) {
                 // If it's an array, use 'connect' to connect multiple records
-                updates[field as keyof ContentData] = {
+                updates[field as keyof BlockContent] = {
                   set: value.map((item) => ({ id: parseInt(item as any) })),
                 };
               } else {
                 // If it's not an array, use 'connect' to connect a single record
-                updates[field as keyof ContentData] = {
+                updates[field as keyof BlockContent] = {
                   connect: { id: parseInt(value as any) },
                 };
               }
@@ -119,10 +119,10 @@ export const updatePageBlock = async (
               // If the value is falsy (null or undefined)
               if (Array.isArray(value)) {
                 // If it's an array, use 'set' with an empty array to clear the relation
-                updates[field as keyof ContentData] = { set: [] };
+                updates[field as keyof BlockContent] = { set: [] };
               } else {
                 // If it's not an array, use 'disconnect' to disconnect a single record
-                updates[field as keyof ContentData] = { disconnect: true };
+                updates[field as keyof BlockContent] = { disconnect: true };
               }
             }
           }
@@ -185,22 +185,22 @@ export const updatePageBlock = async (
       // Populate the updates object based on the provided values
       for (const field in contentData) {
         if (contentData.hasOwnProperty(field)) {
-          const value = contentData[field as keyof ContentData];
+          const value = contentData[field as keyof BlockContent];
 
           if (!Array.isArray(value) && value && isNaN(value as any)) {
             // if field is NaN(not an id) it will be an Enum, populate with enum value
 
-            updates[field as keyof ContentData] = value;
+            updates[field as keyof BlockContent] = value;
           } else if (value) {
             // If the value is truthy (not null or undefined)
             if (Array.isArray(value)) {
               // If it's an array, use 'connect' to connect multiple records
-              updates[field as keyof ContentData] = {
+              updates[field as keyof BlockContent] = {
                 connect: value.map((item) => ({ id: parseInt(item as any) })),
               };
             } else {
               // If it's not an array, use 'connect' to connect a single record
-              updates[field as keyof ContentData] = {
+              updates[field as keyof BlockContent] = {
                 connect: { id: parseInt(value as any) },
               };
             }

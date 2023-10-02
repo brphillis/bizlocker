@@ -5,7 +5,7 @@ type Props = {
   selectedBlock: BlockName | undefined;
   selectedItems: ContentSelection[];
   setSelectedItems: Function;
-  searchResults: Campaign[] | Promotion[] | Product[];
+  searchResults: Campaign[] | Promotion[] | Product[] | Brand[];
   contentType: BlockContentType | undefined;
 };
 
@@ -37,6 +37,7 @@ const BlockContentResultsTable = ({
           selectedBlock === "hero") &&
         (contentType === "campaign" ||
           contentType === "promotion" ||
+          contentType === "brand" ||
           contentType === "product") && (
           <div className="w-full overflow-x-auto">
             <p className="my-3 text-sm font-bold">Select an Item</p>
@@ -52,7 +53,7 @@ const BlockContentResultsTable = ({
               <tbody>
                 {searchResults?.map(
                   (
-                    { name, createdAt }: Promotion | Campaign | Product,
+                    { name, createdAt }: Promotion | Campaign | Product | Brand,
                     index: number
                   ) => {
                     return (

@@ -111,13 +111,24 @@ export const deleteBrand = async (id: string) => {
   });
 };
 
-export const searchBrands = async (searchArgs: BasicSearchArgs) => {
-  const { name, page, perPage } = searchArgs;
-
+export const searchBrands = async (
+  formData?: { [k: string]: FormDataEntryValue },
+  url?: URL
+) => {
+  const name =
+    formData?.name || (url && url.searchParams.get("name")?.toString()) || "";
+  const pageNumber =
+    (formData?.pageNumber && parseInt(formData.pageNumber as string)) ||
+    (url && Number(url.searchParams.get("pageNumber"))) ||
+    1;
+  const perPage =
+    (formData?.perPage && parseInt(formData.perPage as string)) ||
+    (url && Number(url.searchParams.get("perPage"))) ||
+    10;
   let brands;
   let totalBrands;
 
-  const skip = (page - 1) * perPage;
+  const skip = (pageNumber - 1) * perPage;
   let take = perPage;
   if (perPage !== undefined) {
     if (name) {
@@ -126,7 +137,7 @@ export const searchBrands = async (searchArgs: BasicSearchArgs) => {
           OR: [
             {
               name: {
-                contains: name || "",
+                contains: (name as string) || "",
                 mode: "insensitive",
               },
             },
@@ -141,7 +152,7 @@ export const searchBrands = async (searchArgs: BasicSearchArgs) => {
           OR: [
             {
               name: {
-                contains: name || "",
+                contains: (name as string) || "",
                 mode: "insensitive",
               },
             },
