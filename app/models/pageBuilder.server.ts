@@ -1,4 +1,11 @@
 import { prisma } from "~/db.server";
+import { findUniqueStringsInArrays } from "~/helpers/arrayHelpers";
+import { getContentBlockCredentialsFromPageBlock } from "~/helpers/blockHelpers";
+import { includeAllBlockTypes } from "~/utility/blockMaster";
+import {
+  includeAllPageTypes,
+  pageBlockHasPageConnection,
+} from "~/utility/pageBuilder";
 
 const updateOrCreateBlockOptions = async (
   blockId: string,
@@ -37,31 +44,34 @@ export const updatePageBlock = async (
   pageId: number,
   blockData: NewBlockData,
   blockOptions?: BlockOptions
-): Promise<number | HomePage | Article | WebPage> => {
+): Promise<number | HomePage | Article | WebPage | PreviewPage> => {
   const { blockName, itemIndex, contentData } = blockData;
 
-  const findPage = prisma[`${pageType}`].findUnique as (args: any) => any;
-
-  const page = await findPage({
+  const previewPage = await prisma.previewPage.findUnique({
     where: { id: pageId },
-  });
-
-  if (!page) {
-    throw new Error(`Page not found for pageId: ${pageId}`);
-  }
-
-  const blocks = await prisma.block.findMany({
-    where: { [`${pageType}Id`]: page.id },
-    orderBy: { order: "asc" },
     include: {
-      bannerBlock: true,
-      tileBlock: true,
-      heroBlock: true,
-      textBlock: true,
-      productBlock: true,
-      articleBlock: true,
+      ...includeAllBlockTypes(),
+      ...includeAllPageTypes(["previewPage"], true),
     },
   });
+
+  if (!previewPage) {
+    throw new Error(`Page not found for pageId: ${pageId}`);
+  }
+  if (!previewPage?.blocks) {
+    throw new Error(`Page has no Blocks: ${pageId}`);
+  }
+  if (!previewPage[pageType]) {
+    throw new Error(`Page has no Blocks: ${pageId}`);
+  }
+
+  let publishedPage;
+
+  if (previewPage[pageType]) {
+    publishedPage = previewPage[pageType];
+  }
+
+  const blocks = previewPage.blocks;
 
   // check if we are editing an invalid block index
   const isValidItemIndex = itemIndex >= 0 && itemIndex <= blocks.length;
@@ -69,10 +79,23 @@ export const updatePageBlock = async (
     throw new Error(`Invalid itemIndex: ${itemIndex}`);
   }
 
-  /// select the block we are going to edit
-  const existingBlock = blocks.find((e) => e.order === itemIndex);
+  // select the block we are going to edit
+  const existingBlock = blocks.find((e: any) => e.order === itemIndex);
 
-  if (existingBlock && blockOptions) {
+  // check if the published page contains the block already
+  const publishedContainsBlock = publishedPage?.blocks.some(
+    (e: any) => e.id === existingBlock?.id
+  );
+
+  // check if the preview page contains the block already
+  const previewContainsBlock = previewPage?.blocks.some(
+    (e: any) => e.id === existingBlock?.id
+  );
+
+  if (
+    (existingBlock && blockOptions && !publishedContainsBlock) ||
+    (existingBlock && blockOptions && publishedContainsBlock)
+  ) {
     // Update Existing Block
 
     // if there is a block at that index, we edit it
@@ -164,12 +187,21 @@ export const updatePageBlock = async (
       }
     }
   } else {
+    // if the preview page is creating a new version, we remove the old from the preview page
+    if (
+      previewContainsBlock &&
+      existingBlock &&
+      existingBlock[`${blockName}BlockId`]
+    ) {
+      await removeBlock(existingBlock.id, blockName);
+    }
+
     // Create New Block
 
     const newBlock = await prisma.block.create({
       data: {
         order: itemIndex === 0 ? 0 : itemIndex,
-        [`${pageType}`]: { connect: { id: page.id } },
+        previewPage: { connect: { id: previewPage.id } },
       },
     });
 
@@ -242,80 +274,276 @@ export const updatePageBlock = async (
   }
 
   if (pageType === "article") {
-    return page.id;
-  } else return page as HomePage;
+    return previewPage.id;
+  } else return previewPage as any;
 };
 
 export const changeBlockOrder = async (
-  pageType: PageType,
-  pageId: number,
+  previewPageId: string,
+  pageBlocks: string,
   index: number,
   direction: "up" | "down"
 ) => {
-  let blockToMove;
+  let pageBlockIds: string[] = [];
+  if (pageBlocks) {
+    pageBlockIds = JSON.parse(pageBlocks);
+  }
 
-  blockToMove = await prisma.block.findFirst({
-    where: { [`${pageType}Id`]: pageId },
-    orderBy: { order: "asc" },
-    skip: index,
-    take: 1,
+  if (index < 0 || index >= pageBlockIds.length) {
+    throw new Error("Invalid index");
+  }
+
+  // Check if the direction is "up" and index is not 0
+  if (direction === "up" && index > 0) {
+    // Swap the current index with the one above it
+    const temp = pageBlockIds[index];
+    pageBlockIds[index] = pageBlockIds[index - 1];
+    pageBlockIds[index - 1] = temp;
+  }
+
+  // Check if the direction is "down" and index is not the last index
+  if (direction === "down" && index < pageBlockIds.length - 1) {
+    // Swap the current index with the one below it
+    const temp = pageBlockIds[index];
+    pageBlockIds[index] = pageBlockIds[index + 1];
+    pageBlockIds[index + 1] = temp;
+  }
+
+  // Update the block order in the database
+  await prisma.previewPage.update({
+    where: { id: parseInt(previewPageId) },
+    data: {
+      blockOrder: pageBlockIds,
+    },
   });
-
-  if (!blockToMove) {
-    throw new Error(`Block not found at index ${index}`);
-  }
-
-  let maxIndex =
-    (await prisma.block.count({ where: { [`${pageType}Id`]: pageId } })) - 1;
-
-  let newOrder: number;
-  if (direction === "up") {
-    newOrder = blockToMove.order - 1;
-    if (newOrder < 0) {
-      newOrder = 0;
-    }
-  } else if (direction === "down" && maxIndex) {
-    newOrder = blockToMove.order + 1;
-    if (newOrder > maxIndex) {
-      newOrder = maxIndex;
-    }
-  } else {
-    throw new Error(`Invalid direction: ${direction}`);
-  }
-
-  await prisma.$transaction([
-    prisma.block.update({
-      where: { id: blockToMove.id },
-      data: { order: newOrder },
-    }),
-    prisma.block.updateMany({
-      where: {
-        [`${pageType}Id`]: pageId,
-        id: { not: blockToMove.id },
-        order:
-          direction === "up"
-            ? { gte: newOrder, lte: blockToMove.order }
-            : { lte: newOrder, gte: blockToMove.order },
-      },
-      data: {
-        order: {
-          [direction === "up" ? "increment" : "decrement"]: 1,
-        },
-      },
-    }),
-  ]);
 
   return true;
 };
 
-export const removeBlock = async (blockId: string, blockName: BlockName) => {
-  // we search for the content block to find the page block
+export const publishPage = async (
+  pageType: PageType,
+  previewPageId: string,
+  pageId: string
+) => {
+  try {
+    // Find the previewPage
+    const previewPage = await prisma.previewPage.findUnique({
+      where: { id: parseInt(previewPageId) },
+      include: { blocks: true },
+    });
+
+    if (!previewPage) {
+      throw new Error("Preview page not found.");
+    }
+
+    // Disconnect any removed blocks from published
+    const findPage = prisma[`${pageType}`].findUnique as (args: any) => any;
+
+    const currentPage = await findPage({
+      where: { id: parseInt(pageId) },
+      include: {
+        blocks: true,
+      },
+    });
+
+    if (currentPage.blocks) {
+      const disconnectBlocks = prisma[`${pageType}`].update as (
+        args: any
+      ) => any;
+
+      await disconnectBlocks({
+        where: { id: parseInt(pageId) },
+        data: {
+          blocks: {
+            disconnect: currentPage.blocks.map((block: any) => ({
+              id: block.id,
+            })),
+          },
+        },
+      });
+    }
+
+    // Store the preview page blocks in a variable
+    const previewPageBlocks = previewPage.blocks;
+    const previewPageBlockOrder = previewPage.blockOrder;
+    const updateData = {
+      blocks: {
+        connect: previewPageBlocks.map((block) => ({
+          id: block.id,
+        })),
+      },
+      blockOrder: previewPageBlockOrder,
+    };
+
+    // Begin Update to the page
+    const updatePage = prisma[`${pageType}`].update as (args: any) => any;
+
+    // Connect the blocks to the page
+    const updatedPage = await updatePage({
+      where: { id: parseInt(pageId) },
+      data: updateData,
+      include: { blocks: true },
+    });
+
+    // Cleanup blocks that arent connected to anything
+
+    // create arrays of IDs in Before and After update
+    const previewPageBlockIds = previewPage.blocks.map(
+      (block: any) => block.id
+    );
+    const currentPageBlockIds = currentPage.blocks.map(
+      (block: Block) => block.id
+    );
+    const updatedPageBlockIds = updatedPage.blocks.map(
+      (block: Block) => block.id
+    );
+
+    // construct array of block IDs that could have no connections
+    const blocksToValidate: string[] = findUniqueStringsInArrays(
+      previewPageBlockIds,
+      currentPageBlockIds,
+      updatedPageBlockIds
+    );
+
+    if (blocksToValidate) {
+      blocksToValidate.map(async (id: string) => {
+        const blockToCheck = await prisma.block.findUnique({
+          where: { id },
+          include: includeAllPageTypes(undefined, true),
+        });
+
+        if (blockToCheck && !pageBlockHasPageConnection(blockToCheck)) {
+          const blockCredentials =
+            getContentBlockCredentialsFromPageBlock(blockToCheck);
+
+          if (blockCredentials) {
+            const { blockId, blockName } = blockCredentials;
+            removeBlock(blockId, blockName as BlockName);
+          }
+        }
+      });
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error publishing page:", error);
+    throw error;
+  }
+};
+
+export const revertPreviewChanges = async (
+  pageType: PageType,
+  previewPageId: string,
+  pageId: string
+) => {
+  try {
+    // Find the previewPage
+    const previewPage = await prisma.previewPage.findUnique({
+      where: { id: parseInt(previewPageId) },
+      include: { blocks: true },
+    });
+
+    if (!previewPage) {
+      throw new Error("Preview page not found.");
+    }
+
+    // Disconnect blocks from the previewPage
+    await prisma.previewPage.update({
+      where: { id: parseInt(previewPageId) },
+      data: {
+        blocks: {
+          disconnect: previewPage.blocks.map((block) => ({
+            id: block.id,
+          })),
+        },
+      },
+    });
+
+    // find the published page
+    const findPage = prisma[`${pageType}`].findUnique as (args: any) => any;
+
+    const currentPage = await findPage({
+      where: { id: parseInt(pageId) },
+      include: { blocks: true },
+    });
+
+    // Store the published  page blocks in a variable
+    const publishedPageBlocks = currentPage.blocks;
+    const updateData = {
+      blocks: {
+        connect: publishedPageBlocks.map((block: any) => ({
+          id: block.id,
+        })),
+      },
+    };
+
+    // Begin update to the preview page
+
+    await prisma.previewPage.update({
+      where: { id: previewPage.id },
+      data: updateData,
+    });
+
+    return { success: true };
+  } catch (error) {
+    // Handle errors here
+    console.error("Error Reverting Preivew Page:", error);
+    throw error;
+  }
+};
+
+export const disconnectBlock = async (
+  blockId: string,
+  blockName: BlockName,
+  previewPageId: string
+) => {
+  try {
+    const pageBlock = await prisma.block.findFirst({
+      where: { [`${blockName}BlockId`]: blockId },
+    });
+
+    if (pageBlock) {
+      const disconnectedBlock = await prisma.block.update({
+        where: { id: pageBlock.id },
+        data: {
+          previewPage: {
+            disconnect: { id: parseInt(previewPageId) },
+          },
+        },
+        include: includeAllPageTypes(undefined, true),
+      });
+
+      // Delete block if it has no remaining page connections
+      if (!pageBlockHasPageConnection(disconnectedBlock)) {
+        const blockCredentials =
+          getContentBlockCredentialsFromPageBlock(disconnectedBlock);
+        if (blockCredentials) {
+          const { blockId, blockName } = blockCredentials;
+          removeBlock(blockId, blockName as BlockName);
+        }
+      }
+    } else {
+      throw new Error("PageBlock Not Found");
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Error removing block from previewPage:", error);
+    return false;
+  }
+};
+
+export const removeBlock = async (
+  contentBlockId: string,
+  blockName: BlockName
+) => {
+  // We search for the content block to find the page block
   const findBlock = prisma[`${blockName}Block`].findUnique as (
     args: any
   ) => any;
 
   const foundBlockType = await findBlock({
-    where: { id: blockId },
+    where: { id: contentBlockId },
     include: {
       block: {
         include: {
@@ -371,46 +599,5 @@ export const removeBlock = async (blockId: string, blockName: BlockName) => {
     });
   }
 
-  // Ensure blocks are in correct numerical order
-  const { homePageId, webPageId, articleId } = foundBlockType.block || {};
-
-  if (homePageId) {
-    await validateBlockOrder("homePage", homePageId);
-  } else if (webPageId) {
-    await validateBlockOrder("webPage", webPageId);
-  } else if (articleId) {
-    await validateBlockOrder("article", articleId);
-  }
-
   return true;
-};
-
-const validateBlockOrder = async (pageType: PageType, pageId: number) => {
-  // Retrieve all blocks for the given webpage, sorted by order
-  const blocks = await prisma.block.findMany({
-    where: {
-      [`${pageType}Id`]: pageId,
-    },
-    orderBy: {
-      order: "asc", // Sort blocks by the 'order' field in ascending order
-    },
-  });
-
-  // Check if there are blocks with order >= 0 and if the orders follow without skipping
-  let expectedOrder = 0;
-  for (const block of blocks) {
-    if (block.order < 0) {
-      throw new Error("Block order must be greater than or equal to 0.");
-    }
-    if (block.order !== expectedOrder) {
-      // Update the order of the block to the expected order
-
-      await prisma.block.update({
-        where: { id: block.id },
-        data: { order: expectedOrder },
-      });
-    }
-
-    expectedOrder++;
-  }
 };

@@ -6,6 +6,7 @@ To Do
 [ ] add internation phone code validations
 [ ] finish validations function
 [ ] fix image search with connections
+[ ] add transparency to borders in blockoptions
 
 
 Bug Hisory

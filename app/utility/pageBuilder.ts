@@ -2,8 +2,58 @@ import { searchCampaigns } from "~/models/campaigns.server";
 import { searchImages } from "~/models/images.server";
 import { searchProducts } from "~/models/products.server";
 import { searchPromotions } from "~/models/promotions.server";
-import { blockMaster, getBlockContentTypes } from "./blockMaster";
+import { blockMaster, blockTypes, getBlockContentTypes } from "./blockMaster";
 import { searchBrands } from "~/models/brands.server";
+
+export const pageTypes = ["homePage", "webPage", "article", "previewPage"];
+
+// Prisma include to include all pagetypes with all blocks
+// eg = include: includeAllPageTypesWithBlocks()
+export const includeAllPageTypes = (
+  excludedPages?: PageType[],
+  withBlocks?: boolean
+) => {
+  // @ts-ignore
+  const pageTypesObject: Record<
+    PageType,
+    { include: { blocks: { include: Record<string, boolean> } } }
+  > = {};
+
+  pageTypes.forEach((type) => {
+    pageTypesObject[type as PageType] = {
+      include: {
+        blocks: {
+          include: {},
+        },
+      },
+    };
+
+    blockTypes.forEach((blockType) => {
+      if (withBlocks) {
+        pageTypesObject[type as PageType].include.blocks.include[blockType] =
+          true;
+      } else {
+        pageTypesObject[type as PageType].include.blocks.include[blockType] =
+          false;
+      }
+    });
+  });
+
+  if (excludedPages) {
+    excludedPages.forEach((excludedPage) => {
+      delete pageTypesObject[excludedPage];
+    });
+  }
+
+  return pageTypesObject;
+};
+
+// Checks if pageblock has connection to a page
+export const pageBlockHasPageConnection = (blockToCheck: any): boolean => {
+  return pageTypes.some(
+    (type) => !blockToCheck?.[type] || blockToCheck[type].length > 0
+  );
+};
 
 // a register for the blockoptions so the function knows which keys to look for in the formdata
 export const getFormBlockOptions = (form: {

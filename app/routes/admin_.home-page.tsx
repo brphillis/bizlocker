@@ -5,7 +5,9 @@ import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import PageBuilder from "~/components/PageBuilder";
 import {
   changeBlockOrder,
-  removeBlock,
+  disconnectBlock,
+  publishPage,
+  revertPreviewChanges,
   updatePageBlock,
 } from "~/models/pageBuilder.server";
 import LargeCollapse from "~/components/Collapse/LargeCollapse";
@@ -26,11 +28,14 @@ import PatternBackground from "~/components/Layout/PatternBackground";
 import { generateColor } from "~/utility/colors";
 
 export const loader = async () => {
-  const homePage = await getHomePage();
+  const homePage = await getHomePage(true);
+  let previewPages;
   let blocks;
   if (homePage) {
-    blocks = await getBlocks(homePage as any);
+    previewPages = homePage.previewPage;
+    blocks = await getBlocks(previewPages[0] as any);
   }
+
   const productCategories = await getProductCategories();
   const productSubCategories = await getProductSubCategories();
   const articleCategories = await getArticleCategories();
@@ -39,6 +44,7 @@ export const loader = async () => {
 
   return {
     homePage,
+    previewPages,
     blocks,
     productCategories,
     productSubCategories,
@@ -56,10 +62,12 @@ export const action = async ({ request }: ActionArgs) => {
     blockName,
     contentType,
     description,
-    itemIndex,
     name,
     pageId,
+    pageBlocks,
     title,
+    index,
+    previewPageId,
   } = form;
 
   const blockOptions: BlockOptions = getFormBlockOptions(form);
@@ -107,18 +115,40 @@ export const action = async ({ request }: ActionArgs) => {
 
       return { updateSuccess };
 
+    case "publish":
+      const publishSuccess = await publishPage(
+        "homePage",
+        previewPageId as string,
+        pageId as string
+      );
+
+      return { publishSuccess };
+
+    case "revert":
+      const revertSuccess = await revertPreviewChanges(
+        "homePage",
+        previewPageId as string,
+        pageId as string
+      );
+
+      return { revertSuccess };
+
     case "rearrange":
       const { direction } = form;
 
       return await changeBlockOrder(
-        "homePage",
-        parseInt(pageId as string),
-        parseInt(itemIndex as string),
+        previewPageId as string,
+        pageBlocks as string,
+        parseInt(index as string),
         direction as "up" | "down"
       );
 
     case "delete":
-      return await removeBlock(blockId as string, blockName as BlockName);
+      return await disconnectBlock(
+        blockId as string,
+        blockName as BlockName,
+        previewPageId as string
+      );
 
     default:
       return null;
@@ -128,6 +158,7 @@ export const action = async ({ request }: ActionArgs) => {
 const ManageHomePage = () => {
   const {
     homePage,
+    previewPages,
     blocks,
     productCategories,
     productSubCategories,
@@ -155,7 +186,7 @@ const ManageHomePage = () => {
         <div className="flex w-full justify-center">
           <div className="flex flex-col gap-6 rounded-none text-brand-white">
             <div className="relative flex justify-center gap-3 bg-brand-black py-6 text-center text-xl font-bold text-brand-white">
-              <p>Edit Home Page</p>
+              <div className="w-full">Edit Home Page</div>
             </div>
 
             <LargeCollapse
@@ -235,7 +266,8 @@ const ManageHomePage = () => {
               forceOpen={true}
               content={
                 <PageBuilder
-                  page={homePage}
+                  previewPage={previewPages[0]}
+                  pageType="homePage"
                   blocks={blocks}
                   searchResults={searchResults}
                   updateSuccess={updateSuccess}
@@ -247,6 +279,49 @@ const ManageHomePage = () => {
                 />
               }
             />
+
+            <Form
+              method="POST"
+              className="relative flex justify-center gap-3 bg-brand-black py-6 text-center text-xl font-bold text-brand-white"
+            >
+              <input
+                hidden
+                readOnly
+                name="previewPageId"
+                value={previewPages[0].id.toString()}
+              />
+              <input
+                hidden
+                readOnly
+                name="pageId"
+                value={homePage.id.toString()}
+              />
+              <button
+                type="submit"
+                name="_action"
+                value="revert"
+                className="btn-primary btn-md block w-max !rounded-sm"
+              >
+                Revert
+              </button>
+              <a
+                type="button"
+                className="btn-primary btn-md flex w-max items-center justify-center !rounded-sm"
+                target="_blank"
+                rel="noreferrer"
+                href={`/preview/${previewPages[0].id}`}
+              >
+                Preview
+              </a>
+              <button
+                type="submit"
+                name="_action"
+                value="publish"
+                className="btn-primary btn-md block w-max !rounded-sm"
+              >
+                Publish
+              </button>
+            </Form>
           </div>
         </div>
       </div>

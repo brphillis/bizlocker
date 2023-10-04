@@ -49,11 +49,51 @@ const createHomePage = async () => {
   const existingHomePage = await prisma.homePage.findFirst();
 
   if (existingHomePage) {
-    console.log("home page already exist. Skipping seed creation.");
-    return;
-  }
+    const connectedPreviewPage = await prisma.previewPage.findFirst({
+      where: {
+        homePageId: existingHomePage.id,
+      },
+    });
 
-  await prisma.homePage.create({ data: {} });
+    if (connectedPreviewPage) {
+      console.log(
+        "Home page already exists and is connected to a preview page. Skipping seed creation."
+      );
+    } else {
+      // Create a new preview page and connect it to the existing homepage
+      await prisma.previewPage.create({
+        data: {
+          homePage: {
+            connect: { id: existingHomePage.id }, // Connect the existing homepage to the new preview page
+          },
+          // You can specify any additional properties you want to set for the preview page here
+        },
+      });
+
+      console.log("Connected an existing homepage to a new preview page.");
+    }
+  } else {
+    // Create a new homepage
+    const newHomePage = await prisma.homePage.create({
+      data: {
+        // You can specify any additional properties you want to set for the homepage here
+      },
+    });
+
+    // Create a new preview page and connect it to the newly created homepage
+    await prisma.previewPage.create({
+      data: {
+        homePage: {
+          connect: { id: newHomePage.id }, // Connect the new homepage to the new preview page
+        },
+        // You can specify any additional properties you want to set for the preview page here
+      },
+    });
+
+    console.log(
+      "Created a new homepage and connected it to a new preview page."
+    );
+  }
 };
 
 const createBrand = async () => {
