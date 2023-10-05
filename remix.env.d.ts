@@ -229,7 +229,9 @@ interface Article {
   title: string;
   description: string;
   backgroundColor: string;
+  previewPage: PreviewPage[];
   blocks: Block[];
+  blockOrder: string[];
   thumbnail?: Image;
   isActive?: boolean;
   articleCategories: ArticleCategory[];
@@ -387,7 +389,7 @@ type BasicSearchArgs = {
 
 type SortBy = "createdAt" | "totalSold" | "price" | "name" | "title";
 type SortOrder = "asc" | "desc";
-type PageType = "homePage" | "article" | "webPage";
+type PageType = "homePage" | "article" | "webPage" | "previewPage";
 type BlockName = "banner" | "hero" | "tile" | "text" | "product" | "article";
 type BlockContentType =
   | "campaign"
@@ -404,12 +406,25 @@ type BlockContentType =
 
 type BackgroundPatternName = "wavy" | "isometric";
 
+interface PreviewPage {
+  id: number;
+  backgroundColor: string;
+  blocks: Block[];
+  blockOrder: string[];
+  publisher?: string;
+  publishedAt?: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 interface HomePage {
   id: number;
   title: string;
   description: string;
   backgroundColor: string;
+  previewPage: PreviewPage[];
   blocks: Block[];
+  blockOrder: string[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -419,7 +434,9 @@ interface WebPage {
   title: string;
   description: string;
   backgroundColor: string;
+  previewPage: PreviewPage[];
   blocks: Block[];
+  blockOrder: string[];
   thumbnail?: Image;
   isActive?: boolean;
   createdAt: Date;
@@ -516,13 +533,12 @@ interface BlockMasterOptions {
   order?: boolean;
 }
 
-interface Block extends BannerBlock, TileBlock, TextBlock, ProductBlock {
+interface Block {
   id: string;
-  order: number;
-  page: Page;
-  pageId: number;
-  content: BlockContent;
+  pageBlockId: string;
   name: BlockName;
+  page: Page;
+  content: BlockContent;
   blockOptions: BlockOptions[];
 }
 

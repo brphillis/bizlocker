@@ -21,7 +21,8 @@ import BlockContentImageResults from "./BlockContentImageResults";
 import BackSubmitButtons from "../Forms/Buttons/BackSubmitButtons";
 
 type Props = {
-  page: HomePage | Article;
+  previewPage: PreviewPage;
+  pageType: PageType;
   blocks: Block[];
   searchResults: Campaign[] | Promotion[] | Image[] | undefined;
   updateSuccess: boolean;
@@ -33,7 +34,8 @@ type Props = {
 };
 
 const PageBuilder = ({
-  page,
+  previewPage,
+  pageType,
   blocks,
   searchResults,
   updateSuccess,
@@ -88,12 +90,13 @@ const PageBuilder = ({
     setSelectedBlock(blocks[i].name);
   };
 
-  const deleteBlock = (blockId: string, blockName: string) => {
+  const disconnectBlock = (blockId: string, blockName: BlockName) => {
     const formData = new FormData();
 
     formData.set("_action", "delete");
-    formData.set("blockId", blockId.toString() || "");
     formData.set("blockName", blockName.toString() || "");
+    formData.set("blockId", blockId.toString() || "");
+    formData.set("previewPageId", previewPage.id.toString() || "");
 
     submit(formData, {
       method: "POST",
@@ -102,11 +105,14 @@ const PageBuilder = ({
     setEditingContent(false);
   };
 
-  const changeBlockOrder = (i: number, direction: "up" | "down") => {
+  const changeBlockOrder = (index: number, direction: "up" | "down") => {
+    const pageBlockIds = JSON.stringify(previewPage.blocks.map((e) => e.id));
     const formData = new FormData();
+
     formData.set("_action", "rearrange");
-    formData.set("pageId", page.id.toString() || "");
-    formData.set("itemIndex", i.toString() || "");
+    formData.set("previewPageId", previewPage.id.toString() || "");
+    formData.set("pageBlocks", pageBlockIds || "");
+    formData.set("index", index.toString() || "");
     formData.set("direction", direction.toString() || "");
 
     submit(formData, {
@@ -125,90 +131,97 @@ const PageBuilder = ({
 
   return (
     <Form className="relative w-full" method="POST">
-      <input name="pageId" value={page.id} hidden readOnly />
+      <input name="previewPageId" value={previewPage.id} hidden readOnly />
       <input name="itemIndex" value={editingIndex.toString()} hidden readOnly />
       {!editingContent && (
         <div className="flex w-full max-w-full flex-col items-center gap-3 overflow-x-hidden">
           <div className="scrollbar-hide">
-            {blocks
-              ?.sort((a: Block, b: Block) => a.order - b.order)
-              .map(({ id, name }: Block, i) => {
-                return (
+            {blocks.map(({ id, name }: Block, i) => {
+              return (
+                <div
+                  key={"block_" + i}
+                  className="max-w-screen my-3 flex w-[400px] cursor-pointer justify-between rounded-sm border border-brand-white/50 px-3 py-3 transition duration-300 ease-in-out hover:scale-[1.01] max-md:w-[360px]"
+                >
                   <div
-                    key={"block_" + i}
-                    className="max-w-screen my-3 flex w-[400px] cursor-pointer justify-between rounded-sm border border-brand-white/50 px-3 py-3 transition duration-300 ease-in-out hover:scale-[1.01] max-md:w-[360px]"
+                    className="flex items-center gap-3"
+                    onClick={() => {
+                      editBlock(i);
+                    }}
                   >
+                    {/* NUMBER */}
+                    <div className="text-xs"># {i + 1}</div>
+                    {/* ICON */}
+                    <div className="flex gap-3">
+                      <BlockIcon
+                        blockName={blocks[i].name}
+                        size={18}
+                        styles={"mt-[3px]"}
+                      />
+                      <p className="font-bold">
+                        {capitalizeFirst(blocks[i]?.name)}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* BUTTONS */}
+                  <div className="flex h-full flex-row items-center justify-start gap-3">
+                    {i < blocks.length - 1 && (
+                      <div
+                        className="flex !h-[32px] !min-h-[32px] !w-[32px] !min-w-[32px] items-center justify-center !rounded-sm bg-primary hover:bg-primary-focus"
+                        onClick={() => changeBlockOrder(i, "down")}
+                      >
+                        <HiMiniArrowDown
+                          size={14}
+                          className="text-brand-white"
+                        />
+                      </div>
+                    )}
+
+                    {i > 0 && (
+                      <div
+                        className="flex !h-[32px] !min-h-[32px] !w-[32px] !min-w-[32px] items-center justify-center !rounded-sm bg-primary hover:bg-primary-focus"
+                        onClick={() => changeBlockOrder(i, "up")}
+                      >
+                        <HiMiniArrowUp size={14} className="text-brand-white" />
+                      </div>
+                    )}
+
                     <div
-                      className="flex items-center gap-3"
+                      className="flex !h-[32px] !min-h-[32px] !w-[32px] !min-w-[32px] items-center justify-center !rounded-sm bg-primary hover:bg-primary-focus"
                       onClick={() => {
                         editBlock(i);
                       }}
                     >
-                      {/* NUMBER */}
-                      <div className="text-xs"># {blocks[i]?.order + 1}</div>
-                      {/* ICON */}
-                      <div className="flex gap-3">
-                        <BlockIcon
-                          blockName={blocks[i].name}
-                          size={18}
-                          styles={"mt-[3px]"}
-                        />
-                        <p className="font-bold">
-                          {capitalizeFirst(blocks[i]?.name)}
-                        </p>
-                      </div>
+                      <HiPencil size={14} className="text-brand-white" />
                     </div>
 
-                    {/* BUTTONS */}
-                    <div className="flex h-full flex-row items-center justify-start gap-3">
-                      {i < blocks.length - 1 && (
-                        <HiMiniArrowDown
-                          size={28}
-                          className="cursor-pointer rounded-md bg-primary p-[0.3rem] text-primary-content hover:bg-primary-focus"
-                          onClick={() => changeBlockOrder(i, "down")}
-                        />
-                      )}
-
-                      {i > 0 && (
-                        <HiMiniArrowUp
-                          size={28}
-                          className="cursor-pointer rounded-md bg-primary p-[0.3rem] text-primary-content hover:bg-primary-focus"
-                          onClick={() => changeBlockOrder(i, "up")}
-                        />
-                      )}
-
-                      <HiPencil
-                        size={28}
-                        className="cursor-pointer rounded-md bg-primary p-[0.3rem] text-primary-content hover:bg-primary-focus"
+                    {i > 0 && (
+                      <div
+                        className="flex !h-[32px] !min-h-[32px] !w-[32px] !min-w-[32px] items-center justify-center !rounded-sm  bg-error hover:bg-red-500"
                         onClick={() => {
-                          editBlock(i);
+                          disconnectBlock(id, name);
                         }}
-                      />
-                      {i > 0 && (
-                        <HiTrash
-                          size={28}
-                          className="cursor-pointer rounded-md bg-error p-[0.3rem] text-primary-content hover:bg-red-500"
-                          onClick={() => {
-                            deleteBlock(id, name);
-                          }}
-                        />
-                      )}
-                    </div>
+                      >
+                        <HiTrash size={14} className="text-brand-white" />
+                      </div>
+                    )}
                   </div>
-                );
-              })}
-          </div>
+                </div>
+              );
+            })}
 
-          <button
-            type="button"
-            className="btn-primary btn-md rounded-sm"
-            onClick={() => {
-              setEditingIndex(blocks.length);
-              setEditingContent(true);
-            }}
-          >
-            Add Block +
-          </button>
+            <div
+              className="max-w-screen my-3 flex w-[400px] cursor-pointer justify-center rounded-sm border border-brand-white/50 px-3 py-3 transition duration-300 ease-in-out hover:scale-[1.01] max-md:w-[360px]"
+              onClick={() => {
+                setEditingIndex(blocks.length);
+                setEditingContent(true);
+              }}
+            >
+              <div className="flex items-center justify-center gap-3">
+                Add Block +
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
@@ -255,7 +268,6 @@ const PageBuilder = ({
 
           <BlockContentSearch
             selectedBlock={selectedBlock}
-            defaultValue={blocks[editingIndex]?.type as BlockContentType}
             setContentType={setContentType}
           />
 

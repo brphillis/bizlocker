@@ -1,20 +1,15 @@
 import { useSearchParams, useSubmit } from "@remix-run/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
 import { getBlockContentTypes } from "~/utility/blockMaster";
 
 type Props = {
   selectedBlock: BlockName | undefined;
-  defaultValue: BlockContentType | undefined;
   setContentType: Function;
 };
 
-const BlockContentSearch = ({
-  selectedBlock,
-  defaultValue,
-  setContentType,
-}: Props) => {
+const BlockContentSearch = ({ selectedBlock, setContentType }: Props) => {
   const submit = useSubmit();
   const [searchParams] = useSearchParams();
   const [searchValue, setSearchValue] = useState<string>();
@@ -38,12 +33,6 @@ const BlockContentSearch = ({
     }
   };
 
-  useEffect(() => {
-    if (defaultValue) {
-      setContentType(defaultValue);
-    }
-  }, [defaultValue, setContentType]);
-
   return (
     <>
       {(selectedBlock === "banner" ||
@@ -61,7 +50,6 @@ const BlockContentSearch = ({
               <select
                 name="contentType"
                 className=" select w-[95vw] max-w-full sm:w-[215px]"
-                defaultValue={defaultValue}
                 placeholder="Select a Type"
                 onChange={(e) => {
                   handleSearchSubmit(e.target.value, undefined);

@@ -1,12 +1,17 @@
 import { prisma } from "~/db.server";
 import { includeBlocksData } from "~/utility/blockMaster";
 
-export const getHomePage = async () => {
-  return prisma.homePage.findFirst({
+export const getHomePage = async (): Promise<HomePage> => {
+  const homePage = (await prisma.homePage.findFirst({
     include: {
       blocks: includeBlocksData,
     },
-  });
+  })) as unknown as HomePage;
+
+  if (!homePage) {
+    throw new Error(`No Homepage Found`);
+  }
+  return homePage;
 };
 
 export const upsertHomePageInfo = async (

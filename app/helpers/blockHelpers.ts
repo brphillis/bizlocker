@@ -1,16 +1,17 @@
 import { fetchBlockArticles, fetchBlockProducts } from "~/models/blocks.server";
 import { getBlockContentTypes } from "../utility/blockMaster";
 
-//returns the object array nessesery for populating a page in the blockrenderer
-//gets the page blocks, filters out the inactive blocks, then fetches nessesery data
+// Returns the object array nessesery for populating a page in the blockrenderer
+// Main constructor function for preparing a block for the BlockRenderer
 export const getBlocks = async (
   page: HomePage | Article | WebPage,
   fetchNestedContent?: boolean
 ) => {
-  // populate the page with the active block types
-  const blocks = getPageBlocks(page);
-  const activeBlocks = getActiveBlocks(blocks);
+  // Populate the page with the active block types
+  const blocks = squashPageBlockAndContentBlock(page);
+  const activeBlocks = squashBlockContent(blocks);
 
+  // Populate content in blocks that requires a search query
   if (fetchNestedContent) {
     for (let i = 0; i < activeBlocks.length; i++) {
       const block = activeBlocks[i];
@@ -25,27 +26,28 @@ export const getBlocks = async (
   return activeBlocks;
 };
 
-//returns an array of ACTIVE and INACTIVE content blocks for a page
-export const getPageBlocks = (
+// Squash the Page Block into the Content Block
+export const squashPageBlockAndContentBlock = (
   page: HomePage | Article,
   getFirst?: boolean
 ): Block[] => {
   let firstPopulatedObjects: Block[] = [];
 
-  // Sort blocks in ascending order based on 'order' property
-  page?.blocks?.sort((a: Block, b: Block) =>
-    a.order > b.order ? 1 : b.order > a.order ? -1 : 0
-  );
+  // Sorting the pageblocks by the order in the blockOrder array
+  const sortedPageBlocks = sortPageBlocks(page);
 
-  for (let i = 0; i < page?.blocks?.length; i++) {
-    let object = page?.blocks[i];
-    let order = page?.blocks[i]?.order;
-    let blockOptions = page?.blocks[i]?.blockOptions;
+  for (let i = 0; i < sortedPageBlocks.length; i++) {
+    let object = sortedPageBlocks[i];
+    let blockOptions = sortedPageBlocks[i]?.blockOptions;
 
     // Find the first populated object or array within the current object
     let firstPopulatedObject: any = null;
+    let pageBlockId;
 
     for (const [key, value] of Object.entries(object)) {
+      if (key == "id") {
+        pageBlockId = value;
+      }
       if (
         key !== "blockOptions" &&
         ((Array.isArray(value) && value.length > 0) ||
@@ -61,7 +63,7 @@ export const getPageBlocks = (
     if (firstPopulatedObject) {
       firstPopulatedObjects.push({
         ...firstPopulatedObject,
-        order: order,
+        pageBlockId: pageBlockId,
         blockOptions: blockOptions,
       } as Block);
     }
@@ -74,8 +76,8 @@ export const getPageBlocks = (
   return firstPopulatedObjects;
 };
 
-//filters out inactive content blocks
-export const getActiveBlocks = (blocks: Block[]): Block[] => {
+// Squash the Block Content into the Block
+export const squashBlockContent = (blocks: Block[]): Block[] => {
   let firstPopulatedItems: any[] = [];
   for (let item of blocks) {
     // Find the first populated object or array within the current object
@@ -95,16 +97,15 @@ export const getActiveBlocks = (blocks: Block[]): Block[] => {
     }
 
     if (firstPopulated) {
-      const { blockOptions, order, name, type, id } = item;
+      const { blockOptions, name, id, pageBlockId } = item;
       if (Array.isArray(firstPopulated)) {
         // If it's an array, merge it with the specific properties and add it as it is
         firstPopulatedItems.push({
           content: firstPopulated,
           blockOptions: blockOptions,
           name,
-          type,
           id,
-          order,
+          pageBlockId,
         });
       } else {
         // If it's an object, merge it with the specific properties and add
@@ -112,9 +113,8 @@ export const getActiveBlocks = (blocks: Block[]): Block[] => {
           content: { ...firstPopulated },
           blockOptions: blockOptions,
           name,
-          type,
           id,
-          order,
+          pageBlockId,
         });
       }
     }
@@ -123,7 +123,7 @@ export const getActiveBlocks = (blocks: Block[]): Block[] => {
   return firstPopulatedItems;
 };
 
-//returns the default content selection values for a block (example:selected Products)
+// Returns the default content selection values for a block (example:selected Products)
 export const getBlockDefaultValues = (block: Block): ContentSelection[] => {
   const blockContentTypes = getBlockContentTypes(block.name);
 
@@ -138,7 +138,7 @@ export const getBlockDefaultValues = (block: Block): ContentSelection[] => {
       return null;
     }
 
-    // if multiple content selection loop through array and push each defaultvalue
+    // If multiple content selection loop through array and push each defaultvalue
     if (Array.isArray(block.content[contentName])) {
       (block.content[contentName] as Product[]).map((j) =>
         defaultValues.push({
@@ -165,7 +165,51 @@ export const getBlockDefaultValues = (block: Block): ContentSelection[] => {
         name: name,
       });
     }
+    return true;
   });
 
   return defaultValues.filter((notNull) => notNull) as ContentSelection[];
+};
+
+// Returns the id and name of the content block belonging to a pageblock
+export const getContentBlockCredentialsFromPageBlock = (
+  obj: Record<string, any>
+): { blockId: any; blockName: BlockName } | null => {
+  for (const key in obj) {
+    if (
+      key.endsWith("BlockId") &&
+      obj[key] !== null &&
+      obj[key] !== undefined
+    ) {
+      const slicedName = key.slice(0, -7);
+      return {
+        blockId: obj[key],
+        blockName: slicedName as BlockName,
+      };
+    }
+  }
+  return null;
+};
+
+// sorts page blocks by the pages blockOrder array
+export const sortPageBlocks = (
+  page: HomePage | Article | WebPage | PreviewPage
+): Block[] => {
+  const sortedBlocks = page?.blocks?.sort((a, b) => {
+    // Find the index of each object's ID in the string array
+    const indexA = page.blockOrder.indexOf(a.id.toString());
+    const indexB = page.blockOrder.indexOf(b.id.toString());
+
+    // Compare the indices to determine the sorting order
+    if (indexA === -1) {
+      return 1; // Move objects with IDs not in the string array to the end
+    }
+    if (indexB === -1) {
+      return -1; // Move objects with IDs not in the string array to the end
+    }
+
+    return indexA - indexB; // Compare the indices for sorting
+  });
+
+  return sortedBlocks;
 };

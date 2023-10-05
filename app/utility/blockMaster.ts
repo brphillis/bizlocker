@@ -189,6 +189,24 @@ export const blockMaster: BlockMaster[] = [
   },
 ];
 
+// returns an array of all blocknames eg: [bannerBlock,tileBlock...etc]
+export const blockTypes = blockMaster.map((block) => block.name + "Block");
+
+// Prisma include to include all blockTypes with all blocks
+// eg = include: includeAllBlockTypes()
+export const includeAllBlockTypes = () => {
+  const blocksObject: { include: Record<string, boolean> } = {
+    include: {},
+  };
+
+  blockTypes.forEach((type) => {
+    blocksObject.include[type] = true;
+  });
+
+  return { blocks: blocksObject };
+};
+
+// Used in the loader functions for pagebuilders
 export const includeBlocksData = {
   include: {
     blockOptions: true,
@@ -201,6 +219,7 @@ export const includeBlocksData = {
   },
 };
 
+// returns an array of content types a block accepts, built from the blockmaster object
 export const getBlockContentTypes = (
   blockName: BlockName
 ): BlockContentType[] => {

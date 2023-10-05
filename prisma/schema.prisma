@@ -7,25 +7,46 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model HomePage {
-  id              Int     @id @default(autoincrement())
-  blocks          Block[] @relation("HomePageToBlocks")
-  description     String  @default("HomePage Description")
-  title           String  @default("Homepage")
+model PreviewPage {
+  id              Int       @id @default(autoincrement())
+  blocks          Block[]   @relation("PreviewPageToBlocks")
+  blockOrder      String[]
   backgroundColor String?
+  homePage        HomePage? @relation("PreviewPageToHomePage", fields: [homePageId], references: [id])
+  homePageId      Int?
+  webPage         WebPage?  @relation("PreviewPageToWebPage", fields: [webPageId], references: [id])
+  webPageId       Int?
+  article         Article?  @relation("PreviewPageToArticle", fields: [articleId], references: [id])
+  articleId       Int?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  publishedAt DateTime?
+  publisher   String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model HomePage {
+  id              Int           @id @default(autoincrement())
+  blocks          Block[]       @relation("HomePageToBlocks")
+  blockOrder      String[]
+  description     String        @default("HomePage Description")
+  title           String        @default("Homepage")
+  backgroundColor String?
+  previewPage     PreviewPage[] @relation("PreviewPageToHomePage")
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 }
 
 model WebPage {
-  id              Int     @id @default(autoincrement())
-  blocks          Block[] @relation("WebPagesToBlocks")
-  description     String  @default("Page Description")
-  isActive        Boolean @default(true)
-  thumbnail       Image?  @relation("WebPageImage")
-  title           String  @unique
+  id              Int           @id @default(autoincrement())
+  blocks          Block[]       @relation("WebPagesToBlocks")
+  blockOrder      String[]
+  description     String        @default("Page Description")
+  isActive        Boolean       @default(true)
+  thumbnail       Image?        @relation("WebPageImage")
+  title           String        @unique
   backgroundColor String?
+  previewPage     PreviewPage[] @relation("PreviewPageToWebPage")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -33,26 +54,23 @@ model WebPage {
 
 model Block {
   id             String         @id @unique @default(cuid())
-  article        Article?       @relation("ArticlesToBlocks", fields: [articleId], references: [id])
+  previewPage    PreviewPage[]  @relation("PreviewPageToBlocks")
+  article        Article[]      @relation("ArticlesToBlocks")
   articleBlock   ArticleBlock?  @relation("BlockToArticleBlock", fields: [articleBlockId], references: [id])
   articleBlockId String?        @unique
-  articleId      Int?
   bannerBlock    BannerBlock?   @relation("BlockToBannerBlock", fields: [bannerBlockId], references: [id])
   bannerBlockId  String?        @unique
   blockOptions   BlockOptions[] @relation("BlockToBlockOptions")
   heroBlock      HeroBlock?     @relation("BlockToHeroBlock", fields: [heroBlockId], references: [id])
   heroBlockId    String?        @unique
-  homePage       HomePage?      @relation("HomePageToBlocks", fields: [homePageId], references: [id])
-  homePageId     Int?
-  order          Int
+  homePage       HomePage[]     @relation("HomePageToBlocks")
   productBlock   ProductBlock?  @relation("BlockToProductBlock", fields: [productBlockId], references: [id])
   productBlockId String?        @unique
   textBlock      TextBlock?     @relation("BlockToTextBlock", fields: [textBlockId], references: [id])
   textBlockId    String?        @unique
   tileBlock      TileBlock?     @relation("BlockToTileBlock", fields: [tileBlockId], references: [id])
   tileBlockId    String?        @unique
-  webPage        WebPage?       @relation("WebPagesToBlocks", fields: [webPageId], references: [id])
-  webPageId      Int?
+  webPage        WebPage[]      @relation("WebPagesToBlocks")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -469,8 +487,10 @@ model Article {
   id                Int               @id @default(autoincrement())
   articleCategories ArticleCategory[] @relation("ArticleCategoryToArticle")
   blocks            Block[]           @relation("ArticlesToBlocks")
+  blockOrder        String[]
   description       String            @default("Article Description")
   backgroundColor   String?
+  previewPage       PreviewPage[]     @relation("PreviewPageToArticle")
   isActive          Boolean           @default(true)
   thumbnail         Image?            @relation("ArticleImage")
   title             String            @unique

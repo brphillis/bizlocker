@@ -32,7 +32,11 @@ const Articles = () => {
   return (
     <AdminPageWrapper>
       <Form method="GET" className="relative h-full w-full bg-base-200 p-6">
-        <AdminPageHeader title="Manage Articles" addButtonText="Add Article" />
+        <AdminPageHeader
+          title="Manage Articles"
+          addButtonText="Add Article"
+          createLink="/admin/pagebuilder/new?req=article"
+        />
 
         <div className="mt-3 flex flex-col">
           <div className="flex flex-row flex-wrap gap-6">
@@ -91,7 +95,9 @@ const Articles = () => {
                       <tr
                         className="cursor-pointer transition-colors duration-200 hover:bg-base-100"
                         key={id}
-                        onClick={() => navigate(`/admin/articles/${id}`)}
+                        onClick={() =>
+                          navigate(`/admin/pagebuilder/article?id=${id}`)
+                        }
                       >
                         {currentPage && (
                           <td>
