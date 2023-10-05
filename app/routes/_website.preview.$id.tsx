@@ -22,7 +22,7 @@ export const meta: V2_MetaFunction = () => {
 export const loader = async ({ params }: LoaderArgs) => {
   const pageId = params.id;
   if (pageId && !isNaN(parseInt(pageId))) {
-    const webPage = await getPreviewPage(parseInt(pageId));
+    const webPage = await getPreviewPage(pageId as string);
     let backgroundColor, blocks;
 
     if (webPage) {

@@ -411,6 +411,8 @@ interface PreviewPage {
   backgroundColor: string;
   blocks: Block[];
   blockOrder: string[];
+  publisher?: string;
+  publishedAt?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -533,12 +535,10 @@ interface BlockMasterOptions {
 
 interface Block {
   id: string;
-  order: number;
-  type: string;
-  page: Page;
-  pageId: number;
-  content: BlockContent;
+  pageBlockId: string;
   name: BlockName;
+  page: Page;
+  content: BlockContent;
   blockOptions: BlockOptions[];
 }
 

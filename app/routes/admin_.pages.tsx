@@ -30,7 +30,11 @@ const Pages = () => {
   return (
     <AdminPageWrapper>
       <Form method="GET" className="relative h-full w-full bg-base-200 p-6">
-        <AdminPageHeader title="Manage Pages" addButtonText="Add Page" />
+        <AdminPageHeader
+          title="Manage Pages"
+          addButtonText="Add Page"
+          createLink="/admin/pagebuilder/new?req=webpage"
+        />
 
         <div className="mt-3 flex flex-col">
           <div className="flex flex-row flex-wrap gap-6">
@@ -70,7 +74,9 @@ const Pages = () => {
                     <tr
                       className="cursor-pointer transition-colors duration-200 hover:bg-base-100"
                       key={id}
-                      onClick={() => navigate(`/admin/pages/${id}`)}
+                      onClick={() =>
+                        navigate(`/admin/pagebuilder/webpage?id=${id}`)
+                      }
                     >
                       {currentPage && (
                         <td>{i + 1 + (currentPage - 1) * webPages?.length}</td>

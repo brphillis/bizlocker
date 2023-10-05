@@ -3,9 +3,10 @@ import { useNavigate } from "@remix-run/react";
 type Props = {
   title: string;
   addButtonText?: string;
+  createLink?: string;
 };
 
-const AdminPageHeader = ({ title, addButtonText }: Props) => {
+const AdminPageHeader = ({ title, addButtonText, createLink }: Props) => {
   const navigate = useNavigate();
   return (
     <>
@@ -15,7 +16,7 @@ const AdminPageHeader = ({ title, addButtonText }: Props) => {
           <button
             type="button"
             className="btn-primary btn-md w-max !rounded-sm"
-            onClick={() => navigate("add")}
+            onClick={() => navigate(createLink ? createLink : "add")}
           >
             {addButtonText}
           </button>

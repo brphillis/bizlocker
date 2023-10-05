@@ -7,6 +7,7 @@ To Do
 [ ] finish validations function
 [ ] fix image search with connections
 [ ] add transparency to borders in blockoptions
+[ ] add delete functionality to page versions, articles and webpages
 
 
 Bug Hisory

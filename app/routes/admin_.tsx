@@ -140,7 +140,7 @@ const Admin = () => {
               </summary>
               <div className="collapse-content">
                 <ul className="text-white/75">
-                  <li onClick={() => navigate("/admin/home-page")}>
+                  <li onClick={() => navigate("/admin/pagebuilder/homepage")}>
                     <label htmlFor="my-drawer-2" className="hover:text-white">
                       Home Page
                     </label>
