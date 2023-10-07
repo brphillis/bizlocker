@@ -8,16 +8,21 @@ datasource db {
 }
 
 model PreviewPage {
-  id              Int       @id @default(autoincrement())
-  blocks          Block[]   @relation("PreviewPageToBlocks")
-  blockOrder      String[]
-  backgroundColor String?
-  homePage        HomePage? @relation("PreviewPageToHomePage", fields: [homePageId], references: [id])
-  homePageId      Int?
-  webPage         WebPage?  @relation("PreviewPageToWebPage", fields: [webPageId], references: [id])
-  webPageId       Int?
-  article         Article?  @relation("PreviewPageToArticle", fields: [articleId], references: [id])
-  articleId       Int?
+  id                Int               @id @default(autoincrement())
+  blocks            Block[]           @relation("PreviewPageToBlocks")
+  blockOrder        String[]
+  title             String            @default("Page Title")
+  description       String            @default("Page Description")
+  backgroundColor   String?
+  homePage          HomePage?         @relation("PreviewPageToHomePage", fields: [homePageId], references: [id])
+  homePageId        Int?
+  webPage           WebPage?          @relation("PreviewPageToWebPage", fields: [webPageId], references: [id])
+  webPageId         Int?
+  article           Article?          @relation("PreviewPageToArticle", fields: [articleId], references: [id])
+  articleId         Int?
+  isActive          Boolean           @default(true)
+  thumbnail         Image?            @relation("PreviewPageImage")
+  articleCategories ArticleCategory[] @relation("ArticleCategoryToPreviewPage")
 
   publishedAt DateTime?
   publisher   String?
@@ -29,8 +34,8 @@ model HomePage {
   id              Int           @id @default(autoincrement())
   blocks          Block[]       @relation("HomePageToBlocks")
   blockOrder      String[]
-  description     String        @default("HomePage Description")
   title           String        @default("Homepage")
+  description     String        @default("HomePage Description")
   backgroundColor String?
   previewPage     PreviewPage[] @relation("PreviewPageToHomePage")
   createdAt       DateTime      @default(now())
@@ -418,6 +423,9 @@ model Image {
   webPage              WebPage?             @relation("WebPageImage", fields: [webPageId], references: [id])
   webPageId            Int?                 @unique
 
+  previewPage   PreviewPage? @relation("PreviewPageImage", fields: [previewPageId], references: [id])
+  previewPageId Int?         @unique
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -456,6 +464,7 @@ model ArticleCategory {
   id                   Int                   @id @default(autoincrement())
   articleBlockContent  ArticleBlockContent[] @relation("ArticleCategoryToArticleBlock")
   articles             Article[]             @relation("ArticleCategoryToArticle")
+  previewPages         PreviewPage[]         @relation("ArticleCategoryToPreviewPage")
   isActive             Boolean               @default(true)
   name                 String                @unique
   productCategory      ProductCategory?      @relation("ProductCategoryToArticleCategory", fields: [subProductCategoryId], references: [id])

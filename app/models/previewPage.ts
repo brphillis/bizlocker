@@ -6,6 +6,7 @@ export const getPreviewPage = async (id: string) => {
     where: { id: parseInt(id) },
     include: {
       blocks: includeBlocksData,
+      articleCategories: true,
     },
   });
 };

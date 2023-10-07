@@ -1,3 +1,5 @@
+import ToolTip from "~/components/Indicators/ToolTip";
+
 type Props = {
   label: string;
   type: "text" | "number" | "date";
@@ -25,7 +27,7 @@ const BasicInput = ({
 }: Props) => {
   return (
     <div
-      className={`form-control max-md:w-full ${
+      className={`form-control relative max-md:w-full ${
         customWidth ? customWidth : "w-[215px]"
       }`}
     >
@@ -43,7 +45,9 @@ const BasicInput = ({
         type={type}
         placeholder={placeholder}
         className={`input w-full text-brand-black/75 ${
-          validationErrors?.hasOwnProperty(name) ? "input-error border-2" : ""
+          validationErrors?.hasOwnProperty(name)
+            ? "input-error border !outline-none"
+            : ""
         } ${styles}`}
         defaultValue={defaultValue || ""}
         onChange={(e) => {
@@ -52,12 +56,8 @@ const BasicInput = ({
           }
         }}
       />
-      {validationErrors?.hasOwnProperty("contentSelection") && (
-        <label className="label">
-          <span className="label-text-alt">
-            {validationErrors["contentSelection"]}
-          </span>
-        </label>
+      {validationErrors?.hasOwnProperty(name) && (
+        <ToolTip tip={validationErrors[name]} iconColor="text-error" />
       )}
     </div>
   );

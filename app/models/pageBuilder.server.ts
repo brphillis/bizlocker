@@ -12,7 +12,7 @@ export const getPageType = async (
   pageType: PageType,
   returnPreviews?: boolean,
   id?: string
-): Promise<HomePage | Article | WebPage> => {
+): Promise<Page> => {
   if (returnPreviews) {
     // we find the page with the blockContent
     const findPageWithBlockContent = prisma[pageType].findFirst as (
@@ -70,7 +70,7 @@ export const upsertPageMeta = async (
   backgroundColor: string,
   isActive: string,
   thumbnail: Image,
-  pageId?: string,
+  previewPageId?: string,
   articleCategories?: string[]
 ) => {
   let page;
@@ -79,15 +79,22 @@ export const upsertPageMeta = async (
     (pageType.replace(/p/g, "P") as "webPage") ||
     (pageType.replace(/p/g, "P") as "homePage");
 
-  if (!pageId) {
+  if (!previewPageId) {
+    //CREATE
     if (pageType === "homePage") {
       throw new Error("You can only have one Home Page.");
     }
+
+    // create the new Page
+    const newPageType = await prisma[refinedPageType].create({
+      data: { title },
+    });
 
     let data: any = {
       title,
       description,
       backgroundColor,
+      [pageType.replace(/p/g, "P")]: { connect: { id: newPageType.id } },
     };
 
     // Check if thumbnail is provided
@@ -100,38 +107,35 @@ export const upsertPageMeta = async (
       };
     }
 
+    // If Article we connect article categories
     if (refinedPageType === "article" && articleCategories) {
       data.articleCategories = {
-        connect: articleCategories.map((category: string) => ({
-          id: parseInt(category),
+        connect: articleCategories.map((categoryId: string) => ({
+          id: parseInt(categoryId),
         })),
       };
     }
 
-    page = await prisma[refinedPageType].create({
-      data,
-    });
+    // Create the new previewPage with the data
+    await prisma.previewPage.create({ data });
 
-    await prisma.previewPage.create({
-      data: {
-        [pageType.replace(/p/g, "P")]: { connect: { id: page.id } },
-      },
-    });
+    return newPageType.id;
   } else {
-    page = await prisma.article.findUnique({
+    //UPDATE
+    page = await prisma.previewPage.findUnique({
       where: {
-        id: parseInt(pageId),
+        id: parseInt(previewPageId),
       },
     });
 
     if (!page) {
-      throw new Error(`Page not found for pageId: ${pageId}`);
+      throw new Error(`Page not found for pageId: ${previewPageId}`);
     }
 
     if (refinedPageType === "article" && articleCategories) {
       // Disconnect the existing categories from the article
-      await prisma[refinedPageType].update({
-        where: { id: parseInt(pageId) },
+      await prisma.previewPage.update({
+        where: { id: parseInt(previewPageId) },
         data: {
           articleCategories: { set: [] },
         },
@@ -143,7 +147,6 @@ export const upsertPageMeta = async (
       title,
       description,
       backgroundColor,
-      isActive: isActive ? true : false,
     };
 
     // Check if thumbnail is provided
@@ -162,6 +165,10 @@ export const upsertPageMeta = async (
       };
     }
 
+    if (pageType !== "homePage") {
+      updateData.isActive = isActive ? true : false;
+    }
+
     if (refinedPageType === "article" && articleCategories) {
       updateData.articleCategories = {
         connect: articleCategories.map((category: string) => ({
@@ -170,16 +177,16 @@ export const upsertPageMeta = async (
       };
     }
 
-    // Update the existing article's title and thumbnail
-    page = await prisma[refinedPageType].update({
+    // update the preview page
+    await prisma.previewPage.update({
       where: {
-        id: parseInt(pageId),
+        id: parseInt(previewPageId),
       },
-      data: updateData, // Use the updateData object
+      data: updateData,
     });
-  }
 
-  return page.id;
+    return page.id;
+  }
 };
 
 const updateOrCreateBlockOptions = async (
@@ -219,7 +226,7 @@ export const updatePageBlock = async (
   pageId: string,
   blockData: NewBlockData,
   blockOptions?: BlockOptions
-): Promise<number | HomePage | Article | WebPage | PreviewPage> => {
+): Promise<number | Page> => {
   const { blockName, itemIndex, contentData } = blockData;
 
   const previewPage = await prisma.previewPage.findUnique({
@@ -534,17 +541,24 @@ export const publishPage = async (
       });
     }
 
-    // Store the preview page blocks in a variable
+    // Store the preview page blocks and meta in a variable
     const previewPageBlocks = previewPage.blocks;
-    const previewPageBlockOrder = previewPage.blockOrder;
-    const updateData = {
+
+    let updateData: any = {
       blocks: {
         connect: previewPageBlocks.map((block) => ({
           id: block.id,
         })),
       },
-      blockOrder: previewPageBlockOrder,
+      blockOrder: previewPage.blockOrder,
+      title: previewPage?.title,
+      description: previewPage?.description,
+      backgroundColor: previewPage?.backgroundColor,
     };
+
+    if (pageType !== "homePage") {
+      updateData.isActive = previewPage?.isActive;
+    }
 
     // Begin Update to the page
     const updatePage = prisma[`${pageType}`].update as (args: any) => any;

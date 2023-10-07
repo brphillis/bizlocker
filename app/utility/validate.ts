@@ -1,22 +1,314 @@
-export const validateForm = (formEntries: {
-  [k: string]: FormDataEntryValue;
-}): ValidationErrors | null => {
-  const validationError: ValidationErrors = {};
+//the master object, validation helpers below
 
-  const { name } = formEntries;
+export const validationMaster: FormConfig = {
+  altText: {
+    required: true,
+    validator: (value: string) => {
+      if (!value || value.length < 3) {
+        return "Alt Text is invalid";
+      }
+      return null;
+    },
+  },
+  articleCategories: {
+    required: true,
+    validator: (value: string) => {
+      if (!value) {
+        return "Categories Required";
+      }
+      return null;
+    },
+  },
+  brand: {
+    required: true,
+    validator: (value: string) => {
+      if (!value) {
+        return "Brand is invalid";
+      }
+      return null;
+    },
+  },
+  description: {
+    required: true,
+    validator: (value: string) => {
+      if (!value || value.length < 3) {
+        return "Description is invalid";
+      }
+      return null;
+    },
+  },
+  email: {
+    required: true,
+    validator: (value: string) => {
+      if (!isValidEmail(value)) {
+        return "Enter a valid email address";
+      }
+      return null;
+    },
+  },
+  firstName: {
+    required: true,
+    validator: (value: string) => {
+      if (!value || value.length < 3) {
+        return "First name is invalid";
+      }
+      return null;
+    },
+  },
+  lastName: {
+    required: true,
+    validator: (value: string) => {
+      if (!value || value.length < 3) {
+        return "Last name is invalid";
+      }
+      return null;
+    },
+  },
+  dateofbirth: {
+    required: true,
+    validator: (value: string) => {
+      if (!value) {
+        return "Enter a Date of Birth";
+      }
+      return null;
+    },
+  },
+  phoneNumber: {
+    required: true,
+    validator: (value: string) => {
+      if (!isValidMobileNumber(value)) {
+        return "Enter a Date of Birth";
+      }
+      return null;
+    },
+  },
+  address1: {
+    required: true,
+    validator: (value: string) => {
+      if (!isValidMobileNumber(value)) {
+        return "Enter an Address";
+      }
+      return null;
+    },
+  },
+  postcode: {
+    required: true,
+    validator: (value: string) => {
+      if (!isValidMobileNumber(value)) {
+        return "Enter a Postal Code";
+      }
+      return null;
+    },
+  },
+  suburb: {
+    required: true,
+    validator: (value: string) => {
+      if (!isValidMobileNumber(value)) {
+        return "Enter a Suburb";
+      }
+      return null;
+    },
+  },
+  state: {
+    required: true,
+    validator: (value: string) => {
+      if (!isValidMobileNumber(value)) {
+        return "Enter a State";
+      }
+      return null;
+    },
+  },
+  country: {
+    required: true,
+    validator: (value: string) => {
+      if (!isValidMobileNumber(value)) {
+        return "Enter a Country";
+      }
+      return null;
+    },
+  },
+  name: {
+    required: true,
+    validator: (value: string) => {
+      if (!value || value.length < 3) {
+        return "Name is invalid";
+      }
+      return null;
+    },
+  },
+  image: {
+    required: true,
+    validator: (value: string) => {
+      if (!value) {
+        return "Image is Required";
+      }
+      return null;
+    },
+  },
+  images: {
+    required: true,
+    validator: (value: string) => {
+      if (!value) {
+        return "Images are Required";
+      }
+      return null;
+    },
+  },
+  promotion: {
+    required: true,
+    validator: (value: string) => {
+      if (!value) {
+        return "Promotion is Required";
+      }
+      return null;
+    },
+  },
+  discountPercentage: {
+    required: true,
+    validator: (value: string) => {
+      if (!value) {
+        return "Discount is Required";
+      }
+      return null;
+    },
+  },
+  variants: {
+    required: true,
+    validator: (value: string) => {
+      if (!value) {
+        return "Variants are Required";
+      }
+      return null;
+    },
+  },
+  department: {
+    required: true,
+    validator: (value: string) => {
+      if (!value) {
+        return "Department is Required";
+      }
+      return null;
+    },
+  },
+  productCategories: {
+    required: true,
+    validator: (value: string) => {
+      if (!value) {
+        return "Categories Required";
+      }
+      return null;
+    },
+  },
+  productSubCategories: {
+    required: true,
+    validator: (value: string) => {
+      if (!value) {
+        return "Sub Categories Required";
+      }
+      return null;
+    },
+  },
+  brands: {
+    required: true,
+    validator: (value: string) => {
+      if (!value) {
+        return "Brands Required";
+      }
+      return null;
+    },
+  },
+  minSaleRange: {
+    required: true,
+    validator: (value: string) => {
+      if (!value) {
+        return "Min Sale Range Required";
+      }
+      return null;
+    },
+  },
+  maxSaleRange: {
+    required: true,
+    validator: (value: string) => {
+      if (!value) {
+        return "Max Sale Range Required";
+      }
+      return null;
+    },
+  },
+  gender: {
+    required: true,
+    validator: (value: string) => {
+      if (!value) {
+        return "Gender Required";
+      }
+      return null;
+    },
+  },
+  bannerImage: {
+    required: true,
+    validator: (value: string) => {
+      if (!value) {
+        return "Banner Image Required";
+      }
+      return null;
+    },
+  },
+  tileImage: {
+    required: true,
+    validator: (value: string) => {
+      if (!value) {
+        return "Tile Image Required";
+      }
+      return null;
+    },
+  },
+  index: {
+    required: true,
+    validator: (value: string) => {
+      if (!value) {
+        return "Index Required";
+      }
+      return null;
+    },
+  },
+};
 
-  if (!name) {
-    validationError.name = "Name is invalid";
+export const validateForm = (
+  formEntries: Record<string, FormDataEntryValue>,
+  validate: Record<string, boolean>
+): ValidationErrors | null => {
+  const formConfig: FormConfig = {};
+
+  // loop through the validate object and match keys in the validationMaster
+  for (const key in validate) {
+    if (validate[key]) {
+      formConfig[key] = validationMaster[key];
+    }
   }
-  //TO DO
 
-  // if (Object.keys(validationError).length > 0) {
-  //   return validationError;
-  // } else {
-  //   return null;
-  // }
+  const validationErrors: ValidationErrors = {};
 
-  return null;
+  for (const fieldName in formConfig) {
+    const fieldConfig = formConfig[fieldName];
+    const { required, validator } = fieldConfig;
+    const value = formEntries[fieldName];
+
+    if (
+      required &&
+      (value === undefined ||
+        value === null ||
+        (typeof value === "string" && value === ""))
+    ) {
+      validationErrors[fieldName] = `Field is Required`;
+    } else if (validator) {
+      const errorMessage = validator(value as string);
+      if (errorMessage) {
+        validationErrors[fieldName] = errorMessage;
+      }
+    }
+  }
+
+  return Object.keys(validationErrors).length > 0 ? validationErrors : null;
 };
 
 export const isValidEmail = (email: string): boolean => {

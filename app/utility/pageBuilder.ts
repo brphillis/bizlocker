@@ -202,12 +202,12 @@ export const getFormBlockOptions = (form: {
 export const getBlockUpdateValues = (form: {
   [k: string]: FormDataEntryValue;
 }): NewBlockData => {
-  const { pageId, blockName, itemIndex, contentType } = form;
+  const { previewPageId, blockName, itemIndex, contentType } = form;
 
   const parsedObjectData = buildNewBlockData(blockName as BlockName, form);
 
   const blockUpdateValues = {
-    pageId: parseInt(pageId as string),
+    previewPageId: parseInt(previewPageId as string),
     blockName: blockName as BlockName,
     itemIndex: parseInt(itemIndex as string),
     contentType: contentType as BlockContentType,

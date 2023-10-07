@@ -3,10 +3,7 @@ import { getBlockContentTypes } from "../utility/blockMaster";
 
 // Returns the object array nessesery for populating a page in the blockrenderer
 // Main constructor function for preparing a block for the BlockRenderer
-export const getBlocks = async (
-  page: HomePage | Article | WebPage,
-  fetchNestedContent?: boolean
-) => {
+export const getBlocks = async (page: Page, fetchNestedContent?: boolean) => {
   // Populate the page with the active block types
   const blocks = squashPageBlockAndContentBlock(page);
   const activeBlocks = squashBlockContent(blocks);
@@ -28,7 +25,7 @@ export const getBlocks = async (
 
 // Squash the Page Block into the Content Block
 export const squashPageBlockAndContentBlock = (
-  page: HomePage | Article,
+  page: Page,
   getFirst?: boolean
 ): Block[] => {
   let firstPopulatedObjects: Block[] = [];
@@ -192,13 +189,11 @@ export const getContentBlockCredentialsFromPageBlock = (
 };
 
 // sorts page blocks by the pages blockOrder array
-export const sortPageBlocks = (
-  page: HomePage | Article | WebPage | PreviewPage
-): Block[] => {
-  const sortedBlocks = page?.blocks?.sort((a, b) => {
+export const sortPageBlocks = ({ blocks, blockOrder }: Page): Block[] => {
+  const sortedBlocks = blocks?.sort((a, b) => {
     // Find the index of each object's ID in the string array
-    const indexA = page.blockOrder.indexOf(a.id.toString());
-    const indexB = page.blockOrder.indexOf(b.id.toString());
+    const indexA = blockOrder.indexOf(a.id.toString());
+    const indexB = blockOrder.indexOf(b.id.toString());
 
     // Compare the indices to determine the sorting order
     if (indexA === -1) {

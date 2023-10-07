@@ -16,7 +16,7 @@ const SelectPageLinkPopupFormModule = ({
   updateItemsFunction,
   items,
 }: Props) => {
-  const [currentWebPages, setCurrentWebPages] = useState<WebPage[]>();
+  const [currentWebPages, setCurrentWebPages] = useState<Page[]>();
   const fetcher = useFetcher();
   const count = 10;
   const [title, setTitle] = useState<string>();
@@ -128,22 +128,20 @@ const SelectPageLinkPopupFormModule = ({
           </thead>
           <tbody>
             {currentWebPages &&
-              currentWebPages.map(
-                ({ id, title, isActive }: WebPage, i: number) => {
-                  return (
-                    <tr
-                      className="hover cursor-pointer text-brand-white transition-colors duration-200 hover:bg-brand-black/75"
-                      key={id}
-                      onClick={() => handleUpdateItem(title)}
-                    >
-                      <td>{i + 1}</td>
-                      <td>{title}</td>
+              currentWebPages.map(({ id, title }: Page, i: number) => {
+                return (
+                  <tr
+                    className="hover cursor-pointer text-brand-white transition-colors duration-200 hover:bg-brand-black/75"
+                    key={id}
+                    onClick={() => handleUpdateItem(title)}
+                  >
+                    <td>{i + 1}</td>
+                    <td>{title}</td>
 
-                      <td>{"/" + title}</td>
-                    </tr>
-                  );
-                }
-              )}
+                    <td>{"/" + title}</td>
+                  </tr>
+                );
+              })}
           </tbody>
         </table>
       </div>
