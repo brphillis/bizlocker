@@ -1,10 +1,5 @@
 import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node";
-import {
-  Form,
-  useActionData,
-  useLoaderData,
-  useSubmit,
-} from "@remix-run/react";
+import { useActionData, useLoaderData } from "@remix-run/react";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import PageBuilder from "~/components/PageBuilder";
 import {
@@ -28,17 +23,13 @@ import {
 import { getArticleCategories } from "~/models/articleCategories.server";
 import { getAvailableColors } from "~/models/enums.server";
 import { getBlocks } from "~/helpers/blockHelpers";
-import BasicInput from "~/components/Forms/Input/BasicInput";
-import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import PatternBackground from "~/components/Layout/PatternBackground";
 import { generateColor } from "~/utility/colors";
-import { formatDate } from "~/helpers/dateHelpers";
 import { sortPreviewPages } from "~/helpers/sortHelpers";
 import { addPreviewPage, getPreviewPage } from "~/models/previewPage";
 import { useEffect, useState } from "react";
-import { HiTrash } from "react-icons/hi2";
-import BasicMultiSelect from "~/components/Forms/Select/BasicMultiSelect";
-import UploadImage from "~/components/Forms/Upload/UploadImage";
+import VersionControl from "~/components/PageBuilder/VersionControl";
+import Header from "~/components/PageBuilder/Header";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const productCategories = await getProductCategories();
@@ -51,12 +42,13 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   const url = new URL(request.url);
   const req = url.searchParams.get("req") || undefined;
+  const id = url.searchParams.get("id") || undefined;
 
   if (pageType === "new") {
     return { pageToCreate: req, articleCategories };
   }
 
-  const page = await getPageType(pageType as PageType, true, req);
+  const page = await getPageType(pageType as PageType, true, id);
 
   let previewPages;
   let blocks;
@@ -68,40 +60,40 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   }
 
   return {
+    articleCategories,
+    blocks,
+    brands,
+    colors,
+    currentPreviewPage,
     page,
     pageType,
     previewPages,
-    currentPreviewPage,
-    blocks,
     productCategories,
     productSubCategories,
-    articleCategories,
-    brands,
-    colors,
   };
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
   const pageType = params?.pagetype?.replace(/p/g, "P");
   const url = new URL(request.url);
-  const req = url?.searchParams.get("req") || undefined;
+  const req = url?.searchParams.get("req") || pageType;
 
   const form = Object.fromEntries(await request.formData());
   const {
-    backgroundColor,
     articleCategories,
-    thumbnail,
-    isActive,
+    backgroundColor,
     blockId,
     blockName,
     contentType,
     description,
-    name,
-    pageId,
-    pageBlocks,
-    title,
     index,
+    isActive,
+    name,
+    pageBlocks,
+    pageId,
     previewPageId,
+    thumbnail,
+    title,
   } = form;
 
   let actionPreview, actionBlocks;
@@ -141,13 +133,13 @@ export const action = async ({ request, params }: ActionArgs) => {
         backgroundColor as string,
         isActive as string,
         thumbnail ? JSON.parse(thumbnail as string) : undefined,
-        pageId ? (pageId as string) : undefined,
+        previewPageId ? (previewPageId as string) : undefined,
         articleCategories ? JSON.parse(articleCategories as string) : undefined
       );
 
-      if (pageType === "new") {
+      if (!previewPageId) {
         return redirect(`/admin/pagebuilder/${req}?id=${newId}`);
-      } else return null;
+      } else return { metaUpdateSuccess: newId };
 
     case "addpreview":
       const addPreviewSuccess = await addPreviewPage(
@@ -238,27 +230,26 @@ export const action = async ({ request, params }: ActionArgs) => {
 };
 
 const ManageHomePage = () => {
-  const submit = useSubmit();
   const {
-    page,
-    pageType,
-    pageToCreate,
-    previewPages,
-    currentPreviewPage,
-    blocks,
-    productCategories,
-    productSubCategories,
     articleCategories,
+    blocks,
     brands,
     colors,
+    currentPreviewPage,
+    page,
+    pageToCreate,
+    pageType,
+    previewPages,
+    productCategories,
+    productSubCategories,
   } = useLoaderData() || {};
 
   const {
+    actionBlocks,
+    actionPreview,
+    metaValidationError,
     searchResults,
     updateSuccess,
-    metaValidationError,
-    actionPreview,
-    actionBlocks,
   } = useActionData() || {};
 
   const [currentVersion, setCurrentVersion] =
@@ -269,26 +260,34 @@ const ManageHomePage = () => {
     page?.isActive ? " " : ""
   );
 
+  console.log(currentVersion);
+
   useEffect(() => {
+    if (currentPreviewPage && !actionPreview) {
+      setCurrentVersion(currentPreviewPage);
+    }
     if (actionPreview) {
       setCurrentVersion(actionPreview);
+    }
+    if (blocks && !actionBlocks) {
+      setCurrentBlocks(blocks);
     }
     if (actionBlocks) {
       setCurrentBlocks(actionBlocks);
     }
-  }, [actionPreview, actionBlocks]);
+  }, [actionPreview, actionBlocks, blocks, currentPreviewPage]);
 
   return (
     <AdminPageWrapper>
       <div className="relative h-full p-6 max-sm:p-0 sm:w-full">
         <div className="absolute left-0 top-0 h-full w-full bg-brand-white"></div>
         <PatternBackground
-          name="isometric"
           backgroundColor={generateColor("BLACK")}
+          brightness={-1.5}
+          name="isometric"
           patternColor={generateColor("WHITE")}
           patternOpacity={0.2}
           patternSize={140}
-          brightness={-1.5}
         />
 
         <div className="flex w-full justify-center">
@@ -297,129 +296,15 @@ const ManageHomePage = () => {
               <div className="w-full">{page ? page.title : "Add Page"}</div>
             </div>
 
-            <LargeCollapse
-              title="Meta"
-              content={
-                <Form
-                  method="POST"
-                  className="relative flex w-full flex-col items-center gap-6 max-md:px-3"
-                >
-                  {pageType !== "homePage" && (
-                    <>
-                      <label className="label absolute -top-11 right-16 z-10 mt-0 h-1 cursor-pointer max-md:-top-9 sm:mt-1">
-                        <input
-                          type="checkbox"
-                          className="toggle toggle-sm ml-3"
-                          checked={isActive ? true : false}
-                          onChange={(e) =>
-                            setIsActive(e.target.checked ? "true" : undefined)
-                          }
-                        />
-                        <span className="label-text ml-3 text-brand-white">
-                          Active
-                        </span>
-                      </label>
-                      <input
-                        name="isActive"
-                        value={isActive || ""}
-                        readOnly
-                        hidden
-                      />
-                    </>
-                  )}
-
-                  <BasicInput
-                    name="title"
-                    label="Title"
-                    labelColor="text-brand-white"
-                    placeholder="Title"
-                    type="text"
-                    defaultValue={page?.title}
-                    customWidth="w-[320px]"
-                  />
-
-                  <div className="form-control">
-                    <label className="label">
-                      <span className="label-text text-brand-white">
-                        Description
-                      </span>
-                    </label>
-                    <textarea
-                      name="description"
-                      placeholder="Description"
-                      defaultValue={page?.description}
-                      className="textarea textarea-bordered flex w-[95vw] rounded-sm text-brand-black sm:w-[320px]"
-                    />
-                  </div>
-
-                  {pageToCreate === "article" && (
-                    <BasicMultiSelect
-                      name="articleCategories"
-                      label="Categories"
-                      selections={articleCategories}
-                      defaultValues={page?.articleCategories}
-                      customWidth="w-[320px]"
-                      labelColor="text-brand-white"
-                    />
-                  )}
-
-                  {colors && (
-                    <BasicSelect
-                      label="Background Color"
-                      labelColor="text-brand-white"
-                      customWidth="w-[320px]"
-                      name="backgroundColor"
-                      placeholder="Select a Color"
-                      defaultValue={page?.backgroundColor}
-                      selections={colors?.map((color: string) => ({
-                        id: color,
-                        name: color,
-                      }))}
-                    />
-                  )}
-
-                  {pageType !== "homePage" && (
-                    <div className="form-control w-full max-w-xs">
-                      <label className="label">
-                        <span className="label-text text-brand-white">
-                          Thumbnail
-                        </span>
-                      </label>
-                      <div className="max-w-[500px]">
-                        <UploadImage
-                          defaultValue={page?.thumbnail}
-                          name="thumbnail"
-                        />
-                      </div>
-                    </div>
-                  )}
-
-                  <input name="pageId" value={page?.id} hidden readOnly />
-                  <input name="_action" value="updateMeta" hidden readOnly />
-
-                  {metaValidationError && metaValidationError?.length > 0 && (
-                    <div className="pb-3">
-                      {metaValidationError.map((error: string, i: number) => {
-                        return (
-                          <p
-                            key={error + i}
-                            className="my-2 text-center text-xs text-red-500"
-                          >
-                            {error}
-                          </p>
-                        );
-                      })}
-                    </div>
-                  )}
-
-                  <button
-                    type="submit"
-                    className="btn-primary btn-md mx-auto block w-max !rounded-sm"
-                  >
-                    {page ? "Submit" : "Next Step"}
-                  </button>
-                </Form>
-              }
+            <Header
+              pageType={pageType}
+              pageToCreate={pageToCreate}
+              currentVersion={currentVersion}
+              metaValidationError={metaValidationError}
+              isActive={isActive}
+              colors={colors}
+              articleCategories={articleCategories}
+              setIsActive={setIsActive}
             />
 
             {page && (
@@ -428,137 +313,26 @@ const ManageHomePage = () => {
                 forceOpen={true}
                 content={
                   <PageBuilder
-                    previewPage={currentVersion}
-                    pageType={pageType as PageType}
-                    blocks={currentBlocks}
-                    searchResults={searchResults}
-                    updateSuccess={updateSuccess}
-                    productCategories={productCategories}
-                    productSubCategories={productSubCategories}
                     articleCategories={articleCategories}
+                    blocks={currentBlocks}
                     brands={brands}
                     colors={colors}
+                    previewPage={currentVersion}
+                    productCategories={productCategories}
+                    productSubCategories={productSubCategories}
+                    searchResults={searchResults}
+                    updateSuccess={updateSuccess}
                   />
                 }
               />
             )}
 
             {page && (
-              <div className="relative flex flex-col items-center justify-center gap-3 bg-brand-black py-6 text-center text-xl font-bold text-brand-white">
-                <div className="self-start pb-3 pl-6 text-xl font-medium">
-                  Version
-                </div>
-                <div className="flex flex-col items-center gap-3">
-                  <Form method="POST" className="flex items-center gap-3">
-                    <button
-                      type="submit"
-                      name="_action"
-                      value="addpreview"
-                      className="flex !h-[32px] !min-h-[32px] !w-[32px] !min-w-[32px] items-center justify-center !rounded-sm bg-error hover:bg-red-500"
-                    >
-                      <HiTrash size={14} className="text-brand-white" />
-                    </button>
-
-                    <select
-                      className="select select-sm !h-[32px] !min-h-[32px] w-full max-w-xs text-brand-black/75 max-md:max-w-[240px]"
-                      onChange={(e) => {
-                        const formData = new FormData();
-                        formData.set("_action", "changecurrentpreview");
-                        formData.set("pageId", e.target.value);
-                        submit(formData, { method: "POST" });
-                      }}
-                    >
-                      {previewPages
-                        .slice()
-                        .sort(
-                          (a: any, b: any) =>
-                            (b.publishedAt || 0) - (a.publishedAt || 0)
-                        )
-                        .map((previewPageData: PreviewPage, i: number) => {
-                          const { id, publishedAt } = previewPageData;
-                          const publishedDate = publishedAt
-                            ? formatDate(publishedAt, true)
-                            : "unpublished";
-
-                          const optionLabel =
-                            i === 0 ? "Current Version" : "Previous Version";
-
-                          return (
-                            <option
-                              key={"preivewPageVersionSelection_" + i}
-                              selected={i === 0}
-                              value={id}
-                            >
-                              {optionLabel}: {publishedDate}
-                            </option>
-                          );
-                        })}
-                    </select>
-
-                    <input
-                      hidden
-                      readOnly
-                      name="pageId"
-                      value={page?.id.toString()}
-                    />
-                    <button
-                      type="submit"
-                      name="_action"
-                      value="addpreview"
-                      className="btn-primary btn-md flex !h-[32px] !min-h-[32px] !w-[32px] items-center justify-center !rounded-sm"
-                    >
-                      +
-                    </button>
-                  </Form>
-
-                  <div className="w-full select-none py-1 text-xs text-brand-white/75">
-                    Last Published by : {currentVersion?.publisher}
-                  </div>
-                </div>
-
-                <Form
-                  method="POST"
-                  className="flex flex-row justify-center gap-3"
-                >
-                  <input
-                    hidden
-                    readOnly
-                    name="previewPageId"
-                    value={currentVersion?.id.toString()}
-                  />
-                  <input
-                    hidden
-                    readOnly
-                    name="pageId"
-                    value={page?.id.toString()}
-                  />
-                  <button
-                    type="submit"
-                    name="_action"
-                    value="revert"
-                    className="btn-primary btn-md block w-max !rounded-sm"
-                  >
-                    Revert
-                  </button>
-                  <a
-                    type="button"
-                    className="btn-primary btn-md flex w-max items-center justify-center !rounded-sm"
-                    target="_blank"
-                    rel="noreferrer"
-                    href={`/preview/${currentVersion?.id}`}
-                  >
-                    Preview
-                  </a>
-                  <button
-                    type="submit"
-                    name="_action"
-                    value="publish"
-                    className="btn-primary btn-md block w-max !rounded-sm"
-                  >
-                    Publish
-                  </button>
-                </Form>
-              </div>
+              <VersionControl
+                currentVersion={currentVersion}
+                page={page as Page}
+                previewPages={previewPages}
+              />
             )}
           </div>
         </div>

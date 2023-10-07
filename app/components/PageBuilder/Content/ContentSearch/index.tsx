@@ -9,7 +9,7 @@ type Props = {
   setContentType: Function;
 };
 
-const BlockContentSearch = ({ selectedBlock, setContentType }: Props) => {
+const ContentSearch = ({ selectedBlock, setContentType }: Props) => {
   const submit = useSubmit();
   const [searchParams] = useSearchParams();
   const [searchValue, setSearchValue] = useState<string>();
@@ -96,4 +96,4 @@ const BlockContentSearch = ({ selectedBlock, setContentType }: Props) => {
   );
 };
 
-export default BlockContentSearch;
+export default ContentSearch;

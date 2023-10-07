@@ -8,7 +8,7 @@ type Props = {
   contentType: BlockContentType | undefined;
 };
 
-const BlockContentImageResults = ({
+const ResultsImages = ({
   selectedItems,
   setSelectedItems,
   selectedBlock,
@@ -76,4 +76,4 @@ const BlockContentImageResults = ({
   );
 };
 
-export default BlockContentImageResults;
+export default ResultsImages;

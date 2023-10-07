@@ -43,7 +43,20 @@ export const action = async ({ request, params }: ActionArgs) => {
     isActive,
   } = form;
 
-  const validationErrors = validateForm(form);
+  const validate = {
+    email: true,
+    firstName: true,
+    lastName: true,
+    dateofbirth: true,
+    phoneNumber: true,
+    address1: true,
+    postcode: true,
+    suburb: true,
+    state: true,
+    country: true,
+  };
+
+  const validationErrors = validateForm(form, validate);
   if (validationErrors) {
     return { validationErrors };
   }
@@ -87,7 +100,10 @@ const ModifyUser = () => {
     if (success) {
       navigate(-1);
     }
-  }, [success, navigate]);
+    if (validationErrors) {
+      setLoading(false);
+    }
+  }, [success, navigate, validationErrors]);
 
   return (
     <DarkOverlay>
@@ -207,7 +223,10 @@ const ModifyUser = () => {
                   validationErrors={validationErrors}
                 />
 
-                <SelectCountry defaultValue={user?.address?.country} />
+                <SelectCountry
+                  defaultValue={user?.address?.country}
+                  validationErrors={validationErrors}
+                />
               </div>
             </div>
           </div>

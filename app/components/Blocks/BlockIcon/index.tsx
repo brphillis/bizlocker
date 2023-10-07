@@ -1,36 +1,18 @@
 import Icon from "~/components/Icon";
 import type * as IconsIO5 from "react-icons/io5";
+import { blockMaster } from "~/utility/blockMaster";
 
 type BlockIconProps = {
-  blockName?: string;
+  blockName: string;
   size: number;
-  styles: string;
+  styles?: string;
 };
 
 const BlockIcon = ({ blockName, size, styles }: BlockIconProps) => {
-  let iconName: keyof typeof IconsIO5 = "IoSquare";
+  const iconName = (blockMaster.find((e) => e.name === blockName)?.icon ||
+    "IoSquare") as keyof typeof IconsIO5;
 
-  switch (blockName) {
-    case "banner":
-      iconName = "IoTabletLandscape";
-      break;
-    case "tile":
-      iconName = "IoGrid";
-      break;
-    case "text":
-      iconName = "IoText";
-      break;
-    case "product":
-      iconName = "IoCart";
-      break;
-    case "article":
-      iconName = "IoNewspaper";
-      break;
-    default:
-      break;
-  }
-
-  return <Icon iconName={iconName} size={size} styles={styles} />;
+  return <Icon iconName={iconName} size={size} styles={styles || ""} />;
 };
 
 export default BlockIcon;

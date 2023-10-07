@@ -2,12 +2,13 @@ import { IoInformationCircle } from "react-icons/io5";
 
 type Props = {
   tip: string;
+  iconColor?: string;
 };
 
-const ToolTip = ({ tip }: Props) => {
+const ToolTip = ({ tip, iconColor }: Props) => {
   return (
     <div
-      className="z-100 tooltip-primary tooltip absolute right-1 top-[12px]"
+      className={`z-100 tooltip-primary tooltip absolute right-1 top-[12px] ${iconColor}`}
       data-tip={tip}
     >
       <IoInformationCircle />

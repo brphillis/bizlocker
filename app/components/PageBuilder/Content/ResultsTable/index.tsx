@@ -9,7 +9,7 @@ type Props = {
   contentType: BlockContentType | undefined;
 };
 
-const BlockContentResultsTable = ({
+const ResultsTable = ({
   selectedItems,
   setSelectedItems,
   selectedBlock,
@@ -96,4 +96,4 @@ const BlockContentResultsTable = ({
   );
 };
 
-export default BlockContentResultsTable;
+export default ResultsTable;

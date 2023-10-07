@@ -4,25 +4,20 @@ import { blockMaster } from "~/utility/blockMaster";
 import BlockIcon from "~/components/Blocks/BlockIcon";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
 import { getBlockDefaultValues } from "~/helpers/blockHelpers";
-import {
-  HiMiniArrowDown,
-  HiMiniArrowUp,
-  HiPencil,
-  HiTrash,
-} from "react-icons/hi2";
 import BlockOptions from "./BlockOptions";
-import SelectedContent from "./SelectedContent";
-import TextBlockOptions from "./TextBlockOptions";
-import BlockContentSearch from "./BlockContentSearch";
-import ProductBlockOptions from "./ProductBlockOptions";
-import ArticleBlockOptions from "./ArticleBlockOptions";
-import BlockContentResultsTable from "./BlockContentResultsTable";
-import BlockContentImageResults from "./BlockContentImageResults";
+import SelectedContent from "./Content/SelectedContent";
+import TextBlockContent from "./Content/TextBlockContent";
+import ProductBlockOptions from "./Options/ProductBlockOptions";
+import ArticleBlockOptions from "./Options/ArticleBlockOptions";
 import BackSubmitButtons from "../Forms/Buttons/BackSubmitButtons";
+import BlockSelect from "./BlockSelect";
+import SquareIconButton from "../Buttons/SquareIconButton";
+import ContentSearch from "./Content/ContentSearch";
+import ResultsTable from "./Content/ResultsTable";
+import ResultsImages from "./Content/ResultsImages";
 
 type Props = {
   previewPage: PreviewPage;
-  pageType: PageType;
   blocks: Block[];
   searchResults: Campaign[] | Promotion[] | Image[] | undefined;
   updateSuccess: boolean;
@@ -35,7 +30,6 @@ type Props = {
 
 const PageBuilder = ({
   previewPage,
-  pageType,
   blocks,
   searchResults,
   updateSuccess,
@@ -131,12 +125,12 @@ const PageBuilder = ({
 
   return (
     <Form className="relative w-full" method="POST">
-      <input name="previewPageId" value={previewPage.id} hidden readOnly />
+      <input name="previewPageId" value={previewPage?.id} hidden readOnly />
       <input name="itemIndex" value={editingIndex.toString()} hidden readOnly />
       {!editingContent && (
         <div className="flex w-full max-w-full flex-col items-center gap-3 overflow-x-hidden">
           <div className="scrollbar-hide">
-            {blocks.map(({ id, name }: Block, i) => {
+            {blocks?.map(({ id, name }: Block, i) => {
               return (
                 <div
                   key={"block_" + i}
@@ -166,44 +160,37 @@ const PageBuilder = ({
                   {/* BUTTONS */}
                   <div className="flex h-full flex-row items-center justify-start gap-3">
                     {i < blocks.length - 1 && (
-                      <div
-                        className="flex !h-[32px] !min-h-[32px] !w-[32px] !min-w-[32px] items-center justify-center !rounded-sm bg-primary hover:bg-primary-focus"
-                        onClick={() => changeBlockOrder(i, "down")}
-                      >
-                        <HiMiniArrowDown
-                          size={14}
-                          className="text-brand-white"
-                        />
-                      </div>
+                      <SquareIconButton
+                        iconName="IoArrowDown"
+                        size="small"
+                        color="primary"
+                        onClickFunction={() => changeBlockOrder(i, "down")}
+                      />
                     )}
 
                     {i > 0 && (
-                      <div
-                        className="flex !h-[32px] !min-h-[32px] !w-[32px] !min-w-[32px] items-center justify-center !rounded-sm bg-primary hover:bg-primary-focus"
-                        onClick={() => changeBlockOrder(i, "up")}
-                      >
-                        <HiMiniArrowUp size={14} className="text-brand-white" />
-                      </div>
+                      <SquareIconButton
+                        iconName="IoArrowUp"
+                        size="small"
+                        color="primary"
+                        onClickFunction={() => changeBlockOrder(i, "up")}
+                      />
                     )}
 
-                    <div
-                      className="flex !h-[32px] !min-h-[32px] !w-[32px] !min-w-[32px] items-center justify-center !rounded-sm bg-primary hover:bg-primary-focus"
-                      onClick={() => {
-                        editBlock(i);
-                      }}
-                    >
-                      <HiPencil size={14} className="text-brand-white" />
-                    </div>
+                    <SquareIconButton
+                      iconName="IoPencilSharp"
+                      size="small"
+                      color="primary"
+                      onClickFunction={() => editBlock(i)}
+                    />
 
                     {i > 0 && (
-                      <div
-                        className="flex !h-[32px] !min-h-[32px] !w-[32px] !min-w-[32px] items-center justify-center !rounded-sm  bg-error hover:bg-red-500"
-                        onClick={() => {
-                          disconnectBlock(id, name);
-                        }}
-                      >
-                        <HiTrash size={14} className="text-brand-white" />
-                      </div>
+                      <SquareIconButton
+                        iconName="IoTrashBin"
+                        size="small"
+                        color="error"
+                        onClickFunction={() => disconnectBlock(id, name)}
+                      />
                     )}
                   </div>
                 </div>
@@ -227,36 +214,10 @@ const PageBuilder = ({
 
       {editingContent && (
         <div className="relative mt-3 flex w-full flex-col gap-6 px-3 max-md:px-0">
-          <div className="flex w-full flex-row flex-wrap justify-center gap-3 sm:justify-start">
-            <div className="w-full pb-3">
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text pt-1 font-semibold text-brand-white">
-                    Block
-                  </span>
-                </label>
-                <select
-                  name="blockName"
-                  className=" select w-[95vw] max-w-full text-brand-black/75 sm:w-[215px]"
-                  defaultValue={selectedBlock}
-                  placeholder="Select Block"
-                  onChange={(e) => {
-                    setSelectedBlock(e.target.value as BlockName);
-                  }}
-                >
-                  <option value="">Select Block</option>
-
-                  {blockMaster.map(({ name }: BlockMaster) => {
-                    return (
-                      <option key={"blockSelect_" + name} value={name}>
-                        {capitalizeFirst(name)}
-                      </option>
-                    );
-                  })}
-                </select>
-              </div>
-            </div>
-          </div>
+          <BlockSelect
+            selectedBlock={selectedBlock}
+            setSelectedBlock={setSelectedBlock}
+          />
 
           <BlockOptions
             selectedBlock={selectedBlock}
@@ -266,7 +227,7 @@ const PageBuilder = ({
             colors={colors}
           />
 
-          <BlockContentSearch
+          <ContentSearch
             selectedBlock={selectedBlock}
             setContentType={setContentType}
           />
@@ -289,14 +250,14 @@ const PageBuilder = ({
             defaultValues={blocks[editingIndex]?.content as ArticleBlockContent}
           />
 
-          <TextBlockOptions
+          <TextBlockContent
             selectedBlock={selectedBlock}
             selectedItems={selectedItems}
             setSelectedItems={setSelectedItems}
             defaultValue={blocks[editingIndex]?.content as TextBlockContent}
           />
 
-          <BlockContentResultsTable
+          <ResultsTable
             selectedBlock={selectedBlock}
             selectedItems={selectedItems}
             setSelectedItems={handleLimitedItemSelect}
@@ -304,7 +265,7 @@ const PageBuilder = ({
             contentType={contentType}
           />
 
-          <BlockContentImageResults
+          <ResultsImages
             selectedBlock={selectedBlock}
             selectedItems={selectedItems}
             setSelectedItems={handleLimitedItemSelect}

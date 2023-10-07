@@ -45,7 +45,15 @@ export const action = async ({ request, params }: ActionArgs) => {
 
   switch (form._action) {
     case "upsert":
-      const validationErrors = validateForm(form);
+      const validate = {
+        name: true,
+        department: true,
+        discountPercentage: true,
+        bannerImage: true,
+        tileImage: true,
+      };
+
+      const validationErrors = validateForm(form, validate);
       if (validationErrors) {
         return { validationErrors };
       }

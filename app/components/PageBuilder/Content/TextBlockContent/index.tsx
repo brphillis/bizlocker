@@ -8,7 +8,7 @@ type Props = {
   defaultValue: TextBlockContent;
 };
 
-const TextBlockOptions = ({
+const TextBlockContent = ({
   selectedBlock,
   defaultValue,
   selectedItems,
@@ -49,4 +49,4 @@ const TextBlockOptions = ({
   );
 };
 
-export default TextBlockOptions;
+export default TextBlockContent;

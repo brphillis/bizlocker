@@ -24,10 +24,18 @@ interface Verifier {
   updatedAt: DateTime | null;
 }
 
-type ValidationErrors = {
-  name?: string;
-  contentSelection?: string;
-};
+// Define a type for validation errors
+interface ValidationErrors {
+  [key: string]: string;
+}
+
+// Define a type for your form configuration
+interface FormConfig {
+  [key: string]: {
+    required: boolean;
+    validator?: (value: string) => string | null;
+  };
+}
 
 type VerifyTypes = "email" | "password";
 
@@ -224,21 +232,6 @@ interface ProductSubCategory {
   isActive: boolean;
 }
 
-interface Article {
-  id: number;
-  title: string;
-  description: string;
-  backgroundColor: string;
-  previewPage: PreviewPage[];
-  blocks: Block[];
-  blockOrder: string[];
-  thumbnail?: Image;
-  isActive?: boolean;
-  articleCategories: ArticleCategory[];
-  createdAt: Date;
-  updatedAt: Date;
-}
-
 interface ArticleCategory {
   id: number;
   name: string;
@@ -406,18 +399,16 @@ type BlockContentType =
 
 type BackgroundPatternName = "wavy" | "isometric";
 
-interface PreviewPage {
-  id: number;
-  backgroundColor: string;
-  blocks: Block[];
-  blockOrder: string[];
+interface PreviewPage extends Page {
   publisher?: string;
   publishedAt?: Date;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
-interface HomePage {
+interface Article extends Page {
+  articleCategories?: ArticleCategory[];
+}
+
+interface Page {
   id: number;
   title: string;
   description: string;
@@ -425,26 +416,14 @@ interface HomePage {
   previewPage: PreviewPage[];
   blocks: Block[];
   blockOrder: string[];
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-interface WebPage {
-  id: number;
-  title: string;
-  description: string;
-  backgroundColor: string;
-  previewPage: PreviewPage[];
-  blocks: Block[];
-  blockOrder: string[];
-  thumbnail?: Image;
   isActive?: boolean;
+  thumbnail?: Image;
   createdAt: Date;
   updatedAt: Date;
 }
 
 interface NewBlockData {
-  pageId: number;
+  previewPageId: number;
   blockName: BlockName;
   itemIndex: number;
   contentType: BlockContentType;
@@ -468,12 +447,22 @@ type BlockContent = {
 type BlockMaster = {
   name: BlockName;
   component: React.ComponentType<any>;
+  icon: string;
   options: BlockMasterOptions;
   content: Object;
   contentRequired?: boolean;
   hasMultipleContent?: boolean;
   maxContentItems?: number;
 };
+
+interface Block {
+  id: string;
+  pageBlockId: string;
+  name: BlockName;
+  page: Page;
+  content: BlockContent;
+  blockOptions: BlockOptions[];
+}
 
 interface BlockMasterOptions {
   autoplay?: boolean;
@@ -531,15 +520,6 @@ interface BlockMasterOptions {
   title?: boolean;
   titleColor?: boolean;
   order?: boolean;
-}
-
-interface Block {
-  id: string;
-  pageBlockId: string;
-  name: BlockName;
-  page: Page;
-  content: BlockContent;
-  blockOptions: BlockOptions[];
 }
 
 interface BlockOptions {
@@ -666,7 +646,6 @@ interface ProductBlockContent {
   brand?: Brand;
   brandId?: number;
   gender?: Gender;
-
   createdAt: Date;
   updatedAt: Date;
 }

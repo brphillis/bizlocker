@@ -35,11 +35,16 @@ export const action = async ({ request, params }: ActionArgs) => {
   }
   const id = params.id === "add" ? undefined : params.id;
   const form = Object.fromEntries(await request.formData());
-  const { altText, image } = form;
+  const { image, altText } = form;
 
   switch (form._action) {
     case "upsert":
-      const validationErrors = validateForm(form);
+      const validate = {
+        image: true,
+        altText: true,
+      };
+
+      const validationErrors = validateForm(form, validate);
       if (validationErrors) {
         return { validationErrors };
       }

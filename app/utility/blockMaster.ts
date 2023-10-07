@@ -9,6 +9,7 @@ export const blockMaster: BlockMaster[] = [
   {
     name: "banner",
     component: BannerBlock,
+    icon: "IoTabletLandscape",
     options: {
       backgroundColor: true,
       backgroundColorTwo: true,
@@ -48,6 +49,7 @@ export const blockMaster: BlockMaster[] = [
   {
     name: "tile",
     component: TileBlock,
+    icon: "IoGrid",
     hasMultipleContent: true,
     maxContentItems: 6,
     options: {
@@ -110,6 +112,7 @@ export const blockMaster: BlockMaster[] = [
   {
     name: "hero",
     component: HeroBlock,
+    icon: "IoLayers",
     options: {
       backgroundColor: true,
       backgroundColorTwo: true,
@@ -147,6 +150,7 @@ export const blockMaster: BlockMaster[] = [
   {
     name: "text",
     component: TextBlock,
+    icon: "IoText",
     options: {
       size: true,
       backgroundColor: true,
@@ -158,6 +162,7 @@ export const blockMaster: BlockMaster[] = [
   {
     name: "product",
     component: ProductBlock,
+    icon: "IoCart",
     options: {
       columns: true,
       count: true,
@@ -175,6 +180,7 @@ export const blockMaster: BlockMaster[] = [
   {
     name: "article",
     component: ArticleBlock,
+    icon: "IoNewspaper",
     options: {
       columns: true,
       count: true,

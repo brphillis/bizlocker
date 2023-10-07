@@ -32,10 +32,17 @@ export const action = async ({ request, params }: ActionArgs) => {
 
   switch (form._action) {
     case "upsert":
-      const validationErrors = validateForm(form);
+      const validate = {
+        name: true,
+        index: true,
+        image: true,
+      };
+
+      const validationErrors = validateForm(form, validate);
       if (validationErrors) {
         return { validationErrors };
       }
+
       const parsedImage = image
         ? (JSON.parse(image?.toString()) as Image)
         : undefined;

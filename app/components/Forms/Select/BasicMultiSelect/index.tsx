@@ -3,8 +3,8 @@ import { useState } from "react";
 type Props = {
   name: string;
   label: string;
-  selections: Array<SelectValue>;
-  defaultValues: Array<SelectValue>;
+  selections: SelectValue[];
+  defaultValues: SelectValue[];
   styles?: string;
   customWidth?: string;
   labelColor?: string;

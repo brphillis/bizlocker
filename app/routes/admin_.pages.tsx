@@ -69,7 +69,7 @@ const Pages = () => {
             </thead>
             <tbody>
               {webPages &&
-                webPages.map(({ id, title, isActive }: WebPage, i: number) => {
+                webPages.map(({ id, title, isActive }: Page, i: number) => {
                   return (
                     <tr
                       className="cursor-pointer transition-colors duration-200 hover:bg-base-100"
