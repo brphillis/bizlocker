@@ -1,4 +1,4 @@
-import { useSearchParams, useSubmit } from "@remix-run/react";
+import { useSubmit } from "@remix-run/react";
 import { useState } from "react";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
@@ -6,12 +6,16 @@ import { getBlockContentTypes } from "~/utility/blockMaster";
 
 type Props = {
   selectedBlock: BlockName | undefined;
+  contentType: BlockContentType | undefined;
   setContentType: Function;
 };
 
-const ContentSearch = ({ selectedBlock, setContentType }: Props) => {
+const ContentSearch = ({
+  selectedBlock,
+  contentType,
+  setContentType,
+}: Props) => {
   const submit = useSubmit();
-  const [searchParams] = useSearchParams();
   const [searchValue, setSearchValue] = useState<string>();
 
   const handleSearchSubmit = (contentType?: string, name?: string) => {
@@ -19,18 +23,14 @@ const ContentSearch = ({ selectedBlock, setContentType }: Props) => {
     searchForm.set("_action", "search");
 
     if (contentType) {
-      searchParams.set("contentType", contentType);
+      searchForm.set("contentType", contentType);
     }
 
-    const selectedContentType = searchParams.get("contentType");
-
-    if (selectedContentType) {
-      searchForm.set("contentType", selectedContentType as string);
-      if (name) {
-        searchForm.set("name", name as string);
-      }
-      submit(searchForm, { method: "POST" });
+    if (name) {
+      searchForm.set("name", name as string);
     }
+
+    submit(searchForm, { method: "POST" });
   };
 
   return (
@@ -53,6 +53,7 @@ const ContentSearch = ({ selectedBlock, setContentType }: Props) => {
                 placeholder="Select a Type"
                 onChange={(e) => {
                   handleSearchSubmit(e.target.value, undefined);
+
                   setContentType(e.target.value);
                 }}
               >
@@ -84,8 +85,11 @@ const ContentSearch = ({ selectedBlock, setContentType }: Props) => {
             />
 
             <button
+              type="button"
               className="btn-primary btn-sm !h-[42px] rounded-sm"
-              onClick={() => handleSearchSubmit(undefined, searchValue)}
+              onClick={() => {
+                handleSearchSubmit(contentType, searchValue);
+              }}
             >
               Search
             </button>

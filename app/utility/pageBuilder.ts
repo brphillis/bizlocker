@@ -4,6 +4,7 @@ import { searchProducts } from "~/models/products.server";
 import { searchPromotions } from "~/models/promotions.server";
 import { blockMaster, blockTypes, getBlockContentTypes } from "./blockMaster";
 import { searchBrands } from "~/models/brands.server";
+import { searchIcons } from "./icons";
 
 export const pageTypes = ["homePage", "webPage", "article", "previewPage"];
 
@@ -61,19 +62,19 @@ export const getFormBlockOptions = (form: {
 }): BlockOptions => {
   const {
     backgroundColor,
-    backgroundColorTwo,
+    backgroundColorSecondary,
     backgroundBrightness,
-    backgroundBrightnessTwo,
+    backgroundBrightnessSecondary,
     backgroundWidth,
-    backgroundWidthTwo,
+    backgroundWidthSecondary,
     backgroundPatternName,
     backgroundPatternColor,
     backgroundPatternOpacity,
     backgroundPatternSize,
-    backgroundPatternNameTwo,
-    backgroundPatternColorTwo,
-    backgroundPatternOpacityTwo,
-    backgroundPatternSizeTwo,
+    backgroundPatternNameSecondary,
+    backgroundPatternColorSecondary,
+    backgroundPatternOpacitySecondary,
+    backgroundPatternSizeSecondary,
     borderColor,
     borderDisplay,
     borderRadius,
@@ -84,6 +85,12 @@ export const getFormBlockOptions = (form: {
     colorSix,
     colorThree,
     colorTwo,
+    colorSecondaryFive,
+    colorSecondaryFour,
+    colorSecondaryOne,
+    colorSecondarySix,
+    colorSecondaryThree,
+    colorSecondaryTwo,
     columns,
     columnsMobile,
     count,
@@ -112,14 +119,20 @@ export const getFormBlockOptions = (form: {
     style,
     title,
     titleColor,
+    titleOne,
+    titleTwo,
+    titleThree,
+    titleFour,
+    titleFive,
+    titleSix,
   } = form;
 
   const blockOptions = {
     backgroundBrightness: backgroundBrightness
       ? parseInt(backgroundBrightness as string)
       : undefined,
-    backgroundBrightnessTwo: backgroundBrightnessTwo
-      ? parseInt(backgroundBrightnessTwo as string)
+    backgroundBrightnessSecondary: backgroundBrightnessSecondary
+      ? parseInt(backgroundBrightnessSecondary as string)
       : undefined,
     backgroundColor: backgroundColor ? (backgroundColor as string) : undefined,
     backgroundWidth: backgroundWidth ? (backgroundWidth as string) : undefined,
@@ -135,23 +148,23 @@ export const getFormBlockOptions = (form: {
     backgroundPatternSize: backgroundPatternSize
       ? (backgroundPatternSize as string)
       : undefined,
-    backgroundColorTwo: backgroundColorTwo
-      ? (backgroundColorTwo as string)
+    backgroundColorSecondary: backgroundColorSecondary
+      ? (backgroundColorSecondary as string)
       : undefined,
-    backgroundWidthTwo: backgroundWidthTwo
-      ? (backgroundWidthTwo as string)
+    backgroundWidthSecondary: backgroundWidthSecondary
+      ? (backgroundWidthSecondary as string)
       : undefined,
-    backgroundPatternNameTwo: backgroundPatternNameTwo
-      ? (backgroundPatternNameTwo as string)
+    backgroundPatternNameSecondary: backgroundPatternNameSecondary
+      ? (backgroundPatternNameSecondary as string)
       : undefined,
-    backgroundPatternColorTwo: backgroundPatternColorTwo
-      ? (backgroundPatternColorTwo as string)
+    backgroundPatternColorSecondary: backgroundPatternColorSecondary
+      ? (backgroundPatternColorSecondary as string)
       : undefined,
-    backgroundPatternOpacityTwo: backgroundPatternOpacityTwo
-      ? parseInt(backgroundPatternOpacityTwo as string)
+    backgroundPatternOpacitySecondary: backgroundPatternOpacitySecondary
+      ? parseInt(backgroundPatternOpacitySecondary as string)
       : undefined,
-    backgroundPatternSizeTwo: backgroundPatternSizeTwo
-      ? (backgroundPatternSize as string)
+    backgroundPatternSizeSecondary: backgroundPatternSizeSecondary
+      ? (backgroundPatternSizeSecondary as string)
       : undefined,
     borderColor: borderColor ? (borderColor as string) : undefined,
     borderDisplay: borderDisplay ? (borderDisplay as string) : undefined,
@@ -163,6 +176,24 @@ export const getFormBlockOptions = (form: {
     colorFour: colorFour ? (colorFour as string) : undefined,
     colorFive: colorFive ? (colorFive as string) : undefined,
     colorSix: colorSix ? (colorSix as string) : undefined,
+    colorSecondaryOne: colorSecondaryOne
+      ? (colorSecondaryOne as string)
+      : undefined,
+    colorSecondaryTwo: colorSecondaryTwo
+      ? (colorSecondaryTwo as string)
+      : undefined,
+    colorSecondaryThree: colorSecondaryThree
+      ? (colorSecondaryThree as string)
+      : undefined,
+    colorSecondaryFour: colorSecondaryFour
+      ? (colorSecondaryFour as string)
+      : undefined,
+    colorSecondaryFive: colorSecondaryFive
+      ? (colorSecondaryFive as string)
+      : undefined,
+    colorSecondarySix: colorSecondarySix
+      ? (colorSecondarySix as string)
+      : undefined,
     columns: columns ? parseInt(columns as string) : undefined,
     columnsMobile: columnsMobile
       ? parseInt(columnsMobile as string)
@@ -193,6 +224,12 @@ export const getFormBlockOptions = (form: {
     style: style ? (style as string) : undefined,
     title: title ? (title as string) : undefined,
     titleColor: titleColor ? (titleColor as string) : undefined,
+    titleOne: titleOne ? (titleOne as string) : undefined,
+    titleTwo: titleTwo ? (titleTwo as string) : undefined,
+    titleThree: titleThree ? (titleThree as string) : undefined,
+    titleFour: titleFour ? (titleFour as string) : undefined,
+    titleFive: titleFive ? (titleFive as string) : undefined,
+    titleSix: titleSix ? (titleSix as string) : undefined,
   } as BlockOptions;
 
   return blockOptions;
@@ -270,6 +307,7 @@ export const searchContentData = async (
   if (name) {
     formData.set("name", name as string);
   }
+
   formData.set("page", "1");
   formData.set("perPage", "10");
 
@@ -282,32 +320,39 @@ export const searchContentData = async (
       );
       searchResults = promotions;
 
-      return { searchResults };
+      return searchResults;
+
     case "campaign":
       const { campaigns } = await searchCampaigns(Object.fromEntries(formData));
       searchResults = campaigns;
 
-      return { searchResults };
+      return searchResults;
 
     case "image":
       const { images } = await searchImages(Object.fromEntries(formData));
       searchResults = images;
 
-      return { searchResults };
+      return searchResults;
 
     case "product":
       const { products } = await searchProducts(Object.fromEntries(formData));
       searchResults = products;
 
-      return { searchResults };
+      return searchResults;
 
     case "brand":
       const { brands } = await searchBrands(Object.fromEntries(formData));
       searchResults = brands;
 
-      return { searchResults };
+      return searchResults;
+
+    case "icon":
+      const icons = await searchIcons(Object.fromEntries(formData));
+      searchResults = icons;
+
+      return searchResults;
 
     default:
-      return { searchResults };
+      return searchResults;
   }
 };

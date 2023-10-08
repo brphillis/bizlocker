@@ -14,6 +14,7 @@ import ColumnsAndRowsOptions from "./ColumnsAndRows";
 import ItemColorOptions from "./ItemColors";
 import ItemFilterOptions from "./ItemFilters";
 import LinkOptions from "./Links";
+import ItemTitleOptions from "./ItemTitles";
 
 type Props = {
   selectedBlock: BlockName | undefined;
@@ -118,6 +119,12 @@ const BlockOptions = ({
             />
 
             <ItemFilterOptions
+              defaultValues={defaultValues}
+              selectedBlockOptions={selectedBlockOptions}
+              selectedItems={selectedItems}
+            />
+
+            <ItemTitleOptions
               defaultValues={defaultValues}
               selectedBlockOptions={selectedBlockOptions}
               selectedItems={selectedItems}

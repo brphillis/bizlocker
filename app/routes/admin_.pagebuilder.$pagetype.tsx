@@ -102,10 +102,12 @@ export const action = async ({ request, params }: ActionArgs) => {
 
   switch (form._action) {
     case "search":
-      return await searchContentData(
+      const searchResults = await searchContentData(
         contentType as BlockContentType,
         (name as string) || undefined
       );
+
+      return { searchResults };
 
     case "updateMeta":
       let metaValidationError: string[] = [];
@@ -259,8 +261,6 @@ const ManageHomePage = () => {
   const [isActive, setIsActive] = useState<string | undefined>(
     page?.isActive ? " " : ""
   );
-
-  console.log(currentVersion);
 
   useEffect(() => {
     if (currentPreviewPage && !actionPreview) {

@@ -12,7 +12,7 @@ export const blockMaster: BlockMaster[] = [
     icon: "IoTabletLandscape",
     options: {
       backgroundColor: true,
-      backgroundColorTwo: true,
+      backgroundColorSecondary: true,
       backgroundPatternColor: true,
       backgroundPatternName: true,
       backgroundPatternOpacity: true,
@@ -62,6 +62,12 @@ export const blockMaster: BlockMaster[] = [
       colorSix: true,
       colorThree: true,
       colorTwo: true,
+      colorSecondaryFive: true,
+      colorSecondaryFour: true,
+      colorSecondaryOne: true,
+      colorSecondarySix: true,
+      colorSecondaryThree: true,
+      colorSecondaryTwo: true,
       columns: true,
       columnsMobile: true,
       filterFive: true,
@@ -85,7 +91,14 @@ export const blockMaster: BlockMaster[] = [
       borderColor: true,
       borderDisplay: true,
       borderSize: true,
+      titleOne: true,
+      titleTwo: true,
+      titleThree: true,
+      titleFour: true,
+      titleFive: true,
+      titleSix: true,
     },
+    addOns: ["icon"],
     content: {
       include: {
         image: true,
@@ -115,7 +128,7 @@ export const blockMaster: BlockMaster[] = [
     icon: "IoLayers",
     options: {
       backgroundColor: true,
-      backgroundColorTwo: true,
+      backgroundColorSecondary: true,
       borderColor: true,
       borderDisplay: true,
       borderRadius: true,
@@ -255,6 +268,10 @@ export const getBlockContentTypes = (
 
   if (block.content) {
     processContent(block.content);
+  }
+
+  if (block.addOns) {
+    block.addOns.forEach((addOn) => contentTypes.push(addOn));
   }
 
   return contentTypes as BlockContentType[];

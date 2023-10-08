@@ -260,7 +260,9 @@ export const updatePageBlock = async (
   }
 
   // select the block we are going to edit
-  const existingBlock = blocks.find((e: any) => e.order === itemIndex);
+  const existingBlock = blocks.find(
+    (e: any) => e.id === previewPage.blockOrder[itemIndex]
+  );
 
   // check if the published page contains the block already
   const publishedContainsBlock = publishedPage?.blocks.some(
@@ -302,8 +304,15 @@ export const updatePageBlock = async (
           if (contentData.hasOwnProperty(field)) {
             const value = contentData[field as keyof BlockContent];
 
-            if (value && !Array.isArray(value) && isNaN(value as any)) {
-              // if field is NaN(not an id) it will be an Enum, populate with enum value
+            if (
+              (Array.isArray(value) &&
+                value.length > 0 &&
+                value.every(
+                  (item) => typeof item === "string" && isNaN(parseInt(item))
+                )) ||
+              (typeof value === "string" && isNaN(parseInt(value)))
+            ) {
+              // the value is an Enum or an array of Enums
               updates[field as keyof BlockContent] = value;
             } else if (value) {
               // If the value is truthy (not null or undefined)
@@ -366,6 +375,8 @@ export const updatePageBlock = async (
       }
     }
   } else {
+    //CREATE
+
     // if the preview page is creating a new version, we remove the old from the preview page
     if (
       previewContainsBlock &&
@@ -397,18 +408,25 @@ export const updatePageBlock = async (
         if (contentData.hasOwnProperty(field)) {
           const value = contentData[field as keyof BlockContent];
 
-          if (!Array.isArray(value) && value && isNaN(value as any)) {
-            // if field is NaN(not an id) it will be an Enum, populate with enum value
-
+          if (
+            (Array.isArray(value) &&
+              value.length > 0 &&
+              value.every(
+                (item) => typeof item === "string" && isNaN(parseInt(item))
+              )) ||
+            (typeof value === "string" && isNaN(parseInt(value)))
+          ) {
+            // the value is an Enum or array of Enums
+            console.log("CREATING ENUM");
             updates[field as keyof BlockContent] = value;
           } else if (value) {
             // If the value is truthy (not null or undefined)
-            if (Array.isArray(value)) {
+            if (Array.isArray(value) && value.length > 0) {
               // If it's an array, use 'connect' to connect multiple records
               updates[field as keyof BlockContent] = {
                 connect: value.map((item) => ({ id: parseInt(item as any) })),
               };
-            } else {
+            } else if (value && !isNaN(parseInt(value))) {
               // If it's not an array, use 'connect' to connect a single record
               updates[field as keyof BlockContent] = {
                 connect: { id: parseInt(value as any) },
@@ -417,7 +435,8 @@ export const updatePageBlock = async (
           }
         }
       }
-
+      console.log("WE ACTUALLY MADE IT THIS FAR");
+      console.log("LEEEEEE UPDATES", updates);
       // create the BlockContent
       const createBlockContent = prisma[`${blockName}BlockContent`].create as (
         args: any
@@ -445,6 +464,13 @@ export const updatePageBlock = async (
         where: { id: newBlock.id },
         data: {
           [`${blockName}Block`]: { connect: { id: createdContentBlock.id } },
+        },
+      });
+
+      await prisma.previewPage.update({
+        where: { id: previewPage.id },
+        data: {
+          blockOrder: [...previewPage.blockOrder, newBlock.id],
         },
       });
     }
@@ -710,6 +736,21 @@ export const disconnectBlock = async (
           },
         },
         include: includeAllPageTypes(undefined, true),
+      });
+
+      const previewPage = await prisma.previewPage.findUnique({
+        where: { id: parseInt(previewPageId) },
+      });
+
+      const newBlockOrder = previewPage?.blockOrder.filter(
+        (e) => e !== pageBlock.id
+      );
+
+      await prisma.previewPage.update({
+        where: { id: parseInt(previewPageId) },
+        data: {
+          blockOrder: newBlockOrder,
+        },
       });
 
       // Delete block if it has no remaining page connections

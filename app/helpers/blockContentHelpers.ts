@@ -11,6 +11,8 @@ export const determineSingleContentType = (
     return "brand";
   } else if (content?.image) {
     return "image";
+  } else if (content?.icon) {
+    return "icon";
   }
 };
 
@@ -35,6 +37,11 @@ export const concatBlockContent = (content: BlockContent): any => {
   if ((content?.brand as Brand[])?.length > 0) {
     (content?.brand as Brand[])?.forEach((e: any) =>
       joinedContent.push({ brand: e })
+    );
+  }
+  if ((content?.icon as string[])?.length > 0) {
+    (content?.icon as string[])?.forEach((e: any) =>
+      joinedContent.push({ icon: e })
     );
   }
 

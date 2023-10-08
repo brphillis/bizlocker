@@ -229,6 +229,7 @@ const PageBuilder = ({
 
           <ContentSearch
             selectedBlock={selectedBlock}
+            contentType={contentType}
             setContentType={setContentType}
           />
 

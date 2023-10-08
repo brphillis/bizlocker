@@ -1,4 +1,3 @@
-import { useNavigate } from "@remix-run/react";
 import PatternBackground from "~/components/Layout/PatternBackground";
 import {
   buildContentImageFromContent,
@@ -6,6 +5,8 @@ import {
   determineSingleContentType,
 } from "~/helpers/blockContentHelpers";
 import { generateColor } from "~/utility/colors";
+import ContentTile from "./ContentTile";
+import IconTile from "./IconTile";
 
 type Props = {
   content: BlockContent;
@@ -13,9 +14,9 @@ type Props = {
 };
 
 const TileBlock = ({ content, options: ArrayOptions }: Props) => {
-  const navigate = useNavigate();
   const options = ArrayOptions[0];
   const columns = options?.columns || 2;
+
   const {
     backgroundBrightness,
     backgroundColor,
@@ -26,6 +27,12 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
     colorSix,
     colorThree,
     colorTwo,
+    colorSecondaryFive,
+    colorSecondaryFour,
+    colorSecondaryOne,
+    colorSecondarySix,
+    colorSecondaryThree,
+    colorSecondaryTwo,
     columnsMobile,
     filterFive,
     filterFour,
@@ -48,6 +55,12 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
     borderColor,
     borderSize,
     borderDisplay,
+    titleOne,
+    titleTwo,
+    titleThree,
+    titleFour,
+    titleFive,
+    titleSix,
   } = options || {};
 
   const links = [linkOne, linkTwo, linkThree, linkFour, linkFive, linkSix];
@@ -59,6 +72,14 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
     filterFive,
     filterSix,
   ];
+  const itemTitles = [
+    titleOne,
+    titleTwo,
+    titleThree,
+    titleFour,
+    titleFive,
+    titleSix,
+  ];
   const itemColors = [
     colorOne,
     colorTwo,
@@ -67,9 +88,16 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
     colorFive,
     colorSix,
   ];
+  const itemSecondaryColors = [
+    colorSecondaryOne,
+    colorSecondaryTwo,
+    colorSecondaryThree,
+    colorSecondaryFour,
+    colorSecondaryFive,
+    colorSecondarySix,
+  ];
 
   const joinedContent = concatBlockContent(content);
-
   const colsMobile = `max-md:!grid-cols-${columnsMobile}`;
 
   return (
@@ -102,21 +130,22 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
           contentData as BlockContent
         );
 
-        const { name, link, imageSrc } = buildContentImageFromContent(
-          contentType!,
-          contentData,
-          "tileImage",
-          links as string[],
-          i
-        );
+        const { name, link, imageSrc } =
+          buildContentImageFromContent(
+            contentType!,
+            contentData,
+            "tileImage",
+            links as string[],
+            i
+          ) || {};
 
         return (
           <div
             key={"tileImage_" + (name || i)}
             className={`relative flex aspect-square cursor-pointer items-center justify-center transition duration-300 ease-in-out hover:scale-[1.01] ${borderDisplay}`}
             style={{
-              backgroundColor: itemColors[i]
-                ? generateColor(itemColors[i]!)
+              backgroundColor: itemSecondaryColors[i]
+                ? generateColor(itemSecondaryColors[i]!)
                 : "unset",
               borderRadius: borderRadius || "unset",
               border:
@@ -125,21 +154,32 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
                   : "unset",
             }}
           >
-            <img
-              className={`object-fit h-full w-full
-                 ${filters[i]} 
-                 ${borderRadius ? "p-3" : " "}
-                 ${borderRadius === "100%" ? "max-md:!p-2" : " "}
-                 ${
-                   joinedContent.length % 2 !== 0
-                     ? "max-sm:last:col-span-full"
-                     : ""
-                 }
-                 `}
-              onClick={() => link && navigate(link)}
-              src={imageSrc}
-              alt={name}
-            />
+            {contentType === "icon" && (
+              <IconTile
+                borderRadius={borderRadius}
+                filters={filters}
+                imageSrc={imageSrc}
+                index={i}
+                itemTitles={itemTitles}
+                joinedContent={joinedContent}
+                links={links}
+                name={name}
+                itemColors={itemColors}
+              />
+            )}
+
+            {contentType !== "icon" && (
+              <ContentTile
+                borderRadius={borderRadius}
+                filters={filters}
+                imageSrc={imageSrc}
+                index={i}
+                itemSecondaryColors={itemSecondaryColors}
+                joinedContent={joinedContent}
+                link={link}
+                name={name}
+              />
+            )}
           </div>
         );
       })}

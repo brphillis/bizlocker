@@ -395,7 +395,8 @@ type BlockContentType =
   | "article"
   | "articleCategory"
   | "richText"
-  | "gender";
+  | "gender"
+  | "icon";
 
 type BackgroundPatternName = "wavy" | "isometric";
 
@@ -426,6 +427,7 @@ interface NewBlockData {
   previewPageId: number;
   blockName: BlockName;
   itemIndex: number;
+  contentBlockId: string;
   contentType: BlockContentType;
   contentData: ContentData;
 }
@@ -442,6 +444,7 @@ type BlockContent = {
   image?: Image[] | Image;
   product?: Product[] | Product;
   article?: Article[] | Article;
+  icon?: string[];
 };
 
 type BlockMaster = {
@@ -450,6 +453,7 @@ type BlockMaster = {
   icon: string;
   options: BlockMasterOptions;
   content: Object;
+  addOns?: string[];
   contentRequired?: boolean;
   hasMultipleContent?: boolean;
   maxContentItems?: number;
@@ -468,18 +472,18 @@ interface BlockMasterOptions {
   autoplay?: boolean;
   backgroundColor?: boolean;
   backgroundBrightness?: boolean;
-  backgroundBrightnessTwo?: boolean;
+  backgroundBrightnessSecondary?: boolean;
   backgroundPatternName?: boolean;
   backgroundPatternColor?: boolean;
   backgroundPatternOpacity?: boolean;
   backgroundPatternSize?: boolean;
-  backgroundPatternNameTwo?: boolean;
-  backgroundPatternColorTwo?: boolean;
-  backgroundPatternOpacityTwo?: boolean;
-  backgroundPatternSizeTwo?: boolean;
+  backgroundPatternNameSecondary?: boolean;
+  backgroundPatternColorSecondary?: boolean;
+  backgroundPatternOpacitySecondary?: boolean;
+  backgroundPatternSizeSecondary?: boolean;
   backgroundWidth?: boolean;
-  backgroundColorTwo?: boolean;
-  backgroundWidthTwo?: boolean;
+  backgroundColorSecondary?: boolean;
+  backgroundWidthSecondary?: boolean;
   borderColor?: boolean;
   borderDisplay?: boolean;
   borderRadius?: boolean;
@@ -501,6 +505,18 @@ interface BlockMasterOptions {
   colorFour?: boolean;
   colorFive?: boolean;
   colorSix?: boolean;
+  colorSecondaryOne?: boolean;
+  colorSecondaryTwo?: boolean;
+  colorSecondaryThree?: boolean;
+  colorSecondaryFour?: boolean;
+  colorSecondaryFive?: boolean;
+  colorSecondarySix?: boolean;
+  titleOne?: boolean;
+  titleTwo?: boolean;
+  titleThree?: boolean;
+  titleFour?: boolean;
+  titleFive?: boolean;
+  titleSix?: boolean;
   filterOne?: boolean;
   filterTwo?: boolean;
   filterThree?: boolean;
@@ -528,17 +544,17 @@ interface BlockOptions {
   backgroundColor?: Color | null;
   backgroundWidth?: string | null;
   backgroundBrightness?: number | null;
-  backgroundBrightnessTwo?: number | null;
+  backgroundBrightnessSecondary?: number | null;
   backgroundPatternName?: string | null;
   backgroundPatternColor?: string | null;
   backgroundPatternOpacity?: number | null;
   backgroundPatternSize?: number | null;
-  backgroundPatternNameTwo?: string | null;
-  backgroundPatternColorTwo?: string | null;
-  backgroundPatternOpacityTwo?: number | null;
-  backgroundPatternSizeTwo?: number | null;
-  backgroundColorTwo?: Color | null;
-  backgroundWidthTwo?: string | null;
+  backgroundPatternNameSecondary?: string | null;
+  backgroundPatternColorSecondary?: string | null;
+  backgroundPatternOpacitySecondary?: number | null;
+  backgroundPatternSizeSecondary?: number | null;
+  backgroundColorSecondary?: Color | null;
+  backgroundWidthSecondary?: string | null;
   borderColor?: Color | null;
   borderDisplay?: string | null;
   borderRadius?: string | null;
@@ -549,6 +565,18 @@ interface BlockOptions {
   colorFour?: string | null;
   colorFive?: string | null;
   colorSix?: string | null;
+  colorSecondaryOne?: string | null;
+  colorSecondaryTwo?: string | null;
+  colorSecondaryThree?: string | null;
+  colorSecondaryFour?: string | null;
+  colorSecondaryFive?: string | null;
+  colorSecondarySix?: string | null;
+  titleOne?: string | null;
+  titleTwo?: string | null;
+  titleThree?: string | null;
+  titleFour?: string | null;
+  titleFive?: string | null;
+  titleSix?: string | null;
   columns?: number | null;
   columnsMobile?: number | null;
   count?: number | null;
@@ -615,6 +643,7 @@ interface TileBlock {
   promotion: Promotion[];
   promotionId?: string;
   image?: Image[];
+  tile?: string[];
 }
 
 interface TextBlock {
