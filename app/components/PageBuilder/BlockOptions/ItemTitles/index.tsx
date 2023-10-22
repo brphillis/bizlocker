@@ -9,7 +9,7 @@ const ItemTitleOptions = ({
   selectedBlockOptions,
   selectedItems,
 }: Props) => {
-  const { titleOne, titleTwo, titleThree, titleFour, titleFive, titleSix } =
+  const { title1, title2, title3, title4, title5, title6 } =
     defaultValues || {};
 
   return (
@@ -18,92 +18,92 @@ const ItemTitleOptions = ({
         Item Titles
       </summary>
       <div className="flex max-w-full flex-wrap justify-start !gap-3 px-3 pb-3 max-md:justify-center max-md:px-0">
-        {selectedBlockOptions?.filterOne && selectedItems.length > 0 && (
+        {selectedBlockOptions?.filter1 && selectedItems.length > 0 && (
           <div className="form-control max-sm:items-center">
             <label className="label max-sm:ml-3 max-sm:!self-start">
               <span className="label-text text-brand-white">Item 1 Title</span>
             </label>
             <input
-              name="titleOne"
+              name="title1"
               type="text"
               className="input input-bordered w-[95vw] !text-brand-black/75 sm:w-[215px]"
               placeholder="Title"
-              defaultValue={!titleOne ? undefined : titleOne}
+              defaultValue={!title1 ? undefined : title1}
             />
           </div>
         )}
 
-        {selectedBlockOptions?.filterTwo && selectedItems.length > 1 && (
+        {selectedBlockOptions?.filter2 && selectedItems.length > 1 && (
           <div className="form-control max-sm:items-center">
             <label className="label max-sm:ml-3 max-sm:!self-start">
               <span className="label-text text-brand-white">Item 2 Title</span>
             </label>
             <input
-              name="titleTwo"
+              name="title2"
               type="text"
               className="input input-bordered w-[95vw] !text-brand-black/75 sm:w-[215px]"
               placeholder="Title"
-              defaultValue={!titleTwo ? undefined : titleTwo}
+              defaultValue={!title2 ? undefined : title2}
             />
           </div>
         )}
 
-        {selectedBlockOptions?.filterThree && selectedItems.length > 2 && (
+        {selectedBlockOptions?.filter3 && selectedItems.length > 2 && (
           <div className="form-control max-sm:items-center">
             <label className="label max-sm:ml-3 max-sm:!self-start">
               <span className="label-text text-brand-white">Item 3 Title</span>
             </label>
             <input
-              name="titleThree"
+              name="title3"
               type="text"
               className="input input-bordered w-[95vw] !text-brand-black/75 sm:w-[215px]"
               placeholder="Title"
-              defaultValue={!titleThree ? undefined : titleThree}
+              defaultValue={!title3 ? undefined : title3}
             />
           </div>
         )}
 
-        {selectedBlockOptions?.filterFour && selectedItems.length > 3 && (
+        {selectedBlockOptions?.filter4 && selectedItems.length > 3 && (
           <div className="form-control max-sm:items-center">
             <label className="label max-sm:ml-3 max-sm:!self-start">
               <span className="label-text text-brand-white">Item 4 Title</span>
             </label>
             <input
-              name="titleFour"
+              name="title4"
               type="text"
               className="input input-bordered w-[95vw] !text-brand-black/75 sm:w-[215px]"
               placeholder="Title"
-              defaultValue={!titleFour ? undefined : titleFour}
+              defaultValue={!title4 ? undefined : title4}
             />
           </div>
         )}
 
-        {selectedBlockOptions?.filterFive && selectedItems.length > 4 && (
+        {selectedBlockOptions?.filter5 && selectedItems.length > 4 && (
           <div className="form-control max-sm:items-center">
             <label className="label max-sm:ml-3 max-sm:!self-start">
               <span className="label-text text-brand-white">Item 5 Title</span>
             </label>
             <input
-              name="titleFive"
+              name="title5"
               type="text"
               className="input input-bordered w-[95vw] !text-brand-black/75 sm:w-[215px]"
               placeholder="Title"
-              defaultValue={!titleFive ? undefined : titleFive}
+              defaultValue={!title5 ? undefined : title5}
             />
           </div>
         )}
 
-        {selectedBlockOptions?.filterSix && selectedItems.length > 5 && (
+        {selectedBlockOptions?.filter6 && selectedItems.length > 5 && (
           <div className="form-control max-sm:items-center">
             <label className="label max-sm:ml-3 max-sm:!self-start">
               <span className="label-text text-brand-white">Item 6 Title</span>
             </label>
             <input
-              name="titleSix"
+              name="title6"
               type="text"
               className="input input-bordered w-[95vw] !text-brand-black/75 sm:w-[215px]"
               placeholder="Title"
-              defaultValue={!titleSix ? undefined : titleSix}
+              defaultValue={!title6 ? undefined : title6}
             />
           </div>
         )}

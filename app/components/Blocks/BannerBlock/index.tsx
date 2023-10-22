@@ -16,6 +16,7 @@ const BannerBlock = ({ content, options: ArrayOptions }: Props) => {
   const options = ArrayOptions && ArrayOptions[0];
   const {
     backgroundColor,
+    backgroundColorSecondary,
     backgroundBrightness,
     borderColor,
     borderDisplay,
@@ -23,9 +24,8 @@ const BannerBlock = ({ content, options: ArrayOptions }: Props) => {
     borderSize,
     margin,
     padding,
+    link1,
     size,
-    linkOne,
-    backgroundColorTwo,
     title,
     titleColor,
     shortText,
@@ -46,7 +46,7 @@ const BannerBlock = ({ content, options: ArrayOptions }: Props) => {
       contentType!,
       content,
       "bannerImage",
-      linkOne as string
+      link1 as string
     );
     name = imageProps.name;
     link = imageProps.link;
@@ -73,7 +73,7 @@ const BannerBlock = ({ content, options: ArrayOptions }: Props) => {
     >
       <div
         className="absolute left-[50%] top-0 z-0 h-full w-screen translate-x-[-50%]"
-        style={{ backgroundColor: generateColor(backgroundColorTwo) }}
+        style={{ backgroundColor: generateColor(backgroundColorSecondary) }}
       ></div>
 
       {["small", undefined].includes(size) && imageSrc && (
@@ -81,7 +81,8 @@ const BannerBlock = ({ content, options: ArrayOptions }: Props) => {
           onClick={() => link && navigate(link)}
           src={imageSrc}
           alt={name}
-          className="relative mx-auto block h-[146px] w-full max-w-[1280px] overflow-hidden object-cover max-xl:h-[124px] max-lg:h-[100px] max-md:h-[88px]"
+          className={`relative mx-auto block h-[146px] w-full max-w-[1280px] overflow-hidden object-cover max-xl:h-[124px] max-lg:h-[100px] max-md:h-[88px]
+          ${backgroundColorSecondary ? "h-[170px] py-3" : " "}`}
           style={imageStyle}
         />
       )}
@@ -126,7 +127,8 @@ const BannerBlock = ({ content, options: ArrayOptions }: Props) => {
           onClick={() => link && navigate(link)}
           src={imageSrc}
           alt={name}
-          className="relative mx-auto block h-[219px] w-full max-w-[1280px] object-cover max-xl:h-[186px] max-lg:h-[125px] max-md:h-[132px]"
+          className={`relative mx-auto block h-[219px] w-full max-w-[1280px] object-cover max-xl:h-[186px] max-lg:h-[125px] max-md:h-[132px]
+          ${backgroundColorSecondary ? "h-[243px] py-3" : " "}`}
           style={imageStyle}
         />
       )}
@@ -217,7 +219,9 @@ const BannerBlock = ({ content, options: ArrayOptions }: Props) => {
           onClick={() => link && navigate(link)}
           src={imageSrc}
           alt={name}
-          className="relative object-cover shadow-md max-xl:h-[248px] max-lg:h-[224px] max-md:h-[148px]"
+          className={`relative object-cover shadow-md max-xl:h-[248px] max-lg:h-[224px] max-md:h-[148px]
+          ${backgroundColorSecondary ? "h-[272px] py-3" : " "}
+          `}
           style={imageStyle}
         />
       )}

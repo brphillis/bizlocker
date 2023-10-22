@@ -3,6 +3,7 @@ import {
   buildContentImageFromContent,
   concatBlockContent,
   determineSingleContentType,
+  getItemOption,
 } from "~/helpers/blockContentHelpers";
 import { generateColor } from "~/utility/colors";
 import ContentTile from "./ContentTile";
@@ -15,102 +16,39 @@ type Props = {
 
 const TileBlock = ({ content, options: ArrayOptions }: Props) => {
   const options = ArrayOptions[0];
-  const columns = options?.columns || 2;
 
   const {
     backgroundBrightness,
     backgroundColor,
     borderRadius,
-    colorFive,
-    colorFour,
-    colorOne,
-    colorSix,
-    colorThree,
-    colorTwo,
-    colorSecondaryFive,
-    colorSecondaryFour,
-    colorSecondaryOne,
-    colorSecondarySix,
-    colorSecondaryThree,
-    colorSecondaryTwo,
+    columns,
     columnsMobile,
-    filterFive,
-    filterFour,
-    filterOne,
-    filterSix,
-    filterThree,
-    filterTwo,
-    linkFive,
-    linkFour,
-    linkOne,
-    linkSix,
-    linkThree,
-    linkTwo,
     margin,
     padding,
     backgroundPatternColor,
     backgroundPatternName,
     backgroundPatternOpacity,
     backgroundPatternSize,
+    backgroundWidth,
     borderColor,
     borderSize,
     borderDisplay,
-    titleOne,
-    titleTwo,
-    titleThree,
-    titleFour,
-    titleFive,
-    titleSix,
   } = options || {};
-
-  const links = [linkOne, linkTwo, linkThree, linkFour, linkFive, linkSix];
-  const filters = [
-    filterOne,
-    filterTwo,
-    filterThree,
-    filterFour,
-    filterFive,
-    filterSix,
-  ];
-  const itemTitles = [
-    titleOne,
-    titleTwo,
-    titleThree,
-    titleFour,
-    titleFive,
-    titleSix,
-  ];
-  const itemColors = [
-    colorOne,
-    colorTwo,
-    colorThree,
-    colorFour,
-    colorFive,
-    colorSix,
-  ];
-  const itemSecondaryColors = [
-    colorSecondaryOne,
-    colorSecondaryTwo,
-    colorSecondaryThree,
-    colorSecondaryFour,
-    colorSecondaryFive,
-    colorSecondarySix,
-  ];
 
   const joinedContent = concatBlockContent(content);
   const colsMobile = `max-md:!grid-cols-${columnsMobile}`;
 
   return (
     <div
-      className={`relative grid h-max place-items-center gap-3 px-3 sm:gap-6 lg:px-0 ${margin} ${padding} ${
+      className={`relative grid h-max place-items-center gap-3 px-3 sm:gap-6 ${margin} ${padding} ${
         colsMobile || "max-md:!grid-cols-2"
       }`}
       style={{
         gridTemplateColumns: columns
           ? `repeat(${columns}, minmax(0, 1fr))`
           : "repeat(2, minmax(0, 1fr))",
-        paddingTop: backgroundColor ? "1.5rem" : "unset",
-        paddingBottom: backgroundColor ? "1.5rem" : "unset",
+        paddingTop: backgroundColor ? "12px" : "unset",
+        paddingBottom: backgroundColor ? "12px" : "unset",
       }}
     >
       <PatternBackground
@@ -121,7 +59,7 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
         }
         patternOpacity={backgroundPatternOpacity || 0.5}
         patternSize={backgroundPatternSize || 32}
-        screenWidth={true}
+        screenWidth={backgroundWidth === "100vw" ? true : false}
         brightness={backgroundBrightness || undefined}
       />
 
@@ -135,8 +73,7 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
             contentType!,
             contentData,
             "tileImage",
-            links as string[],
-            i
+            getItemOption(options, "link", i)
           ) || {};
 
         return (
@@ -144,8 +81,8 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
             key={"tileImage_" + (name || i)}
             className={`relative flex aspect-square cursor-pointer items-center justify-center transition duration-300 ease-in-out hover:scale-[1.01] ${borderDisplay}`}
             style={{
-              backgroundColor: itemSecondaryColors[i]
-                ? generateColor(itemSecondaryColors[i]!)
+              backgroundColor: getItemOption(options, "colorSecondary", i)
+                ? generateColor(getItemOption(options, "colorSecondary", i))
                 : "unset",
               borderRadius: borderRadius || "unset",
               border:
@@ -157,27 +94,27 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
             {contentType === "icon" && (
               <IconTile
                 borderRadius={borderRadius}
-                filters={filters}
+                filter={getItemOption(options, "filter", i)}
                 imageSrc={imageSrc}
                 index={i}
-                itemTitles={itemTitles}
+                title={getItemOption(options, "title", i)}
                 joinedContent={joinedContent}
-                links={links}
+                link={getItemOption(options, "link", i)}
                 name={name}
-                itemColors={itemColors}
+                itemColor={getItemOption(options, "color", i)}
               />
             )}
 
             {contentType !== "icon" && (
               <ContentTile
                 borderRadius={borderRadius}
-                filters={filters}
+                filter={getItemOption(options, "filter", i)}
                 imageSrc={imageSrc}
-                index={i}
-                itemSecondaryColors={itemSecondaryColors}
+                itemSecondaryColor={getItemOption(options, "colorSecondary", i)}
                 joinedContent={joinedContent}
                 link={link}
                 name={name}
+                contentType={contentType}
               />
             )}
           </div>

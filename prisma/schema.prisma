@@ -83,21 +83,20 @@ model Block {
 
 model BlockOptions {
   id                                String     @id @unique @default(cuid())
-  order                             Int?
   autoplay                          String?
-  backgroundColor                   Color?
-  backgroundWidth                   String?
   backgroundBrightness              Int?
   backgroundBrightnessSecondary     Int?
-  backgroundPatternName             String?
-  backgroundPatternColor            String?
-  backgroundPatternOpacity          Int?
-  backgroundPatternSize             Int?
-  backgroundPatternNameSecondary    String?
-  backgroundPatternColorSecondary   String?
-  backgroundPatternOpacitySecondary Int?
-  backgroundPatternSizeSecondary    Int?
+  backgroundColor                   Color?
   backgroundColorSecondary          Color?
+  backgroundPatternColor            String?
+  backgroundPatternColorSecondary   String?
+  backgroundPatternName             String?
+  backgroundPatternNameSecondary    String?
+  backgroundPatternOpacity          Int?
+  backgroundPatternOpacitySecondary Int?
+  backgroundPatternSize             Int?
+  backgroundPatternSizeSecondary    Int?
+  backgroundWidth                   String?
   backgroundWidthSecondary          String?
   block                             Block?     @relation("BlockToBlockOptions", fields: [blockId], references: [id])
   blockId                           String?
@@ -105,36 +104,37 @@ model BlockOptions {
   borderDisplay                     String?
   borderRadius                      String?
   borderSize                        String?
-  colorOne                          String?
-  colorTwo                          String?
-  colorThree                        String?
-  colorFour                         String?
-  colorFive                         String?
-  colorSix                          String?
-  colorSecondaryOne                 String?
-  colorSecondaryTwo                 String?
-  colorSecondaryThree               String?
-  colorSecondaryFour                String?
-  colorSecondaryFive                String?
-  colorSecondarySix                 String?
+  color1                            String?
+  color2                            String?
+  color3                            String?
+  color4                            String?
+  color5                            String?
+  color6                            String?
+  colorSecondary1                   String?
+  colorSecondary2                   String?
+  colorSecondary3                   String?
+  colorSecondary4                   String?
+  colorSecondary5                   String?
+  colorSecondary6                   String?
   columns                           Int?
   columnsMobile                     Int?
   count                             Int?
-  filterOne                         String?
-  filterTwo                         String?
-  filterThree                       String?
-  filterFour                        String?
-  filterFive                        String?
-  filterSix                         String?
+  filter1                           String?
+  filter2                           String?
+  filter3                           String?
+  filter4                           String?
+  filter5                           String?
+  filter6                           String?
   flipX                             String?
+  link1                             String?
+  link2                             String?
+  link3                             String?
+  link4                             String?
+  link5                             String?
+  link6                             String?
   margin                            String?
+  order                             Int?
   padding                           String?
-  linkOne                           String?
-  linkTwo                           String?
-  linkThree                         String?
-  linkFour                          String?
-  linkFive                          String?
-  linkSix                           String?
   rows                              Int?
   shortText                         String?
   shortTextColor                    Color?
@@ -145,12 +145,12 @@ model BlockOptions {
   speed                             String?
   style                             String?
   title                             String?
-  titleOne                          String?
-  titleTwo                          String?
-  titleThree                        String?
-  titleFour                         String?
-  titleFive                         String?
-  titleSix                          String?
+  title1                            String?
+  title2                            String?
+  title3                            String?
+  title4                            String?
+  title5                            String?
+  title6                            String?
   titleColor                        Color?
 
   createdAt DateTime @default(now())

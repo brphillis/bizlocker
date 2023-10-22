@@ -16,7 +16,7 @@ export const parseOptions: HTMLReactParserOptions = {
 
     if (node instanceof Element && node.name === "h1") {
       return (
-        <h2 className="relative max-w-full px-0 text-5xl font-bold max-xl:px-3">
+        <h2 className="relative max-w-full px-0 pb-3 text-5xl font-bold max-xl:px-3">
           {domToReact(node.children, parseOptions)}
         </h2>
       );
@@ -24,7 +24,7 @@ export const parseOptions: HTMLReactParserOptions = {
 
     if (node instanceof Element && node.name === "h2") {
       return (
-        <h2 className="relative max-w-full px-0 text-3xl font-bold max-xl:px-3">
+        <h2 className="relative max-w-full px-0 pb-3 text-3xl font-bold max-xl:px-3">
           {domToReact(node.children, parseOptions)}
         </h2>
       );

@@ -229,6 +229,7 @@ const PageBuilder = ({
 
           <ContentSearch
             selectedBlock={selectedBlock}
+            previewPage={previewPage}
             contentType={contentType}
             setContentType={setContentType}
           />

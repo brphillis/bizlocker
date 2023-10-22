@@ -2,37 +2,40 @@ import { useNavigate } from "@remix-run/react";
 import { generateColor } from "~/utility/colors";
 
 type Props = {
-  index: number;
-  joinedContent: any;
-  itemSecondaryColors: (string | null | undefined)[];
-  filters: (string | null | undefined)[];
   borderRadius: string | null | undefined;
-  name: string;
+  contentType: string | undefined;
+  filter: string;
   imageSrc: string;
+  itemSecondaryColor: string;
+  joinedContent: any;
   link: string;
+  name: string;
 };
 
 const ContentTile = ({
-  index,
-  joinedContent,
-  itemSecondaryColors,
-  filters,
   borderRadius,
-  name,
+  contentType,
+  filter,
   imageSrc,
+  itemSecondaryColor,
+  joinedContent,
   link,
+  name,
 }: Props) => {
   const navigate = useNavigate();
+
   return (
     <img
       style={{
-        backgroundColor: itemSecondaryColors[index]
-          ? generateColor(itemSecondaryColors[index]!)
+        backgroundColor: itemSecondaryColor
+          ? generateColor(itemSecondaryColor)
           : "unset",
+        borderRadius: borderRadius || " ",
+        padding:
+          contentType === "brand" && borderRadius === "100%" ? "12px" : "",
       }}
       className={`object-fit h-full w-full 
-     ${filters[index]} 
-     ${borderRadius ? "p-3" : " "}
+     ${filter} 
      ${borderRadius === "100%" ? "max-md:!p-2" : " "}
      ${joinedContent.length % 2 !== 0 ? "max-sm:last:col-span-full" : ""}
      `}

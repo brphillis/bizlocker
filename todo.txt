@@ -7,7 +7,6 @@ To Do
 [ ] finish validations function
 [ ] fix image search with connections
 [ ] add transparency to borders in blockoptions
-[ ] add delete functionality to page versions, articles and webpages
 
 
 Bug Hisory
@@ -40,3 +39,4 @@ Feat history
 010 - basic/necessary form validation added to all forms
 011 - continuation redesign of content block development
 012 - input and select field reusable components
+013 - add delete functionality to page versions, articles and webpages

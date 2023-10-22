@@ -417,7 +417,7 @@ export const updatePageBlock = async (
             (typeof value === "string" && isNaN(parseInt(value)))
           ) {
             // the value is an Enum or array of Enums
-            console.log("CREATING ENUM");
+
             updates[field as keyof BlockContent] = value;
           } else if (value) {
             // If the value is truthy (not null or undefined)
@@ -435,8 +435,7 @@ export const updatePageBlock = async (
           }
         }
       }
-      console.log("WE ACTUALLY MADE IT THIS FAR");
-      console.log("LEEEEEE UPDATES", updates);
+
       // create the BlockContent
       const createBlockContent = prisma[`${blockName}BlockContent`].create as (
         args: any

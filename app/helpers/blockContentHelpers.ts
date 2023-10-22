@@ -1,3 +1,12 @@
+//gets the correct option for the item, example "title1"
+export const getItemOption = (
+  options: BlockOptions,
+  key: string,
+  index: number
+) => {
+  return options[`${key}${index + 1}` as keyof BlockOptions];
+};
+
 export const determineSingleContentType = (
   content: BlockContent
 ): BlockContentType | undefined => {
@@ -52,8 +61,7 @@ export const buildContentImageFromContent = (
   contentType: BlockContentType,
   contentData: BlockContent,
   tileOrBanner: "tileImage" | "bannerImage",
-  links?: string[] | string,
-  index?: number
+  itemLink: string
 ) => {
   let name: string = "tileImage";
   let link: string = " ";
@@ -77,13 +85,11 @@ export const buildContentImageFromContent = (
     imageSrc = ((contentData as BlockContent)?.image as Image)?.url || imageSrc;
     name = ((contentData as BlockContent)?.image as Image)?.altText || "";
 
-    if (index && links && links[index]) {
-      link = links[index]!;
-    } else if (!index && links) {
-      link = links as string;
+    if (itemLink) {
+      link = itemLink;
     }
   }
-  //if a custom links is set in the editor we over ride with it
 
+  //if a custom links is set in the editor we over ride with it
   return { name, link, imageSrc };
 };

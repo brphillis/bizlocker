@@ -21,7 +21,7 @@ const VersionControl = ({ currentVersion, previewPages, page }: Props) => {
             color="error"
             type="submit"
             name="_action"
-            value="addpreview"
+            value="deletepreview"
           />
 
           <select
@@ -57,6 +57,12 @@ const VersionControl = ({ currentVersion, previewPages, page }: Props) => {
           </select>
 
           <input hidden readOnly name="pageId" value={page?.id.toString()} />
+          <input
+            hidden
+            readOnly
+            name="previewPageId"
+            value={currentVersion?.id.toString()}
+          />
 
           <SquareIconButton
             iconName="IoAdd"

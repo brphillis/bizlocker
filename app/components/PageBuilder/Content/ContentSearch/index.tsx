@@ -6,12 +6,14 @@ import { getBlockContentTypes } from "~/utility/blockMaster";
 
 type Props = {
   selectedBlock: BlockName | undefined;
+  previewPage: PreviewPage;
   contentType: BlockContentType | undefined;
   setContentType: Function;
 };
 
 const ContentSearch = ({
   selectedBlock,
+  previewPage,
   contentType,
   setContentType,
 }: Props) => {
@@ -29,6 +31,8 @@ const ContentSearch = ({
     if (name) {
       searchForm.set("name", name as string);
     }
+
+    searchForm.set("previewPageId", previewPage.id.toString());
 
     submit(searchForm, { method: "POST" });
   };
