@@ -45,8 +45,8 @@ const BasicSelect = ({
         }}
       >
         <option value="">{placeholder}</option>
-        {selections?.map(({ id, name }: SelectValue) => (
-          <option key={`${name}_${id}`} value={id}>
+        {selections?.map(({ id, name }: SelectValue, index: number) => (
+          <option key={`${name}_${id}_${index}`} value={id}>
             {name}
           </option>
         ))}

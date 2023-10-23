@@ -413,6 +413,7 @@ model OrderItem {
 
 model Image {
   id                   Int                  @id @default(autoincrement())
+  href                 String?
   altText              String?
   article              Article?             @relation("ArticleImage", fields: [articleId], references: [id])
   articleId            Int?                 @unique
@@ -430,7 +431,6 @@ model Image {
   promotionBanner      Promotion[]          @relation("BannerImageToPromotion")
   promotionTile        Promotion[]          @relation("TileImageToPromotion")
   tileBlockContent     TileBlockContent[]   @relation("ImageToTileBlockContent")
-  url                  String
   user                 User?                @relation("AvatarImage", fields: [userId], references: [id])
   userId               String?              @unique
   webPage              WebPage?             @relation("WebPageImage", fields: [webPageId], references: [id])

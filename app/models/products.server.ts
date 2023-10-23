@@ -1,5 +1,7 @@
 import { prisma } from "~/db.server";
+import { calculateDiscountPercentage } from "~/helpers/numberHelpers";
 import { getOrderBy } from "~/helpers/sortHelpers";
+import { handleS3Upload } from "~/integrations/aws/s3/s3.server";
 
 export const getProducts = async (count?: string) => {
   if (count) {
@@ -65,20 +67,6 @@ export const getProduct = async (id: string) => {
   });
 };
 
-// Function to calculate discount percentage
-const calculateDiscountPercentage = (price: number, salePrice: number) => {
-  if (
-    !price ||
-    !salePrice ||
-    price <= 0 ||
-    salePrice <= 0 ||
-    salePrice >= price
-  ) {
-    return 0;
-  }
-  return ((price - salePrice) / price) * 100;
-};
-
 export const upsertProduct = async (productData: any) => {
   const {
     name,
@@ -98,7 +86,6 @@ export const upsertProduct = async (productData: any) => {
   let product;
 
   // Compute the discountPercentageHigh and discountPercentageLow for the product from the variants
-
   const activeVariants = variants.filter(
     (variant: ProductVariant) => variant.isActive
   );
@@ -109,6 +96,19 @@ export const upsertProduct = async (productData: any) => {
     discountPercentages.length > 0 ? Math.max(...discountPercentages) : 0;
   const discountPercentageLow =
     discountPercentages.length > 0 ? Math.min(...discountPercentages) : 0;
+
+  const repoLinksProduct: string[] = [];
+
+  for (const e of images) {
+    const repoLink = await handleS3Upload(e);
+    repoLinksProduct.push(repoLink);
+  }
+
+  let heroRepoLink = "";
+
+  if (heroImage) {
+    heroRepoLink = await handleS3Upload(heroImage);
+  }
 
   const data: any = {
     name,
@@ -133,8 +133,8 @@ export const upsertProduct = async (productData: any) => {
     images:
       images && images.length > 0
         ? {
-            create: images.map((image: Image) => ({
-              url: image.url,
+            create: images.map((image: Image, i: number) => ({
+              href: repoLinksProduct[i],
               altText: image.altText,
             })),
           }
@@ -142,7 +142,7 @@ export const upsertProduct = async (productData: any) => {
     heroImage: heroImage
       ? {
           create: {
-            url: heroImage.url,
+            href: heroRepoLink,
             altText: heroImage.altText,
           },
         }
@@ -191,13 +191,6 @@ export const upsertProduct = async (productData: any) => {
       throw new Error("Product not found");
     }
 
-    // Delete existing images
-    if (images) {
-      await prisma.image.deleteMany({
-        where: { productId: parseInt(id) },
-      });
-    }
-
     // Disconnect existing connections
     await prisma.product.update({
       where: { id: parseInt(id) },
@@ -205,6 +198,11 @@ export const upsertProduct = async (productData: any) => {
         productSubCategories: {
           disconnect: existingProduct.productSubCategories.map((category) => ({
             id: category.id,
+          })),
+        },
+        images: {
+          disconnect: existingProduct.images.map((image) => ({
+            id: image.id,
           })),
         },
         brand: {

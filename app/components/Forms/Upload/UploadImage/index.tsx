@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { IoClose } from "react-icons/io5";
-import { ConvertToBase64 } from "~/helpers/fileHelpers";
+import { ConvertToBase64Image } from "~/helpers/fileHelpers";
 import { findFirstNotNullInputValue } from "~/helpers/formHelpers";
 
 type Props = {
@@ -21,7 +21,7 @@ const UploadImage = ({ defaultValue, name, label }: Props) => {
         <div className="relative my-6 flex max-w-full flex-col items-center">
           <div className="relative h-max w-max max-w-full">
             <img
-              src={image.url}
+              src={image.href}
               className="max-w-screen h-auto max-h-96 w-[400px] object-contain"
               alt={image.altText}
             />
@@ -46,7 +46,7 @@ const UploadImage = ({ defaultValue, name, label }: Props) => {
           accept="image/*"
           className="file-input file-input-bordered w-full rounded-none bg-primary/50 text-brand-white"
           onChange={async (e) => {
-            const convertedImage = await ConvertToBase64(e);
+            const convertedImage = await ConvertToBase64Image(e);
 
             if (
               (convertedImage?.altText?.includes(".") || null) &&

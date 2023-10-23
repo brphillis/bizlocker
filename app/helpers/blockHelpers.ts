@@ -25,10 +25,7 @@ export const getBlocks = async (page: Page, fetchNestedContent?: boolean) => {
 };
 
 // Squash the Page Block into the Content Block
-export const squashPageBlockAndContentBlock = (
-  page: Page,
-  getFirst?: boolean
-): Block[] => {
+export const squashPageBlockAndContentBlock = (page: Page): Block[] => {
   let firstPopulatedObjects: Block[] = [];
 
   // Sorting the pageblocks by the order in the blockOrder array
@@ -65,10 +62,6 @@ export const squashPageBlockAndContentBlock = (
         blockOptions: blockOptions,
       } as Block);
     }
-  }
-
-  if (getFirst) {
-    return [firstPopulatedObjects[0]];
   }
 
   return firstPopulatedObjects;

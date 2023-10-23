@@ -261,7 +261,6 @@ const PageBuilder = ({
 
           <ResultsTable
             selectedBlock={selectedBlock}
-            selectedItems={selectedItems}
             setSelectedItems={handleLimitedItemSelect}
             searchResults={searchResults as Campaign[] | Promotion[]}
             contentType={contentType}

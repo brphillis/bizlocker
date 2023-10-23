@@ -135,14 +135,14 @@ const Product = () => {
         <div className="mx-auto flex justify-center max-xl:flex-wrap">
           <div className="flex h-[740px] gap-3 max-xl:h-max max-xl:flex-col max-xl:gap-6">
             <div className="scrollbar-hide flex h-full flex-col justify-start gap-3 overflow-auto max-xl:order-2 max-xl:h-[200px] max-xl:flex-row">
-              {images?.map(({ url }: Image, i: number) => {
+              {images?.map(({ href }: Image, i: number) => {
                 return (
                   <img
                     key={"productImage_" + i}
                     alt="ecommerce"
                     className="m-0 h-[calc(100%/3)] w-auto cursor-pointer object-cover shadow-sm max-xl:h-[200px] max-sm:shadow-md"
                     onClick={() => setSelectedImage(images[i])}
-                    src={url}
+                    src={href}
                   />
                 );
               })}
@@ -151,14 +151,14 @@ const Product = () => {
               <img
                 alt={name + "_focusedImage"}
                 className="h-full w-auto object-cover object-center shadow-md max-xl:px-3 max-xl:shadow-none"
-                src={selectedImage?.url}
+                src={selectedImage?.href}
               />
 
-              {brandImage?.url && (
+              {brandImage?.href && (
                 <img
                   alt={brandName + "_image"}
                   className="max-md:h-30 absolute bottom-2 right-4 h-16 w-auto max-md:bottom-2"
-                  src={brandImage?.url}
+                  src={brandImage?.href}
                 />
               )}
             </div>

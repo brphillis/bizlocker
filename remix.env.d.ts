@@ -52,7 +52,8 @@ type ContentSelection = {
 
 interface Image {
   id?: number;
-  url: string;
+  href?: string;
+  repoLink?: string;
   altText?: string;
   user?: User;
   userId?: string;

@@ -35,7 +35,7 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
   } = options || {};
 
   const product = content.product as Product;
-  const productImage = product.heroImage?.url;
+  const productImage = product.heroImage?.href;
 
   const contentType = determineSingleContentType(content);
 

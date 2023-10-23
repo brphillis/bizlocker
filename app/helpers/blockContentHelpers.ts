@@ -70,19 +70,20 @@ export const buildContentImageFromContent = (
     const promotion = contentData?.promotion as Promotion;
     name = promotion?.name || name;
     link = `/promotion/${name}`;
-    imageSrc = promotion?.[tileOrBanner]?.url || imageSrc;
+    imageSrc = promotion?.[tileOrBanner]?.href || imageSrc;
   } else if (contentType === "campaign") {
     const campaign = contentData?.campaign as Campaign;
     name = campaign?.name || name;
     link = `/campaign/${name}`;
-    imageSrc = campaign?.[tileOrBanner]?.url || imageSrc;
+    imageSrc = campaign?.[tileOrBanner]?.href || imageSrc;
   } else if (contentType === "brand") {
     const brand = contentData?.brand as Brand;
     name = brand?.name || name;
     link = `/products?brand=${name}`;
-    imageSrc = brand?.image?.url || imageSrc;
+    imageSrc = brand?.image?.href || imageSrc;
   } else if (contentType === "image") {
-    imageSrc = ((contentData as BlockContent)?.image as Image)?.url || imageSrc;
+    imageSrc =
+      ((contentData as BlockContent)?.image as Image)?.href || imageSrc;
     name = ((contentData as BlockContent)?.image as Image)?.altText || "";
 
     if (itemLink) {

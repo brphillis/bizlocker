@@ -1,4 +1,5 @@
 import { prisma } from "~/db.server";
+import { removeS3Image } from "~/integrations/aws/s3/s3.server";
 export type { Image } from "@prisma/client";
 
 export function getImages() {
@@ -27,12 +28,12 @@ export const upsertImage = async (
   let updatedImage;
 
   if (!id && image) {
-    updatedImage = await prisma.image.create({
-      data: {
-        altText: altText,
-        url: image.url,
-      },
-    });
+    // updatedImage = await prisma.image.create({
+    //   data: {
+    //     altText: altText,
+    //     url: image.href,
+    //   },
+    // });
   } else if (id) {
     const existingImage = await prisma.image.findUnique({
       where: {
@@ -50,7 +51,7 @@ export const upsertImage = async (
       },
       data: {
         altText: altText,
-        url: image?.url,
+        href: image?.href,
       },
     });
   }
@@ -67,6 +68,10 @@ export const deleteImage = async (id: string) => {
 
   if (!image) {
     return false;
+  }
+
+  if (image.href) {
+    await removeS3Image(image.href);
   }
 
   return await prisma.image.delete({
@@ -114,27 +119,15 @@ export const searchImages = async (
 
   if (connectionType === "promotion") {
     filter.OR = [
-      {
-        NOT: {
-          promotionBanner: null,
-        },
-      },
-      {
-        NOT: {
-          promotionTile: null,
-        },
-      },
+      { promotionBanner: { some: {} } },
+      { promotionTile: { some: {} } },
     ];
   }
 
   if (connectionType === "campaign") {
     filter.OR = [
-      {
-        campaignBanner: { isNot: null },
-      },
-      {
-        campaignTile: { isNot: null },
-      },
+      { campaignBanner: { some: {} } },
+      { campaignTile: { some: {} } },
     ];
   }
 

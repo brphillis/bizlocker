@@ -116,11 +116,11 @@ const ManageProductCategories = () => {
                     <tr
                       className="cursor-pointer transition-colors duration-200 hover:bg-base-100"
                       key={id}
-                      onClick={() =>
-                        navigate(`/admin/product-categories/${id}`, {
-                          replace: false,
-                        })
-                      }
+                      onClick={() => {
+                        navigate(
+                          `${location.pathname + "/" + id}${location.search}`
+                        );
+                      }}
                     >
                       {currentPage && (
                         <td>

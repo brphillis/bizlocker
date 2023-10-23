@@ -4,14 +4,13 @@ import { capitalizeFirst } from "~/helpers/stringHelpers";
 
 type Props = {
   selectedBlock: BlockName | undefined;
-  selectedItems: ContentSelection[];
+
   setSelectedItems: Function;
   searchResults: Campaign[] | Promotion[] | Product[] | Brand[];
   contentType: BlockContentType | undefined;
 };
 
 const ResultsTable = ({
-  selectedItems,
   setSelectedItems,
   selectedBlock,
   searchResults,
@@ -30,13 +29,22 @@ const ResultsTable = ({
     });
   };
 
+  const shouldDisplay = () => {
+    const contentTypes = ["promotion", "campaign", "product", "icon"];
+
+    if (contentType && contentTypes.includes(contentType)) {
+      return true;
+    } else return false;
+  };
+
   return (
     <>
       {searchResults &&
         (selectedBlock === "banner" ||
           selectedBlock === "tile" ||
           selectedBlock === "hero") &&
-        contentType && (
+        contentType &&
+        shouldDisplay() && (
           <div className="w-full overflow-x-auto">
             <p className="my-3 text-sm font-bold">Select an Item</p>
             <table className="table table-sm">

@@ -1,6 +1,10 @@
 import { prisma } from "~/db.server";
 import { findUniqueStringsInArrays } from "~/helpers/arrayHelpers";
 import { getContentBlockCredentialsFromPageBlock } from "~/helpers/blockHelpers";
+import {
+  handleS3Update,
+  handleS3Upload,
+} from "~/integrations/aws/s3/s3.server";
 import { getUserDataFromSession } from "~/session.server";
 import { includeAllBlockTypes, includeBlocksData } from "~/utility/blockMaster";
 import {
@@ -99,9 +103,10 @@ export const upsertPageMeta = async (
 
     // Check if thumbnail is provided
     if (thumbnail) {
+      const repoLinkThumbnail = await handleS3Upload(thumbnail);
       data.thumbnail = {
         create: {
-          url: thumbnail.url,
+          href: repoLinkThumbnail,
           altText: thumbnail.altText,
         },
       };
@@ -151,18 +156,34 @@ export const upsertPageMeta = async (
 
     // Check if thumbnail is provided
     if (thumbnail) {
-      updateData.thumbnail = {
-        upsert: {
-          create: {
-            url: thumbnail.url,
-            altText: thumbnail.altText,
-          },
-          update: {
-            url: thumbnail.url,
-            altText: thumbnail.altText,
-          },
+      const existingThumbnail = await prisma.image.findFirst({
+        where: {
+          previewPageId: parseInt(previewPageId),
         },
-      };
+      });
+
+      if (existingThumbnail) {
+        const repoLinkThumbnail = await handleS3Update(
+          existingThumbnail as Image,
+          thumbnail
+        );
+
+        updateData.thumbnail = {
+          update: {
+            href: repoLinkThumbnail,
+            altText: thumbnail.altText,
+          },
+        };
+      } else {
+        const repoLinkThumbnail = await handleS3Upload(thumbnail);
+
+        updateData.thumbnail = {
+          create: {
+            href: repoLinkThumbnail,
+            altText: thumbnail.altText,
+          },
+        };
+      }
     }
 
     if (pageType !== "homePage") {

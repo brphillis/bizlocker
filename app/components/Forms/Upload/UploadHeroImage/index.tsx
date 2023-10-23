@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { IoIosCloseCircle } from "react-icons/io";
-import { ConvertToBase64 } from "~/helpers/fileHelpers";
+import { ConvertToBase64Image } from "~/helpers/fileHelpers";
 
 type Props = {
   valueToChange: Product;
@@ -12,7 +12,7 @@ const UploadHeroImage = ({ valueToChange }: Props) => {
   );
 
   return (
-    <div className="collapse-arrow collapse mt-6 rounded-none bg-base-100">
+    <div className="collapse collapse-arrow mt-6 rounded-none bg-base-100">
       <input type="checkbox" />
       <div className="collapse-title ml-3 mt-1 h-max text-center text-sm font-medium">
         Hero Image
@@ -25,7 +25,7 @@ const UploadHeroImage = ({ valueToChange }: Props) => {
             <div className="relative mt-3 flex flex-col items-center">
               <div className="relative h-max w-max">
                 <img
-                  src={heroImage.url}
+                  src={heroImage.href}
                   className="my-3 h-36 max-w-[280px] rounded-lg object-contain sm:max-w-[30rem]"
                   alt="brandImageEditor"
                 />
@@ -45,7 +45,7 @@ const UploadHeroImage = ({ valueToChange }: Props) => {
             accept="image/*"
             className="file-input file-input-bordered mt-3 w-[120px] bg-primary/50 text-brand-white sm:w-[440px]"
             onChange={async (e) => {
-              const convertedImage = await ConvertToBase64(e);
+              const convertedImage = await ConvertToBase64Image(e);
               convertedImage && setHeroImage(convertedImage);
             }}
           />

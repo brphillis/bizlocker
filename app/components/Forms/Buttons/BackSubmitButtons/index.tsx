@@ -52,7 +52,7 @@ const BackSubmitButtons = ({
         <button
           type="button"
           className="btn btn-primary w-max !rounded-sm"
-          onClick={() => (backFunction ? backFunction() : navigate(".."))}
+          onClick={() => (backFunction ? backFunction() : navigate(-1))}
         >
           Back
         </button>

@@ -1,5 +1,9 @@
 import type { Gender } from "@prisma/client";
 import { prisma } from "~/db.server";
+import {
+  handleS3Update,
+  handleS3Upload,
+} from "~/integrations/aws/s3/s3.server";
 
 export function getPromotions(
   includeImages?: boolean,
@@ -74,6 +78,9 @@ export const upsertPromotion = async (updateData: any) => {
   let updatedPromotion;
 
   if (!id) {
+    const repoLinkTile = await handleS3Upload(parsedTile);
+    const repoLinkBanner = await handleS3Upload(parsedBanner);
+
     updatedPromotion = await prisma.promotion.create({
       data: {
         name,
@@ -87,13 +94,13 @@ export const upsertPromotion = async (updateData: any) => {
         isActive,
         tileImage: {
           create: {
-            url: parsedTile.url,
+            href: repoLinkTile,
             altText: parsedTile.altText,
           },
         },
         bannerImage: {
           create: {
-            url: parsedBanner.url,
+            href: repoLinkBanner,
             altText: parsedBanner.altText,
           },
         },
@@ -125,6 +132,15 @@ export const upsertPromotion = async (updateData: any) => {
       },
     });
 
+    const repoLinkTile = await handleS3Update(
+      existingPromotion?.tileImage as Image,
+      parsedTile
+    );
+    const repoLinkBanner = await handleS3Update(
+      existingPromotion?.bannerImage as Image,
+      parsedBanner
+    );
+
     if (!existingPromotion) {
       throw new Error("Promotion not found");
     }
@@ -140,13 +156,13 @@ export const upsertPromotion = async (updateData: any) => {
       isActive,
       tileImage: {
         update: {
-          url: parsedTile.url,
+          href: repoLinkTile,
           altText: parsedTile.altText,
         },
       },
       bannerImage: {
         update: {
-          url: parsedBanner.url,
+          href: repoLinkBanner,
           altText: parsedBanner.altText,
         },
       },

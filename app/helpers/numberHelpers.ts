@@ -1,3 +1,19 @@
+export const calculateDiscountPercentage = (
+  price: number,
+  salePrice: number
+) => {
+  if (
+    !price ||
+    !salePrice ||
+    price <= 0 ||
+    salePrice <= 0 ||
+    salePrice >= price
+  ) {
+    return 0;
+  }
+  return ((price - salePrice) / price) * 100;
+};
+
 export const calculatePercentageChange = (
   currentValue: number,
   previousValue: number

@@ -316,7 +316,7 @@ const ManageHomePage = () => {
           <div className="flex flex-col gap-6 rounded-none text-brand-white">
             <div className="relative flex flex-col items-center justify-center gap-6 bg-brand-black py-6 text-center text-xl font-bold text-brand-white max-sm:gap-3">
               <div className="w-full">{page ? page.title : "Add Page"}</div>
-              {pageType !== "HomePage" && (
+              {pageType !== "homePage" && (
                 <Form method="POST" className="absolute right-3">
                   <input
                     hidden

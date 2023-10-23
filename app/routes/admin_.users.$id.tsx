@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
 import FormHeader from "~/components/Forms/Headers/FormHeader";
 import BasicInput from "~/components/Forms/Input/BasicInput";
+import PhoneInput from "~/components/Forms/Input/PhoneInput";
 import SelectCountry from "~/components/Forms/Select/SelectCountry";
 import UploadAvatar from "~/components/Forms/Upload/UploadAvatar";
 import DarkOverlay from "~/components/Layout/DarkOverlay";
@@ -152,7 +153,7 @@ const ModifyUser = () => {
                   validationErrors={validationErrors}
                 />
 
-                <BasicInput
+                <PhoneInput
                   name="phoneNumber"
                   label="Phone Number"
                   placeholder="Phone Number"

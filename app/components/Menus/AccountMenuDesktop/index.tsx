@@ -45,8 +45,12 @@ const AccountMenuDesktop = () => {
         </NavLink> */}
 
         <NavLink
-          to="/orders"
-          className="my-1 flex items-center justify-between rounded-md p-3 hover:bg-base-300"
+          to="/account/orders"
+          className={({ isActive }) =>
+            `my-1 flex items-center justify-between rounded-md p-3 hover:bg-base-300 ${
+              isActive && "bg-base-300 font-semibold"
+            }`
+          }
         >
           <div>My Orders</div>
           <IoChevronForward />

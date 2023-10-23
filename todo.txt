@@ -1,13 +1,8 @@
 To Do
 
-[ ] Finish Mobile Nav Slideout for AdminWeb
 [ ] add shipping calculator
 [ ] send email when order is shipped
-[ ] add internation phone code validations
-[ ] finish validations function
-[ ] fix image search with connections
-[ ] add transparency to borders in blockoptions
-
+[ ] fix product images from being created every time the form is submitted
 
 Bug Hisory
 
@@ -40,3 +35,6 @@ Feat history
 011 - continuation redesign of content block development
 012 - input and select field reusable components
 013 - add delete functionality to page versions, articles and webpages
+014 - add international phone code validations
+013 - fix image search with connections
+014 - added aws s3 for managing images via bucket

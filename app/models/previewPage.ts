@@ -9,6 +9,7 @@ export const getPreviewPage = async (id: string) => {
     include: {
       blocks: includeBlocksData,
       articleCategories: true,
+      thumbnail: true,
     },
   });
 };

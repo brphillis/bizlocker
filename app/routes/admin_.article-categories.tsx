@@ -82,7 +82,11 @@ const ArticleCategories = () => {
                 return (
                   <tr
                     className="cursor-pointer transition-colors duration-200 hover:bg-base-100"
-                    onClick={() => navigate(`/admin/article-categories/${id}`)}
+                    onClick={() => {
+                      navigate(
+                        `${location.pathname + "/" + id}${location.search}`
+                      );
+                    }}
                     key={id}
                   >
                     {currentPage && (
