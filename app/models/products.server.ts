@@ -183,9 +183,72 @@ export const upsertProduct = async (productData: any) => {
         promotion: true,
         productSubCategories: true,
         images: true,
+        heroImage: true,
         variants: true,
       },
     });
+
+    data.images = {};
+
+    const createImages = [];
+    const updateImages = [];
+
+    for (let i = 0; i < images.length; i++) {
+      const existingImage = existingProduct?.images[i];
+      const image = images[i];
+
+      if (existingImage) {
+        updateImages.push({
+          id: existingImage.id,
+          href: repoLinksProduct[i],
+          altText: image.altText,
+        });
+      } else {
+        createImages.push({
+          href: repoLinksProduct[i],
+          altText: image.altText,
+        });
+      }
+    }
+
+    if (createImages.length > 0) {
+      data.images.create = createImages.map(({ href, altText }) => ({
+        href,
+        altText,
+      }));
+    }
+
+    if (updateImages.length > 0) {
+      data.images.update = updateImages.map(({ id, href, altText }) => ({
+        where: { id },
+        data: {
+          href,
+          altText,
+        },
+      }));
+    }
+
+    data.heroImage = {};
+
+    if (existingProduct?.heroImage && heroImage) {
+      data.heroImage = {
+        update: {
+          where: { id: existingProduct.heroImage.id },
+          data: {
+            href: heroRepoLink,
+            altText: heroImage.altText,
+          },
+        },
+      };
+    }
+    if (!existingProduct?.heroImage && heroImage) {
+      data.heroImage = {
+        create: {
+          href: heroRepoLink,
+          altText: heroImage.altText,
+        },
+      };
+    }
 
     if (!existingProduct) {
       throw new Error("Product not found");
@@ -198,11 +261,6 @@ export const upsertProduct = async (productData: any) => {
         productSubCategories: {
           disconnect: existingProduct.productSubCategories.map((category) => ({
             id: category.id,
-          })),
-        },
-        images: {
-          disconnect: existingProduct.images.map((image) => ({
-            id: image.id,
           })),
         },
         brand: {
