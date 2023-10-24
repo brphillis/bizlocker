@@ -80,7 +80,11 @@ const Promotions = () => {
                     <tr
                       className="cursor-pointer transition-colors duration-200 hover:bg-base-100"
                       key={id}
-                      onClick={() => navigate(`/admin/promotions/${id}`)}
+                      onClick={() => {
+                        navigate(
+                          `${location.pathname + "/" + id}${location.search}`
+                        );
+                      }}
                     >
                       {currentPage && (
                         <td>

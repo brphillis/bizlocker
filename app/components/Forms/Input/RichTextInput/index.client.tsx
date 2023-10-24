@@ -20,6 +20,8 @@ const RichTextInput = ({ value, onChange, className }: RichTextEditorProps) => {
 
   var tools = [
     ["bold", "italic", "underline", "strike"],
+    [{ header: "1" }, { header: "2" }],
+    ["size"],
     [
       {
         color: [

@@ -14,18 +14,18 @@ const BackgroundOptions = ({
   const {
     backgroundColor,
     backgroundWidth,
-    backgroundColorTwo,
-    backgroundWidthTwo,
+    backgroundColorSecondary,
+    backgroundWidthSecondary,
     backgroundPatternColor,
     backgroundPatternName,
     backgroundPatternOpacity,
     backgroundPatternSize,
-    backgroundPatternColorTwo,
-    backgroundPatternNameTwo,
-    backgroundPatternOpacityTwo,
-    backgroundPatternSizeTwo,
+    backgroundPatternColorSecondary,
+    backgroundPatternNameSecondary,
+    backgroundPatternOpacitySecondary,
+    backgroundPatternSizeSecondary,
     backgroundBrightness,
-    backgroundBrightnessTwo,
+    backgroundBrightnessSecondary,
   } = defaultValues || {};
 
   return (
@@ -192,7 +192,7 @@ const BackgroundOptions = ({
         </div>
 
         <div className="flex max-w-full flex-wrap justify-start !gap-3 pb-3 max-md:justify-center">
-          {selectedBlockOptions?.backgroundColorTwo && (
+          {selectedBlockOptions?.backgroundColorSecondary && (
             <div className="form-control relative max-sm:items-center">
               <ToolTip tip="Usually the background color of behind the entire main item" />
               <label className="label max-sm:ml-3 max-sm:!self-start">
@@ -201,11 +201,13 @@ const BackgroundOptions = ({
                 </span>
               </label>
               <select
-                name="backgroundColorTwo"
+                name="backgroundColorSecondary"
                 className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
                 placeholder="Select a Color"
                 defaultValue={
-                  !backgroundColorTwo ? undefined : backgroundColorTwo
+                  !backgroundColorSecondary
+                    ? undefined
+                    : backgroundColorSecondary
                 }
               >
                 <option value="">Select a Color</option>
@@ -220,7 +222,7 @@ const BackgroundOptions = ({
             </div>
           )}
 
-          {selectedBlockOptions?.backgroundWidthTwo && (
+          {selectedBlockOptions?.backgroundWidthSecondary && (
             <div className="form-control relative max-sm:items-center">
               <ToolTip tip="Option to extend the background width" />
               <label className="label max-sm:ml-3 max-sm:!self-start">
@@ -229,11 +231,13 @@ const BackgroundOptions = ({
                 </span>
               </label>
               <select
-                name="backgroundWidthTwo"
+                name="backgroundWidthSecondary"
                 className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
                 placeholder="Select a Width"
                 defaultValue={
-                  !backgroundWidthTwo ? undefined : backgroundWidthTwo
+                  !backgroundWidthSecondary
+                    ? undefined
+                    : backgroundWidthSecondary
                 }
               >
                 <option value="">Select a Width</option>
@@ -243,7 +247,7 @@ const BackgroundOptions = ({
             </div>
           )}
 
-          {selectedBlockOptions?.backgroundBrightnessTwo && (
+          {selectedBlockOptions?.backgroundBrightnessSecondary && (
             <div className="form-control relative max-sm:items-center">
               <ToolTip tip="Brightness Filter ( Blank for Default )" />
               <label className="label max-sm:ml-3 max-sm:!self-start">
@@ -252,17 +256,17 @@ const BackgroundOptions = ({
                 </span>
               </label>
               <input
-                name="backgroundBrightnessTwo"
+                name="backgroundBrightnessSecondary"
                 type="number"
                 step="any"
                 className="input input-bordered w-[95vw] max-w-full text-brand-black sm:w-[215px]"
                 placeholder="Default Brightness"
-                defaultValue={backgroundBrightnessTwo || undefined}
+                defaultValue={backgroundBrightnessSecondary || undefined}
               />
             </div>
           )}
 
-          {selectedBlockOptions?.backgroundPatternNameTwo && (
+          {selectedBlockOptions?.backgroundPatternNameSecondary && (
             <div className="form-control relative max-sm:items-center">
               <ToolTip tip="Add a pattern when your content has no background" />
               <label className="label max-sm:ml-3 max-sm:!self-start">
@@ -271,13 +275,13 @@ const BackgroundOptions = ({
                 </span>
               </label>
               <select
-                name="backgroundPatternNameTwo"
+                name="backgroundPatternNameSecondary"
                 className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
                 placeholder="Select a Color"
                 defaultValue={
-                  !backgroundPatternNameTwo
+                  !backgroundPatternNameSecondary
                     ? undefined
-                    : backgroundPatternNameTwo
+                    : backgroundPatternNameSecondary
                 }
               >
                 <option value="">None</option>
@@ -287,7 +291,7 @@ const BackgroundOptions = ({
             </div>
           )}
 
-          {selectedBlockOptions?.backgroundPatternColorTwo && (
+          {selectedBlockOptions?.backgroundPatternColorSecondary && (
             <div className="form-control relative max-sm:items-center">
               <ToolTip tip="Color of the selected pattern" />
               <label className="label max-sm:ml-3 max-sm:!self-start">
@@ -296,13 +300,13 @@ const BackgroundOptions = ({
                 </span>
               </label>
               <select
-                name="backgroundPatternColorTwo"
+                name="backgroundPatternColorSecondary"
                 className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
                 placeholder="Select a Color"
                 defaultValue={
-                  !backgroundPatternColorTwo
+                  !backgroundPatternColorSecondary
                     ? undefined
-                    : backgroundPatternColorTwo
+                    : backgroundPatternColorSecondary
                 }
               >
                 <option value="">Select a Color</option>
@@ -317,7 +321,7 @@ const BackgroundOptions = ({
             </div>
           )}
 
-          {selectedBlockOptions?.backgroundPatternSizeTwo && (
+          {selectedBlockOptions?.backgroundPatternSizeSecondary && (
             <div className="form-control relative max-sm:items-center">
               <ToolTip tip="Size of the pattern shapes, between 0 - 120" />
               <label className="label max-sm:ml-3 max-sm:!self-start">
@@ -326,17 +330,17 @@ const BackgroundOptions = ({
                 </span>
               </label>
               <input
-                name="backgroundPatternSizeTwo"
+                name="backgroundPatternSizeSecondary"
                 type="number"
                 max="120"
                 className="input input-bordered w-[95vw] max-w-full text-brand-black sm:w-[215px]"
                 placeholder="Size"
-                defaultValue={backgroundPatternSizeTwo || undefined}
+                defaultValue={backgroundPatternSizeSecondary || undefined}
               />
             </div>
           )}
 
-          {selectedBlockOptions?.backgroundPatternOpacityTwo && (
+          {selectedBlockOptions?.backgroundPatternOpacitySecondary && (
             <div className="form-control relative max-sm:items-center">
               <ToolTip tip="Opacity of the pattern layer, between 0 - 1" />
               <label className="label max-sm:ml-3 max-sm:!self-start">
@@ -345,12 +349,12 @@ const BackgroundOptions = ({
                 </span>
               </label>
               <input
-                name="backgroundPatternOpacityTwo"
+                name="backgroundPatternOpacitySecondary"
                 type="number"
                 step="any"
                 className="input input-bordered w-[95vw] max-w-full text-brand-black sm:w-[215px]"
                 placeholder="Opacity"
-                defaultValue={backgroundPatternOpacityTwo || undefined}
+                defaultValue={backgroundPatternOpacitySecondary || undefined}
               />
             </div>
           )}

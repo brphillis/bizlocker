@@ -9,14 +9,8 @@ const ItemFilterOptions = ({
   selectedBlockOptions,
   selectedItems,
 }: Props) => {
-  const {
-    filterOne,
-    filterTwo,
-    filterThree,
-    filterFour,
-    filterFive,
-    filterSix,
-  } = defaultValues || {};
+  const { filter1, filter2, filter3, filter4, filter5, filter6 } =
+    defaultValues || {};
 
   return (
     <details className="collapse !hidden !max-w-full !rounded-sm bg-brand-white/20 [&:has(div>div)]:!grid">
@@ -24,16 +18,16 @@ const ItemFilterOptions = ({
         Item Filters
       </summary>
       <div className="flex max-w-full flex-wrap justify-start !gap-3 px-3 pb-3 max-md:justify-center max-md:px-0">
-        {selectedBlockOptions?.filterOne && selectedItems.length > 0 && (
+        {selectedBlockOptions?.filter1 && selectedItems.length > 0 && (
           <div className="form-control max-sm:items-center">
             <label className="label max-sm:ml-3 max-sm:!self-start">
               <span className="label-text text-brand-white">Item 1 Filter</span>
             </label>
             <select
-              name="filterOne"
+              name="filter1"
               className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
               placeholder="Select a Filter"
-              defaultValue={!filterOne ? undefined : filterOne}
+              defaultValue={!filter1 ? undefined : filter1}
             >
               <option value="">Select a Filter</option>
               <option value=" filter invert ">Invert</option>
@@ -63,16 +57,16 @@ const ItemFilterOptions = ({
           </div>
         )}
 
-        {selectedBlockOptions?.filterTwo && selectedItems.length > 1 && (
+        {selectedBlockOptions?.filter2 && selectedItems.length > 1 && (
           <div className="form-control max-sm:items-center">
             <label className="label max-sm:ml-3 max-sm:!self-start">
               <span className="label-text text-brand-white">Item 2 Filter</span>
             </label>
             <select
-              name="filterTwo"
+              name="filter2"
               className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
               placeholder="Select a Filter"
-              defaultValue={!filterTwo ? undefined : filterTwo}
+              defaultValue={!filter2 ? undefined : filter2}
             >
               <option value="">Select a Filter</option>
               <option value=" filter invert ">Invert</option>
@@ -102,16 +96,16 @@ const ItemFilterOptions = ({
           </div>
         )}
 
-        {selectedBlockOptions?.filterThree && selectedItems.length > 2 && (
+        {selectedBlockOptions?.filter3 && selectedItems.length > 2 && (
           <div className="form-control max-sm:items-center">
             <label className="label max-sm:ml-3 max-sm:!self-start">
               <span className="label-text text-brand-white">Item 3 Filter</span>
             </label>
             <select
-              name="filterThree"
+              name="filter3"
               className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
               placeholder="Select a Filter"
-              defaultValue={!filterThree ? undefined : filterThree}
+              defaultValue={!filter3 ? undefined : filter3}
             >
               <option value="">Select a Filter</option>
               <option value=" filter invert ">Invert</option>
@@ -141,16 +135,16 @@ const ItemFilterOptions = ({
           </div>
         )}
 
-        {selectedBlockOptions?.filterFour && selectedItems.length > 3 && (
+        {selectedBlockOptions?.filter4 && selectedItems.length > 3 && (
           <div className="form-control max-sm:items-center">
             <label className="label max-sm:ml-3 max-sm:!self-start">
               <span className="label-text text-brand-white">Item 4 Filter</span>
             </label>
             <select
-              name="filterFour"
+              name="filter4"
               className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
               placeholder="Select a Filter"
-              defaultValue={!filterFour ? undefined : filterFour}
+              defaultValue={!filter4 ? undefined : filter4}
             >
               <option value="">Select a Filter</option>
               <option value=" filter invert ">Invert</option>
@@ -180,16 +174,16 @@ const ItemFilterOptions = ({
           </div>
         )}
 
-        {selectedBlockOptions?.filterFive && selectedItems.length > 4 && (
+        {selectedBlockOptions?.filter5 && selectedItems.length > 4 && (
           <div className="form-control max-sm:items-center">
             <label className="label max-sm:ml-3 max-sm:!self-start">
               <span className="label-text text-brand-white">Item 5 Filter</span>
             </label>
             <select
-              name="filterFive"
+              name="filter5"
               className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
               placeholder="Select a Filter"
-              defaultValue={!filterFive ? undefined : filterFive}
+              defaultValue={!filter5 ? undefined : filter5}
             >
               <option value="">Select a Filter</option>
               <option value=" filter invert ">Invert</option>
@@ -219,16 +213,16 @@ const ItemFilterOptions = ({
           </div>
         )}
 
-        {selectedBlockOptions?.filterSix && selectedItems.length > 5 && (
+        {selectedBlockOptions?.filter6 && selectedItems.length > 5 && (
           <div className="form-control max-sm:items-center">
             <label className="label max-sm:ml-3 max-sm:!self-start">
               <span className="label-text text-brand-white">Item 6 Filter</span>
             </label>
             <select
-              name="filterSix"
+              name="filter6"
               className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
               placeholder="Select a Filter"
-              defaultValue={!filterSix ? undefined : filterSix}
+              defaultValue={!filter6 ? undefined : filter6}
             >
               <option value="">Select a Filter</option>
               <option value=" filter invert ">Invert</option>

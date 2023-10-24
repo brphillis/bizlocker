@@ -77,7 +77,7 @@ export const validationMaster: FormConfig = {
     required: true,
     validator: (value: string) => {
       if (!isValidMobileNumber(value)) {
-        return "Enter a Date of Birth";
+        return "Enter a Valid Phone Number";
       }
       return null;
     },
@@ -85,7 +85,7 @@ export const validationMaster: FormConfig = {
   address1: {
     required: true,
     validator: (value: string) => {
-      if (!isValidMobileNumber(value)) {
+      if (!value) {
         return "Enter an Address";
       }
       return null;
@@ -94,7 +94,7 @@ export const validationMaster: FormConfig = {
   postcode: {
     required: true,
     validator: (value: string) => {
-      if (!isValidMobileNumber(value)) {
+      if (!value) {
         return "Enter a Postal Code";
       }
       return null;
@@ -103,7 +103,7 @@ export const validationMaster: FormConfig = {
   suburb: {
     required: true,
     validator: (value: string) => {
-      if (!isValidMobileNumber(value)) {
+      if (!value) {
         return "Enter a Suburb";
       }
       return null;
@@ -112,7 +112,7 @@ export const validationMaster: FormConfig = {
   state: {
     required: true,
     validator: (value: string) => {
-      if (!isValidMobileNumber(value)) {
+      if (!value) {
         return "Enter a State";
       }
       return null;
@@ -121,7 +121,7 @@ export const validationMaster: FormConfig = {
   country: {
     required: true,
     validator: (value: string) => {
-      if (!isValidMobileNumber(value)) {
+      if (!value) {
         return "Enter a Country";
       }
       return null;
@@ -271,6 +271,42 @@ export const validationMaster: FormConfig = {
       return null;
     },
   },
+  price: {
+    required: true,
+    validator: (value: string) => {
+      if (!value || isNaN(parseInt(value))) {
+        return "Price Required";
+      }
+      return null;
+    },
+  },
+  salePrice: {
+    required: true,
+    validator: (value: string) => {
+      if (!value || isNaN(parseInt(value))) {
+        return "Sale Price Required";
+      }
+      return null;
+    },
+  },
+  remainingStock: {
+    required: true,
+    validator: (value: string) => {
+      if (!value || isNaN(parseInt(value))) {
+        return "Remaining Stock Required";
+      }
+      return null;
+    },
+  },
+  sku: {
+    required: true,
+    validator: (value: string) => {
+      if (!value) {
+        return "SKU Required";
+      }
+      return null;
+    },
+  },
 };
 
 export const validateForm = (
@@ -333,7 +369,43 @@ export const isValidPassword = (password: string): boolean => {
 };
 
 export const isValidMobileNumber = (mobileNumber: string) => {
-  if (mobileNumber.startsWith("614") && mobileNumber.length === 11) {
+  // Australia
+
+  if (
+    mobileNumber.startsWith("614 ") &&
+    mobileNumber.replace(/ /g, "").length === 11
+  ) {
     return true;
   }
+  // UK
+  if (
+    mobileNumber.startsWith("44 ") &&
+    (mobileNumber.length === 10 || mobileNumber.length === 11)
+  ) {
+    return true;
+  }
+  // France
+  if (
+    mobileNumber.startsWith("33 ") &&
+    (mobileNumber.length === 10 || mobileNumber.length === 11)
+  ) {
+    return true;
+  }
+  // Germany
+  if (
+    mobileNumber.startsWith("49 ") &&
+    (mobileNumber.length === 10 || mobileNumber.length === 11)
+  ) {
+    return true;
+  }
+  // United States
+  if (mobileNumber.startsWith("1 ") && mobileNumber.length === 11) {
+    return true;
+  }
+  // Canada
+  if (mobileNumber.startsWith("1 ") && mobileNumber.length === 11) {
+    return true;
+  }
+
+  return false;
 };

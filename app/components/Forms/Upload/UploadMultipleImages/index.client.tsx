@@ -1,7 +1,7 @@
 import React, { Suspense, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper";
-import { ConvertToBase64 } from "~/helpers/fileHelpers";
+import { ConvertToBase64Image } from "~/helpers/fileHelpers";
 import { IoClose } from "react-icons/io5";
 import { findFirstNotNullInputValue } from "~/helpers/formHelpers";
 
@@ -34,8 +34,8 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
           centeredSlides={true}
           navigation
         >
-          {images?.map(({ url, altText }: Image, i) => {
-            if (url) {
+          {images?.map(({ href, altText }: Image, i) => {
+            if (href) {
               return (
                 <SwiperSlide key={i}>
                   <div className="relative mx-auto block max-w-[200px] rounded-lg">
@@ -49,7 +49,7 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
                       onClick={() => handleRemoveImage(i)}
                     />
                     <img
-                      src={url}
+                      src={href}
                       alt={altText}
                       className="h-full w-full object-cover"
                     />
@@ -74,7 +74,7 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
                   accept="image/*"
                   className="file-input file-input-bordered hidden w-full"
                   onChange={async (e) => {
-                    const convertedImage = await ConvertToBase64(e);
+                    const convertedImage = await ConvertToBase64Image(e);
                     if (convertedImage) {
                       const updatedImages = [...(images || [])];
                       updatedImages[i] = convertedImage;

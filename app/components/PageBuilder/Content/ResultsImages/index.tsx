@@ -38,7 +38,7 @@ const ResultsImages = ({
               selectedBlock === "hero") && (
               <div className="flex w-full flex-wrap justify-center gap-6 overflow-x-auto pb-3 max-lg:gap-3">
                 {searchResults?.map(
-                  ({ id, url, altText }: Image, index: number) => {
+                  ({ id, href, altText }: Image, index: number) => {
                     return (
                       <div
                         key={id}
@@ -60,7 +60,7 @@ const ResultsImages = ({
                           <IoEllipsisVertical size={12} />
                         </button>
                         <img
-                          src={url}
+                          src={href}
                           alt={altText}
                           className="h-full w-full object-cover max-lg:h-44 max-lg:w-44"
                         />

@@ -1,11 +1,13 @@
-import { useNavigate } from "@remix-run/react";
 import PatternBackground from "~/components/Layout/PatternBackground";
 import {
   buildContentImageFromContent,
   concatBlockContent,
   determineSingleContentType,
+  getItemOption,
 } from "~/helpers/blockContentHelpers";
 import { generateColor } from "~/utility/colors";
+import ContentTile from "./ContentTile";
+import IconTile from "./IconTile";
 
 type Props = {
   content: BlockContent;
@@ -13,76 +15,40 @@ type Props = {
 };
 
 const TileBlock = ({ content, options: ArrayOptions }: Props) => {
-  const navigate = useNavigate();
   const options = ArrayOptions[0];
-  const columns = options?.columns || 2;
+
   const {
     backgroundBrightness,
     backgroundColor,
     borderRadius,
-    colorFive,
-    colorFour,
-    colorOne,
-    colorSix,
-    colorThree,
-    colorTwo,
+    columns,
     columnsMobile,
-    filterFive,
-    filterFour,
-    filterOne,
-    filterSix,
-    filterThree,
-    filterTwo,
-    linkFive,
-    linkFour,
-    linkOne,
-    linkSix,
-    linkThree,
-    linkTwo,
     margin,
     padding,
     backgroundPatternColor,
     backgroundPatternName,
     backgroundPatternOpacity,
     backgroundPatternSize,
+    backgroundWidth,
     borderColor,
     borderSize,
     borderDisplay,
   } = options || {};
 
-  const links = [linkOne, linkTwo, linkThree, linkFour, linkFive, linkSix];
-  const filters = [
-    filterOne,
-    filterTwo,
-    filterThree,
-    filterFour,
-    filterFive,
-    filterSix,
-  ];
-  const itemColors = [
-    colorOne,
-    colorTwo,
-    colorThree,
-    colorFour,
-    colorFive,
-    colorSix,
-  ];
-
   const joinedContent = concatBlockContent(content);
-
   const colsMobile = `max-md:!grid-cols-${columnsMobile}`;
 
   return (
     <div
-      className={`relative grid h-max place-items-center gap-3 px-3 sm:gap-6 lg:px-0 ${margin} ${padding} ${
+      className={`relative grid h-max place-items-center gap-3 px-3 sm:gap-6 ${margin} ${padding} ${
         colsMobile || "max-md:!grid-cols-2"
       }`}
       style={{
         gridTemplateColumns: columns
           ? `repeat(${columns}, minmax(0, 1fr))`
           : "repeat(2, minmax(0, 1fr))",
-        paddingTop: backgroundColor ? "1.5rem" : "unset",
-        paddingBottom: backgroundColor ? "1.5rem" : "unset",
+        paddingTop: backgroundColor ? "12px" : "unset",
+        paddingBottom: backgroundColor ? "12px" : "unset",
       }}
     >
       <PatternBackground
@@ -93,7 +59,7 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
         }
         patternOpacity={backgroundPatternOpacity || 0.5}
         patternSize={backgroundPatternSize || 32}
-        screenWidth={true}
+        screenWidth={backgroundWidth === "100vw" ? true : false}
         brightness={backgroundBrightness || undefined}
       />
 
@@ -102,21 +68,21 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
           contentData as BlockContent
         );
 
-        const { name, link, imageSrc } = buildContentImageFromContent(
-          contentType!,
-          contentData,
-          "tileImage",
-          links as string[],
-          i
-        );
+        const { name, link, imageSrc } =
+          buildContentImageFromContent(
+            contentType!,
+            contentData,
+            "tileImage",
+            getItemOption(options, "link", i)
+          ) || {};
 
         return (
           <div
             key={"tileImage_" + (name || i)}
             className={`relative flex aspect-square cursor-pointer items-center justify-center transition duration-300 ease-in-out hover:scale-[1.01] ${borderDisplay}`}
             style={{
-              backgroundColor: itemColors[i]
-                ? generateColor(itemColors[i]!)
+              backgroundColor: getItemOption(options, "colorSecondary", i)
+                ? generateColor(getItemOption(options, "colorSecondary", i))
                 : "unset",
               borderRadius: borderRadius || "unset",
               border:
@@ -125,21 +91,32 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
                   : "unset",
             }}
           >
-            <img
-              className={`object-fit h-full w-full
-                 ${filters[i]} 
-                 ${borderRadius ? "p-3" : " "}
-                 ${borderRadius === "100%" ? "max-md:!p-2" : " "}
-                 ${
-                   joinedContent.length % 2 !== 0
-                     ? "max-sm:last:col-span-full"
-                     : ""
-                 }
-                 `}
-              onClick={() => link && navigate(link)}
-              src={imageSrc}
-              alt={name}
-            />
+            {contentType === "icon" && (
+              <IconTile
+                borderRadius={borderRadius}
+                filter={getItemOption(options, "filter", i)}
+                imageSrc={imageSrc}
+                index={i}
+                title={getItemOption(options, "title", i)}
+                joinedContent={joinedContent}
+                link={getItemOption(options, "link", i)}
+                name={name}
+                itemColor={getItemOption(options, "color", i)}
+              />
+            )}
+
+            {contentType !== "icon" && (
+              <ContentTile
+                borderRadius={borderRadius}
+                filter={getItemOption(options, "filter", i)}
+                imageSrc={imageSrc}
+                itemSecondaryColor={getItemOption(options, "colorSecondary", i)}
+                joinedContent={joinedContent}
+                link={link}
+                name={name}
+                contentType={contentType}
+              />
+            )}
           </div>
         );
       })}

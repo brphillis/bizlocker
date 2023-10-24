@@ -52,7 +52,8 @@ type ContentSelection = {
 
 interface Image {
   id?: number;
-  url: string;
+  href?: string;
+  repoLink?: string;
   altText?: string;
   user?: User;
   userId?: string;
@@ -395,7 +396,8 @@ type BlockContentType =
   | "article"
   | "articleCategory"
   | "richText"
-  | "gender";
+  | "gender"
+  | "icon";
 
 type BackgroundPatternName = "wavy" | "isometric";
 
@@ -426,6 +428,7 @@ interface NewBlockData {
   previewPageId: number;
   blockName: BlockName;
   itemIndex: number;
+  contentBlockId: string;
   contentType: BlockContentType;
   contentData: ContentData;
 }
@@ -442,6 +445,7 @@ type BlockContent = {
   image?: Image[] | Image;
   product?: Product[] | Product;
   article?: Article[] | Article;
+  icon?: string[];
 };
 
 type BlockMaster = {
@@ -450,6 +454,7 @@ type BlockMaster = {
   icon: string;
   options: BlockMasterOptions;
   content: Object;
+  addOns?: string[];
   contentRequired?: boolean;
   hasMultipleContent?: boolean;
   maxContentItems?: number;
@@ -468,18 +473,18 @@ interface BlockMasterOptions {
   autoplay?: boolean;
   backgroundColor?: boolean;
   backgroundBrightness?: boolean;
-  backgroundBrightnessTwo?: boolean;
+  backgroundBrightnessSecondary?: boolean;
   backgroundPatternName?: boolean;
   backgroundPatternColor?: boolean;
   backgroundPatternOpacity?: boolean;
   backgroundPatternSize?: boolean;
-  backgroundPatternNameTwo?: boolean;
-  backgroundPatternColorTwo?: boolean;
-  backgroundPatternOpacityTwo?: boolean;
-  backgroundPatternSizeTwo?: boolean;
+  backgroundPatternNameSecondary?: boolean;
+  backgroundPatternColorSecondary?: boolean;
+  backgroundPatternOpacitySecondary?: boolean;
+  backgroundPatternSizeSecondary?: boolean;
   backgroundWidth?: boolean;
-  backgroundColorTwo?: boolean;
-  backgroundWidthTwo?: boolean;
+  backgroundColorSecondary?: boolean;
+  backgroundWidthSecondary?: boolean;
   borderColor?: boolean;
   borderDisplay?: boolean;
   borderRadius?: boolean;
@@ -489,24 +494,36 @@ interface BlockMasterOptions {
   count?: boolean;
   flipX?: boolean;
   margin?: boolean;
-  linkOne?: boolean;
-  linkTwo?: boolean;
-  linkThree?: boolean;
-  linkFour?: boolean;
-  linkFive?: boolean;
-  linkSix?: boolean;
-  colorOne?: boolean;
-  colorTwo?: boolean;
-  colorThree?: boolean;
-  colorFour?: boolean;
-  colorFive?: boolean;
-  colorSix?: boolean;
-  filterOne?: boolean;
-  filterTwo?: boolean;
-  filterThree?: boolean;
-  filterFour?: booolean;
-  filterFive?: booolean;
-  filterSix?: boolean;
+  link1?: boolean;
+  link2?: boolean;
+  link3?: boolean;
+  link4?: boolean;
+  link5?: boolean;
+  link6?: boolean;
+  color1?: boolean;
+  color2?: boolean;
+  color3?: boolean;
+  color4?: boolean;
+  color5?: boolean;
+  color6?: boolean;
+  colorSecondary1?: boolean;
+  colorSecondary2?: boolean;
+  colorSecondary3?: boolean;
+  colorSecondary4?: boolean;
+  colorSecondary5?: boolean;
+  colorSecondary6?: boolean;
+  title1?: boolean;
+  title2?: boolean;
+  title3?: boolean;
+  title4?: boolean;
+  title5?: boolean;
+  title6?: boolean;
+  filter1?: boolean;
+  filter2?: boolean;
+  filter3?: boolean;
+  filter4?: booolean;
+  filter5?: booolean;
+  filter6?: boolean;
   rows?: boolean;
   shortText?: boolean;
   shortTextColor?: boolean;
@@ -528,45 +545,57 @@ interface BlockOptions {
   backgroundColor?: Color | null;
   backgroundWidth?: string | null;
   backgroundBrightness?: number | null;
-  backgroundBrightnessTwo?: number | null;
+  backgroundBrightnessSecondary?: number | null;
   backgroundPatternName?: string | null;
   backgroundPatternColor?: string | null;
   backgroundPatternOpacity?: number | null;
   backgroundPatternSize?: number | null;
-  backgroundPatternNameTwo?: string | null;
-  backgroundPatternColorTwo?: string | null;
-  backgroundPatternOpacityTwo?: number | null;
-  backgroundPatternSizeTwo?: number | null;
-  backgroundColorTwo?: Color | null;
-  backgroundWidthTwo?: string | null;
+  backgroundPatternNameSecondary?: string | null;
+  backgroundPatternColorSecondary?: string | null;
+  backgroundPatternOpacitySecondary?: number | null;
+  backgroundPatternSizeSecondary?: number | null;
+  backgroundColorSecondary?: Color | null;
+  backgroundWidthSecondary?: string | null;
   borderColor?: Color | null;
   borderDisplay?: string | null;
   borderRadius?: string | null;
   borderSize?: string | null;
-  colorOne?: string | null;
-  colorTwo?: string | null;
-  colorThree?: string | null;
-  colorFour?: string | null;
-  colorFive?: string | null;
-  colorSix?: string | null;
+  color1?: string | null;
+  color2?: string | null;
+  color3?: string | null;
+  color4?: string | null;
+  color5?: string | null;
+  color6?: string | null;
+  colorSecondary1?: string | null;
+  colorSecondary2?: string | null;
+  colorSecondary3?: string | null;
+  colorSecondary4?: string | null;
+  colorSecondary5?: string | null;
+  colorSecondary6?: string | null;
+  title1?: string | null;
+  title2?: string | null;
+  title3?: string | null;
+  title4?: string | null;
+  title5?: string | null;
+  title6?: string | null;
   columns?: number | null;
   columnsMobile?: number | null;
   count?: number | null;
   flipX?: string | null;
   padding?: string | null;
   margin?: string | null;
-  linkOne?: string | null;
-  linkTwo?: string | null;
-  linkThree?: string | null;
-  linkFour?: string | null;
-  linkFive?: string | null;
-  linkSix?: string | null;
-  filterOne?: string | null;
-  filterTwo?: string | null;
-  filterThree?: string | null;
-  filterFour?: string | null;
-  filterFive?: string | null;
-  filterSix?: string | null;
+  link1?: string | null;
+  link2?: string | null;
+  link3?: string | null;
+  link4?: string | null;
+  link5?: string | null;
+  link6?: string | null;
+  filter1?: string | null;
+  filter2?: string | null;
+  filter3?: string | null;
+  filter4?: string | null;
+  filter5?: string | null;
+  filter6?: string | null;
   rows?: number | null;
   shortText?: string | null;
   shortTextColor?: Color | null;
@@ -615,6 +644,7 @@ interface TileBlock {
   promotion: Promotion[];
   promotionId?: string;
   image?: Image[];
+  tile?: string[];
 }
 
 interface TextBlock {

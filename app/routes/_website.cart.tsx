@@ -72,7 +72,7 @@ const Cart = () => {
                   >
                     <img
                       className="h-20 w-20 border border-base-300 object-cover md:h-[8.8rem] md:w-[8.8rem]"
-                      src={images[0].url}
+                      src={images[0].href}
                       alt={name + "_cartImage"}
                     />
                     <div className="relative w-full text-center">

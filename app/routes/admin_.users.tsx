@@ -111,7 +111,7 @@ const Articles = () => {
                         <div className="avatar mx-[-10px]">
                           <div className="w-8 rounded-full">
                             <img
-                              src={avatar?.url || placeholderAvatar.url}
+                              src={avatar?.href || placeholderAvatar.href}
                               alt="user_avatar"
                             />
                           </div>

@@ -1,16 +1,16 @@
 import { IoCaretForwardCircleSharp } from "react-icons/io5";
+import Icon from "~/components/Icon";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
 
 type Props = {
   selectedBlock: BlockName | undefined;
-  selectedItems: ContentSelection[];
+
   setSelectedItems: Function;
   searchResults: Campaign[] | Promotion[] | Product[] | Brand[];
   contentType: BlockContentType | undefined;
 };
 
 const ResultsTable = ({
-  selectedItems,
   setSelectedItems,
   selectedBlock,
   searchResults,
@@ -29,16 +29,22 @@ const ResultsTable = ({
     });
   };
 
+  const shouldDisplay = () => {
+    const contentTypes = ["promotion", "campaign", "product", "icon"];
+
+    if (contentType && contentTypes.includes(contentType)) {
+      return true;
+    } else return false;
+  };
+
   return (
     <>
       {searchResults &&
         (selectedBlock === "banner" ||
           selectedBlock === "tile" ||
           selectedBlock === "hero") &&
-        (contentType === "campaign" ||
-          contentType === "promotion" ||
-          contentType === "brand" ||
-          contentType === "product") && (
+        contentType &&
+        shouldDisplay() && (
           <div className="w-full overflow-x-auto">
             <p className="my-3 text-sm font-bold">Select an Item</p>
             <table className="table table-sm">
@@ -46,7 +52,13 @@ const ResultsTable = ({
                 <tr>
                   <th className="w-1/4">#</th>
                   <th className="w-1/4">Name</th>
-                  <th className="w-1/4">Created</th>
+
+                  {searchResults?.[0]?.createdAt && (
+                    <th className="w-1/4">Created</th>
+                  )}
+
+                  {contentType === "icon" && <th className="w-1/4">Icon</th>}
+
                   <th className="w-1/4">Go To</th>
                 </tr>
               </thead>
@@ -72,13 +84,23 @@ const ResultsTable = ({
                         <td className="w-1/4">
                           {name && capitalizeFirst(name)}
                         </td>
-                        <td className="w-1/4">
-                          {new Date(createdAt).toLocaleDateString("en-US", {
-                            day: "numeric",
-                            month: "long",
-                            year: "numeric",
-                          })}
-                        </td>
+
+                        {searchResults?.[0]?.createdAt && (
+                          <td className="w-1/4">
+                            {new Date(createdAt).toLocaleDateString("en-US", {
+                              day: "numeric",
+                              month: "long",
+                              year: "numeric",
+                            })}
+                          </td>
+                        )}
+
+                        {contentType === "icon" && (
+                          <td className="w-1/4">
+                            <Icon iconName={name as any} size={16} styles="" />
+                          </td>
+                        )}
+
                         <td className="w-1/4">
                           <div className="ml-2">
                             <IoCaretForwardCircleSharp size={18} />

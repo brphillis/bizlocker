@@ -1,3 +1,12 @@
+//gets the correct option for the item, example "title1"
+export const getItemOption = (
+  options: BlockOptions,
+  key: string,
+  index: number
+) => {
+  return options[`${key}${index + 1}` as keyof BlockOptions];
+};
+
 export const determineSingleContentType = (
   content: BlockContent
 ): BlockContentType | undefined => {
@@ -11,6 +20,8 @@ export const determineSingleContentType = (
     return "brand";
   } else if (content?.image) {
     return "image";
+  } else if (content?.icon) {
+    return "icon";
   }
 };
 
@@ -37,6 +48,11 @@ export const concatBlockContent = (content: BlockContent): any => {
       joinedContent.push({ brand: e })
     );
   }
+  if ((content?.icon as string[])?.length > 0) {
+    (content?.icon as string[])?.forEach((e: any) =>
+      joinedContent.push({ icon: e })
+    );
+  }
 
   return joinedContent;
 };
@@ -45,8 +61,7 @@ export const buildContentImageFromContent = (
   contentType: BlockContentType,
   contentData: BlockContent,
   tileOrBanner: "tileImage" | "bannerImage",
-  links?: string[] | string,
-  index?: number
+  itemLink: string
 ) => {
   let name: string = "tileImage";
   let link: string = " ";
@@ -55,28 +70,27 @@ export const buildContentImageFromContent = (
     const promotion = contentData?.promotion as Promotion;
     name = promotion?.name || name;
     link = `/promotion/${name}`;
-    imageSrc = promotion?.[tileOrBanner]?.url || imageSrc;
+    imageSrc = promotion?.[tileOrBanner]?.href || imageSrc;
   } else if (contentType === "campaign") {
     const campaign = contentData?.campaign as Campaign;
     name = campaign?.name || name;
     link = `/campaign/${name}`;
-    imageSrc = campaign?.[tileOrBanner]?.url || imageSrc;
+    imageSrc = campaign?.[tileOrBanner]?.href || imageSrc;
   } else if (contentType === "brand") {
     const brand = contentData?.brand as Brand;
     name = brand?.name || name;
     link = `/products?brand=${name}`;
-    imageSrc = brand?.image?.url || imageSrc;
+    imageSrc = brand?.image?.href || imageSrc;
   } else if (contentType === "image") {
-    imageSrc = ((contentData as BlockContent)?.image as Image)?.url || imageSrc;
+    imageSrc =
+      ((contentData as BlockContent)?.image as Image)?.href || imageSrc;
     name = ((contentData as BlockContent)?.image as Image)?.altText || "";
 
-    if (index && links && links[index]) {
-      link = links[index]!;
-    } else if (!index && links) {
-      link = links as string;
+    if (itemLink) {
+      link = itemLink;
     }
   }
-  //if a custom links is set in the editor we over ride with it
 
+  //if a custom links is set in the editor we over ride with it
   return { name, link, imageSrc };
 };

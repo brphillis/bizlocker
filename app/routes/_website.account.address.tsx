@@ -4,6 +4,8 @@ import SelectCountry from "~/components/Forms/Select/SelectCountry";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { type ActionArgs, type LoaderArgs } from "@remix-run/server-runtime";
 import { getUserAddress, upsertUserAddress } from "~/models/auth/userAddress";
+import { validateForm } from "~/utility/validate";
+import BasicInput from "~/components/Forms/Input/BasicInput";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const { id } = ((await getUserDataFromSession(request)) as User) || {};
@@ -13,33 +15,20 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 export const action = async ({ request }: ActionArgs) => {
   const { id } = ((await getUserDataFromSession(request)) as User) || {};
-  const { addressLine1, addressLine2, suburb, postcode, state, country } =
-    Object.fromEntries(await request.formData());
+  const form = Object.fromEntries(await request.formData());
+  const { addressLine1, addressLine2, suburb, postcode, state, country } = form;
 
-  let validationError: string[] = [];
+  const validate = {
+    addressLine1: true,
+    suburb: true,
+    postcode: true,
+    state: true,
+    country: true,
+  };
 
-  if (!addressLine1) {
-    validationError.push("Adresss Line 1 is Required");
-  }
-
-  if (!suburb) {
-    validationError.push("Suburb is Required");
-  }
-
-  if (!postcode) {
-    validationError.push("Post Code is Required");
-  }
-
-  if (!state) {
-    validationError.push("State is Required");
-  }
-
-  if (!country) {
-    validationError.push("Country is Required");
-  }
-
-  if (validationError.length > 0) {
-    return { validationError };
+  const validationErrors = validateForm(form, validate);
+  if (validationErrors) {
+    return { validationErrors };
   }
 
   const updateData = {
@@ -58,8 +47,11 @@ export const action = async ({ request }: ActionArgs) => {
 
 const Address = () => {
   const { userAddress } = useLoaderData();
-  const { success, validationError } =
-    (useActionData() as { success: string; validationError: string[] }) || {};
+  const { success, validationErrors } =
+    (useActionData() as {
+      success: string;
+      validationErrors: ValidationErrors;
+    }) || {};
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -70,10 +62,10 @@ const Address = () => {
   }, [success]);
 
   useEffect(() => {
-    if (validationError) {
+    if (validationErrors) {
       setLoading(false);
     }
-  }, [validationError]);
+  }, [validationErrors]);
 
   return (
     <Form method="POST" id="AddressPanel">
@@ -81,89 +73,68 @@ const Address = () => {
         Address
       </h2>
       <div className="flex h-max w-[520px] max-w-[100vw] flex-col items-center gap-3 bg-base-200 p-3">
-        <div className="form-control w-full">
-          <label className="label">
-            <span className="label-text">Address Line 1</span>
-          </label>
-          <input
-            name="addressLine1"
-            type="text"
-            placeholder="Address Line 1"
-            className="input input-bordered w-full"
-            defaultValue={userAddress?.addressLine1 || undefined}
-          />
-        </div>
+        <BasicInput
+          name="addressLine1"
+          label="Address Line 1"
+          placeholder="Address Line 1"
+          customWidth="w-full"
+          styles="input-bordered"
+          type="text"
+          defaultValue={userAddress?.addressLine1 || undefined}
+          validationErrors={validationErrors}
+        />
 
-        <div className="form-control w-full">
-          <label className="label">
-            <span className="label-text">Address Line 2</span>
-          </label>
-          <input
-            name="addressLine2"
-            type="text"
-            placeholder="Address Line 2"
-            className="input input-bordered w-full"
-            defaultValue={userAddress?.addressLine2 || undefined}
-          />
-        </div>
+        <BasicInput
+          name="addressLine2"
+          label="Address Line 2"
+          placeholder="Address Line 2"
+          customWidth="w-full"
+          styles="input-bordered"
+          type="text"
+          defaultValue={userAddress?.addressLine2 || undefined}
+          validationErrors={validationErrors}
+        />
 
-        <div className="form-control w-full">
-          <label className="label">
-            <span className="label-text">Suburb</span>
-          </label>
-          <input
-            name="suburb"
-            type="text"
-            placeholder="Suburb"
-            className="input input-bordered w-full"
-            defaultValue={userAddress?.suburb || undefined}
-          />
-        </div>
+        <BasicInput
+          name="suburb"
+          label="Suburb"
+          placeholder="Suburb"
+          customWidth="w-full"
+          styles="input-bordered"
+          type="text"
+          defaultValue={userAddress?.suburb || undefined}
+          validationErrors={validationErrors}
+        />
 
-        <div className="form-control w-full">
-          <label className="label">
-            <span className="label-text">PostCode</span>
-          </label>
-          <input
-            name="postcode"
-            type="text"
-            placeholder="PostCode"
-            className="input input-bordered w-full"
-            defaultValue={userAddress?.postcode || undefined}
-          />
-        </div>
+        <BasicInput
+          name="postcode"
+          label="PostCode"
+          placeholder="PostCode"
+          customWidth="w-full"
+          styles="input-bordered"
+          type="text"
+          defaultValue={userAddress?.postcode || undefined}
+          validationErrors={validationErrors}
+        />
 
-        <div className="form-control w-full">
-          <label className="label">
-            <span className="label-text">State</span>
-          </label>
-          <input
-            name="state"
-            type="text"
-            placeholder="State"
-            className="input input-bordered w-full"
-            defaultValue={userAddress?.state || undefined}
-          />
-        </div>
+        <BasicInput
+          name="state"
+          label="State"
+          placeholder="State"
+          customWidth="w-full"
+          styles="input-bordered"
+          type="text"
+          defaultValue={userAddress?.state || undefined}
+          validationErrors={validationErrors}
+        />
 
-        <SelectCountry defaultValue={userAddress?.country} styles="!w-full" />
+        <SelectCountry
+          defaultValue={userAddress?.country}
+          validationErrors={validationErrors}
+          styles="!w-full"
+        />
 
         <div className="divider m-0 w-full p-0 pt-3" />
-
-        {validationError?.length > 0 && (
-          <div>
-            {validationError.map((error: string, i) => {
-              return (
-                <p
-                  key={error + i}
-                  className="my-2 text-center text-xs text-red-500"
-                >
-                  {error}
-                </p>
-              );
-            })}
-          </div>
-        )}
 
         {success && (
           <div>

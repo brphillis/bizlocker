@@ -1,5 +1,6 @@
 import { fetchBlockArticles, fetchBlockProducts } from "~/models/blocks.server";
 import { getBlockContentTypes } from "../utility/blockMaster";
+import { isArrayofStrings } from "./arrayHelpers";
 
 // Returns the object array nessesery for populating a page in the blockrenderer
 // Main constructor function for preparing a block for the BlockRenderer
@@ -24,10 +25,7 @@ export const getBlocks = async (page: Page, fetchNestedContent?: boolean) => {
 };
 
 // Squash the Page Block into the Content Block
-export const squashPageBlockAndContentBlock = (
-  page: Page,
-  getFirst?: boolean
-): Block[] => {
+export const squashPageBlockAndContentBlock = (page: Page): Block[] => {
   let firstPopulatedObjects: Block[] = [];
 
   // Sorting the pageblocks by the order in the blockOrder array
@@ -64,10 +62,6 @@ export const squashPageBlockAndContentBlock = (
         blockOptions: blockOptions,
       } as Block);
     }
-  }
-
-  if (getFirst) {
-    return [firstPopulatedObjects[0]];
   }
 
   return firstPopulatedObjects;
@@ -126,6 +120,7 @@ export const getBlockDefaultValues = (block: Block): ContentSelection[] => {
 
   const defaultValues: ContentSelection[] = [];
 
+  // Were using the PRODUCT type as a generic type
   blockContentTypes.map((contentName: BlockContentType) => {
     if (
       !block.content[contentName] ||
@@ -136,12 +131,27 @@ export const getBlockDefaultValues = (block: Block): ContentSelection[] => {
     }
 
     // If multiple content selection loop through array and push each defaultvalue
-    if (Array.isArray(block.content[contentName])) {
+    if (
+      Array.isArray(block.content[contentName]) &&
+      !isArrayofStrings(block.content[contentName])
+    ) {
       (block.content[contentName] as Product[]).map((j) =>
         defaultValues.push({
           type: contentName,
           contentId: j.id,
           name: j.name,
+        })
+      );
+    } else if (
+      Array.isArray(block.content[contentName]) &&
+      isArrayofStrings(block.content[contentName])
+    ) {
+      // if the value is an enum array
+      (block.content[contentName] as Product[]).map((j) =>
+        defaultValues.push({
+          type: contentName,
+          contentId: j as unknown as string,
+          name: j as unknown as string,
         })
       );
     } else {

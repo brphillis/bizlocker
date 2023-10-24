@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
-import { isValidMobileNumber } from "~/utility/validate";
+import { validateForm } from "~/utility/validate";
 import { getUserDataFromSession } from "~/session.server";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { type ActionArgs, type LoaderArgs } from "@remix-run/server-runtime";
 import { getUserDetails, upsertUserDetails } from "~/models/auth/userDetails";
+import PhoneInput from "~/components/Forms/Input/PhoneInput";
+import BasicInput from "~/components/Forms/Input/BasicInput";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const { id, email } = ((await getUserDataFromSession(request)) as User) || {};
@@ -13,33 +15,20 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 export const action = async ({ request }: ActionArgs) => {
   const { id } = ((await getUserDataFromSession(request)) as User) || {};
-  const { firstName, lastName, dateofbirth, phoneNumber } = Object.fromEntries(
-    await request.formData()
-  );
+  const form = Object.fromEntries(await request.formData());
 
-  let validationError: string[] = [];
+  const { firstName, lastName, dateofbirth, phoneNumber } = form;
 
-  if (!firstName) {
-    validationError.push("First Name is Required");
-  }
+  const validate = {
+    firstName: true,
+    lastName: true,
+    dateofbirth: true,
+    phoneNumber: true,
+  };
 
-  if (!lastName) {
-    validationError.push("Last Name is Required");
-  }
-
-  if (!phoneNumber) {
-    validationError.push("Phone Number is Required");
-  }
-  if (phoneNumber && !isValidMobileNumber(phoneNumber as string)) {
-    validationError.push("Phone Number is Invalid (+614)");
-  }
-
-  if (!dateofbirth) {
-    validationError.push("Date of Birth is Required");
-  }
-
-  if (validationError.length > 0) {
-    return { validationError };
+  const validationErrors = validateForm(form, validate);
+  if (validationErrors) {
+    return { validationErrors };
   }
 
   const updateData = {
@@ -56,8 +45,11 @@ export const action = async ({ request }: ActionArgs) => {
 
 const Account = () => {
   const { userDetails, email } = useLoaderData();
-  const { success, validationError } =
-    (useActionData() as { success: string; validationError: string[] }) || {};
+  const { success, validationErrors } =
+    (useActionData() as {
+      success: string;
+      validationErrors: ValidationErrors;
+    }) || {};
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -68,10 +60,10 @@ const Account = () => {
   }, [success]);
 
   useEffect(() => {
-    if (validationError) {
+    if (validationErrors) {
       setLoading(false);
     }
-  }, [validationError]);
+  }, [validationErrors]);
 
   return (
     <Form method="POST" id="AccountPanel">
@@ -79,44 +71,38 @@ const Account = () => {
         Profile
       </h2>
       <div className="flex h-max w-[520px] max-w-[100vw] flex-col items-center gap-3 bg-base-200 p-3">
-        <div className="form-control w-full">
-          <label className="label">
-            <span className="label-text">First Name</span>
-          </label>
-          <input
-            name="firstName"
-            type="text"
-            placeholder="First Name"
-            className="input input-bordered w-full"
-            defaultValue={userDetails?.firstName || undefined}
-          />
-        </div>
+        <BasicInput
+          name="firstName"
+          label="First Name"
+          placeholder="First Name"
+          customWidth="w-full"
+          styles="input-bordered"
+          type="text"
+          defaultValue={userDetails?.firstName || undefined}
+          validationErrors={validationErrors}
+        />
 
-        <div className="form-control w-full">
-          <label className="label">
-            <span className="label-text">Last Name</span>
-          </label>
-          <input
-            name="lastName"
-            type="text"
-            placeholder="Last Name"
-            className="input input-bordered w-full"
-            defaultValue={userDetails?.lastName || undefined}
-          />
-        </div>
+        <BasicInput
+          name="lastName"
+          label="Last Name"
+          placeholder="Last Name"
+          customWidth="w-full"
+          styles="input-bordered"
+          type="text"
+          defaultValue={userDetails?.lastName || undefined}
+          validationErrors={validationErrors}
+        />
 
-        <div className="form-control w-full">
-          <label className="label">
-            <span className="label-text">Phone Number</span>
-          </label>
-          <input
-            name="phoneNumber"
-            type="text"
-            placeholder="Phone Number"
-            className="input input-bordered w-full"
-            defaultValue={userDetails?.phoneNumber || undefined}
-          />
-        </div>
+        <PhoneInput
+          name="phoneNumber"
+          label="Phone Number"
+          placeholder="Phone Number"
+          customWidth="w-full"
+          styles="input-bordered"
+          type="text"
+          defaultValue={userDetails?.phoneNumber || undefined}
+          validationErrors={validationErrors}
+        />
 
         <div className="form-control w-full">
           <label className="label">
@@ -132,43 +118,26 @@ const Account = () => {
           />
         </div>
 
-        <div className="form-control w-full">
-          <label className="label">
-            <span className="label-text">Date of Birth</span>
-          </label>
-          <input
-            name="dateofbirth"
-            type="date"
-            placeholder="Date of Birth"
-            className="cursor-pointer] input input-bordered w-full"
-            defaultValue={
-              userDetails?.dateOfBirth
-                ? new Date(userDetails?.dateOfBirth).toISOString().split("T")[0]
-                : undefined
-            }
-          />
-        </div>
+        <BasicInput
+          name="dateofbirth"
+          label="Date of Birth"
+          placeholder="Date of Birth"
+          customWidth="w-full"
+          styles="input-bordered"
+          type="date"
+          defaultValue={
+            userDetails?.dateOfBirth
+              ? new Date(userDetails?.dateOfBirth).toISOString().split("T")[0]
+              : undefined
+          }
+          validationErrors={validationErrors}
+        />
 
         <div className="flex w-full items-center justify-center pt-3 text-xs sm:w-[215px]">
           Birthday Coupons sent Annually.
         </div>
 
         <div className="divider m-0 w-full p-0 pt-3" />
-
-        {validationError?.length > 0 && (
-          <div>
-            {validationError.map((error: string, i) => {
-              return (
-                <p
-                  key={error + i}
-                  className="my-2 text-center text-xs text-red-500"
-                >
-                  {error}
-                </p>
-              );
-            })}
-          </div>
-        )}
 
         {success && (
           <div>

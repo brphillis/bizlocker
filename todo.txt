@@ -1,13 +1,7 @@
 To Do
 
-[ ] Finish Mobile Nav Slideout for AdminWeb
 [ ] add shipping calculator
 [ ] send email when order is shipped
-[ ] add internation phone code validations
-[ ] finish validations function
-[ ] fix image search with connections
-[ ] add transparency to borders in blockoptions
-[ ] add delete functionality to page versions, articles and webpages
 
 
 Bug Hisory
@@ -25,6 +19,7 @@ Bug Hisory
 009.2 - [x] fix links on tile block
 009.3 - [x] fix all purchases from being JWT user authenticated so guests can add to cart
 009.4 - [x] product prices appear striked out when variants are flagged but product does not have promotion selected
+010 - [x] fix product images from being created every time the form is submitted
 
 Feat history
 
@@ -40,3 +35,7 @@ Feat history
 010 - basic/necessary form validation added to all forms
 011 - continuation redesign of content block development
 012 - input and select field reusable components
+013 - add delete functionality to page versions, articles and webpages
+014 - add international phone code validations
+013 - fix image search with connections
+014 - added aws s3 for managing images via bucket

@@ -1,4 +1,5 @@
 import { useNavigate } from "@remix-run/react";
+import PatternBackground from "~/components/Layout/PatternBackground";
 import { determineSingleContentType } from "~/helpers/blockContentHelpers";
 import { generateColor } from "~/utility/colors";
 
@@ -18,18 +19,23 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
     backgroundColor,
     margin,
     flipX,
-    backgroundColorTwo,
+    backgroundColorSecondary,
+    backgroundBrightnessSecondary,
+    backgroundPatternColorSecondary,
+    backgroundPatternNameSecondary,
+    backgroundPatternOpacitySecondary,
+    backgroundPatternSizeSecondary,
     borderColor,
     borderDisplay,
     borderSize,
     borderRadius,
     padding,
-    linkOne,
-    linkTwo,
+    link1,
+    link2,
   } = options || {};
 
   const product = content.product as Product;
-  const productImage = product.heroImage?.url;
+  const productImage = product.heroImage?.href;
 
   const contentType = determineSingleContentType(content);
 
@@ -47,20 +53,26 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
     <div
       className={`relative h-max w-full ${padding}`}
       style={{
-        paddingTop: backgroundColorTwo ? "1.5rem" : "unset",
-        paddingBottom: backgroundColorTwo ? "1.5rem" : "unset",
+        paddingTop: backgroundColorSecondary ? "48px" : "unset",
+        paddingBottom: backgroundColorSecondary ? "48px" : "unset",
       }}
     >
-      <div
-        className="absolute left-[50%] top-[50%] h-full w-screen translate-x-[-50%] translate-y-[-50%] max-md:hidden"
-        style={{
-          backgroundColor: generateColor(backgroundColorTwo),
-          width: "100vw",
-        }}
-      ></div>
+      <PatternBackground
+        name={backgroundPatternNameSecondary as BackgroundPatternName}
+        backgroundColor={generateColor(backgroundColorSecondary)}
+        patternColor={
+          backgroundPatternColorSecondary
+            ? generateColor(backgroundPatternColorSecondary)
+            : ""
+        }
+        patternOpacity={backgroundPatternOpacitySecondary || 0.5}
+        patternSize={backgroundPatternSizeSecondary || 32}
+        brightness={backgroundBrightnessSecondary || undefined}
+        screenWidth={true}
+      />
 
       <div
-        className={`relative flex items-center bg-white shadow-sm ${margin} ${borderDisplay} ${flipX}`}
+        className={`relative flex items-center bg-white shadow-sm ${margin} ${padding} ${borderDisplay} ${flipX}`}
         style={{
           backgroundColor: generateColor(backgroundColor),
           border:
@@ -89,7 +101,7 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
                     color: generateColor(titleColor),
                   }}
                 >
-                  From ${lowestPrice}
+                  From ${parseInt(lowestPrice).toFixed(2)}
                 </h2>
               )}
             </div>
@@ -104,7 +116,7 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
                 {shortText}
               </p>
               <div className={`mt-8 flex ${flipX}`}>
-                {(contentType === "product" || linkOne) && (
+                {(contentType === "product" || link1) && (
                   <div
                     onClick={() =>
                       navigate(
@@ -112,7 +124,7 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
                           ? `/product/SlackSki%20Jacket?id=${
                               (content.product as Product).id
                             }`
-                          : (linkOne as string)
+                          : (link1 as string)
                       )
                     }
                     className="text-md mr-4 cursor-pointer rounded-sm border-2 border-transparent bg-primary px-4 py-2 uppercase text-white hover:bg-primary"
@@ -120,10 +132,10 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
                     Buy Now
                   </div>
                 )}
-                {linkTwo && (
+                {link2 && (
                   <div
                     className="text-md cursor-pointer rounded-sm border-2 border-primary bg-transparent px-4 py-2 uppercase text-primary hover:bg-primary hover:text-white dark:text-white"
-                    onClick={() => navigate(linkTwo as string)}
+                    onClick={() => navigate(link2 as string)}
                   >
                     Read more
                   </div>

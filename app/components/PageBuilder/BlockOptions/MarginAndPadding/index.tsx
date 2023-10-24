@@ -1,3 +1,5 @@
+import ToolTip from "~/components/Indicators/ToolTip";
+
 type Props = {
   defaultValues: BlockOptions;
   selectedBlockOptions: BlockMasterOptions | undefined;
@@ -16,7 +18,8 @@ const MarginAndPaddingOptions = ({
       </summary>
       <div className="flex max-w-full flex-wrap justify-start !gap-3 px-3 pb-3 max-md:justify-center max-md:px-0">
         {selectedBlockOptions?.margin && (
-          <div className="form-control max-sm:items-center">
+          <div className="form-control relative max-sm:items-center">
+            <ToolTip tip="Padding is the area between the item and another item" />
             <label className="label max-sm:ml-3 max-sm:!self-start">
               <span className="label-text text-brand-white">Margin</span>
             </label>
@@ -47,7 +50,8 @@ const MarginAndPaddingOptions = ({
         )}
 
         {selectedBlockOptions?.padding && (
-          <div className="form-control max-sm:items-center">
+          <div className="form-control relative max-sm:items-center">
+            <ToolTip tip="Padding is the area between the margin & the item" />
             <label className="label max-sm:ml-3 max-sm:!self-start">
               <span className="label-text text-brand-white">Padding</span>
             </label>
@@ -58,6 +62,7 @@ const MarginAndPaddingOptions = ({
               defaultValue={!padding ? undefined : padding}
             >
               <option value={undefined}>Normal Padding</option>
+
               <option value=" !pt-0">No Top</option>
               <option value=" max-md:!pt-0">No Top Mobile</option>
               <option value=" md:!pt-0">No Top Desktop</option>

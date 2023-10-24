@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import BasicInput from "../../Input/BasicInput";
+import BasicSelect from "../../Select/BasicSelect";
+import { validateForm } from "~/utility/validate";
 
 type Props = {
   product: Product;
@@ -12,12 +15,36 @@ const ProductVariantFormModule = ({
   availableColors,
 }: Props) => {
   const [activeVariant, setActiveVariant] = useState<NewProductVariant>();
-
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors>();
   const [variants, setVariants] = useState<ProductVariant[] | undefined>(
     product?.variants
   );
 
   const handleAddVariant = () => {
+    const form = new FormData();
+    const formDataObject: Record<string, FormDataEntryValue> = {};
+
+    for (const key in activeVariant) {
+      if (activeVariant.hasOwnProperty(key)) {
+        form.append(key, (activeVariant as any)[key]);
+      }
+    }
+
+    for (const [key, value] of form.entries()) {
+      formDataObject[key] = value;
+    }
+
+    const validate = {
+      name: true,
+      price: true,
+    };
+
+    const validationErrors = validateForm(formDataObject, validate);
+    if (validationErrors) {
+      setValidationErrors(validationErrors);
+      return;
+    }
+
     if (activeVariant) {
       let updatedActiveVariant = activeVariant;
       if (!activeVariant.hasOwnProperty("isActive")) {
@@ -41,6 +68,7 @@ const ProductVariantFormModule = ({
         setVariants([updatedActiveVariant as ProductVariant]);
       }
     }
+    setValidationErrors(undefined);
     setActiveVariant(undefined);
   };
 
@@ -74,158 +102,120 @@ const ProductVariantFormModule = ({
       {activeVariant && (
         <div className="form-control gap-3">
           <div className="flex flex-wrap justify-evenly gap-3">
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Variant Name</span>
-              </label>
-              <input
-                type="string"
-                placeholder="Variant Name"
-                className="input input-bordered w-[95vw] sm:w-[215px]"
-                defaultValue={activeVariant?.name || "BASE"}
-                onChange={(e) => {
-                  const value = e.target.value.trim();
-                  setActiveVariant({
-                    ...activeVariant,
-                    name: value !== "" ? value : "BASE",
-                  });
-                }}
-              />
-            </div>
+            <BasicInput
+              name="name"
+              label="Variant Name"
+              placeholder="Name"
+              type="text"
+              defaultValue={activeVariant?.name || "BASE"}
+              onChange={(e) => {
+                setActiveVariant({
+                  ...activeVariant,
+                  name: e !== "" ? (e as string) : "BASE",
+                });
+              }}
+              validationErrors={validationErrors}
+            />
 
             <div className="w-[95vw] sm:w-[215px]" />
           </div>
 
           <div className="flex flex-wrap justify-evenly gap-3">
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Price</span>
-              </label>
-              <input
-                type="number"
-                placeholder="Price"
-                className="input input-bordered w-[95vw] sm:w-[215px]"
-                defaultValue={activeVariant?.price || ""}
-                onChange={(e) => {
-                  setActiveVariant({
-                    ...activeVariant,
-                    price: parseFloat(e.target.value),
-                  });
-                }}
-              />
-            </div>
+            <BasicInput
+              name="price"
+              label="Price"
+              placeholder="Price"
+              type="number"
+              defaultValue={activeVariant?.price || ""}
+              onChange={(e) => {
+                setActiveVariant({
+                  ...activeVariant,
+                  price: parseFloat(e as string),
+                });
+              }}
+              validationErrors={validationErrors}
+            />
 
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Sale Price</span>
-              </label>
-              <input
-                type="number"
-                placeholder="Sale Price"
-                className="input input-bordered w-[95vw] sm:w-[215px]"
-                defaultValue={activeVariant?.salePrice || ""}
-                onChange={(e) => {
-                  setActiveVariant({
-                    ...activeVariant,
-                    salePrice: parseFloat(e.target.value),
-                  });
-                }}
-              />
-            </div>
+            <BasicInput
+              name="salePrice"
+              label="Sale Price"
+              placeholder="Sale Price"
+              type="number"
+              defaultValue={activeVariant?.salePrice || ""}
+              onChange={(e) => {
+                setActiveVariant({
+                  ...activeVariant,
+                  salePrice: parseFloat(e as string),
+                });
+              }}
+              validationErrors={validationErrors}
+            />
           </div>
 
           <div className="flex flex-wrap justify-evenly gap-3">
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Remaining Stock</span>
-              </label>
-              <input
-                type="number"
-                placeholder="Stock"
-                className="input input-bordered w-[95vw] sm:w-[215px]"
-                defaultValue={activeVariant?.stock || ""}
-                onChange={(e) => {
-                  setActiveVariant({
-                    ...activeVariant,
-                    stock: parseInt(e.target.value),
-                  });
-                }}
-              />
-            </div>
+            <BasicInput
+              name="remainingStock"
+              label="Remaining Stock"
+              placeholder="Remaining Stock"
+              type="number"
+              defaultValue={activeVariant?.stock || ""}
+              onChange={(e) => {
+                setActiveVariant({
+                  ...activeVariant,
+                  stock: parseFloat(e as string),
+                });
+              }}
+              validationErrors={validationErrors}
+            />
 
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">SKU</span>
-              </label>
-              <input
-                type="text"
-                placeholder="SKU"
-                className="input input-bordered w-[95vw] sm:w-[215px]"
-                defaultValue={activeVariant?.sku || ""}
-                onChange={(e) => {
-                  setActiveVariant({
-                    ...activeVariant,
-                    sku: e.target.value,
-                  });
-                }}
-              />
-            </div>
+            <BasicInput
+              name="sku"
+              label="SKU"
+              placeholder="SKU"
+              type="text"
+              defaultValue={activeVariant?.sku || ""}
+              onChange={(e) => {
+                setActiveVariant({
+                  ...activeVariant,
+                  sku: e as string,
+                });
+              }}
+              validationErrors={validationErrors}
+            />
           </div>
 
           <div className="flex flex-wrap justify-evenly gap-3">
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Color</span>
-              </label>
-              <select
-                name="color"
-                className=" select w-[95vw] sm:w-[215px]"
-                placeholder="Select a Color"
-                value={activeVariant?.color || ""}
-                onChange={(e) => {
-                  setActiveVariant({
-                    ...activeVariant,
-                    color: e.target.value,
-                  });
-                }}
-              >
-                <option value="">Select a Color</option>
-                {availableColors?.map((color: string, i: number) => {
-                  return (
-                    <option key={color + i} value={color}>
-                      {color}
-                    </option>
-                  );
-                })}
-              </select>
-            </div>
+            <BasicSelect
+              name="color"
+              label="Color"
+              placeholder="Color"
+              selections={availableColors.map((e) => {
+                return { id: e, name: e };
+              })}
+              defaultValue={activeVariant?.color || ""}
+              onChange={(e) =>
+                setActiveVariant({
+                  ...activeVariant,
+                  color: e,
+                })
+              }
+            />
 
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Size</span>
-              </label>
-              <select
-                name="size"
-                className=" select w-[95vw] sm:w-[215px]"
-                placeholder="Select a Size"
-                value={activeVariant?.size || ""}
-                onChange={(e) => {
-                  setActiveVariant({
-                    ...activeVariant,
-                    size: e.target.value,
-                  });
-                }}
-              >
-                <option value="">Select a Size</option>
-                {availableSizes?.map((size: string, i: number) => {
-                  return (
-                    <option key={size + i} value={size}>
-                      {size}
-                    </option>
-                  );
-                })}
-              </select>
-            </div>
+            <BasicSelect
+              name="size"
+              label="Size"
+              placeholder="Size"
+              selections={availableSizes.map((e) => {
+                return { id: e, name: e };
+              })}
+              defaultValue={activeVariant?.size || ""}
+              onChange={(e) =>
+                setActiveVariant({
+                  ...activeVariant,
+                  size: e,
+                })
+              }
+            />
           </div>
 
           <div className="flex flex-col flex-wrap gap-3">
@@ -320,7 +310,11 @@ const ProductVariantFormModule = ({
                   Delete Variant
                 </button> */}
 
-            <button type="button" className="btn" onClick={handleAddVariant}>
+            <button
+              type="button"
+              className="btn rounded-sm !border-base-300 bg-primary text-white"
+              onClick={handleAddVariant}
+            >
               Confirm Variant
             </button>
           </div>

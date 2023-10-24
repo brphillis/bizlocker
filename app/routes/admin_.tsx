@@ -103,171 +103,175 @@ const Admin = () => {
             </p>
             <div className="divider w-full" />
 
-            <details className="collapse">
-              <summary className="text-md collapse-title -mb-3 !pb-0 font-medium tracking-wide text-primary-content">
-                <div className="flex items-center gap-3">
-                  <IoPeople size={18} />
-                  <p className="transition duration-500 ease-in-out hover:scale-[1.03]">
-                    User Management
-                  </p>
-                </div>
-              </summary>
-              <div className="collapse-content">
-                <ul className="text-white/75">
-                  <li onClick={() => navigate("/admin/users")}>
-                    <label htmlFor="my-drawer-2" className="hover:text-white">
-                      Users
-                    </label>
-                  </li>
+            <div className="scrollbar-hide max-h-[75vh] overflow-y-auto">
+              <details className="collapse rounded-sm open:border open:border-primary/50">
+                <summary className="text-md collapse-title -mb-3 !pb-0 font-medium tracking-wide text-primary-content">
+                  <div className="flex items-center gap-3">
+                    <IoPeople size={18} />
+                    <p className="select-none transition duration-500 ease-in-out hover:scale-[1.03]">
+                      User Management
+                    </p>
+                  </div>
+                </summary>
+                <div className="collapse-content">
+                  <ul className="text-white/75">
+                    <li onClick={() => navigate("/admin/users")}>
+                      <label htmlFor="my-drawer-2" className="hover:text-white">
+                        Users
+                      </label>
+                    </li>
 
-                  <li onClick={() => navigate("/admin/orders")}>
-                    <label htmlFor="my-drawer-2" className="hover:text-white">
-                      Orders
-                    </label>
-                  </li>
-                </ul>
-              </div>
-            </details>
-
-            <details className="collapse">
-              <summary className="text-md collapse-title -mb-3 !pb-0 font-medium tracking-wide text-primary-content">
-                <div className="flex items-center gap-3">
-                  <IoPlanet size={18} />
-                  <p className="transition duration-500 ease-in-out hover:scale-[1.03]">
-                    Website
-                  </p>
+                    <li onClick={() => navigate("/admin/orders")}>
+                      <label htmlFor="my-drawer-2" className="hover:text-white">
+                        Orders
+                      </label>
+                    </li>
+                  </ul>
                 </div>
-              </summary>
-              <div className="collapse-content">
-                <ul className="text-white/75">
-                  <li onClick={() => navigate("/admin/pagebuilder/homepage")}>
-                    <label htmlFor="my-drawer-2" className="hover:text-white">
-                      Home Page
-                    </label>
-                  </li>
-                  <li onClick={() => navigate("/admin/pages")}>
-                    <label htmlFor="my-drawer-2" className="hover:text-white">
-                      Pages
-                    </label>
-                  </li>
-                  <li onClick={() => navigate("/admin/articles")}>
-                    <label htmlFor="my-drawer-2" className="hover:text-white">
-                      Articles
-                    </label>
-                  </li>
-                  <li onClick={() => navigate("/admin/article-categories")}>
-                    <label htmlFor="my-drawer-2" className="hover:text-white">
-                      Article Categories
-                    </label>
-                  </li>
-                </ul>
-              </div>
-            </details>
+              </details>
 
-            <details className="collapse">
-              <summary className="text-md collapse-title -mb-3 !pb-0 font-medium tracking-wide text-primary-content">
-                <div className="flex items-center gap-3">
-                  <IoPricetag size={18} />
-                  <p className="transition duration-500 ease-in-out hover:scale-[1.03]">
-                    Product
-                  </p>
+              <details className="collapse rounded-sm open:mt-3 open:border open:border-primary/50">
+                <summary className="text-md collapse-title -mb-3 !pb-0 font-medium tracking-wide text-primary-content">
+                  <div className="flex items-center gap-3">
+                    <IoPlanet size={18} />
+                    <p className="transition duration-500 ease-in-out hover:scale-[1.03]">
+                      Website
+                    </p>
+                  </div>
+                </summary>
+                <div className="collapse-content">
+                  <ul className="text-white/75">
+                    <li onClick={() => navigate("/admin/pagebuilder/homepage")}>
+                      <label htmlFor="my-drawer-2" className="hover:text-white">
+                        Home Page
+                      </label>
+                    </li>
+                    <li onClick={() => navigate("/admin/pages")}>
+                      <label htmlFor="my-drawer-2" className="hover:text-white">
+                        Pages
+                      </label>
+                    </li>
+                    <li onClick={() => navigate("/admin/articles")}>
+                      <label htmlFor="my-drawer-2" className="hover:text-white">
+                        Articles
+                      </label>
+                    </li>
+                    <li onClick={() => navigate("/admin/article-categories")}>
+                      <label htmlFor="my-drawer-2" className="hover:text-white">
+                        Article Categories
+                      </label>
+                    </li>
+                  </ul>
                 </div>
-              </summary>
-              <div className="collapse-content">
-                <ul className="text-white/75">
-                  <li onClick={() => navigate("/admin/products")}>
-                    <label htmlFor="my-drawer-2" className="hover:text-white">
-                      Products
-                    </label>
-                  </li>
-                  <li onClick={() => navigate("/admin/departments")}>
-                    <label htmlFor="my-drawer-2" className="hover:text-white">
-                      Departments
-                    </label>
-                  </li>
-                  <li onClick={() => navigate("/admin/product-categories")}>
-                    <label htmlFor="my-drawer-2" className="hover:text-white">
-                      Categories
-                    </label>
-                  </li>
-                  <li onClick={() => navigate("/admin/product-subcategories")}>
-                    <label htmlFor="my-drawer-2" className="hover:text-white">
-                      SubCategories
-                    </label>
-                  </li>
-                  <li onClick={() => navigate("/admin/brands")}>
-                    <label htmlFor="my-drawer-2" className="hover:text-white">
-                      Brands
-                    </label>
-                  </li>
-                </ul>
-              </div>
-            </details>
+              </details>
 
-            <details className="collapse">
-              <summary className="text-md collapse-title -mb-3 !pb-0 font-medium tracking-wide text-primary-content">
-                <div className="flex items-center gap-3">
-                  <IoFolder size={18} />
-                  <p className="transition duration-500 ease-in-out hover:scale-[1.03]">
-                    Storage
-                  </p>
+              <details className="collapse rounded-sm open:mt-3 open:border open:border-primary/50">
+                <summary className="text-md collapse-title -mb-3 !pb-0 font-medium tracking-wide text-primary-content">
+                  <div className="flex items-center gap-3">
+                    <IoPricetag size={18} />
+                    <p className="transition duration-500 ease-in-out hover:scale-[1.03]">
+                      Product
+                    </p>
+                  </div>
+                </summary>
+                <div className="collapse-content">
+                  <ul className="text-white/75">
+                    <li onClick={() => navigate("/admin/products")}>
+                      <label htmlFor="my-drawer-2" className="hover:text-white">
+                        Products
+                      </label>
+                    </li>
+                    <li onClick={() => navigate("/admin/departments")}>
+                      <label htmlFor="my-drawer-2" className="hover:text-white">
+                        Departments
+                      </label>
+                    </li>
+                    <li onClick={() => navigate("/admin/product-categories")}>
+                      <label htmlFor="my-drawer-2" className="hover:text-white">
+                        Categories
+                      </label>
+                    </li>
+                    <li
+                      onClick={() => navigate("/admin/product-subcategories")}
+                    >
+                      <label htmlFor="my-drawer-2" className="hover:text-white">
+                        SubCategories
+                      </label>
+                    </li>
+                    <li onClick={() => navigate("/admin/brands")}>
+                      <label htmlFor="my-drawer-2" className="hover:text-white">
+                        Brands
+                      </label>
+                    </li>
+                  </ul>
                 </div>
-              </summary>
-              <div className="collapse-content">
-                <ul className="text-white/75">
-                  <li onClick={() => navigate("/admin/images")}>
-                    <label htmlFor="my-drawer-2" className="hover:text-white">
-                      Images
-                    </label>
-                  </li>
-                </ul>
-              </div>
-            </details>
+              </details>
 
-            <details className="collapse">
-              <summary className="text-md collapse-title -mb-3 !pb-0 font-medium tracking-wide text-primary-content">
-                <div className="flex items-center gap-3">
-                  <IoFileTrayFull size={18} />
-                  <p className="transition duration-500 ease-in-out hover:scale-[1.03]">
-                    Reports
-                  </p>
+              <details className="collapse rounded-sm open:mt-3 open:border open:border-primary/50">
+                <summary className="text-md collapse-title -mb-3 !pb-0 font-medium tracking-wide text-primary-content">
+                  <div className="flex items-center gap-3">
+                    <IoFolder size={18} />
+                    <p className="transition duration-500 ease-in-out hover:scale-[1.03]">
+                      Storage
+                    </p>
+                  </div>
+                </summary>
+                <div className="collapse-content">
+                  <ul className="text-white/75">
+                    <li onClick={() => navigate("/admin/images")}>
+                      <label htmlFor="my-drawer-2" className="hover:text-white">
+                        Images
+                      </label>
+                    </li>
+                  </ul>
                 </div>
-              </summary>
-              <div className="collapse-content">
-                <ul className="text-white/75">
-                  <li onClick={() => navigate("/admin/report-sales")}>
-                    <label htmlFor="my-drawer-2" className="hover:text-white">
-                      Sales
-                    </label>
-                  </li>
-                </ul>
-              </div>
-            </details>
+              </details>
 
-            <details className="collapse">
-              <summary className="text-md collapse-title -mb-3 !pb-0 font-medium tracking-wide text-primary-content">
-                <div className="flex items-center gap-3">
-                  <IoMegaphone size={18} />
-                  <p className="transition duration-500 ease-in-out hover:scale-[1.03]">
-                    Marketing
-                  </p>
+              <details className="collapse rounded-sm open:mt-3 open:border open:border-primary/50">
+                <summary className="text-md collapse-title -mb-3 !pb-0 font-medium tracking-wide text-primary-content">
+                  <div className="flex items-center gap-3">
+                    <IoFileTrayFull size={18} />
+                    <p className="transition duration-500 ease-in-out hover:scale-[1.03]">
+                      Reports
+                    </p>
+                  </div>
+                </summary>
+                <div className="collapse-content">
+                  <ul className="text-white/75">
+                    <li onClick={() => navigate("/admin/report-sales")}>
+                      <label htmlFor="my-drawer-2" className="hover:text-white">
+                        Sales
+                      </label>
+                    </li>
+                  </ul>
                 </div>
-              </summary>
-              <div className="collapse-content">
-                <ul className="text-white/75">
-                  <li onClick={() => navigate("/admin/promotions")}>
-                    <label htmlFor="my-drawer-2" className="hover:text-white">
-                      Promotions
-                    </label>
-                  </li>
-                  <li onClick={() => navigate("/admin/campaigns")}>
-                    <label htmlFor="my-drawer-2" className="hover:text-white">
-                      Campaigns
-                    </label>
-                  </li>
-                </ul>
-              </div>
-            </details>
+              </details>
+
+              <details className="collapse rounded-sm open:mt-3 open:border open:border-primary/50">
+                <summary className="text-md collapse-title -mb-3 !pb-0 font-medium tracking-wide text-primary-content">
+                  <div className="flex items-center gap-3">
+                    <IoMegaphone size={18} />
+                    <p className="transition duration-500 ease-in-out hover:scale-[1.03]">
+                      Marketing
+                    </p>
+                  </div>
+                </summary>
+                <div className="collapse-content">
+                  <ul className="text-white/75">
+                    <li onClick={() => navigate("/admin/promotions")}>
+                      <label htmlFor="my-drawer-2" className="hover:text-white">
+                        Promotions
+                      </label>
+                    </li>
+                    <li onClick={() => navigate("/admin/campaigns")}>
+                      <label htmlFor="my-drawer-2" className="hover:text-white">
+                        Campaigns
+                      </label>
+                    </li>
+                  </ul>
+                </div>
+              </details>
+            </div>
 
             <div className="absolute bottom-3 right-3">
               {user && <>{LogoutButton()}</>}

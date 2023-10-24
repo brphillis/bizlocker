@@ -22,7 +22,8 @@ export const loader = async ({ params }: LoaderArgs) => {
   const id = params?.id;
 
   if (id && id !== "add") {
-    return await getImage(id);
+    const image = await getImage(id);
+    return { image };
   } else {
     return null;
   }
@@ -66,7 +67,7 @@ export const action = async ({ request, params }: ActionArgs) => {
 const ModifyImage = () => {
   const navigate = useNavigate();
   let submit = useSubmit();
-  const image = useLoaderData();
+  const { image } = useLoaderData();
   const { validationErrors, success } =
     (useActionData() as {
       success: boolean;

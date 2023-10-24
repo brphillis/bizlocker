@@ -1,6 +1,10 @@
 import type { Gender } from "@prisma/client";
 import { prisma } from "~/db.server";
 import { getRandomOneOrTwo } from "~/helpers/numberHelpers";
+import {
+  handleS3Update,
+  handleS3Upload,
+} from "~/integrations/aws/s3/s3.server";
 
 export function getCampaigns(inDetail?: boolean) {
   if (inDetail) {
@@ -63,6 +67,10 @@ export const upsertCampaign = async (updateData: any) => {
 
   if (!id) {
     // Create a new campaign
+
+    const repoLinkTile = await handleS3Upload(parsedTile);
+    const repoLinkBanner = await handleS3Upload(parsedBanner);
+
     updatedCampaign = await prisma.campaign.create({
       data: {
         name,
@@ -83,13 +91,13 @@ export const upsertCampaign = async (updateData: any) => {
         isActive,
         tileImage: {
           create: {
-            url: parsedTile.url,
+            href: repoLinkTile,
             altText: parsedTile.altText,
           },
         },
         bannerImage: {
           create: {
-            url: parsedBanner.url,
+            href: repoLinkBanner,
             altText: parsedBanner.altText,
           },
         },
@@ -107,20 +115,29 @@ export const upsertCampaign = async (updateData: any) => {
       },
     });
 
+    const repoLinkTile = await handleS3Update(
+      existingCampaign?.tileImage as Image,
+      parsedTile
+    );
+    const repoLinkBanner = await handleS3Update(
+      existingCampaign?.bannerImage as Image,
+      parsedBanner
+    );
+
     if (!existingCampaign) {
       throw new Error("Campaign not found");
     }
 
     let tileImageData = {
       create: {
-        url: parsedTile.url,
+        href: repoLinkTile,
         altText: parsedTile.altText,
       },
     };
 
     let bannerImageData = {
       create: {
-        url: parsedBanner.url,
+        href: repoLinkBanner,
         altText: parsedBanner.altText,
       },
     };

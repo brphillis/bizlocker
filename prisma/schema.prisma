@@ -82,64 +82,76 @@ model Block {
 }
 
 model BlockOptions {
-  id                          String     @id @unique @default(cuid())
-  order                       Int?
-  autoplay                    String?
-  backgroundColor             Color?
-  backgroundWidth             String?
-  backgroundBrightness        Int?
-  backgroundBrightnessTwo     Int?
-  backgroundPatternName       String?
-  backgroundPatternColor      String?
-  backgroundPatternOpacity    Int?
-  backgroundPatternSize       Int?
-  backgroundPatternNameTwo    String?
-  backgroundPatternColorTwo   String?
-  backgroundPatternOpacityTwo Int?
-  backgroundPatternSizeTwo    Int?
-  backgroundColorTwo          Color?
-  backgroundWidthTwo          String?
-  block                       Block?     @relation("BlockToBlockOptions", fields: [blockId], references: [id])
-  blockId                     String?
-  borderColor                 Color?
-  borderDisplay               String?
-  borderRadius                String?
-  borderSize                  String?
-  colorOne                    String?
-  colorTwo                    String?
-  colorThree                  String?
-  colorFour                   String?
-  colorFive                   String?
-  colorSix                    String?
-  columns                     Int?
-  columnsMobile               Int?
-  count                       Int?
-  filterOne                   String?
-  filterTwo                   String?
-  filterThree                 String?
-  filterFour                  String?
-  filterFive                  String?
-  filterSix                   String?
-  flipX                       String?
-  margin                      String?
-  padding                     String?
-  linkOne                     String?
-  linkTwo                     String?
-  linkThree                   String?
-  linkFour                    String?
-  linkFive                    String?
-  linkSix                     String?
-  rows                        Int?
-  shortText                   String?
-  shortTextColor              Color?
-  size                        String?
-  sizeMobile                  String?
-  sortBy                      SortBy?
-  sortOrder                   SortOrder?
-  speed                       String?
-  style                       String?
-  title                       String?
-  titleColor                  Color?
+  id                                String     @id @unique @default(cuid())
+  autoplay                          String?
+  backgroundBrightness              Int?
+  backgroundBrightnessSecondary     Int?
+  backgroundColor                   Color?
+  backgroundColorSecondary          Color?
+  backgroundPatternColor            String?
+  backgroundPatternColorSecondary   String?
+  backgroundPatternName             String?
+  backgroundPatternNameSecondary    String?
+  backgroundPatternOpacity          Int?
+  backgroundPatternOpacitySecondary Int?
+  backgroundPatternSize             Int?
+  backgroundPatternSizeSecondary    Int?
+  backgroundWidth                   String?
+  backgroundWidthSecondary          String?
+  block                             Block?     @relation("BlockToBlockOptions", fields: [blockId], references: [id])
+  blockId                           String?
+  borderColor                       Color?
+  borderDisplay                     String?
+  borderRadius                      String?
+  borderSize                        String?
+  color1                            String?
+  color2                            String?
+  color3                            String?
+  color4                            String?
+  color5                            String?
+  color6                            String?
+  colorSecondary1                   String?
+  colorSecondary2                   String?
+  colorSecondary3                   String?
+  colorSecondary4                   String?
+  colorSecondary5                   String?
+  colorSecondary6                   String?
+  columns                           Int?
+  columnsMobile                     Int?
+  count                             Int?
+  filter1                           String?
+  filter2                           String?
+  filter3                           String?
+  filter4                           String?
+  filter5                           String?
+  filter6                           String?
+  flipX                             String?
+  link1                             String?
+  link2                             String?
+  link3                             String?
+  link4                             String?
+  link5                             String?
+  link6                             String?
+  margin                            String?
+  order                             Int?
+  padding                           String?
+  rows                              Int?
+  shortText                         String?
+  shortTextColor                    Color?
+  size                              String?
+  sizeMobile                        String?
+  sortBy                            SortBy?
+  sortOrder                         SortOrder?
+  speed                             String?
+  style                             String?
+  title                             String?
+  title1                            String?
+  title2                            String?
+  title3                            String?
+  title4                            String?
+  title5                            String?
+  title6                            String?
+  titleColor                        Color?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -209,6 +221,7 @@ model TileBlockContent {
   promotion Promotion[] @relation("PromotionToTileBlockContent")
   brand     Brand[]     @relation("BrandToTileBlockContent")
   image     Image[]     @relation("ImageToTileBlockContent")
+  icon      String[]
 
   tileBlock   TileBlock? @relation("TileBlockContentToTileBlock", fields: [tileBlockId], references: [id])
   tileBlockId String?    @unique
@@ -400,6 +413,7 @@ model OrderItem {
 
 model Image {
   id                   Int                  @id @default(autoincrement())
+  href                 String?
   altText              String?
   article              Article?             @relation("ArticleImage", fields: [articleId], references: [id])
   articleId            Int?                 @unique
@@ -417,7 +431,6 @@ model Image {
   promotionBanner      Promotion[]          @relation("BannerImageToPromotion")
   promotionTile        Promotion[]          @relation("TileImageToPromotion")
   tileBlockContent     TileBlockContent[]   @relation("ImageToTileBlockContent")
-  url                  String
   user                 User?                @relation("AvatarImage", fields: [userId], references: [id])
   userId               String?              @unique
   webPage              WebPage?             @relation("WebPageImage", fields: [webPageId], references: [id])

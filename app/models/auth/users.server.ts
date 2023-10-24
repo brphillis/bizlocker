@@ -58,7 +58,7 @@ export const upsertUser = async (userData: any) => {
         avatar: avatar
           ? {
               create: {
-                url: avatar.url,
+                href: avatar.href,
                 altText: avatar.altText,
               },
             }
@@ -117,11 +117,11 @@ export const upsertUser = async (userData: any) => {
           ? {
               upsert: {
                 create: {
-                  url: avatar.url,
+                  href: avatar.href,
                   altText: avatar.altText,
                 },
                 update: {
-                  url: avatar.url,
+                  href: avatar.href,
                   altText: avatar.altText,
                 },
               },
@@ -154,7 +154,7 @@ export const upsertUser = async (userData: any) => {
         avatar: avatar
           ? {
               create: {
-                url: avatar.url,
+                href: avatar.href,
                 altText: avatar.altText,
               },
             }

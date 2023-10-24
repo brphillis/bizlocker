@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { ConvertToBase64 } from "~/helpers/fileHelpers";
+import { useState } from "react";
+import { ConvertToBase64Image } from "~/helpers/fileHelpers";
 import { placeholderAvatar } from "~/utility/placeholderAvatar";
 
 type Props = {
@@ -15,7 +15,7 @@ const UploadAvatar = ({ avatar }: Props) => {
         <div className="avatar">
           <div className="w-24 rounded-full ring ring-primary ring-offset-2 ring-offset-base-100 sm:w-32">
             <img
-              src={image?.url || placeholderAvatar?.url || undefined}
+              src={image?.href || placeholderAvatar?.href || undefined}
               alt="user_avatar"
             />
           </div>
@@ -26,7 +26,7 @@ const UploadAvatar = ({ avatar }: Props) => {
             accept="image/*"
             className="file-input file-input-bordered w-full max-w-[50vw] bg-primary/50"
             onChange={async (e) => {
-              const convertedImage = await ConvertToBase64(e);
+              const convertedImage = await ConvertToBase64Image(e);
               convertedImage && setImage(convertedImage);
             }}
           />

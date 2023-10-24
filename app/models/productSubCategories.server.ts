@@ -1,5 +1,9 @@
 import { prisma } from "~/db.server";
 import { getOrderBy } from "~/helpers/sortHelpers";
+import {
+  handleS3Update,
+  handleS3Upload,
+} from "~/integrations/aws/s3/s3.server";
 
 export const getProductSubCategories = async () => {
   return await prisma.productSubCategory.findMany({
@@ -35,6 +39,7 @@ export const upsertProductSubCategory = async (categoryData: any) => {
   let updatedProductSubCategory;
 
   if (!id && image) {
+    const repoLink = await handleS3Upload(image);
     updatedProductSubCategory = await prisma.productSubCategory.create({
       data: {
         name: name,
@@ -43,7 +48,7 @@ export const upsertProductSubCategory = async (categoryData: any) => {
         isActive,
         image: {
           create: {
-            url: image.url,
+            href: repoLink,
             altText: image.altText,
           },
         },
@@ -77,17 +82,24 @@ export const upsertProductSubCategory = async (categoryData: any) => {
     let imageData = {};
 
     if (image && existingProductSubCategory.image) {
+      const repoLink = await handleS3Update(
+        existingProductSubCategory.image as Image,
+        image
+      );
+
       imageData = {
         update: {
-          url: image.url,
+          url: repoLink,
           altText: image.altText,
         },
       };
     }
     if (image && !existingProductSubCategory.image) {
+      const repoLink = await handleS3Upload(image);
+
       imageData = {
         create: {
-          url: image.url,
+          url: repoLink,
           altText: image.altText,
         },
       };

@@ -20,10 +20,10 @@ const Images = () => {
 
   return (
     <AdminPageWrapper>
-      <Form method="GET" className="relative h-full w-full bg-base-200 p-6">
+      <div className="relative h-full w-full bg-base-200 p-6">
         <AdminPageHeader title="Manage Images" addButtonText="Add Image" />
 
-        <div className="mt-6 flex flex-col">
+        <Form method="GET" className="mt-6 flex flex-col">
           <div className="flex flex-row flex-wrap gap-6">
             <BasicInput
               label="Title"
@@ -57,26 +57,28 @@ const Images = () => {
               Search
             </button>
           </div>
-        </div>
+        </Form>
 
         <div className="divider w-full" />
 
         <div className="flex w-full flex-wrap justify-center gap-6 overflow-x-auto pb-3 max-lg:gap-3">
-          {images?.map(({ id, url, altText }: Image, i: number) => {
+          {images?.map(({ id, href, altText }: Image) => {
             return (
               <img
                 key={id}
-                src={url}
+                src={href}
                 alt={altText}
                 className=" h-52 w-52 cursor-pointer object-cover transition-all duration-300 hover:scale-105 max-lg:h-44 max-lg:w-44"
-                onClick={() => navigate(`/admin/images/${id}`)}
+                onClick={() => {
+                  navigate(`${location.pathname + "/" + id}${location.search}`);
+                }}
               />
             );
           })}
         </div>
 
         <Pagination totalPages={totalPages} />
-      </Form>
+      </div>
       <Outlet />
     </AdminPageWrapper>
   );

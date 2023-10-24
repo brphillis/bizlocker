@@ -10,7 +10,7 @@ const ProductCard = (product: Product) => {
   const { id, name, images, variants, brand, promotion } = product;
 
   const { id: variantId, price, isOnSale, isPromoted } = variants[0] || {};
-  const displayImage = images[0]?.url;
+  const displayImage = images[0]?.href;
 
   const handleAddToCart = () => {
     if (variantId) {

@@ -1,5 +1,5 @@
 import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node";
-import { useActionData, useLoaderData } from "@remix-run/react";
+import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import PageBuilder from "~/components/PageBuilder";
 import {
@@ -26,10 +26,16 @@ import { getBlocks } from "~/helpers/blockHelpers";
 import PatternBackground from "~/components/Layout/PatternBackground";
 import { generateColor } from "~/utility/colors";
 import { sortPreviewPages } from "~/helpers/sortHelpers";
-import { addPreviewPage, getPreviewPage } from "~/models/previewPage";
+import {
+  addPreviewPage,
+  deletePage,
+  deletePreviewPage,
+  getPreviewPage,
+} from "~/models/previewPage";
 import { useEffect, useState } from "react";
 import VersionControl from "~/components/PageBuilder/VersionControl";
 import Header from "~/components/PageBuilder/Header";
+import SquareIconButton from "~/components/Buttons/SquareIconButton";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const productCategories = await getProductCategories();
@@ -102,10 +108,15 @@ export const action = async ({ request, params }: ActionArgs) => {
 
   switch (form._action) {
     case "search":
-      return await searchContentData(
+      const searchResults = await searchContentData(
         contentType as BlockContentType,
         (name as string) || undefined
       );
+
+      actionPreview = await getPreviewPage(previewPageId as string);
+      actionBlocks = await getBlocks(actionPreview as any);
+
+      return { searchResults, actionPreview, actionBlocks };
 
     case "updateMeta":
       let metaValidationError: string[] = [];
@@ -148,6 +159,19 @@ export const action = async ({ request, params }: ActionArgs) => {
       );
 
       return { addPreviewSuccess };
+
+    case "deletepreview":
+      const deletePreviewSuccess = await deletePreviewPage(
+        previewPageId as string
+      );
+
+      return { deletePreviewSuccess };
+
+    case "deletepage":
+      await deletePage(pageId as string, pageType as PageType);
+
+      if (pageType === "article") return redirect("/admin/articles");
+      if (pageType === "webPage") return redirect("/admin/pages");
 
     case "changecurrentpreview":
       actionPreview = await getPreviewPage(pageId as string);
@@ -260,8 +284,6 @@ const ManageHomePage = () => {
     page?.isActive ? " " : ""
   );
 
-  console.log(currentVersion);
-
   useEffect(() => {
     if (currentPreviewPage && !actionPreview) {
       setCurrentVersion(currentPreviewPage);
@@ -294,6 +316,25 @@ const ManageHomePage = () => {
           <div className="flex flex-col gap-6 rounded-none text-brand-white">
             <div className="relative flex flex-col items-center justify-center gap-6 bg-brand-black py-6 text-center text-xl font-bold text-brand-white max-sm:gap-3">
               <div className="w-full">{page ? page.title : "Add Page"}</div>
+              {pageType !== "homePage" && (
+                <Form method="POST" className="absolute right-3">
+                  <input
+                    hidden
+                    readOnly
+                    name="pageId"
+                    value={page?.id.toString()}
+                  />
+                  <input hidden readOnly name="pageType" value={pageType} />
+                  <SquareIconButton
+                    iconName="IoTrashBin"
+                    size="small"
+                    color="error"
+                    type="submit"
+                    name="_action"
+                    value="deletepage"
+                  />
+                </Form>
+              )}
             </div>
 
             <Header

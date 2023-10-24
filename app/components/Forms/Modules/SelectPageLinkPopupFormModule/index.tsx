@@ -74,7 +74,7 @@ const SelectPageLinkPopupFormModule = ({
   const handleUpdateItem = (pageTitle: string) => {
     if (itemIndexToUpdate !== undefined) {
       const newItems = [...items];
-      newItems[itemIndexToUpdate].url = `/${pageTitle}`;
+      newItems[itemIndexToUpdate].href = `/${pageTitle}`;
 
       updateItemsFunction(newItems);
       setItemIndexToUpdate(undefined);

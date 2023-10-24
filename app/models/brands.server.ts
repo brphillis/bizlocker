@@ -1,4 +1,9 @@
 import { prisma } from "~/db.server";
+import {
+  handleS3Update,
+  handleS3Upload,
+} from "~/integrations/aws/s3/s3.server";
+
 export type { Brand } from "@prisma/client";
 
 export function getBrands() {
@@ -20,12 +25,13 @@ export const upsertBrand = async (name: string, image?: Image, id?: string) => {
   let updatedBrand;
 
   if (!id && image) {
+    const repoLink = await handleS3Upload(image);
     updatedBrand = await prisma.brand.create({
       data: {
         name: name,
         image: {
           create: {
-            url: image.url,
+            href: repoLink,
             altText: image.altText,
           },
         },
@@ -44,7 +50,7 @@ export const upsertBrand = async (name: string, image?: Image, id?: string) => {
         id: parseInt(id),
       },
       include: {
-        image: true, // Include the existing image
+        image: true,
       },
     });
 
@@ -55,21 +61,30 @@ export const upsertBrand = async (name: string, image?: Image, id?: string) => {
     let imageData = {};
 
     if (image && existingBrand.image) {
+      const repoLink = await handleS3Update(
+        existingBrand.image as Image,
+        image
+      );
+
       imageData = {
         update: {
-          url: image.url,
           altText: image.altText,
+          href: repoLink,
         },
       };
     }
+
     if (image && !existingBrand.image) {
+      const repoLink = await handleS3Upload(image);
+
       imageData = {
         create: {
-          url: image.url,
+          url: repoLink,
           altText: image.altText,
         },
       };
     }
+
     if (!image && existingBrand.image) {
       imageData = {
         delete: true,
@@ -85,7 +100,7 @@ export const upsertBrand = async (name: string, image?: Image, id?: string) => {
         image: imageData,
       },
       include: {
-        image: true, // Include the image in the updated brand response
+        image: true,
       },
     });
   }

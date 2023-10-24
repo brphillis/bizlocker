@@ -229,6 +229,8 @@ const PageBuilder = ({
 
           <ContentSearch
             selectedBlock={selectedBlock}
+            previewPage={previewPage}
+            contentType={contentType}
             setContentType={setContentType}
           />
 
@@ -259,7 +261,6 @@ const PageBuilder = ({
 
           <ResultsTable
             selectedBlock={selectedBlock}
-            selectedItems={selectedItems}
             setSelectedItems={handleLimitedItemSelect}
             searchResults={searchResults as Campaign[] | Promotion[]}
             contentType={contentType}

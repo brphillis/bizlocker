@@ -4,6 +4,7 @@ import { searchProducts } from "~/models/products.server";
 import { searchPromotions } from "~/models/promotions.server";
 import { blockMaster, blockTypes, getBlockContentTypes } from "./blockMaster";
 import { searchBrands } from "~/models/brands.server";
+import { searchIcons } from "./icons";
 
 export const pageTypes = ["homePage", "webPage", "article", "previewPage"];
 
@@ -60,46 +61,52 @@ export const getFormBlockOptions = (form: {
   [k: string]: FormDataEntryValue;
 }): BlockOptions => {
   const {
-    backgroundColor,
-    backgroundColorTwo,
     backgroundBrightness,
-    backgroundBrightnessTwo,
-    backgroundWidth,
-    backgroundWidthTwo,
-    backgroundPatternName,
+    backgroundBrightnessSecondary,
+    backgroundColor,
+    backgroundColorSecondary,
     backgroundPatternColor,
+    backgroundPatternColorSecondary,
+    backgroundPatternName,
+    backgroundPatternNameSecondary,
     backgroundPatternOpacity,
+    backgroundPatternOpacitySecondary,
     backgroundPatternSize,
-    backgroundPatternNameTwo,
-    backgroundPatternColorTwo,
-    backgroundPatternOpacityTwo,
-    backgroundPatternSizeTwo,
+    backgroundPatternSizeSecondary,
+    backgroundWidth,
+    backgroundWidthSecondary,
     borderColor,
     borderDisplay,
     borderRadius,
     borderSize,
-    colorFive,
-    colorFour,
-    colorOne,
-    colorSix,
-    colorThree,
-    colorTwo,
+    color1,
+    color2,
+    color3,
+    color4,
+    color5,
+    color6,
+    colorSecondary1,
+    colorSecondary2,
+    colorSecondary3,
+    colorSecondary4,
+    colorSecondary5,
+    colorSecondary6,
     columns,
     columnsMobile,
     count,
-    filterFive,
-    filterFour,
-    filterOne,
-    filterSix,
-    filterThree,
-    filterTwo,
+    filter1,
+    filter2,
+    filter3,
+    filter4,
+    filter5,
+    filter6,
     flipX,
-    linkFive,
-    linkFour,
-    linkOne,
-    linkSix,
-    linkThree,
-    linkTwo,
+    link1,
+    link2,
+    link3,
+    link4,
+    link5,
+    link6,
     margin,
     padding,
     rows,
@@ -111,6 +118,12 @@ export const getFormBlockOptions = (form: {
     sortOrder,
     style,
     title,
+    title1,
+    title2,
+    title3,
+    title4,
+    title5,
+    title6,
     titleColor,
   } = form;
 
@@ -118,8 +131,8 @@ export const getFormBlockOptions = (form: {
     backgroundBrightness: backgroundBrightness
       ? parseInt(backgroundBrightness as string)
       : undefined,
-    backgroundBrightnessTwo: backgroundBrightnessTwo
-      ? parseInt(backgroundBrightnessTwo as string)
+    backgroundBrightnessSecondary: backgroundBrightnessSecondary
+      ? parseInt(backgroundBrightnessSecondary as string)
       : undefined,
     backgroundColor: backgroundColor ? (backgroundColor as string) : undefined,
     backgroundWidth: backgroundWidth ? (backgroundWidth as string) : undefined,
@@ -133,56 +146,62 @@ export const getFormBlockOptions = (form: {
       ? parseInt(backgroundPatternOpacity as string)
       : undefined,
     backgroundPatternSize: backgroundPatternSize
-      ? (backgroundPatternSize as string)
+      ? parseInt(backgroundPatternSize as string)
       : undefined,
-    backgroundColorTwo: backgroundColorTwo
-      ? (backgroundColorTwo as string)
+    backgroundColorSecondary: backgroundColorSecondary
+      ? (backgroundColorSecondary as string)
       : undefined,
-    backgroundWidthTwo: backgroundWidthTwo
-      ? (backgroundWidthTwo as string)
+    backgroundWidthSecondary: backgroundWidthSecondary
+      ? (backgroundWidthSecondary as string)
       : undefined,
-    backgroundPatternNameTwo: backgroundPatternNameTwo
-      ? (backgroundPatternNameTwo as string)
+    backgroundPatternNameSecondary: backgroundPatternNameSecondary
+      ? (backgroundPatternNameSecondary as string)
       : undefined,
-    backgroundPatternColorTwo: backgroundPatternColorTwo
-      ? (backgroundPatternColorTwo as string)
+    backgroundPatternColorSecondary: backgroundPatternColorSecondary
+      ? (backgroundPatternColorSecondary as string)
       : undefined,
-    backgroundPatternOpacityTwo: backgroundPatternOpacityTwo
-      ? parseInt(backgroundPatternOpacityTwo as string)
+    backgroundPatternOpacitySecondary: backgroundPatternOpacitySecondary
+      ? parseInt(backgroundPatternOpacitySecondary as string)
       : undefined,
-    backgroundPatternSizeTwo: backgroundPatternSizeTwo
-      ? (backgroundPatternSize as string)
+    backgroundPatternSizeSecondary: backgroundPatternSizeSecondary
+      ? parseInt(backgroundPatternSizeSecondary as string)
       : undefined,
     borderColor: borderColor ? (borderColor as string) : undefined,
     borderDisplay: borderDisplay ? (borderDisplay as string) : undefined,
     borderRadius: borderRadius ? (borderRadius as string) : undefined,
     borderSize: borderSize ? (borderSize as string) : undefined,
-    colorOne: colorOne ? (colorOne as string) : undefined,
-    colorTwo: colorTwo ? (colorTwo as string) : undefined,
-    colorThree: colorThree ? (colorThree as string) : undefined,
-    colorFour: colorFour ? (colorFour as string) : undefined,
-    colorFive: colorFive ? (colorFive as string) : undefined,
-    colorSix: colorSix ? (colorSix as string) : undefined,
+    color1: color1 ? (color1 as string) : undefined,
+    color2: color2 ? (color2 as string) : undefined,
+    color3: color3 ? (color3 as string) : undefined,
+    color4: color4 ? (color4 as string) : undefined,
+    color5: color5 ? (color5 as string) : undefined,
+    color6: color6 ? (color6 as string) : undefined,
+    colorSecondary1: colorSecondary1 ? (colorSecondary1 as string) : undefined,
+    colorSecondary2: colorSecondary2 ? (colorSecondary2 as string) : undefined,
+    colorSecondary3: colorSecondary3 ? (colorSecondary3 as string) : undefined,
+    colorSecondary4: colorSecondary4 ? (colorSecondary4 as string) : undefined,
+    colorSecondary5: colorSecondary5 ? (colorSecondary5 as string) : undefined,
+    colorSecondary6: colorSecondary6 ? (colorSecondary6 as string) : undefined,
     columns: columns ? parseInt(columns as string) : undefined,
     columnsMobile: columnsMobile
       ? parseInt(columnsMobile as string)
       : undefined,
     count: count ? parseInt(count as string) : undefined,
-    filterOne: filterOne ? (filterOne as string) : undefined,
-    filterTwo: filterTwo ? (filterTwo as string) : undefined,
-    filterThree: filterThree ? (filterThree as string) : undefined,
-    filterFour: filterFour ? (filterFour as string) : undefined,
-    filterFive: filterFive ? (filterFive as string) : undefined,
-    filterSix: filterSix ? (filterSix as string) : undefined,
+    filter1: filter1 ? (filter1 as string) : undefined,
+    filter2: filter2 ? (filter2 as string) : undefined,
+    filter3: filter3 ? (filter3 as string) : undefined,
+    filter4: filter4 ? (filter4 as string) : undefined,
+    filter5: filter5 ? (filter5 as string) : undefined,
+    filter6: filter6 ? (filter6 as string) : undefined,
     flipX: flipX ? (flipX as string) : undefined,
     margin: margin ? (margin as string) : undefined,
     padding: padding ? (padding as string) : undefined,
-    linkOne: linkOne ? (linkOne as string) : undefined,
-    linkTwo: linkTwo ? (linkTwo as string) : undefined,
-    linkThree: linkThree ? (linkThree as string) : undefined,
-    linkFour: linkFour ? (linkFour as string) : undefined,
-    linkFive: linkFive ? (linkFive as string) : undefined,
-    linkSix: linkSix ? (linkSix as string) : undefined,
+    link1: link1 ? (link1 as string) : undefined,
+    link2: link2 ? (link2 as string) : undefined,
+    link3: link3 ? (link3 as string) : undefined,
+    link4: link4 ? (link4 as string) : undefined,
+    link5: link5 ? (link5 as string) : undefined,
+    link6: link6 ? (link6 as string) : undefined,
     rows: rows ? parseInt(rows as string) : undefined,
     shortText: shortText ? (shortText as string) : undefined,
     shortTextColor: shortTextColor ? (shortTextColor as string) : undefined,
@@ -193,6 +212,12 @@ export const getFormBlockOptions = (form: {
     style: style ? (style as string) : undefined,
     title: title ? (title as string) : undefined,
     titleColor: titleColor ? (titleColor as string) : undefined,
+    title1: title1 ? (title1 as string) : undefined,
+    title2: title2 ? (title2 as string) : undefined,
+    title3: title3 ? (title3 as string) : undefined,
+    title4: title4 ? (title4 as string) : undefined,
+    title5: title5 ? (title5 as string) : undefined,
+    title6: title6 ? (title6 as string) : undefined,
   } as BlockOptions;
 
   return blockOptions;
@@ -270,6 +295,7 @@ export const searchContentData = async (
   if (name) {
     formData.set("name", name as string);
   }
+
   formData.set("page", "1");
   formData.set("perPage", "10");
 
@@ -282,32 +308,39 @@ export const searchContentData = async (
       );
       searchResults = promotions;
 
-      return { searchResults };
+      return searchResults;
+
     case "campaign":
       const { campaigns } = await searchCampaigns(Object.fromEntries(formData));
       searchResults = campaigns;
 
-      return { searchResults };
+      return searchResults;
 
     case "image":
       const { images } = await searchImages(Object.fromEntries(formData));
       searchResults = images;
 
-      return { searchResults };
+      return searchResults;
 
     case "product":
       const { products } = await searchProducts(Object.fromEntries(formData));
       searchResults = products;
 
-      return { searchResults };
+      return searchResults;
 
     case "brand":
       const { brands } = await searchBrands(Object.fromEntries(formData));
       searchResults = brands;
 
-      return { searchResults };
+      return searchResults;
+
+    case "icon":
+      const icons = await searchIcons(Object.fromEntries(formData));
+      searchResults = icons;
+
+      return searchResults;
 
     default:
-      return { searchResults };
+      return searchResults;
   }
 };

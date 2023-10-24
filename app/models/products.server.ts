@@ -1,5 +1,7 @@
 import { prisma } from "~/db.server";
+import { calculateDiscountPercentage } from "~/helpers/numberHelpers";
 import { getOrderBy } from "~/helpers/sortHelpers";
+import { handleS3Upload } from "~/integrations/aws/s3/s3.server";
 
 export const getProducts = async (count?: string) => {
   if (count) {
@@ -65,20 +67,6 @@ export const getProduct = async (id: string) => {
   });
 };
 
-// Function to calculate discount percentage
-const calculateDiscountPercentage = (price: number, salePrice: number) => {
-  if (
-    !price ||
-    !salePrice ||
-    price <= 0 ||
-    salePrice <= 0 ||
-    salePrice >= price
-  ) {
-    return 0;
-  }
-  return ((price - salePrice) / price) * 100;
-};
-
 export const upsertProduct = async (productData: any) => {
   const {
     name,
@@ -98,7 +86,6 @@ export const upsertProduct = async (productData: any) => {
   let product;
 
   // Compute the discountPercentageHigh and discountPercentageLow for the product from the variants
-
   const activeVariants = variants.filter(
     (variant: ProductVariant) => variant.isActive
   );
@@ -109,6 +96,19 @@ export const upsertProduct = async (productData: any) => {
     discountPercentages.length > 0 ? Math.max(...discountPercentages) : 0;
   const discountPercentageLow =
     discountPercentages.length > 0 ? Math.min(...discountPercentages) : 0;
+
+  const repoLinksProduct: string[] = [];
+
+  for (const e of images) {
+    const repoLink = await handleS3Upload(e);
+    repoLinksProduct.push(repoLink);
+  }
+
+  let heroRepoLink = "";
+
+  if (heroImage) {
+    heroRepoLink = await handleS3Upload(heroImage);
+  }
 
   const data: any = {
     name,
@@ -133,8 +133,8 @@ export const upsertProduct = async (productData: any) => {
     images:
       images && images.length > 0
         ? {
-            create: images.map((image: Image) => ({
-              url: image.url,
+            create: images.map((image: Image, i: number) => ({
+              href: repoLinksProduct[i],
               altText: image.altText,
             })),
           }
@@ -142,7 +142,7 @@ export const upsertProduct = async (productData: any) => {
     heroImage: heroImage
       ? {
           create: {
-            url: heroImage.url,
+            href: heroRepoLink,
             altText: heroImage.altText,
           },
         }
@@ -183,19 +183,75 @@ export const upsertProduct = async (productData: any) => {
         promotion: true,
         productSubCategories: true,
         images: true,
+        heroImage: true,
         variants: true,
       },
     });
 
-    if (!existingProduct) {
-      throw new Error("Product not found");
+    data.images = {};
+
+    const createImages = [];
+    const updateImages = [];
+
+    for (let i = 0; i < images.length; i++) {
+      const existingImage = existingProduct?.images[i];
+      const image = images[i];
+
+      if (existingImage) {
+        updateImages.push({
+          id: existingImage.id,
+          href: repoLinksProduct[i],
+          altText: image.altText,
+        });
+      } else {
+        createImages.push({
+          href: repoLinksProduct[i],
+          altText: image.altText,
+        });
+      }
     }
 
-    // Delete existing images
-    if (images) {
-      await prisma.image.deleteMany({
-        where: { productId: parseInt(id) },
-      });
+    if (createImages.length > 0) {
+      data.images.create = createImages.map(({ href, altText }) => ({
+        href,
+        altText,
+      }));
+    }
+
+    if (updateImages.length > 0) {
+      data.images.update = updateImages.map(({ id, href, altText }) => ({
+        where: { id },
+        data: {
+          href,
+          altText,
+        },
+      }));
+    }
+
+    data.heroImage = {};
+
+    if (existingProduct?.heroImage && heroImage) {
+      data.heroImage = {
+        update: {
+          where: { id: existingProduct.heroImage.id },
+          data: {
+            href: heroRepoLink,
+            altText: heroImage.altText,
+          },
+        },
+      };
+    }
+    if (!existingProduct?.heroImage && heroImage) {
+      data.heroImage = {
+        create: {
+          href: heroRepoLink,
+          altText: heroImage.altText,
+        },
+      };
+    }
+
+    if (!existingProduct) {
+      throw new Error("Product not found");
     }
 
     // Disconnect existing connections

@@ -17,3 +17,11 @@ export const findUniqueStringsInArrays = (...arrays: string[][]): string[] => {
 
   return uniqueStrings;
 };
+
+export const isArrayofStrings = (value: any): value is string[] => {
+  if (!Array.isArray(value)) {
+    return false;
+  }
+
+  return value.every((item) => typeof item === "string");
+};

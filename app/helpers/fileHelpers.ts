@@ -1,42 +1,53 @@
 import { type ChangeEvent } from "react";
-import fs from "fs";
 
-export const ConvertToBase64 = async (
+export const ConvertToBase64Image = async (
   event: ChangeEvent<HTMLInputElement>
 ): Promise<Image | undefined> => {
   const file = event.target.files?.[0];
   if (file && file.type.includes("image")) {
     return new Promise<Image | undefined>((resolve, reject) => {
       const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result as string;
+      reader.onload = () => {
+        const base64string = reader.result as string; // Get the base64 string from the FileReader
 
         const newImage: Image = {
-          url: base64String,
+          href: base64string, // Store the base64 string in the blob property
+          repoLink: base64string,
           altText: event.target.files?.[0].name || "",
         };
+
         resolve(newImage);
       };
       reader.onerror = () => {
         reject(new Error("Failed to read the file."));
       };
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(file); // Read as Data URL (base64 string)
     });
   } else {
     return undefined;
   }
 };
 
-export const encodeImageToBase64 = (imagePath: string): string => {
-  try {
-    const imageBuffer = fs.readFileSync(imagePath);
-    const base64Image = imageBuffer.toString("base64");
-    return base64Image;
-  } catch (error) {
-    console.error(
-      "Error while encoding image to base64:",
-      (error as Error).message
-    );
-    return "";
+export const base64toBufferedBinary = (dataURI: any) => {
+  var BASE64_MARKER = ";base64,";
+  var base64Index = dataURI.indexOf(BASE64_MARKER) + BASE64_MARKER.length;
+  var base64 = dataURI.substring(base64Index);
+  var raw = atob(base64);
+  var rawLength = raw.length;
+  var array = new Uint8Array(new ArrayBuffer(rawLength));
+
+  for (var i = 0; i < rawLength; i++) {
+    array[i] = raw.charCodeAt(i);
   }
+  return Buffer.from(array);
+};
+
+export const getImageTypeFromBase64 = (base64String: string): string => {
+  // Extract the data URI header (e.g., "data:image/jpeg;base64")
+  const header = base64String.split(";")[0];
+
+  // Extract the image type from the header
+  const imageType = header.split(":")[1];
+
+  return imageType;
 };

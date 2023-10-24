@@ -1,5 +1,9 @@
 import type { Gender } from "@prisma/client";
 import { prisma } from "~/db.server";
+import {
+  handleS3Update,
+  handleS3Upload,
+} from "~/integrations/aws/s3/s3.server";
 
 export function getPromotions(
   includeImages?: boolean,
@@ -74,6 +78,9 @@ export const upsertPromotion = async (updateData: any) => {
   let updatedPromotion;
 
   if (!id) {
+    const repoLinkTile = await handleS3Upload(parsedTile);
+    const repoLinkBanner = await handleS3Upload(parsedBanner);
+
     updatedPromotion = await prisma.promotion.create({
       data: {
         name,
@@ -87,13 +94,13 @@ export const upsertPromotion = async (updateData: any) => {
         isActive,
         tileImage: {
           create: {
-            url: parsedTile.url,
+            href: repoLinkTile,
             altText: parsedTile.altText,
           },
         },
         bannerImage: {
           create: {
-            url: parsedBanner.url,
+            href: repoLinkBanner,
             altText: parsedBanner.altText,
           },
         },
@@ -125,6 +132,15 @@ export const upsertPromotion = async (updateData: any) => {
       },
     });
 
+    const repoLinkTile = await handleS3Update(
+      existingPromotion?.tileImage as Image,
+      parsedTile
+    );
+    const repoLinkBanner = await handleS3Update(
+      existingPromotion?.bannerImage as Image,
+      parsedBanner
+    );
+
     if (!existingPromotion) {
       throw new Error("Promotion not found");
     }
@@ -140,13 +156,13 @@ export const upsertPromotion = async (updateData: any) => {
       isActive,
       tileImage: {
         update: {
-          url: parsedTile.url,
+          href: repoLinkTile,
           altText: parsedTile.altText,
         },
       },
       bannerImage: {
         update: {
-          url: parsedBanner.url,
+          href: repoLinkBanner,
           altText: parsedBanner.altText,
         },
       },
@@ -187,70 +203,75 @@ export const searchPromotions = async (
   formData?: { [k: string]: FormDataEntryValue },
   url?: URL
 ) => {
-  const name =
-    formData?.name || (url && url.searchParams.get("name")?.toString()) || "";
-  const departmentName =
-    formData?.departmentName || url?.searchParams.get("departmentName") || "";
-  const pageNumber =
-    (formData?.pageNumber && parseInt(formData.pageNumber as string)) ||
-    (url && Number(url.searchParams.get("pageNumber"))) ||
-    1;
-  const perPage =
-    (formData?.perPage && parseInt(formData.perPage as string)) ||
-    (url && Number(url.searchParams.get("perPage"))) ||
-    10;
+  try {
+    const name =
+      formData?.name || (url && url.searchParams.get("name")?.toString()) || "";
+    const departmentName =
+      formData?.departmentName || url?.searchParams.get("departmentName") || "";
+    const pageNumber =
+      (formData?.pageNumber && parseInt(formData.pageNumber as string)) ||
+      (url && Number(url.searchParams.get("pageNumber"))) ||
+      1;
+    const perPage =
+      (formData?.perPage && parseInt(formData.perPage as string)) ||
+      (url && Number(url.searchParams.get("perPage"))) ||
+      10;
 
-  const skip = (pageNumber - 1) * perPage;
-  const take = perPage;
+    const skip = (pageNumber - 1) * perPage;
+    const take = perPage;
 
-  // Construct a filter based on the search parameters provided
-  const filter: { [key: string]: any } = {};
+    // Construct a filter based on the search parameters provided
+    const filter: { [key: string]: any } = {};
 
-  if (name) {
-    filter.name = {
-      contains: name,
-      mode: "insensitive",
-    };
-  }
-
-  if (departmentName) {
-    filter.department = {
-      name: {
-        equals: departmentName,
+    if (name) {
+      filter.name = {
+        contains: name,
         mode: "insensitive",
-      },
-    };
+      };
+    }
+
+    if (departmentName) {
+      filter.department = {
+        name: {
+          equals: departmentName,
+          mode: "insensitive",
+        },
+      };
+    }
+
+    // Find and count the promotions
+    const [promotions, totalPromotions] = await Promise.all([
+      prisma.promotion.findMany({
+        where: filter,
+        include: {
+          department: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          products: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          bannerImage: true,
+          tileImage: true,
+        },
+        skip,
+        take,
+      }),
+      prisma.promotion.count({
+        where: filter,
+      }),
+    ]);
+
+    const totalPages = Math.ceil(totalPromotions / perPage);
+
+    return { promotions, totalPages };
+  } catch (error) {
+    console.error("Error in searchPromotions:", error);
+    throw error; // Rethrow the error for higher-level error handling
   }
-
-  // Find and count the promotions
-  const [promotions, totalPromotions] = await Promise.all([
-    prisma.promotion.findMany({
-      where: filter,
-      include: {
-        department: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        products: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        bannerImage: true,
-        tileImage: true,
-      },
-      skip,
-      take,
-    }),
-    prisma.promotion.count({
-      where: filter,
-    }),
-  ]);
-
-  const totalPages = Math.ceil(totalPromotions / perPage);
-
-  return { promotions, totalPages };
 };
