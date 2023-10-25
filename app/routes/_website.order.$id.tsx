@@ -25,7 +25,7 @@ const Order = () => {
 
   return (
     <PageWrapper>
-      <div className="bg-base-100 px-0 lg:px-3">
+      <div className="w-[520px] max-w-full bg-base-100 px-0 lg:px-3">
         <div className="mt-3 flex flex-col items-center gap-3">
           <h1 className="text-center text-3xl">Order</h1>
           <p className="text-xs opacity-50"># - {order?.orderId}</p>

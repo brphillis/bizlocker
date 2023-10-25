@@ -63,7 +63,7 @@ export const createSquarePaymentLink = async (
   const squareAddress = AddressToSquareAddress(address as Address);
 
   // Create the Square API order request object
-  const orderRequest: CreatePaymentLinkRequest = {
+  let orderRequest: CreatePaymentLinkRequest = {
     idempotencyKey: randomUUID(),
     order: {
       locationId: squareLocationId,
@@ -77,17 +77,41 @@ export const createSquarePaymentLink = async (
         googlePay: true,
       },
     },
-
-    prePopulatedData: {
-      buyerEmail: email || undefined,
-      buyerPhoneNumber: userDetails?.phoneNumber || undefined,
-      buyerAddress: {
-        ...squareAddress,
-        firstName: userDetails?.firstName || undefined,
-        lastName: userDetails?.lastName || undefined,
-      },
-    },
   };
+
+  if (squareAddress || userDetails?.firstName || userDetails?.lastName) {
+    orderRequest.prePopulatedData = {};
+    orderRequest.prePopulatedData.buyerAddress = {};
+  }
+
+  if (email || userDetails?.phoneNumber) {
+    orderRequest.prePopulatedData = {};
+  }
+
+  if (squareAddress) {
+    orderRequest.prePopulatedData!.buyerAddress = {
+      ...squareAddress,
+    };
+  }
+
+  if (userDetails) {
+    if (userDetails.firstName) {
+      orderRequest.prePopulatedData!.buyerAddress!.firstName =
+        userDetails?.firstName;
+    }
+    if (userDetails.lastName) {
+      orderRequest.prePopulatedData!.buyerAddress!.lastName =
+        userDetails?.lastName;
+    }
+  }
+
+  if (email) {
+    orderRequest.prePopulatedData!.buyerEmail = email;
+  }
+
+  if (userDetails?.phoneNumber) {
+    orderRequest.prePopulatedData!.buyerPhoneNumber = userDetails.phoneNumber;
+  }
 
   const { result } = (await squareClient.checkoutApi.createPaymentLink(
     orderRequest

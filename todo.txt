@@ -1,8 +1,9 @@
 To Do
 
 [ ] add shipping calculator
-[ ] send email when order is shipped
-
+[ ] shipping details input boxes in userweb order status
+[ ] sweetalert popup styles
+[ ] search bar loading state
 
 Bug Hisory
 
@@ -39,3 +40,4 @@ Feat history
 014 - add international phone code validations
 013 - fix image search with connections
 014 - added aws s3 for managing images via bucket
+015 - send email when order is shipped

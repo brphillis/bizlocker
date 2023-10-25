@@ -13,6 +13,8 @@ import {
   USER_SESSION_KEY,
 } from "~/session.server";
 import { getCart } from "./cart.server";
+import { getVariantUnitPrice } from "~/helpers/numberHelpers";
+import { sendOrderReceiptEmail } from "~/integrations/sendgrid/emails/orderReceipt";
 
 export const getOrder = async (orderId: string) => {
   return await prisma.order.findUnique({
@@ -62,10 +64,6 @@ export const getSquareOrderDetails = async (
 ): Promise<{ shippingDetails: SquareShippingDetails; email: string }> => {
   const response = await squareClient.ordersApi.retrieveOrder(orderId);
 
-  // if (!response || !response.result || !response.result.order) {
-  //   return null;
-  // }
-
   const shippingDetails = response?.result?.order?.fulfillments?.find(
     (fulfillment) => fulfillment.type === "SHIPMENT"
   )?.shipmentDetails?.recipient?.address as SquareShippingDetails;
@@ -101,8 +99,9 @@ export const createOrder = async (request: Request) => {
 
     //create the order object
     for (const { variantId, variant, quantity } of cartItems) {
-      const { isOnSale, salePrice, price } = variant;
-      const itemTotalPrice = isOnSale ? salePrice : price;
+      const itemTotalPrice = parseInt(
+        getVariantUnitPrice(variant, undefined, variant?.product?.promotion)
+      );
 
       if (itemTotalPrice) {
         totalPrice += itemTotalPrice * quantity;
@@ -177,7 +176,20 @@ export const confirmPayment = async (paymentCode: string) => {
       paymentCode,
     },
     include: {
-      items: true,
+      items: {
+        include: {
+          variant: {
+            include: {
+              product: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      },
+      user: true,
     },
   });
 
@@ -231,11 +243,11 @@ export const confirmPayment = async (paymentCode: string) => {
     });
   }
 
+  const { email, shippingDetails } =
+    (await getSquareOrderDetails(order.orderId)) || {};
+
   // handling upserting user data
   if (order.rememberInformation && order.userId) {
-    const { shippingDetails } =
-      (await getSquareOrderDetails(order.orderId)) || {};
-
     const address = SquareAddressToAddress(shippingDetails);
 
     await prisma.address.upsert({
@@ -252,6 +264,12 @@ export const confirmPayment = async (paymentCode: string) => {
       },
     });
   }
+
+  await sendOrderReceiptEmail(
+    email,
+    order as unknown as Order,
+    shippingDetails
+  );
 
   return updatedOrder;
 };

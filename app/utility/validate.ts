@@ -82,7 +82,7 @@ export const validationMaster: FormConfig = {
       return null;
     },
   },
-  address1: {
+  addressLine1: {
     required: true,
     validator: (value: string) => {
       if (!value) {
@@ -372,7 +372,7 @@ export const isValidMobileNumber = (mobileNumber: string) => {
   // Australia
 
   if (
-    mobileNumber.startsWith("614 ") &&
+    mobileNumber.startsWith("61 ") &&
     mobileNumber.replace(/ /g, "").length === 11
   ) {
     return true;

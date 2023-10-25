@@ -56,6 +56,7 @@ export const getCart = async (request: Request) => {
         },
       },
     });
+
     return cart;
   } else return null;
 };

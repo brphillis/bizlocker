@@ -73,20 +73,21 @@ export const calculateCartTotal = (cartItems: CartItem[]): number => {
 
 export const getVariantUnitPrice = (
   variant: ProductVariant,
-  product: Product
-): string | undefined => {
+  product?: Product,
+  promotion?: Promotion
+): string => {
   const { isOnSale, salePrice, price, isPromoted } = variant;
 
-  let unitPrice = isOnSale ? salePrice : price;
+  let unitPrice = isOnSale && salePrice ? salePrice : price;
 
   if (unitPrice && isPromoted && !isOnSale) {
-    const { discountPercentage } = product.promotion || {};
+    const { discountPercentage } = product?.promotion || promotion || {};
     if (discountPercentage) {
       unitPrice = minusPercentage(unitPrice, discountPercentage);
     }
   }
 
-  return unitPrice?.toFixed(2);
+  return unitPrice.toFixed(2);
 };
 
 export const getRandomOneOrTwo = (): number => {

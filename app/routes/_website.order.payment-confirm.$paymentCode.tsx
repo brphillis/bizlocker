@@ -18,8 +18,8 @@ const PaymentConfirm = () => {
 
   return (
     <PageWrapper>
-      <div className="py-6">
-        <div className="flex flex-col items-center gap-3">
+      <div className="w-[520px] max-w-full bg-base-100 px-0 lg:px-3">
+        <div className="mt-3 flex flex-col items-center gap-3">
           <h1 className="text-center text-2xl">
             Your Payment Has Been Successful
           </h1>
@@ -42,7 +42,7 @@ const PaymentConfirm = () => {
 
               return (
                 <div
-                  className="relative flex w-[420px] max-w-full flex-row items-center bg-base-300 p-3"
+                  className="relative flex w-full max-w-full flex-row items-center bg-brand-black p-3 text-brand-white"
                   key={"cartItem-" + product.name}
                 >
                   <div className="relative w-full text-center">

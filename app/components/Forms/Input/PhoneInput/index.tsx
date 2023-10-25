@@ -1,5 +1,6 @@
 import { useState } from "react";
 import ToolTip from "~/components/Indicators/ToolTip";
+import { ISO3166Countries } from "~/utility/countryList";
 
 type Props = {
   label: string;
@@ -77,10 +78,18 @@ const BasicInput = ({
           defaultValue={phoneNumber.areacode}
           onChange={(e) => updateAreaCode(e.target.value)}
         >
-          <option value="614 ">+614</option>
-          <option value="49 ">+49</option>
-          <option value="44 ">+44</option>
-          <option value="33 ">+33</option>
+          {ISO3166Countries.map((e) => {
+            if (e.phoneCode) {
+              return (
+                <option
+                  key={"phoneCodeSelect_" + e.phoneCode}
+                  value={e.phoneCode + " "}
+                >
+                  {"+" + e.phoneCode}
+                </option>
+              );
+            } else return null;
+          })}
         </select>
 
         <input
