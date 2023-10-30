@@ -1,4 +1,4 @@
-import { Color, Size } from "@prisma/client";
+import { Color } from "@prisma/client";
 
 export const getAvailableColors = async () => {
   const availableColors = Object.values(Color);
@@ -7,9 +7,4 @@ export const getAvailableColors = async () => {
   availableColors.sort((a, b) => a.localeCompare(b));
 
   return availableColors;
-};
-
-export const getAvailableSizes = async () => {
-  const availableSizes = Object.values(Size);
-  return availableSizes;
 };

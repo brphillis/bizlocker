@@ -1,4 +1,4 @@
-export const getAvailableSizes = (product: Product): string[] | undefined => {
+export const getAvailableSizes = (product: Product): (string | undefined)[] => {
   const sizeSet = new Set();
   const sizes = [];
 

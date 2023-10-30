@@ -67,7 +67,7 @@ const Cart = () => {
 
                 return (
                   <div
-                    className="relative flex w-[420px] max-w-full flex-row items-center border border-base-300 bg-base-200/50 p-2 text-brand-black shadow-sm"
+                    className="relative flex w-[420px] max-w-full flex-row items-center rounded-sm border border-base-300 bg-base-200/50 p-2 text-brand-black shadow-sm"
                     key={"cartItem-" + name}
                   >
                     <img
@@ -108,7 +108,7 @@ const Cart = () => {
 
         <Form
           method="POST"
-          className="order-1 flex min-w-full flex-col items-center justify-center border border-base-300 bg-base-200/50 px-3 py-6 text-brand-black shadow-sm md:min-w-[400px]"
+          className="order-1 flex min-w-full flex-col items-center justify-center rounded-sm border border-base-300 bg-base-200/50 px-3 py-6 text-brand-black shadow-sm md:min-w-[400px]"
         >
           <div className="hidden select-none text-center md:block">
             <h1 className="text-3xl">Your Cart</h1>

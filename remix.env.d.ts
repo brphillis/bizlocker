@@ -274,7 +274,7 @@ interface ProductVariant {
   productId: number;
   product: Product;
   color?: Color;
-  size?: Size;
+  size?: string;
   totalSold: number;
   cartItems: CartItem[];
   orderItems: OrderItem[];
@@ -295,7 +295,7 @@ type NewProductVariant = {
   stock?: number;
   product?: Product;
   color?: Color;
-  size?: Size;
+  size?: string;
   orders?: Order[];
   isActive?: boolean;
   isPromoted?: boolean;

@@ -604,7 +604,7 @@ model ProductVariant {
   product    Product     @relation("ProductVariants", fields: [productId], references: [id])
   productId  Int
   salePrice  Float?
-  size       Size?
+  size       String?
   sku        String      @unique
   stock      Int?
   totalSold  Int         @default(0)
@@ -692,13 +692,4 @@ enum Color {
   TRANSPARENTMD
   TRANSPARENTLG
   TRANSPARENT
-}
-
-enum Size {
-  XS
-  S
-  M
-  L
-  XL
-  XXL
 }

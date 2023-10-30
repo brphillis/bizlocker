@@ -18,8 +18,8 @@ export const ActionAlert = async (
     customClass: {
       popup: "bg-brand-black text-brand-white/75",
       title: "text-brand-white",
-      confirmButton: "!bg-green-400 !rounded-none !shadow-none",
-      cancelButton: "!bg-red-400 !rounded-none !shadow-none",
+      confirmButton: "!bg-primary !rounded-sm !shadow-none",
+      cancelButton: "!bg-red-400 !rounded-sm !shadow-none",
     },
   }).then(async (result) => {
     if (result.isConfirmed) {
