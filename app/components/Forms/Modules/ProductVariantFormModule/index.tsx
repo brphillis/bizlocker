@@ -6,19 +6,16 @@ import { validateForm } from "~/utility/validate";
 type Props = {
   product: Product;
   availableColors: string[];
-  availableSizes: string[];
 };
 
-const ProductVariantFormModule = ({
-  product,
-  availableSizes,
-  availableColors,
-}: Props) => {
+const ProductVariantFormModule = ({ product, availableColors }: Props) => {
   const [activeVariant, setActiveVariant] = useState<NewProductVariant>();
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>();
   const [variants, setVariants] = useState<ProductVariant[] | undefined>(
     product?.variants
   );
+
+  const [upsertState, setUpsertState] = useState<"edit" | "add" | undefined>();
 
   const handleAddVariant = () => {
     const form = new FormData();
@@ -37,6 +34,7 @@ const ProductVariantFormModule = ({
     const validate = {
       name: true,
       price: true,
+      sku: true,
     };
 
     const validationErrors = validateForm(formDataObject, validate);
@@ -70,6 +68,17 @@ const ProductVariantFormModule = ({
     }
     setValidationErrors(undefined);
     setActiveVariant(undefined);
+    setUpsertState(undefined);
+  };
+
+  const handleCancelEditVariant = () => {
+    if (upsertState === "edit" && variants) {
+      setVariants([...variants, activeVariant as ProductVariant]);
+    } else if (upsertState === "add" && variants) {
+      setVariants([...variants]);
+    }
+    setActiveVariant(undefined);
+    setUpsertState(undefined);
   };
 
   //   const handleDeleteVariant = (name: string | undefined) => {
@@ -83,11 +92,13 @@ const ProductVariantFormModule = ({
   //   };
 
   const handleEditVariant = (name: string | undefined, i: number) => {
+    setUpsertState("edit");
     setActiveVariant(variants?.[i]);
     setVariants(variants?.filter((e) => e?.name !== name));
   };
 
   const handleNewVariant = () => {
+    setUpsertState("add");
     setActiveVariant({});
   };
 
@@ -201,20 +212,79 @@ const ProductVariantFormModule = ({
               }
             />
 
-            <BasicSelect
+            <BasicInput
               name="size"
               label="Size"
               placeholder="Size"
-              selections={availableSizes.map((e) => {
-                return { id: e, name: e };
-              })}
+              type="text"
               defaultValue={activeVariant?.size || ""}
-              onChange={(e) =>
+              onChange={(e) => {
                 setActiveVariant({
                   ...activeVariant,
-                  size: e,
-                })
-              }
+                  size: e as string,
+                });
+              }}
+              validationErrors={validationErrors}
+            />
+
+            <BasicInput
+              name="length"
+              label="Length (cm)"
+              placeholder="Length"
+              type="number"
+              defaultValue={activeVariant?.length || ""}
+              onChange={(e) => {
+                setActiveVariant({
+                  ...activeVariant,
+                  length: parseFloat(e as string),
+                });
+              }}
+              validationErrors={validationErrors}
+            />
+
+            <BasicInput
+              name="width"
+              label="Width (cm)"
+              placeholder="Width"
+              type="number"
+              defaultValue={activeVariant?.width || ""}
+              onChange={(e) => {
+                setActiveVariant({
+                  ...activeVariant,
+                  width: parseFloat(e as string),
+                });
+              }}
+              validationErrors={validationErrors}
+            />
+
+            <BasicInput
+              name="height"
+              label="Height (cm)"
+              placeholder="Height"
+              type="number"
+              defaultValue={activeVariant?.height || ""}
+              onChange={(e) => {
+                setActiveVariant({
+                  ...activeVariant,
+                  height: parseFloat(e as string),
+                });
+              }}
+              validationErrors={validationErrors}
+            />
+
+            <BasicInput
+              name="weight"
+              label="Weight (kg)"
+              placeholder="Weight"
+              type="number"
+              defaultValue={activeVariant?.weight || ""}
+              onChange={(e) => {
+                setActiveVariant({
+                  ...activeVariant,
+                  weight: parseFloat(e as string),
+                });
+              }}
+              validationErrors={validationErrors}
             />
           </div>
 
@@ -299,6 +369,29 @@ const ProductVariantFormModule = ({
             </div>
           </div>
 
+          <div className="mt-3 flex flex-wrap justify-evenly gap-3 self-start">
+            <div className="form-control pl-0 sm:pl-6">
+              <label className="label cursor-pointer !pb-0">
+                <input
+                  type="checkbox"
+                  className="toggle toggle-success ml-3"
+                  checked={
+                    activeVariant.hasOwnProperty("isFragile")
+                      ? activeVariant.isFragile
+                      : false
+                  }
+                  onChange={(e) => {
+                    setActiveVariant({
+                      ...activeVariant,
+                      isFragile: e.target.checked,
+                    });
+                  }}
+                />
+                <span className="label-text ml-3">Fragile</span>
+              </label>
+            </div>
+          </div>
+
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             {/* <button
                   type="button"
@@ -312,7 +405,15 @@ const ProductVariantFormModule = ({
 
             <button
               type="button"
-              className="btn rounded-sm !border-base-300 bg-primary text-white"
+              className="btn rounded-sm !border-base-300 bg-error text-white hover:bg-red-500"
+              onClick={handleCancelEditVariant}
+            >
+              Cancel
+            </button>
+
+            <button
+              type="button"
+              className="btn rounded-sm !border-base-300 bg-primary text-white hover:bg-primary-focus"
               onClick={handleAddVariant}
             >
               Confirm Variant

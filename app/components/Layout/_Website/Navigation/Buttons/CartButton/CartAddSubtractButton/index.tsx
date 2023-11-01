@@ -21,7 +21,10 @@ const CartAddSubtractButton = ({
     return (
       <IoAddCircle
         size={size || 20}
-        className={"cursor-pointer text-brand-black/75 " + extendStyle}
+        className={
+          "cursor-pointer text-brand-black/25 hover:text-brand-black/50 " +
+          extendStyle
+        }
         onClick={() => {
           submit(
             { variantId: variantId.toString(), quantity: "1" },
@@ -35,7 +38,10 @@ const CartAddSubtractButton = ({
     return (
       <IoRemoveCircle
         size={size || 20}
-        className={"cursor-pointer text-brand-black/75 " + extendStyle}
+        className={
+          "cursor-pointer text-brand-black/25 hover:text-brand-black/50 " +
+          extendStyle
+        }
         onClick={() => {
           submit(
             { variantId: variantId.toString(), quantity: "-1" },

@@ -353,8 +353,10 @@ model Address {
   postcode     String?
   state        String?
   suburb       String?
-  user         User    @relation(fields: [userId], references: [id])
-  userId       String  @unique
+  user         User?   @relation(fields: [userId], references: [id])
+  userId       String? @unique
+  order        Order?  @relation(fields: [orderId], references: [orderId])
+  orderId      String? @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -393,9 +395,13 @@ model Order {
   totalPrice          Float
   user                User?       @relation(fields: [userId], references: [id])
   userId              String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  address             Address?
+  firstName           String?
+  lastName            String?
+  shippingMethod      String?
+  shippingPrice       String?
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
 }
 
 model OrderItem {
@@ -596,6 +602,7 @@ model ProductVariant {
   color      Color?
   isActive   Boolean     @default(true)
   isOnSale   Boolean     @default(false)
+  isFragile  Boolean     @default(false)
   isPromoted Boolean     @default(false)
   name       String
   orderId    String?
@@ -604,10 +611,14 @@ model ProductVariant {
   product    Product     @relation("ProductVariants", fields: [productId], references: [id])
   productId  Int
   salePrice  Float?
-  size       Size?
+  size       String?
   sku        String      @unique
   stock      Int?
   totalSold  Int         @default(0)
+  length     Int         @default(0) //remove default
+  width      Int         @default(0) //remove default
+  height     Int         @default(0) //remove default
+  weight     Int         @default(0) //remove default
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -692,13 +703,4 @@ enum Color {
   TRANSPARENTMD
   TRANSPARENTLG
   TRANSPARENT
-}
-
-enum Size {
-  XS
-  S
-  M
-  L
-  XL
-  XXL
 }

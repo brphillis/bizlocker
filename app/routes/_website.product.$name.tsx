@@ -57,24 +57,28 @@ const Product = () => {
   const { name, images, variants, description } = product as Product;
   const { name: brandName, image: brandImage } = brand || {};
 
-  const [selectedSize, setSelectedSize] = useState<string>(variants[0].size);
+  const [selectedSize, setSelectedSize] = useState<string | undefined>(
+    variants[0].size
+  );
   const [selectedColor, setSelectedColor] = useState<string>(variants[0].color);
   const [selectedImage, setSelectedImage] = useState<Image>(images[0]);
 
   const availableSizes = getAvailableSizes(product);
 
   const updateColors = (
-    size: string,
-    initializing: boolean
+    size?: string,
+    initializing?: boolean
   ): string[] | undefined => {
-    const colors = getAvailableColors(product, size);
-    if (colors) {
-      if (initializing) {
-        return colors;
-      }
+    if (size) {
+      const colors = getAvailableColors(product, size);
+      if (colors) {
+        if (initializing) {
+          return colors;
+        }
 
-      setAvailableColors(colors);
-      setSelectedColor(colors[0]);
+        setAvailableColors(colors);
+        setSelectedColor(colors[0]);
+      }
     }
   };
 

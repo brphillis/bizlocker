@@ -57,7 +57,7 @@ const Orders = () => {
                     onClick={() =>
                       navigate(
                         {
-                          pathname: `/order/${order.orderId}`,
+                          pathname: `/account/order/${order.orderId}`,
                           search: `?status=${order.status}`,
                         },
                         {

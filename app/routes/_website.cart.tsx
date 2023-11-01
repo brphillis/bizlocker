@@ -3,7 +3,12 @@ import {
   type ActionArgs,
   redirect,
 } from "@remix-run/server-runtime";
-import { Form, useLoaderData } from "@remix-run/react";
+import {
+  Form,
+  useActionData,
+  useLoaderData,
+  useSubmit,
+} from "@remix-run/react";
 import { useEffect, useState } from "react";
 import PageWrapper from "~/components/Layout/_Website/PageWrapper";
 import squareLogo from "../assets/logos/square-logo.svg";
@@ -19,27 +24,110 @@ import {
 } from "~/helpers/numberHelpers";
 import CartAddSubtractButton from "~/components/Layout/_Website/Navigation/Buttons/CartButton/CartAddSubtractButton";
 import { getUserDataFromSession } from "~/session.server";
+import BasicInput from "~/components/Forms/Input/BasicInput";
+import { getUserAddress } from "~/models/auth/userAddress";
+import SelectCountry from "~/components/Forms/Select/SelectCountry";
+import { getCartDeliveryOptions } from "~/helpers/cartHelpers";
+import BasicSelect from "~/components/Forms/Select/BasicSelect";
+import { getUserDetails } from "~/models/auth/userDetails";
 
 export const loader = async ({ request }: LoaderArgs) => {
-  let cart, user;
+  let cart, user, userAddress, loaderShippingOptions, userDetails;
   cart = await getCart(request);
   user = await getUserDataFromSession(request);
-  if (cart || user) {
-    return { cart, user };
+
+  if (user) {
+    userAddress = await getUserAddress(user.id);
+    userDetails = await getUserDetails(user.id);
+
+    if (userAddress && cart) {
+      loaderShippingOptions = await getCartDeliveryOptions(
+        cart as unknown as Cart,
+        parseInt(userAddress.postcode!)
+      );
+    }
+
+    return { cart, user, userAddress, userDetails, loaderShippingOptions };
   } else {
     return redirect("/products");
   }
 };
 
 export const action = async ({ request }: ActionArgs) => {
-  const createdOrder = await createOrder(request);
-  return createdOrder;
+  const form = Object.fromEntries(await request.formData());
+
+  switch (form._action) {
+    case "placeOrder":
+      const {
+        rememberInformation,
+        addressLine1,
+        addressLine2,
+        suburb,
+        postcode,
+        state,
+        country,
+        firstName,
+        lastName,
+        shippingOptions,
+      } = form;
+
+      const address: Address = {
+        addressLine1: addressLine1 as string,
+        addressLine2: addressLine2 as string,
+        suburb: suburb as string,
+        postcode: postcode as string,
+        state: state as string,
+        country: country as string,
+      };
+
+      const shippingOptionsSplit = (shippingOptions as string).split("_");
+      const shippingMethod = shippingOptionsSplit[0];
+      const shippingPrice = shippingOptionsSplit[1];
+
+      const createdOrder = await createOrder(
+        request,
+        firstName as string,
+        lastName as string,
+        address,
+        shippingMethod as string,
+        shippingPrice as string,
+        rememberInformation ? true : false
+      );
+      return createdOrder;
+
+    case "getShipping":
+      const cart = await getCart(request);
+      const { postCode } = form;
+
+      if (cart && !isNaN(parseInt(postCode as string))) {
+        const actionShippingOptions = await getCartDeliveryOptions(
+          cart as unknown as Cart,
+          parseInt(postCode as string)
+        );
+        return { actionShippingOptions };
+      } else return null;
+  }
 };
 
 const Cart = () => {
-  const { cart, user } = useLoaderData() || {};
+  const submit = useSubmit();
+  const { cart, user, userAddress, userDetails, loaderShippingOptions } =
+    useLoaderData() || {};
+  const { validationErrors, actionShippingOptions } =
+    (useActionData() as {
+      success: string;
+      validationErrors: ValidationErrors;
+      actionShippingOptions: AusPostDeliveryOption[];
+    }) || {};
   const { cartItems } = (cart as { cartItems: CartItem[] }) || {};
   const [orderTotal, setOrderTotal] = useState<number>(0);
+
+  const handleUpdateShipping = (postCode: string) => {
+    const formData = new FormData();
+    formData.set("_action", "getShipping");
+    formData.set("postCode", postCode);
+    submit(formData, { method: "POST" });
+  };
 
   useEffect(() => {
     const total = calculateCartTotal(cartItems);
@@ -67,7 +155,7 @@ const Cart = () => {
 
                 return (
                   <div
-                    className="relative flex w-[420px] max-w-full flex-row items-center border border-base-300 bg-base-200/50 p-2 text-brand-black shadow-sm"
+                    className="relative flex w-[420px] max-w-full flex-row items-center rounded-sm border border-base-300 bg-base-200/50 p-2 text-brand-black shadow-sm"
                     key={"cartItem-" + name}
                   >
                     <img
@@ -108,34 +196,124 @@ const Cart = () => {
 
         <Form
           method="POST"
-          className="order-1 flex min-w-full flex-col items-center justify-center border border-base-300 bg-base-200/50 px-3 py-6 text-brand-black shadow-sm md:min-w-[400px]"
+          className="order-1 flex min-w-full flex-col items-center justify-center rounded-sm border border-base-300 bg-base-200/50 px-3 py-6 text-brand-black shadow-sm md:min-w-[400px]"
         >
           <div className="hidden select-none text-center md:block">
-            <h1 className="text-3xl">Your Cart</h1>
-            <div className="opacity-50">Track your Order History</div>
+            <h1 className="text-2xl">Delivery Address</h1>
           </div>
 
           <div className="mt-6 hidden h-1 w-full border-t border-brand-black/10 md:block" />
 
-          <div className="flex flex-col py-3 text-center max-md:pt-0">
+          <BasicInput
+            name="firstName"
+            label="First Name"
+            placeholder="First Name"
+            customWidth="w-full"
+            styles="input-bordered"
+            type="text"
+            defaultValue={userDetails?.firstName || undefined}
+            validationErrors={validationErrors}
+          />
+
+          <BasicInput
+            name="lastName"
+            label="Last Name"
+            placeholder="Last Name"
+            customWidth="w-full"
+            styles="input-bordered"
+            type="text"
+            defaultValue={userDetails?.lastName || undefined}
+            validationErrors={validationErrors}
+          />
+
+          <BasicInput
+            name="addressLine1"
+            label="Address Line 1"
+            placeholder="Address Line 1"
+            customWidth="w-full"
+            styles="input-bordered"
+            type="text"
+            defaultValue={userAddress?.addressLine1 || undefined}
+            validationErrors={validationErrors}
+          />
+
+          <BasicInput
+            name="addressLine2"
+            label="Address Line 2"
+            placeholder="Address Line 2"
+            customWidth="w-full"
+            styles="input-bordered"
+            type="text"
+            defaultValue={userAddress?.addressLine2 || undefined}
+            validationErrors={validationErrors}
+          />
+
+          <BasicInput
+            name="suburb"
+            label="Suburb"
+            placeholder="Suburb"
+            customWidth="w-full"
+            styles="input-bordered"
+            type="text"
+            defaultValue={userAddress?.suburb || undefined}
+            validationErrors={validationErrors}
+          />
+
+          <BasicInput
+            name="postcode"
+            label="PostCode"
+            placeholder="PostCode"
+            customWidth="w-full"
+            styles="input-bordered"
+            type="text"
+            defaultValue={userAddress?.postcode || undefined}
+            validationErrors={validationErrors}
+            onChange={(e) => {
+              if (e && e.toString().length >= 4) {
+                handleUpdateShipping(e as string);
+              }
+            }}
+          />
+
+          <BasicInput
+            name="state"
+            label="State"
+            placeholder="State"
+            customWidth="w-full"
+            styles="input-bordered"
+            type="text"
+            defaultValue={userAddress?.state || undefined}
+            validationErrors={validationErrors}
+          />
+
+          <SelectCountry
+            defaultValue={userAddress?.country}
+            validationErrors={validationErrors}
+            styles="!w-full"
+          />
+
+          <div className="mt-3 flex w-full flex-col py-3 text-center max-md:pt-0">
             <div>Sub Total: $ {orderTotal.toFixed(2)} </div>
 
-            <div className="my-0">+</div>
-
-            <div>Shipping Options</div>
-            <select
-              name="productCategory"
-              title="category"
-              className=" select mt-3 w-[215px] border border-base-300 !font-normal text-brand-black/50"
-              placeholder="Select a Value"
-              defaultValue=""
-            >
-              <option className="text-center" value="">
-                Standard - $4.99
-              </option>
-
-              <option>shipping</option>
-            </select>
+            {(actionShippingOptions || loaderShippingOptions) && (
+              <>
+                <div className="my-0">+</div>
+                <BasicSelect
+                  name="shippingOptions"
+                  label="Shipping Options"
+                  placeholder="Shipping Options"
+                  customWidth="!w-full"
+                  selections={(
+                    actionShippingOptions || loaderShippingOptions
+                  ).map((e) => {
+                    return {
+                      id: e.name + "_" + e.price,
+                      name: "AUS POST | " + e.name + " | $" + e.price,
+                    };
+                  })}
+                />
+              </>
+            )}
           </div>
 
           {user && (
@@ -155,12 +333,28 @@ const Cart = () => {
           )}
 
           <input name="cartId" value={cart?.id || ""} readOnly hidden />
-          <button
-            type="submit"
-            className="btn btn-primary relative !rounded-sm font-bold tracking-wide !text-white"
-          >
-            Continue to Checkout
-          </button>
+
+          <div className="flex flex-col justify-center gap-3">
+            <button
+              type="submit"
+              name="_action"
+              value="placeOrder"
+              className="btn btn-primary relative !rounded-sm font-bold tracking-wide !text-white"
+            >
+              Continue to Checkout
+            </button>
+          </div>
+
+          {/* <div className="form-control w-[215px]">
+            <label className="label">
+              <span className="label-text">What is your name?</span>
+            </label>
+            <input
+              type="number"
+              placeholder="Post Code"
+              className="input input-bordered w-full"
+            />
+          </div> */}
 
           <div className="mt-6 h-1 w-full border-t border-brand-black/10" />
 

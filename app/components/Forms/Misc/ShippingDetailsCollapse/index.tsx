@@ -1,137 +1,89 @@
-type Props = { shippingDetails: SquareShippingDetails };
+import BasicInput from "../../Input/BasicInput";
 
-const index = ({ shippingDetails }: Props) => {
+type Props = { order: Order };
+
+const index = ({ order }: Props) => {
   return (
-    <div className="collapse-arrow collapse rounded-none !bg-brand-black px-3">
+    <div className="collapse collapse-arrow rounded-sm !bg-base-200 px-3">
       <input type="checkbox" />
-      <div className="collapse-title !ml-[12px] !mr-[-12px] w-full bg-brand-black pt-4 text-center text-brand-white">
+      <div className="collapse-title !ml-[12px] !mr-[-12px] w-full pt-4 text-center">
         Shipping Details
       </div>
       <div className="collapse-content">
         <div className="flex flex-col items-center gap-3">
-          <div className="mt-3 flex flex-row flex-wrap items-center justify-center gap-3">
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text text-brand-white">First Name</span>
-              </label>
-              <input
-                readOnly
-                name="firstName"
-                type="text"
-                placeholder="First Name"
-                className="input input-bordered w-[95vw] sm:w-[215px]"
-                defaultValue={shippingDetails?.firstName}
-              />
-            </div>
+          <BasicInput
+            name="firstName"
+            label="First Name"
+            placeholder="First Name"
+            type="text"
+            customWidth="w-full"
+            defaultValue={order?.firstName}
+          />
 
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text text-brand-white">Last Name</span>
-              </label>
-              <input
-                readOnly
-                name="lastName"
-                type="text"
-                placeholder="Last Name"
-                className="input input-bordered w-[95vw]  sm:w-[215px]"
-                defaultValue={shippingDetails?.lastName}
-              />
-            </div>
-          </div>
+          <BasicInput
+            name="lastName"
+            label="Last Name"
+            placeholder="Last Name"
+            type="text"
+            customWidth="w-full"
+            defaultValue={order?.lastName}
+          />
 
-          <div className="flex flex-row flex-wrap justify-center gap-3">
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text text-brand-white">
-                  Address Line 1
-                </span>
-              </label>
-              <input
-                readOnly
-                name="addressLine1"
-                type="text"
-                placeholder="Address Line 1"
-                className="input input-bordered w-[95vw]  sm:w-[215px]"
-                defaultValue={shippingDetails?.addressLine1}
-              />
-            </div>
+          <BasicInput
+            name="addressLine1"
+            label="Address Line 1"
+            placeholder="Address Line 1"
+            type="text"
+            customWidth="w-full"
+            defaultValue={order?.address?.addressLine1}
+          />
 
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text text-brand-white">
-                  Address Line 2
-                </span>
-              </label>
-              <input
-                readOnly
-                name="addressLine2"
-                type="text"
-                placeholder="Address Line 2"
-                className="input input-bordered w-[95vw] sm:w-[215px]"
-                defaultValue={shippingDetails?.addressLine2}
-              />
-            </div>
-          </div>
+          <BasicInput
+            name="addressLine2"
+            label="Address Line 2"
+            placeholder="Address Line 2"
+            type="text"
+            customWidth="w-full"
+            defaultValue={order?.address?.addressLine2}
+          />
 
-          <div className="flex flex-row flex-wrap justify-center gap-3">
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text text-brand-white">City/Suburb</span>
-              </label>
-              <input
-                readOnly
-                name="suburb"
-                type="text"
-                placeholder="State"
-                className="input input-bordered w-[95vw] sm:w-[215px]"
-                defaultValue={shippingDetails?.locality}
-              />
-            </div>
+          <BasicInput
+            name="suburb"
+            label="Suburb"
+            placeholder="Suburb"
+            type="text"
+            customWidth="w-full"
+            defaultValue={order?.address?.suburb}
+          />
 
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text text-brand-white">State</span>
-              </label>
-              <input
-                readOnly
-                name="state"
-                type="text"
-                placeholder="State"
-                className="input input-bordered w-[95vw] sm:w-[215px]"
-                defaultValue={shippingDetails?.administrativeDistrictLevel1}
-              />
-            </div>
-          </div>
+          <BasicInput
+            name="state"
+            label="State"
+            placeholder="State"
+            type="text"
+            customWidth="w-full"
+            defaultValue={order?.address?.state}
+          />
 
-          <div className="flex flex-row flex-wrap justify-center gap-3">
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text text-brand-white">Post Code</span>
-              </label>
-              <input
-                readOnly
-                name="postcode"
-                type="text"
-                placeholder="Post Code"
-                className="input input-bordered w-[95vw] sm:w-[215px]"
-                defaultValue={shippingDetails?.postalCode}
-              />
-            </div>
+          <BasicInput
+            name="postcode"
+            label="PostCode"
+            placeholder="PostCode"
+            type="text"
+            customWidth="w-full"
+            defaultValue={order?.address?.postcode}
+          />
 
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text text-brand-white">Country</span>
-              </label>
-              <input
-                readOnly
-                name="country"
-                type="text"
-                placeholder="Country"
-                className="input input-bordered w-[95vw] sm:w-[215px]"
-                defaultValue={shippingDetails?.country}
-              />
-            </div>
-          </div>
+          <BasicInput
+            name="country"
+            label="Country"
+            placeholder="Country"
+            type="text"
+            customWidth="w-full"
+            defaultValue={order?.address?.country}
+          />
+
+          <div className="h-1"></div>
         </div>
       </div>
     </div>

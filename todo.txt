@@ -1,9 +1,6 @@
 To Do
 
-[ ] add shipping calculator
-[ ] shipping details input boxes in userweb order status
-[ ] sweetalert popup styles
-[ ] search bar loading state
+add validation to order shipping address
 
 Bug Hisory
 
@@ -41,3 +38,7 @@ Feat history
 013 - fix image search with connections
 014 - added aws s3 for managing images via bucket
 015 - send email when order is shipped
+016 - sweetalert popup styles
+017 search bar loading state
+018 shipping details input boxes in userweb order status
+019 add shipping calculator

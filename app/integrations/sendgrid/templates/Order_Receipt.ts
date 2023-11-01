@@ -3,12 +3,13 @@ import { staticPathImageToBase64 } from "../sendgrid.server";
 export const Order_Receipt = (
   recipient: string,
   order: Order,
-  shippingDetails: SquareShippingDetails,
   subject: string,
   message: string,
   footerMessage: string
 ) => {
   const { items } = order;
+
+  const { firstName, lastName, address } = order;
 
   const template = {
     to: recipient,
@@ -815,30 +816,26 @@ export const Order_Receipt = (
                                                                         style="line-height: 18.2px;"></span><span
                                                                         style="line-height: 18.2px;"></span><span
                                                                         style="line-height: 18.2px;">
-                                                                        ${
-                                                                          shippingDetails.firstName
-                                                                        } ${
-      shippingDetails.lastName
-    }
+                                                                        ${firstName} ${lastName}
                                                                         <br />
                                                                         ${
-                                                                          shippingDetails.addressLine1
+                                                                          address?.addressLine1
                                                                         }
                                                                         <br />
                                                                         ${
-                                                                          shippingDetails.addressLine2
-                                                                            ? shippingDetails.addressLine2 +
+                                                                          address?.addressLine2
+                                                                            ? address?.addressLine2 +
                                                                               `<br />`
                                                                             : ""
                                                                         }
                                                                         ${
-                                                                          shippingDetails.locality
+                                                                          address?.suburb
                                                                         } ${
-      shippingDetails.administrativeDistrictLevel1
-    } ${shippingDetails.postalCode}  
+      address?.state
+    } ${address?.postcode}  
                                                                         <br />
                                                                        ${
-                                                                         shippingDetails.country
+                                                                         address?.country
                                                                        }
                                                                         </span></p>
                                                             </div>

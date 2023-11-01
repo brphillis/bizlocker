@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { IoRefreshOutline } from "react-icons/io5";
+import { IoRefreshOutline, IoSearch } from "react-icons/io5";
 import { Form, useSearchParams, useSubmit } from "react-router-dom";
 import SearchInput from "../Forms/Input/SearchInput";
 
@@ -38,6 +38,20 @@ const SearchBar = ({ departments, productCategories, brands }: Props) => {
       className="form-control relative mt-[-1px] flex h-max w-full !flex-row justify-center gap-3 bg-brand-black py-3"
     >
       <div className="flex flex-row flex-wrap items-center justify-center gap-3">
+        <button
+          type="button"
+          className="btn-square btn-primary !ml-[85%] flex h-[2.6rem] w-12 items-center justify-center !rounded-sm sm:!ml-0"
+          onClick={() => {
+            searchParams.delete("name");
+            searchParams.delete("productCategory");
+            searchParams.delete("productSubCategory");
+            searchParams.delete("brand");
+            searchParams.delete("gender");
+          }}
+        >
+          <IoRefreshOutline />
+        </button>
+
         <div className="flex flex-row gap-3">
           <SearchInput
             name="name"
@@ -67,10 +81,6 @@ const SearchBar = ({ departments, productCategories, brands }: Props) => {
               searchParams.delete("productSubCategory");
               searchParams.delete("brand");
               searchParams.set("department", e.target.value);
-              submit(searchParams, {
-                method: "GET",
-                action: "/products",
-              });
             }}
           >
             <option value="">Department</option>
@@ -98,14 +108,9 @@ const SearchBar = ({ departments, productCategories, brands }: Props) => {
                     .productSubCategories
                 );
               }
-
               searchParams.delete("productSubCategory");
               searchParams.delete("brand");
               searchParams.set("productCategory", e.target.value);
-              submit(searchParams, {
-                method: "GET",
-                action: "/products",
-              });
             }}
           >
             <option value="">By Category</option>
@@ -124,14 +129,9 @@ const SearchBar = ({ departments, productCategories, brands }: Props) => {
               title="Sub Category"
               className="select w-[95vw] !rounded-sm !font-normal text-brand-black/50 sm:w-[215px]"
               placeholder="Select a SubCategory"
-              value={searchParams.get("productSubCategory") || ""}
               onChange={(e) => {
                 searchParams.delete("brand");
                 searchParams.set("productSubCategory", e.target.value);
-                submit(searchParams, {
-                  method: "GET",
-                  action: "/products",
-                });
               }}
             >
               <option value="">By Range</option>
@@ -155,10 +155,6 @@ const SearchBar = ({ departments, productCategories, brands }: Props) => {
             value={searchParams.get("brand") || ""}
             onChange={(e) => {
               searchParams.set("brand", e.target.value);
-              submit(searchParams, {
-                method: "GET",
-                action: "/products",
-              });
             }}
           >
             <option value="">By Brand</option>
@@ -176,18 +172,13 @@ const SearchBar = ({ departments, productCategories, brands }: Props) => {
           type="button"
           className="btn-square btn-primary !ml-[85%] flex h-[2.6rem] w-12 items-center justify-center !rounded-sm sm:!ml-0"
           onClick={() => {
-            searchParams.delete("name");
-            searchParams.delete("productCategory");
-            searchParams.delete("productSubCategory");
-            searchParams.delete("brand");
-            searchParams.delete("gender");
             submit(searchParams, {
               method: "GET",
               action: "/products",
             });
           }}
         >
-          <IoRefreshOutline />
+          <IoSearch />
         </button>
       </div>
     </Form>

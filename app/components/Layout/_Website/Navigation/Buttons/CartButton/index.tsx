@@ -56,57 +56,68 @@ const CartButton = ({ id: cartId, cartItems }: Cart) => {
           className="
           absolute right-2 top-2
           cursor-pointer
-          rounded-full bg-primary p-[0.2rem] text-white"
+          rounded-full bg-primary p-[0.2rem] text-white hover:bg-primary-focus"
         />
 
         <Form method="POST" className="mb-6 flex flex-col gap-3">
           <div className="mt-3 text-center font-bold">Your Cart</div>
           <ul className="mb-12">
-            {cartItems
-              ?.sort((a, b) =>
-                a.variant.product.name.localeCompare(b.variant.product.name)
-              )
-              .reverse()
-              .map(({ variant, quantity }: CartItem, index) => {
-                const { product, id: variantId } = variant;
+            <div className="max-h-[400px] overflow-y-auto">
+              {cartItems
+                ?.sort((a, b) =>
+                  a.variant.product.name.localeCompare(b.variant.product.name)
+                )
+                .reverse()
+                .map(({ variant, quantity }: CartItem, index) => {
+                  const { product, id: variantId, name } = variant;
+                  const { href: imageSrc, altText } = product.images?.[0];
 
-                return (
-                  <div
-                    key={"cartButton_item_" + variant + "_" + index}
-                    className="relative mx-3 mb-1 flex flex-col items-center justify-center gap-1 border border-base-300 bg-base-200/50 px-3 py-3 text-brand-black"
-                  >
-                    {variantId && (
-                      <CartAddSubtractButton
-                        mode="subtract"
-                        variantId={variantId?.toString()}
-                        extendStyle="absolute left-8"
-                      />
-                    )}
-
+                  return (
                     <div
-                      className="cursor-pointer hover:font-semibold"
-                      onClick={() =>
-                        navigate(`/product/${product?.name}?id=${product.id}`)
-                      }
+                      key={"cartButton_item_" + variant + "_" + index}
+                      className="relative mx-3 mb-1 flex flex-col items-center justify-center gap-1 rounded-sm border border-base-300 bg-base-200/50 px-3 py-3 text-brand-black"
                     >
-                      {product?.name}
-                    </div>
-
-                    <div className="flex flex-row gap-3">
-                      <div>${getVariantUnitPrice(variant, product)}</div>
-                      <div> x {quantity}</div>
-                    </div>
-
-                    {variantId && (
-                      <CartAddSubtractButton
-                        mode="add"
-                        variantId={variantId?.toString()}
-                        extendStyle="absolute right-8"
+                      <img
+                        alt={"cartItem_" + altText}
+                        src={imageSrc}
+                        className="h-20 w-20 rounded-sm border border-base-300 object-cover"
                       />
-                    )}
-                  </div>
-                );
-              })}
+
+                      {variantId && (
+                        <CartAddSubtractButton
+                          mode="subtract"
+                          variantId={variantId?.toString()}
+                          extendStyle="absolute left-8 top-10"
+                        />
+                      )}
+
+                      <div
+                        className="cursor-pointer hover:font-semibold"
+                        onClick={() =>
+                          navigate(`/product/${product?.name}?id=${product.id}`)
+                        }
+                      >
+                        {product?.name}
+                      </div>
+
+                      <div className="text-xs opacity-50">{name}</div>
+
+                      <div className="flex flex-row gap-3">
+                        <div>${getVariantUnitPrice(variant, product)}</div>
+                        <div> x {quantity}</div>
+                      </div>
+
+                      {variantId && (
+                        <CartAddSubtractButton
+                          mode="add"
+                          variantId={variantId?.toString()}
+                          extendStyle="absolute right-8 top-10"
+                        />
+                      )}
+                    </div>
+                  );
+                })}
+            </div>
 
             <input name="cartId" value={cartId || ""} readOnly hidden />
 
@@ -121,7 +132,7 @@ const CartButton = ({ id: cartId, cartItems }: Cart) => {
           <div className="absolute bottom-0 left-1/2 my-3 flex w-full translate-x-[-50%] flex-col gap-1 px-3">
             <button
               type="button"
-              className="lg btn-md relative bottom-[-1px] bg-primary pr-4 font-bold tracking-wide !text-white"
+              className="lg btn-md relative bottom-[-1px] rounded-sm bg-primary pr-4 font-bold tracking-wide !text-white hover:bg-primary-focus"
               onClick={() => navigate(`/cart`)}
             >
               Buy Now

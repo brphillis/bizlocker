@@ -10,7 +10,7 @@ import SelectGender from "~/components/Forms/Select/SelectGender";
 import UploadHeroImage from "~/components/Forms/Upload/UploadHeroImage";
 import BasicMultiSelect from "~/components/Forms/Select/BasicMultiSelect";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
-import { getAvailableColors, getAvailableSizes } from "~/models/enums.server";
+import { getAvailableColors } from "~/models/enums.server";
 import { getProductSubCategories } from "~/models/productSubCategories.server";
 import RichTextInput from "~/components/Forms/Input/RichTextInput/index.client";
 import {
@@ -46,7 +46,6 @@ export const loader = async ({ params }: LoaderArgs) => {
   const brands = await getBrands();
   const promotions = await getPromotions();
   const availableColors = await getAvailableColors();
-  const availableSizes = await getAvailableSizes();
   let product;
 
   if (id && id !== "add") {
@@ -59,7 +58,6 @@ export const loader = async ({ params }: LoaderArgs) => {
     brands,
     promotions,
     availableColors,
-    availableSizes,
   };
 };
 
@@ -135,14 +133,8 @@ export const action = async ({ request, params }: ActionArgs) => {
 };
 
 const Product = () => {
-  const {
-    product,
-    productSubCategories,
-    brands,
-    promotions,
-    availableColors,
-    availableSizes,
-  } = useLoaderData();
+  const { product, productSubCategories, brands, promotions, availableColors } =
+    useLoaderData();
   const { validationErrors, success } =
     (useActionData() as {
       validationErrors: ValidationErrors;
@@ -244,7 +236,6 @@ const Product = () => {
           <ProductVariantFormModule
             product={product}
             availableColors={availableColors}
-            availableSizes={availableSizes}
           />
 
           <div className="divider w-full pt-4" />
