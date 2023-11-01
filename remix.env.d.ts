@@ -1,6 +1,45 @@
 /// <reference types="@remix-run/dev" />
 /// <reference types="@remix-run/node" />
 
+type GetPostageServicesType = {
+  from_postcode: string;
+  to_postcode: string;
+  length: number;
+  width: number;
+  height: number;
+  weight: number;
+};
+
+type CalculateDeliveryPriceType = {
+  from_postcode: string;
+  to_postcode: string;
+  length: number;
+  width: number;
+  height: number;
+  weight: number;
+  service_code: string;
+};
+
+type AusPostDeliveryOptionsResponse = AusPostDeliveryOption[];
+
+type AusPostDeliveryOption = {
+  code: string;
+  name: string;
+  price: string;
+  max_extra_cover: number;
+  options: AusPostDeliveryOptionsOption;
+};
+
+type AusPostDeliveryOptionsOption = {
+  code: string;
+  name: string;
+  suboptions: AusPostDeliveryOptionsSubOption;
+};
+
+type AusPostDeliveryOptionsSubOption = {
+  option: AusPostDeliveryOption;
+};
+
 type GoogleAuthResponse = {
   iss: string;
   nbf: number;
@@ -145,6 +184,11 @@ interface Order {
   items: OrderItem[];
   userId: string;
   user: User;
+  address?: Address;
+  firstName: string;
+  lastName: string;
+  shippingMethod: string;
+  shippingPrice: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -175,7 +219,7 @@ type NewOrderItem = {
 
 interface Cart {
   id: number;
-  user: User;
+  user?: User;
   userId: string;
   cartItems: CartItem[];
   createdAt: Date;
@@ -203,6 +247,14 @@ interface Department {
   campaigns: Campaign[];
   promotions: Promotion[];
 }
+
+type CartDimensions = {
+  height: number;
+  width: number;
+  length: number;
+  weight: number;
+  fragile: boolean;
+};
 
 type ProductCategory = {
   id: number;
@@ -270,11 +322,16 @@ interface ProductVariant {
   price: number;
   salePrice?: number;
   isOnSale: boolean;
+  isFragile: boolean;
   stock?: number;
   productId: number;
   product: Product;
   color?: Color;
   size?: string;
+  length: number;
+  width: number;
+  height: number;
+  weight: number;
   totalSold: number;
   cartItems: CartItem[];
   orderItems: OrderItem[];
@@ -292,10 +349,15 @@ type NewProductVariant = {
   price?: number;
   salePrice?: number;
   isOnSale?: boolean;
+  isFragile?: boolean;
   stock?: number;
   product?: Product;
   color?: Color;
   size?: string;
+  length?: number;
+  width?: number;
+  height?: number;
+  weight?: number;
   orders?: Order[];
   isActive?: boolean;
   isPromoted?: boolean;

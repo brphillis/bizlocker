@@ -4,6 +4,7 @@ import BlockRenderer from "~/components/BlockRenderer";
 import PageWrapper from "~/components/Layout/_Website/PageWrapper";
 import { getHomePage } from "~/models/homePage.server";
 import { getBlocks } from "~/helpers/blockHelpers";
+import { getPostageServices } from "~/integrations/auspost/auspost.server";
 
 export const meta: V2_MetaFunction = ({ data }) => {
   return [

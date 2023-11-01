@@ -1,0 +1,9 @@
+-- AlterTable
+ALTER TABLE "ProductVariant" ADD COLUMN     "height" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "isFragile" BOOLEAN NOT NULL DEFAULT false,
+ADD COLUMN     "length" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "weight" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "width" INTEGER NOT NULL DEFAULT 0;
+
+-- AlterTable
+ALTER TABLE "Verifier" ALTER COLUMN "expiration" SET DEFAULT NOW() + interval '3 hours';

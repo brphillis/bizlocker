@@ -226,6 +226,66 @@ const ProductVariantFormModule = ({ product, availableColors }: Props) => {
               }}
               validationErrors={validationErrors}
             />
+
+            <BasicInput
+              name="length"
+              label="Length (cm)"
+              placeholder="Length"
+              type="number"
+              defaultValue={activeVariant?.length || ""}
+              onChange={(e) => {
+                setActiveVariant({
+                  ...activeVariant,
+                  length: parseFloat(e as string),
+                });
+              }}
+              validationErrors={validationErrors}
+            />
+
+            <BasicInput
+              name="width"
+              label="Width (cm)"
+              placeholder="Width"
+              type="number"
+              defaultValue={activeVariant?.width || ""}
+              onChange={(e) => {
+                setActiveVariant({
+                  ...activeVariant,
+                  width: parseFloat(e as string),
+                });
+              }}
+              validationErrors={validationErrors}
+            />
+
+            <BasicInput
+              name="height"
+              label="Height (cm)"
+              placeholder="Height"
+              type="number"
+              defaultValue={activeVariant?.height || ""}
+              onChange={(e) => {
+                setActiveVariant({
+                  ...activeVariant,
+                  height: parseFloat(e as string),
+                });
+              }}
+              validationErrors={validationErrors}
+            />
+
+            <BasicInput
+              name="weight"
+              label="Weight (kg)"
+              placeholder="Weight"
+              type="number"
+              defaultValue={activeVariant?.weight || ""}
+              onChange={(e) => {
+                setActiveVariant({
+                  ...activeVariant,
+                  weight: parseFloat(e as string),
+                });
+              }}
+              validationErrors={validationErrors}
+            />
           </div>
 
           <div className="flex flex-col flex-wrap gap-3">
@@ -306,6 +366,29 @@ const ProductVariantFormModule = ({ product, availableColors }: Props) => {
                   <span className="label-text ml-3">Promo Item</span>
                 </label>
               </div>
+            </div>
+          </div>
+
+          <div className="mt-3 flex flex-wrap justify-evenly gap-3 self-start">
+            <div className="form-control pl-0 sm:pl-6">
+              <label className="label cursor-pointer !pb-0">
+                <input
+                  type="checkbox"
+                  className="toggle toggle-success ml-3"
+                  checked={
+                    activeVariant.hasOwnProperty("isFragile")
+                      ? activeVariant.isFragile
+                      : false
+                  }
+                  onChange={(e) => {
+                    setActiveVariant({
+                      ...activeVariant,
+                      isFragile: e.target.checked,
+                    });
+                  }}
+                />
+                <span className="label-text ml-3">Fragile</span>
+              </label>
             </div>
           </div>
 

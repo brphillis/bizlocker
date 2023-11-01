@@ -1,4 +1,3 @@
-import { randomUUID } from "crypto";
 import { prisma } from "~/db.server";
 import { redirect } from "@remix-run/server-runtime";
 import { SquareAddressToAddress } from "~/helpers/addressHelpers";
@@ -31,6 +30,7 @@ export const getOrder = async (orderId: string) => {
           },
         },
       },
+      address: true,
       user: true,
     },
   });
@@ -45,6 +45,7 @@ export const getOrdersCurrentUser = async (request: Request) => {
       userId: userId,
     },
     include: {
+      address: true,
       items: {
         include: {
           variant: {
@@ -75,11 +76,17 @@ export const getSquareOrderDetails = async (
   return { shippingDetails, email };
 };
 
-export const createOrder = async (request: Request) => {
-  const cart = await getCart(request);
+export const createOrder = async (
+  request: Request,
+  firstName: string,
+  lastName: string,
+  address: Address,
+  shippingMethod: string,
+  shippingPrice: string,
+  rememberInformation: boolean
+) => {
   const userData = (await getUserDataFromSession(request)) as User;
-  const form = Object.fromEntries(await request.formData());
-  const { rememberInformation } = form;
+  const cart = await getCart(request);
 
   if (!cart) {
     throw new Error("Cart not found");
@@ -89,7 +96,7 @@ export const createOrder = async (request: Request) => {
   const userId = userData?.id || undefined;
 
   const { createPaymentLinkResponse, confirmCode } =
-    await createSquarePaymentLink(cartItems, userId);
+    await createSquarePaymentLink(cartItems);
 
   if (createPaymentLinkResponse && createPaymentLinkResponse.paymentLink) {
     const { paymentLink } = createPaymentLinkResponse;
@@ -118,11 +125,25 @@ export const createOrder = async (request: Request) => {
       data: {
         orderId: paymentLink.orderId,
         status: "created",
-        rememberInformation: rememberInformation ? true : false,
+        rememberInformation: rememberInformation,
         paymentCode: confirmCode,
         totalPrice: totalPrice,
         paymentUrl: paymentLink.url!,
         paymentLinkId: paymentLink.id!,
+        shippingMethod: shippingMethod,
+        shippingPrice: shippingPrice,
+        firstName: firstName,
+        lastName: lastName,
+        address: {
+          create: {
+            addressLine1: address.addressLine1,
+            addressLine2: address.addressLine2,
+            suburb: address.suburb,
+            state: address.state,
+            postcode: address.postcode,
+            country: address.country,
+          },
+        },
         user: userId
           ? {
               connect: {
@@ -159,6 +180,7 @@ export const createOrder = async (request: Request) => {
 
     const session = await getSession(request);
     session.set(USER_SESSION_KEY, userNoCart);
+
     return redirect(createPaymentLinkResponse.paymentLink.longUrl!, {
       headers: {
         "Set-Cookie": await sessionStorage.commitSession(session),
@@ -176,6 +198,7 @@ export const confirmPayment = async (paymentCode: string) => {
       paymentCode,
     },
     include: {
+      address: true,
       items: {
         include: {
           variant: {
@@ -265,11 +288,7 @@ export const confirmPayment = async (paymentCode: string) => {
     });
   }
 
-  await sendOrderReceiptEmail(
-    email,
-    order as unknown as Order,
-    shippingDetails
-  );
+  await sendOrderReceiptEmail(email, order as unknown as Order);
 
   return updatedOrder;
 };
@@ -290,62 +309,32 @@ export const updateOrderStatus = async (
 
 export const updateOrderShippingDetails = async (
   orderId: string,
-  shippingDetails: SquareShippingDetails
+  firstName: string,
+  lastName: string,
+  addressLine1: string,
+  addressLine2: string,
+  suburb: string,
+  state: string,
+  postcode: string,
+  country: string
 ) => {
-  const response = await squareClient.ordersApi.retrieveOrder(orderId);
-
-  if (!response || !response.result || !response.result.order) {
-    throw new Error("Order not found");
-  }
-
-  let shipmentFulfillment = response.result.order.fulfillments?.find(
-    (fulfillment) => fulfillment.type === "SHIPMENT"
-  );
-
-  // If there isn't a 'SHIPMENT' fulfillment, create a new one
-  if (!shipmentFulfillment) {
-    shipmentFulfillment = {
-      type: "SHIPMENT",
-      shipmentDetails: {
-        recipient: {
-          address: shippingDetails,
+  return await prisma.order.update({
+    where: { orderId: orderId },
+    data: {
+      firstName,
+      lastName,
+      address: {
+        update: {
+          addressLine1,
+          addressLine2,
+          suburb,
+          state,
+          postcode,
+          country,
         },
       },
-    };
-    // Add the new fulfillment to the order's fulfillments
-    response.result.order.fulfillments = [
-      ...(response.result.order.fulfillments || []),
-      shipmentFulfillment,
-    ];
-  } else if (
-    shipmentFulfillment.shipmentDetails &&
-    shipmentFulfillment.shipmentDetails.recipient
-  ) {
-    // If there is a 'SHIPMENT' fulfillment but it does not have shipment details, add them
-    shipmentFulfillment.shipmentDetails.recipient.address = shippingDetails;
-  } else {
-    if (shipmentFulfillment.shipmentDetails)
-      // If there is a 'SHIPMENT' fulfillment and it has shipment details but does not have a recipient, add one
-      shipmentFulfillment.shipmentDetails.recipient = {
-        address: shippingDetails,
-      };
-  }
-
-  // Update the order with the modified details
-  const updateResponse = await squareClient.ordersApi.updateOrder(orderId, {
-    order: response.result.order,
-    idempotencyKey: randomUUID(),
+    },
   });
-
-  if (
-    !updateResponse ||
-    !updateResponse.result ||
-    !updateResponse.result.order
-  ) {
-    throw new Error("Order not Updated");
-  }
-
-  return null;
 };
 
 export const searchOrders = async (searchArgs: BasicSearchArgs) => {

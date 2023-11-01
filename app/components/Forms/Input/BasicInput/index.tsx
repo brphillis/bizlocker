@@ -10,6 +10,7 @@ type Props = {
   styles?: string;
   customWidth?: string;
   labelColor?: string;
+  disabled?: boolean;
   onChange?: (value: string | React.ChangeEvent<HTMLSelectElement>) => void;
 };
 
@@ -23,6 +24,7 @@ const BasicInput = ({
   styles,
   customWidth,
   labelColor,
+  disabled,
   onChange,
 }: Props) => {
   return (
@@ -44,6 +46,7 @@ const BasicInput = ({
         name={name}
         type={type}
         placeholder={placeholder}
+        disabled={disabled}
         className={`input w-full text-brand-black/75 ${
           validationErrors?.hasOwnProperty(name)
             ? "input-error border !outline-none"

@@ -1,19 +1,17 @@
 import { type ActionArgs, type LoaderArgs } from "@remix-run/node";
 import {
   Form,
-  useActionData,
   useLoaderData,
   useLocation,
   useNavigate,
 } from "@remix-run/react";
-import { useState } from "react";
 import { IoClose } from "react-icons/io5";
+import BasicInput from "~/components/Forms/Input/BasicInput";
+import SelectCountry from "~/components/Forms/Select/SelectCountry";
 import OrderStatusSteps from "~/components/Indicators/OrderStatusSteps";
 import DarkOverlay from "~/components/Layout/DarkOverlay";
-import Spinner from "~/components/Spinner";
 import {
   getOrder,
-  getSquareOrderDetails,
   updateOrderShippingDetails,
   updateOrderStatus,
 } from "~/models/orders.server";
@@ -33,12 +31,6 @@ export const action = async ({ request }: ActionArgs) => {
       const { status } = form;
       return await updateOrderStatus(orderId as string, status as OrderStatus);
 
-    case "loadShipping":
-      const { shippingDetails: _shippingDetails } =
-        (await getSquareOrderDetails(orderId as string)) || {};
-
-      return _shippingDetails;
-
     case "updateShipping":
       const {
         firstName,
@@ -51,20 +43,16 @@ export const action = async ({ request }: ActionArgs) => {
         country,
       } = form;
 
-      const shippingDetails: SquareShippingDetails = {
-        firstName: firstName as string,
-        lastName: lastName as string,
-        addressLine1: addressLine1 as string,
-        addressLine2: addressLine2 as string,
-        locality: suburb as string,
-        administrativeDistrictLevel1: state as string,
-        postalCode: postcode as string,
-        country: country as string,
-      };
-
       return await updateOrderShippingDetails(
         orderId as string,
-        shippingDetails
+        firstName as string,
+        lastName as string,
+        addressLine1 as string,
+        addressLine2 as string,
+        suburb as string,
+        state as string,
+        postcode as string,
+        country as string
       );
   }
 };
@@ -74,11 +62,8 @@ const ModifyOrder = () => {
   const { pathname } = useLocation();
   const order = useLoaderData();
 
-  const { items } = (order as { items: OrderItem[] }) || {};
-
-  const shippingDetails = useActionData() as SquareShippingDetails;
-  const [viewingShippingDetails, setViewingShippingDetails] =
-    useState<boolean>(false);
+  const { items, address } =
+    (order as { items: OrderItem[]; address: Address }) || {};
 
   return (
     <DarkOverlay>
@@ -171,182 +156,111 @@ const ModifyOrder = () => {
             </div>
           </div>
 
-          {order.status !== ("created" || "cancelled") && (
-            <>
-              <div className="divider w-full" />
+          <div className="divider w-full" />
 
-              <Form
-                method="POST"
-                action={pathname}
-                className={`flex flex-col items-center 
-                               ${!viewingShippingDetails ? "block" : "hidden"}`}
+          <Form
+            method="POST"
+            action={pathname}
+            className="flex flex-col items-center gap-3"
+          >
+            <div className="pb-3 text-center">Shipping Details</div>
+
+            <BasicInput
+              name="firstName"
+              label="First Name"
+              placeholder="First Name"
+              type="text"
+              customWidth="w-full"
+              defaultValue={order?.firstName}
+            />
+
+            <BasicInput
+              name="lastName"
+              label="Last Name"
+              placeholder="Last Name"
+              type="text"
+              customWidth="w-full"
+              defaultValue={order?.lastName}
+            />
+
+            <BasicInput
+              name="addressLine1"
+              label="Address Line 1"
+              placeholder="Address Line 1"
+              type="text"
+              customWidth="w-full"
+              defaultValue={address?.addressLine1}
+            />
+
+            <BasicInput
+              name="addressLine2"
+              label="Address Line 2"
+              placeholder="Address Line 2"
+              type="text"
+              customWidth="w-full"
+              defaultValue={address?.addressLine2}
+            />
+
+            <BasicInput
+              name="suburb"
+              label="Suburb"
+              placeholder="Suburb"
+              type="text"
+              customWidth="w-full"
+              defaultValue={address?.suburb}
+            />
+
+            <BasicInput
+              name="state"
+              label="state"
+              placeholder="State"
+              type="text"
+              customWidth="w-full"
+              defaultValue={address?.state}
+            />
+
+            <BasicInput
+              name="postcode"
+              label="Post Code"
+              placeholder="Post Code"
+              type="text"
+              customWidth="w-full"
+              defaultValue={address?.postcode}
+            />
+
+            <SelectCountry defaultValue={address?.country} styles="!w-full" />
+
+            <BasicInput
+              name="shippingMethod"
+              label="Shipping Method"
+              placeholder="Shipping Method"
+              type="text"
+              customWidth="w-full"
+              defaultValue={order?.shippingMethod}
+            />
+
+            <BasicInput
+              name="shippingPrice"
+              label="Shipping Price"
+              placeholder="Shipping Price"
+              type="text"
+              customWidth="w-full"
+              defaultValue={order?.shippingPrice}
+            />
+
+            <input readOnly hidden value={order.orderId} name="orderId" />
+
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
+              <button
+                type="submit"
+                name="_action"
+                value="updateShipping"
+                className="btn btn-primary"
               >
-                <input hidden readOnly name="orderId" value={order.orderId} />
-                <button
-                  type="submit"
-                  name="_action"
-                  value="loadShipping"
-                  className="btn btn-primary w-max"
-                  onClick={() => setViewingShippingDetails(true)}
-                >
-                  Load Shipping Details
-                </button>
-              </Form>
-
-              {!shippingDetails && viewingShippingDetails && (
-                <div className="flex justify-center">
-                  <Spinner mode="circle" />
-                </div>
-              )}
-
-              <Form
-                method="POST"
-                action={pathname}
-                className={`flex flex-col items-center gap-3 
-                  ${
-                    viewingShippingDetails && shippingDetails
-                      ? "block"
-                      : "hidden"
-                  }`}
-              >
-                <div className="pb-3 text-center">Shipping Details</div>
-                <div className="flex flex-row flex-wrap justify-center gap-3">
-                  <div className="form-control">
-                    <label className="label">
-                      <span className="label-text">First Name</span>
-                    </label>
-                    <input
-                      name="firstName"
-                      type="text"
-                      placeholder="First Name"
-                      className="input input-bordered w-[95vw] sm:w-[215px]"
-                      defaultValue={shippingDetails?.firstName}
-                    />
-                  </div>
-
-                  <div className="form-control">
-                    <label className="label">
-                      <span className="label-text">Last Name</span>
-                    </label>
-                    <input
-                      name="lastName"
-                      type="text"
-                      placeholder="Last Name"
-                      className="input input-bordered w-[95vw] sm:w-[215px]"
-                      defaultValue={shippingDetails?.lastName}
-                    />
-                  </div>
-                </div>
-
-                <div className="flex flex-row flex-wrap justify-center gap-3">
-                  <div className="form-control">
-                    <label className="label">
-                      <span className="label-text">Address Line 1</span>
-                    </label>
-                    <input
-                      name="addressLine1"
-                      type="text"
-                      placeholder="Address Line 1"
-                      className="input input-bordered w-[95vw] sm:w-[215px]"
-                      defaultValue={shippingDetails?.addressLine1}
-                    />
-                  </div>
-
-                  <div className="form-control">
-                    <label className="label">
-                      <span className="label-text">Address Line 2</span>
-                    </label>
-                    <input
-                      name="addressLine2"
-                      type="text"
-                      placeholder="Address Line 2"
-                      className="input input-bordered w-[95vw] sm:w-[215px]"
-                      defaultValue={shippingDetails?.addressLine2}
-                    />
-                  </div>
-                </div>
-
-                <div className="flex flex-row flex-wrap justify-center gap-3">
-                  <div className="form-control">
-                    <label className="label">
-                      <span className="label-text">City/Suburb</span>
-                    </label>
-                    <input
-                      name="suburb"
-                      type="text"
-                      placeholder="State"
-                      className="input input-bordered w-[95vw] sm:w-[215px]"
-                      defaultValue={shippingDetails?.locality}
-                    />
-                  </div>
-
-                  <div className="form-control">
-                    <label className="label">
-                      <span className="label-text">State</span>
-                    </label>
-                    <input
-                      name="state"
-                      type="text"
-                      placeholder="State"
-                      className="input input-bordered w-[95vw] sm:w-[215px]"
-                      defaultValue={
-                        shippingDetails?.administrativeDistrictLevel1
-                      }
-                    />
-                  </div>
-                </div>
-
-                <div className="flex flex-row flex-wrap justify-center gap-3">
-                  <div className="form-control">
-                    <label className="label">
-                      <span className="label-text">Post Code</span>
-                    </label>
-                    <input
-                      name="postcode"
-                      type="text"
-                      placeholder="Post Code"
-                      className="input input-bordered w-[95vw] sm:w-[215px]"
-                      defaultValue={shippingDetails?.postalCode}
-                    />
-                  </div>
-
-                  <div className="form-control">
-                    <label className="label">
-                      <span className="label-text">Country</span>
-                    </label>
-                    <input
-                      name="country"
-                      type="text"
-                      placeholder="Country"
-                      className="input input-bordered w-[95vw] sm:w-[215px]"
-                      defaultValue={shippingDetails?.country}
-                    />
-                  </div>
-                </div>
-
-                <input readOnly hidden value={order.orderId} name="orderId" />
-                <div className="mt-6 flex flex-wrap justify-center gap-3">
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={() => setViewingShippingDetails(false)}
-                  >
-                    Cancel
-                  </button>
-
-                  <button
-                    type="submit"
-                    name="_action"
-                    value="updateShipping"
-                    className="btn btn-primary"
-                    onClick={() => setViewingShippingDetails(false)}
-                  >
-                    Confirm
-                  </button>
-                </div>
-              </Form>
-            </>
-          )}
+                Update Shipping
+              </button>
+            </div>
+          </Form>
 
           {order.status === "created" && (
             <>
