@@ -11,8 +11,15 @@ import {
 import { useState } from "react";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import { validateForm } from "~/utility/validate";
+import { tokenAuth } from "~/auth.server";
+import { STAFF_SESSION_KEY } from "~/session.server";
 
-export const loader = async ({ params }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderArgs) => {
+  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+  if (!authenticated.valid) {
+    return redirect("/login");
+  }
+
   const id = params?.id;
 
   if (id === "add") {
@@ -24,6 +31,11 @@ export const loader = async ({ params }: LoaderArgs) => {
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
+  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+  if (!authenticated.valid) {
+    return redirect("/login");
+  }
+
   const id = params.id === "add" ? undefined : params.id;
   const form = Object.fromEntries(await request.formData());
   const { name } = form;
@@ -63,7 +75,7 @@ const ModifyArticleCategory = () => {
     <DarkOverlay>
       <Form
         method="POST"
-        className="relative max-w-full rounded-none bg-base-200 px-0 py-6 sm:rounded-md sm:px-6"
+        className="scrollbar-hide relative w-[500px] max-w-[100vw] overflow-y-auto bg-base-200 px-3 py-6 sm:px-6"
       >
         <FormHeader
           valueToChange={articleCategory}
@@ -73,18 +85,17 @@ const ModifyArticleCategory = () => {
           hasDelete={true}
         />
 
-        <div className="form-control mt-6 w-full max-w-xs">
-          <BasicInput
-            label="Name"
-            name="name"
-            type="text"
-            placeholder="Name"
-            defaultValue={articleCategory?.name || undefined}
-            validationErrors={validationErrors}
-          />
+        <BasicInput
+          label="Name"
+          name="name"
+          type="text"
+          placeholder="Name"
+          customWidth="w-full"
+          defaultValue={articleCategory?.name || undefined}
+          validationErrors={validationErrors}
+        />
 
-          <BackSubmitButtons loading={loading} setLoading={setLoading} />
-        </div>
+        <BackSubmitButtons loading={loading} setLoading={setLoading} />
       </Form>
     </DarkOverlay>
   );

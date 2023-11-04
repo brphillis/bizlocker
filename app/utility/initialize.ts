@@ -7,7 +7,7 @@ export const createInitialDeveloper = async () => {
   const hashedPassword = await bcrypt.hash("Erhjadc7!", salt);
 
   try {
-    await prisma.user.create({
+    await prisma.staff.create({
       data: {
         email: "brock@brockdev.com.au",
         password: hashedPassword,
@@ -20,7 +20,7 @@ export const createInitialDeveloper = async () => {
         },
       },
     });
-    console.log("Initial developer user created");
+    console.log("Initial admin created");
   } catch (error: any) {
     if (error.code === "P2002") {
       console.log("Initial developer already created, skipping creation.");

@@ -1,4 +1,4 @@
-import { type ActionArgs, type LoaderArgs } from "@remix-run/node";
+import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node";
 import {
   Form,
   useLoaderData,
@@ -6,6 +6,7 @@ import {
   useNavigate,
 } from "@remix-run/react";
 import { IoClose } from "react-icons/io5";
+import { tokenAuth } from "~/auth.server";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import SelectCountry from "~/components/Forms/Select/SelectCountry";
 import OrderStatusSteps from "~/components/Indicators/OrderStatusSteps";
@@ -15,8 +16,14 @@ import {
   updateOrderShippingDetails,
   updateOrderStatus,
 } from "~/models/orders.server";
+import { STAFF_SESSION_KEY } from "~/session.server";
 
-export const loader = async ({ params }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderArgs) => {
+  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+  if (!authenticated.valid) {
+    return redirect("/admin/login");
+  }
+
   const id = params.id;
   const order = id && (await getOrder(id));
   return order;
@@ -67,7 +74,7 @@ const ModifyOrder = () => {
 
   return (
     <DarkOverlay>
-      <div className="scrollbar-hide relative w-[720px] overflow-y-auto bg-base-200 px-3 py-6 sm:px-6">
+      <div className="scrollbar-hide relative w-[600px] max-w-[100vw] overflow-y-auto bg-base-200 px-3 py-6 sm:px-6">
         <button className="absolute right-3 top-3 cursor-pointer">
           <IoClose onClick={() => navigate("..")} />
         </button>

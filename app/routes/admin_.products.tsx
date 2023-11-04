@@ -2,7 +2,7 @@ import Pagination from "~/components/Pagination";
 import { getBrands } from "~/models/brands.server";
 import { searchProducts } from "~/models/products.server";
 import ProductSort from "~/components/Sorting/ProductSort";
-import { type LoaderArgs } from "@remix-run/server-runtime";
+import { redirect, type LoaderArgs } from "@remix-run/server-runtime";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
@@ -15,8 +15,15 @@ import {
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
+import { tokenAuth } from "~/auth.server";
+import { STAFF_SESSION_KEY } from "~/session.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
+  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+  if (!authenticated.valid) {
+    return redirect("/admin/login");
+  }
+
   const url = new URL(request.url);
 
   const { products, totalPages } = await searchProducts(undefined, url);

@@ -27,6 +27,7 @@ import {
 import ProductVariantFormModule from "~/components/Forms/Modules/ProductVariantFormModule";
 import UploadMultipleImages from "~/components/Forms/Upload/UploadMultipleImages/index.client";
 import {
+  redirect,
   type ActionArgs,
   type LinksFunction,
   type LoaderArgs,
@@ -34,13 +35,20 @@ import {
 
 import swiper from "../../node_modules/swiper/swiper.css";
 import swiperNav from "../../node_modules/swiper/modules/navigation/navigation.min.css";
+import { tokenAuth } from "~/auth.server";
+import { STAFF_SESSION_KEY } from "~/session.server";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: swiper },
   { rel: "stylesheet", href: swiperNav },
 ];
 
-export const loader = async ({ params }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderArgs) => {
+  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+  if (!authenticated.valid) {
+    return redirect("/admin/login");
+  }
+
   const id = params?.id;
   const productSubCategories = await getProductSubCategories();
   const brands = await getBrands();
@@ -62,6 +70,11 @@ export const loader = async ({ params }: LoaderArgs) => {
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
+  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+  if (!authenticated.valid) {
+    return redirect("/admin/login");
+  }
+
   const id = params.id === "add" ? undefined : params.id;
   const form = Object.fromEntries(await request.formData());
   const {

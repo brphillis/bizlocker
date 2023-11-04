@@ -184,6 +184,7 @@ const ProductVariantFormModule = ({ product, availableColors }: Props) => {
               label="SKU"
               placeholder="SKU"
               type="text"
+              disabled={upsertState === "edit" ? true : false}
               defaultValue={activeVariant?.sku || ""}
               onChange={(e) => {
                 setActiveVariant({

@@ -1,9 +1,15 @@
-import { type ActionArgs } from "@remix-run/server-runtime";
+import { redirect, type ActionArgs } from "@remix-run/server-runtime";
 import { Form, useLoaderData, useNavigate } from "@remix-run/react";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
 import { getOrdersCurrentUser } from "~/models/orders.server";
+import { tokenAuth } from "~/auth.server";
 
 export const loader = async ({ request }: ActionArgs) => {
+  const authenticated = await tokenAuth(request);
+  if (!authenticated.valid) {
+    return redirect("/login");
+  }
+
   const orders = await getOrdersCurrentUser(request);
   return orders;
 };

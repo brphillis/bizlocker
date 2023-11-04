@@ -11,7 +11,7 @@ const AccountMenuDesktop = () => {
         <NavLink
           to="/account/profile"
           className={({ isActive }) =>
-            `my-1 flex items-center justify-between rounded-md p-3 hover:bg-base-300 ${
+            `my-1 flex items-center justify-between rounded-sm p-3 hover:bg-base-300 ${
               isActive && "bg-base-300 font-semibold"
             }`
           }
@@ -23,7 +23,7 @@ const AccountMenuDesktop = () => {
         <NavLink
           to="/account/address"
           className={({ isActive }) =>
-            `my-1 flex items-center justify-between rounded-md p-3 hover:bg-base-300 ${
+            `my-1 flex items-center justify-between rounded-sm p-3 hover:bg-base-300 ${
               isActive && "bg-base-300 font-semibold"
             }`
           }
@@ -32,22 +32,10 @@ const AccountMenuDesktop = () => {
           <IoChevronForward />
         </NavLink>
 
-        {/* <NavLink
-          to="/account"
-          className={({ isActive }) =>
-            `my-1 flex items-center justify-between rounded-md p-3 hover:bg-base-300 ${
-              isActive && "bg-base-300 font-semibold"
-            }`
-          }
-        >
-          <div>Login & Security</div>
-          <IoChevronForward />
-        </NavLink> */}
-
         <NavLink
           to="/account/orders"
           className={({ isActive }) =>
-            `my-1 flex items-center justify-between rounded-md p-3 hover:bg-base-300 ${
+            `my-1 flex items-center justify-between rounded-sm p-3 hover:bg-base-300 ${
               isActive && "bg-base-300 font-semibold"
             }`
           }
@@ -57,7 +45,7 @@ const AccountMenuDesktop = () => {
         </NavLink>
 
         <div
-          className="my-1 flex cursor-pointer items-center justify-between rounded-md p-3 hover:bg-base-300"
+          className="my-1 flex cursor-pointer items-center justify-between rounded-sm p-3 hover:bg-base-300"
           onClick={() => submit(null, { method: "post", action: "/logout" })}
         >
           <div>Log Out</div>

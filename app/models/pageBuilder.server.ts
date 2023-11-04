@@ -2,9 +2,9 @@ import { prisma } from "~/db.server";
 import { findUniqueStringsInArrays } from "~/helpers/arrayHelpers";
 import { getContentBlockCredentialsFromPageBlock } from "~/helpers/blockHelpers";
 import {
-  handleS3Update,
-  handleS3Upload,
-} from "~/integrations/aws/s3/s3.server";
+  updateImage_Integration,
+  uploadImage_Integration,
+} from "~/integrations/_master/storage";
 import { getUserDataFromSession } from "~/session.server";
 import { includeAllBlockTypes, includeBlocksData } from "~/utility/blockMaster";
 import {
@@ -103,7 +103,7 @@ export const upsertPageMeta = async (
 
     // Check if thumbnail is provided
     if (thumbnail) {
-      const repoLinkThumbnail = await handleS3Upload(thumbnail);
+      const repoLinkThumbnail = await uploadImage_Integration(thumbnail);
       data.thumbnail = {
         create: {
           href: repoLinkThumbnail,
@@ -163,7 +163,7 @@ export const upsertPageMeta = async (
       });
 
       if (existingThumbnail) {
-        const repoLinkThumbnail = await handleS3Update(
+        const repoLinkThumbnail = await updateImage_Integration(
           existingThumbnail as Image,
           thumbnail
         );
@@ -175,7 +175,7 @@ export const upsertPageMeta = async (
           },
         };
       } else {
-        const repoLinkThumbnail = await handleS3Upload(thumbnail);
+        const repoLinkThumbnail = await uploadImage_Integration(thumbnail);
 
         updateData.thumbnail = {
           create: {

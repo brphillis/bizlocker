@@ -8,7 +8,7 @@ import {
   useNavigate,
 } from "@remix-run/react";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
-import { type ActionArgs, type LoaderArgs } from "@remix-run/node";
+import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node";
 import {
   deleteProductSubCategory,
   getProductSubCategory,
@@ -17,8 +17,15 @@ import {
 import { useEffect, useState } from "react";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import { validateForm } from "~/utility/validate";
+import { tokenAuth } from "~/auth.server";
+import { STAFF_SESSION_KEY } from "~/session.server";
 
-export const loader = async ({ params }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderArgs) => {
+  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+  if (!authenticated.valid) {
+    return redirect("/admin/login");
+  }
+
   const id = params?.id;
   const productSubCategory =
     id && id !== "add" && (await getProductSubCategory(id));
@@ -26,6 +33,11 @@ export const loader = async ({ params }: LoaderArgs) => {
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
+  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+  if (!authenticated.valid) {
+    return redirect("/admin/login");
+  }
+
   const id = params.id === "add" ? undefined : params.id;
   const form = Object.fromEntries(await request.formData());
   const { name, index, displayInNavigation, isActive, image } = form;
@@ -88,7 +100,7 @@ const ModifyProductSubCategory = () => {
     <DarkOverlay>
       <Form
         method="POST"
-        className="relative max-w-full rounded-none bg-base-200 px-0 py-6 sm:rounded-md sm:px-6"
+        className="scrollbar-hide relative w-[500px] max-w-[100vw] overflow-y-auto bg-base-200 px-3 py-6 sm:px-6"
       >
         <FormHeader
           valueToChange={productSubCategory}
@@ -99,42 +111,38 @@ const ModifyProductSubCategory = () => {
         />
 
         <div className="form-control  gap-3">
-          <div className="flex flex-wrap justify-evenly gap-3">
-            <BasicInput
-              label="Name"
-              type="text"
-              name="name"
-              placeholder="Name"
-              defaultValue={productSubCategory?.name || ""}
-              validationErrors={validationErrors}
-            />
+          <BasicInput
+            label="Name"
+            type="text"
+            name="name"
+            placeholder="Name"
+            customWidth="w-full"
+            defaultValue={productSubCategory?.name || ""}
+            validationErrors={validationErrors}
+          />
 
-            <div className="w-[95vw] sm:w-[215px]"></div>
-          </div>
+          <BasicInput
+            label="Index"
+            type="number"
+            name="index"
+            placeholder="Index"
+            customWidth="w-full"
+            defaultValue={productSubCategory?.index || 0}
+            validationErrors={validationErrors}
+          />
 
-          <div className="mb-6 flex flex-wrap justify-evenly gap-3">
-            <BasicInput
-              label="Index"
-              type="number"
-              name="index"
-              placeholder="Index"
-              defaultValue={productSubCategory?.index || 0}
-              validationErrors={validationErrors}
-            />
-
-            <div className="form-control w-full sm:w-[215px]">
-              <label className="label text-sm">In Navigation</label>
-              <select
-                name="displayInNavigation"
-                className="select w-full text-brand-black/75"
-                defaultValue={
-                  productSubCategory.displayInNavigation ? "true" : ""
-                }
-              >
-                <option value="true">Yes</option>
-                <option value="">No</option>
-              </select>
-            </div>
+          <div className="form-control w-full">
+            <label className="label text-sm">In Navigation</label>
+            <select
+              name="displayInNavigation"
+              className="select w-full text-brand-black/75"
+              defaultValue={
+                productSubCategory.displayInNavigation ? "true" : ""
+              }
+            >
+              <option value="true">Yes</option>
+              <option value="">No</option>
+            </select>
           </div>
 
           <UploadImage

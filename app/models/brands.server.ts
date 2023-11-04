@@ -1,8 +1,8 @@
 import { prisma } from "~/db.server";
 import {
-  handleS3Update,
-  handleS3Upload,
-} from "~/integrations/aws/s3/s3.server";
+  updateImage_Integration,
+  uploadImage_Integration,
+} from "~/integrations/_master/storage";
 
 export type { Brand } from "@prisma/client";
 
@@ -25,7 +25,7 @@ export const upsertBrand = async (name: string, image?: Image, id?: string) => {
   let updatedBrand;
 
   if (!id && image) {
-    const repoLink = await handleS3Upload(image);
+    const repoLink = await uploadImage_Integration(image);
     updatedBrand = await prisma.brand.create({
       data: {
         name: name,
@@ -61,7 +61,7 @@ export const upsertBrand = async (name: string, image?: Image, id?: string) => {
     let imageData = {};
 
     if (image && existingBrand.image) {
-      const repoLink = await handleS3Update(
+      const repoLink = await updateImage_Integration(
         existingBrand.image as Image,
         image
       );
@@ -75,7 +75,7 @@ export const upsertBrand = async (name: string, image?: Image, id?: string) => {
     }
 
     if (image && !existingBrand.image) {
-      const repoLink = await handleS3Upload(image);
+      const repoLink = await uploadImage_Integration(image);
 
       imageData = {
         create: {

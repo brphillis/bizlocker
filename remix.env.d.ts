@@ -117,6 +117,31 @@ type LoginData = {
   password: string;
 };
 
+type Store = {
+  id: number;
+  name: string;
+  paymentProviderId?: string;
+  address: Address;
+  isActive: boolean;
+  createdAt?: DateTime;
+  updatedAt?: DateTime;
+};
+
+type Staff = {
+  id: string;
+  email: string;
+  password?: string | null;
+  avatar?: Image | null;
+  address?: Address;
+  doubleAuthentication: boolean;
+  isActive: boolean;
+  role: Role;
+  userDetails?: UserDetails;
+
+  createdAt: Date;
+  updatedAt: Date;
+};
+
 type User = {
   id: string;
   email: string;
@@ -125,12 +150,12 @@ type User = {
   cart?: Cart;
   cartId?: number;
   role: Role;
-  createdAt: Date;
-  updatedAt: Date;
   userDetails?: UserDetails;
   address?: Address;
   doubleAuthentication: boolean;
   isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 type UserDetails = {
@@ -156,6 +181,8 @@ type NewAddress = {
   suburb?: string;
   state?: string;
   country?: string;
+  latitude?: string;
+  longitude?: string;
 };
 
 type CountrySelect = {

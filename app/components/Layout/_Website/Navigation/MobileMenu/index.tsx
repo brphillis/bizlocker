@@ -1,6 +1,6 @@
 import { useNavigate, useSubmit } from "@remix-run/react";
 import { useState } from "react";
-import { IoChevronForward, IoLogOutOutline, IoMenu } from "react-icons/io5";
+import { IoChevronForward, IoLogOutOutline } from "react-icons/io5";
 
 type Props = {
   departments: Department[];
@@ -24,7 +24,7 @@ const MobileNavigation = ({ departments, productCategories, user }: Props) => {
     <div className="drawer-side">
       <label htmlFor="my-drawer-3" className="drawer-overlay"></label>
       <ul className="z-100 menu relative !h-[100dvh] w-64 bg-brand-black p-4 text-brand-white">
-        <div className="mx-auto block">
+        <div className="mx-auto mb-1 block">
           <h1 className="cursor-pointer select-none text-3xl font-bold tracking-widest text-white">
             CLUTCH.
           </h1>
@@ -33,7 +33,7 @@ const MobileNavigation = ({ departments, productCategories, user }: Props) => {
 
         <select
           name="department"
-          className="select mx-auto my-6 w-full border-l border-r border-white/25 bg-brand-black pt-[0.125rem] tracking-wider text-brand-white"
+          className="select mx-auto my-6 w-full border-l border-r border-white/10 bg-brand-black pt-[0.125rem] tracking-wider text-brand-white"
           defaultValue={departments?.[0].name.toUpperCase() || ""}
           onChange={(e) => setSelectedDepartment(parseInt(e.target.value))}
         >
@@ -67,7 +67,7 @@ const MobileNavigation = ({ departments, productCategories, user }: Props) => {
                       <div className="relative flex w-full items-center justify-between py-3">
                         <div className="text-sm font-semibold">{name}</div>
                         {productSubCategories &&
-                          productSubCategories.length > 0 && <IoMenu />}
+                          productSubCategories.length > 0}
                       </div>
                       <div className="collapse-content">
                         {productSubCategories?.map(
@@ -82,7 +82,7 @@ const MobileNavigation = ({ departments, productCategories, user }: Props) => {
                               return (
                                 <div
                                   key={"mobileMenu_productSubCategory" + i}
-                                  className="flex justify-between py-3"
+                                  className="flex items-center justify-between py-3"
                                   onClick={() =>
                                     navigate({
                                       pathname: "/products",
@@ -92,7 +92,7 @@ const MobileNavigation = ({ departments, productCategories, user }: Props) => {
                                 >
                                   <label
                                     htmlFor="my-drawer-3"
-                                    className="pl-3 text-sm font-normal"
+                                    className="pl-3 text-sm font-normal text-brand-white/90"
                                   >
                                     {subCatName}
                                   </label>

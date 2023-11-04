@@ -1,10 +1,11 @@
-import { getPostageServices } from "~/integrations/auspost/auspost.server";
+import { getShippingServices_Integration } from "~/integrations/_master/shipping";
 
 export const getCartDeliveryOptions = async (
   cart: Cart,
   postCode: number
 ): Promise<AusPostDeliveryOption> => {
   const cartDimensions = getCartDimensions(cart);
+
   const postageServicesArgs = {
     height: cartDimensions.height,
     width: cartDimensions.width,
@@ -14,7 +15,7 @@ export const getCartDeliveryOptions = async (
     to_postcode: postCode.toString(),
   };
 
-  const postageServices = await getPostageServices(
+  const postageServices = await getShippingServices_Integration(
     postageServicesArgs as GetPostageServicesType
   );
 

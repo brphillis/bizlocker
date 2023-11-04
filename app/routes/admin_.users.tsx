@@ -1,4 +1,4 @@
-import type { LoaderArgs } from "@remix-run/node";
+import { redirect, type LoaderArgs } from "@remix-run/node";
 import {
   Form,
   Outlet,
@@ -13,8 +13,15 @@ import Pagination from "~/components/Pagination";
 import { searchUsers } from "~/models/auth/users.server";
 import { placeholderAvatar } from "~/utility/placeholderAvatar";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
+import { tokenAuth } from "~/auth.server";
+import { STAFF_SESSION_KEY } from "~/session.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
+  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+  if (!authenticated.valid) {
+    return redirect("/admin/login");
+  }
+
   const url = new URL(request.url);
 
   const searchQuery = {

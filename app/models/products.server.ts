@@ -1,7 +1,7 @@
 import { prisma } from "~/db.server";
 import { calculateDiscountPercentage } from "~/helpers/numberHelpers";
 import { getOrderBy } from "~/helpers/sortHelpers";
-import { handleS3Upload } from "~/integrations/aws/s3/s3.server";
+import { uploadImage_Integration } from "~/integrations/_master/storage";
 
 export const getProducts = async (count?: string) => {
   if (count) {
@@ -100,14 +100,14 @@ export const upsertProduct = async (productData: any) => {
   const repoLinksProduct: string[] = [];
 
   for (const e of images) {
-    const repoLink = await handleS3Upload(e);
+    const repoLink = await uploadImage_Integration(e);
     repoLinksProduct.push(repoLink);
   }
 
   let heroRepoLink = "";
 
   if (heroImage) {
-    heroRepoLink = await handleS3Upload(heroImage);
+    heroRepoLink = await uploadImage_Integration(heroImage);
   }
 
   const data: any = {

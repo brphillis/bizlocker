@@ -31,7 +31,7 @@ const CartButton = ({ id: cartId, cartItems }: Cart) => {
   }, [cartItems]);
 
   return (
-    <div className="dropdown dropdown-end relative">
+    <div className="dropdown-end dropdown relative">
       <label
         tabIndex={0}
         onClick={handleOpen}

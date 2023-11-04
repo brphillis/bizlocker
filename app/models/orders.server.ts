@@ -1,10 +1,7 @@
 import { prisma } from "~/db.server";
 import { redirect } from "@remix-run/server-runtime";
 import { SquareAddressToAddress } from "~/helpers/addressHelpers";
-import {
-  createSquarePaymentLink,
-  squareClient,
-} from "~/integrations/square/square.server";
+import { squareClient } from "~/integrations/square/square.server";
 import {
   getSession,
   getUserDataFromSession,
@@ -14,6 +11,7 @@ import {
 import { getCart } from "./cart.server";
 import { getVariantUnitPrice } from "~/helpers/numberHelpers";
 import { sendOrderReceiptEmail } from "~/integrations/sendgrid/emails/orderReceipt";
+import { createPaymentLink_Integration } from "~/integrations/_master/payments";
 
 export const getOrder = async (orderId: string) => {
   return await prisma.order.findUnique({
@@ -96,7 +94,7 @@ export const createOrder = async (
   const userId = userData?.id || undefined;
 
   const { createPaymentLinkResponse, confirmCode } =
-    await createSquarePaymentLink(cartItems);
+    await createPaymentLink_Integration(cartItems);
 
   if (createPaymentLinkResponse && createPaymentLinkResponse.paymentLink) {
     const { paymentLink } = createPaymentLinkResponse;

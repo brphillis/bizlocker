@@ -17,8 +17,14 @@ import { handleResourceSubmit } from "~/helpers/formHelpers";
 import { useEffect, useState } from "react";
 import { validateForm } from "~/utility/validate";
 import BasicInput from "~/components/Forms/Input/BasicInput";
+import { STAFF_SESSION_KEY } from "~/session.server";
 
-export const loader = async ({ params }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderArgs) => {
+  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+  if (!authenticated.valid) {
+    return redirect("/login");
+  }
+
   const id = params?.id;
 
   if (id && id !== "add") {
@@ -30,10 +36,11 @@ export const loader = async ({ params }: LoaderArgs) => {
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
-  const authenticated = await tokenAuth(request);
+  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
   if (!authenticated.valid) {
     return redirect("/login");
   }
+
   const id = params.id === "add" ? undefined : params.id;
   const form = Object.fromEntries(await request.formData());
   const { image, altText } = form;

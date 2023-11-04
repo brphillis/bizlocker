@@ -1,5 +1,5 @@
 import type { LoaderArgs } from "@remix-run/node";
-import { json } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import {
   Form,
   Outlet,
@@ -7,18 +7,25 @@ import {
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
+import { tokenAuth } from "~/auth.server";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import Pagination from "~/components/Pagination";
 import { searchPromotions } from "~/models/promotions.server";
+import { STAFF_SESSION_KEY } from "~/session.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
+  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+  if (!authenticated.valid) {
+    return redirect("/admin/login");
+  }
+
   const url = new URL(request.url);
 
   const { promotions, totalPages } = await searchPromotions(undefined, url);
 
-  return json({ promotions, totalPages });
+  return { promotions, totalPages };
 };
 
 const Promotions = () => {

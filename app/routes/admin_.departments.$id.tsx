@@ -7,15 +7,22 @@ import {
   useNavigate,
 } from "@remix-run/react";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
-import { type ActionArgs, type LoaderArgs } from "@remix-run/node";
+import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node";
 import {} from "~/models/productSubCategories.server";
 import { useEffect, useState } from "react";
 import { getDepartment, upsertDepartment } from "~/models/departments.server";
 import { HiTrash } from "react-icons/hi2";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import { validateForm } from "~/utility/validate";
+import { tokenAuth } from "~/auth.server";
+import { STAFF_SESSION_KEY } from "~/session.server";
 
-export const loader = async ({ params }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderArgs) => {
+  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+  if (!authenticated.valid) {
+    return redirect("/admin/login");
+  }
+
   const id = params?.id;
   const department = id && id !== "add" && (await getDepartment(id));
   if (department) {
@@ -24,6 +31,11 @@ export const loader = async ({ params }: LoaderArgs) => {
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
+  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+  if (!authenticated.valid) {
+    return redirect("/admin/login");
+  }
+
   const id = params.id === "add" ? undefined : params.id;
   const form = Object.fromEntries(await request.formData());
   const { name, isActive, index, displayInNavigation, productCategories } =
@@ -93,7 +105,7 @@ const ModifyDepartment = () => {
     <DarkOverlay>
       <Form
         method="POST"
-        className="relative min-w-[400px] max-w-full rounded-none bg-base-200 px-6 py-6 max-sm:w-full sm:rounded-md"
+        className="scrollbar-hide relative w-[500px] max-w-[100vw] overflow-y-auto bg-base-200 px-3 py-6 sm:px-6"
       >
         <FormHeader
           valueToChange={department}

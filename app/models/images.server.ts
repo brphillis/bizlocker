@@ -1,5 +1,5 @@
 import { prisma } from "~/db.server";
-import { removeS3Image } from "~/integrations/aws/s3/s3.server";
+import { deleteImage_Integration } from "~/integrations/_master/storage";
 export type { Image } from "@prisma/client";
 
 export function getImages() {
@@ -71,7 +71,7 @@ export const deleteImage = async (id: string) => {
   }
 
   if (image.href) {
-    await removeS3Image(image.href);
+    await deleteImage_Integration(image.href);
   }
 
   return await prisma.image.delete({

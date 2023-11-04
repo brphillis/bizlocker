@@ -1,7 +1,6 @@
 import type { ActionArgs } from "@remix-run/node";
 import { useEffect } from "react";
 import { createUserSession } from "~/session.server";
-import { verifyLogin } from "~/models/auth/login.server";
 import { safeRedirect } from "~/helpers/navigateHelpers";
 import AuthContainer from "~/components/Layout/AuthContainer";
 import AuthPageWrapper from "~/components/Layout/AuthPageWrapper";
@@ -12,6 +11,7 @@ import {
   useLocation,
   useNavigate,
 } from "@remix-run/react";
+import { verifyStaffLogin } from "~/models/auth/staffLogin";
 
 export const action = async ({ request }: ActionArgs) => {
   const formData = await request.formData();
@@ -33,7 +33,7 @@ export const action = async ({ request }: ActionArgs) => {
     return { validationError };
   }
 
-  const { user, error } = await verifyLogin(
+  const { user, error } = await verifyStaffLogin(
     email as string,
     password as string
   );

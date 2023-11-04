@@ -1,4 +1,4 @@
-import type { ActionArgs, LoaderArgs } from "@remix-run/node";
+import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node";
 import {
   Form,
   useActionData,
@@ -6,6 +6,7 @@ import {
   useNavigate,
 } from "@remix-run/react";
 import { useEffect, useState } from "react";
+import { tokenAuth } from "~/auth.server";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
 import FormHeader from "~/components/Forms/Headers/FormHeader";
 import BasicInput from "~/components/Forms/Input/BasicInput";
@@ -14,9 +15,15 @@ import SelectCountry from "~/components/Forms/Select/SelectCountry";
 import UploadAvatar from "~/components/Forms/Upload/UploadAvatar";
 import DarkOverlay from "~/components/Layout/DarkOverlay";
 import { getUser, upsertUser } from "~/models/auth/users.server";
+import { STAFF_SESSION_KEY } from "~/session.server";
 import { validateForm } from "~/utility/validate";
 
-export const loader = async ({ params }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderArgs) => {
+  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+  if (!authenticated.valid) {
+    return redirect("/admin/login");
+  }
+
   const id = params?.id;
 
   if (id && id !== "add") {
@@ -26,6 +33,11 @@ export const loader = async ({ params }: LoaderArgs) => {
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
+  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+  if (!authenticated.valid) {
+    return redirect("/admin/login");
+  }
+
   const id = params.id === "add" ? undefined : params.id;
   const form = Object.fromEntries(await request.formData());
   const {
@@ -110,7 +122,7 @@ const ModifyUser = () => {
     <DarkOverlay>
       <Form
         method="POST"
-        className="relative w-[600px] bg-base-200 py-6 sm:px-6"
+        className="absolute top-0 w-[600px] bg-base-200 py-6 sm:px-6"
       >
         <FormHeader
           hasDelete={false}
@@ -125,110 +137,117 @@ const ModifyUser = () => {
             <UploadAvatar avatar={user?.avatar} />
 
             <div className="flex flex-row flex-wrap justify-center gap-6">
-              <div className="form-control gap-3">
-                <BasicInput
-                  name="email"
-                  label="Email Address"
-                  placeholder="Email Address"
-                  type="text"
-                  defaultValue={user?.email || undefined}
-                  validationErrors={validationErrors}
-                />
+              <BasicInput
+                name="email"
+                label="Email Address"
+                placeholder="Email Address"
+                type="text"
+                customWidth="w-full"
+                defaultValue={user?.email || undefined}
+                validationErrors={validationErrors}
+              />
 
-                <BasicInput
-                  name="firstName"
-                  label="First Name"
-                  placeholder="First Name"
-                  type="text"
-                  defaultValue={user?.userDetails?.firstName || undefined}
-                  validationErrors={validationErrors}
-                />
+              <BasicInput
+                name="firstName"
+                label="First Name"
+                placeholder="First Name"
+                type="text"
+                customWidth="w-full"
+                defaultValue={user?.userDetails?.firstName || undefined}
+                validationErrors={validationErrors}
+              />
 
-                <BasicInput
-                  name="lastName"
-                  label="Last Name"
-                  placeholder="Last Name"
-                  type="text"
-                  defaultValue={user?.userDetails?.lastName || undefined}
-                  validationErrors={validationErrors}
-                />
+              <BasicInput
+                name="lastName"
+                label="Last Name"
+                placeholder="Last Name"
+                type="text"
+                customWidth="w-full"
+                defaultValue={user?.userDetails?.lastName || undefined}
+                validationErrors={validationErrors}
+              />
 
-                <PhoneInput
-                  name="phoneNumber"
-                  label="Phone Number"
-                  placeholder="Phone Number"
-                  type="text"
-                  defaultValue={user?.userDetails?.phoneNumber || undefined}
-                  validationErrors={validationErrors}
-                />
+              <PhoneInput
+                name="phoneNumber"
+                label="Phone Number"
+                placeholder="Phone Number"
+                type="text"
+                customWidth="w-full"
+                defaultValue={user?.userDetails?.phoneNumber || undefined}
+                validationErrors={validationErrors}
+              />
 
-                <BasicInput
-                  name="dateofbirth"
-                  label="Date of Birth"
-                  placeholder="Date of Birth"
-                  type="date"
-                  defaultValue={
-                    user?.userDetails?.dateOfBirth
-                      ? new Date(user?.userDetails?.dateOfBirth)
-                          .toISOString()
-                          .split("T")[0]
-                      : undefined
-                  }
-                  validationErrors={validationErrors}
-                />
-              </div>
+              <BasicInput
+                name="dateofbirth"
+                label="Date of Birth"
+                placeholder="Date of Birth"
+                type="date"
+                customWidth="w-full"
+                defaultValue={
+                  user?.userDetails?.dateOfBirth
+                    ? new Date(user?.userDetails?.dateOfBirth)
+                        .toISOString()
+                        .split("T")[0]
+                    : undefined
+                }
+                validationErrors={validationErrors}
+              />
 
-              <div className="form-control gap-3">
-                <BasicInput
-                  name="address1"
-                  label="Address Line 1"
-                  placeholder="Address Line 1"
-                  type="text"
-                  defaultValue={user?.address?.addressLine1 || undefined}
-                  validationErrors={validationErrors}
-                />
+              <BasicInput
+                name="address1"
+                label="Address Line 1"
+                placeholder="Address Line 1"
+                type="text"
+                customWidth="w-full"
+                defaultValue={user?.address?.addressLine1 || undefined}
+                validationErrors={validationErrors}
+              />
 
-                <BasicInput
-                  name="address2"
-                  label="Address Line 2"
-                  placeholder="Address Line 2"
-                  type="text"
-                  defaultValue={user?.address?.addressLine2 || undefined}
-                  validationErrors={validationErrors}
-                />
+              <BasicInput
+                name="address2"
+                label="Address Line 2"
+                placeholder="Address Line 2"
+                type="text"
+                customWidth="w-full"
+                defaultValue={user?.address?.addressLine2 || undefined}
+                validationErrors={validationErrors}
+              />
 
-                <BasicInput
-                  name="suburb"
-                  label="Suburb"
-                  placeholder="Suburb"
-                  type="text"
-                  defaultValue={user?.address?.suburb || undefined}
-                  validationErrors={validationErrors}
-                />
+              <BasicInput
+                name="suburb"
+                label="Suburb"
+                placeholder="Suburb"
+                type="text"
+                customWidth="w-full"
+                defaultValue={user?.address?.suburb || undefined}
+                validationErrors={validationErrors}
+              />
 
-                <BasicInput
-                  name="postcode"
-                  label="PostCode"
-                  placeholder="PostCode"
-                  type="text"
-                  defaultValue={user?.address?.postcode || undefined}
-                  validationErrors={validationErrors}
-                />
+              <BasicInput
+                name="postcode"
+                label="PostCode"
+                placeholder="PostCode"
+                type="text"
+                customWidth="w-full"
+                defaultValue={user?.address?.postcode || undefined}
+                validationErrors={validationErrors}
+              />
 
-                <BasicInput
-                  name="state"
-                  label="State"
-                  placeholder="State"
-                  type="text"
-                  defaultValue={user?.address?.state || undefined}
-                  validationErrors={validationErrors}
-                />
+              <BasicInput
+                name="state"
+                label="State"
+                placeholder="State"
+                type="text"
+                customWidth="w-full"
+                defaultValue={user?.address?.state || undefined}
+                validationErrors={validationErrors}
+              />
 
-                <SelectCountry
-                  defaultValue={user?.address?.country}
-                  validationErrors={validationErrors}
-                />
-              </div>
+              <SelectCountry
+                defaultValue={user?.address?.country}
+                validationErrors={validationErrors}
+                styles="!w-full"
+              />
             </div>
           </div>
         </div>

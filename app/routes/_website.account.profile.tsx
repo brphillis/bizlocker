@@ -2,18 +2,33 @@ import { useEffect, useState } from "react";
 import { validateForm } from "~/utility/validate";
 import { getUserDataFromSession } from "~/session.server";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
-import { type ActionArgs, type LoaderArgs } from "@remix-run/server-runtime";
+import {
+  redirect,
+  type ActionArgs,
+  type LoaderArgs,
+} from "@remix-run/server-runtime";
 import { getUserDetails, upsertUserDetails } from "~/models/auth/userDetails";
 import PhoneInput from "~/components/Forms/Input/PhoneInput";
 import BasicInput from "~/components/Forms/Input/BasicInput";
+import { tokenAuth } from "~/auth.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
+  const authenticated = await tokenAuth(request);
+  if (!authenticated.valid) {
+    return redirect("/login");
+  }
+
   const { id, email } = ((await getUserDataFromSession(request)) as User) || {};
   const userDetails = await getUserDetails(id);
   return { userDetails, email };
 };
 
 export const action = async ({ request }: ActionArgs) => {
+  const authenticated = await tokenAuth(request);
+  if (!authenticated.valid) {
+    return redirect("/login");
+  }
+
   const { id } = ((await getUserDataFromSession(request)) as User) || {};
   const form = Object.fromEntries(await request.formData());
 
