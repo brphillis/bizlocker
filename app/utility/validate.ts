@@ -253,6 +253,15 @@ export const validationMaster: FormConfig = {
       return null;
     },
   },
+  shippingOptions: {
+    required: true,
+    validator: (value: string) => {
+      if (!value) {
+        return "Please Select a Shipping Option";
+      }
+      return null;
+    },
+  },
   tileImage: {
     required: true,
     validator: (value: string) => {
@@ -370,7 +379,6 @@ export const isValidPassword = (password: string): boolean => {
 
 export const isValidMobileNumber = (mobileNumber: string) => {
   // Australia
-
   if (
     mobileNumber.startsWith("61 ") &&
     mobileNumber.replace(/ /g, "").length === 11

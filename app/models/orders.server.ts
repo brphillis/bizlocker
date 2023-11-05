@@ -1,6 +1,5 @@
 import { prisma } from "~/db.server";
 import { redirect } from "@remix-run/server-runtime";
-import { SquareAddressToAddress } from "~/helpers/addressHelpers";
 import { squareClient } from "~/integrations/square/square.server";
 import {
   getSession,
@@ -78,6 +77,7 @@ export const createOrder = async (
   request: Request,
   firstName: string,
   lastName: string,
+  phoneNumber: string,
   address: Address,
   shippingMethod: string,
   shippingPrice: string,
@@ -132,6 +132,7 @@ export const createOrder = async (
         shippingPrice: shippingPrice,
         firstName: firstName,
         lastName: lastName,
+        phoneNumber: phoneNumber,
         address: {
           create: {
             addressLine1: address.addressLine1,
@@ -196,6 +197,7 @@ export const confirmPayment = async (paymentCode: string) => {
       paymentCode,
     },
     include: {
+      user: true,
       address: true,
       items: {
         include: {
@@ -210,7 +212,6 @@ export const confirmPayment = async (paymentCode: string) => {
           },
         },
       },
-      user: true,
     },
   });
 
@@ -264,29 +265,53 @@ export const confirmPayment = async (paymentCode: string) => {
     });
   }
 
-  const { email, shippingDetails } =
-    (await getSquareOrderDetails(order.orderId)) || {};
+  const orderAddress = order.address;
 
-  // handling upserting user data
+  const newAddress = {
+    addressLine1: orderAddress?.addressLine1,
+    addressLine2: orderAddress?.addressLine2,
+    postcode: orderAddress?.postcode,
+    suburb: orderAddress?.suburb,
+    state: orderAddress?.state,
+    country: orderAddress?.country,
+  };
+
+  // handling upserting user address
   if (order.rememberInformation && order.userId) {
-    const address = SquareAddressToAddress(shippingDetails);
-
     await prisma.address.upsert({
       where: {
         userId: order.userId,
       },
       create: {
-        ...address,
+        ...newAddress,
         user: { connect: { id: order.userId } },
       },
       update: {
-        ...address,
+        ...newAddress,
+        user: { connect: { id: order.userId } },
+      },
+    });
+
+    await prisma.userDetails.upsert({
+      where: {
+        id: order.userId,
+      },
+      create: {
+        firstName: order.firstName,
+        lastName: order.lastName,
+        phoneNumber: order.phoneNumber,
+        user: { connect: { id: order.userId } },
+      },
+      update: {
+        firstName: order.firstName,
+        lastName: order.lastName,
+        phoneNumber: order.phoneNumber,
         user: { connect: { id: order.userId } },
       },
     });
   }
 
-  await sendOrderReceiptEmail(email, order as unknown as Order);
+  await sendOrderReceiptEmail(order.user!.email, order as unknown as Order);
 
   return updatedOrder;
 };

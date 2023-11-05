@@ -151,6 +151,12 @@ const AdminSideBar = ({ user }: Props) => {
 
                 <div className="collapse-content">
                   <ul className="!px-3 !pt-1 text-white/75">
+                    <li onClick={() => navigate("/admin/staff")}>
+                      <label htmlFor="my-drawer-2" className="hover:text-white">
+                        Staff
+                      </label>
+                    </li>
+
                     <li onClick={() => navigate("/admin/users")}>
                       <label htmlFor="my-drawer-2" className="hover:text-white">
                         Users

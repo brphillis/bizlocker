@@ -1,6 +1,7 @@
 To Do
 
 add validation to order shipping address
+finish stores on adminweb
 
 Bug Hisory
 

@@ -32,7 +32,7 @@ const BasicInput = ({
   labelColor,
 }: Props) => {
   const [phoneNumber, setPhoneNumber] = useState<PhoneNumber>({
-    areacode: defaultValue ? defaultValue.split(" ")[0] + " " : "614 ",
+    areacode: defaultValue ? defaultValue.split(" ")[0] + " " : "61 ",
     dialnumber: defaultValue ? defaultValue.split(" ")[1] : "",
   });
 

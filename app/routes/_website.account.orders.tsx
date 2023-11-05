@@ -27,7 +27,7 @@ const Orders = () => {
       <h1 className="text-3xl">Orders</h1>
       <div className="opacity-50">Track your Order History</div>
       <div className="divider w-full" />
-      <div className="max-h-[650px] max-w-[98vw] overflow-x-auto">
+      <div className="max-h-[650px] w-full max-w-[98vw] overflow-x-auto">
         {orders?.length === 0 && (
           <>
             <p>You have not made an order yet.</p>

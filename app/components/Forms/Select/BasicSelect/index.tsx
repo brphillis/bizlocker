@@ -1,3 +1,5 @@
+import ToolTip from "~/components/Indicators/ToolTip";
+
 type Props = {
   name: string;
   label: string;
@@ -7,6 +9,7 @@ type Props = {
   onChange?: (value: string | React.ChangeEvent<HTMLSelectElement>) => void;
   customWidth?: string;
   labelColor?: string;
+  validationErrors?: ValidationErrors;
 };
 
 const BasicSelect = ({
@@ -17,11 +20,12 @@ const BasicSelect = ({
   placeholder,
   customWidth,
   labelColor,
+  validationErrors,
   onChange,
 }: Props) => {
   return (
     <div
-      className={`form-control max-md:w-full ${
+      className={`form-control relative max-md:w-full ${
         customWidth ? customWidth : "w-[215px]"
       }`}
     >
@@ -36,7 +40,13 @@ const BasicSelect = ({
       </label>
       <select
         name={name}
-        className="select w-full text-brand-black/75"
+        className={`select w-full text-brand-black/75
+        ${
+          validationErrors?.hasOwnProperty(name)
+            ? "select-error border !outline-none"
+            : ""
+        }
+        `}
         defaultValue={defaultValue}
         onChange={(e) => {
           if (onChange) {
@@ -51,6 +61,9 @@ const BasicSelect = ({
           </option>
         ))}
       </select>
+      {validationErrors?.hasOwnProperty(name) && (
+        <ToolTip tip={validationErrors[name]} iconColor="text-error" />
+      )}
     </div>
   );
 };

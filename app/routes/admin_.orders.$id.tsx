@@ -8,6 +8,7 @@ import {
 import { IoClose } from "react-icons/io5";
 import { tokenAuth } from "~/auth.server";
 import BasicInput from "~/components/Forms/Input/BasicInput";
+import PhoneInput from "~/components/Forms/Input/PhoneInput";
 import SelectCountry from "~/components/Forms/Select/SelectCountry";
 import OrderStatusSteps from "~/components/Indicators/OrderStatusSteps";
 import DarkOverlay from "~/components/Layout/DarkOverlay";
@@ -236,6 +237,16 @@ const ModifyOrder = () => {
             />
 
             <SelectCountry defaultValue={address?.country} styles="!w-full" />
+
+            <PhoneInput
+              name="phoneNumber"
+              label="Phone Number"
+              placeholder="Phone Number"
+              customWidth="w-full"
+              styles="input-bordered"
+              type="text"
+              defaultValue={order?.phoneNumber || undefined}
+            />
 
             <BasicInput
               name="shippingMethod"

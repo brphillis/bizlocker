@@ -25,7 +25,8 @@ type Props = {
     | "Category"
     | "User"
     | "Campaign"
-    | "Image";
+    | "Image"
+    | "Staff";
   mode: "add" | "edit";
   hasIsActive?: boolean;
   hasDelete?: boolean;

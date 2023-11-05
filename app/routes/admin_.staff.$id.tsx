@@ -14,7 +14,7 @@ import PhoneInput from "~/components/Forms/Input/PhoneInput";
 import SelectCountry from "~/components/Forms/Select/SelectCountry";
 import UploadAvatar from "~/components/Forms/Upload/UploadAvatar";
 import DarkOverlay from "~/components/Layout/DarkOverlay";
-import { getUser, upsertUser } from "~/models/auth/users.server";
+import { getStaff, upsertStaff } from "~/models/auth/staff.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
 import { validateForm } from "~/utility/validate";
 
@@ -27,8 +27,8 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const id = params?.id;
 
   if (id && id !== "add") {
-    const user = await getUser(id);
-    return user;
+    const staffMember = await getStaff(id);
+    return staffMember;
   } else return null;
 };
 
@@ -91,21 +91,21 @@ export const action = async ({ request, params }: ActionArgs) => {
     id: id,
   };
 
-  await upsertUser(updateData);
+  await upsertStaff(updateData);
 
   return { success: true };
 };
 
-const ModifyUser = () => {
+const ModifyStaff = () => {
   const navigate = useNavigate();
-  const user = useLoaderData();
+  const staffMember = useLoaderData();
   const { validationErrors, success } =
     (useActionData() as {
       success: boolean;
       validationErrors: ValidationErrors;
     }) || {};
 
-  const mode = user ? "edit" : "add";
+  const mode = staffMember ? "edit" : "add";
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -128,13 +128,13 @@ const ModifyUser = () => {
           hasDelete={false}
           hasIsActive={true}
           mode={mode}
-          type="User"
-          valueToChange={user}
+          type="Staff"
+          valueToChange={staffMember}
         />
 
         <div className="form-control gap-3">
           <div className="flex flex-wrap justify-evenly gap-3">
-            <UploadAvatar avatar={user?.avatar} />
+            <UploadAvatar avatar={staffMember?.avatar} />
 
             <div className="flex flex-row flex-wrap justify-center gap-6">
               <BasicInput
@@ -143,7 +143,7 @@ const ModifyUser = () => {
                 placeholder="Email Address"
                 type="text"
                 customWidth="w-full"
-                defaultValue={user?.email || undefined}
+                defaultValue={staffMember?.email || undefined}
                 validationErrors={validationErrors}
               />
 
@@ -153,7 +153,7 @@ const ModifyUser = () => {
                 placeholder="First Name"
                 type="text"
                 customWidth="w-full"
-                defaultValue={user?.userDetails?.firstName || undefined}
+                defaultValue={staffMember?.userDetails?.firstName || undefined}
                 validationErrors={validationErrors}
               />
 
@@ -163,7 +163,7 @@ const ModifyUser = () => {
                 placeholder="Last Name"
                 type="text"
                 customWidth="w-full"
-                defaultValue={user?.userDetails?.lastName || undefined}
+                defaultValue={staffMember?.userDetails?.lastName || undefined}
                 validationErrors={validationErrors}
               />
 
@@ -173,7 +173,9 @@ const ModifyUser = () => {
                 placeholder="Phone Number"
                 type="text"
                 customWidth="w-full"
-                defaultValue={user?.userDetails?.phoneNumber || undefined}
+                defaultValue={
+                  staffMember?.userDetails?.phoneNumber || undefined
+                }
                 validationErrors={validationErrors}
               />
 
@@ -184,8 +186,8 @@ const ModifyUser = () => {
                 type="date"
                 customWidth="w-full"
                 defaultValue={
-                  user?.userDetails?.dateOfBirth
-                    ? new Date(user?.userDetails?.dateOfBirth)
+                  staffMember?.userDetails?.dateOfBirth
+                    ? new Date(staffMember?.userDetails?.dateOfBirth)
                         .toISOString()
                         .split("T")[0]
                     : undefined
@@ -199,7 +201,7 @@ const ModifyUser = () => {
                 placeholder="Address Line 1"
                 type="text"
                 customWidth="w-full"
-                defaultValue={user?.address?.addressLine1 || undefined}
+                defaultValue={staffMember?.address?.addressLine1 || undefined}
                 validationErrors={validationErrors}
               />
 
@@ -209,7 +211,7 @@ const ModifyUser = () => {
                 placeholder="Address Line 2"
                 type="text"
                 customWidth="w-full"
-                defaultValue={user?.address?.addressLine2 || undefined}
+                defaultValue={staffMember?.address?.addressLine2 || undefined}
                 validationErrors={validationErrors}
               />
 
@@ -219,7 +221,7 @@ const ModifyUser = () => {
                 placeholder="Suburb"
                 type="text"
                 customWidth="w-full"
-                defaultValue={user?.address?.suburb || undefined}
+                defaultValue={staffMember?.address?.suburb || undefined}
                 validationErrors={validationErrors}
               />
 
@@ -229,7 +231,7 @@ const ModifyUser = () => {
                 placeholder="PostCode"
                 type="text"
                 customWidth="w-full"
-                defaultValue={user?.address?.postcode || undefined}
+                defaultValue={staffMember?.address?.postcode || undefined}
                 validationErrors={validationErrors}
               />
 
@@ -239,12 +241,12 @@ const ModifyUser = () => {
                 placeholder="State"
                 type="text"
                 customWidth="w-full"
-                defaultValue={user?.address?.state || undefined}
+                defaultValue={staffMember?.address?.state || undefined}
                 validationErrors={validationErrors}
               />
 
               <SelectCountry
-                defaultValue={user?.address?.country}
+                defaultValue={staffMember?.address?.country}
                 validationErrors={validationErrors}
                 styles="!w-full"
               />
@@ -257,4 +259,4 @@ const ModifyUser = () => {
   );
 };
 
-export default ModifyUser;
+export default ModifyStaff;

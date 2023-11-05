@@ -214,6 +214,7 @@ interface Order {
   address?: Address;
   firstName: string;
   lastName: string;
+  phoneNumber: string;
   shippingMethod: string;
   shippingPrice: string;
   createdAt: Date;

@@ -10,11 +10,11 @@ import BasicInput from "~/components/Forms/Input/BasicInput";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import Pagination from "~/components/Pagination";
-import { searchUsers } from "~/models/auth/users.server";
 import { placeholderAvatar } from "~/utility/placeholderAvatar";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
+import { searchStaff } from "~/models/auth/staff.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
@@ -32,14 +32,14 @@ export const loader = async ({ request }: LoaderArgs) => {
     perPage: 10,
   };
 
-  const { users, totalPages } = await searchUsers(searchQuery, true);
+  const { staff, totalPages } = await searchStaff(searchQuery, true);
 
-  return { users, totalPages };
+  return { staff, totalPages };
 };
 
-const Users = () => {
+const Staff = () => {
   const navigate = useNavigate();
-  const { users, totalPages } = useLoaderData() || {};
+  const { staff, totalPages } = useLoaderData() || {};
 
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("pageNumber")) || 1;
@@ -47,7 +47,7 @@ const Users = () => {
   return (
     <AdminPageWrapper>
       <Form method="GET" className="relative h-full w-full bg-base-200 p-6">
-        <AdminPageHeader title="Manage Users" addButtonText="Add User" />
+        <AdminPageHeader title="Manage Staff" addButtonText="Add Staff" />
 
         <div className="mt-3 flex flex-col">
           <div className="flex flex-row flex-wrap gap-6">
@@ -98,9 +98,9 @@ const Users = () => {
               </tr>
             </thead>
             <tbody>
-              {users?.map(
+              {staff?.map(
                 (
-                  { id, email, avatar, userDetails, isActive }: User,
+                  { id, email, avatar, userDetails, isActive }: Staff,
                   i: number
                 ) => {
                   const { firstName, lastName } = userDetails || {};
@@ -109,10 +109,10 @@ const Users = () => {
                     <tr
                       className="cursor-pointer transition-colors duration-200 hover:bg-base-100"
                       key={id}
-                      onClick={() => navigate(`/admin/users/${id}`)}
+                      onClick={() => navigate(`/admin/staff/${id}`)}
                     >
                       {currentPage && (
-                        <td>{i + 1 + (currentPage - 1) * users?.length}</td>
+                        <td>{i + 1 + (currentPage - 1) * staff?.length}</td>
                       )}
                       <td className="flex items-center justify-center">
                         <div className="avatar mx-[-10px]">
@@ -150,4 +150,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default Staff;
