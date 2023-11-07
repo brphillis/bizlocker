@@ -98,7 +98,7 @@ export const action = async ({ request, params }: ActionArgs) => {
 
 const ModifyStore = () => {
   const navigate = useNavigate();
-  const store = useLoaderData() as Store;
+  const store = useLoaderData();
   const { validationErrors, success } =
     (useActionData() as {
       success: boolean;

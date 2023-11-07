@@ -37,7 +37,6 @@ export const createSeedData = async () => {
     await createHomePage();
     await createBrand();
     await createRandomProductSubCategories();
-    await createRandomProducts();
   } catch (error) {
     console.error("Error creating products and categories:", error);
   } finally {
@@ -177,47 +176,5 @@ const createRandomProductSubCategories = async () => {
     console.error("Error creating categories:", error);
   } finally {
     await prisma.$disconnect();
-  }
-};
-
-const createRandomProducts = async () => {
-  try {
-    const existingDepartments = await prisma.department.findMany();
-    if (existingDepartments.length > 0) {
-      console.log("seed data already exist. Skipping seed creation.");
-      return;
-    }
-
-    for (let i = 0; i < 5; i++) {
-      await prisma.product.create({
-        data: {
-          name: `Product ${i + 1}`,
-          description: `Description for Product ${i + 1}`,
-          variants: {
-            create: [
-              {
-                name: "Variant A",
-                sku: `SKU-A-${i + 1}`,
-                price: 10.0,
-                salePrice: null,
-                isOnSale: false,
-                stock: 100,
-              },
-              {
-                name: "Variant B",
-                sku: `SKU-B-${i + 1}`,
-                price: 20.0,
-                salePrice: 15.0,
-                isOnSale: true,
-                stock: 50,
-              },
-            ],
-          },
-        },
-      });
-    }
-    console.log("Random products with variants created successfully.");
-  } catch (error) {
-    console.error("Error creating random products with variants:", error);
   }
 };
