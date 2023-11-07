@@ -2,9 +2,9 @@ import type { Gender } from "@prisma/client";
 import { prisma } from "~/db.server";
 import { getRandomOneOrTwo } from "~/helpers/numberHelpers";
 import {
-  handleS3Update,
-  handleS3Upload,
-} from "~/integrations/aws/s3/s3.server";
+  updateImage_Integration,
+  uploadImage_Integration,
+} from "~/integrations/_master/storage";
 
 export function getCampaigns(inDetail?: boolean) {
   if (inDetail) {
@@ -68,8 +68,8 @@ export const upsertCampaign = async (updateData: any) => {
   if (!id) {
     // Create a new campaign
 
-    const repoLinkTile = await handleS3Upload(parsedTile);
-    const repoLinkBanner = await handleS3Upload(parsedBanner);
+    const repoLinkTile = await uploadImage_Integration(parsedTile);
+    const repoLinkBanner = await uploadImage_Integration(parsedBanner);
 
     updatedCampaign = await prisma.campaign.create({
       data: {
@@ -115,11 +115,11 @@ export const upsertCampaign = async (updateData: any) => {
       },
     });
 
-    const repoLinkTile = await handleS3Update(
+    const repoLinkTile = await updateImage_Integration(
       existingCampaign?.tileImage as Image,
       parsedTile
     );
-    const repoLinkBanner = await handleS3Update(
+    const repoLinkBanner = await updateImage_Integration(
       existingCampaign?.bannerImage as Image,
       parsedBanner
     );

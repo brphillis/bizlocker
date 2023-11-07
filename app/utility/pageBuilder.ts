@@ -5,6 +5,7 @@ import { searchPromotions } from "~/models/promotions.server";
 import { blockMaster, blockTypes, getBlockContentTypes } from "./blockMaster";
 import { searchBrands } from "~/models/brands.server";
 import { searchIcons } from "./icons";
+import { searchStores } from "~/models/stores.server";
 
 export const pageTypes = ["homePage", "webPage", "article", "previewPage"];
 
@@ -125,6 +126,15 @@ export const getFormBlockOptions = (form: {
     title5,
     title6,
     titleColor,
+    itemColor,
+    itemSecondaryColor,
+    titleAlign,
+    titleSize,
+    titleWeight,
+    itemBorderDisplay,
+    itemBorderSize,
+    itemBorderColor,
+    itemBorderRadius,
   } = form;
 
   const blockOptions = {
@@ -218,6 +228,21 @@ export const getFormBlockOptions = (form: {
     title4: title4 ? (title4 as string) : undefined,
     title5: title5 ? (title5 as string) : undefined,
     title6: title6 ? (title6 as string) : undefined,
+    itemColor: itemColor ? (itemColor as string) : undefined,
+    itemSecondaryColor: itemSecondaryColor
+      ? (itemSecondaryColor as string)
+      : undefined,
+    titleAlign: titleAlign ? (titleAlign as string) : undefined,
+    titleSize: titleSize ? (titleSize as string) : undefined,
+    titleWeight: titleWeight ? (titleWeight as string) : undefined,
+    itemBorderDisplay: itemBorderDisplay
+      ? (itemBorderDisplay as string)
+      : undefined,
+    itemBorderSize: itemBorderSize ? (itemBorderSize as string) : undefined,
+    itemBorderColor: itemBorderColor ? (itemBorderColor as string) : undefined,
+    itemBorderRadius: itemBorderRadius
+      ? (itemBorderRadius as string)
+      : undefined,
   } as BlockOptions;
 
   return blockOptions;
@@ -331,6 +356,12 @@ export const searchContentData = async (
     case "brand":
       const { brands } = await searchBrands(Object.fromEntries(formData));
       searchResults = brands;
+
+      return searchResults;
+
+    case "store":
+      const { stores } = await searchStores(Object.fromEntries(formData));
+      searchResults = stores;
 
       return searchResults;
 

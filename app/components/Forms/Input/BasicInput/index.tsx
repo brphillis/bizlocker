@@ -47,7 +47,9 @@ const BasicInput = ({
         type={type}
         placeholder={placeholder}
         disabled={disabled}
-        className={`input w-full text-brand-black/75 ${
+        className={`input w-full text-brand-black/75
+        disabled:bg-base-100/50
+        ${
           validationErrors?.hasOwnProperty(name)
             ? "input-error border !outline-none"
             : ""

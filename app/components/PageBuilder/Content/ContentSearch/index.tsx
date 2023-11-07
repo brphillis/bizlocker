@@ -37,11 +37,17 @@ const ContentSearch = ({
     submit(searchForm, { method: "POST" });
   };
 
+  const shouldDisplay = () => {
+    const blockTypes = ["banner", "tile", "map", "hero"];
+
+    if (selectedBlock && blockTypes.includes(selectedBlock)) {
+      return true;
+    } else return false;
+  };
+
   return (
     <>
-      {(selectedBlock === "banner" ||
-        selectedBlock === "tile" ||
-        selectedBlock === "hero") && (
+      {selectedBlock && shouldDisplay() && (
         <div className="mt-10 hidden w-full flex-wrap justify-start gap-3 rounded-sm bg-brand-white/20 px-4 pb-4 pt-2 max-md:px-2 [&:has(div)]:flex">
           <span className="absolute -mt-10 block font-bold">
             Content Selection

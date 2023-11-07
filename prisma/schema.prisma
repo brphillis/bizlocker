@@ -75,6 +75,8 @@ model Block {
   textBlockId    String?        @unique
   tileBlock      TileBlock?     @relation("BlockToTileBlock", fields: [tileBlockId], references: [id])
   tileBlockId    String?        @unique
+  mapBlock       MapBlock?      @relation("BlockToMapBlock", fields: [mapBlockId], references: [id])
+  mapBlockId     String?        @unique
   webPage        WebPage[]      @relation("WebPagesToBlocks")
 
   createdAt DateTime @default(now())
@@ -152,6 +154,15 @@ model BlockOptions {
   title5                            String?
   title6                            String?
   titleColor                        Color?
+  itemColor                         String?
+  itemSecondaryColor                String?
+  titleAlign                        String?
+  titleSize                         String?
+  titleWeight                       String?
+  itemBorderDisplay                 String?
+  itemBorderSize                    String?
+  itemBorderColor                   String?
+  itemBorderRadius                  String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -297,6 +308,53 @@ model ArticleBlockContent {
   updatedAt DateTime @updatedAt
 }
 
+model MapBlock {
+  id        String           @id @unique @default(cuid())
+  block     Block?           @relation("BlockToMapBlock")
+  content   MapBlockContent? @relation("MapBlockContentToMapBlock")
+  name      String           @default("map")
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+}
+
+model MapBlockContent {
+  id         String    @id @unique @default(cuid())
+  mapBlock   MapBlock? @relation("MapBlockContentToMapBlock", fields: [mapBlockId], references: [id])
+  mapBlockId String?   @unique
+  store      Store[]   @relation("StoreToMapBlockContent")
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model Store {
+  id                Int               @id @default(autoincrement())
+  name              String
+  phoneNumber       String?
+  faxNumber         String?
+  address           Address?
+  paymentProviderId String?
+  isActive          Boolean           @default(true)
+  mapBlockContent   MapBlockContent[] @relation("StoreToMapBlockContent")
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+}
+
+model Staff {
+  id                   String       @id @unique @default(cuid())
+  address              Address?
+  avatar               Image?       @relation("StaffAvatarImage")
+  doubleAuthentication Boolean      @default(false)
+  email                String       @unique
+  isActive             Boolean      @default(true)
+  role                 Role         @default(STAFF)
+  password             String?
+  userDetails          UserDetails?
+  userDetailsId        String?      @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model User {
   id                   String       @id @unique @default(cuid())
   address              Address?
@@ -338,8 +396,10 @@ model UserDetails {
   gender      Gender?
   lastName    String?
   phoneNumber String?
-  user        User      @relation(fields: [userId], references: [id])
-  userId      String    @unique
+  staff       Staff?    @relation(fields: [staffId], references: [id])
+  staffId     String?   @unique
+  user        User?     @relation(fields: [userId], references: [id])
+  userId      String?   @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -353,10 +413,16 @@ model Address {
   postcode     String?
   state        String?
   suburb       String?
+  staff        Staff?  @relation(fields: [staffId], references: [id])
+  staffId      String? @unique
   user         User?   @relation(fields: [userId], references: [id])
   userId       String? @unique
   order        Order?  @relation(fields: [orderId], references: [orderId])
   orderId      String? @unique
+  store        Store?  @relation(fields: [storeId], references: [id])
+  storeId      Int?    @unique
+  latitude     String?
+  longitude    String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -400,6 +466,8 @@ model Order {
   lastName            String?
   shippingMethod      String?
   shippingPrice       String?
+  trackingNumber      String?
+  phoneNumber         String?
   createdAt           DateTime    @default(now())
   updatedAt           DateTime    @updatedAt
 }
@@ -439,6 +507,8 @@ model Image {
   tileBlockContent     TileBlockContent[]   @relation("ImageToTileBlockContent")
   user                 User?                @relation("AvatarImage", fields: [userId], references: [id])
   userId               String?              @unique
+  staff                Staff?               @relation("StaffAvatarImage", fields: [staffId], references: [id])
+  staffId              String?              @unique
   webPage              WebPage?             @relation("WebPageImage", fields: [webPageId], references: [id])
   webPageId            Int?                 @unique
 
@@ -641,6 +711,7 @@ model Brand {
 enum Role {
   DEVELOPER
   ADMIN
+  MANAGER
   STAFF
   USER
 }

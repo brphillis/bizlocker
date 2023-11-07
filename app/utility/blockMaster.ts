@@ -4,6 +4,9 @@ import TextBlock from "~/components/Blocks/TextBlock";
 import HeroBlock from "~/components/Blocks/HeroBlock";
 import ProductBlock from "~/components/Blocks/ProductBlock";
 import ArticleBlock from "~/components/Blocks/ArticleBlock";
+import MapBlock from "~/components/Blocks/MapBlock";
+
+export type BlockName = (typeof blockMaster)[number]["name"];
 
 export const blockMaster: BlockMaster[] = [
   {
@@ -161,6 +164,41 @@ export const blockMaster: BlockMaster[] = [
                 image: true,
               },
             },
+          },
+        },
+      },
+    },
+  },
+  {
+    name: "map",
+    component: MapBlock,
+    icon: "IoMap",
+    hasMultipleContent: true,
+    maxContentItems: 100,
+    options: {
+      borderColor: true,
+      borderDisplay: true,
+      borderRadius: true,
+      borderSize: true,
+      itemBorderColor: true,
+      itemBorderDisplay: true,
+      itemBorderRadius: true,
+      itemBorderSize: true,
+      itemColor: true,
+      margin: true,
+      size: true,
+      style: true,
+      title: true,
+      titleColor: true,
+      titleSize: true,
+      titleAlign: true,
+      titleWeight: true,
+    },
+    content: {
+      include: {
+        store: {
+          include: {
+            address: true,
           },
         },
       },

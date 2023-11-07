@@ -1,18 +1,25 @@
-import type { LoaderArgs } from "@remix-run/node";
+import { redirect, type LoaderArgs } from "@remix-run/node";
 import {
   Form,
   useLoaderData,
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
+import { tokenAuth } from "~/auth.server";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import Pagination from "~/components/Pagination";
 import { searchWebPages } from "~/models/webPages.server";
+import { STAFF_SESSION_KEY } from "~/session.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
+  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+  if (!authenticated.valid) {
+    return redirect("/admin/login");
+  }
+
   const url = new URL(request.url);
 
   const { webPages, totalPages } = await searchWebPages(undefined, url);

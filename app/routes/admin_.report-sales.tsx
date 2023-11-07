@@ -1,10 +1,12 @@
-import type { LoaderArgs } from "@remix-run/node";
+import { redirect, type LoaderArgs } from "@remix-run/node";
 import { Form, Outlet, useLoaderData } from "@remix-run/react";
 import PieReChart from "~/components/Charts/PieChart";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import { getSalesToday } from "~/models/saleReports.server";
 import { calculatePercentageChange } from "~/helpers/numberHelpers";
+import { tokenAuth } from "~/auth.server";
+import { STAFF_SESSION_KEY } from "~/session.server";
 
 type ReportData = {
   productSubCategory: string;
@@ -14,6 +16,11 @@ type ReportData = {
 };
 
 export const loader = async ({ request }: LoaderArgs) => {
+  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+  if (!authenticated.valid) {
+    return redirect("/admin/login");
+  }
+
   const {
     totalSalesToday,
     totalSalesYesterday,
@@ -63,7 +70,10 @@ const ManageHomePage = () => {
 
   return (
     <AdminPageWrapper>
-      <Form method="GET" className="relative h-max w-full bg-base-200 p-6">
+      <Form
+        method="GET"
+        className="relative h-max min-h-full w-full bg-base-200 p-6"
+      >
         <AdminPageHeader title="Sales Reports" />
         <div className="flex justify-center pb-6 text-3xl">
           <h1 className="tracking wider font-bold">Sales Statistics - Today</h1>

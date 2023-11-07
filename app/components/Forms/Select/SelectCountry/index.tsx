@@ -23,7 +23,6 @@ const SelectCountry = ({ defaultValue, validationErrors, styles }: Props) => {
         defaultValue={defaultValue}
         placeholder="Select a Value"
       >
-        <option value={undefined}>Select a Country</option>
         {ISO3166Countries?.map(({ code, name }: CountrySelect) => {
           return (
             <option key={code + name} value={code}>

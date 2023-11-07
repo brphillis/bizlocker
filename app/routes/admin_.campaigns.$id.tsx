@@ -1,4 +1,4 @@
-import { type LoaderArgs, type ActionArgs } from "@remix-run/node";
+import { type LoaderArgs, type ActionArgs, redirect } from "@remix-run/node";
 import {
   Form,
   useActionData,
@@ -6,6 +6,7 @@ import {
   useNavigate,
 } from "@remix-run/react";
 import { useEffect, useState } from "react";
+import { tokenAuth } from "~/auth.server";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
 import FormHeader from "~/components/Forms/Headers/FormHeader";
 import BasicInput from "~/components/Forms/Input/BasicInput";
@@ -18,9 +19,15 @@ import { getBrands } from "~/models/brands.server";
 import { getCampaign, upsertCampaign } from "~/models/campaigns.server";
 import { getDepartments } from "~/models/departments.server";
 import { getProductSubCategories } from "~/models/productSubCategories.server";
+import { STAFF_SESSION_KEY } from "~/session.server";
 import { validateForm } from "~/utility/validate";
 
-export const loader = async ({ params }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderArgs) => {
+  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+  if (!authenticated.valid) {
+    return redirect("/login");
+  }
+
   const id = params?.id;
   const departments = await getDepartments();
   const productSubCategories = await getProductSubCategories();
@@ -35,6 +42,11 @@ export const loader = async ({ params }: LoaderArgs) => {
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
+  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+  if (!authenticated.valid) {
+    return redirect("/login");
+  }
+
   const id = params.id === "add" ? undefined : params.id;
   const form = Object.fromEntries(await request.formData());
   const {

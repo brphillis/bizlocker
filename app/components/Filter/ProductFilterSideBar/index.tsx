@@ -114,13 +114,13 @@ const ProductFilterSideBar = ({
                 onClick={(e) => searchedGender && e.preventDefault()}
               >
                 <summary
-                  className={`font-semibold text-brand-black 
+                  className={`mx-2 rounded-none font-semibold text-brand-black  
             ${searchedGender && "after:hidden"}`}
                 >
                   Gender
                 </summary>
                 <div
-                  className="ml-3 flex cursor-pointer gap-2 py-1 pt-3"
+                  className="ml-3 flex cursor-pointer items-center gap-2 py-1 pt-3"
                   onClick={() => {
                     const selectedGender = searchedGender;
                     if (selectedGender === "MALE") {
@@ -144,7 +144,7 @@ const ProductFilterSideBar = ({
                   <p>Mens</p>
                 </div>
                 <div
-                  className="ml-3 flex cursor-pointer gap-2 py-1 pt-3"
+                  className="ml-3 flex cursor-pointer items-center gap-2 py-1 pt-3"
                   onClick={() => {
                     const selectedGender = searchedGender;
                     if (selectedGender === "FEMALE") {
@@ -168,7 +168,7 @@ const ProductFilterSideBar = ({
                   <p>Womans</p>
                 </div>
                 <div
-                  className="ml-3 flex cursor-pointer gap-2 py-1 pt-3"
+                  className="ml-3 flex cursor-pointer items-center gap-2 py-1 pt-3"
                   onClick={() => {
                     const selectedGender = searchedGender;
                     if (selectedGender === "KIDS") {
@@ -200,15 +200,15 @@ const ProductFilterSideBar = ({
                 open
                 onClick={(e) => searchedDepartment && e.preventDefault()}
               >
-                <summary className="font-semibold text-brand-black">
+                <summary className="mx-2 rounded-none font-semibold text-brand-black">
                   Department
                 </summary>
-                <div className="max-h-[300px] overflow-y-auto">
+                <div className="mb-1 max-h-[300px] overflow-y-auto">
                   {departments?.map(({ id, name }: Department) => {
                     return (
                       <div
                         key={"department_sideFilter_" + id}
-                        className="ml-3 flex cursor-pointer gap-2 py-1 pt-3"
+                        className="ml-3 flex cursor-pointer items-center gap-2 py-1 pt-3"
                         onClick={() => {
                           searchParams.delete("productCategory");
                           const selectedDepartment = searchedDepartment;
@@ -246,16 +246,16 @@ const ProductFilterSideBar = ({
                 open
                 onClick={(e) => searchedProdCat && e.preventDefault()}
               >
-                <summary className="font-semibold text-brand-black">
+                <summary className="mx-2 rounded-none font-semibold text-brand-black">
                   Category
                 </summary>
-                <div className="max-h-[300px] overflow-y-auto">
+                <div className="mb-1 max-h-[300px] overflow-y-auto">
                   {filteredProductCategories?.map(
                     ({ id, name }: ProductCategory) => {
                       return (
                         <div
                           key={"productCategory_sideFilter_" + id}
-                          className="ml-3 flex cursor-pointer gap-2 py-1 pt-3"
+                          className="ml-3 flex cursor-pointer items-center gap-2 py-1 pt-3"
                           onClick={() => {
                             searchParams.delete("productSubCategory");
                             const selectedProductCategory = searchedRootCat;
@@ -293,16 +293,16 @@ const ProductFilterSideBar = ({
                 open
                 onClick={(e) => searchedProdCat && e.preventDefault()}
               >
-                <summary className="font-semibold text-brand-black">
+                <summary className="mx-2 rounded-none font-semibold text-brand-black">
                   Sub-Category
                 </summary>
-                <div className="max-h-[300px] overflow-y-auto">
+                <div className="mb-1 max-h-[300px] overflow-y-auto">
                   {filteredProductSubCategories?.map(
                     ({ id, name }: ProductSubCategory) => {
                       return (
                         <div
                           key={"productSubCategory_sideFilter_" + id}
-                          className="ml-3 flex cursor-pointer gap-2 py-1 pt-3"
+                          className="ml-3 flex cursor-pointer items-center gap-2 py-1 pt-3"
                           onClick={() => {
                             const selectedProductSubCategory = searchedProdCat;
                             if (selectedProductSubCategory === name) {
@@ -334,15 +334,15 @@ const ProductFilterSideBar = ({
             <div className="my-2 w-full border-b-2 border-brand-black/5" />
             <li>
               <details onClick={(e) => searchedBrand && e.preventDefault()}>
-                <summary className="font-semibold text-brand-black">
+                <summary className="mx-2 rounded-none font-semibold text-brand-black">
                   Brand
                 </summary>
-                <div className="max-h-[300px] overflow-y-auto">
+                <div className="mb-1 max-h-[300px] overflow-y-auto">
                   {brands?.map(({ id, name }: Brand) => {
                     return (
                       <div
                         key={"brand_sideFilter_" + id}
-                        className="ml-3 flex cursor-pointer gap-2 py-1 pt-3"
+                        className="ml-3 flex cursor-pointer items-center gap-2 py-1 pt-3"
                         onClick={() => {
                           const selectedBrand = searchedBrand;
                           if (selectedBrand === name) {
@@ -373,15 +373,15 @@ const ProductFilterSideBar = ({
             <div className="my-2 w-full border-b-2 border-brand-black/5" />
             <li>
               <details onClick={(e) => searchedColor && e.preventDefault()}>
-                <summary className="font-semibold text-brand-black">
+                <summary className="mx-2 rounded-none font-semibold text-brand-black">
                   Color
                 </summary>
-                <div className="max-h-[300px] overflow-y-auto">
+                <div className="mb-1 max-h-[300px] overflow-y-auto">
                   {colors?.map((colorName: string) => {
                     return (
                       <div
                         key={"color_sideFilter_" + colorName}
-                        className="ml-3 flex cursor-pointer gap-2 py-1 pt-3"
+                        className="ml-3 flex cursor-pointer items-center gap-2 py-1 pt-3"
                         onClick={() => {
                           const selectedColor = searchedColor;
                           if (selectedColor === colorName) {

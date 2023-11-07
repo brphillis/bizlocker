@@ -13,7 +13,7 @@ const Pagination = ({ totalPages }: Props) => {
   return (
     <>
       {totalPages > 0 && (
-        <div className="flex items-start justify-center py-3">
+        <div className="flex items-start justify-center pb-3 pt-6">
           <div className="btn-group">
             {Array.from({ length: totalPages }).map((_, i) => {
               const pageNumber = i + 1;
@@ -21,7 +21,7 @@ const Pagination = ({ totalPages }: Props) => {
                 <button
                   type="button"
                   key={"pagination" + i}
-                  className={`btn-sm border border-brand-black/20 ${
+                  className={`flex h-8 w-8 items-center justify-center rounded-sm border border-brand-black/20 ${
                     currentPage === pageNumber && "btn-active"
                   }`}
                   onClick={() => {

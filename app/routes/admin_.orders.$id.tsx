@@ -1,4 +1,4 @@
-import { type ActionArgs, type LoaderArgs } from "@remix-run/node";
+import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node";
 import {
   Form,
   useLoaderData,
@@ -6,7 +6,9 @@ import {
   useNavigate,
 } from "@remix-run/react";
 import { IoClose } from "react-icons/io5";
+import { tokenAuth } from "~/auth.server";
 import BasicInput from "~/components/Forms/Input/BasicInput";
+import PhoneInput from "~/components/Forms/Input/PhoneInput";
 import SelectCountry from "~/components/Forms/Select/SelectCountry";
 import OrderStatusSteps from "~/components/Indicators/OrderStatusSteps";
 import DarkOverlay from "~/components/Layout/DarkOverlay";
@@ -15,8 +17,14 @@ import {
   updateOrderShippingDetails,
   updateOrderStatus,
 } from "~/models/orders.server";
+import { STAFF_SESSION_KEY } from "~/session.server";
 
-export const loader = async ({ params }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderArgs) => {
+  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+  if (!authenticated.valid) {
+    return redirect("/admin/login");
+  }
+
   const id = params.id;
   const order = id && (await getOrder(id));
   return order;
@@ -41,6 +49,7 @@ export const action = async ({ request }: ActionArgs) => {
         state,
         postcode,
         country,
+        trackingNumber,
       } = form;
 
       return await updateOrderShippingDetails(
@@ -52,7 +61,8 @@ export const action = async ({ request }: ActionArgs) => {
         suburb as string,
         state as string,
         postcode as string,
-        country as string
+        country as string,
+        trackingNumber as string
       );
   }
 };
@@ -67,7 +77,7 @@ const ModifyOrder = () => {
 
   return (
     <DarkOverlay>
-      <div className="scrollbar-hide relative w-[720px] overflow-y-auto bg-base-200 px-3 py-6 sm:px-6">
+      <div className="scrollbar-hide relative w-[600px] max-w-[100vw] overflow-y-auto bg-base-200 px-3 py-6 sm:px-6">
         <button className="absolute right-3 top-3 cursor-pointer">
           <IoClose onClick={() => navigate("..")} />
         </button>
@@ -84,6 +94,24 @@ const ModifyOrder = () => {
           <div className="flex justify-center rounded-lg bg-base-100 py-6">
             <OrderStatusSteps status={order?.status} />
           </div>
+
+          {order.status === "created" && (
+            <>
+              <div className="divider w-full" />
+
+              <div className="flex justify-center">
+                <button
+                  type="button"
+                  className="btn btn-primary w-max"
+                  onClick={() =>
+                    navigator.clipboard.writeText(order.paymentUrl)
+                  }
+                >
+                  Copy Payment Link
+                </button>
+              </div>
+            </>
+          )}
 
           {order?.status !== "created" && (
             <Form
@@ -230,6 +258,16 @@ const ModifyOrder = () => {
 
             <SelectCountry defaultValue={address?.country} styles="!w-full" />
 
+            <PhoneInput
+              name="phoneNumber"
+              label="Phone Number"
+              placeholder="Phone Number"
+              customWidth="w-full"
+              styles="input-bordered"
+              type="text"
+              defaultValue={order?.phoneNumber || undefined}
+            />
+
             <BasicInput
               name="shippingMethod"
               label="Shipping Method"
@@ -248,6 +286,15 @@ const ModifyOrder = () => {
               defaultValue={order?.shippingPrice}
             />
 
+            <BasicInput
+              name="trackingNumber"
+              label="Tracking Number"
+              placeholder="Tracking Number"
+              type="text"
+              customWidth="w-full"
+              defaultValue={order?.trackingNumber}
+            />
+
             <input readOnly hidden value={order.orderId} name="orderId" />
 
             <div className="mt-6 flex flex-wrap justify-center gap-3">
@@ -262,29 +309,12 @@ const ModifyOrder = () => {
             </div>
           </Form>
 
-          {order.status === "created" && (
-            <>
-              <div className="divider w-full" />
-
-              <div className="flex justify-center">
-                <button
-                  type="button"
-                  className="btn btn-primary w-max"
-                  onClick={() =>
-                    navigator.clipboard.writeText(order.paymentUrl)
-                  }
-                >
-                  Copy Payment Link
-                </button>
-              </div>
-            </>
-          )}
           <div className="divider w-full" />
 
-          <div className="flex flex-row justify-center gap-6">
+          <div className="flex flex-row justify-center">
             <button
               type="button"
-              className="btn btn-primary mt-6 w-max !rounded-sm"
+              className="btn btn-primary w-max !rounded-sm"
               onClick={() => navigate("..")}
             >
               Back

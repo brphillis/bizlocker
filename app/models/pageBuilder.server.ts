@@ -2,9 +2,9 @@ import { prisma } from "~/db.server";
 import { findUniqueStringsInArrays } from "~/helpers/arrayHelpers";
 import { getContentBlockCredentialsFromPageBlock } from "~/helpers/blockHelpers";
 import {
-  handleS3Update,
-  handleS3Upload,
-} from "~/integrations/aws/s3/s3.server";
+  updateImage_Integration,
+  uploadImage_Integration,
+} from "~/integrations/_master/storage";
 import { getUserDataFromSession } from "~/session.server";
 import { includeAllBlockTypes, includeBlocksData } from "~/utility/blockMaster";
 import {
@@ -103,7 +103,7 @@ export const upsertPageMeta = async (
 
     // Check if thumbnail is provided
     if (thumbnail) {
-      const repoLinkThumbnail = await handleS3Upload(thumbnail);
+      const repoLinkThumbnail = await uploadImage_Integration(thumbnail);
       data.thumbnail = {
         create: {
           href: repoLinkThumbnail,
@@ -163,7 +163,7 @@ export const upsertPageMeta = async (
       });
 
       if (existingThumbnail) {
-        const repoLinkThumbnail = await handleS3Update(
+        const repoLinkThumbnail = await updateImage_Integration(
           existingThumbnail as Image,
           thumbnail
         );
@@ -175,7 +175,7 @@ export const upsertPageMeta = async (
           },
         };
       } else {
-        const repoLinkThumbnail = await handleS3Upload(thumbnail);
+        const repoLinkThumbnail = await uploadImage_Integration(thumbnail);
 
         updateData.thumbnail = {
           create: {
@@ -285,7 +285,7 @@ export const updatePageBlock = async (
     (e: any) => e.id === previewPage.blockOrder[itemIndex]
   );
 
-  // check if the published page contains the block already
+  //check if the published page contains the block already
   const publishedContainsBlock = publishedPage?.blocks.some(
     (e: any) => e.id === existingBlock?.id
   );
@@ -295,205 +295,130 @@ export const updatePageBlock = async (
     (e: any) => e.id === existingBlock?.id
   );
 
+  console.log("EXISTINGBLOCKAAAA", existingBlock);
+  // if the preview page is creating a new version, we remove the old from the preview page
   if (
-    (existingBlock && blockOptions && !publishedContainsBlock) ||
-    (existingBlock && blockOptions && publishedContainsBlock)
+    previewContainsBlock &&
+    existingBlock &&
+    existingBlock[`${blockName}BlockId`] &&
+    !publishedContainsBlock
   ) {
-    // Update Existing Block
+    console.log("removing");
+    await removeBlock(
+      existingBlock[`${blockName}BlockId`]!,
+      blockName,
+      previewPage.id.toString()
+    );
+  } else if (
+    existingBlock &&
+    existingBlock[`${blockName}BlockId`] &&
+    previewContainsBlock &&
+    publishedContainsBlock
+  ) {
+    await disconnectBlock(
+      existingBlock[`${blockName}BlockId`]!,
+      blockName,
+      previewPage.id.toString()
+    );
+  }
 
-    // if there is a block at that index, we edit it
-    if (blockName && contentData) {
-      // we get the type of block we are updating (eg:existingBlock.bannerBlock)
-      const blockTypeToUpdate = existingBlock[`${blockName}BlockId`];
+  // Create New Block
 
-      // we find the blockContent
-      const findBlockContent = prisma[`${blockName}BlockContent`].findFirst as (
-        args: any // Replace 'any' with the appropriate argument type for your update method
-      ) => any;
+  const newBlock = await prisma.block.create({
+    data: {
+      previewPage: { connect: { id: previewPage.id } },
+    },
+  });
 
-      const blockContent = await findBlockContent({
-        where: {
-          [`${blockName}BlockId`]: existingBlock[`${blockName}BlockId`],
-        },
-      });
+  // create block options for new block
+  if (blockOptions) {
+    await updateOrCreateBlockOptions(newBlock.id, blockOptions);
+  }
 
-      // we have our block and verified it is valid with content, now we begin the update process
-      if (blockTypeToUpdate && blockContent) {
-        const updates: Record<string, any> = {};
+  //Create Block
+  if (blockName && contentData) {
+    const updates: Record<string, any> = {};
 
-        for (const field in contentData) {
-          if (contentData.hasOwnProperty(field)) {
-            const value = contentData[field as keyof BlockContent];
+    // Populate the updates object based on the provided values
+    for (const field in contentData) {
+      if (contentData.hasOwnProperty(field)) {
+        const value = contentData[field as keyof BlockContent];
 
-            if (
-              (Array.isArray(value) &&
-                value.length > 0 &&
-                value.every(
-                  (item) => typeof item === "string" && isNaN(parseInt(item))
-                )) ||
-              (typeof value === "string" && isNaN(parseInt(value)))
-            ) {
-              // the value is an Enum or an array of Enums
-              updates[field as keyof BlockContent] = value;
-            } else if (value) {
-              // If the value is truthy (not null or undefined)
-              if (Array.isArray(value)) {
-                // If it's an array, use 'connect' to connect multiple records
-                updates[field as keyof BlockContent] = {
-                  set: value.map((item) => ({ id: parseInt(item as any) })),
-                };
-              } else {
-                // If it's not an array, use 'connect' to connect a single record
-                updates[field as keyof BlockContent] = {
-                  connect: { id: parseInt(value as any) },
-                };
-              }
-            } else {
-              // If the value is falsy (null or undefined)
-              if (Array.isArray(value)) {
-                // If it's an array, use 'set' with an empty array to clear the relation
-                updates[field as keyof BlockContent] = { set: [] };
-              } else {
-                // If it's not an array, use 'disconnect' to disconnect a single record
-                updates[field as keyof BlockContent] = { disconnect: true };
-              }
-            }
+        if (
+          (Array.isArray(value) &&
+            value.length > 0 &&
+            value.every(
+              (item) => typeof item === "string" && isNaN(parseInt(item))
+            )) ||
+          (typeof value === "string" && isNaN(parseInt(value)))
+        ) {
+          // the value is an Enum or array of Enums
+
+          updates[field as keyof BlockContent] = value;
+        } else if (value) {
+          // If the value is truthy (not null or undefined)
+          if (Array.isArray(value) && value.length > 0) {
+            // If it's an array, use 'connect' to connect multiple records
+            updates[field as keyof BlockContent] = {
+              connect: value.map((item) => ({ id: parseInt(item as any) })),
+            };
+          } else if (value && !isNaN(parseInt(value))) {
+            // If it's not an array, use 'connect' to connect a single record
+            updates[field as keyof BlockContent] = {
+              connect: { id: parseInt(value as any) },
+            };
           }
         }
-
-        // update the BlockContent
-        const updateBlockContent = prisma[`${blockName}BlockContent`]
-          .update as (
-          args: any // Replace 'any' with the appropriate argument type for your update method
-        ) => any;
-
-        const updatedBlockContent = await updateBlockContent({
-          where: { id: blockContent.id },
-          data: updates,
-        });
-
-        // update the BlockType
-        const updateBlock = prisma[`${blockName}Block`].update as (
-          args: any // Replace 'any' with the appropriate argument type for your update method
-        ) => any;
-
-        const updatedBlock = await updateBlock({
-          where: { id: blockTypeToUpdate },
-          data: {
-            content: { connect: { id: updatedBlockContent.id } },
-          },
-        });
-
-        // update the BlockOptions
-        await updateOrCreateBlockOptions(existingBlock.id, blockOptions);
-        // update the PageBlock
-        await prisma.block.update({
-          where: { id: existingBlock.id },
-          data: {
-            [`${blockName}Block`]: { connect: { id: updatedBlock.id } },
-          },
-        });
       }
     }
-  } else {
-    //CREATE
 
-    // if the preview page is creating a new version, we remove the old from the preview page
-    if (
-      previewContainsBlock &&
-      existingBlock &&
-      existingBlock[`${blockName}BlockId`]
-    ) {
-      await removeBlock(existingBlock.id, blockName);
-    }
+    // create the BlockContent
+    const createBlockContent = prisma[`${blockName}BlockContent`].create as (
+      args: any
+    ) => any;
 
-    // Create New Block
+    const createdBlockContent = await createBlockContent({
+      data: updates,
+    });
 
-    const newBlock = await prisma.block.create({
+    // create the Block
+    const createContentBlock = prisma[`${blockName}Block`].create as (
+      args: any
+    ) => any;
+
+    const createdContentBlock = await createContentBlock({
       data: {
-        previewPage: { connect: { id: previewPage.id } },
+        name: blockName,
+        content: {
+          connect: { id: createdBlockContent.id },
+        },
       },
     });
 
-    // create block options for new block
-    if (blockOptions) {
-      await updateOrCreateBlockOptions(newBlock.id, blockOptions);
+    await prisma.block.update({
+      where: { id: newBlock.id },
+      data: {
+        [`${blockName}Block`]: { connect: { id: createdContentBlock.id } },
+      },
+    });
+
+    const newBlockOrder = [...previewPage.blockOrder];
+
+    // if there is an item at order index overwrite it
+    if (itemIndex >= 0 && itemIndex < newBlockOrder.length) {
+      newBlockOrder[itemIndex] = newBlock.id;
+    }
+    // else we append to the end
+    else if (itemIndex >= newBlockOrder.length) {
+      newBlockOrder.push(newBlock.id);
     }
 
-    //Create Block
-    if (blockName && contentData) {
-      const updates: Record<string, any> = {};
-
-      // Populate the updates object based on the provided values
-      for (const field in contentData) {
-        if (contentData.hasOwnProperty(field)) {
-          const value = contentData[field as keyof BlockContent];
-
-          if (
-            (Array.isArray(value) &&
-              value.length > 0 &&
-              value.every(
-                (item) => typeof item === "string" && isNaN(parseInt(item))
-              )) ||
-            (typeof value === "string" && isNaN(parseInt(value)))
-          ) {
-            // the value is an Enum or array of Enums
-
-            updates[field as keyof BlockContent] = value;
-          } else if (value) {
-            // If the value is truthy (not null or undefined)
-            if (Array.isArray(value) && value.length > 0) {
-              // If it's an array, use 'connect' to connect multiple records
-              updates[field as keyof BlockContent] = {
-                connect: value.map((item) => ({ id: parseInt(item as any) })),
-              };
-            } else if (value && !isNaN(parseInt(value))) {
-              // If it's not an array, use 'connect' to connect a single record
-              updates[field as keyof BlockContent] = {
-                connect: { id: parseInt(value as any) },
-              };
-            }
-          }
-        }
-      }
-
-      // create the BlockContent
-      const createBlockContent = prisma[`${blockName}BlockContent`].create as (
-        args: any
-      ) => any;
-
-      const createdBlockContent = await createBlockContent({
-        data: updates,
-      });
-
-      // create the Block
-      const createContentBlock = prisma[`${blockName}Block`].create as (
-        args: any
-      ) => any;
-
-      const createdContentBlock = await createContentBlock({
-        data: {
-          name: blockName,
-          content: {
-            connect: { id: createdBlockContent.id },
-          },
-        },
-      });
-
-      await prisma.block.update({
-        where: { id: newBlock.id },
-        data: {
-          [`${blockName}Block`]: { connect: { id: createdContentBlock.id } },
-        },
-      });
-
-      await prisma.previewPage.update({
-        where: { id: previewPage.id },
-        data: {
-          blockOrder: [...previewPage.blockOrder, newBlock.id],
-        },
-      });
-    }
+    await prisma.previewPage.update({
+      where: { id: previewPage.id },
+      data: {
+        blockOrder: newBlockOrder,
+      },
+    });
   }
 
   if (pageType === "article") {
@@ -738,13 +663,13 @@ export const revertPreviewChanges = async (
 };
 
 export const disconnectBlock = async (
-  blockId: string,
+  contentBlockId: string,
   blockName: BlockName,
   previewPageId: string
 ) => {
   try {
     const pageBlock = await prisma.block.findFirst({
-      where: { [`${blockName}BlockId`]: blockId },
+      where: { [`${blockName}BlockId`]: contentBlockId },
     });
 
     if (pageBlock) {
@@ -795,7 +720,8 @@ export const disconnectBlock = async (
 
 export const removeBlock = async (
   contentBlockId: string,
-  blockName: BlockName
+  blockName: BlockName,
+  previewPageId?: string
 ) => {
   // We search for the content block to find the page block
   const findBlock = prisma[`${blockName}Block`].findUnique as (
@@ -813,6 +739,9 @@ export const removeBlock = async (
       content: true,
     },
   });
+  console.log("BLOCKNAME", blockName);
+  console.log("FOUNDBLOCKTYPE", foundBlockType);
+  console.log("CONTENTBLOCKID", contentBlockId);
 
   const blockContentId = foundBlockType?.content?.id; // block content id eg:bannerBlockContent
   const blockTypeId = foundBlockType?.id; // block type id eg:bannerBlock
@@ -856,6 +785,24 @@ export const removeBlock = async (
   if (pageBlockId) {
     await prisma.block.delete({
       where: { id: pageBlockId },
+    });
+  }
+
+  //if we are deleting from the page we correct the order
+  if (previewPageId) {
+    const previewPage = await prisma.previewPage.findUnique({
+      where: { id: parseInt(previewPageId) },
+    });
+
+    const newBlockOrder = previewPage?.blockOrder.filter(
+      (e) => e !== pageBlockId
+    );
+
+    await prisma.previewPage.update({
+      where: { id: parseInt(previewPageId) },
+      data: {
+        blockOrder: newBlockOrder,
+      },
     });
   }
 

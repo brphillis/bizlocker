@@ -15,17 +15,9 @@ type Props = {
     | ProductCategory
     | User
     | Campaign
-    | Image;
-  type:
-    | "Promotion"
-    | "Department"
-    | "Product"
-    | "Brand"
-    | "Article"
-    | "Category"
-    | "User"
-    | "Campaign"
-    | "Image";
+    | Image
+    | Store;
+  type: string;
   mode: "add" | "edit";
   hasIsActive?: boolean;
   hasDelete?: boolean;
@@ -52,7 +44,7 @@ const FormHeader = ({
   return (
     <>
       <div className="flex max-w-[100vw] flex-row justify-end sm:justify-between">
-        <h1 className="absolute left-0 top-[1.2rem] sm:relative sm:top-0">
+        <h1 className="absolute left-3 top-[1.2rem] sm:relative sm:left-0 sm:top-0">
           {mode && capitalizeFirst(mode)} {type}
         </h1>
 

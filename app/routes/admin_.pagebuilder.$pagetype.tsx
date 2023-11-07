@@ -36,8 +36,15 @@ import { useEffect, useState } from "react";
 import VersionControl from "~/components/PageBuilder/VersionControl";
 import Header from "~/components/PageBuilder/Header";
 import SquareIconButton from "~/components/Buttons/SquareIconButton";
+import { tokenAuth } from "~/auth.server";
+import { STAFF_SESSION_KEY } from "~/session.server";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
+  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+  if (!authenticated.valid) {
+    return redirect("/admin/login");
+  }
+
   const productCategories = await getProductCategories();
   const productSubCategories = await getProductSubCategories();
   const articleCategories = await getArticleCategories();
@@ -80,6 +87,11 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
+  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+  if (!authenticated.valid) {
+    return redirect("/admin/login");
+  }
+
   const pageType = params?.pagetype?.replace(/p/g, "P");
   const url = new URL(request.url);
   const req = url?.searchParams.get("req") || pageType;
@@ -185,7 +197,8 @@ export const action = async ({ request, params }: ActionArgs) => {
 
     case "update":
       const newBlockData = getBlockUpdateValues(form);
-
+      console.log("pagetype", pageType);
+      console.log("previewpageId", previewPageId);
       const updateSuccess = await updatePageBlock(
         pageType as PageType,
         previewPageId as string,
@@ -198,6 +211,7 @@ export const action = async ({ request, params }: ActionArgs) => {
       return { updateSuccess, actionPreview, actionBlocks };
 
     case "publish":
+      console.log("publishing!!!!!!!!");
       const publishSuccess = await publishPage(
         pageType as PageType,
         previewPageId as string,

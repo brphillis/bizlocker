@@ -1,9 +1,15 @@
-import { type ActionArgs } from "@remix-run/server-runtime";
+import { redirect, type ActionArgs } from "@remix-run/server-runtime";
 import { Form, useLoaderData, useNavigate } from "@remix-run/react";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
 import { getOrdersCurrentUser } from "~/models/orders.server";
+import { tokenAuth } from "~/auth.server";
 
 export const loader = async ({ request }: ActionArgs) => {
+  const authenticated = await tokenAuth(request);
+  if (!authenticated.valid) {
+    return redirect("/login");
+  }
+
   const orders = await getOrdersCurrentUser(request);
   return orders;
 };
@@ -21,7 +27,7 @@ const Orders = () => {
       <h1 className="text-3xl">Orders</h1>
       <div className="opacity-50">Track your Order History</div>
       <div className="divider w-full" />
-      <div className="max-h-[650px] max-w-[98vw] overflow-x-auto">
+      <div className="max-h-[650px] w-full max-w-[98vw] overflow-x-auto">
         {orders?.length === 0 && (
           <>
             <p>You have not made an order yet.</p>

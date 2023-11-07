@@ -18,11 +18,11 @@ const UploadImage = ({ defaultValue, name, label }: Props) => {
     <>
       {label && <label className="label text-sm">{label}</label>}
       {image && (
-        <div className="relative my-6 flex max-w-full flex-col items-center">
-          <div className="relative h-max w-max max-w-full">
+        <div className="relative my-6 flex max-w-full flex-col items-center px-3">
+          <div className="max-w-screen relative h-auto max-h-96 w-[240px]">
             <img
               src={image.href}
-              className="max-w-screen h-auto max-h-96 w-[400px] object-contain"
+              className="h-full w-full object-contain"
               alt={image.altText}
             />
 
@@ -31,8 +31,8 @@ const UploadImage = ({ defaultValue, name, label }: Props) => {
               size={18}
               className="
               absolute right-2 top-2
-              -mr-2 -mt-2 cursor-pointer
-              rounded-bl-md bg-primary p-[0.2rem] text-white
+              -mr-3 -mt-3 cursor-pointer
+              rounded-sm bg-primary p-[0.2rem] text-white
             "
             />
           </div>

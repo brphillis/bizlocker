@@ -6,7 +6,7 @@ import { getDepartments } from "~/models/departments.server";
 import FormHeader from "~/components/Forms/Headers/FormHeader";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import SelectGender from "~/components/Forms/Select/SelectGender";
-import { type ActionArgs, type LoaderArgs } from "@remix-run/node";
+import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node";
 import { getPromotion, upsertPromotion } from "~/models/promotions.server";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
 import {
@@ -16,8 +16,15 @@ import {
   useNavigate,
 } from "@remix-run/react";
 import UploadImageCollapse from "~/components/Forms/Upload/UploadImageCollapse";
+import { tokenAuth } from "~/auth.server";
+import { STAFF_SESSION_KEY } from "~/session.server";
 
-export const loader = async ({ params }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderArgs) => {
+  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+  if (!authenticated.valid) {
+    return redirect("/admin/login");
+  }
+
   const id = params?.id;
   const departments = await getDepartments();
   let promotion;
@@ -30,6 +37,11 @@ export const loader = async ({ params }: LoaderArgs) => {
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
+  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+  if (!authenticated.valid) {
+    return redirect("/admin/login");
+  }
+
   const id = params.id === "add" ? undefined : params.id;
   const form = Object.fromEntries(await request.formData());
   const {

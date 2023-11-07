@@ -20,7 +20,10 @@ export const generateRefreshToken = (user: any) => {
   });
 };
 
-export const tokenAuth = async (request: Request) => {
+export const tokenAuth = async (
+  request: Request,
+  sessionKey: string = USER_SESSION_KEY
+) => {
   const session = await getSession(request);
 
   let accessToken, refreshToken;
@@ -42,14 +45,14 @@ export const tokenAuth = async (request: Request) => {
           jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET!);
 
           // If refresh token is valid, we generate a new access token and store it
-          const user = session.get(USER_SESSION_KEY);
+          const user = session.get(sessionKey);
           const newAccessToken = generateAccessToken(user);
           session.set("access_token", newAccessToken);
 
           return { valid: true, accessToken: newAccessToken };
         } catch (e: any) {
           // If refresh token is also invalid, we clear the session
-          session.unset(USER_SESSION_KEY);
+          session.unset(sessionKey);
           session.unset("access_token");
           session.unset("refresh_token");
 
@@ -57,7 +60,7 @@ export const tokenAuth = async (request: Request) => {
         }
       } else {
         // If access token is invalid for a reason other than expiry, we clear the session
-        session.unset(USER_SESSION_KEY);
+        session.unset(sessionKey);
         session.unset("access_token");
         session.unset("refresh_token");
 
@@ -65,7 +68,7 @@ export const tokenAuth = async (request: Request) => {
       }
     }
   } else {
-    session.unset(USER_SESSION_KEY);
+    session.unset(sessionKey);
     session.unset("access_token");
     session.unset("refresh_token");
 

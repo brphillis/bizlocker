@@ -11,7 +11,8 @@ const TitleOptions = ({
   colors,
   selectedBlockOptions,
 }: Props) => {
-  const { title, titleColor } = defaultValues || {};
+  const { title, titleColor, titleSize, titleWeight, titleAlign } =
+    defaultValues || {};
 
   return (
     <details className="collapse !hidden !max-w-full !rounded-sm bg-brand-white/20 [&:has(div>div)]:!grid">
@@ -31,6 +32,76 @@ const TitleOptions = ({
               placeholder="Title"
               defaultValue={!title ? undefined : title}
             />
+          </div>
+        )}
+
+        {selectedBlockOptions?.titleSize && (
+          <div className="form-control max-sm:items-center">
+            <label className="label max-sm:ml-3 max-sm:!self-start">
+              <span className="label-text text-brand-white">Title Size</span>
+            </label>
+            <select
+              name="titleSize"
+              className=" select w-[95vw] max-w-full text-brand-black/75 sm:w-[215px]"
+              placeholder="Select a Type"
+              defaultValue={!titleSize ? undefined : titleSize}
+            >
+              <option value="text-xs">XSmall</option>
+              <option value="text-sm">Small</option>
+              <option value="text-base">Medium</option>
+              <option value="text-lg">Large</option>
+              <option value="text-xl">XL</option>
+              <option value="text-2xl">2XL</option>
+              <option value="text-3xl">3XL</option>
+              <option value="text-4xl">4XL</option>
+              <option value="text-5xl">5XL</option>
+              <option value="text-6xl">6XL</option>
+              <option value="text-7xl">7XL</option>
+              <option value="text-8xl">8XL</option>
+              <option value="text-9xl">9XL</option>
+            </select>
+          </div>
+        )}
+
+        {selectedBlockOptions?.titleWeight && (
+          <div className="form-control max-sm:items-center">
+            <label className="label max-sm:ml-3 max-sm:!self-start">
+              <span className="label-text text-brand-white">Title Weight</span>
+            </label>
+            <select
+              name="titleWeight"
+              className=" select w-[95vw] max-w-full text-brand-black/75 sm:w-[215px]"
+              placeholder="Select a Type"
+              defaultValue={!titleWeight ? undefined : titleWeight}
+            >
+              <option value="font-thin">Thin</option>
+              <option value="font-extralight">X Light</option>
+              <option value="font-light">Light</option>
+              <option value="font-normal">Normal</option>
+              <option value="font-medium">Medium</option>
+              <option value="font-semibold">Semi Bold</option>
+              <option value="font-bold">Bold</option>
+              <option value="font-extrabold">X Bold</option>
+              <option value="font-black">Boldest</option>
+            </select>
+          </div>
+        )}
+
+        {selectedBlockOptions?.titleAlign && (
+          <div className="form-control max-sm:items-center">
+            <label className="label max-sm:ml-3 max-sm:!self-start">
+              <span className="label-text text-brand-white">Title Align</span>
+            </label>
+            <select
+              name="titleAlign"
+              className=" select w-[95vw] max-w-full text-brand-black/75 sm:w-[215px]"
+              placeholder="Select a Type"
+              defaultValue={!titleAlign ? undefined : titleAlign}
+            >
+              <option value="text-left">Left</option>
+              <option value="text-center">Center</option>
+              <option value="text-right">Right</option>
+            </select>
           </div>
         )}
 

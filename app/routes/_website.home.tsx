@@ -9,7 +9,7 @@ export const meta: V2_MetaFunction = ({ data }) => {
   return [
     { title: data.title },
     {
-      name: "description",
+      name: data.title,
       content: data.description,
     },
   ];

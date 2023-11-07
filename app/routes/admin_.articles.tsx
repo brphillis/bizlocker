@@ -1,10 +1,11 @@
-import type { LoaderArgs } from "@remix-run/node";
+import { redirect, type LoaderArgs } from "@remix-run/node";
 import {
   Form,
   useLoaderData,
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
+import { tokenAuth } from "~/auth.server";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
@@ -12,8 +13,14 @@ import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import Pagination from "~/components/Pagination";
 import { getArticleCategories } from "~/models/articleCategories.server";
 import { searchArticles } from "~/models/articles.server";
+import { STAFF_SESSION_KEY } from "~/session.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
+  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+  if (!authenticated.valid) {
+    return redirect("/login");
+  }
+
   const url = new URL(request.url);
 
   const { articles, totalPages } = await searchArticles(undefined, url);

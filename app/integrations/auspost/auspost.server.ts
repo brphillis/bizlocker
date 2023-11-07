@@ -3,7 +3,7 @@ const baseURL = "https://digitalapi.auspost.com.au";
 
 const apiKey = process.env.AUSPOST_ACCESS!;
 
-export const getPostageServices = async ({
+export const getAusPostServices = async ({
   from_postcode,
   to_postcode,
   length,

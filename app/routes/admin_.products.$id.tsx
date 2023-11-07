@@ -27,6 +27,7 @@ import {
 import ProductVariantFormModule from "~/components/Forms/Modules/ProductVariantFormModule";
 import UploadMultipleImages from "~/components/Forms/Upload/UploadMultipleImages/index.client";
 import {
+  redirect,
   type ActionArgs,
   type LinksFunction,
   type LoaderArgs,
@@ -34,13 +35,21 @@ import {
 
 import swiper from "../../node_modules/swiper/swiper.css";
 import swiperNav from "../../node_modules/swiper/modules/navigation/navigation.min.css";
+import { tokenAuth } from "~/auth.server";
+import { STAFF_SESSION_KEY } from "~/session.server";
+import { ClientOnly } from "~/components/Utility/ClientOnly";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: swiper },
   { rel: "stylesheet", href: swiperNav },
 ];
 
-export const loader = async ({ params }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderArgs) => {
+  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+  if (!authenticated.valid) {
+    return redirect("/admin/login");
+  }
+
   const id = params?.id;
   const productSubCategories = await getProductSubCategories();
   const brands = await getBrands();
@@ -62,6 +71,11 @@ export const loader = async ({ params }: LoaderArgs) => {
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
+  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+  if (!authenticated.valid) {
+    return redirect("/admin/login");
+  }
+
   const id = params.id === "add" ? undefined : params.id;
   const form = Object.fromEntries(await request.formData());
   const {
@@ -225,7 +239,9 @@ const Product = () => {
 
           <div className="divider w-full pt-4" />
 
-          <UploadMultipleImages defaultImages={product?.images} />
+          <ClientOnly fallback={<div id="skeleton" />}>
+            {() => <UploadMultipleImages defaultImages={product?.images} />}
+          </ClientOnly>
 
           <div className="divider w-full pt-4" />
 
@@ -245,11 +261,15 @@ const Product = () => {
               <span className="label-text">Description</span>
             </label>
 
-            <RichTextInput
-              value={richText}
-              onChange={setRichText}
-              className="mb-6 h-[200px] pb-3"
-            />
+            <ClientOnly fallback={<div id="skeleton" />}>
+              {() => (
+                <RichTextInput
+                  value={richText}
+                  onChange={setRichText}
+                  className="mb-6 h-[200px] pb-3"
+                />
+              )}
+            </ClientOnly>
 
             <input
               hidden

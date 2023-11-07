@@ -1,10 +1,6 @@
 import { prisma } from "~/db.server";
 import { redirect } from "@remix-run/server-runtime";
-import { SquareAddressToAddress } from "~/helpers/addressHelpers";
-import {
-  createSquarePaymentLink,
-  squareClient,
-} from "~/integrations/square/square.server";
+import { squareClient } from "~/integrations/square/square.server";
 import {
   getSession,
   getUserDataFromSession,
@@ -14,6 +10,7 @@ import {
 import { getCart } from "./cart.server";
 import { getVariantUnitPrice } from "~/helpers/numberHelpers";
 import { sendOrderReceiptEmail } from "~/integrations/sendgrid/emails/orderReceipt";
+import { createPaymentLink_Integration } from "~/integrations/_master/payments";
 
 export const getOrder = async (orderId: string) => {
   return await prisma.order.findUnique({
@@ -80,6 +77,7 @@ export const createOrder = async (
   request: Request,
   firstName: string,
   lastName: string,
+  phoneNumber: string,
   address: Address,
   shippingMethod: string,
   shippingPrice: string,
@@ -96,7 +94,7 @@ export const createOrder = async (
   const userId = userData?.id || undefined;
 
   const { createPaymentLinkResponse, confirmCode } =
-    await createSquarePaymentLink(cartItems);
+    await createPaymentLink_Integration(cartItems);
 
   if (createPaymentLinkResponse && createPaymentLinkResponse.paymentLink) {
     const { paymentLink } = createPaymentLinkResponse;
@@ -134,6 +132,7 @@ export const createOrder = async (
         shippingPrice: shippingPrice,
         firstName: firstName,
         lastName: lastName,
+        phoneNumber: phoneNumber,
         address: {
           create: {
             addressLine1: address.addressLine1,
@@ -198,6 +197,7 @@ export const confirmPayment = async (paymentCode: string) => {
       paymentCode,
     },
     include: {
+      user: true,
       address: true,
       items: {
         include: {
@@ -212,7 +212,6 @@ export const confirmPayment = async (paymentCode: string) => {
           },
         },
       },
-      user: true,
     },
   });
 
@@ -266,29 +265,53 @@ export const confirmPayment = async (paymentCode: string) => {
     });
   }
 
-  const { email, shippingDetails } =
-    (await getSquareOrderDetails(order.orderId)) || {};
+  const orderAddress = order.address;
 
-  // handling upserting user data
+  const newAddress = {
+    addressLine1: orderAddress?.addressLine1,
+    addressLine2: orderAddress?.addressLine2,
+    postcode: orderAddress?.postcode,
+    suburb: orderAddress?.suburb,
+    state: orderAddress?.state,
+    country: orderAddress?.country,
+  };
+
+  // handling upserting user address
   if (order.rememberInformation && order.userId) {
-    const address = SquareAddressToAddress(shippingDetails);
-
     await prisma.address.upsert({
       where: {
         userId: order.userId,
       },
       create: {
-        ...address,
+        ...newAddress,
         user: { connect: { id: order.userId } },
       },
       update: {
-        ...address,
+        ...newAddress,
+        user: { connect: { id: order.userId } },
+      },
+    });
+
+    await prisma.userDetails.upsert({
+      where: {
+        id: order.userId,
+      },
+      create: {
+        firstName: order.firstName,
+        lastName: order.lastName,
+        phoneNumber: order.phoneNumber,
+        user: { connect: { id: order.userId } },
+      },
+      update: {
+        firstName: order.firstName,
+        lastName: order.lastName,
+        phoneNumber: order.phoneNumber,
         user: { connect: { id: order.userId } },
       },
     });
   }
 
-  await sendOrderReceiptEmail(email, order as unknown as Order);
+  await sendOrderReceiptEmail(order.user!.email, order as unknown as Order);
 
   return updatedOrder;
 };
@@ -316,13 +339,15 @@ export const updateOrderShippingDetails = async (
   suburb: string,
   state: string,
   postcode: string,
-  country: string
+  country: string,
+  trackingNumber: string
 ) => {
   return await prisma.order.update({
     where: { orderId: orderId },
     data: {
       firstName,
       lastName,
+      trackingNumber,
       address: {
         update: {
           addressLine1,

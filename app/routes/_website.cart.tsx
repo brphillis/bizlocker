@@ -30,6 +30,8 @@ import SelectCountry from "~/components/Forms/Select/SelectCountry";
 import { getCartDeliveryOptions } from "~/helpers/cartHelpers";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import { getUserDetails } from "~/models/auth/userDetails";
+import { validateForm } from "~/utility/validate";
+import PhoneInput from "~/components/Forms/Input/PhoneInput";
 
 export const loader = async ({ request }: LoaderArgs) => {
   let cart, user, userAddress, loaderShippingOptions, userDetails;
@@ -60,16 +62,34 @@ export const action = async ({ request }: ActionArgs) => {
     case "placeOrder":
       const {
         rememberInformation,
+        firstName,
+        lastName,
+        phoneNumber,
         addressLine1,
         addressLine2,
         suburb,
         postcode,
         state,
         country,
-        firstName,
-        lastName,
         shippingOptions,
       } = form;
+
+      const validate = {
+        firstName: true,
+        lastName: true,
+        addressLine1: true,
+        suburb: true,
+        postcode: true,
+        state: true,
+        country: true,
+        phoneNumber: true,
+        shippingOptions: true,
+      };
+
+      const validationErrors = validateForm(form, validate);
+      if (validationErrors) {
+        return { validationErrors };
+      }
 
       const address: Address = {
         addressLine1: addressLine1 as string,
@@ -88,6 +108,7 @@ export const action = async ({ request }: ActionArgs) => {
         request,
         firstName as string,
         lastName as string,
+        phoneNumber as string,
         address,
         shippingMethod as string,
         shippingPrice as string,
@@ -286,6 +307,17 @@ const Cart = () => {
             validationErrors={validationErrors}
           />
 
+          <PhoneInput
+            name="phoneNumber"
+            label="Phone Number"
+            placeholder="Phone Number"
+            customWidth="w-full"
+            styles="input-bordered"
+            type="text"
+            defaultValue={userDetails?.phoneNumber || undefined}
+            validationErrors={validationErrors}
+          />
+
           <SelectCountry
             defaultValue={userAddress?.country}
             validationErrors={validationErrors}
@@ -303,6 +335,7 @@ const Cart = () => {
                   label="Shipping Options"
                   placeholder="Shipping Options"
                   customWidth="!w-full"
+                  defaultValue={undefined}
                   selections={(
                     actionShippingOptions || loaderShippingOptions
                   ).map((e) => {
@@ -311,6 +344,7 @@ const Cart = () => {
                       name: "AUS POST | " + e.name + " | $" + e.price,
                     };
                   })}
+                  validationErrors={validationErrors}
                 />
               </>
             )}

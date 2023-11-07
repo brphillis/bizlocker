@@ -1,6 +1,11 @@
 import type { V2_MetaFunction } from "@remix-run/node";
-import { type LoaderArgs, type ActionArgs } from "@remix-run/server-runtime";
+import {
+  type LoaderArgs,
+  type ActionArgs,
+  redirect,
+} from "@remix-run/server-runtime";
 import { useLoaderData } from "react-router-dom";
+import { tokenAuth } from "~/auth.server";
 import BannerBlock from "~/components/Blocks/BannerBlock";
 import ProductFilterSideBar from "~/components/Filter/ProductFilterSideBar";
 import ProductGrid from "~/components/Grids/ProductGrid";
@@ -14,6 +19,7 @@ import { getAvailableColors } from "~/models/enums.server";
 import { getProductCategories } from "~/models/productCategories.server";
 import { getProductSubCategories } from "~/models/productSubCategories.server";
 import { searchProducts } from "~/models/products.server";
+import { STAFF_SESSION_KEY } from "~/session.server";
 
 export const meta: V2_MetaFunction = ({ data }) => {
   const url = new URL(data.url);
@@ -68,10 +74,10 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 export const action = async ({ request }: ActionArgs) => {
-  // const authenticated = await tokenAuth(request);
-  // if (!authenticated.valid) {
-  //   return redirect("/login");
-  // }
+  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+  if (!authenticated.valid) {
+    return redirect("/admin/login");
+  }
   const form = Object.fromEntries(await request.formData());
   const { variantId, quantity } = form;
   switch (form._action) {

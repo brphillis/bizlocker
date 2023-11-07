@@ -1,5 +1,5 @@
 import Pagination from "~/components/Pagination";
-import { type LoaderArgs } from "@remix-run/node";
+import { redirect, type LoaderArgs } from "@remix-run/node";
 import { searchBrands } from "~/models/brands.server";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
 import BasicInput from "~/components/Forms/Input/BasicInput";
@@ -12,8 +12,15 @@ import {
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
+import { tokenAuth } from "~/auth.server";
+import { STAFF_SESSION_KEY } from "~/session.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
+  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+  if (!authenticated.valid) {
+    return redirect("/login");
+  }
+
   const url = new URL(request.url);
 
   const { brands, totalPages } = await searchBrands(undefined, url);

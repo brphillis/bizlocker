@@ -17,8 +17,14 @@ import { handleResourceSubmit } from "~/helpers/formHelpers";
 import { useEffect, useState } from "react";
 import { validateForm } from "~/utility/validate";
 import BasicInput from "~/components/Forms/Input/BasicInput";
+import { STAFF_SESSION_KEY } from "~/session.server";
 
-export const loader = async ({ params }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderArgs) => {
+  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+  if (!authenticated.valid) {
+    return redirect("/login");
+  }
+
   const id = params?.id;
 
   if (id && id !== "add") {
@@ -30,10 +36,11 @@ export const loader = async ({ params }: LoaderArgs) => {
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
-  const authenticated = await tokenAuth(request);
+  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
   if (!authenticated.valid) {
     return redirect("/login");
   }
+
   const id = params.id === "add" ? undefined : params.id;
   const form = Object.fromEntries(await request.formData());
   const { image, altText } = form;
@@ -115,7 +122,7 @@ const ModifyImage = () => {
     <DarkOverlay>
       <Form
         method="POST"
-        className="relative w-max max-w-full rounded-none bg-base-200 px-3 py-6 max-md:w-screen sm:rounded-md lg:px-6"
+        className="scrollbar-hide relative w-[500px] max-w-[100vw] overflow-y-auto bg-base-200 px-3 py-6 sm:px-6"
         onSubmit={(e) => handleResourceSubmit(e, submit, isConnected)}
       >
         <FormHeader
@@ -133,6 +140,7 @@ const ModifyImage = () => {
             label="Title"
             name="altText"
             placeholder="Title"
+            customWidth="w-full"
             defaultValue={altText || undefined}
             type="text"
             validationErrors={validationErrors}
