@@ -401,13 +401,15 @@ type AusPostDeliveryOptionsSubOption = {
 
 type Staff = {
   id: string;
-  email: string;
-  password?: string | null;
-  avatar?: Image | null;
   address?: Address;
+  avatar?: Image | null;
   doubleAuthentication: boolean;
+  email: string;
   isActive: boolean;
+  password?: string | null;
   role: Role;
+  store?: Store;
+  storeId?: number;
   userDetails?: UserDetails;
 
   createdAt: Date;
@@ -515,6 +517,8 @@ type Store = {
   faxNumber: string;
   paymentProviderId?: string;
   address: Address;
+  orderItem: OrderItem[];
+  staff?: Staff[];
   isActive: boolean;
   createdAt?: DateTime;
   updatedAt?: DateTime;
@@ -586,6 +590,8 @@ interface OrderItem {
   variantId: number;
   order: Order;
   orderId: string;
+  store: Store;
+  storeId: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -709,7 +715,7 @@ interface ProductVariant {
   salePrice?: number;
   isOnSale: boolean;
   isFragile: boolean;
-  stock?: number;
+  stock?: StockLevel[];
   productId: number;
   product: Product;
   color?: Color;
@@ -719,6 +725,7 @@ interface ProductVariant {
   height: number;
   weight: number;
   totalSold: number;
+  stockLevel: StockLevel;
   cartItems: CartItem[];
   orderItems: OrderItem[];
   orderId?: string;
@@ -919,4 +926,22 @@ interface OrderLineItemAppliedTax {
   applied_money?: Money;
   metadata?: Record<string, string>;
   version?: number;
+}
+
+interface MapFunctions {
+  navigateToSpot: (
+    latitude: number,
+    longitude: number,
+    newZoom: number
+  ) => void;
+}
+
+interface StockLevel {
+  id: number;
+  productVariant: ProductVariant;
+  productVariantId: number;
+  store: Store;
+  storeName: string;
+  storeId: number;
+  quantity: number;
 }

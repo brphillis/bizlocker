@@ -52,6 +52,7 @@ export const tokenAuth = async (
           return { valid: true, accessToken: newAccessToken };
         } catch (e: any) {
           // If refresh token is also invalid, we clear the session
+          console.log("NO AUTH.");
           session.unset(sessionKey);
           session.unset("access_token");
           session.unset("refresh_token");
@@ -60,6 +61,7 @@ export const tokenAuth = async (
         }
       } else {
         // If access token is invalid for a reason other than expiry, we clear the session
+        console.log("NO AUTH.");
         session.unset(sessionKey);
         session.unset("access_token");
         session.unset("refresh_token");
@@ -68,6 +70,7 @@ export const tokenAuth = async (
       }
     }
   } else {
+    console.log("NO AUTH.");
     session.unset(sessionKey);
     session.unset("access_token");
     session.unset("refresh_token");

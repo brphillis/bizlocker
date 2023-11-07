@@ -27,10 +27,11 @@ export async function getSession(request: Request) {
 }
 
 export async function getUserDataFromSession(
-  request: Request
-): Promise<User | undefined | null> {
+  request: Request,
+  sessionKey: string = USER_SESSION_KEY
+): Promise<User | Staff | undefined | null> {
   const session = await getSession(request);
-  const userData = session.get(USER_SESSION_KEY);
+  const userData = session.get(sessionKey);
   if (userData) {
     if (typeof userData === "string") {
       return JSON.parse(userData);

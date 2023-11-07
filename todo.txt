@@ -1,6 +1,7 @@
 To Do
 
-finish stores on adminweb
+products are showing that have no stock
+finish see all stock button for product
 
 Bug Hisory
 
@@ -43,3 +44,5 @@ Feat history
 018 shipping details input boxes in userweb order status
 019 add shipping calculator
 020 add validation to order shipping address
+021 add multistore stock levels for products
+022 update packages

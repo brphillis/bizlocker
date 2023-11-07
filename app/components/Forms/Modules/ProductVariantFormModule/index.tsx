@@ -4,11 +4,16 @@ import BasicSelect from "../../Select/BasicSelect";
 import { validateForm } from "~/utility/validate";
 
 type Props = {
+  storeId: number;
   product: Product;
   availableColors: string[];
 };
 
-const ProductVariantFormModule = ({ product, availableColors }: Props) => {
+const ProductVariantFormModule = ({
+  storeId,
+  product,
+  availableColors,
+}: Props) => {
   const [activeVariant, setActiveVariant] = useState<NewProductVariant>();
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>();
   const [variants, setVariants] = useState<ProductVariant[] | undefined>(
@@ -77,6 +82,7 @@ const ProductVariantFormModule = ({ product, availableColors }: Props) => {
     } else if (upsertState === "add" && variants) {
       setVariants([...variants]);
     }
+    setValidationErrors(undefined);
     setActiveVariant(undefined);
     setUpsertState(undefined);
   };
@@ -93,7 +99,18 @@ const ProductVariantFormModule = ({ product, availableColors }: Props) => {
 
   const handleEditVariant = (name: string | undefined, i: number) => {
     setUpsertState("edit");
-    setActiveVariant(variants?.[i]);
+
+    const newActiveVariant = {
+      ...variants?.[i],
+      stock: Array.isArray(variants?.[i]?.stock)
+        ? variants?.[i]?.stock?.find((e: StockLevel) => e.storeId === storeId)
+            ?.quantity || 0
+        : typeof variants?.[i]?.stock === "number"
+        ? variants?.[i]?.stock
+        : 0,
+    };
+
+    setActiveVariant(newActiveVariant as NewProductVariant);
     setVariants(variants?.filter((e) => e?.name !== name));
   };
 
@@ -161,42 +178,7 @@ const ProductVariantFormModule = ({ product, availableColors }: Props) => {
               }}
               validationErrors={validationErrors}
             />
-          </div>
 
-          <div className="flex flex-wrap justify-evenly gap-3">
-            <BasicInput
-              name="remainingStock"
-              label="Remaining Stock"
-              placeholder="Remaining Stock"
-              type="number"
-              defaultValue={activeVariant?.stock || ""}
-              onChange={(e) => {
-                setActiveVariant({
-                  ...activeVariant,
-                  stock: parseFloat(e as string),
-                });
-              }}
-              validationErrors={validationErrors}
-            />
-
-            <BasicInput
-              name="sku"
-              label="SKU"
-              placeholder="SKU"
-              type="text"
-              disabled={upsertState === "edit" ? true : false}
-              defaultValue={activeVariant?.sku || ""}
-              onChange={(e) => {
-                setActiveVariant({
-                  ...activeVariant,
-                  sku: e as string,
-                });
-              }}
-              validationErrors={validationErrors}
-            />
-          </div>
-
-          <div className="flex flex-wrap justify-evenly gap-3">
             <BasicSelect
               name="color"
               label="Color"
@@ -287,6 +269,58 @@ const ProductVariantFormModule = ({ product, availableColors }: Props) => {
               }}
               validationErrors={validationErrors}
             />
+
+            <div className="flex w-full items-end justify-center gap-3 justify-self-start px-[2.3rem] max-md:px-0">
+              <BasicInput
+                name="remainingStock"
+                label="Remaining Stock"
+                placeholder="Remaining Stock"
+                type="number"
+                customWidth="!w-full !max-w-full"
+                defaultValue={activeVariant?.stock || ""}
+                onChange={(e) => {
+                  setActiveVariant({
+                    ...activeVariant,
+                    stock: parseFloat(e as string),
+                  });
+                }}
+                validationErrors={validationErrors}
+              />
+
+              <button
+                type="button"
+                className="btn btn-primary flex !h-[41px] !min-h-[41px] w-[103px] items-center justify-center !rounded-sm sm:!ml-0"
+              >
+                See Stock
+              </button>
+            </div>
+
+            <div className="flex w-full items-end justify-center gap-3 justify-self-start px-[2.3rem] max-md:px-0">
+              <BasicInput
+                name="sku"
+                label="SKU"
+                placeholder="SKU"
+                type="text"
+                customWidth="!w-full !max-w-full"
+                disabled={upsertState === "edit" ? true : false}
+                defaultValue={activeVariant?.sku || ""}
+                onChange={(e) => {
+                  setActiveVariant({
+                    ...activeVariant,
+                    sku: e as string,
+                  });
+                }}
+                validationErrors={validationErrors}
+              />
+
+              <button
+                type="button"
+                disabled={upsertState === "edit" ? true : false}
+                className="btn btn-primary flex !h-[41px] !min-h-[41px] w-[103px] items-center justify-center !rounded-sm sm:!ml-0"
+              >
+                Generate
+              </button>
+            </div>
           </div>
 
           <div className="flex flex-col flex-wrap gap-3">

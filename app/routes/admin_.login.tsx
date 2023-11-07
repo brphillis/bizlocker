@@ -1,6 +1,6 @@
 import type { ActionArgs } from "@remix-run/node";
 import { useEffect } from "react";
-import { createUserSession } from "~/session.server";
+import { createStaffSession } from "~/session.server";
 import { safeRedirect } from "~/helpers/navigateHelpers";
 import AuthContainer from "~/components/Layout/AuthContainer";
 import AuthPageWrapper from "~/components/Layout/AuthPageWrapper";
@@ -44,7 +44,7 @@ export const action = async ({ request }: ActionArgs) => {
   }
 
   if (user) {
-    return createUserSession({
+    return createStaffSession({
       request,
       user: JSON.stringify(user),
       remember: remember === "on" ? true : false,

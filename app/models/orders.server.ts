@@ -11,6 +11,8 @@ import { getCart } from "./cart.server";
 import { getVariantUnitPrice } from "~/helpers/numberHelpers";
 import { sendOrderReceiptEmail } from "~/integrations/sendgrid/emails/orderReceipt";
 import { createPaymentLink_Integration } from "~/integrations/_master/payments";
+import { getLatLongForPostcode } from "./location.server";
+import { findClosestPostcode } from "~/helpers/locationHelpers";
 
 export const getOrder = async (orderId: string) => {
   return await prisma.order.findUnique({
@@ -99,7 +101,7 @@ export const createOrder = async (
   if (createPaymentLinkResponse && createPaymentLinkResponse.paymentLink) {
     const { paymentLink } = createPaymentLinkResponse;
 
-    const orderItems: NewOrderItem[] = [];
+    const orderItems: any = [];
     let totalPrice = 0;
 
     //create the order object
@@ -111,10 +113,48 @@ export const createOrder = async (
       if (itemTotalPrice) {
         totalPrice += itemTotalPrice * quantity;
 
+        let shippingCoords;
+        let closestStoreId;
+        if (address.postcode) {
+          // Get the long and lat of the shipping postcode
+          shippingCoords = await getLatLongForPostcode(address.postcode);
+
+          if (!shippingCoords) {
+            throw new Error("Unable to get shipping Coords.");
+          }
+
+          const variantStoreIds = variant?.stock?.map((e) => e.storeId);
+
+          const stockedStores = await prisma.address.findMany({
+            where: {
+              storeId: {
+                in: variantStoreIds,
+              },
+            },
+          });
+
+          // Find the closest store with stock
+          const closestPostCode = findClosestPostcode(
+            shippingCoords?.lat,
+            shippingCoords?.long,
+            stockedStores as Address[]
+          );
+
+          closestStoreId = stockedStores.find(
+            (e) => e.postcode === closestPostCode
+          )?.storeId;
+        }
+
+        if (!closestStoreId) {
+          throw new Error("Unable to Determine Closest Store.");
+        }
+
+        // Populate and order items array
         orderItems.push({
           variantId,
           quantity,
           unitPrice: Math.round(itemTotalPrice),
+          store: closestStoreId,
         });
       }
     }
@@ -151,9 +191,20 @@ export const createOrder = async (
             }
           : undefined,
         items: {
-          createMany: {
-            data: orderItems,
-          },
+          create: orderItems.map((e: any) => ({
+            variant: {
+              connect: {
+                id: e.variantId,
+              },
+            },
+            quantity: e.quantity,
+            unitPrice: e.unitPrice,
+            store: {
+              connect: {
+                id: e.store,
+              },
+            },
+          })),
         },
       },
     });
@@ -248,9 +299,6 @@ export const confirmPayment = async (paymentCode: string) => {
         id: item.variantId,
       },
       data: {
-        stock: {
-          decrement: item.quantity,
-        },
         totalSold: {
           increment: item.quantity,
         },
@@ -263,6 +311,26 @@ export const confirmPayment = async (paymentCode: string) => {
         },
       },
     });
+
+    const existingStockLevel = await prisma.stockLevel.findFirst({
+      where: {
+        productVariantId: item.variantId,
+        storeId: item.storeId,
+      },
+    });
+
+    if (existingStockLevel) {
+      await prisma.stockLevel.update({
+        where: {
+          id: existingStockLevel.id,
+        },
+        data: {
+          quantity: {
+            decrement: item.quantity,
+          },
+        },
+      });
+    }
   }
 
   const orderAddress = order.address;

@@ -2,6 +2,7 @@ import { prisma } from "~/db.server";
 import { calculateDiscountPercentage } from "~/helpers/numberHelpers";
 import { getOrderBy } from "~/helpers/sortHelpers";
 import { uploadImage_Integration } from "~/integrations/_master/storage";
+import { STAFF_SESSION_KEY, getUserDataFromSession } from "~/session.server";
 
 export const getProducts = async (count?: string) => {
   if (count) {
@@ -61,13 +62,27 @@ export const getProduct = async (id: string) => {
       images: true,
       heroImage: true,
       brand: true,
-      variants: true,
+      variants: {
+        include: {
+          stock: {
+            select: {
+              quantity: true,
+              storeId: true,
+              store: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      },
       promotion: true,
     },
   });
 };
 
-export const upsertProduct = async (productData: any) => {
+export const upsertProduct = async (request: Request, productData: any) => {
   const {
     name,
     description,
@@ -82,6 +97,9 @@ export const upsertProduct = async (productData: any) => {
     variants,
     id,
   } = productData;
+
+  const { storeId } =
+    ((await getUserDataFromSession(request, STAFF_SESSION_KEY)) as Staff) || {};
 
   let product;
 
@@ -164,7 +182,16 @@ export const upsertProduct = async (productData: any) => {
         width: variant.width,
         height: variant.height,
         weight: variant.weight,
-        stock: variant.stock,
+        stock: {
+          create: {
+            store: {
+              connect: {
+                id: storeId,
+              },
+            },
+            quantity: variant.stock,
+          },
+        },
         ...(variant.color && { color: variant.color }),
         ...(variant.size && { size: variant.size }),
       })),
@@ -189,7 +216,11 @@ export const upsertProduct = async (productData: any) => {
         productSubCategories: true,
         images: true,
         heroImage: true,
-        variants: true,
+        variants: {
+          include: {
+            stock: true,
+          },
+        },
       },
     });
 
@@ -293,7 +324,16 @@ export const upsertProduct = async (productData: any) => {
           width: variant.width,
           height: variant.height,
           weight: variant.weight,
-          stock: variant.stock,
+          stock: {
+            create: {
+              store: {
+                connect: {
+                  id: storeId,
+                },
+              },
+              quantity: variant.stock,
+            },
+          },
           ...(variant.color && { color: variant.color }),
           ...(variant.size && { size: variant.size }),
         })),
@@ -313,7 +353,6 @@ export const upsertProduct = async (productData: any) => {
             width: variant.width,
             height: variant.height,
             weight: variant.weight,
-            stock: variant.stock,
             ...(variant.color === undefined || variant.color === ""
               ? { color: null }
               : { color: variant.color }),
@@ -333,6 +372,54 @@ export const upsertProduct = async (productData: any) => {
       data.promotion = {
         connect: { id: parseInt(promotion) },
       };
+    }
+
+    // Update stock quantity for existing variants
+    for (let i = 0; i < variants.length; i++) {
+      const variant = variants[i];
+
+      const currentStockLevel = existingProduct.variants[i].stock.find(
+        (e) => e.storeId === storeId
+      )?.quantity;
+
+      // Check if we should update stock / save on number of queries
+      const shouldUpdateStock =
+        currentStockLevel != variant.stock || !currentStockLevel;
+
+      if (variant.id && variant.stock && shouldUpdateStock) {
+        // Try to update the stock level; if it doesn't exist, create it
+        const existingStockLevel = await prisma.stockLevel.findFirst({
+          where: {
+            productVariantId: variant.id,
+            storeId: storeId,
+          },
+        });
+
+        if (existingStockLevel) {
+          // Stock level exists; update it
+          await prisma.stockLevel.update({
+            where: {
+              id: existingStockLevel.id,
+            },
+            data: {
+              quantity: variant.stock,
+            },
+          });
+        } else {
+          // Stock level doesn't exist; create it
+          await prisma.stockLevel.create({
+            data: {
+              productVariant: {
+                connect: { id: variant.id },
+              },
+              store: {
+                connect: { id: storeId },
+              },
+              quantity: variant.stock,
+            },
+          });
+        }
+      }
     }
 
     product = await prisma.product.update({

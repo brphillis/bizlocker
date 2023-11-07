@@ -38,6 +38,11 @@ export const getCart = async (request: Request) => {
           include: {
             variant: {
               include: {
+                stock: {
+                  select: {
+                    storeId: true,
+                  },
+                },
                 product: {
                   select: {
                     id: true,

@@ -36,7 +36,7 @@ import {
 import swiper from "../../node_modules/swiper/swiper.css";
 import swiperNav from "../../node_modules/swiper/modules/navigation/navigation.min.css";
 import { tokenAuth } from "~/auth.server";
-import { STAFF_SESSION_KEY } from "~/session.server";
+import { STAFF_SESSION_KEY, getUserDataFromSession } from "~/session.server";
 import { ClientOnly } from "~/components/Utility/ClientOnly";
 
 export const links: LinksFunction = () => [
@@ -55,6 +55,8 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const brands = await getBrands();
   const promotions = await getPromotions();
   const availableColors = await getAvailableColors();
+  const { storeId } =
+    ((await getUserDataFromSession(request, STAFF_SESSION_KEY)) as Staff) || {};
   let product;
 
   if (id && id !== "add") {
@@ -62,6 +64,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   }
 
   return {
+    storeId,
     product,
     productSubCategories,
     brands,
@@ -136,7 +139,7 @@ export const action = async ({ request, params }: ActionArgs) => {
         id: id,
       };
 
-      await upsertProduct(updateData);
+      await upsertProduct(request, updateData);
 
       return { success: true };
 
@@ -147,8 +150,14 @@ export const action = async ({ request, params }: ActionArgs) => {
 };
 
 const Product = () => {
-  const { product, productSubCategories, brands, promotions, availableColors } =
-    useLoaderData();
+  const {
+    storeId,
+    product,
+    productSubCategories,
+    brands,
+    promotions,
+    availableColors,
+  } = useLoaderData();
   const { validationErrors, success } =
     (useActionData() as {
       validationErrors: ValidationErrors;
@@ -250,6 +259,7 @@ const Product = () => {
           <div className="divider w-full pt-4" />
 
           <ProductVariantFormModule
+            storeId={storeId}
             product={product}
             availableColors={availableColors}
           />
