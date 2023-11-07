@@ -1,6 +1,7 @@
 To Do
 
-finish stores on adminweb
+products are showing that have no stock
+finish see all stock button for product
 
 Bug Hisory
 

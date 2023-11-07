@@ -295,7 +295,6 @@ export const updatePageBlock = async (
     (e: any) => e.id === existingBlock?.id
   );
 
-  console.log("EXISTINGBLOCKAAAA", existingBlock);
   // if the preview page is creating a new version, we remove the old from the preview page
   if (
     previewContainsBlock &&
@@ -303,7 +302,6 @@ export const updatePageBlock = async (
     existingBlock[`${blockName}BlockId`] &&
     !publishedContainsBlock
   ) {
-    console.log("removing");
     await removeBlock(
       existingBlock[`${blockName}BlockId`]!,
       blockName,
@@ -739,9 +737,6 @@ export const removeBlock = async (
       content: true,
     },
   });
-  console.log("BLOCKNAME", blockName);
-  console.log("FOUNDBLOCKTYPE", foundBlockType);
-  console.log("CONTENTBLOCKID", contentBlockId);
 
   const blockContentId = foundBlockType?.content?.id; // block content id eg:bannerBlockContent
   const blockTypeId = foundBlockType?.id; // block type id eg:bannerBlock

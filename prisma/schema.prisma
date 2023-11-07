@@ -332,6 +332,9 @@ model Store {
   phoneNumber       String?
   faxNumber         String?
   address           Address?
+  stock             StockLevel[]
+  orderItem         OrderItem[]
+  staff             Staff[]           @relation("StaffStore")
   paymentProviderId String?
   isActive          Boolean           @default(true)
   mapBlockContent   MapBlockContent[] @relation("StoreToMapBlockContent")
@@ -350,9 +353,10 @@ model Staff {
   password             String?
   userDetails          UserDetails?
   userDetailsId        String?      @unique
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  store                Store?       @relation("StaffStore", fields: [storeId], references: [id])
+  storeId              Int?         @unique
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
 }
 
 model User {
@@ -480,6 +484,8 @@ model OrderItem {
   unitPrice Int
   variant   ProductVariant @relation(fields: [variantId], references: [id])
   variantId Int
+  store     Store?         @relation(fields: [storeId], references: [id])
+  storeId   Int
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -667,31 +673,40 @@ model Product {
 }
 
 model ProductVariant {
-  id         Int         @id @default(autoincrement())
+  id         Int          @id @default(autoincrement())
   cartItems  CartItem[]
   color      Color?
-  isActive   Boolean     @default(true)
-  isOnSale   Boolean     @default(false)
-  isFragile  Boolean     @default(false)
-  isPromoted Boolean     @default(false)
+  isActive   Boolean      @default(true)
+  isOnSale   Boolean      @default(false)
+  isFragile  Boolean      @default(false)
+  isPromoted Boolean      @default(false)
   name       String
   orderId    String?
   orderItems OrderItem[]
   price      Float
-  product    Product     @relation("ProductVariants", fields: [productId], references: [id])
+  product    Product      @relation("ProductVariants", fields: [productId], references: [id])
   productId  Int
   salePrice  Float?
   size       String?
-  sku        String      @unique
-  stock      Int?
-  totalSold  Int         @default(0)
-  length     Int         @default(0) //remove default
-  width      Int         @default(0) //remove default
-  height     Int         @default(0) //remove default
-  weight     Int         @default(0) //remove default
+  sku        String       @unique
+  stock      StockLevel[]
+  totalSold  Int          @default(0)
+  length     Int          @default(0)
+  width      Int          @default(0)
+  height     Int          @default(0)
+  weight     Int          @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model StockLevel {
+  id               Int             @id @default(autoincrement())
+  productVariant   ProductVariant? @relation(fields: [productVariantId], references: [id])
+  productVariantId Int
+  store            Store?          @relation(fields: [storeId], references: [id])
+  storeId          Int
+  quantity         Int
 }
 
 model Brand {

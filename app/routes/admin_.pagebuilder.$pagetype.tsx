@@ -197,8 +197,7 @@ export const action = async ({ request, params }: ActionArgs) => {
 
     case "update":
       const newBlockData = getBlockUpdateValues(form);
-      console.log("pagetype", pageType);
-      console.log("previewpageId", previewPageId);
+
       const updateSuccess = await updatePageBlock(
         pageType as PageType,
         previewPageId as string,
@@ -211,7 +210,6 @@ export const action = async ({ request, params }: ActionArgs) => {
       return { updateSuccess, actionPreview, actionBlocks };
 
     case "publish":
-      console.log("publishing!!!!!!!!");
       const publishSuccess = await publishPage(
         pageType as PageType,
         previewPageId as string,

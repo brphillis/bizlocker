@@ -3,6 +3,7 @@ import Map from "~/components/Map/index.client";
 import { generateColor } from "~/utility/colors";
 import { IoCall, IoLocationSharp, IoPrint } from "react-icons/io5";
 import { getCountrFromISO3166 } from "~/utility/countryList";
+import { useRef } from "react";
 type Props = {
   content: BlockContent;
   options: BlockOptions[];
@@ -30,6 +31,14 @@ const MapBlock = ({ content, options: optionsArray }: Props) => {
   } = options || {};
 
   const locations = content.store as Store[];
+
+  const mapRef = useRef<MapFunctions | null>(null);
+
+  const handleNavigate = (lat: number, long: number) => {
+    if (mapRef.current) {
+      mapRef.current.navigateToSpot(lat, long, 15);
+    }
+  };
 
   const blockHeight = (): string => {
     switch (size) {
@@ -71,6 +80,7 @@ const MapBlock = ({ content, options: optionsArray }: Props) => {
         <ClientOnly fallback={<div id="skeleton" />}>
           {() => (
             <Map
+              ref={mapRef}
               locations={locations}
               markerColor={generateColor(itemColor || "BLUE")}
             />
@@ -88,6 +98,8 @@ const MapBlock = ({ content, options: optionsArray }: Props) => {
               state,
               postcode,
               country,
+              latitude,
+              longitude,
             } = address;
             return (
               <div
@@ -102,6 +114,11 @@ const MapBlock = ({ content, options: optionsArray }: Props) => {
                       : "unset",
                 }}
                 className={`relative flex flex-col justify-center overflow-hidden bg-gray-50 ${itemBorderDisplay}`}
+                onClick={() =>
+                  latitude &&
+                  longitude &&
+                  handleNavigate(parseFloat(latitude), parseFloat(longitude))
+                }
               >
                 <div className="group relative bg-white px-6 pb-8 pt-6 shadow-xl ring-1 ring-gray-900/5 transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl sm:mx-auto sm:px-10">
                   <span

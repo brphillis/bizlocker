@@ -10,6 +10,7 @@ export const verifyStaffLogin = async (email: string, password: string) => {
     },
     select: {
       id: true,
+      storeId: true,
       email: true,
       password: true,
       isActive: true,

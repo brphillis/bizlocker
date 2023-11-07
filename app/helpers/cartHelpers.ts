@@ -1,17 +1,46 @@
 import { getShippingServices_Integration } from "~/integrations/_master/shipping";
-
+import { getLatLongForPostcode } from "~/models/location.server";
+import { prisma } from "~/db.server";
+import { findClosestPostcode } from "./locationHelpers";
 export const getCartDeliveryOptions = async (
   cart: Cart,
   postCode: number
 ): Promise<AusPostDeliveryOption> => {
   const cartDimensions = getCartDimensions(cart);
 
+  const shippingCoords = await getLatLongForPostcode(postCode.toString());
+
+  const variantStoreIds: any = [];
+
+  for (const { variant } of cart.cartItems) {
+    if (variant.stock) {
+      variantStoreIds.push(...variant.stock.map((e) => e.storeId));
+    }
+  }
+
+  const stockedStores = await prisma.address.findMany({
+    where: {
+      storeId: {
+        in: variantStoreIds,
+      },
+    },
+  });
+
+  let closestPostCode;
+  if (shippingCoords) {
+    closestPostCode = findClosestPostcode(
+      shippingCoords?.lat,
+      shippingCoords?.long,
+      stockedStores as Address[]
+    );
+  }
+
   const postageServicesArgs = {
     height: cartDimensions.height,
     width: cartDimensions.width,
     length: cartDimensions.length,
     weight: cartDimensions.weight,
-    from_postcode: "4000",
+    from_postcode: closestPostCode || "4000",
     to_postcode: postCode.toString(),
   };
 

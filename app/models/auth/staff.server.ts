@@ -28,6 +28,7 @@ export const upsertStaff = async (staffData: any) => {
     country,
     avatar,
     role,
+    store,
     isActive,
     id,
   } = staffData;
@@ -37,6 +38,8 @@ export const upsertStaff = async (staffData: any) => {
       data: {
         email,
         role,
+        doubleAuthentication: false,
+        isActive,
         userDetails: {
           create: {
             firstName,
@@ -55,13 +58,18 @@ export const upsertStaff = async (staffData: any) => {
             country,
           },
         },
-        doubleAuthentication: false,
-        isActive,
         avatar: avatar
           ? {
               create: {
                 href: avatar.href,
                 altText: avatar.altText,
+              },
+            }
+          : undefined,
+        store: store
+          ? {
+              connect: {
+                id: parseInt(store),
               },
             }
           : undefined,
@@ -78,6 +86,8 @@ export const upsertStaff = async (staffData: any) => {
       update: {
         email,
         role,
+        doubleAuthentication: false,
+        isActive,
         userDetails: {
           upsert: {
             create: {
@@ -114,8 +124,7 @@ export const upsertStaff = async (staffData: any) => {
             },
           },
         },
-        doubleAuthentication: false,
-        isActive,
+
         avatar: avatar
           ? {
               upsert: {
@@ -130,6 +139,15 @@ export const upsertStaff = async (staffData: any) => {
               },
             }
           : undefined,
+        store: store
+          ? {
+              connect: {
+                id: parseInt(store),
+              },
+            }
+          : {
+              disconnect: true,
+            },
       },
       create: {
         id,
@@ -159,6 +177,13 @@ export const upsertStaff = async (staffData: any) => {
               create: {
                 href: avatar.href,
                 altText: avatar.altText,
+              },
+            }
+          : undefined,
+        store: store
+          ? {
+              connect: {
+                id: parseInt(store),
               },
             }
           : undefined,

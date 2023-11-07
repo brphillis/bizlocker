@@ -17,6 +17,7 @@ import UploadAvatar from "~/components/Forms/Upload/UploadAvatar";
 import DarkOverlay from "~/components/Layout/DarkOverlay";
 import { getStaff, upsertStaff } from "~/models/auth/staff.server";
 import { getAvailableRoles } from "~/models/enums.server";
+import { getStores } from "~/models/stores.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
 import { validateForm } from "~/utility/validate";
 
@@ -31,7 +32,8 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   if (id && id !== "add") {
     const staffMember = await getStaff(id);
     const roles = await getAvailableRoles();
-    return { staffMember, roles };
+    const stores = await getStores();
+    return { staffMember, roles, stores };
   } else return null;
 };
 
@@ -57,6 +59,7 @@ export const action = async ({ request, params }: ActionArgs) => {
     country,
     avatar,
     role,
+    store,
     isActive,
   } = form;
 
@@ -93,6 +96,7 @@ export const action = async ({ request, params }: ActionArgs) => {
     isActive: isActive ? true : false,
     avatar: avatar ? (JSON.parse(avatar?.toString()) as Image) : undefined,
     role: role as string,
+    store: store as string,
     id: id,
   };
 
@@ -103,7 +107,7 @@ export const action = async ({ request, params }: ActionArgs) => {
 
 const ModifyStaff = () => {
   const navigate = useNavigate();
-  const { staffMember, roles } = useLoaderData();
+  const { staffMember, roles, stores } = useLoaderData();
   const { validationErrors, success } =
     (useActionData() as {
       success: boolean;
@@ -151,6 +155,15 @@ const ModifyStaff = () => {
                   return { id: e, name: e };
                 })}
                 defaultValue={staffMember?.role || ""}
+              />
+
+              <BasicSelect
+                label="Store"
+                name="store"
+                customWidth="w-full"
+                placeholder="Select a Store"
+                selections={stores}
+                defaultValue={staffMember?.storeId || ""}
               />
 
               <BasicInput

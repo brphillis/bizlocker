@@ -19,7 +19,6 @@ import { getAvailableColors } from "~/models/enums.server";
 import { getProductCategories } from "~/models/productCategories.server";
 import { getProductSubCategories } from "~/models/productSubCategories.server";
 import { searchProducts } from "~/models/products.server";
-import { STAFF_SESSION_KEY } from "~/session.server";
 
 export const meta: V2_MetaFunction = ({ data }) => {
   const url = new URL(data.url);
@@ -74,9 +73,9 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 export const action = async ({ request }: ActionArgs) => {
-  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+  const authenticated = await tokenAuth(request);
   if (!authenticated.valid) {
-    return redirect("/admin/login");
+    return redirect("/login");
   }
   const form = Object.fromEntries(await request.formData());
   const { variantId, quantity } = form;
