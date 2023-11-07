@@ -30,8 +30,8 @@ const Footer = () => {
 
         <div className="text-brand-white">
           <span className="footer-title">Company</span>
+          <p className="link-hover link">Our Locations</p>
           <p className="link-hover link">About us</p>
-          <p className="link-hover link">Contact</p>
         </div>
         <div className="text-brand-white">
           <span className="footer-title">Legal</span>

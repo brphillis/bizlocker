@@ -49,6 +49,7 @@ export const action = async ({ request }: ActionArgs) => {
         state,
         postcode,
         country,
+        trackingNumber,
       } = form;
 
       return await updateOrderShippingDetails(
@@ -60,7 +61,8 @@ export const action = async ({ request }: ActionArgs) => {
         suburb as string,
         state as string,
         postcode as string,
-        country as string
+        country as string,
+        trackingNumber as string
       );
   }
 };
@@ -92,6 +94,24 @@ const ModifyOrder = () => {
           <div className="flex justify-center rounded-lg bg-base-100 py-6">
             <OrderStatusSteps status={order?.status} />
           </div>
+
+          {order.status === "created" && (
+            <>
+              <div className="divider w-full" />
+
+              <div className="flex justify-center">
+                <button
+                  type="button"
+                  className="btn btn-primary w-max"
+                  onClick={() =>
+                    navigator.clipboard.writeText(order.paymentUrl)
+                  }
+                >
+                  Copy Payment Link
+                </button>
+              </div>
+            </>
+          )}
 
           {order?.status !== "created" && (
             <Form
@@ -266,6 +286,15 @@ const ModifyOrder = () => {
               defaultValue={order?.shippingPrice}
             />
 
+            <BasicInput
+              name="trackingNumber"
+              label="Tracking Number"
+              placeholder="Tracking Number"
+              type="text"
+              customWidth="w-full"
+              defaultValue={order?.trackingNumber}
+            />
+
             <input readOnly hidden value={order.orderId} name="orderId" />
 
             <div className="mt-6 flex flex-wrap justify-center gap-3">
@@ -280,29 +309,12 @@ const ModifyOrder = () => {
             </div>
           </Form>
 
-          {order.status === "created" && (
-            <>
-              <div className="divider w-full" />
-
-              <div className="flex justify-center">
-                <button
-                  type="button"
-                  className="btn btn-primary w-max"
-                  onClick={() =>
-                    navigator.clipboard.writeText(order.paymentUrl)
-                  }
-                >
-                  Copy Payment Link
-                </button>
-              </div>
-            </>
-          )}
           <div className="divider w-full" />
 
-          <div className="flex flex-row justify-center gap-6">
+          <div className="flex flex-row justify-center">
             <button
               type="button"
-              className="btn btn-primary mt-6 w-max !rounded-sm"
+              className="btn btn-primary w-max !rounded-sm"
               onClick={() => navigate("..")}
             >
               Back

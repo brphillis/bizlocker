@@ -27,6 +27,7 @@ export const upsertStaff = async (staffData: any) => {
     state,
     country,
     avatar,
+    role,
     isActive,
     id,
   } = staffData;
@@ -35,6 +36,7 @@ export const upsertStaff = async (staffData: any) => {
     return await prisma.staff.create({
       data: {
         email,
+        role,
         userDetails: {
           create: {
             firstName,
@@ -75,6 +77,7 @@ export const upsertStaff = async (staffData: any) => {
       where: { id },
       update: {
         email,
+        role,
         userDetails: {
           upsert: {
             create: {

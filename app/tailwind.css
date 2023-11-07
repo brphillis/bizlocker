@@ -30,3 +30,7 @@
 .rtl-grid {
   direction: rtl;
 }
+
+.leaflet-control-attribution {
+  display: none;
+}

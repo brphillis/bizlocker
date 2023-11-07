@@ -1,6 +1,5 @@
 To Do
 
-add validation to order shipping address
 finish stores on adminweb
 
 Bug Hisory
@@ -43,3 +42,4 @@ Feat history
 017 search bar loading state
 018 shipping details input boxes in userweb order status
 019 add shipping calculator
+020 add validation to order shipping address

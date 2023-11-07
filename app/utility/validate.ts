@@ -1,6 +1,15 @@
 //the master object, validation helpers below
 
 export const validationMaster: FormConfig = {
+  addressLine1: {
+    required: true,
+    validator: (value: string) => {
+      if (!value) {
+        return "Enter an Address";
+      }
+      return null;
+    },
+  },
   altText: {
     required: true,
     validator: (value: string) => {
@@ -19,6 +28,15 @@ export const validationMaster: FormConfig = {
       return null;
     },
   },
+  bannerImage: {
+    required: true,
+    validator: (value: string) => {
+      if (!value) {
+        return "Banner Image Required";
+      }
+      return null;
+    },
+  },
   brand: {
     required: true,
     validator: (value: string) => {
@@ -28,38 +46,11 @@ export const validationMaster: FormConfig = {
       return null;
     },
   },
-  description: {
+  country: {
     required: true,
     validator: (value: string) => {
-      if (!value || value.length < 3) {
-        return "Description is invalid";
-      }
-      return null;
-    },
-  },
-  email: {
-    required: true,
-    validator: (value: string) => {
-      if (!isValidEmail(value)) {
-        return "Enter a valid email address";
-      }
-      return null;
-    },
-  },
-  firstName: {
-    required: true,
-    validator: (value: string) => {
-      if (!value || value.length < 3) {
-        return "First name is invalid";
-      }
-      return null;
-    },
-  },
-  lastName: {
-    required: true,
-    validator: (value: string) => {
-      if (!value || value.length < 3) {
-        return "Last name is invalid";
+      if (!value) {
+        return "Enter a Country";
       }
       return null;
     },
@@ -73,20 +64,105 @@ export const validationMaster: FormConfig = {
       return null;
     },
   },
+  department: {
+    required: true,
+    validator: (value: string) => {
+      if (!value) {
+        return "Department is Required";
+      }
+      return null;
+    },
+  },
+  description: {
+    required: true,
+    validator: (value: string) => {
+      if (!value || value.length < 3) {
+        return "Description is invalid";
+      }
+      return null;
+    },
+  },
+  discountPercentage: {
+    required: true,
+    validator: (value: string) => {
+      if (!value) {
+        return "Discount is Required";
+      }
+      return null;
+    },
+  },
+  email: {
+    required: true,
+    validator: (value: string) => {
+      if (!isValidEmail(value)) {
+        return "Enter a valid email address";
+      }
+      return null;
+    },
+  },
+  faxNumber: {
+    required: true,
+    validator: (value: string) => {
+      if (!value) {
+        return "Fax Number is Required";
+      }
+      return null;
+    },
+  },
+  firstName: {
+    required: true,
+    validator: (value: string) => {
+      if (!value || value.length < 3) {
+        return "First name is invalid";
+      }
+      return null;
+    },
+  },
+  gender: {
+    required: true,
+    validator: (value: string) => {
+      if (!value) {
+        return "Gender Required";
+      }
+      return null;
+    },
+  },
+  lastName: {
+    required: true,
+    validator: (value: string) => {
+      if (!value || value.length < 3) {
+        return "Last name is invalid";
+      }
+      return null;
+    },
+  },
+  latitude: {
+    required: true,
+    validator: (value: string) => {
+      if (!isNaN(parseInt(value))) {
+        if (!(parseInt(value) > -90 && parseInt(value) < 90)) {
+          return "Enter a Valid Latitude";
+        }
+      }
+      return null;
+    },
+  },
+  longitude: {
+    required: true,
+    validator: (value: string) => {
+      if (!isNaN(parseInt(value))) {
+        if (!(parseInt(value) > -180 && parseInt(value) < 180)) {
+          return "Enter a Valid Longitude";
+        }
+      }
+      return null;
+    },
+  },
   phoneNumber: {
     required: true,
     validator: (value: string) => {
       if (!isValidMobileNumber(value)) {
         return "Enter a Valid Phone Number";
-      }
-      return null;
-    },
-  },
-  addressLine1: {
-    required: true,
-    validator: (value: string) => {
-      if (!value) {
-        return "Enter an Address";
       }
       return null;
     },
@@ -118,24 +194,7 @@ export const validationMaster: FormConfig = {
       return null;
     },
   },
-  country: {
-    required: true,
-    validator: (value: string) => {
-      if (!value) {
-        return "Enter a Country";
-      }
-      return null;
-    },
-  },
-  name: {
-    required: true,
-    validator: (value: string) => {
-      if (!value || value.length < 3) {
-        return "Name is invalid";
-      }
-      return null;
-    },
-  },
+
   image: {
     required: true,
     validator: (value: string) => {
@@ -154,6 +213,15 @@ export const validationMaster: FormConfig = {
       return null;
     },
   },
+  index: {
+    required: true,
+    validator: (value: string) => {
+      if (!value) {
+        return "Index Required";
+      }
+      return null;
+    },
+  },
   promotion: {
     required: true,
     validator: (value: string) => {
@@ -163,29 +231,11 @@ export const validationMaster: FormConfig = {
       return null;
     },
   },
-  discountPercentage: {
-    required: true,
-    validator: (value: string) => {
-      if (!value) {
-        return "Discount is Required";
-      }
-      return null;
-    },
-  },
   variants: {
     required: true,
     validator: (value: string) => {
       if (!value) {
         return "Variants are Required";
-      }
-      return null;
-    },
-  },
-  department: {
-    required: true,
-    validator: (value: string) => {
-      if (!value) {
-        return "Department is Required";
       }
       return null;
     },
@@ -235,20 +285,11 @@ export const validationMaster: FormConfig = {
       return null;
     },
   },
-  gender: {
+  name: {
     required: true,
     validator: (value: string) => {
-      if (!value) {
-        return "Gender Required";
-      }
-      return null;
-    },
-  },
-  bannerImage: {
-    required: true,
-    validator: (value: string) => {
-      if (!value) {
-        return "Banner Image Required";
+      if (!value || value.length < 3) {
+        return "Name is invalid";
       }
       return null;
     },
@@ -267,15 +308,6 @@ export const validationMaster: FormConfig = {
     validator: (value: string) => {
       if (!value) {
         return "Tile Image Required";
-      }
-      return null;
-    },
-  },
-  index: {
-    required: true,
-    validator: (value: string) => {
-      if (!value) {
-        return "Index Required";
       }
       return null;
     },

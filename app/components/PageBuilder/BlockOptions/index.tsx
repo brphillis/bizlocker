@@ -15,6 +15,7 @@ import ItemColorOptions from "./ItemColors";
 import ItemFilterOptions from "./ItemFilters";
 import LinkOptions from "./Links";
 import ItemTitleOptions from "./ItemTitles";
+import ItemBorderOptions from "./ItemBorders";
 
 type Props = {
   selectedBlock: BlockName | undefined;
@@ -107,6 +108,12 @@ const BlockOptions = ({
             />
 
             <ColumnsAndRowsOptions
+              defaultValues={defaultValues}
+              selectedBlockOptions={selectedBlockOptions}
+            />
+
+            <ItemBorderOptions
+              colors={colors}
               defaultValues={defaultValues}
               selectedBlockOptions={selectedBlockOptions}
             />

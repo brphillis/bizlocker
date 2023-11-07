@@ -12,6 +12,8 @@ const ItemColorOptions = ({
   selectedItems,
 }: Props) => {
   const {
+    itemColor,
+    itemSecondaryColor,
     color1,
     color2,
     color3,
@@ -32,6 +34,56 @@ const ItemColorOptions = ({
         Item Colors
       </summary>
       <div className="flex max-w-full flex-wrap justify-start !gap-3 px-3 pb-3 max-md:justify-center max-md:px-0">
+        {selectedBlockOptions?.itemColor && (
+          <div className="form-control max-sm:items-center">
+            <label className="label max-sm:ml-3 max-sm:!self-start">
+              <span className="label-text text-brand-white">Item Color</span>
+            </label>
+            <select
+              name="itemColor"
+              className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
+              placeholder="Select a Color"
+              defaultValue={!itemColor ? undefined : itemColor}
+            >
+              <option value="">Select a Color</option>
+              {colors?.map((color: string, i: number) => {
+                return (
+                  <option key={color + i} value={color}>
+                    {color}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+        )}
+
+        {selectedBlockOptions?.itemSecondaryColor && (
+          <div className="form-control max-sm:items-center">
+            <label className="label max-sm:ml-3 max-sm:!self-start">
+              <span className="label-text text-brand-white">
+                Item Secondary Color
+              </span>
+            </label>
+            <select
+              name="itemSecondaryColor"
+              className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
+              placeholder="Select a Color"
+              defaultValue={
+                !itemSecondaryColor ? undefined : itemSecondaryColor
+              }
+            >
+              <option value="">Select a Color</option>
+              {colors?.map((color: string, i: number) => {
+                return (
+                  <option key={color + i} value={color}>
+                    {color}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+        )}
+
         {selectedBlockOptions?.color1 && selectedItems.length > 0 && (
           <div className="form-control max-sm:items-center">
             <label className="label max-sm:ml-3 max-sm:!self-start">

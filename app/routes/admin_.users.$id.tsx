@@ -122,7 +122,7 @@ const ModifyUser = () => {
     <DarkOverlay>
       <Form
         method="POST"
-        className="absolute top-0 w-[600px] bg-base-200 py-6 sm:px-6"
+        className="scrollbar-hide relative w-[600px] max-w-[100vw] overflow-y-auto bg-base-200 px-3 py-6 sm:px-6"
       >
         <FormHeader
           hasDelete={false}

@@ -37,6 +37,7 @@ import swiper from "../../node_modules/swiper/swiper.css";
 import swiperNav from "../../node_modules/swiper/modules/navigation/navigation.min.css";
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
+import { ClientOnly } from "~/components/Utility/ClientOnly";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: swiper },
@@ -238,7 +239,9 @@ const Product = () => {
 
           <div className="divider w-full pt-4" />
 
-          <UploadMultipleImages defaultImages={product?.images} />
+          <ClientOnly fallback={<div id="skeleton" />}>
+            {() => <UploadMultipleImages defaultImages={product?.images} />}
+          </ClientOnly>
 
           <div className="divider w-full pt-4" />
 
@@ -258,11 +261,15 @@ const Product = () => {
               <span className="label-text">Description</span>
             </label>
 
-            <RichTextInput
-              value={richText}
-              onChange={setRichText}
-              className="mb-6 h-[200px] pb-3"
-            />
+            <ClientOnly fallback={<div id="skeleton" />}>
+              {() => (
+                <RichTextInput
+                  value={richText}
+                  onChange={setRichText}
+                  className="mb-6 h-[200px] pb-3"
+                />
+              )}
+            </ClientOnly>
 
             <input
               hidden

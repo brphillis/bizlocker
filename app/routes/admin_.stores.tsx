@@ -1,13 +1,9 @@
 import Pagination from "~/components/Pagination";
-import { getBrands } from "~/models/brands.server";
-import { searchProducts } from "~/models/products.server";
 import ProductSort from "~/components/Sorting/ProductSort";
 import { redirect, type LoaderArgs } from "@remix-run/server-runtime";
 import BasicInput from "~/components/Forms/Input/BasicInput";
-import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
-import { getProductSubCategories } from "~/models/productSubCategories.server";
 import {
   Form,
   Outlet,
@@ -17,6 +13,7 @@ import {
 } from "@remix-run/react";
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
+import { searchStores } from "~/models/stores.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
@@ -26,29 +23,24 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   const url = new URL(request.url);
 
-  const { products, totalPages } = await searchProducts(undefined, url);
-  const brands = await getBrands();
-  const productSubCategories = await getProductSubCategories();
+  const { stores, totalPages } = await searchStores(undefined, url);
 
   return {
-    products,
-    brands,
-    productSubCategories,
+    stores,
     totalPages,
   };
 };
 
-const ManageProducts = () => {
+const ManageStores = () => {
   const navigate = useNavigate();
-  const { products, totalPages, productSubCategories, brands } =
-    useLoaderData();
+  const { stores, totalPages } = useLoaderData();
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("pageNumber")) || 1;
 
   return (
     <AdminPageWrapper>
       <Form method="GET" className="relative h-full w-full bg-base-200 p-6">
-        <AdminPageHeader title="Manage Products" addButtonText="Add Products" />
+        <AdminPageHeader title="Manage Stores" addButtonText="Add Store" />
 
         <div className="mt-3 flex flex-col">
           <div className="flex flex-row flex-wrap gap-6">
@@ -57,20 +49,6 @@ const ManageProducts = () => {
               label="Name"
               placeholder="Name"
               type="text"
-            />
-
-            <BasicSelect
-              label="Category"
-              name="productSubCategory"
-              placeholder="Select a Category"
-              selections={productSubCategories}
-            />
-
-            <BasicSelect
-              label="Brand"
-              name="brand"
-              placeholder="Brand"
-              selections={brands}
             />
           </div>
           <div className="flex flex-row justify-end sm:justify-start">
@@ -92,27 +70,15 @@ const ManageProducts = () => {
             <thead className="sticky top-0">
               <tr>
                 {currentPage && <th>#</th>}
-                <th>Title</th>
-                <th>Category</th>
-                <th>Brand</th>
-                <th>Sold</th>
+                <th>Name</th>
+                <th>State</th>
                 <th>Active</th>
               </tr>
             </thead>
             <tbody>
-              {products &&
-                products?.map(
-                  (
-                    {
-                      id,
-                      name,
-                      productSubCategories,
-                      brand,
-                      totalSold,
-                      isActive,
-                    }: Product,
-                    i: number
-                  ) => {
+              {stores &&
+                stores?.map(
+                  ({ id, name, address, isActive }: Store, i: number) => {
                     return (
                       <tr
                         className="cursor-pointer transition-colors duration-200 hover:bg-base-100"
@@ -124,20 +90,10 @@ const ManageProducts = () => {
                         }}
                       >
                         {currentPage && (
-                          <td>
-                            {i + 1 + (currentPage - 1) * products?.length}
-                          </td>
+                          <td>{i + 1 + (currentPage - 1) * stores?.length}</td>
                         )}
                         <td>{name}</td>
-                        <td>
-                          {productSubCategories?.map(
-                            ({ id, name }: ProductSubCategory) => (
-                              <p key={"category" + id + name}>{name}</p>
-                            )
-                          )}
-                        </td>
-                        <td>{brand?.name}</td>
-                        <td>{totalSold}</td>
+                        <td>{address?.state}</td>
                         <td>
                           {!isActive && (
                             <div className="ml-4 h-3 w-3 rounded-full bg-red-500" />
@@ -161,4 +117,4 @@ const ManageProducts = () => {
   );
 };
 
-export default ManageProducts;
+export default ManageStores;

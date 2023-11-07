@@ -26,7 +26,7 @@ export const getCartDeliveryOptions = async (
     )
     .sort(
       (a: AusPostDeliveryOption, b: AusPostDeliveryOption) =>
-        parseInt(a.price) - parseInt(b.price)
+        parseFloat(a.price) - parseFloat(b.price)
     );
 
   return filteredPostageServices;

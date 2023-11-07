@@ -11,12 +11,9 @@ import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
 import FormHeader from "~/components/Forms/Headers/FormHeader";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import PhoneInput from "~/components/Forms/Input/PhoneInput";
-import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import SelectCountry from "~/components/Forms/Select/SelectCountry";
-import UploadAvatar from "~/components/Forms/Upload/UploadAvatar";
 import DarkOverlay from "~/components/Layout/DarkOverlay";
-import { getStaff, upsertStaff } from "~/models/auth/staff.server";
-import { getAvailableRoles } from "~/models/enums.server";
+import { getStore, upsertStore } from "~/models/stores.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
 import { validateForm } from "~/utility/validate";
 
@@ -29,9 +26,8 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const id = params?.id;
 
   if (id && id !== "add") {
-    const staffMember = await getStaff(id);
-    const roles = await getAvailableRoles();
-    return { staffMember, roles };
+    const store = await getStore(id);
+    return store;
   } else return null;
 };
 
@@ -44,33 +40,32 @@ export const action = async ({ request, params }: ActionArgs) => {
   const id = params.id === "add" ? undefined : params.id;
   const form = Object.fromEntries(await request.formData());
   const {
-    email,
-    firstName,
-    lastName,
+    name,
     dateofbirth,
     phoneNumber,
+    faxNumber,
     addressLine1,
     addressLine2,
     postcode,
     suburb,
     state,
     country,
-    avatar,
-    role,
+    longitude,
+    latitude,
+    paymentProviderId,
     isActive,
   } = form;
 
   const validate = {
-    email: true,
-    firstName: true,
-    lastName: true,
-    dateofbirth: true,
+    name: true,
     phoneNumber: true,
     addressLine1: true,
     postcode: true,
     suburb: true,
     state: true,
     country: true,
+    latitude: true,
+    longitude: true,
   };
 
   const validationErrors = validateForm(form, validate);
@@ -79,38 +74,38 @@ export const action = async ({ request, params }: ActionArgs) => {
   }
 
   const updateData = {
-    email: email as string,
-    firstName: firstName as string,
-    lastName: lastName as string,
+    name: name as string,
     dateOfBirth: new Date(dateofbirth as string),
     phoneNumber: phoneNumber as string,
+    faxNumber: faxNumber as string,
     addressLine1: addressLine1 as string,
     addressLine2: addressLine2 as string,
     postcode: postcode as string,
     suburb: suburb as string,
     state: state as string,
     country: country as string,
+    longitude: longitude as string,
+    latitude: latitude as string,
+    paymentProviderId: paymentProviderId as string,
     isActive: isActive ? true : false,
-    avatar: avatar ? (JSON.parse(avatar?.toString()) as Image) : undefined,
-    role: role as string,
     id: id,
   };
 
-  await upsertStaff(updateData);
+  await upsertStore(updateData);
 
   return { success: true };
 };
 
-const ModifyStaff = () => {
+const ModifyStore = () => {
   const navigate = useNavigate();
-  const { staffMember, roles } = useLoaderData();
+  const store = useLoaderData() as Store;
   const { validationErrors, success } =
     (useActionData() as {
       success: boolean;
       validationErrors: ValidationErrors;
     }) || {};
 
-  const mode = staffMember ? "edit" : "add";
+  const mode = store ? "edit" : "add";
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -133,53 +128,20 @@ const ModifyStaff = () => {
           hasDelete={false}
           hasIsActive={true}
           mode={mode}
-          type="Staff"
-          valueToChange={staffMember}
+          type="Store"
+          valueToChange={store}
         />
 
         <div className="form-control gap-3">
           <div className="flex flex-wrap justify-evenly gap-3">
-            <UploadAvatar avatar={staffMember?.avatar} />
-
             <div className="flex flex-row flex-wrap justify-center gap-6">
-              <BasicSelect
-                name="role"
-                label="Role"
-                customWidth="w-full"
-                placeholder="Role"
-                selections={roles.map((e: string) => {
-                  return { id: e, name: e };
-                })}
-                defaultValue={staffMember?.role || ""}
-              />
-
               <BasicInput
-                name="email"
-                label="Email Address"
-                placeholder="Email Address"
+                name="name"
+                label="Name"
+                placeholder="Name"
                 type="text"
                 customWidth="w-full"
-                defaultValue={staffMember?.email || undefined}
-                validationErrors={validationErrors}
-              />
-
-              <BasicInput
-                name="firstName"
-                label="First Name"
-                placeholder="First Name"
-                type="text"
-                customWidth="w-full"
-                defaultValue={staffMember?.userDetails?.firstName || undefined}
-                validationErrors={validationErrors}
-              />
-
-              <BasicInput
-                name="lastName"
-                label="Last Name"
-                placeholder="Last Name"
-                type="text"
-                customWidth="w-full"
-                defaultValue={staffMember?.userDetails?.lastName || undefined}
+                defaultValue={store?.name || undefined}
                 validationErrors={validationErrors}
               />
 
@@ -189,25 +151,17 @@ const ModifyStaff = () => {
                 placeholder="Phone Number"
                 type="text"
                 customWidth="w-full"
-                defaultValue={
-                  staffMember?.userDetails?.phoneNumber || undefined
-                }
+                defaultValue={store?.phoneNumber || undefined}
                 validationErrors={validationErrors}
               />
 
               <BasicInput
-                name="dateofbirth"
-                label="Date of Birth"
-                placeholder="Date of Birth"
-                type="date"
+                name="faxNumber"
+                label="Fax Number"
+                placeholder="Fax Number"
+                type="number"
                 customWidth="w-full"
-                defaultValue={
-                  staffMember?.userDetails?.dateOfBirth
-                    ? new Date(staffMember?.userDetails?.dateOfBirth)
-                        .toISOString()
-                        .split("T")[0]
-                    : undefined
-                }
+                defaultValue={store?.faxNumber || undefined}
                 validationErrors={validationErrors}
               />
 
@@ -217,7 +171,7 @@ const ModifyStaff = () => {
                 placeholder="Address Line 1"
                 type="text"
                 customWidth="w-full"
-                defaultValue={staffMember?.address?.addressLine1 || undefined}
+                defaultValue={store?.address?.addressLine1 || undefined}
                 validationErrors={validationErrors}
               />
 
@@ -227,7 +181,7 @@ const ModifyStaff = () => {
                 placeholder="Address Line 2"
                 type="text"
                 customWidth="w-full"
-                defaultValue={staffMember?.address?.addressLine2 || undefined}
+                defaultValue={store?.address?.addressLine2 || undefined}
                 validationErrors={validationErrors}
               />
 
@@ -237,7 +191,7 @@ const ModifyStaff = () => {
                 placeholder="Suburb"
                 type="text"
                 customWidth="w-full"
-                defaultValue={staffMember?.address?.suburb || undefined}
+                defaultValue={store?.address?.suburb || undefined}
                 validationErrors={validationErrors}
               />
 
@@ -247,7 +201,7 @@ const ModifyStaff = () => {
                 placeholder="PostCode"
                 type="text"
                 customWidth="w-full"
-                defaultValue={staffMember?.address?.postcode || undefined}
+                defaultValue={store?.address?.postcode || undefined}
                 validationErrors={validationErrors}
               />
 
@@ -257,14 +211,44 @@ const ModifyStaff = () => {
                 placeholder="State"
                 type="text"
                 customWidth="w-full"
-                defaultValue={staffMember?.address?.state || undefined}
+                defaultValue={store?.address?.state || undefined}
                 validationErrors={validationErrors}
               />
 
               <SelectCountry
-                defaultValue={staffMember?.address?.country}
+                defaultValue={store?.address?.country}
                 validationErrors={validationErrors}
                 styles="!w-full"
+              />
+
+              <BasicInput
+                name="longitude"
+                label="Longitude"
+                placeholder="Longitude"
+                type="text"
+                customWidth="w-full"
+                defaultValue={store?.address?.longitude || undefined}
+                validationErrors={validationErrors}
+              />
+
+              <BasicInput
+                name="latitude"
+                label="Latitude"
+                placeholder="Latitude"
+                type="text"
+                customWidth="w-full"
+                defaultValue={store?.address?.latitude || undefined}
+                validationErrors={validationErrors}
+              />
+
+              <BasicInput
+                name="paymentProviderId"
+                label="Payment Provider Id"
+                placeholder="Payment Provider Id"
+                type="text"
+                customWidth="w-full"
+                defaultValue={store?.paymentProviderId || undefined}
+                validationErrors={validationErrors}
               />
             </div>
           </div>
@@ -275,4 +259,4 @@ const ModifyStaff = () => {
   );
 };
 
-export default ModifyStaff;
+export default ModifyStore;

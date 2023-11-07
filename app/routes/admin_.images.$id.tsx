@@ -122,7 +122,7 @@ const ModifyImage = () => {
     <DarkOverlay>
       <Form
         method="POST"
-        className="relative w-max max-w-full rounded-none bg-base-200 px-3 py-6 max-md:w-screen sm:rounded-md lg:px-6"
+        className="scrollbar-hide relative w-[500px] max-w-[100vw] overflow-y-auto bg-base-200 px-3 py-6 sm:px-6"
         onSubmit={(e) => handleResourceSubmit(e, submit, isConnected)}
       >
         <FormHeader
@@ -140,6 +140,7 @@ const ModifyImage = () => {
             label="Title"
             name="altText"
             placeholder="Title"
+            customWidth="w-full"
             defaultValue={altText || undefined}
             type="text"
             validationErrors={validationErrors}

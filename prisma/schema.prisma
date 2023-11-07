@@ -75,6 +75,8 @@ model Block {
   textBlockId    String?        @unique
   tileBlock      TileBlock?     @relation("BlockToTileBlock", fields: [tileBlockId], references: [id])
   tileBlockId    String?        @unique
+  mapBlock       MapBlock?      @relation("BlockToMapBlock", fields: [mapBlockId], references: [id])
+  mapBlockId     String?        @unique
   webPage        WebPage[]      @relation("WebPagesToBlocks")
 
   createdAt DateTime @default(now())
@@ -152,6 +154,15 @@ model BlockOptions {
   title5                            String?
   title6                            String?
   titleColor                        Color?
+  itemColor                         String?
+  itemSecondaryColor                String?
+  titleAlign                        String?
+  titleSize                         String?
+  titleWeight                       String?
+  itemBorderDisplay                 String?
+  itemBorderSize                    String?
+  itemBorderColor                   String?
+  itemBorderRadius                  String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -297,14 +308,35 @@ model ArticleBlockContent {
   updatedAt DateTime @updatedAt
 }
 
+model MapBlock {
+  id        String           @id @unique @default(cuid())
+  block     Block?           @relation("BlockToMapBlock")
+  content   MapBlockContent? @relation("MapBlockContentToMapBlock")
+  name      String           @default("map")
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+}
+
+model MapBlockContent {
+  id         String    @id @unique @default(cuid())
+  mapBlock   MapBlock? @relation("MapBlockContentToMapBlock", fields: [mapBlockId], references: [id])
+  mapBlockId String?   @unique
+  store      Store[]   @relation("StoreToMapBlockContent")
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
 model Store {
-  id                Int      @id @default(autoincrement())
+  id                Int               @id @default(autoincrement())
   name              String
+  phoneNumber       String?
+  faxNumber         String?
   address           Address?
   paymentProviderId String?
-  isActive          Boolean  @default(true)
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  isActive          Boolean           @default(true)
+  mapBlockContent   MapBlockContent[] @relation("StoreToMapBlockContent")
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
 }
 
 model Staff {
@@ -314,7 +346,7 @@ model Staff {
   doubleAuthentication Boolean      @default(false)
   email                String       @unique
   isActive             Boolean      @default(true)
-  role                 Role         @default(USER)
+  role                 Role         @default(STAFF)
   password             String?
   userDetails          UserDetails?
   userDetailsId        String?      @unique
@@ -434,6 +466,7 @@ model Order {
   lastName            String?
   shippingMethod      String?
   shippingPrice       String?
+  trackingNumber      String?
   phoneNumber         String?
   createdAt           DateTime    @default(now())
   updatedAt           DateTime    @updatedAt

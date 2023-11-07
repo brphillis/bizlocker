@@ -101,7 +101,7 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
                     color: generateColor(titleColor),
                   }}
                 >
-                  From ${parseInt(lowestPrice).toFixed(2)}
+                  From ${parseFloat(lowestPrice).toFixed(2)}
                 </h2>
               )}
             </div>

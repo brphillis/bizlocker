@@ -288,6 +288,10 @@ const PageBuilder = ({
             />
           )}
 
+          {selectedBlock && (
+            <input name="blockName" value={selectedBlock} hidden readOnly />
+          )}
+
           <BackSubmitButtons
             value="update"
             divider={false}

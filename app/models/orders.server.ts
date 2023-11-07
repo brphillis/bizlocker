@@ -339,13 +339,15 @@ export const updateOrderShippingDetails = async (
   suburb: string,
   state: string,
   postcode: string,
-  country: string
+  country: string,
+  trackingNumber: string
 ) => {
   return await prisma.order.update({
     where: { orderId: orderId },
     data: {
       firstName,
       lastName,
+      trackingNumber,
       address: {
         update: {
           addressLine1,

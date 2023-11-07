@@ -15,18 +15,9 @@ type Props = {
     | ProductCategory
     | User
     | Campaign
-    | Image;
-  type:
-    | "Promotion"
-    | "Department"
-    | "Product"
-    | "Brand"
-    | "Article"
-    | "Category"
-    | "User"
-    | "Campaign"
-    | "Image"
-    | "Staff";
+    | Image
+    | Store;
+  type: string;
   mode: "add" | "edit";
   hasIsActive?: boolean;
   hasDelete?: boolean;

@@ -14,6 +14,18 @@ export const getCountryISO3166 = (
   } else return undefined;
 };
 
+export const getCountrFromISO3166 = (
+  countryCode: string | undefined
+): string | undefined => {
+  const foundCountry = ISO3166Countries.find(
+    (country) => country.code === countryCode
+  );
+
+  if (foundCountry) {
+    return foundCountry.name;
+  } else return undefined;
+};
+
 export const ISO3166Countries = [
   { code: "AF", name: "Afghanistan" },
   { code: "AX", name: "Åland Islands" },

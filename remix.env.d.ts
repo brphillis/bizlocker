@@ -1,480 +1,18 @@
 /// <reference types="@remix-run/dev" />
 /// <reference types="@remix-run/node" />
 
-type GetPostageServicesType = {
-  from_postcode: string;
-  to_postcode: string;
-  length: number;
-  width: number;
-  height: number;
-  weight: number;
-};
-
-type CalculateDeliveryPriceType = {
-  from_postcode: string;
-  to_postcode: string;
-  length: number;
-  width: number;
-  height: number;
-  weight: number;
-  service_code: string;
-};
-
-type AusPostDeliveryOptionsResponse = AusPostDeliveryOption[];
-
-type AusPostDeliveryOption = {
-  code: string;
-  name: string;
-  price: string;
-  max_extra_cover: number;
-  options: AusPostDeliveryOptionsOption;
-};
-
-type AusPostDeliveryOptionsOption = {
-  code: string;
-  name: string;
-  suboptions: AusPostDeliveryOptionsSubOption;
-};
-
-type AusPostDeliveryOptionsSubOption = {
-  option: AusPostDeliveryOption;
-};
-
-type GoogleAuthResponse = {
-  iss: string;
-  nbf: number;
-  aud: string;
-  sub: string;
-  email: string;
-  email_verified: boolean;
-  azp: string;
-  name: string;
-  picture: string;
-  given_name: string;
-};
-
-interface Verifier {
-  id: number;
-  email: string;
-  type: VerifyTypes;
-  code: string | null;
-  expiration: DateTime;
-  createdAt: DateTime;
-  updatedAt: DateTime | null;
-}
-
-// Define a type for validation errors
-interface ValidationErrors {
-  [key: string]: string;
-}
-
-// Define a type for your form configuration
-interface FormConfig {
-  [key: string]: {
-    required: boolean;
-    validator?: (value: string) => string | null;
-  };
-}
-
-type VerifyTypes = "email" | "password";
-
-type SelectValue = {
-  id: string;
-  name: string;
-};
-
-type ContentSelection = {
-  type: BlockContentType;
-  name: string;
-  contentId: number | string;
-};
-
-interface Image {
-  id?: number;
-  href?: string;
-  repoLink?: string;
-  altText?: string;
-  user?: User;
-  userId?: string;
-  article?: Article;
-  articleId?: number;
-  product?: Product;
-  productId?: number;
-  productSubCategory?: ProductSubCategory;
-  productSubCategoryId?: number;
-  brand?: Brand;
-  brandId?: number;
-  campaignTile?: Campaign;
-  campaignBanner?: Campaign;
-  promotionTile?: Promotion;
-  promotionBanner?: Promotion;
-  createdAt?: DateTime;
-  updatedAt?: DateTime;
-}
-
-type LoginData = {
-  username: string;
-  password: string;
-};
-
-type Store = {
-  id: number;
-  name: string;
-  paymentProviderId?: string;
-  address: Address;
-  isActive: boolean;
-  createdAt?: DateTime;
-  updatedAt?: DateTime;
-};
-
-type Staff = {
-  id: string;
-  email: string;
-  password?: string | null;
-  avatar?: Image | null;
-  address?: Address;
-  doubleAuthentication: boolean;
-  isActive: boolean;
-  role: Role;
-  userDetails?: UserDetails;
-
-  createdAt: Date;
-  updatedAt: Date;
-};
-
-type User = {
-  id: string;
-  email: string;
-  password?: string | null;
-  avatar?: Image | null;
-  cart?: Cart;
-  cartId?: number;
-  role: Role;
-  userDetails?: UserDetails;
-  address?: Address;
-  doubleAuthentication: boolean;
-  isActive: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-};
-
-type UserDetails = {
-  firstName?: string | null;
-  lastName?: string | null;
-  phoneNumber?: string | null;
-  dateOfBirth?: Date | null;
-  gender?: Gender | null;
-  user?: User;
-  userId?: string;
-};
-
-interface Address extends NewAddress {
-  id?: string;
-  userId?: string;
-  user?: User;
-}
-
-type NewAddress = {
-  addressLine1?: string;
-  addressLine2?: string;
-  postcode?: string;
-  suburb?: string;
-  state?: string;
-  country?: string;
-  latitude?: string;
-  longitude?: string;
-};
-
-type CountrySelect = {
-  code: string;
-  name: string;
-};
-
-type SquareShippingDetails = {
-  addressLine1?: string;
-  addressLine2?: string;
-  administrativeDistrictLevel1?: string;
-  country?: string;
-  firstName?: string;
-  lastName?: string;
-  locality?: string;
-  postalCode?: string;
-};
-
-interface Order {
-  orderId: string;
-  status: OrderStatus;
-  totalPrice: number;
-  paymentCode: string;
-  paymentUrl: string;
-  paymentLinkId: string;
-  items: OrderItem[];
-  userId: string;
-  user: User;
-  address?: Address;
-  firstName: string;
-  lastName: string;
-  phoneNumber: string;
-  shippingMethod: string;
-  shippingPrice: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-type OrderStatus = "created" | "cancelled" | "paid" | "shipped" | "complete";
-
-interface OrderItem {
-  id: number;
-  quantity: number;
-  unitPrice: number;
-  variant: ProductVariant;
-  variantId: number;
-  order: Order;
-  orderId: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-type NewOrderItem = {
-  id?: number;
-  quantity: number;
-  unitPrice: number;
-  variant?: ProductVariant;
-  variantId: number;
-  order?: Order;
-  orderId?: string;
-};
-
-interface Cart {
-  id: number;
-  user?: User;
-  userId: string;
-  cartItems: CartItem[];
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-interface CartItem {
-  id: number;
-  quantity: number;
-  cart: Cart;
-  cartId: number;
-  variant: ProductVariant;
-  variantId: number;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-interface Department {
-  id: number;
-  name: string;
-  index: number;
-  displayInNavigation: boolean;
-  isActive: boolean;
-  productCategories: ProductCategory[];
-  campaigns: Campaign[];
-  promotions: Promotion[];
-}
-
-type CartDimensions = {
-  height: number;
-  width: number;
-  length: number;
-  weight: number;
-  fragile: boolean;
-};
-
-type ProductCategory = {
-  id: number;
-  name: string;
-  department: Department;
-  departmentId: number;
-  articleCategories?: ArticleCategory[];
-  productSubCategories?: ProductSubCategory[];
-  index: number;
-  displayInNavigation: boolean;
-  isActive: boolean;
-};
-
-interface ProductSubCategory {
-  id: number;
-  name: string;
-  productCategory?: ProductCategory;
-  productCategoryId?: number;
-  productSubCategory?: ProductCategory;
-  productSubCategoryId?: number;
-  products: Product[];
-  productBlockContent: ProductBlockContent[];
-  image?: Image;
-  imageId?: number;
-  campaigns: Campaign[];
-  index: number;
-  displayInNavigation: boolean;
-  isActive: boolean;
-}
-
-interface ArticleCategory {
-  id: number;
-  name: string;
-  articles?: Article[];
-  productCategory?: ProductCategory | null;
-}
-
-interface Product {
-  id: number;
-  name: string;
-  description: string;
-  images: Image[];
-  heroImage?: Image;
-  heroImageId?: number;
-  productSubCategories: ProductSubCategory[];
-  brand?: Brand;
-  brandId?: number;
-  variants: ProductVariant[];
-  discountPercentageHigh: number;
-  discountPercentageLow: number;
-  totalSold: number;
-  isActive: boolean;
-  gender?: Gender;
-  campaigns: Campaign[];
-  promotion?: Promotion;
-  promotionId?: number;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-interface ProductVariant {
-  id: number;
-  name: string;
-  sku: string;
-  price: number;
-  salePrice?: number;
-  isOnSale: boolean;
-  isFragile: boolean;
-  stock?: number;
-  productId: number;
-  product: Product;
-  color?: Color;
-  size?: string;
-  length: number;
-  width: number;
-  height: number;
-  weight: number;
-  totalSold: number;
-  cartItems: CartItem[];
-  orderItems: OrderItem[];
-  orderId?: string;
-  isActive: boolean;
-  isPromoted: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-type NewProductVariant = {
-  id?: number;
-  name?: string;
-  sku?: string;
-  price?: number;
-  salePrice?: number;
-  isOnSale?: boolean;
-  isFragile?: boolean;
-  stock?: number;
-  product?: Product;
-  color?: Color;
-  size?: string;
-  length?: number;
-  width?: number;
-  height?: number;
-  weight?: number;
-  orders?: Order[];
-  isActive?: boolean;
-  isPromoted?: boolean;
-};
-
-interface Brand {
-  id: number;
-  name: string;
-  products: Product[];
-  productBlockContent: ProductBlockContent[];
-  image?: Image;
-  imageId?: number;
-  campaigns: Campaign[];
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-interface Promotion {
-  id: number;
-  name: string;
-  products: Product[];
-  discountPercentage: number;
-  targetGender?: Gender;
-  isActive: boolean;
-  tileImage: Image;
-  tileImageId: number;
-  bannerImage: Image;
-  bannerImageId: number;
-  department: Department;
-  departmentId: number;
-  bannerBlocks: BannerBlock[];
-  tileBlocks: TileBlock[];
-  createdAt: Date;
-  updatedAt?: Date;
-}
-
-interface Campaign {
-  id: number;
-  name: string;
-  excludedProducts: Product[];
-  minSaleRange: number;
-  maxSaleRange: number;
-  targetGender?: Gender;
-  isActive: boolean;
-  tileImage: Image;
-  tileImageId: number;
-  bannerImage: Image;
-  bannerImageId: number;
-  department: Department;
-  departmentId: number;
-  productSubCategories: ProductSubCategory[];
-  brands: Brand[];
-  bannerBlocks: BannerBlock[];
-  tileBlocks: TileBlock[];
-  createdAt: Date;
-  updatedAt?: Date;
-}
-
-type BasicSearchArgs = {
-  id?: string;
-  title?: string;
-  name?: string;
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  gender?: string;
-  status?: string;
-  startDate?: string;
-  endDate?: string;
-  productcategoryname?: string;
-  articlecategoryname?: string;
-  departmentName?: string;
-  brand?: string;
-  department?: string;
-  promotion?: string;
-  productCategory?: string;
-  articleCategory?: string;
-  productSubCategory?: string;
-  category?: string;
-  page: number;
-  perPage: number;
-  sortBy?: string;
-  sortOrder?: string;
-};
-
-type SortBy = "createdAt" | "totalSold" | "price" | "name" | "title";
-type SortOrder = "asc" | "desc";
+// 001 - BUILDER TYPES
 type PageType = "homePage" | "article" | "webPage" | "previewPage";
-type BlockName = "banner" | "hero" | "tile" | "text" | "product" | "article";
+
+type BlockName =
+  | "tile"
+  | "banner"
+  | "map"
+  | "text"
+  | "product"
+  | "article"
+  | "hero";
+
 type BlockContentType =
   | "campaign"
   | "promotion"
@@ -487,7 +25,8 @@ type BlockContentType =
   | "articleCategory"
   | "richText"
   | "gender"
-  | "icon";
+  | "icon"
+  | "store";
 
 type BackgroundPatternName = "wavy" | "isometric";
 
@@ -535,6 +74,7 @@ type BlockContent = {
   image?: Image[] | Image;
   product?: Product[] | Product;
   article?: Article[] | Article;
+  store?: Store[] | Store;
   icon?: string[];
 };
 
@@ -596,6 +136,15 @@ interface BlockMasterOptions {
   color4?: boolean;
   color5?: boolean;
   color6?: boolean;
+  itemColor?: boolean;
+  itemSecondaryColor?: boolean;
+  titleAlign?: boolean;
+  titleSize?: boolean;
+  titleWeight?: boolean;
+  itemBorderDisplay?: boolean;
+  itemBorderSize?: boolean;
+  itemBorderColor?: boolean;
+  itemBorderRadius?: boolean;
   colorSecondary1?: boolean;
   colorSecondary2?: boolean;
   colorSecondary3?: boolean;
@@ -656,6 +205,15 @@ interface BlockOptions {
   color4?: string | null;
   color5?: string | null;
   color6?: string | null;
+  itemColor?: string | null;
+  itemSecondaryColor?: string | null;
+  titleAlign?: string | null;
+  titleSize?: string | null;
+  titleWeight?: string | null;
+  itemBorderDisplay?: string | null;
+  itemBorderSize?: string | null;
+  itemBorderColor?: string | null;
+  itemBorderRadius?: string | null;
   colorSecondary1?: string | null;
   colorSecondary2?: string | null;
   colorSecondary3?: string | null;
@@ -753,7 +311,13 @@ interface ProductBlock {
   updatedAt: DateTime;
 }
 
-type ConcatenatedBlockContent = Array<Promotion | Campaign | Brand | Image>;
+interface MapBlock {
+  id: string;
+  name: string;
+  type: string;
+  block?: Block;
+  store?: Store[];
+}
 
 interface ProductBlockContent {
   id: string;
@@ -787,17 +351,491 @@ interface TextBlockContent {
   updatedAt: Date;
 }
 
-type NewProductBlockContent = {
-  productCategory?: string;
-  productSubCategory?: string;
-  brand?: string;
+type ContentSelection = {
+  type: BlockContentType;
+  name: string;
+  contentId: number | string;
+};
+
+type ConcatenatedBlockContent = Array<Promotion | Campaign | Brand | Image>;
+
+// 002 - POSTAGE TYPES
+type GetPostageServicesType = {
+  from_postcode: string;
+  to_postcode: string;
+  length: number;
+  width: number;
+  height: number;
+  weight: number;
+};
+
+type CalculateDeliveryPriceType = {
+  from_postcode: string;
+  to_postcode: string;
+  length: number;
+  width: number;
+  height: number;
+  weight: number;
+  service_code: string;
+};
+
+type AusPostDeliveryOption = {
+  code: string;
+  name: string;
+  price: string;
+  max_extra_cover: number;
+  options: AusPostDeliveryOptionsOption;
+};
+
+type AusPostDeliveryOptionsOption = {
+  code: string;
+  name: string;
+  suboptions: AusPostDeliveryOptionsSubOption;
+};
+
+type AusPostDeliveryOptionsSubOption = {
+  option: AusPostDeliveryOption;
+};
+
+// 003 - AUTHENTICATION TYPES
+
+type Staff = {
+  id: string;
+  email: string;
+  password?: string | null;
+  avatar?: Image | null;
+  address?: Address;
+  doubleAuthentication: boolean;
+  isActive: boolean;
+  role: Role;
+  userDetails?: UserDetails;
+
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+type User = {
+  id: string;
+  email: string;
+  password?: string | null;
+  avatar?: Image | null;
+  cart?: Cart;
+  cartId?: number;
+  role: Role;
+  userDetails?: UserDetails;
+  address?: Address;
+  doubleAuthentication: boolean;
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+type UserDetails = {
+  firstName?: string | null;
+  lastName?: string | null;
+  phoneNumber?: string | null;
+  dateOfBirth?: Date | null;
+  gender?: Gender | null;
+  user?: User;
+  userId?: string;
+};
+
+type GoogleAuthResponse = {
+  iss: string;
+  nbf: number;
+  aud: string;
+  sub: string;
+  email: string;
+  email_verified: boolean;
+  azp: string;
+  name: string;
+  picture: string;
+  given_name: string;
+};
+
+interface Verifier {
+  id: number;
+  email: string;
+  type: VerifyTypes;
+  code: string | null;
+  expiration: DateTime;
+  createdAt: DateTime;
+  updatedAt: DateTime | null;
+}
+
+interface ValidationErrors {
+  [key: string]: string;
+}
+
+interface FormConfig {
+  [key: string]: {
+    required: boolean;
+    validator?: (value: string) => string | null;
+  };
+}
+
+type VerifyTypes = "email" | "password";
+
+type SelectValue = {
+  id: string;
+  name: string;
+};
+
+// 004 - MEDIA TYPES
+
+interface Image {
+  id?: number;
+  href?: string;
+  repoLink?: string;
+  altText?: string;
+  user?: User;
+  userId?: string;
+  article?: Article;
+  articleId?: number;
+  product?: Product;
+  productId?: number;
+  productSubCategory?: ProductSubCategory;
+  productSubCategoryId?: number;
+  brand?: Brand;
+  brandId?: number;
+  campaignTile?: Campaign;
+  campaignBanner?: Campaign;
+  promotionTile?: Promotion;
+  promotionBanner?: Promotion;
+  createdAt?: DateTime;
+  updatedAt?: DateTime;
+}
+
+// 005 - LOCATION TYPES
+
+type Store = {
+  id: number;
+  name: string;
+  phoneNumber: string;
+  faxNumber: string;
+  paymentProviderId?: string;
+  address: Address;
+  isActive: boolean;
+  createdAt?: DateTime;
+  updatedAt?: DateTime;
+};
+
+interface Address extends NewAddress {
+  id?: string;
+  userId?: string;
+  user?: User;
+}
+
+type NewAddress = {
+  addressLine1?: string;
+  addressLine2?: string;
+  postcode?: string;
+  suburb?: string;
+  state?: string;
+  country?: string;
+  latitude?: string;
+  longitude?: string;
+};
+
+type CountrySelect = {
+  code: string;
+  name: string;
+};
+
+// 006 - ORDER TYPES
+
+type SquareShippingDetails = {
+  addressLine1?: string;
+  addressLine2?: string;
+  administrativeDistrictLevel1?: string;
+  country?: string;
+  firstName?: string;
+  lastName?: string;
+  locality?: string;
+  postalCode?: string;
+};
+
+interface Order {
+  orderId: string;
+  status: OrderStatus;
+  totalPrice: number;
+  paymentCode: string;
+  paymentUrl: string;
+  paymentLinkId: string;
+  items: OrderItem[];
+  userId: string;
+  user: User;
+  address?: Address;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  shippingMethod: string;
+  shippingPrice: string;
+  trackingNumber: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+type OrderStatus = "created" | "cancelled" | "paid" | "shipped" | "complete";
+
+interface OrderItem {
+  id: number;
+  quantity: number;
+  unitPrice: number;
+  variant: ProductVariant;
+  variantId: number;
+  order: Order;
+  orderId: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+type NewOrderItem = {
+  id?: number;
+  quantity: number;
+  unitPrice: number;
+  variant?: ProductVariant;
+  variantId: number;
+  order?: Order;
+  orderId?: string;
+};
+
+interface Cart {
+  id: number;
+  user?: User;
+  userId: string;
+  cartItems: CartItem[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface CartItem {
+  id: number;
+  quantity: number;
+  cart: Cart;
+  cartId: number;
+  variant: ProductVariant;
+  variantId: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+type CartDimensions = {
+  height: number;
+  width: number;
+  length: number;
+  weight: number;
+  fragile: boolean;
+};
+
+// 006 - CATEGORY TYPES
+
+interface Department {
+  id: number;
+  name: string;
+  index: number;
+  displayInNavigation: boolean;
+  isActive: boolean;
+  productCategories: ProductCategory[];
+  campaigns: Campaign[];
+  promotions: Promotion[];
+}
+
+type ProductCategory = {
+  id: number;
+  name: string;
+  department: Department;
+  departmentId: number;
+  articleCategories?: ArticleCategory[];
+  productSubCategories?: ProductSubCategory[];
+  index: number;
+  displayInNavigation: boolean;
+  isActive: boolean;
+};
+
+interface ProductSubCategory {
+  id: number;
+  name: string;
+  productCategory?: ProductCategory;
+  productCategoryId?: number;
+  productSubCategory?: ProductCategory;
+  productSubCategoryId?: number;
+  products: Product[];
+  productBlockContent: ProductBlockContent[];
+  image?: Image;
+  imageId?: number;
+  campaigns: Campaign[];
+  index: number;
+  displayInNavigation: boolean;
+  isActive: boolean;
+}
+
+interface ArticleCategory {
+  id: number;
+  name: string;
+  articles?: Article[];
+  productCategory?: ProductCategory | null;
+}
+
+// 007 - PRODUCT TYPES
+interface Product {
+  id: number;
+  name: string;
+  description: string;
+  images: Image[];
+  heroImage?: Image;
+  heroImageId?: number;
+  productSubCategories: ProductSubCategory[];
+  brand?: Brand;
+  brandId?: number;
+  variants: ProductVariant[];
+  discountPercentageHigh: number;
+  discountPercentageLow: number;
+  totalSold: number;
+  isActive: boolean;
   gender?: Gender;
+  campaigns: Campaign[];
+  promotion?: Promotion;
+  promotionId?: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface ProductVariant {
+  id: number;
+  name: string;
+  sku: string;
+  price: number;
+  salePrice?: number;
+  isOnSale: boolean;
+  isFragile: boolean;
+  stock?: number;
+  productId: number;
+  product: Product;
+  color?: Color;
+  size?: string;
+  length: number;
+  width: number;
+  height: number;
+  weight: number;
+  totalSold: number;
+  cartItems: CartItem[];
+  orderItems: OrderItem[];
+  orderId?: string;
+  isActive: boolean;
+  isPromoted: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+type NewProductVariant = {
+  id?: number;
+  name?: string;
+  sku?: string;
+  price?: number;
+  salePrice?: number;
+  isOnSale?: boolean;
+  isFragile?: boolean;
+  stock?: number;
+  product?: Product;
+  color?: Color;
+  size?: string;
+  length?: number;
+  width?: number;
+  height?: number;
+  weight?: number;
+  orders?: Order[];
+  isActive?: boolean;
+  isPromoted?: boolean;
 };
 
-type NewArticleBlockContent = {
+interface Brand {
+  id: number;
+  name: string;
+  products: Product[];
+  productBlockContent: ProductBlockContent[];
+  image?: Image;
+  imageId?: number;
+  campaigns: Campaign[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// 008 - MARKETING TYPES
+
+interface Promotion {
+  id: number;
+  name: string;
+  products: Product[];
+  discountPercentage: number;
+  targetGender?: Gender;
+  isActive: boolean;
+  tileImage: Image;
+  tileImageId: number;
+  bannerImage: Image;
+  bannerImageId: number;
+  department: Department;
+  departmentId: number;
+  bannerBlocks: BannerBlock[];
+  tileBlocks: TileBlock[];
+  createdAt: Date;
+  updatedAt?: Date;
+}
+
+interface Campaign {
+  id: number;
+  name: string;
+  excludedProducts: Product[];
+  minSaleRange: number;
+  maxSaleRange: number;
+  targetGender?: Gender;
+  isActive: boolean;
+  tileImage: Image;
+  tileImageId: number;
+  bannerImage: Image;
+  bannerImageId: number;
+  department: Department;
+  departmentId: number;
+  productSubCategories: ProductSubCategory[];
+  brands: Brand[];
+  bannerBlocks: BannerBlock[];
+  tileBlocks: TileBlock[];
+  createdAt: Date;
+  updatedAt?: Date;
+}
+
+// 009 - SEARCH TYPES
+type BasicSearchArgs = {
+  id?: string;
+  title?: string;
+  name?: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  gender?: string;
+  status?: string;
+  startDate?: string;
+  endDate?: string;
+  productcategoryname?: string;
+  articlecategoryname?: string;
+  departmentName?: string;
+  brand?: string;
+  department?: string;
+  promotion?: string;
+  productCategory?: string;
   articleCategory?: string;
+  productSubCategory?: string;
+  category?: string;
+  page: number;
+  perPage: number;
+  sortBy?: string;
+  sortOrder?: string;
 };
 
+type SortBy = "createdAt" | "totalSold" | "price" | "name" | "title";
+type SortOrder = "asc" | "desc";
+
+// 010 SQUARE TYPES
 interface Money {
   amount: number;
   currency: string;
