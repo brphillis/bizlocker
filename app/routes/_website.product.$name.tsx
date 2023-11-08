@@ -11,9 +11,11 @@ import { Link, useLoaderData, useSubmit } from "@remix-run/react";
 import PageWrapper from "~/components/Layout/_Website/PageWrapper";
 import { getProduct, searchProducts } from "~/models/products.server";
 import {
+  calculateVariantStock,
   getAvailableColors,
   getAvailableSizes,
 } from "~/helpers/productHelpers";
+
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
   const productId = url.searchParams.get("id");
@@ -133,6 +135,9 @@ const Product = () => {
   const hasSizes = availableSizes && availableSizes[0] !== null;
   const hasColors = availableColors && availableColors[0] !== null;
 
+  const selectedVariantStock = calculateVariantStock(selectedVariant);
+  console.log(selectedVariantStock);
+
   return (
     <PageWrapper>
       <div className="mx-auto cursor-auto px-3 pt-3 max-xl:px-0 max-xl:pt-0">
@@ -246,14 +251,21 @@ const Product = () => {
                     </div>
                   )}
                   ${getVariantUnitPrice(selectedVariant, product)}
-                  {selectedVariant.isPromoted && (
-                    <div className="w-max rounded-sm bg-green-500 px-2 py-1 text-xs text-brand-white">
-                      PROMO
-                    </div>
-                  )}
-                  {selectedVariant.isOnSale && (
-                    <div className="w-max rounded-sm bg-red-500 px-2 py-1 text-xs text-brand-white">
-                      SALE
+                  {selectedVariant.isPromoted &&
+                    selectedVariantStock.totalStock > 0 && (
+                      <div className="mb-1 w-max rounded-sm bg-green-500 px-2 py-1 text-xs text-brand-white">
+                        PROMO
+                      </div>
+                    )}
+                  {selectedVariant.isOnSale &&
+                    selectedVariantStock.totalStock > 0 && (
+                      <div className="mb-1 w-max rounded-sm bg-red-500 px-2 py-1 text-xs text-brand-white">
+                        SALE
+                      </div>
+                    )}
+                  {selectedVariantStock.totalStock <= 0 && (
+                    <div className="mb-1 w-max rounded-sm bg-red-500 px-2 py-1 text-xs text-brand-white">
+                      NO STOCK
                     </div>
                   )}
                 </div>
@@ -261,7 +273,8 @@ const Product = () => {
 
               <div className="flex items-center gap-3">
                 <button
-                  className="ml-auto flex !rounded-sm border-0 bg-primary px-3 py-2 text-white hover:bg-primary focus:outline-none max-sm:order-2"
+                  disabled={selectedVariantStock.totalStock <= 0}
+                  className="ml-auto flex !rounded-sm border-0 bg-primary px-3 py-2 text-white hover:bg-primary focus:outline-none disabled:opacity-50 max-sm:order-2"
                   onClick={handleAddToCart}
                 >
                   Add to Cart

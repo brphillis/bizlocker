@@ -1,7 +1,7 @@
 To Do
 
-products are showing that have no stock
 finish see all stock button for product
+search bar responsivness
 
 Bug Hisory
 
@@ -46,3 +46,4 @@ Feat history
 020 add validation to order shipping address
 021 add multistore stock levels for products
 022 update packages
+023 disable out of stock products from being purchased

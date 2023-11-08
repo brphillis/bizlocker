@@ -119,6 +119,44 @@ const ProductVariantFormModule = ({
     setActiveVariant({});
   };
 
+  const generateSku = () => {
+    const nameInput =
+      (document.querySelector("#ProductName") as HTMLInputElement) || "";
+
+    const colorInput =
+      (document.querySelector("#VariantColor") as HTMLSelectElement) || "";
+
+    const sizeInput =
+      (document.querySelector("#VariantSize") as HTMLInputElement) || "";
+
+    const SKUInput = document.querySelector("#VariantSKU") as HTMLInputElement;
+
+    const name = nameInput.value;
+    const color = colorInput.value;
+    const size = sizeInput.value;
+
+    let generatedSKU: string = "";
+
+    if (name) {
+      generatedSKU += name.split(" ")[0].toUpperCase();
+    }
+    if (color) {
+      generatedSKU += color.toUpperCase();
+    }
+    if (size) {
+      generatedSKU += size.toUpperCase();
+    }
+
+    generatedSKU.trim();
+
+    SKUInput.value = generatedSKU;
+
+    setActiveVariant({
+      ...activeVariant,
+      sku: generatedSKU,
+    });
+  };
+
   useEffect(() => {
     if (!product?.variants) {
       setActiveVariant({});
@@ -180,6 +218,7 @@ const ProductVariantFormModule = ({
             />
 
             <BasicSelect
+              id="VariantColor"
               name="color"
               label="Color"
               placeholder="Color"
@@ -196,6 +235,7 @@ const ProductVariantFormModule = ({
             />
 
             <BasicInput
+              id="VariantSize"
               name="size"
               label="Size"
               placeholder="Size"
@@ -272,6 +312,36 @@ const ProductVariantFormModule = ({
 
             <div className="flex w-full items-end justify-center gap-3 justify-self-start px-[2.3rem] max-md:px-0">
               <BasicInput
+                id="VariantSKU"
+                name="sku"
+                label="SKU"
+                placeholder="SKU"
+                type="text"
+                customWidth="!w-full !max-w-full"
+                // disabled={upsertState === "edit" ? true : false}
+
+                defaultValue={activeVariant?.sku || ""}
+                onChange={(e) => {
+                  setActiveVariant({
+                    ...activeVariant,
+                    sku: e as string,
+                  });
+                }}
+                validationErrors={validationErrors}
+              />
+
+              <button
+                type="button"
+                onClick={generateSku}
+                //   disabled={upsertState === "edit" ? true : false}
+                className="btn btn-primary flex !h-[41px] !min-h-[41px] w-[103px] items-center justify-center !rounded-sm sm:!ml-0"
+              >
+                Generate
+              </button>
+            </div>
+
+            <div className="flex w-full items-end justify-center gap-3 justify-self-start px-[2.3rem] max-md:px-0">
+              <BasicInput
                 name="remainingStock"
                 label="Remaining Stock"
                 placeholder="Remaining Stock"
@@ -292,33 +362,6 @@ const ProductVariantFormModule = ({
                 className="btn btn-primary flex !h-[41px] !min-h-[41px] w-[103px] items-center justify-center !rounded-sm sm:!ml-0"
               >
                 See Stock
-              </button>
-            </div>
-
-            <div className="flex w-full items-end justify-center gap-3 justify-self-start px-[2.3rem] max-md:px-0">
-              <BasicInput
-                name="sku"
-                label="SKU"
-                placeholder="SKU"
-                type="text"
-                customWidth="!w-full !max-w-full"
-                disabled={upsertState === "edit" ? true : false}
-                defaultValue={activeVariant?.sku || ""}
-                onChange={(e) => {
-                  setActiveVariant({
-                    ...activeVariant,
-                    sku: e as string,
-                  });
-                }}
-                validationErrors={validationErrors}
-              />
-
-              <button
-                type="button"
-                disabled={upsertState === "edit" ? true : false}
-                className="btn btn-primary flex !h-[41px] !min-h-[41px] w-[103px] items-center justify-center !rounded-sm sm:!ml-0"
-              >
-                Generate
               </button>
             </div>
           </div>

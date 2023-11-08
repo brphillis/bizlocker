@@ -57,7 +57,7 @@ const AdminSideBar = ({ user }: Props) => {
           </label>
           <h1
             className="select-none text-center text-2xl font-bold tracking-wide text-white/90"
-            onClick={() => navigate("/admin")}
+            onClick={() => navigate("/admin/home")}
           >
             CLUTCH.
           </h1>

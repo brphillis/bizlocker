@@ -123,7 +123,15 @@ export const createOrder = async (
             throw new Error("Unable to get shipping Coords.");
           }
 
-          const variantStoreIds = variant?.stock?.map((e) => e.storeId);
+          const variantStoreIds = variant?.stock
+            ?.filter((e) => e.quantity > 0)
+            .map((f) => f.storeId);
+
+          if (!variantStoreIds) {
+            throw new Error(
+              `No Available Stock for ${variant.product.name} - ${variant.sku}`
+            );
+          }
 
           const stockedStores = await prisma.address.findMany({
             where: {

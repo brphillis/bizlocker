@@ -1,31 +1,33 @@
 import ToolTip from "~/components/Indicators/ToolTip";
 
 type Props = {
-  label: string;
-  type: "text" | "number" | "date";
-  name: string;
-  placeholder: string;
-  defaultValue?: any;
-  validationErrors?: ValidationErrors;
-  styles?: string;
   customWidth?: string;
-  labelColor?: string;
+  defaultValue?: any;
   disabled?: boolean;
+  id?: string;
+  label: string;
+  labelColor?: string;
+  name: string;
   onChange?: (value: string | React.ChangeEvent<HTMLSelectElement>) => void;
+  placeholder: string;
+  styles?: string;
+  type: "text" | "number" | "date";
+  validationErrors?: ValidationErrors;
 };
 
 const BasicInput = ({
-  label,
-  type,
-  name,
-  placeholder,
-  defaultValue,
-  validationErrors,
-  styles,
   customWidth,
-  labelColor,
+  defaultValue,
   disabled,
+  id,
+  label,
+  labelColor,
+  name,
   onChange,
+  placeholder,
+  styles,
+  type,
+  validationErrors,
 }: Props) => {
   return (
     <div
@@ -43,6 +45,7 @@ const BasicInput = ({
         </span>
       </label>
       <input
+        id={id}
         name={name}
         type={type}
         placeholder={placeholder}

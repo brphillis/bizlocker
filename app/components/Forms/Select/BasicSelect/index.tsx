@@ -1,27 +1,29 @@
 import ToolTip from "~/components/Indicators/ToolTip";
 
 type Props = {
-  name: string;
-  label: string;
-  selections: Array<SelectValue>;
-  defaultValue?: string;
-  placeholder: string;
-  onChange?: (value: string | React.ChangeEvent<HTMLSelectElement>) => void;
   customWidth?: string;
+  defaultValue?: string;
+  id?: string;
+  label: string;
   labelColor?: string;
+  name: string;
+  onChange?: (value: string | React.ChangeEvent<HTMLSelectElement>) => void;
+  placeholder: string;
+  selections: Array<SelectValue>;
   validationErrors?: ValidationErrors;
 };
 
 const BasicSelect = ({
-  name,
-  label,
-  selections,
-  defaultValue,
-  placeholder,
   customWidth,
+  defaultValue,
+  id,
+  label,
   labelColor,
-  validationErrors,
+  name,
   onChange,
+  placeholder,
+  selections,
+  validationErrors,
 }: Props) => {
   return (
     <div
@@ -39,6 +41,7 @@ const BasicSelect = ({
         </span>
       </label>
       <select
+        id={id}
         name={name}
         className={`select w-full text-brand-black/75
         ${

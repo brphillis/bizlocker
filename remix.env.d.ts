@@ -941,7 +941,17 @@ interface StockLevel {
   productVariant: ProductVariant;
   productVariantId: number;
   store: Store;
-  storeName: string;
   storeId: number;
   quantity: number;
 }
+
+type TotalStock = {
+  totalStock: number;
+  storeStock: StoreStock[];
+};
+
+type StoreStock = {
+  total: number;
+  storeName: string;
+  storeId: number;
+};

@@ -195,6 +195,7 @@ const Product = () => {
           <div className="form-control gap-3">
             <div className="flex flex-wrap justify-evenly gap-3">
               <BasicInput
+                id="ProductName"
                 label="Name"
                 type="text"
                 name="name"
