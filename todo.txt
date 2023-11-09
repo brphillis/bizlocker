@@ -2,6 +2,7 @@ To Do
 
 finish see all stock button for product
 search bar responsivness
+finish stock transfer requests
 
 Bug Hisory
 

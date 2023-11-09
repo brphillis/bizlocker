@@ -28,6 +28,7 @@ export const upsertStaff = async (staffData: any) => {
     country,
     avatar,
     role,
+    jobTitle,
     store,
     isActive,
     id,
@@ -38,6 +39,7 @@ export const upsertStaff = async (staffData: any) => {
       data: {
         email,
         role,
+        jobTitle,
         doubleAuthentication: false,
         isActive,
         userDetails: {
@@ -86,6 +88,7 @@ export const upsertStaff = async (staffData: any) => {
       update: {
         email,
         role,
+        jobTitle,
         doubleAuthentication: false,
         isActive,
         userDetails: {
@@ -152,6 +155,8 @@ export const upsertStaff = async (staffData: any) => {
       create: {
         id,
         email,
+        role,
+        jobTitle,
         userDetails: {
           create: {
             firstName,

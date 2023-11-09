@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import BasicInput from "../../Input/BasicInput";
 import BasicSelect from "../../Select/BasicSelect";
 import { validateForm } from "~/utility/validate";
+import { useNavigate } from "@remix-run/react";
 
 type Props = {
   storeId: number;
@@ -14,6 +15,8 @@ const ProductVariantFormModule = ({
   product,
   availableColors,
 }: Props) => {
+  const navigate = useNavigate();
+
   const [activeVariant, setActiveVariant] = useState<NewProductVariant>();
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>();
   const [variants, setVariants] = useState<ProductVariant[] | undefined>(
@@ -360,6 +363,9 @@ const ProductVariantFormModule = ({
               <button
                 type="button"
                 className="btn btn-primary flex !h-[41px] !min-h-[41px] w-[103px] items-center justify-center !rounded-sm sm:!ml-0"
+                onClick={() =>
+                  navigate(`stock/${activeVariant.id}`, { replace: true })
+                }
               >
                 See Stock
               </button>

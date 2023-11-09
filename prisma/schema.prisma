@@ -338,8 +338,23 @@ model Store {
   paymentProviderId String?
   isActive          Boolean           @default(true)
   mapBlockContent   MapBlockContent[] @relation("StoreToMapBlockContent")
-  createdAt         DateTime          @default(now())
-  updatedAt         DateTime          @updatedAt
+  team              Team[]
+
+  fromStoreStockRequest StockTransferRequest[] @relation("FromStoreStockRequest")
+  toStoreStockRequest   StockTransferRequest[] @relation("ToStoreStockRequest")
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+}
+
+model Team {
+  id        Int       @id @default(autoincrement())
+  name      String
+  staff     Staff[]
+  store     Store?    @relation(fields: [storeId], references: [id])
+  storeId   Int?
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt //remove optional
 }
 
 model Staff {
@@ -350,11 +365,14 @@ model Staff {
   email                String       @unique
   isActive             Boolean      @default(true)
   role                 Role         @default(STAFF)
+  jobTitle             String?
   password             String?
   userDetails          UserDetails?
   userDetailsId        String?      @unique
   store                Store?       @relation("StaffStore", fields: [storeId], references: [id])
   storeId              Int?         @unique
+  team                 Team?        @relation(fields: [teamId], references: [id])
+  teamId               Int?
   createdAt            DateTime     @default(now())
   updatedAt            DateTime     @updatedAt
 }
@@ -590,17 +608,16 @@ model ProductSubCategory {
 model Article {
   id                Int               @id @default(autoincrement())
   articleCategories ArticleCategory[] @relation("ArticleCategoryToArticle")
-  blocks            Block[]           @relation("ArticlesToBlocks")
-  blockOrder        String[]
-  description       String            @default("Article Description")
   backgroundColor   String?
-  previewPage       PreviewPage[]     @relation("PreviewPageToArticle")
+  blockOrder        String[]
+  blocks            Block[]           @relation("ArticlesToBlocks")
+  createdAt         DateTime          @default(now())
+  description       String            @default("Article Description")
   isActive          Boolean           @default(true)
+  previewPage       PreviewPage[]     @relation("PreviewPageToArticle")
   thumbnail         Image?            @relation("ArticleImage")
   title             String            @unique
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt         DateTime          @updatedAt
 }
 
 model Campaign {
@@ -609,6 +626,7 @@ model Campaign {
   bannerImage          Image                @relation("BannerImageToCampaign", fields: [bannerImageId], references: [id])
   bannerImageId        Int                  @unique
   brands               Brand[]              @relation("BrandToCampaign")
+  createdAt            DateTime             @default(now())
   department           Department           @relation(fields: [departmentId], references: [id])
   departmentId         Int
   excludedProducts     Product[]
@@ -621,9 +639,7 @@ model Campaign {
   tileBlockContent     TileBlockContent[]   @relation("CampaignToTileBlockContent")
   tileImage            Image                @relation("TileImageToCampaign", fields: [tileImageId], references: [id])
   tileImageId          Int                  @unique
-
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @default(now()) @updatedAt
+  updatedAt            DateTime?            @default(now()) @updatedAt
 }
 
 model Promotion {
@@ -631,6 +647,7 @@ model Promotion {
   bannerBlockContent BannerBlockContent[] @relation("PromotionToBannerBlockContent")
   bannerImage        Image                @relation("BannerImageToPromotion", fields: [bannerImageId], references: [id])
   bannerImageId      Int                  @unique
+  createdAt          DateTime             @default(now())
   department         Department           @relation(fields: [departmentId], references: [id])
   departmentId       Int
   discountPercentage Float                @default(0)
@@ -641,9 +658,7 @@ model Promotion {
   tileBlockContent   TileBlockContent[]   @relation("PromotionToTileBlockContent")
   tileImage          Image                @relation("TileImageToPromotion", fields: [tileImageId], references: [id])
   tileImageId        Int                  @unique
-
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @default(now()) @updatedAt
+  updatedAt          DateTime?            @default(now()) @updatedAt
 }
 
 model Product {
@@ -651,6 +666,7 @@ model Product {
   brand                  Brand?               @relation("BrandToProduct", fields: [brandId], references: [id])
   brandId                Int?
   campaigns              Campaign[]
+  createdAt              DateTime             @default(now())
   description            String
   discountPercentageHigh Float                @default(0)
   discountPercentageLow  Float                @default(0)
@@ -666,47 +682,62 @@ model Product {
   promotion              Promotion?           @relation("PromotionToProduct", fields: [promotionId], references: [id])
   promotionId            Int?
   totalSold              Int                  @default(0)
+  updatedAt              DateTime             @updatedAt
   variants               ProductVariant[]     @relation("ProductVariants")
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 model ProductVariant {
-  id         Int          @id @default(autoincrement())
-  cartItems  CartItem[]
-  color      Color?
-  isActive   Boolean      @default(true)
-  isOnSale   Boolean      @default(false)
-  isFragile  Boolean      @default(false)
-  isPromoted Boolean      @default(false)
-  name       String
-  orderId    String?
-  orderItems OrderItem[]
-  price      Float
-  product    Product      @relation("ProductVariants", fields: [productId], references: [id])
-  productId  Int
-  salePrice  Float?
-  size       String?
-  sku        String       @unique
-  stock      StockLevel[]
-  totalSold  Int          @default(0)
-  length     Int          @default(0)
-  width      Int          @default(0)
-  height     Int          @default(0)
-  weight     Int          @default(0)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                   Int                    @id @default(autoincrement())
+  cartItems            CartItem[]
+  color                Color?
+  createdAt            DateTime               @default(now())
+  height               Int                    @default(0)
+  isActive             Boolean                @default(true)
+  isFragile            Boolean                @default(false)
+  isOnSale             Boolean                @default(false)
+  isPromoted           Boolean                @default(false)
+  length               Int                    @default(0)
+  name                 String
+  orderId              String?
+  orderItems           OrderItem[]
+  price                Float
+  product              Product                @relation("ProductVariants", fields: [productId], references: [id])
+  productId            Int
+  salePrice            Float?
+  size                 String?
+  sku                  String                 @unique
+  stock                StockLevel[]
+  stockTransferRequest StockTransferRequest[] @relation("ProductVariantStockRequest")
+  totalSold            Int                    @default(0)
+  updatedAt            DateTime               @updatedAt
+  weight               Int                    @default(0)
+  width                Int                    @default(0)
 }
 
 model StockLevel {
   id               Int             @id @default(autoincrement())
+  createdAt        DateTime        @default(now())
   productVariant   ProductVariant? @relation(fields: [productVariantId], references: [id])
   productVariantId Int
+  quantity         Int
   store            Store?          @relation(fields: [storeId], references: [id])
   storeId          Int
+  updatedAt        DateTime?       @updatedAt //remove optional
+}
+
+model StockTransferRequest {
+  id               Int            @id @default(autoincrement())
+  fromStore        Store?         @relation("FromStoreStockRequest", fields: [fromStoreId], references: [id])
+  fromStoreId      Int
+  productVariant   ProductVariant @relation("ProductVariantStockRequest", fields: [productVariantId], references: [id])
+  productVariantId Int
   quantity         Int
+  status           OrderStatus
+  toStore          Store?         @relation("ToStoreStockRequest", fields: [toStoreId], references: [id])
+  toStoreId        Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Brand {
@@ -717,10 +748,10 @@ model Brand {
   name                String                @unique
   productBlockContent ProductBlockContent[] @relation("BrandToProductBlock")
   products            Product[]             @relation("BrandToProduct")
+  tileBlockContent    TileBlockContent[]    @relation("BrandToTileBlockContent")
 
-  createdAt        DateTime           @default(now())
-  updatedAt        DateTime           @updatedAt
-  tileBlockContent TileBlockContent[] @relation("BrandToTileBlockContent")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum Role {
@@ -728,6 +759,7 @@ enum Role {
   ADMIN
   MANAGER
   STAFF
+  EDITOR
   USER
 }
 

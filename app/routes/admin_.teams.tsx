@@ -12,7 +12,7 @@ import {
 } from "@remix-run/react";
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
-import { searchStores } from "~/models/stores.server";
+import { searchTeams } from "~/models/teams.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
@@ -20,26 +20,34 @@ export const loader = async ({ request }: LoaderArgs) => {
     return redirect("/admin/login");
   }
 
-  const url = new URL(request.url);
+  // const { storeId } =
+  //   ((await getUserDataFromSession(request, STAFF_SESSION_KEY)) as Staff) || {};
 
-  const { stores, totalPages } = await searchStores(undefined, url);
+  // if (!storeId) {
+  //   return redirect("/admin/not-found");
+  // }
+
+  const url = new URL(request.url);
+  // url.searchParams.set("storeId", storeId?.toString());
+
+  const { teams, totalPages } = await searchTeams(undefined, url);
 
   return {
-    stores,
+    teams,
     totalPages,
   };
 };
 
-const ManageStores = () => {
+const ManageTeams = () => {
   const navigate = useNavigate();
-  const { stores, totalPages } = useLoaderData();
+  const { teams, totalPages } = useLoaderData();
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("pageNumber")) || 1;
-
+  console.log("TEAMS", teams);
   return (
     <AdminPageWrapper>
       <Form method="GET" className="relative h-full w-full bg-base-200 p-6">
-        <AdminPageHeader title="Manage Stores" addButtonText="Add Store" />
+        <AdminPageHeader title="Manage Teams" addButtonText="Add Team" />
 
         <div className="mt-3 flex flex-col">
           <div className="flex flex-row flex-wrap gap-6">
@@ -62,47 +70,46 @@ const ManageStores = () => {
 
         <div className="divider w-full" />
 
-        <div className="w-full max-w-[80vw] overflow-x-auto">
+        <div className="max-h-[520px] w-full max-w-[80vw] overflow-auto">
           <table className="table table-sm my-3">
             <thead className="sticky top-0">
               <tr>
                 {currentPage && <th>#</th>}
                 <th>Name</th>
-                <th>State</th>
+                <th>Location</th>
                 <th>Active</th>
               </tr>
             </thead>
             <tbody>
-              {stores &&
-                stores?.map(
-                  ({ id, name, address, isActive }: Store, i: number) => {
-                    return (
-                      <tr
-                        className="cursor-pointer transition-colors duration-200 hover:bg-base-100"
-                        key={"product" + id}
-                        onClick={() => {
-                          navigate(
-                            `${location.pathname + "/" + id}${location.search}`
-                          );
-                        }}
-                      >
-                        {currentPage && (
-                          <td>{i + 1 + (currentPage - 1) * stores?.length}</td>
+              {teams &&
+                teams?.map(({ id, name, store, isActive }: Team, i: number) => {
+                  const { name: storeName } = store;
+                  return (
+                    <tr
+                      className="cursor-pointer transition-colors duration-200 hover:bg-base-100"
+                      key={"product" + id}
+                      onClick={() => {
+                        navigate(
+                          `${location.pathname + "/" + id}${location.search}`
+                        );
+                      }}
+                    >
+                      {currentPage && (
+                        <td>{i + 1 + (currentPage - 1) * teams?.length}</td>
+                      )}
+                      <td>{name}</td>
+                      <td>{storeName}</td>
+                      <td>
+                        {!isActive && (
+                          <div className="ml-4 h-3 w-3 rounded-full bg-red-500" />
                         )}
-                        <td>{name}</td>
-                        <td>{address?.state}</td>
-                        <td>
-                          {!isActive && (
-                            <div className="ml-4 h-3 w-3 rounded-full bg-red-500" />
-                          )}
-                          {isActive && (
-                            <div className="ml-4 h-3 w-3 self-center rounded-full bg-success" />
-                          )}
-                        </td>
-                      </tr>
-                    );
-                  }
-                )}
+                        {isActive && (
+                          <div className="ml-4 h-3 w-3 self-center rounded-full bg-success" />
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
             </tbody>
           </table>
         </div>
@@ -114,4 +121,4 @@ const ManageStores = () => {
   );
 };
 
-export default ManageStores;
+export default ManageTeams;
