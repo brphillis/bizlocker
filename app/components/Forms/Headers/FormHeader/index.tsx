@@ -5,7 +5,7 @@ import { IoClose } from "react-icons/io5";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
 
 type Props = {
-  valueToChange:
+  valueToChange?:
     | Promotion
     | Product
     | ProductSubCategory
@@ -18,7 +18,7 @@ type Props = {
     | Image
     | Store;
   type: string;
-  mode: "add" | "edit";
+  mode: "add" | "edit" | "view";
   hasIsActive?: boolean;
   hasDelete?: boolean;
   hasConnections?: boolean;
@@ -34,11 +34,13 @@ const FormHeader = ({
   const navigate = useNavigate();
 
   const [isActive, setIsActive] = useState<string | undefined>(
-    mode === "add"
-      ? " "
-      : "isActive" in valueToChange && valueToChange?.isActive
-      ? " "
-      : ""
+    valueToChange
+      ? mode === "add"
+        ? " "
+        : "isActive" in valueToChange && valueToChange?.isActive
+        ? " "
+        : ""
+      : undefined
   );
 
   return (
@@ -71,7 +73,7 @@ const FormHeader = ({
             </button>
           )}
           <button type="button" className="cursor-pointer">
-            <IoClose onClick={() => navigate("..")} />
+            <IoClose onClick={() => navigate("..", { replace: true })} />
           </button>
         </div>
       </div>

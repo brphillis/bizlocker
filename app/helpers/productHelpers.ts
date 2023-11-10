@@ -28,3 +28,41 @@ export const getAvailableColors = (
   }
   return colors;
 };
+
+export const calculateVariantStock = (variant: ProductVariant): TotalStock => {
+  const stockLevels: StockLevel[] | undefined = variant.stock;
+
+  let totalStock: TotalStock = {
+    totalStock: 0,
+    storeStock: [],
+  };
+
+  stockLevels?.forEach(({ quantity, storeId, store }: StockLevel) => {
+    const { name } = store;
+
+    const storeStock: StoreStock = {
+      total: quantity,
+      storeName: name,
+      storeId: storeId,
+    };
+
+    totalStock.totalStock += quantity;
+    totalStock.storeStock.push(storeStock);
+  });
+
+  return totalStock;
+};
+
+export const calculateProductStock = (product: Product): number => {
+  let total: number = 0;
+
+  product.variants.forEach((variant: ProductVariant) => {
+    const variantTotalStock = calculateVariantStock(variant);
+
+    if (variantTotalStock.totalStock) {
+      total += variantTotalStock.totalStock;
+    }
+  });
+
+  return total;
+};

@@ -29,12 +29,14 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   const id = params?.id;
 
+  const roles = await getAvailableRoles();
+  const stores = await getStores();
+  let staffMember;
+
   if (id && id !== "add") {
-    const staffMember = await getStaff(id);
-    const roles = await getAvailableRoles();
-    const stores = await getStores();
-    return { staffMember, roles, stores };
-  } else return null;
+    staffMember = await getStaff(id);
+  }
+  return { staffMember, roles, stores };
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
@@ -59,6 +61,7 @@ export const action = async ({ request, params }: ActionArgs) => {
     country,
     avatar,
     role,
+    jobTitle,
     store,
     isActive,
   } = form;
@@ -96,6 +99,7 @@ export const action = async ({ request, params }: ActionArgs) => {
     isActive: isActive ? true : false,
     avatar: avatar ? (JSON.parse(avatar?.toString()) as Image) : undefined,
     role: role as string,
+    jobTitle: jobTitle as string,
     store: store as string,
     id: id,
   };
@@ -107,7 +111,7 @@ export const action = async ({ request, params }: ActionArgs) => {
 
 const ModifyStaff = () => {
   const navigate = useNavigate();
-  const { staffMember, roles, stores } = useLoaderData();
+  const { staffMember, roles, stores } = useLoaderData() || {};
   const { validationErrors, success } =
     (useActionData() as {
       success: boolean;
@@ -151,10 +155,20 @@ const ModifyStaff = () => {
                 label="Role"
                 customWidth="w-full"
                 placeholder="Role"
-                selections={roles.map((e: string) => {
+                selections={roles?.map((e: string) => {
                   return { id: e, name: e };
                 })}
                 defaultValue={staffMember?.role || ""}
+              />
+
+              <BasicInput
+                name="jobTitle"
+                label="Job Title"
+                placeholder="Job Title"
+                type="text"
+                customWidth="w-full"
+                defaultValue={staffMember?.jobTitle || undefined}
+                validationErrors={validationErrors}
               />
 
               <BasicSelect

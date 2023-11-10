@@ -6,12 +6,14 @@ import {
   useSubmit,
 } from "@remix-run/react";
 import {
+  IoBriefcase,
   IoFileTrayFull,
   IoFolder,
   IoHomeSharp,
   IoLocation,
   IoMegaphone,
   IoMenu,
+  IoNotificationsOutline,
   IoPeople,
   IoPlanet,
   IoPricetag,
@@ -57,7 +59,7 @@ const AdminSideBar = ({ user }: Props) => {
           </label>
           <h1
             className="select-none text-center text-2xl font-bold tracking-wide text-white/90"
-            onClick={() => navigate("/admin")}
+            onClick={() => navigate("/admin/home")}
           >
             CLUTCH.
           </h1>
@@ -107,6 +109,37 @@ const AdminSideBar = ({ user }: Props) => {
               <details className="collapse collapse-arrow relative rounded-none border border-x-0 border-brand-white/10 bg-brand-white/5  pb-1 open:pb-0">
                 <summary className="text-md collapse-title -mb-3 font-medium tracking-wide text-primary-content after:mt-[-4px] after:text-brand-white">
                   <div className="flex items-center gap-3">
+                    <IoBriefcase size={18} />
+                    <p className="select-none transition duration-500 ease-in-out hover:scale-[1.03]">
+                      My WorkPlace
+                    </p>
+                  </div>
+                </summary>
+
+                <div className="collapse-content">
+                  <ul className="!px-3 !pt-1 text-white/75">
+                    <li onClick={() => navigate("/admin/staff")}>
+                      <label htmlFor="my-drawer-2" className="hover:text-white">
+                        Staff
+                      </label>
+                    </li>
+                    <li onClick={() => navigate("/admin/teams")}>
+                      <label htmlFor="my-drawer-2" className="hover:text-white">
+                        Teams
+                      </label>
+                    </li>
+                    <li onClick={() => navigate("/admin/orders")}>
+                      <label htmlFor="my-drawer-2" className="hover:text-white">
+                        Orders
+                      </label>
+                    </li>
+                  </ul>
+                </div>
+              </details>
+
+              <details className="collapse collapse-arrow relative rounded-none border border-x-0 border-t-0 border-brand-white/10 bg-brand-white/5 pb-1 open:pb-0">
+                <summary className="text-md collapse-title -mb-3 font-medium tracking-wide text-primary-content after:mt-[-4px] after:text-brand-white">
+                  <div className="flex items-center gap-3">
                     <IoPlanet size={18} />
                     <p className="transition duration-500 ease-in-out hover:scale-[1.03]">
                       Website
@@ -139,7 +172,7 @@ const AdminSideBar = ({ user }: Props) => {
                 </div>
               </details>
 
-              <details className="collapse-arrow collapse relative rounded-none border border-x-0  border-t-0 border-brand-white/10 bg-brand-white/5 pb-1 open:pb-0">
+              <details className="collapse collapse-arrow relative rounded-none border border-x-0  border-t-0 border-brand-white/10 bg-brand-white/5 pb-1 open:pb-0">
                 <summary className="text-md collapse-title -mb-3 font-medium tracking-wide text-primary-content after:mt-[-4px] after:text-brand-white">
                   <div className="flex items-center gap-3">
                     <IoPeople size={18} />
@@ -151,28 +184,16 @@ const AdminSideBar = ({ user }: Props) => {
 
                 <div className="collapse-content">
                   <ul className="!px-3 !pt-1 text-white/75">
-                    <li onClick={() => navigate("/admin/staff")}>
-                      <label htmlFor="my-drawer-2" className="hover:text-white">
-                        Staff
-                      </label>
-                    </li>
-
                     <li onClick={() => navigate("/admin/users")}>
                       <label htmlFor="my-drawer-2" className="hover:text-white">
                         Users
-                      </label>
-                    </li>
-
-                    <li onClick={() => navigate("/admin/orders")}>
-                      <label htmlFor="my-drawer-2" className="hover:text-white">
-                        Orders
                       </label>
                     </li>
                   </ul>
                 </div>
               </details>
 
-              <details className="collapse-arrow collapse relative rounded-none border border-x-0 border-t-0 border-brand-white/10 bg-brand-white/5 pb-1 open:pb-0">
+              <details className="collapse collapse-arrow relative rounded-none border border-x-0 border-t-0 border-brand-white/10 bg-brand-white/5 pb-1 open:pb-0">
                 <summary className="text-md collapse-title -mb-3 font-medium tracking-wide text-primary-content after:mt-[-4px] after:text-brand-white">
                   <div className="flex items-center gap-3">
                     <IoLocation size={18} />
@@ -193,7 +214,7 @@ const AdminSideBar = ({ user }: Props) => {
                 </div>
               </details>
 
-              <details className="collapse-arrow collapse relative rounded-none border border-x-0 border-t-0 border-brand-white/10 bg-brand-white/5  pb-1 open:pb-0">
+              <details className="collapse collapse-arrow relative rounded-none border border-x-0 border-t-0 border-brand-white/10 bg-brand-white/5  pb-1 open:pb-0">
                 <summary className="text-md collapse-title -mb-3 font-medium tracking-wide text-primary-content after:mt-[-4px] after:text-brand-white">
                   <div className="flex items-center gap-3">
                     <IoPricetag size={18} />
@@ -231,11 +252,16 @@ const AdminSideBar = ({ user }: Props) => {
                         Brands
                       </label>
                     </li>
+                    <li onClick={() => navigate("/admin/stock-transfers")}>
+                      <label htmlFor="my-drawer-2" className="hover:text-white">
+                        Stock Transfers
+                      </label>
+                    </li>
                   </ul>
                 </div>
               </details>
 
-              <details className="collapse-arrow collapse relative rounded-none border border-x-0 border-t-0 border-brand-white/10 bg-brand-white/5  pb-1 open:pb-0">
+              <details className="collapse collapse-arrow relative rounded-none border border-x-0 border-t-0 border-brand-white/10 bg-brand-white/5  pb-1 open:pb-0">
                 <summary className="text-md collapse-title -mb-3 font-medium tracking-wide text-primary-content after:mt-[-4px] after:text-brand-white">
                   <div className="flex items-center gap-3">
                     <IoFolder size={18} />
@@ -255,7 +281,7 @@ const AdminSideBar = ({ user }: Props) => {
                 </div>
               </details>
 
-              <details className="collapse-arrow collapse relative rounded-none border border-x-0 border-t-0 border-brand-white/10 bg-brand-white/5  pb-1 open:pb-0">
+              <details className="collapse collapse-arrow relative rounded-none border border-x-0 border-t-0 border-brand-white/10 bg-brand-white/5  pb-1 open:pb-0">
                 <summary className="text-md collapse-title -mb-3 font-medium tracking-wide text-primary-content after:mt-[-4px] after:text-brand-white">
                   <div className="flex items-center gap-3">
                     <IoFileTrayFull size={18} />
@@ -275,7 +301,7 @@ const AdminSideBar = ({ user }: Props) => {
                 </div>
               </details>
 
-              <details className="collapse-arrow collapse relative rounded-none border border-x-0 border-t-0 border-brand-white/10 bg-brand-white/5  pb-1 open:pb-0">
+              <details className="collapse collapse-arrow relative rounded-none border border-x-0 border-t-0 border-brand-white/10 bg-brand-white/5  pb-1 open:pb-0">
                 <summary className="text-md collapse-title -mb-3 font-medium tracking-wide text-primary-content after:mt-[-4px] after:text-brand-white">
                   <div className="flex items-center gap-3">
                     <IoMegaphone size={18} />
@@ -302,8 +328,14 @@ const AdminSideBar = ({ user }: Props) => {
             </div>
 
             <div className="border-t-1 absolute bottom-0 flex w-full items-center justify-between border-t border-t-brand-white/10 bg-brand-white/5 p-3">
-              <div className="cursor-pointer text-brand-white/50 hover:text-brand-white">
-                <IoSettingsOutline size={22} />
+              <div className="flex items-center gap-3">
+                <div className="cursor-pointer text-brand-white/50 hover:text-brand-white">
+                  <IoSettingsOutline size={22} />
+                </div>
+
+                <div className="cursor-pointer text-brand-white/50 hover:text-brand-white">
+                  <IoNotificationsOutline size={22} />
+                </div>
               </div>
               <div>{user && <>{LogoutButton()}</>}</div>
             </div>

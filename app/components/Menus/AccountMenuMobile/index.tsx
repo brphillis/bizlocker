@@ -4,7 +4,7 @@ import { IoChevronForward, IoLogOutOutline } from "react-icons/io5";
 const AccountMenuMobile = () => {
   const submit = useSubmit();
   return (
-    <div id="AccountMenuMobile" className="w-full max-w-[520px]">
+    <div id="AccountMenuMobile" className="-m-[1px] w-full max-w-[520px]">
       <div className="collapse collapse-arrow hidden w-full rounded-none bg-brand-black max-md:grid">
         <input type="checkbox" />
         <div className="collapse-title text-center text-xl font-medium text-brand-white">

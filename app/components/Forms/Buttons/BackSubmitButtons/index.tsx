@@ -9,6 +9,7 @@ type Props = {
   backFunction?: () => void;
   requiredValueToSubmit?: boolean;
   validationMessage?: string;
+  hideSubmit?: boolean;
 };
 
 const BackSubmitButtons = ({
@@ -19,6 +20,7 @@ const BackSubmitButtons = ({
   requiredValueToSubmit = true,
   validationMessage,
   backFunction,
+  hideSubmit,
 }: Props) => {
   const navigate = useNavigate();
   const [validationErrors, setValidationErrors] = useState<string[]>();
@@ -56,18 +58,20 @@ const BackSubmitButtons = ({
         >
           Back
         </button>
-        <button
-          type={requiredValueToSubmit ? "submit" : "button"}
-          name="_action"
-          value={value}
-          className="btn btn-primary w-max !rounded-sm"
-          onClick={() => {
-            checkValidation();
-            setLoading && requiredValueToSubmit && setLoading(true);
-          }}
-        >
-          {loading ? "Loading..." : "Submit"}
-        </button>
+        {!hideSubmit && (
+          <button
+            type={requiredValueToSubmit ? "submit" : "button"}
+            name="_action"
+            value={value}
+            className="btn btn-primary w-max !rounded-sm"
+            onClick={() => {
+              checkValidation();
+              setLoading && requiredValueToSubmit && setLoading(true);
+            }}
+          >
+            {loading ? "Loading..." : "Submit"}
+          </button>
+        )}
       </div>
     </>
   );

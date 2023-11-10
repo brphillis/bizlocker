@@ -97,19 +97,19 @@ const ModifyBrand = () => {
           hasIsActive={true}
           hasDelete={true}
         />
+        <div className="flex flex-col gap-6">
+          <BasicInput
+            name="name"
+            label="Name"
+            placeholder="Name"
+            type="text"
+            customWidth="w-full"
+            defaultValue={brand?.name || undefined}
+            validationErrors={validationErrors}
+          />
 
-        <BasicInput
-          name="name"
-          label="Name"
-          placeholder="Name"
-          type="text"
-          customWidth="w-full"
-          defaultValue={brand?.name || undefined}
-          validationErrors={validationErrors}
-        />
-
-        <UploadImage defaultValue={brand?.image} />
-
+          <UploadImage defaultValue={brand?.image} />
+        </div>
         <BackSubmitButtons loading={loading} setLoading={setLoading} />
       </Form>
     </DarkOverlay>

@@ -1,27 +1,31 @@
 import ToolTip from "~/components/Indicators/ToolTip";
 
 type Props = {
-  name: string;
-  label: string;
-  selections: Array<SelectValue>;
-  defaultValue?: string;
-  placeholder: string;
-  onChange?: (value: string | React.ChangeEvent<HTMLSelectElement>) => void;
   customWidth?: string;
+  defaultValue?: string;
+  disabled?: boolean;
+  id?: string;
+  label: string;
   labelColor?: string;
+  name: string;
+  onChange?: (value: string | React.ChangeEvent<HTMLSelectElement>) => void;
+  placeholder: string;
+  selections: Array<SelectValue>;
   validationErrors?: ValidationErrors;
 };
 
 const BasicSelect = ({
-  name,
-  label,
-  selections,
-  defaultValue,
-  placeholder,
   customWidth,
+  defaultValue,
+  disabled,
+  id,
+  label,
   labelColor,
-  validationErrors,
+  name,
   onChange,
+  placeholder,
+  selections,
+  validationErrors,
 }: Props) => {
   return (
     <div
@@ -39,8 +43,11 @@ const BasicSelect = ({
         </span>
       </label>
       <select
+        id={id}
+        disabled={disabled}
         name={name}
         className={`select w-full text-brand-black/75
+        disabled:!border-base-100/50 disabled:!bg-base-100/50 disabled:!text-brand-black/50
         ${
           validationErrors?.hasOwnProperty(name)
             ? "select-error border !outline-none"

@@ -397,9 +397,22 @@ type AusPostDeliveryOptionsSubOption = {
   option: AusPostDeliveryOption;
 };
 
-// 003 - AUTHENTICATION TYPES
+//// TEAM TYPES
 
-type Staff = {
+interface Team {
+  id: number;
+  name: string;
+  staff: Staff[];
+  store: Store;
+  storeId: number;
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+//// AUTHENTICATION TYPES
+
+interface Staff {
   id: string;
   address?: Address;
   avatar?: Image | null;
@@ -411,12 +424,15 @@ type Staff = {
   store?: Store;
   storeId?: number;
   userDetails?: UserDetails;
+  jobTitle?: string;
+  team?: Team;
+  teamId?: number;
 
   createdAt: Date;
   updatedAt: Date;
-};
+}
 
-type User = {
+interface User {
   id: string;
   email: string;
   password?: string | null;
@@ -430,9 +446,9 @@ type User = {
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
-};
+}
 
-type UserDetails = {
+interface UserDetails {
   firstName?: string | null;
   lastName?: string | null;
   phoneNumber?: string | null;
@@ -440,7 +456,7 @@ type UserDetails = {
   gender?: Gender | null;
   user?: User;
   userId?: string;
-};
+}
 
 type GoogleAuthResponse = {
   iss: string;
@@ -510,7 +526,7 @@ interface Image {
 
 // 005 - LOCATION TYPES
 
-type Store = {
+interface Store {
   id: number;
   name: string;
   phoneNumber: string;
@@ -519,10 +535,13 @@ type Store = {
   address: Address;
   orderItem: OrderItem[];
   staff?: Staff[];
+  team?: Team[];
+  fromStoreStockRequest?: StockTransferRequest[];
+  toStoreStockRequest?: StockTransferRequest[];
   isActive: boolean;
   createdAt?: DateTime;
   updatedAt?: DateTime;
-};
+}
 
 interface Address extends NewAddress {
   id?: string;
@@ -581,6 +600,12 @@ interface Order {
 }
 
 type OrderStatus = "created" | "cancelled" | "paid" | "shipped" | "complete";
+type ApprovalStatus =
+  | "created"
+  | "cancelled"
+  | "approved"
+  | "processing"
+  | "complete";
 
 interface OrderItem {
   id: number;
@@ -726,6 +751,7 @@ interface ProductVariant {
   weight: number;
   totalSold: number;
   stockLevel: StockLevel;
+  stockTransferRequest?: StockTransferRequest[];
   cartItems: CartItem[];
   orderItems: OrderItem[];
   orderId?: string;
@@ -936,12 +962,48 @@ interface MapFunctions {
   ) => void;
 }
 
+interface StockTransferRequest {
+  id: number;
+  productVariant: ProductVariant;
+  productVariantId: number;
+  quantity: number;
+  fromStore: Store;
+  fromStoreId: number;
+  toStore: Store;
+  toStoreId: number;
+  trackingNumber?: string;
+  status: ApprovalStatus;
+  approvedBy?: string;
+  createdBy: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 interface StockLevel {
   id: number;
   productVariant: ProductVariant;
   productVariantId: number;
   store: Store;
-  storeName: string;
   storeId: number;
   quantity: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
+
+type TotalStock = {
+  totalStock: number;
+  storeStock: StoreStock[];
+};
+
+type StoreStock = {
+  total: number;
+  storeName: string;
+  storeId: number;
+};
+
+type ToastType = "success" | "error" | "warning" | "info" | "question";
+
+type PageNotification = {
+  message: string;
+  type: ToastType;
+};

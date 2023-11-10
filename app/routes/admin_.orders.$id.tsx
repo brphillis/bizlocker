@@ -92,7 +92,7 @@ const ModifyOrder = () => {
 
         <div className="form-control">
           <div className="flex justify-center rounded-lg bg-base-100 py-6">
-            <OrderStatusSteps status={order?.status} />
+            <OrderStatusSteps status={order?.status} type="orderStatus" />
           </div>
 
           {order.status === "created" && (

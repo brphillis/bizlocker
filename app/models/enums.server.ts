@@ -1,9 +1,8 @@
-import { Role, Color } from "@prisma/client";
+import { Role, Color, OrderStatus, ApprovalStatus } from "@prisma/client";
 
 export const getAvailableRoles = async () => {
   const availableRoles = Object.values(Role);
 
-  // Sort the colors alphabetically
   availableRoles.sort((a, b) => a.localeCompare(b));
 
   return availableRoles;
@@ -12,8 +11,23 @@ export const getAvailableRoles = async () => {
 export const getAvailableColors = async () => {
   const availableColors = Object.values(Color);
 
-  // Sort the colors alphabetically
   availableColors.sort((a, b) => a.localeCompare(b));
 
   return availableColors;
+};
+
+export const getOrderStatusList = async () => {
+  const statusList = Object.values(OrderStatus);
+
+  statusList.sort((a, b) => a.localeCompare(b));
+
+  return statusList;
+};
+
+export const getApprovalStatusList = async () => {
+  const statusList = Object.values(ApprovalStatus);
+
+  statusList.sort((a, b) => a.localeCompare(b));
+
+  return statusList;
 };

@@ -27,6 +27,7 @@ export const getCartDeliveryOptions = async (
   });
 
   let closestPostCode;
+
   if (shippingCoords) {
     closestPostCode = findClosestPostcode(
       shippingCoords?.lat,

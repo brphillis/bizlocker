@@ -15,6 +15,7 @@ import { getProductSubCategories } from "~/models/productSubCategories.server";
 import RichTextInput from "~/components/Forms/Input/RichTextInput/index.client";
 import {
   Form,
+  Outlet,
   useActionData,
   useLoaderData,
   useNavigate,
@@ -178,121 +179,125 @@ const Product = () => {
   }, [success, navigate]);
 
   return (
-    <DarkOverlay>
-      <Form
-        method="POST"
-        className="scrollbar-hide relative w-[600px] max-w-full overflow-y-auto bg-base-200 px-3 py-6 sm:px-6"
-      >
-        <FormHeader
-          valueToChange={product}
-          type="Product"
-          mode={mode}
-          hasIsActive={true}
-          hasDelete={true}
-        />
-
-        <div className="form-control">
-          <div className="form-control gap-3">
-            <div className="flex flex-wrap justify-evenly gap-3">
-              <BasicInput
-                label="Name"
-                type="text"
-                name="name"
-                placeholder="Name"
-                defaultValue={product?.name}
-                validationErrors={validationErrors}
-              />
-
-              <BasicSelect
-                name="brand"
-                label="Brand"
-                placeholder="Brand"
-                selections={brands}
-                defaultValue={product?.brandId?.toString()}
-              />
-            </div>
-
-            <div className="flex flex-wrap justify-evenly gap-3">
-              <SelectGender
-                defaultValue={product?.gender}
-                label="Product is Gendered?"
-              />
-
-              <BasicSelect
-                name="promotion"
-                label="Promotion"
-                placeholder="Promotion"
-                selections={promotions}
-                defaultValue={product?.promotionId?.toString()}
-              />
-            </div>
-
-            <div className="flex flex-wrap justify-evenly gap-3">
-              <BasicMultiSelect
-                name="productSubCategories"
-                label="Categories"
-                selections={productSubCategories}
-                defaultValues={product?.productSubCategories}
-              />
-
-              <BasicInput
-                label="Info URL"
-                type="text"
-                name="infoURL"
-                placeholder="Info URL"
-                defaultValue={product?.infoURL}
-                validationErrors={validationErrors}
-              />
-            </div>
-          </div>
-
-          <div className="divider w-full pt-4" />
-
-          <ClientOnly fallback={<div id="skeleton" />}>
-            {() => <UploadMultipleImages defaultImages={product?.images} />}
-          </ClientOnly>
-
-          <div className="divider w-full pt-4" />
-
-          <UploadHeroImage valueToChange={product} />
-
-          <div className="divider w-full pt-4" />
-
-          <ProductVariantFormModule
-            storeId={storeId}
-            product={product}
-            availableColors={availableColors}
+    <>
+      <DarkOverlay>
+        <Form
+          method="POST"
+          className="scrollbar-hide relative w-[600px] max-w-full overflow-y-auto bg-base-200 px-3 py-6 sm:px-6"
+        >
+          <FormHeader
+            valueToChange={product}
+            type="Product"
+            mode={mode}
+            hasIsActive={true}
+            hasDelete={true}
           />
 
-          <div className="divider w-full pt-4" />
+          <div className="form-control">
+            <div className="form-control gap-3">
+              <div className="flex flex-wrap justify-evenly gap-3">
+                <BasicInput
+                  id="ProductName"
+                  label="Name"
+                  type="text"
+                  name="name"
+                  placeholder="Name"
+                  defaultValue={product?.name}
+                  validationErrors={validationErrors}
+                />
 
-          <div className="form-control my-3 w-[495px] max-w-[95vw] self-center">
-            <label className="label">
-              <span className="label-text">Description</span>
-            </label>
+                <BasicSelect
+                  name="brand"
+                  label="Brand"
+                  placeholder="Brand"
+                  selections={brands}
+                  defaultValue={product?.brandId?.toString()}
+                />
+              </div>
+
+              <div className="flex flex-wrap justify-evenly gap-3">
+                <SelectGender
+                  defaultValue={product?.gender}
+                  label="Product is Gendered?"
+                />
+
+                <BasicSelect
+                  name="promotion"
+                  label="Promotion"
+                  placeholder="Promotion"
+                  selections={promotions}
+                  defaultValue={product?.promotionId?.toString()}
+                />
+              </div>
+
+              <div className="flex flex-wrap justify-evenly gap-3">
+                <BasicMultiSelect
+                  name="productSubCategories"
+                  label="Categories"
+                  selections={productSubCategories}
+                  defaultValues={product?.productSubCategories}
+                />
+
+                <BasicInput
+                  label="Info URL"
+                  type="text"
+                  name="infoURL"
+                  placeholder="Info URL"
+                  defaultValue={product?.infoURL}
+                  validationErrors={validationErrors}
+                />
+              </div>
+            </div>
+
+            <div className="divider w-full pt-4" />
 
             <ClientOnly fallback={<div id="skeleton" />}>
-              {() => (
-                <RichTextInput
-                  value={richText}
-                  onChange={setRichText}
-                  className="mb-6 h-[200px] pb-3"
-                />
-              )}
+              {() => <UploadMultipleImages defaultImages={product?.images} />}
             </ClientOnly>
 
-            <input
-              hidden
-              readOnly
-              name="description"
-              value={richText || product?.description}
-            />
-          </div>
+            <div className="divider w-full pt-4" />
 
-          <BackSubmitButtons loading={loading} setLoading={setLoading} />
-        </div>
-      </Form>
-    </DarkOverlay>
+            <UploadHeroImage valueToChange={product} />
+
+            <div className="divider w-full pt-4" />
+
+            <ProductVariantFormModule
+              storeId={storeId}
+              product={product}
+              availableColors={availableColors}
+            />
+
+            <div className="divider w-full pt-4" />
+
+            <div className="form-control my-3 w-[495px] max-w-[95vw] self-center">
+              <label className="label">
+                <span className="label-text">Description</span>
+              </label>
+
+              <ClientOnly fallback={<div id="skeleton" />}>
+                {() => (
+                  <RichTextInput
+                    value={richText}
+                    onChange={setRichText}
+                    className="mb-6 h-[200px] pb-3"
+                  />
+                )}
+              </ClientOnly>
+
+              <input
+                hidden
+                readOnly
+                name="description"
+                value={richText || product?.description}
+              />
+            </div>
+
+            <BackSubmitButtons loading={loading} setLoading={setLoading} />
+          </div>
+        </Form>
+      </DarkOverlay>
+      <Outlet />
+    </>
   );
 };
 
