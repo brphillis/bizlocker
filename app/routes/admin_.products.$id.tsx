@@ -131,7 +131,7 @@ export const action = async ({ request, params }: ActionArgs) => {
         infoURL: infoURL as string,
         description: description as string,
         gender: gender as string,
-        isActive: isActive ? true : false,
+        isActive: id ? (isActive ? true : false) : true,
         images:
           images && (JSON.parse(images as string).filter(Boolean) as Image[]),
         heroImage: parsedHeroImage,
@@ -211,7 +211,7 @@ const Product = () => {
                   label="Brand"
                   placeholder="Brand"
                   selections={brands}
-                  defaultValue={product?.brandId?.toString()}
+                  defaultValue={product?.brandId?.toString() || "1"}
                 />
               </div>
 
