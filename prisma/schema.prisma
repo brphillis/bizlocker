@@ -723,6 +723,8 @@ model StockLevel {
   store            Store?          @relation(fields: [storeId], references: [id])
   storeId          Int
   updatedAt        DateTime?       @updatedAt //remove optional
+
+  @@unique([productVariantId, storeId])
 }
 
 model StockTransferRequest {
@@ -732,12 +734,14 @@ model StockTransferRequest {
   productVariant   ProductVariant @relation("ProductVariantStockRequest", fields: [productVariantId], references: [id])
   productVariantId Int
   quantity         Int
-  status           OrderStatus
+  status           ApprovalStatus @default(created)
+  trackingNumber   String?
   toStore          Store?         @relation("ToStoreStockRequest", fields: [toStoreId], references: [id])
   toStoreId        Int
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  approvedBy       String?
+  createdBy        String
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
 }
 
 model Brand {
@@ -780,6 +784,14 @@ enum OrderStatus {
   cancelled
   paid
   shipped
+  complete
+}
+
+enum ApprovalStatus {
+  created
+  cancelled
+  approved
+  processing
   complete
 }
 

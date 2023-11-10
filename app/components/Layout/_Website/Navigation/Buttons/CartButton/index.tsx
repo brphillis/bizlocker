@@ -31,7 +31,7 @@ const CartButton = ({ id: cartId, cartItems }: Cart) => {
   }, [cartItems]);
 
   return (
-    <div className="dropdown-end dropdown relative">
+    <div className="dropdown dropdown-end relative">
       <label
         tabIndex={0}
         onClick={handleOpen}
@@ -80,7 +80,10 @@ const CartButton = ({ id: cartId, cartItems }: Cart) => {
                       <img
                         alt={"cartItem_" + altText}
                         src={imageSrc}
-                        className="h-20 w-20 rounded-sm border border-base-300 object-cover"
+                        className="h-20 w-20 cursor-pointer rounded-sm border border-base-300 object-cover"
+                        onClick={() =>
+                          navigate(`/product/${product?.name}?id=${product.id}`)
+                        }
                       />
 
                       {variantId && (

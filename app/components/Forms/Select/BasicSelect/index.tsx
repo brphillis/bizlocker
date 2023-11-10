@@ -3,6 +3,7 @@ import ToolTip from "~/components/Indicators/ToolTip";
 type Props = {
   customWidth?: string;
   defaultValue?: string;
+  disabled?: boolean;
   id?: string;
   label: string;
   labelColor?: string;
@@ -16,6 +17,7 @@ type Props = {
 const BasicSelect = ({
   customWidth,
   defaultValue,
+  disabled,
   id,
   label,
   labelColor,
@@ -42,8 +44,10 @@ const BasicSelect = ({
       </label>
       <select
         id={id}
+        disabled={disabled}
         name={name}
         className={`select w-full text-brand-black/75
+        disabled:!border-base-100/50 disabled:!bg-base-100/50 disabled:!text-brand-black/50
         ${
           validationErrors?.hasOwnProperty(name)
             ? "select-error border !outline-none"

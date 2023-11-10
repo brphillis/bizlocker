@@ -1,8 +1,6 @@
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { capitalizeFirst } from "../../../helpers/stringHelpers";
 
-type ToastType = "success" | "error" | "warning" | "info" | "question";
-
 export const Toast = (type: ToastType, time?: number, text?: string) => {
   let color: string;
 
@@ -35,11 +33,11 @@ export const Toast = (type: ToastType, time?: number, text?: string) => {
     toast: true,
     position: "bottom-right",
     iconColor: "white",
-    title: capitalizeFirst(type) + `${text ? " - " + text : ""}`,
+    title: `${capitalizeFirst(type)}\n${text ? text : ""}`,
     icon: type,
     customClass: {
       popup: color,
-      title: "text-white bold",
+      title: "text-white bold !text-md",
     },
     showConfirmButton: false,
     timer: time || 2500,

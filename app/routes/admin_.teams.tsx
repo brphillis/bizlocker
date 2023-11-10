@@ -20,15 +20,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     return redirect("/admin/login");
   }
 
-  // const { storeId } =
-  //   ((await getUserDataFromSession(request, STAFF_SESSION_KEY)) as Staff) || {};
-
-  // if (!storeId) {
-  //   return redirect("/admin/not-found");
-  // }
-
   const url = new URL(request.url);
-  // url.searchParams.set("storeId", storeId?.toString());
 
   const { teams, totalPages } = await searchTeams(undefined, url);
 
@@ -43,7 +35,7 @@ const ManageTeams = () => {
   const { teams, totalPages } = useLoaderData();
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("pageNumber")) || 1;
-  console.log("TEAMS", teams);
+
   return (
     <AdminPageWrapper>
       <Form method="GET" className="relative h-full w-full bg-base-200 p-6">

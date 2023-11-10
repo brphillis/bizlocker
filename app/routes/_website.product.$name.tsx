@@ -136,7 +136,6 @@ const Product = () => {
   const hasColors = availableColors && availableColors[0] !== null;
 
   const selectedVariantStock = calculateVariantStock(selectedVariant);
-  console.log(selectedVariantStock);
 
   return (
     <PageWrapper>

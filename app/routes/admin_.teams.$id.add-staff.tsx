@@ -76,8 +76,6 @@ const ModifyTeam = () => {
       success: boolean;
     }) || {};
 
-  console.log(totalPages);
-
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleAddUserToTeam = (

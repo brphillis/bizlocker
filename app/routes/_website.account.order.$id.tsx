@@ -17,7 +17,9 @@ const Order = () => {
       <div className="divider w-full" />
 
       <div className="flex flex-col items-center gap-6">
-        {order && <OrderStatusSteps status={order?.status} />}
+        {order && (
+          <OrderStatusSteps status={order?.status} type="orderStatus" />
+        )}
 
         {order && order?.status === "created" && (
           <Link

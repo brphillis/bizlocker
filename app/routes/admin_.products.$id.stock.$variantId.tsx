@@ -30,7 +30,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   if (!id) {
     redirect("/admin/not-found");
   }
-  console.log("Searching id of", id);
+
   const stock = await getProductVariantStock(id!);
 
   const { storeId } =
@@ -62,7 +62,6 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
 const ManageStock = () => {
   const { stock } = useLoaderData();
-  console.log(stock);
 
   return (
     <DarkOverlay>

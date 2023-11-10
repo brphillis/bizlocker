@@ -1,8 +1,9 @@
 To Do
 
-finish see all stock button for product
 search bar responsivness
-finish stock transfer requests
+add sweet alert to stock transfer approval actions
+see where else we could use the new notification hook
+finish see all stock button for product / add ability to create a stock transfer request
 
 Bug Hisory
 
@@ -48,3 +49,4 @@ Feat history
 021 add multistore stock levels for products
 022 update packages
 023 disable out of stock products from being purchased
+024 add stock transfers

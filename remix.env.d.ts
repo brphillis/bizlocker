@@ -600,6 +600,12 @@ interface Order {
 }
 
 type OrderStatus = "created" | "cancelled" | "paid" | "shipped" | "complete";
+type ApprovalStatus =
+  | "created"
+  | "cancelled"
+  | "approved"
+  | "processing"
+  | "complete";
 
 interface OrderItem {
   id: number;
@@ -965,7 +971,12 @@ interface StockTransferRequest {
   fromStoreId: number;
   toStore: Store;
   toStoreId: number;
-  status: OrderStatus;
+  trackingNumber?: string;
+  status: ApprovalStatus;
+  approvedBy?: string;
+  createdBy: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 interface StockLevel {
@@ -988,4 +999,11 @@ type StoreStock = {
   total: number;
   storeName: string;
   storeId: number;
+};
+
+type ToastType = "success" | "error" | "warning" | "info" | "question";
+
+type PageNotification = {
+  message: string;
+  type: ToastType;
 };
