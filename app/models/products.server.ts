@@ -100,7 +100,7 @@ export const upsertProduct = async (request: Request, productData: any) => {
 
   const { storeId } =
     ((await getUserDataFromSession(request, STAFF_SESSION_KEY)) as Staff) || {};
-
+  console.log("CHECKPOINT 1");
   let product;
 
   // Compute the discountPercentageHigh and discountPercentageLow for the product from the variants
@@ -123,11 +123,11 @@ export const upsertProduct = async (request: Request, productData: any) => {
   }
 
   let heroRepoLink = "";
-
+  console.log("CHECKPOINT 2");
   if (heroImage) {
     heroRepoLink = await uploadImage_Integration(heroImage);
   }
-
+  console.log("CHECKPOINT 3");
   const data: any = {
     name,
     description,
@@ -168,6 +168,7 @@ export const upsertProduct = async (request: Request, productData: any) => {
   };
 
   if (!id) {
+    console.log("CHECKPOINT 4");
     // Create a new product with variants
     data.variants = {
       create: variants.map((variant: ProductVariant) => ({
@@ -196,7 +197,7 @@ export const upsertProduct = async (request: Request, productData: any) => {
         ...(variant.size && { size: variant.size }),
       })),
     };
-
+    console.log("CHECKPOINT 5");
     product = await prisma.product.create({
       data,
       include: {
@@ -207,6 +208,7 @@ export const upsertProduct = async (request: Request, productData: any) => {
         variants: true,
       },
     });
+    console.log("CHECKPOINT 6");
   } else {
     const existingProduct = await prisma.product.findUnique({
       where: { id: parseInt(id) },
@@ -373,7 +375,7 @@ export const upsertProduct = async (request: Request, productData: any) => {
         connect: { id: parseInt(promotion) },
       };
     }
-
+    console.log("CHECKPOINT 7");
     // Update stock quantity for existing variants
     for (let i = 0; i < variants.length; i++) {
       const variant = variants[i];
@@ -421,7 +423,7 @@ export const upsertProduct = async (request: Request, productData: any) => {
         }
       }
     }
-
+    console.log("CHECKPOINT 8");
     product = await prisma.product.update({
       where: { id: parseInt(id) },
       data,
@@ -434,6 +436,7 @@ export const upsertProduct = async (request: Request, productData: any) => {
       },
     });
   }
+  console.log("CHECKPOINT 9");
 
   return product;
 };
