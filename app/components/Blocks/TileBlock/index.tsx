@@ -79,7 +79,9 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
         return (
           <div
             key={"tileImage_" + (name || i)}
-            className={`relative flex aspect-square cursor-pointer items-center justify-center transition duration-300 ease-in-out hover:scale-[1.01] ${borderDisplay}`}
+            className={`relative flex aspect-square cursor-pointer items-center justify-center transition duration-300 ease-in-out hover:scale-[1.01] ${borderDisplay}
+            ${joinedContent.length % 2 !== 0 ? "max-sm:last:col-span-full" : ""}
+            `}
             style={{
               backgroundColor: getItemOption(options, "colorSecondary", i)
                 ? generateColor(getItemOption(options, "colorSecondary", i))

@@ -37,7 +37,7 @@ const ContentTile = ({
       className={`object-fit h-full w-full 
      ${filter} 
      ${borderRadius === "100%" ? "max-md:!p-2" : " "}
-     ${joinedContent.length % 2 !== 0 ? "max-sm:last:col-span-full" : ""}
+   
      `}
       onClick={() => link && navigate(link)}
       src={imageSrc}

@@ -31,7 +31,7 @@ const IconTile = ({
   ${filter} 
   ${borderRadius ? "p-3" : " "}
   ${borderRadius === "100%" ? "max-md:!p-2" : " "}
-  ${joinedContent.length % 2 !== 0 ? "max-sm:last:col-span-full" : ""}
+
   flex flex-col items-center justify-center`}
       onClick={() => link && navigate(link || "")}
     >
