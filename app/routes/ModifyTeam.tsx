@@ -11,14 +11,12 @@ import {
   useActionData,
   useLoaderData,
   useNavigate,
-  useSubmit,
 } from "@remix-run/react";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
-import { ActionAlert } from "~/components/Notifications/Alerts";
 
 export const ModifyTeam = () => {
   const navigate = useNavigate();
-  const submit = useSubmit();
+
   const { team, stores } =
     (useLoaderData() as unknown as { team: Team; stores: Store[] }) || {};
   const { validationErrors, success } =
@@ -31,24 +29,24 @@ export const ModifyTeam = () => {
 
   const [loading, setLoading] = useState<boolean>(false);
 
-  const handleRemoveUserFromTeam = (
-    staffId: string,
-    firstName?: string | null,
-    lastName?: string | null
-  ) => {
-    const hasFullName = firstName && lastName;
-    ActionAlert(
-      "Confirm",
-      `Remove ${hasFullName ? firstName + " " + lastName : "User"} From Team?`,
-      () => {
-        const formData = new FormData();
-        formData.set("_action", "removeUser");
-        formData.set("staffId", staffId);
-        formData.set("teamId", team?.id.toString());
-        submit(formData, { method: "POST" });
-      }
-    );
-  };
+  // const handleRemoveUserFromTeam = (
+  //   staffId: string,
+  //   firstName?: string | null,
+  //   lastName?: string | null
+  // ) => {
+  //   const hasFullName = firstName && lastName;
+  //   ActionAlert(
+  //     "Confirm",
+  //     `Remove ${hasFullName ? firstName + " " + lastName : "User"} From Team?`,
+  //     () => {
+  //       const formData = new FormData();
+  //       formData.set("_action", "removeUser");
+  //       formData.set("staffId", staffId);
+  //       formData.set("teamId", team?.id.toString());
+  //       submit(formData, { method: "POST" });
+  //     }
+  //   );
+  // };
 
   useEffect(() => {
     if (success) {
