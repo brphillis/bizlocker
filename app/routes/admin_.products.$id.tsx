@@ -292,7 +292,11 @@ const Product = () => {
               />
             </div>
 
-            <BackSubmitButtons loading={loading} setLoading={setLoading} />
+            <BackSubmitButtons
+              loading={loading}
+              setLoading={setLoading}
+              validationErrors={validationErrors}
+            />
           </div>
         </Form>
       </DarkOverlay>

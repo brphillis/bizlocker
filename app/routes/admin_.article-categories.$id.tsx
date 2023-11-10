@@ -95,7 +95,11 @@ const ModifyArticleCategory = () => {
           validationErrors={validationErrors}
         />
 
-        <BackSubmitButtons loading={loading} setLoading={setLoading} />
+        <BackSubmitButtons
+          loading={loading}
+          setLoading={setLoading}
+          validationErrors={validationErrors}
+        />
       </Form>
     </DarkOverlay>
   );

@@ -10,6 +10,7 @@ type Props = {
   requiredValueToSubmit?: boolean;
   validationMessage?: string;
   hideSubmit?: boolean;
+  validationErrors?: ValidationErrors;
 };
 
 const BackSubmitButtons = ({
@@ -21,13 +22,14 @@ const BackSubmitButtons = ({
   validationMessage,
   backFunction,
   hideSubmit,
+  validationErrors,
 }: Props) => {
   const navigate = useNavigate();
-  const [validationErrors, setValidationErrors] = useState<string[]>();
+  const [error, setError] = useState<string[]>();
 
   const checkValidation = () => {
     if (!requiredValueToSubmit && validationMessage) {
-      setValidationErrors([validationMessage]);
+      setError([validationMessage]);
     }
   };
 
@@ -35,9 +37,9 @@ const BackSubmitButtons = ({
     <>
       {divider && <div className="divider w-full" />}
 
-      {validationErrors && validationErrors?.length > 0 && (
+      {error && error?.length > 0 && (
         <div className="pb-3">
-          {validationErrors.map((error: string, i: number) => {
+          {error.map((error: string, i: number) => {
             return (
               <p
                 key={error + i}
@@ -69,7 +71,7 @@ const BackSubmitButtons = ({
               setLoading && requiredValueToSubmit && setLoading(true);
             }}
           >
-            {loading ? "Loading..." : "Submit"}
+            {loading && !validationErrors ? "Loading..." : "Submit"}
           </button>
         )}
       </div>

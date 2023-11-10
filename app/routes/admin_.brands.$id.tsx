@@ -110,7 +110,11 @@ const ModifyBrand = () => {
 
           <UploadImage defaultValue={brand?.image} />
         </div>
-        <BackSubmitButtons loading={loading} setLoading={setLoading} />
+        <BackSubmitButtons
+          loading={loading}
+          setLoading={setLoading}
+          validationErrors={validationErrors}
+        />
       </Form>
     </DarkOverlay>
   );

@@ -47,7 +47,6 @@ export const action = async ({ request, params }: ActionArgs) => {
       const validate = {
         name: true,
         index: true,
-        image: true,
       };
 
       const validationErrors = validateForm(form, validate);
@@ -151,7 +150,11 @@ const ModifyProductSubCategory = () => {
           />
         </div>
 
-        <BackSubmitButtons loading={loading} setLoading={setLoading} />
+        <BackSubmitButtons
+          loading={loading}
+          setLoading={setLoading}
+          validationErrors={validationErrors}
+        />
       </Form>
     </DarkOverlay>
   );

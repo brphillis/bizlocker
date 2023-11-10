@@ -304,7 +304,11 @@ const ModifyImage = () => {
           </table>
         </div>
 
-        <BackSubmitButtons loading={loading} setLoading={setLoading} />
+        <BackSubmitButtons
+          loading={loading}
+          setLoading={setLoading}
+          validationErrors={validationErrors}
+        />
       </Form>
     </DarkOverlay>
   );

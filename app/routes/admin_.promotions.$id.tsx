@@ -241,7 +241,11 @@ const ModifyPromotion = () => {
           />
         </div>
 
-        <BackSubmitButtons loading={loading} setLoading={setLoading} />
+        <BackSubmitButtons
+          loading={loading}
+          setLoading={setLoading}
+          validationErrors={validationErrors}
+        />
       </Form>
     </DarkOverlay>
   );
