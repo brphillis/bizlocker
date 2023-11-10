@@ -68,7 +68,7 @@ export const action = async ({ request, params }: ActionArgs) => {
         id: id as string,
         name: name as string,
         store: location as string,
-        isActive: isActive ? true : false,
+        isActive: id ? (isActive ? true : false) : false,
       };
 
       await upsertTeam(teamData);

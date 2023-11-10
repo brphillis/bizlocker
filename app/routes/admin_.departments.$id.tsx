@@ -46,7 +46,6 @@ export const action = async ({ request, params }: ActionArgs) => {
       const validate = {
         name: true,
         index: true,
-        productCategories: true,
       };
 
       const validationErrors = validateForm(form, validate);
@@ -57,7 +56,7 @@ export const action = async ({ request, params }: ActionArgs) => {
       const departmentData = {
         name: name as string,
         index: parseInt(index as string),
-        isActive: isActive ? true : false,
+        isActive: id ? (isActive ? true : false) : false,
         displayInNavigation: displayInNavigation ? true : false,
         productCategories:
           productCategories && JSON.parse(productCategories as string),

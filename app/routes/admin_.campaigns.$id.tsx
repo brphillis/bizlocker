@@ -100,7 +100,7 @@ export const action = async ({ request, params }: ActionArgs) => {
         gender: gender as string,
         parsedBanner: parsedBanner,
         parsedTile: parsedTile,
-        isActive: isActive ? true : false,
+        isActive: id ? (isActive ? true : false) : false,
         id: id,
       };
 

@@ -63,7 +63,7 @@ export const action = async ({ request, params }: ActionArgs) => {
         image: parsedImage,
         index: parseInt(index as string),
         displayInNavigation: displayInNavigation ? true : false,
-        isActive: isActive ? true : false,
+        isActive: id ? (isActive ? true : false) : false,
         id: id,
       };
 
