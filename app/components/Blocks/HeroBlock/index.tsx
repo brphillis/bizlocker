@@ -51,10 +51,10 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
 
   return (
     <div
-      className={`relative h-max w-full ${padding}`}
+      className={`relative h-max w-full ${margin} ${padding}`}
       style={{
-        paddingTop: backgroundColorSecondary ? "48px" : "unset",
-        paddingBottom: backgroundColorSecondary ? "48px" : "unset",
+        paddingTop: backgroundColorSecondary ? "24px" : "unset",
+        paddingBottom: backgroundColorSecondary ? "24px" : "unset",
       }}
     >
       <PatternBackground
@@ -72,7 +72,7 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
       />
 
       <div
-        className={`relative flex items-center bg-white shadow-sm ${margin} ${padding} ${borderDisplay} ${flipX}`}
+        className={`relative flex items-center bg-white shadow-sm ${borderDisplay} ${flipX}`}
         style={{
           backgroundColor: generateColor(backgroundColor),
           border:
