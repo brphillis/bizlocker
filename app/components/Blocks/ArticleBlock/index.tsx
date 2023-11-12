@@ -28,6 +28,12 @@ const ArticleBlock = ({ content, options: optionsArray }: Props) => {
         </p>
       )}
 
+      {options?.sortBy && !articleCategory?.name && (
+        <p className="self-start pl-3 text-2xl font-bold md:pl-1">
+          Our Latest Articles
+        </p>
+      )}
+
       {articles && <ArticleGrid articles={articles} />}
     </>
   );
