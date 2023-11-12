@@ -47,8 +47,8 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
         gridTemplateColumns: columns
           ? `repeat(${columns}, minmax(0, 1fr))`
           : "repeat(2, minmax(0, 1fr))",
-        paddingTop: backgroundColor ? "12px" : "unset",
-        paddingBottom: backgroundColor ? "12px" : "unset",
+        paddingTop: backgroundColor ? "24px" : "unset",
+        paddingBottom: backgroundColor ? "24px" : "unset",
       }}
     >
       <PatternBackground
