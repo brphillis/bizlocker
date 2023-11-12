@@ -84,7 +84,7 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
       >
         <div className="container relative mx-auto flex px-20 py-12 max-xl:px-16 max-lg:px-12 max-md:px-3 max-md:py-6">
           <div className="relative mr-16 flex w-[60%] flex-col gap-[20%] max-md:w-4/5 max-md:justify-between max-md:gap-16 max-sm:mr-0">
-            <div>
+            <div className="mb-6 max-md:mt-0">
               <h1
                 className={`flex max-w-[500px] select-none flex-col text-7xl font-bold uppercase leading-none max-md:max-w-[250px] max-md:text-3xl ${flipX}`}
                 style={{
