@@ -510,7 +510,7 @@ export const searchProducts = async (
   const perPage =
     (formData?.perPage && parseInt(formData.perPage as string)) ||
     Number(url?.searchParams.get("perPage")) ||
-    8;
+    12;
 
   const excludeId =
     formData?.excludeId || url?.searchParams.get("excludeId") || "";
