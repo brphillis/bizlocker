@@ -36,7 +36,7 @@ const Footer = () => {
         </div>
         <div className="text-brand-white">
           <span className="footer-title">Legal</span>
-          <Link className="link-hover link" to="/terms-of-use">
+          <Link className="link-hover link" to="/terms-conditions">
             Terms of use
           </Link>
           <Link className="link-hover link" to="/privacy-policy">
