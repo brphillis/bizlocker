@@ -73,10 +73,6 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 export const action = async ({ request }: ActionArgs) => {
-  const authenticated = await tokenAuth(request);
-  if (!authenticated.valid) {
-    return redirect("/login");
-  }
   const form = Object.fromEntries(await request.formData());
   const { variantId, quantity } = form;
   switch (form._action) {
