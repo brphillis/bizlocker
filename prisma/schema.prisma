@@ -370,7 +370,7 @@ model Staff {
   userDetails          UserDetails?
   userDetailsId        String?      @unique
   store                Store?       @relation("StaffStore", fields: [storeId], references: [id])
-  storeId              Int?         @unique
+  storeId              Int?
   team                 Team?        @relation(fields: [teamId], references: [id])
   teamId               Int?
   createdAt            DateTime     @default(now())
