@@ -592,6 +592,7 @@ interface Order {
   firstName: string;
   lastName: string;
   phoneNumber: string;
+  email: string;
   shippingMethod: string;
   shippingPrice: string;
   trackingNumber: string;

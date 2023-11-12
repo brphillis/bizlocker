@@ -86,16 +86,16 @@ model Block {
 model BlockOptions {
   id                                String     @id @unique @default(cuid())
   autoplay                          String?
-  backgroundBrightness              Int?
-  backgroundBrightnessSecondary     Int?
+  backgroundBrightness              Float?
+  backgroundBrightnessSecondary     Float?
   backgroundColor                   Color?
   backgroundColorSecondary          Color?
   backgroundPatternColor            String?
   backgroundPatternColorSecondary   String?
   backgroundPatternName             String?
   backgroundPatternNameSecondary    String?
-  backgroundPatternOpacity          Int?
-  backgroundPatternOpacitySecondary Int?
+  backgroundPatternOpacity          Float?
+  backgroundPatternOpacitySecondary Float?
   backgroundPatternSize             Int?
   backgroundPatternSizeSecondary    Int?
   backgroundWidth                   String?
@@ -490,6 +490,7 @@ model Order {
   shippingPrice       String?
   trackingNumber      String?
   phoneNumber         String?
+  email               String?
   createdAt           DateTime    @default(now())
   updatedAt           DateTime    @updatedAt
 }
@@ -710,7 +711,7 @@ model ProductVariant {
   stockTransferRequest StockTransferRequest[] @relation("ProductVariantStockRequest")
   totalSold            Int                    @default(0)
   updatedAt            DateTime               @updatedAt
-  weight               Int                    @default(0)
+  weight               Float                  @default(0.0)
   width                Int                    @default(0)
 }
 

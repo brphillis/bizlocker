@@ -1,6 +1,5 @@
 To Do
 
-search bar responsivness
 add sweet alert to stock transfer approval actions
 see where else we could use the new notification hook
 finish see all stock button for product / add ability to create a stock transfer request

@@ -1,8 +1,4 @@
-import {
-  type LoaderArgs,
-  type ActionArgs,
-  redirect,
-} from "@remix-run/server-runtime";
+import { type LoaderArgs, type ActionArgs } from "@remix-run/server-runtime";
 import {
   Form,
   useActionData,
@@ -41,18 +37,16 @@ export const loader = async ({ request }: LoaderArgs) => {
   if (user) {
     userAddress = await getUserAddress(user.id);
     userDetails = await getUserDetails(user.id);
-
-    if (userAddress && cart) {
-      loaderShippingOptions = await getCartDeliveryOptions(
-        cart as unknown as Cart,
-        parseInt(userAddress.postcode!)
-      );
-    }
-
-    return { cart, user, userAddress, userDetails, loaderShippingOptions };
-  } else {
-    return redirect("/products");
   }
+
+  if (userAddress && cart) {
+    loaderShippingOptions = await getCartDeliveryOptions(
+      cart as unknown as Cart,
+      parseInt(userAddress.postcode!)
+    );
+  }
+
+  return { cart, user, userAddress, userDetails, loaderShippingOptions };
 };
 
 export const action = async ({ request }: ActionArgs) => {
@@ -64,6 +58,7 @@ export const action = async ({ request }: ActionArgs) => {
         rememberInformation,
         firstName,
         lastName,
+        email,
         phoneNumber,
         addressLine1,
         addressLine2,
@@ -77,6 +72,7 @@ export const action = async ({ request }: ActionArgs) => {
       const validate = {
         firstName: true,
         lastName: true,
+        email: true,
         addressLine1: true,
         suburb: true,
         postcode: true,
@@ -108,6 +104,7 @@ export const action = async ({ request }: ActionArgs) => {
         request,
         firstName as string,
         lastName as string,
+        email as string,
         phoneNumber as string,
         address,
         shippingMethod as string,
@@ -244,6 +241,17 @@ const Cart = () => {
             styles="input-bordered"
             type="text"
             defaultValue={userDetails?.lastName || undefined}
+            validationErrors={validationErrors}
+          />
+
+          <BasicInput
+            name="email"
+            label="Email Address"
+            placeholder="Email Address"
+            customWidth="w-full"
+            styles="input-bordered"
+            type="text"
+            defaultValue={user?.email || undefined}
             validationErrors={validationErrors}
           />
 

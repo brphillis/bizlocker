@@ -195,11 +195,12 @@ const ProductVariantFormModule = ({
               label="Price"
               placeholder="Price"
               type="number"
+              decimals={2}
               defaultValue={activeVariant?.price || ""}
               onChange={(e) => {
                 setActiveVariant({
                   ...activeVariant,
-                  price: parseFloat(e as string),
+                  price: Number(e as string),
                 });
               }}
               validationErrors={validationErrors}
@@ -210,11 +211,12 @@ const ProductVariantFormModule = ({
               label="Sale Price"
               placeholder="Sale Price"
               type="number"
+              decimals={2}
               defaultValue={activeVariant?.salePrice || ""}
               onChange={(e) => {
                 setActiveVariant({
                   ...activeVariant,
-                  salePrice: parseFloat(e as string),
+                  salePrice: Number(e as string),
                 });
               }}
               validationErrors={validationErrors}
@@ -262,7 +264,7 @@ const ProductVariantFormModule = ({
               onChange={(e) => {
                 setActiveVariant({
                   ...activeVariant,
-                  length: parseFloat(e as string),
+                  length: parseInt(e as string),
                 });
               }}
               validationErrors={validationErrors}
@@ -277,7 +279,7 @@ const ProductVariantFormModule = ({
               onChange={(e) => {
                 setActiveVariant({
                   ...activeVariant,
-                  width: parseFloat(e as string),
+                  width: parseInt(e as string),
                 });
               }}
               validationErrors={validationErrors}
@@ -303,6 +305,7 @@ const ProductVariantFormModule = ({
               label="Weight (kg)"
               placeholder="Weight"
               type="number"
+              decimals={2}
               defaultValue={activeVariant?.weight || ""}
               onChange={(e) => {
                 setActiveVariant({

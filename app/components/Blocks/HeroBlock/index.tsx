@@ -83,10 +83,10 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
         }}
       >
         <div className="container relative mx-auto flex px-20 py-12 max-xl:px-16 max-lg:px-12 max-md:px-3 max-md:py-6">
-          <div className="relative mr-16 flex w-[60%] flex-col justify-between max-md:w-4/5 max-md:gap-16 max-sm:mr-0">
+          <div className="relative mr-16 flex w-[60%] flex-col gap-[20%] max-md:w-4/5 max-md:justify-between max-md:gap-16 max-sm:mr-0">
             <div>
               <h1
-                className={`flex max-w-[500px] select-none flex-col text-7xl font-bold uppercase leading-none max-md:max-w-[250px] max-md:text-5xl ${flipX}`}
+                className={`flex max-w-[500px] select-none flex-col text-7xl font-bold uppercase leading-none max-md:max-w-[250px] max-md:text-3xl ${flipX}`}
                 style={{
                   color: generateColor(titleColor),
                 }}
@@ -108,7 +108,7 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
 
             <div className="flex flex-col items-start">
               <p
-                className={`select-none text-sm sm:text-base ${flipX}`}
+                className={`select-none text-lg max-md:max-w-[220px] max-md:text-sm ${flipX}`}
                 style={{
                   color: generateColor(shortTextColor),
                 }}
@@ -143,13 +143,12 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
               </div>
             </div>
           </div>
-          <div className="relative block h-[30rem] w-[30rem] max-md:absolute max-md:right-5 max-md:top-8 max-md:h-48 max-md:w-48 max-sm:right-2 max-sm:h-48 max-sm:w-48">
-            <img
-              className="m-auto mt-8 max-h-full max-w-full transition duration-300 ease-in-out hover:scale-[1.05] max-xl:mt-0"
-              src={productImage}
-              alt="hero"
-            />
-          </div>
+
+          <img
+            className="relative h-auto max-h-full max-w-full transition duration-300 ease-in-out hover:scale-[1.05] max-lg:absolute max-lg:left-[75%] max-lg:w-64 max-md:left-[52%] max-md:w-48"
+            src={productImage}
+            alt="hero"
+          />
         </div>
       </div>
     </div>

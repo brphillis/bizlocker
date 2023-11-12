@@ -79,6 +79,7 @@ export const createOrder = async (
   request: Request,
   firstName: string,
   lastName: string,
+  email: string,
   phoneNumber: string,
   address: Address,
   shippingMethod: string,
@@ -181,6 +182,7 @@ export const createOrder = async (
         firstName: firstName,
         lastName: lastName,
         phoneNumber: phoneNumber,
+        email: email,
         address: {
           create: {
             addressLine1: address.addressLine1,
@@ -387,7 +389,7 @@ export const confirmPayment = async (paymentCode: string) => {
     });
   }
 
-  await sendOrderReceiptEmail(order.user!.email, order as unknown as Order);
+  await sendOrderReceiptEmail(order.email!, order as unknown as Order);
 
   return updatedOrder;
 };

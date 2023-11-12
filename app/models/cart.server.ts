@@ -41,6 +41,7 @@ export const getCart = async (request: Request) => {
                 stock: {
                   select: {
                     storeId: true,
+                    quantity: true,
                   },
                 },
                 product: {

@@ -2,6 +2,7 @@ import ToolTip from "~/components/Indicators/ToolTip";
 
 type Props = {
   customWidth?: string;
+  decimals?: number;
   defaultValue?: any;
   disabled?: boolean;
   id?: string;
@@ -17,6 +18,7 @@ type Props = {
 
 const BasicInput = ({
   customWidth,
+  decimals,
   defaultValue,
   disabled,
   id,
@@ -57,10 +59,18 @@ const BasicInput = ({
             ? "input-error border !outline-none"
             : ""
         } ${styles}`}
-        defaultValue={defaultValue || ""}
+        defaultValue={
+          decimals
+            ? parseFloat(defaultValue).toFixed(decimals)
+            : defaultValue || ""
+        }
         onChange={(e) => {
           if (onChange) {
-            onChange(e.target.value);
+            if (decimals) {
+              onChange(parseFloat(e.target.value).toFixed(decimals));
+            } else {
+              onChange(e.target.value);
+            }
           }
         }}
       />

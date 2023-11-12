@@ -139,10 +139,10 @@ export const getFormBlockOptions = (form: {
 
   const blockOptions = {
     backgroundBrightness: backgroundBrightness
-      ? parseInt(backgroundBrightness as string)
+      ? parseFloat(backgroundBrightness as string)
       : undefined,
     backgroundBrightnessSecondary: backgroundBrightnessSecondary
-      ? parseInt(backgroundBrightnessSecondary as string)
+      ? parseFloat(backgroundBrightnessSecondary as string)
       : undefined,
     backgroundColor: backgroundColor ? (backgroundColor as string) : undefined,
     backgroundWidth: backgroundWidth ? (backgroundWidth as string) : undefined,
@@ -153,7 +153,7 @@ export const getFormBlockOptions = (form: {
       ? (backgroundPatternColor as string)
       : undefined,
     backgroundPatternOpacity: backgroundPatternOpacity
-      ? parseInt(backgroundPatternOpacity as string)
+      ? parseFloat(backgroundPatternOpacity as string)
       : undefined,
     backgroundPatternSize: backgroundPatternSize
       ? parseInt(backgroundPatternSize as string)
@@ -171,7 +171,7 @@ export const getFormBlockOptions = (form: {
       ? (backgroundPatternColorSecondary as string)
       : undefined,
     backgroundPatternOpacitySecondary: backgroundPatternOpacitySecondary
-      ? parseInt(backgroundPatternOpacitySecondary as string)
+      ? parseFloat(backgroundPatternOpacitySecondary as string)
       : undefined,
     backgroundPatternSizeSecondary: backgroundPatternSizeSecondary
       ? parseInt(backgroundPatternSizeSecondary as string)

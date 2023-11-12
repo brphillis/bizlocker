@@ -15,9 +15,7 @@ const SearchBar = ({ departments, productCategories, brands }: Props) => {
 
   const searchedDepartment = searchParams.get("department");
 
-  const [categories, setCategories] = useState<ProductCategory[] | undefined>(
-    undefined
-  );
+  const [, setCategories] = useState<ProductCategory[] | undefined>();
   const [subCategories, setSubCategories] = useState<
     ProductSubCategory[] | undefined
   >(undefined);
@@ -40,7 +38,7 @@ const SearchBar = ({ departments, productCategories, brands }: Props) => {
       <div className="flex flex-row flex-wrap items-center justify-center gap-3">
         <button
           type="button"
-          className="btn-square btn-primary !ml-[85%] flex h-[2.6rem] w-12 items-center justify-center !rounded-sm sm:!ml-0"
+          className="btn-square btn-primary !ml-[85%] flex h-[2.6rem] w-12 items-center justify-center !rounded-sm max-lg:hidden sm:!ml-0"
           onClick={() => {
             searchParams.delete("name");
             searchParams.delete("productCategory");
@@ -66,9 +64,8 @@ const SearchBar = ({ departments, productCategories, brands }: Props) => {
           <select
             name="department"
             title="department"
-            className="select w-[95vw] !rounded-sm !font-normal text-brand-black/50 sm:w-[215px]"
+            className="select w-[215px] !rounded-sm !font-normal text-brand-black/50 max-lg:w-[95vw]"
             placeholder="Select a Department"
-            value={searchParams.get("department") || ""}
             onChange={(e) => {
               if (e.target.selectedIndex === 0) {
                 setSubCategories(undefined);
@@ -96,9 +93,8 @@ const SearchBar = ({ departments, productCategories, brands }: Props) => {
           <select
             name="productCategory"
             title="category"
-            className="select max-h-[1rem] w-[95vw] !rounded-sm !font-normal text-brand-black/50 sm:w-[215px]"
+            className="select w-[215px] !rounded-sm !font-normal text-brand-black/50 max-lg:w-[95vw]"
             placeholder="Select a Category"
-            value={searchParams.get("productCategory") || ""}
             onChange={(e) => {
               if (e.target.selectedIndex === 0) {
                 setSubCategories(undefined);
@@ -114,20 +110,28 @@ const SearchBar = ({ departments, productCategories, brands }: Props) => {
             }}
           >
             <option value="">By Category</option>
-            {categories?.map(({ id, name }: ProductCategory) => {
-              return (
-                <option key={name + id} value={name}>
-                  {name}
-                </option>
-              );
-            })}
+            {productCategories
+              .filter(
+                (e) =>
+                  e.departmentId ===
+                  (departments.find(
+                    (f: Department) => f.name === searchParams.get("department")
+                  )?.id || 1)
+              )
+              .map(({ id, name }: ProductCategory) => {
+                return (
+                  <option key={name + id} value={name}>
+                    {name}
+                  </option>
+                );
+              })}
           </select>
 
           {subCategories && subCategories.length > 0 && (
             <select
               name="productSubCategory"
               title="Sub Category"
-              className="select w-[95vw] !rounded-sm !font-normal text-brand-black/50 sm:w-[215px]"
+              className="select w-[215px] !rounded-sm !font-normal text-brand-black/50 max-lg:w-[95vw]"
               placeholder="Select a SubCategory"
               onChange={(e) => {
                 searchParams.delete("brand");
@@ -150,9 +154,8 @@ const SearchBar = ({ departments, productCategories, brands }: Props) => {
           <select
             name="brand"
             title="brand"
-            className="select w-[95vw] !rounded-sm !font-normal text-brand-black/50 sm:w-[215px]"
+            className="select w-[215px] !rounded-sm !font-normal text-brand-black/50 max-lg:w-[95vw]"
             placeholder="Select a Value"
-            value={searchParams.get("brand") || ""}
             onChange={(e) => {
               searchParams.set("brand", e.target.value);
             }}
@@ -168,18 +171,34 @@ const SearchBar = ({ departments, productCategories, brands }: Props) => {
           </select>
         </div>
 
-        <button
-          type="button"
-          className="btn-square btn-primary !ml-[85%] flex h-[2.6rem] w-12 items-center justify-center !rounded-sm sm:!ml-0"
-          onClick={() => {
-            submit(searchParams, {
-              method: "GET",
-              action: "/products",
-            });
-          }}
-        >
-          <IoSearch />
-        </button>
+        <div className="flex w-max items-center justify-between px-0 max-lg:w-full max-lg:px-4">
+          <button
+            type="button"
+            className="btn-square btn-primary hidden h-[2.6rem] w-12 items-center justify-center !rounded-sm max-lg:flex "
+            onClick={() => {
+              searchParams.delete("name");
+              searchParams.delete("productCategory");
+              searchParams.delete("productSubCategory");
+              searchParams.delete("brand");
+              searchParams.delete("gender");
+            }}
+          >
+            <IoRefreshOutline />
+          </button>
+
+          <button
+            type="button"
+            className="btn-square btn-primary flex h-[2.6rem] w-12 items-center justify-center !rounded-sm sm:!ml-0"
+            onClick={() => {
+              submit(searchParams, {
+                method: "GET",
+                action: "/products",
+              });
+            }}
+          >
+            <IoSearch />
+          </button>
+        </div>
       </div>
     </Form>
   );

@@ -57,7 +57,7 @@ const SearchInput = ({
     <input
       name={name}
       className={
-        "input input-bordered max-h-full w-[95vw] text-brand-black/50 sm:w-[215px] " +
+        "input input-bordered max-h-full w-[215px] text-brand-black/50 max-lg:w-[95vw] " +
         styles
       }
       placeholder={placeholder}
