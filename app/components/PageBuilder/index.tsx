@@ -262,7 +262,7 @@ const PageBuilder = ({
           <ResultsTable
             selectedBlock={selectedBlock}
             setSelectedItems={handleLimitedItemSelect}
-            searchResults={searchResults as Campaign[] | Promotion[]}
+            searchResults={searchResults as Campaign[] | Promotion[] | Brand[]}
             contentType={contentType}
           />
 

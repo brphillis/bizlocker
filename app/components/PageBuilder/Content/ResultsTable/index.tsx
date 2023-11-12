@@ -31,7 +31,14 @@ const ResultsTable = ({
 
   const shouldDisplay = () => {
     const blockTypes = ["banner", "tile", "map", "hero"];
-    const contentTypes = ["promotion", "campaign", "product", "icon", "store"];
+    const contentTypes = [
+      "promotion",
+      "campaign",
+      "product",
+      "icon",
+      "store",
+      "brand",
+    ];
 
     if (
       contentType &&
