@@ -60,12 +60,14 @@ const MapBlock = ({ content, options: optionsArray }: Props) => {
     <div
       className={`flex w-full flex-col gap-6 px-0 max-md:gap-3 max-md:px-3 ${margin}`}
     >
-      <h1
-        style={{ color: generateColor(titleColor || "BLACK") }}
-        className={`relative ${titleSize} ${titleAlign} ${titleWeight} w-full pb-0 max-md:py-3`}
-      >
-        {title}
-      </h1>
+      {title && (
+        <h1
+          style={{ color: generateColor(titleColor || "BLACK") }}
+          className={`relative ${titleSize} ${titleAlign} ${titleWeight} w-full pb-0 max-md:py-3`}
+        >
+          {title}
+        </h1>
+      )}
       <div
         className={`relative z-0 w-full ${borderDisplay} overflow-hidden`}
         style={{
