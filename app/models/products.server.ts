@@ -189,7 +189,9 @@ export const upsertProduct = async (request: Request, productData: any) => {
                 id: storeId,
               },
             },
-            quantity: variant.stock,
+            quantity: Array.isArray(variant?.stock)
+              ? variant?.stock?.[0]?.quantity
+              : variant?.stock,
           },
         },
         ...(variant.color && { color: variant.color }),
@@ -331,7 +333,9 @@ export const upsertProduct = async (request: Request, productData: any) => {
                   id: storeId,
                 },
               },
-              quantity: variant.stock,
+              quantity: Array.isArray(variant?.stock)
+                ? variant?.stock?.[0]?.quantity
+                : variant?.stock,
             },
           },
           ...(variant.color && { color: variant.color }),
@@ -378,7 +382,7 @@ export const upsertProduct = async (request: Request, productData: any) => {
     for (let i = 0; i < variants.length; i++) {
       const variant = variants[i];
 
-      const currentStockLevel = existingProduct.variants[i].stock.find(
+      const currentStockLevel = existingProduct.variants?.[i]?.stock.find(
         (e) => e.storeId === storeId
       )?.quantity;
 
@@ -403,7 +407,9 @@ export const upsertProduct = async (request: Request, productData: any) => {
               id: existingStockLevel.id,
             },
             data: {
-              quantity: variant.stock,
+              quantity: Array.isArray(variant.stock)
+                ? variant?.stock[0].quantity
+                : variant?.stock,
             },
           });
         } else {
@@ -417,7 +423,9 @@ export const upsertProduct = async (request: Request, productData: any) => {
               store: {
                 connect: { id: storeId },
               },
-              quantity: variant.stock,
+              quantity: Array.isArray(variant?.stock)
+                ? variant?.stock[0].quantity
+                : variant?.stock,
             },
           });
         }

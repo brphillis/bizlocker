@@ -1,5 +1,8 @@
 import { prisma } from "~/db.server";
-import { deleteImage_Integration } from "~/integrations/_master/storage";
+import {
+  deleteImage_Integration,
+  uploadImage_Integration,
+} from "~/integrations/_master/storage";
 export type { Image } from "@prisma/client";
 
 export function getImages() {
@@ -28,13 +31,14 @@ export const upsertImage = async (
   let updatedImage;
 
   if (!id && image) {
-    // updatedImage = await prisma.image.create({
-    //   data: {
-    //     altText: altText,
-    //     url: image.href,
-    //   },
-    // });
-  } else if (id) {
+    const repoLink = await uploadImage_Integration(image);
+    updatedImage = await prisma.image.create({
+      data: {
+        href: repoLink,
+        altText: altText,
+      },
+    });
+  } else if (id && image) {
     const existingImage = await prisma.image.findUnique({
       where: {
         id: parseInt(id),
@@ -45,13 +49,15 @@ export const upsertImage = async (
       throw new Error("Image not found");
     }
 
+    const repoLink = await uploadImage_Integration(image);
+
     updatedImage = await prisma.image.update({
       where: {
         id: parseInt(id),
       },
       data: {
         altText: altText,
-        href: image?.href,
+        href: repoLink,
       },
     });
   }
