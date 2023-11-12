@@ -397,16 +397,18 @@ export const upsertProduct = async (request: Request, productData: any) => {
 
         if (existingStockLevel) {
           // Stock level exists; update it
+
           await prisma.stockLevel.update({
             where: {
               id: existingStockLevel.id,
             },
             data: {
-              quantity: variant.stock.quantity,
+              quantity: variant.stock,
             },
           });
         } else {
           // Stock level doesn't exist; create it
+
           await prisma.stockLevel.create({
             data: {
               productVariant: {
@@ -415,7 +417,7 @@ export const upsertProduct = async (request: Request, productData: any) => {
               store: {
                 connect: { id: storeId },
               },
-              quantity: variant.stock.quantity,
+              quantity: variant.stock,
             },
           });
         }

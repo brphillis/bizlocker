@@ -40,7 +40,7 @@ const FormHeader = ({
         : "isActive" in valueToChange && valueToChange?.isActive
         ? " "
         : ""
-      : undefined
+      : " "
   );
 
   return (
