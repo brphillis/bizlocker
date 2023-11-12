@@ -1,11 +1,6 @@
 import type { V2_MetaFunction } from "@remix-run/node";
-import {
-  type LoaderArgs,
-  type ActionArgs,
-  redirect,
-} from "@remix-run/server-runtime";
+import { type LoaderArgs, type ActionArgs } from "@remix-run/server-runtime";
 import { useLoaderData } from "react-router-dom";
-import { tokenAuth } from "~/auth.server";
 import BannerBlock from "~/components/Blocks/BannerBlock";
 import ProductFilterSideBar from "~/components/Filter/ProductFilterSideBar";
 import ProductGrid from "~/components/Grids/ProductGrid";

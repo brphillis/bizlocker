@@ -9,6 +9,7 @@ type Props = {
 const ArticleCard = ({ article, hasDescription }: Props) => {
   const navigate = useNavigate();
   const image = article?.thumbnail?.href;
+
   return (
     <div
       className="group relative flex h-[248px] w-full cursor-pointer flex-col max-sm:h-[232px]"

@@ -476,7 +476,7 @@ export const publishPage = async (
     // Find the previewPage
     const previewPage = await prisma.previewPage.findUnique({
       where: { id: parseInt(previewPageId) },
-      include: { blocks: true },
+      include: { blocks: true, thumbnail: true },
     });
 
     if (!previewPage) {
@@ -527,6 +527,14 @@ export const publishPage = async (
 
     if (pageType !== "homePage") {
       updateData.isActive = previewPage?.isActive;
+
+      updateData.thumbnail = previewPage?.thumbnail?.id
+        ? {
+            connect: {
+              id: previewPage.thumbnail.id,
+            },
+          }
+        : undefined;
     }
 
     // Begin Update to the page
