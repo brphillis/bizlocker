@@ -402,7 +402,7 @@ export const upsertProduct = async (request: Request, productData: any) => {
               id: existingStockLevel.id,
             },
             data: {
-              quantity: variant.stock,
+              quantity: variant.stock.quantity,
             },
           });
         } else {
@@ -415,7 +415,7 @@ export const upsertProduct = async (request: Request, productData: any) => {
               store: {
                 connect: { id: storeId },
               },
-              quantity: variant.stock,
+              quantity: variant.stock.quantity,
             },
           });
         }

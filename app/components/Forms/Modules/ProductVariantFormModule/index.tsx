@@ -147,7 +147,7 @@ const ProductVariantFormModule = ({
       generatedSKU += color.toUpperCase();
     }
     if (size) {
-      generatedSKU += size.toUpperCase();
+      generatedSKU += size.toUpperCase().replace(" ", "");
     }
 
     generatedSKU.trim();
