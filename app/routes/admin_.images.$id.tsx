@@ -74,7 +74,7 @@ export const action = async ({ request, params }: ActionArgs) => {
 const ModifyImage = () => {
   const navigate = useNavigate();
   let submit = useSubmit();
-  const { image } = useLoaderData();
+  const { image } = useLoaderData() || {};
   const { validationErrors, success } =
     (useActionData() as {
       success: boolean;

@@ -6,6 +6,60 @@ finish see all stock button for product / add ability to create a stock transfer
 background blockoption is always showing even when it isnt true for mapblock
 make it so when a block content is a selected item it will not show in search results
 
+add validation on product stock
+
+seeStock error
+
+2023-11-12T03:48:46.244 app[9080e33ef6e438] hkg [info] Invalid `prisma.stockLevel.findMany()` invocation:
+
+2023-11-12T03:48:46.244 app[9080e33ef6e438] hkg [info] {
+
+2023-11-12T03:48:46.244 app[9080e33ef6e438] hkg [info] where: {
+
+2023-11-12T03:48:46.244 app[9080e33ef6e438] hkg [info] + productVariantId: {
+
+2023-11-12T03:48:46.244 app[9080e33ef6e438] hkg [info] + equals: Int | IntFieldRefInput,
+
+2023-11-12T03:48:46.244 app[9080e33ef6e438] hkg [info] + in: Int[] | ListIntFieldRefInput,
+
+2023-11-12T03:48:46.244 app[9080e33ef6e438] hkg [info] + notIn: Int[] | ListIntFieldRefInput,
+
+2023-11-12T03:48:46.244 app[9080e33ef6e438] hkg [info] + lt: Int | IntFieldRefInput,
+
+2023-11-12T03:48:46.244 app[9080e33ef6e438] hkg [info] + lte: Int | IntFieldRefInput,
+
+2023-11-12T03:48:46.244 app[9080e33ef6e438] hkg [info] + gt: Int | IntFieldRefInput,
+
+2023-11-12T03:48:46.244 app[9080e33ef6e438] hkg [info] + gte: Int | IntFieldRefInput,
+
+2023-11-12T03:48:46.244 app[9080e33ef6e438] hkg [info] + not: Int | NestedIntFilter
+
+2023-11-12T03:48:46.244 app[9080e33ef6e438] hkg [info] + }
+
+2023-11-12T03:48:46.244 app[9080e33ef6e438] hkg [info] },
+
+2023-11-12T03:48:46.244 app[9080e33ef6e438] hkg [info] include: {
+
+2023-11-12T03:48:46.244 app[9080e33ef6e438] hkg [info] store: {
+
+2023-11-12T03:48:46.244 app[9080e33ef6e438] hkg [info] select: {
+
+2023-11-12T03:48:46.244 app[9080e33ef6e438] hkg [info] id: true,
+
+2023-11-12T03:48:46.244 app[9080e33ef6e438] hkg [info] name: true
+
+2023-11-12T03:48:46.244 app[9080e33ef6e438] hkg [info] }
+
+2023-11-12T03:48:46.244 app[9080e33ef6e438] hkg [info] }
+
+2023-11-12T03:48:46.244 app[9080e33ef6e438] hkg [info] }
+
+2023-11-12T03:48:46.244 app[9080e33ef6e438] hkg [info] }
+
+2023-11-12T03:48:46.244 app[9080e33ef6e438] hkg [info] Argument `productVariantId` is missing.
+
+
+
 brand dropdown in filter wont collapse
 
 Bug Hisory
