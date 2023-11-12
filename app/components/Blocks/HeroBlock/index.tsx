@@ -145,7 +145,7 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
           </div>
 
           <img
-            className="relative h-auto max-h-full max-w-full transition duration-300 ease-in-out hover:scale-[1.05] max-lg:absolute max-lg:left-[75%] max-lg:w-64 max-md:left-[52%] max-md:w-48"
+            className="relative h-auto max-h-full max-w-full object-contain transition duration-300 ease-in-out hover:scale-[1.05] max-lg:absolute max-lg:left-[75%] max-lg:w-64 max-md:left-[52%] max-md:w-48"
             src={productImage}
             alt="hero"
           />
