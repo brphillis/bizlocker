@@ -315,7 +315,7 @@ const Product = () => {
                   <b>Size Guide</b>
                 </div>
                 <Link
-                  to="/return-policy"
+                  to="/size-guide"
                   className="max-w-full px-3 text-sm text-primary hover:underline sm:px-0"
                 >
                   Check out the size guide.
