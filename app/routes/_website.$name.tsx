@@ -4,26 +4,26 @@ import BlockRenderer from "~/components/BlockRenderer";
 import PageWrapper from "~/components/Layout/_Website/PageWrapper";
 import { getWebPage } from "~/models/webPages.server";
 import { getBlocks } from "~/helpers/blockHelpers";
+import { capitalizeWords } from "~/helpers/stringHelpers";
 
 export const meta: V2_MetaFunction = ({ data }) => {
   return [
-    { title: data.title },
+    { title: "CLUTCH | " + data.title },
     {
-      name: "description",
       content: data.description,
     },
   ];
 };
 
 export const loader = async ({ params }: LoaderArgs) => {
-  const pageName = params.name;
+  const pageName = params.name?.replace("-", " ");
   const webPage = await getWebPage(undefined, pageName);
   let title, description, backgroundColor, blocks;
 
   if (webPage) {
     blocks = await getBlocks(webPage as any, true);
-    title = webPage.title;
-    description = webPage.description;
+    title = capitalizeWords(webPage.title);
+    description = capitalizeWords(webPage.description);
     backgroundColor = webPage.backgroundColor;
   }
 

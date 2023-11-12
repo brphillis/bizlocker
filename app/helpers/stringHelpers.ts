@@ -9,6 +9,18 @@ export const capitalizeFirst = (str: string): string => {
   return firstLetter + resOfWord;
 };
 
+export const capitalizeWords = (input: string): string => {
+  const words = input.split(" ");
+
+  const capitalizedWords = words.map(
+    (word) => word.charAt(0).toUpperCase() + word.slice(1)
+  );
+
+  const result = capitalizedWords.join(" ");
+
+  return result;
+};
+
 export const limitString = (
   inputString: string,
   maxLength: number,
