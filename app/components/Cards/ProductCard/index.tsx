@@ -1,18 +1,24 @@
-import { useNavigate, useSubmit } from "@remix-run/react";
+import { useNavigate, useNavigation, useSubmit } from "@remix-run/react";
+import { useEffect, useState } from "react";
 import { IoCart } from "react-icons/io5";
 import { Toast } from "~/components/Notifications/Toast";
+import Spinner from "~/components/Spinner";
 import { getVariantUnitPrice } from "~/helpers/numberHelpers";
 
 const ProductCard = (product: Product) => {
   const submit = useSubmit();
   const navigate = useNavigate();
+  const navigation = useNavigation();
 
   const { id, name, images, variants, brand, promotion } = product;
 
   const { id: variantId, price, isOnSale, isPromoted } = variants[0] || {};
   const displayImage = images[0]?.href;
 
+  const [loading, setLoading] = useState<boolean>(false);
+
   const handleAddToCart = () => {
+    setLoading(true);
     if (variantId) {
       const formData = new FormData();
       formData.set("variantId", variantId.toString());
@@ -25,69 +31,85 @@ const ProductCard = (product: Product) => {
         replace: true,
       });
     }
-
-    Toast("success", 3000, "Item Added");
   };
 
-  return (
-    <div className="group flex w-full flex-col overflow-hidden bg-brand-white">
-      <div className="relative flex h-60 w-full max-w-full cursor-pointer overflow-hidden shadow-sm sm:h-72">
-        <img
-          className="absolute right-0 top-0 h-full w-full transform object-cover hover:scale-[1.025]"
-          src={displayImage}
-          alt={name.toLowerCase() + " product card"}
-          onClick={() => navigate(`/product/${name}?id=${id}`)}
-        />
-        {isOnSale && (
-          <span className="absolute left-2 top-2 mr-2 bg-red-500 px-2 py-1 text-xs text-brand-white opacity-75">
-            SALE
-          </span>
-        )}
+  useEffect(() => {
+    if (navigation.state === "idle") {
+      if (loading) {
+        Toast("success", 3000, "Item Added");
+      }
 
-        {promotion && isPromoted && promotion?.isActive && (
-          <span className="absolute left-2 top-2 mr-2 bg-green-500 px-2 py-1 text-xs text-brand-white opacity-75">
-            PROMO
-          </span>
-        )}
-        {/* <div className="absolute bottom-0 mb-4 flex w-full justify-center space-x-4">
+      setLoading(false);
+    }
+  }, [navigation.state, loading]);
+
+  return (
+    <>
+      <div className="group flex w-full flex-col overflow-hidden bg-brand-white">
+        <div className="relative flex h-60 w-full max-w-full cursor-pointer overflow-hidden shadow-sm sm:h-72">
+          <img
+            className="absolute right-0 top-0 h-full w-full transform object-cover hover:scale-[1.025]"
+            src={displayImage}
+            alt={name.toLowerCase() + " product card"}
+            onClick={() => navigate(`/product/${name}?id=${id}`)}
+          />
+          {isOnSale && (
+            <span className="absolute left-2 top-2 mr-2 bg-red-500 px-2 py-1 text-xs text-brand-white opacity-75">
+              SALE
+            </span>
+          )}
+
+          {promotion && isPromoted && promotion?.isActive && (
+            <span className="absolute left-2 top-2 mr-2 bg-green-500 px-2 py-1 text-xs text-brand-white opacity-75">
+              PROMO
+            </span>
+          )}
+          {/* <div className="absolute bottom-0 mb-4 flex w-full justify-center space-x-4">
           <div className="h-3 w-3 rounded-full border-2 border-brand-white bg-white"></div>
           <div className="h-3 w-3 rounded-full border-2 border-brand-white bg-transparent"></div>
           <div className="h-3 w-3 rounded-full border-2 border-brand-white bg-transparent"></div>
         </div> */}
-        <div className="absolute -bottom-2 right-0 mb-4 mr-2 space-y-2 transition-all duration-300 group-hover:right-0">
-          {/* <button className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-900 text-white transition hover:bg-gray-700">
+          <div className="absolute -bottom-2 right-0 mb-4 mr-2 space-y-2 transition-all duration-300 group-hover:right-0">
+            {/* <button className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-900 text-white transition hover:bg-gray-700">
             <IoHeart size={18} />
           </button> */}
-          <button
-            className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-black text-brand-white transition hover:bg-gray-700"
-            onClick={handleAddToCart}
-          >
-            <IoCart size={18} />
-          </button>
+            <button
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-black text-brand-white transition hover:bg-gray-700"
+              onClick={handleAddToCart}
+            >
+              <IoCart size={18} />
+            </button>
+          </div>
         </div>
-      </div>
-      <div className="mt-2 text-left">
-        {brand && brand.name.toLowerCase() !== "none" && (
-          <h5 className="font-semibold tracking-tight text-gray-500">
-            {brand.name}
-          </h5>
-        )}
-        <h5 className="tracking-tight text-gray-500">{name}</h5>
+        <div className="mt-2 text-left">
+          {brand && brand.name.toLowerCase() !== "none" && (
+            <h5 className="font-semibold tracking-tight text-gray-500">
+              {brand.name}
+            </h5>
+          )}
+          <h5 className="tracking-tight text-gray-500">{name}</h5>
 
-        <div>
-          <p>
-            {(isOnSale || (promotion && isPromoted)) && (
-              <span className="mr-2 text-sm text-gray-400 line-through">
-                ${price.toFixed(2)}
+          <div>
+            <p>
+              {(isOnSale || (promotion && isPromoted)) && (
+                <span className="mr-2 text-sm text-gray-400 line-through">
+                  ${price.toFixed(2)}
+                </span>
+              )}
+              <span className="text-sm font-bold text-gray-900">
+                ${getVariantUnitPrice(variants[0], product)}&nbsp;
               </span>
-            )}
-            <span className="text-sm font-bold text-gray-900">
-              ${getVariantUnitPrice(variants[0], product)}&nbsp;
-            </span>
-          </p>
+            </p>
+          </div>
         </div>
       </div>
-    </div>
+
+      {loading && (
+        <div className="fixed bottom-3 right-3">
+          <Spinner mode="circle" />
+        </div>
+      )}
+    </>
   );
 };
 
