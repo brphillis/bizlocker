@@ -7,7 +7,12 @@ import { Toast } from "~/components/Notifications/Toast";
 import ProductGrid from "~/components/Grids/ProductGrid";
 import { type LoaderArgs } from "@remix-run/server-runtime";
 import { getVariantUnitPrice } from "~/helpers/numberHelpers";
-import { Link, useLoaderData, useSubmit } from "@remix-run/react";
+import {
+  Link,
+  useLoaderData,
+  useNavigation,
+  useSubmit,
+} from "@remix-run/react";
 import PageWrapper from "~/components/Layout/_Website/PageWrapper";
 import { getProduct, searchProducts } from "~/models/products.server";
 import {
@@ -15,6 +20,7 @@ import {
   getAvailableColors,
   getAvailableSizes,
 } from "~/helpers/productHelpers";
+import Spinner from "~/components/Spinner";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
@@ -96,6 +102,7 @@ const Product = () => {
     const selectedProduct = returnProductFromSelections();
 
     if (selectedProduct) {
+      setLoading(true);
       const formData = new FormData();
       formData.set("variantId", selectedProduct.id.toString());
       formData.set("quantity", "1");
@@ -106,7 +113,6 @@ const Product = () => {
         preventScrollReset: true,
         replace: true,
       });
-      Toast("success", 2000, "Item Added");
     } else {
       Toast("warning", 2000, "Invalid Selection");
     }
@@ -136,6 +142,26 @@ const Product = () => {
   const hasColors = availableColors && availableColors[0] !== null;
 
   const selectedVariantStock = calculateVariantStock(selectedVariant);
+
+  const [loading, setLoading] = useState<boolean>(false);
+  const [submitted, setSubmitted] = useState<boolean>(false);
+
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    if (location && loading) {
+      if (navigation.state === "submitting") {
+        setSubmitted(true);
+      }
+
+      if (submitted && navigation.state === "idle") {
+        Toast("success", 3000, "Item Added");
+
+        setLoading(false);
+        setSubmitted(false);
+      }
+    }
+  }, [navigation, loading, submitted]);
 
   return (
     <PageWrapper>
@@ -339,6 +365,12 @@ const Product = () => {
             enablePlaceHolder={true}
           />
         </>
+      )}
+
+      {loading && (
+        <div className="fixed bottom-3 right-3 z-50">
+          <Spinner mode="circle" />
+        </div>
       )}
     </PageWrapper>
   );
