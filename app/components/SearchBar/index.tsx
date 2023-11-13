@@ -15,7 +15,9 @@ const SearchBar = ({ departments, productCategories, brands }: Props) => {
 
   const searchedDepartment = searchParams.get("department");
 
-  const [, setCategories] = useState<ProductCategory[] | undefined>();
+  const [categories, setCategories] = useState<ProductCategory[] | undefined>(
+    productCategories
+  );
   const [subCategories, setSubCategories] = useState<
     ProductSubCategory[] | undefined
   >(undefined);
@@ -99,10 +101,10 @@ const SearchBar = ({ departments, productCategories, brands }: Props) => {
               if (e.target.selectedIndex === 0) {
                 setSubCategories(undefined);
               } else {
-                setSubCategories(
-                  productCategories[e.target.selectedIndex - 1]
-                    .productSubCategories
+                const selectedCategory = productCategories.find(
+                  (f: ProductCategory) => f.name === e.target.value
                 );
+                setSubCategories(selectedCategory?.productSubCategories);
               }
               searchParams.delete("productSubCategory");
               searchParams.delete("brand");
@@ -110,21 +112,13 @@ const SearchBar = ({ departments, productCategories, brands }: Props) => {
             }}
           >
             <option value="">By Category</option>
-            {productCategories
-              .filter(
-                (e) =>
-                  e.departmentId ===
-                  (departments.find(
-                    (f: Department) => f.name === searchParams.get("department")
-                  )?.id || 1)
-              )
-              .map(({ id, name }: ProductCategory) => {
-                return (
-                  <option key={name + id} value={name}>
-                    {name}
-                  </option>
-                );
-              })}
+            {categories?.map(({ id, name }: ProductCategory) => {
+              return (
+                <option key={name + id} value={name}>
+                  {name}
+                </option>
+              );
+            })}
           </select>
 
           {subCategories && subCategories.length > 0 && (

@@ -24,7 +24,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   const searchQuery = {
     id: url.searchParams.get("orderId")?.toString() || undefined,
     status: url.searchParams.get("status")?.toString() || undefined,
-    email: url.searchParams.get("userEmail")?.toString() || undefined,
+    // email: url.searchParams.get("userEmail")?.toString() || undefined,
     page: Number(url.searchParams.get("pageNumber")) || 1,
     perPage: Number(url.searchParams.get("perPage")) || 10,
   };
@@ -112,7 +112,7 @@ const ManageOrders = () => {
                         <td>{i + 1 + (currentPage - 1) * orders?.length}</td>
                       )}
                       <td>{orderId}</td>
-                      <td>{user.email}</td>
+                      <td>{user?.email}</td>
                       <td>{status}</td>
                     </tr>
                   );
