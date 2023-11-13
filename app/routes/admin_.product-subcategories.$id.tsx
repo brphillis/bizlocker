@@ -41,7 +41,7 @@ export const action = async ({ request, params }: ActionArgs) => {
   const id = params.id === "add" ? undefined : params.id;
   const form = Object.fromEntries(await request.formData());
   const { name, index, displayInNavigation, isActive, image } = form;
-
+  console.log("ISACTIVE", isActive);
   switch (form._action) {
     case "upsert":
       const validate = {
@@ -79,12 +79,13 @@ export const action = async ({ request, params }: ActionArgs) => {
 
 const ModifyProductSubCategory = () => {
   const navigate = useNavigate();
-  const productSubCategory = useLoaderData() || {};
+  const productSubCategory = useLoaderData();
   const { validationErrors, success } =
     (useActionData() as {
       success: boolean;
       validationErrors: ValidationErrors;
     }) || {};
+
   const mode = productSubCategory ? "edit" : "add";
 
   const [loading, setLoading] = useState<boolean>(false);

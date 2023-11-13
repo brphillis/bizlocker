@@ -21,7 +21,7 @@ const Admin = () => {
     }
   }, [isLoginPage, staffMember, navigate]);
 
-  return <AdminSideBar user={staffMember} />;
+  return <AdminSideBar {...staffMember} />;
 };
 
 export default Admin;

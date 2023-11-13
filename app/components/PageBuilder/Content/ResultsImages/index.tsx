@@ -15,6 +15,21 @@ const ResultsImages = ({
   searchResults,
   contentType,
 }: Props) => {
+  
+  const shouldDisplay = () => {
+    const blockTypes = ["banner", "tile", "hero"];
+    const contentTypes = ["image"];
+
+    if (
+      contentType &&
+      selectedBlock &&
+      contentTypes.includes(contentType) &&
+      blockTypes.includes(selectedBlock)
+    ) {
+      return true;
+    } else return false;
+  };
+
   const selectItems = (
     type: BlockContentType,
     contentId: number,
@@ -32,10 +47,7 @@ const ResultsImages = ({
     <>
       {contentType === "image" && (
         <>
-          {searchResults &&
-            (selectedBlock === "banner" ||
-              selectedBlock === "tile" ||
-              selectedBlock === "hero") && (
+           {searchResults && contentType && shouldDisplay() && (
               <div className="flex w-full flex-wrap justify-center gap-6 overflow-x-auto pb-3 max-lg:gap-3">
                 {searchResults?.map(
                   ({ id, href, altText }: Image, index: number) => {

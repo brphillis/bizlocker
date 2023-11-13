@@ -1,6 +1,6 @@
-import { useNavigate, useSubmit } from "@remix-run/react";
-import { useState } from "react";
-import { IoChevronForward, IoLogOutOutline } from "react-icons/io5";
+import React, { useState } from "react";
+import MobileMenuDropdown from "./MobileMenuDropdown";
+import MobileMenuFooter from "./MobileMenuFooter";
 
 type Props = {
   departments: Department[];
@@ -9,9 +9,6 @@ type Props = {
 };
 
 const MobileNavigation = ({ departments, productCategories, user }: Props) => {
-  const navigate = useNavigate();
-  const submit = useSubmit();
-
   const [selectedDepartment, setSelectedDepartment] = useState<number>(
     departments?.[0].id
   );
@@ -58,69 +55,20 @@ const MobileNavigation = ({ departments, productCategories, user }: Props) => {
             }: ProductCategory) => {
               if (displayInNavigation) {
                 return (
-                  <li
-                    key={"mobileMenu_productCategory_" + id}
-                    className="cursor-pointer border-b-2 border-primary-content/0 px-3 text-sm font-bold tracking-wide !opacity-100"
-                  >
-                    <div className="collapse !visible w-full !auto-cols-auto !gap-0 !p-0">
-                      <input type="checkbox" className="peer absolute top-0" />
-                      <div className="relative flex w-full items-center justify-between py-3 text-sm font-semibold peer-checked:mb-2 peer-checked:border-b peer-checked:border-b-white/10 peer-checked:pl-2">
-                        {name}
-                      </div>
-                      <div className="collapse-content">
-                        {productSubCategories?.map(
-                          (
-                            {
-                              name: subCatName,
-                              displayInNavigation: displaySubCat,
-                            }: ProductSubCategory,
-                            i: number
-                          ) => {
-                            if (displaySubCat) {
-                              return (
-                                <label
-                                  key={"mobileMenu_productSubCategory" + i}
-                                  htmlFor="my-drawer-3"
-                                  className="flex items-center justify-between py-3"
-                                  onClick={() =>
-                                    navigate({
-                                      pathname: "/products",
-                                      search: `?productCategory=${name}&productSubCategory=${subCatName}`,
-                                    })
-                                  }
-                                >
-                                  <label
-                                    htmlFor="my-drawer-3"
-                                    className="pl-3 text-sm font-normal text-brand-white/90"
-                                  >
-                                    {subCatName}
-                                  </label>
-                                  <IoChevronForward />
-                                </label>
-                              );
-                            } else return null;
-                          }
-                        )}
-                      </div>
-                    </div>
-                  </li>
+                  <React.Fragment key={"mobileMenu_Dropdown_" + id}>
+                    <MobileMenuDropdown
+                      id={id}
+                      name={name}
+                      productSubCategories={productSubCategories}
+                    />
+                  </React.Fragment>
                 );
               } else return null;
             }
           )}
         </div>
 
-        {user && (
-          <div
-            className={"absolute bottom-0 left-0 right-0 w-full px-4 font-bold"}
-            onClick={() => submit(null, { method: "post", action: "/logout" })}
-          >
-            <div className="flex flex-row justify-between border-t border-white/25 px-3 py-4">
-              <p className="text-xs text-brand-white">terms & conditions</p>
-              <IoLogOutOutline size={20} />
-            </div>
-          </div>
-        )}
+        <MobileMenuFooter user={user} />
       </ul>
     </div>
   );

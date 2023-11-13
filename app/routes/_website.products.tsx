@@ -104,6 +104,7 @@ const Products = () => {
       {(campaign || promotion) && (
         <BannerBlock
           content={{ campaign: campaign, promotion: promotion } as BlockContent}
+          options={[{ margin: " max-md:-mt-[13px]" }] as BlockOptions[]}
         />
       )}
 

@@ -27,7 +27,7 @@ const MobileButtonContainer = ({
         <IoMenu size={26} />
       </label>
 
-      <div className="absolute right-3 flex gap-6">
+      <div className="absolute right-3 flex items-center gap-6">
         {user && !location.pathname.includes("/account") && (
           <AccountButton {...user} />
         )}

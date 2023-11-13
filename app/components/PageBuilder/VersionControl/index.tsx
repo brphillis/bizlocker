@@ -1,15 +1,29 @@
 import { Form, useSubmit } from "@remix-run/react";
+import { useEffect, useState } from "react";
 import SquareIconButton from "~/components/Buttons/SquareIconButton";
+import Spinner from "~/components/Spinner";
 import { formatDate } from "~/helpers/dateHelpers";
 
 type Props = {
   currentVersion: PreviewPage;
   previewPages: { id: number; publishedAt?: Date }[];
   page: Page;
+  updateSuccess: boolean;
 };
 
-const VersionControl = ({ currentVersion, previewPages, page }: Props) => {
+const VersionControl = ({
+  currentVersion,
+  previewPages,
+  page,
+  updateSuccess,
+}: Props) => {
   const submit = useSubmit();
+
+  const [loading, setLoading] = useState<boolean>(false);
+  useEffect(() => {
+    setLoading(false);
+  }, [updateSuccess]);
+
   return (
     <div className="relative flex flex-col items-center justify-center gap-3 bg-brand-black py-6 text-center text-xl font-bold text-brand-white">
       <div className="self-start pb-3 pl-6 text-xl font-medium">Version</div>
@@ -87,31 +101,43 @@ const VersionControl = ({ currentVersion, previewPages, page }: Props) => {
           value={currentVersion?.id.toString()}
         />
         <input hidden readOnly name="pageId" value={page?.id.toString()} />
+
         <button
           type="submit"
           name="_action"
           value="revert"
-          className="btn-primary btn-md block w-max !rounded-sm"
+          className={`btn-primary btn-md block w-max !rounded-sm ${
+            loading && "hidden"
+          }`}
         >
           Revert
         </button>
+
         <a
           type="button"
-          className="btn-primary btn-md flex w-max items-center justify-center !rounded-sm"
+          className={`btn-primary btn-md flex w-max items-center justify-center !rounded-sm ${
+            loading && "hidden"
+          }`}
           target="_blank"
           rel="noreferrer"
           href={`/preview/${currentVersion?.id}`}
+          onClick={() => setLoading(true)}
         >
-          Preview
+          {loading ? "Loading..." : "Preview"}
         </a>
         <button
           type="submit"
           name="_action"
           value="publish"
-          className="btn-primary btn-md block w-max !rounded-sm"
+          className={`btn-primary btn-md block w-max !rounded-sm ${
+            loading && "hidden"
+          }`}
+          onClick={() => setLoading(true)}
         >
-          Publish
+          {loading ? "Loading..." : "Publish"}
         </button>
+
+        {loading && <Spinner mode="circle" />}
       </Form>
     </div>
   );

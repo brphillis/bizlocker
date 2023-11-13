@@ -1,6 +1,13 @@
 /// <reference types="@remix-run/dev" />
 /// <reference types="@remix-run/node" />
 
+type NavigationRouteItem = {
+  name: string;
+  icon?: string;
+  link?: string;
+  children?: NavigationRouteItem[];
+};
+
 // 001 - BUILDER TYPES
 type PageType = "homePage" | "article" | "webPage" | "previewPage";
 

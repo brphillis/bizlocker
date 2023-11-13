@@ -107,6 +107,7 @@ const ModifyProductCategory = () => {
       success: boolean;
       validationErrors: ValidationErrors;
     }) || {};
+
   const mode = productCategory ? "edit" : "add";
 
   const [selectedProductSubCategories, setSelectedProductSubCategories] =

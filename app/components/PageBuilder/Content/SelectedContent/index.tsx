@@ -26,6 +26,8 @@ const SelectedContent = ({
     } else return false;
   };
 
+
+
   return (
     <>
       {selectedItems && selectedItems.length > 0 && shouldDisplay() && (

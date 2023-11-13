@@ -3,6 +3,7 @@ import BasicInput from "../../Input/BasicInput";
 import BasicSelect from "../../Select/BasicSelect";
 import { validateForm } from "~/utility/validate";
 import { useNavigate } from "@remix-run/react";
+import { Toast } from "~/components/Notifications/Toast";
 
 type Props = {
   storeId: number;
@@ -119,7 +120,20 @@ const ProductVariantFormModule = ({
 
   const handleNewVariant = () => {
     setUpsertState("add");
-    setActiveVariant({});
+
+    if (variants) {
+      Toast("info", 3000, "Data Prefilled.");
+      setActiveVariant({
+        price: variants?.[0]?.price,
+        salePrice: variants?.[0]?.salePrice,
+        height: variants?.[0]?.height,
+        weight: variants?.[0]?.weight,
+        width: variants?.[0]?.width,
+        length: variants?.[0]?.length,
+      });
+    } else {
+      setActiveVariant({});
+    }
   };
 
   const generateSku = () => {

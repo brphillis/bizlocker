@@ -4,7 +4,7 @@ import * as IconsIO5 from "react-icons/io5";
 type IconProps = {
   iconName: keyof typeof IconsIO5;
   size: number;
-  styles: string;
+  styles?: string;
   color?: string;
 };
 

@@ -286,6 +286,7 @@ const ManageHomePage = () => {
     metaValidationError,
     searchResults,
     updateSuccess,
+    publishSuccess,
   } = useActionData() || {};
 
   const [currentVersion, setCurrentVersion] =
@@ -338,11 +339,11 @@ const ManageHomePage = () => {
                   />
                   <input hidden readOnly name="pageType" value={pageType} />
                   <SquareIconButton
-                    iconName="IoTrashBin"
-                    size="small"
                     color="error"
-                    type="submit"
+                    iconName="IoTrashBin"
                     name="_action"
+                    size="small"
+                    type="submit"
                     value="deletepage"
                   />
                 </Form>
@@ -350,13 +351,13 @@ const ManageHomePage = () => {
             </div>
 
             <Header
-              pageType={pageType}
-              pageToCreate={pageToCreate}
-              currentVersion={currentVersion}
-              metaValidationError={metaValidationError}
-              isActive={isActive}
-              colors={colors}
               articleCategories={articleCategories}
+              colors={colors}
+              currentVersion={currentVersion}
+              isActive={isActive}
+              metaValidationError={metaValidationError}
+              pageToCreate={pageToCreate}
+              pageType={pageType}
               setIsActive={setIsActive}
             />
 
@@ -385,6 +386,7 @@ const ManageHomePage = () => {
                 currentVersion={currentVersion}
                 page={page as Page}
                 previewPages={previewPages}
+                updateSuccess={publishSuccess}
               />
             )}
           </div>

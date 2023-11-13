@@ -208,7 +208,7 @@ const SearchBar = ({ departments, productCategories, brands }: Props) => {
 
           {loading && (
             <div>
-              <div className="mr-3 h-6 w-6 animate-spin rounded-full border-[3px] border-brand-black border-t-blue-600" />
+              <div className="mx-3 h-6 w-6 animate-spin rounded-full border-[3px] border-brand-black border-t-blue-600 pr-1" />
             </div>
           )}
         </div>

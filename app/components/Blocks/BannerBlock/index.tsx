@@ -66,9 +66,7 @@ const BannerBlock = ({ content, options: ArrayOptions }: Props) => {
     <div
       className={`relative max-w-[100vw] overflow-visible sm:w-max ${margin} ${padding} ${borderDisplay}`}
       style={{
-        borderRadius: borderRadius || "unset",
-        paddingTop: backgroundColor && !imageSrc ? "1.5rem" : "unset",
-        paddingBottom: backgroundColor && !imageSrc ? "1.5rem" : "unset",
+        borderRadius: borderRadius || "unset"
       }}
     >
       <div

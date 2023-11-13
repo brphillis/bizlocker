@@ -18,7 +18,6 @@ const ContentTile = ({
   filter,
   imageSrc,
   itemSecondaryColor,
-  joinedContent,
   link,
   name,
 }: Props) => {
@@ -27,16 +26,17 @@ const ContentTile = ({
   return (
     <img
       style={{
-        backgroundColor: itemSecondaryColor
-          ? generateColor(itemSecondaryColor)
-          : "unset",
-        borderRadius: borderRadius || " ",
+        backgroundColor:
+          itemSecondaryColor && generateColor(itemSecondaryColor),
+        borderRadius: borderRadius || undefined,
         padding:
-          contentType === "brand" && borderRadius === "100%" ? "12px" : "",
+          contentType === "brand" && borderRadius === "100%"
+            ? "12px"
+            : undefined,
       }}
       className={`object-fit h-full w-full 
      ${filter} 
-     ${borderRadius === "100%" ? "max-md:!p-2" : " "}
+     ${borderRadius === "100%" ? "max-md:!p-2" : undefined}
    
      `}
       onClick={() => link && navigate(link)}

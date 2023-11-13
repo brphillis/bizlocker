@@ -164,12 +164,13 @@ export const getBlockDefaultValues = (block: Block): ContentSelection[] => {
 
       const name =
         (block.content[contentName] as Product).name ||
-        (block.content[contentName] as Article).title;
+        (block.content[contentName] as Article).title ||
+        (block.content[contentName] as Image).altText;
 
       defaultValues.push({
         type: contentName,
         contentId: content || "",
-        name: name,
+        name: name || "",
       });
     }
     return true;

@@ -33,15 +33,16 @@ const FormHeader = ({
 }: Props) => {
   const navigate = useNavigate();
 
-  const [isActive, setIsActive] = useState<string | undefined>(
-    valueToChange
-      ? mode === "add"
-        ? " "
-        : "isActive" in valueToChange && valueToChange?.isActive
-        ? " "
-        : ""
-      : " "
-  );
+  const handleActiveStatus = (mode: string): boolean => {
+    if (mode === "add") {
+      return true;
+    }
+    if (valueToChange && (valueToChange as any)?.isActive) {
+      return true;
+    } else return false;
+  };
+
+  const [isActive, setIsActive] = useState<boolean>(handleActiveStatus(mode));
 
   return (
     <>
@@ -58,13 +59,16 @@ const FormHeader = ({
                   type="checkbox"
                   className="toggle toggle-sm ml-3"
                   checked={isActive ? true : false}
-                  onChange={(e) =>
-                    setIsActive(e.target.checked ? "true" : undefined)
-                  }
+                  onChange={(e) => setIsActive(e.target.checked ? true : false)}
                 />
                 <span className="label-text ml-3">Active</span>
               </label>
-              <input name="isActive" value={isActive || ""} readOnly hidden />
+              <input
+                name="isActive"
+                value={isActive ? "true" : undefined}
+                readOnly
+                hidden
+              />
             </>
           )}
           {hasDelete && (

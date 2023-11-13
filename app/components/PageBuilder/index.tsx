@@ -114,14 +114,14 @@ const PageBuilder = ({
     });
   };
 
+  const [loading, setLoading] = useState<boolean>(false);
+
   useEffect(() => {
     if (updateSuccess) {
       reset();
     }
     setLoading(false);
   }, [updateSuccess]);
-
-  const [loading, setLoading] = useState<boolean>(false);
 
   return (
     <Form className="relative w-full" method="POST">
