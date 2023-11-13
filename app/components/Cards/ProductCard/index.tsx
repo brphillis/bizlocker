@@ -34,7 +34,7 @@ const ProductCard = (product: Product) => {
   };
 
   useEffect(() => {
-    if (navigation.state === "idle") {
+    if (navigation.state === "loading") {
       if (loading) {
         Toast("success", 3000, "Item Added");
       }
