@@ -111,12 +111,13 @@ const App = () => {
           </div>
         )}
 
-        {navigation.state === ("loading" || "submitting") &&
-          navigation.formAction !== "/products" && (
-            <DarkOverlay fadeIn={true}>
-              <Spinner mode="shirt" extendStyle={"mt-16"} />
-            </DarkOverlay>
-          )}
+        {navigation.state === "loading" ||
+          (navigation.state === "submitting" &&
+            navigation.formAction !== "/products" && (
+              <DarkOverlay fadeIn={true}>
+                <Spinner mode="shirt" extendStyle={"mt-16"} />
+              </DarkOverlay>
+            ))}
         <Outlet />
 
         <Footer />

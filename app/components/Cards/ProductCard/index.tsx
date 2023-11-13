@@ -16,6 +16,7 @@ const ProductCard = (product: Product) => {
   const displayImage = images[0]?.href;
 
   const [loading, setLoading] = useState<boolean>(false);
+  const [submitted, setSubmitted] = useState<boolean>(false);
 
   const handleAddToCart = () => {
     setLoading(true);
@@ -34,14 +35,19 @@ const ProductCard = (product: Product) => {
   };
 
   useEffect(() => {
-    if (navigation.state === "loading") {
-      if (loading) {
-        Toast("success", 3000, "Item Added");
+    if (location && loading) {
+      if (navigation.state === "submitting") {
+        setSubmitted(true);
       }
 
-      setLoading(false);
+      if (submitted && navigation.state === "idle") {
+        Toast("success", 3000, "Item Added");
+
+        setLoading(false);
+        setSubmitted(false);
+      }
     }
-  }, [navigation.state, loading]);
+  }, [navigation, loading, submitted]);
 
   return (
     <>
@@ -105,7 +111,7 @@ const ProductCard = (product: Product) => {
       </div>
 
       {loading && (
-        <div className="fixed bottom-3 right-3">
+        <div className="fixed bottom-3 right-3 z-50">
           <Spinner mode="circle" />
         </div>
       )}
