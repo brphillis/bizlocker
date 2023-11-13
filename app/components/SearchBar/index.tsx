@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { IoRefreshOutline, IoSearch } from "react-icons/io5";
 import { Form, useSearchParams, useSubmit } from "react-router-dom";
 import SearchInput from "../Forms/Input/SearchInput";
+import { useLocation } from "@remix-run/react";
 
 type Props = {
   departments: Department[];
@@ -12,6 +13,7 @@ type Props = {
 const SearchBar = ({ departments, productCategories, brands }: Props) => {
   const submit = useSubmit();
   const [searchParams] = useSearchParams();
+  const location = useLocation();
 
   const searchedDepartment = searchParams.get("department");
 
@@ -22,6 +24,8 @@ const SearchBar = ({ departments, productCategories, brands }: Props) => {
     ProductSubCategory[] | undefined
   >(undefined);
 
+  const [loading, setLoading] = useState<boolean>(false);
+
   useEffect(() => {
     if (searchedDepartment) {
       const departmentsCategories = productCategories.filter(
@@ -30,6 +34,12 @@ const SearchBar = ({ departments, productCategories, brands }: Props) => {
       setCategories(departmentsCategories);
     }
   }, [productCategories, searchedDepartment]);
+
+  useEffect(() => {
+    if (location) {
+      setLoading(false);
+    }
+  }, [location]);
 
   return (
     <Form
@@ -180,18 +190,27 @@ const SearchBar = ({ departments, productCategories, brands }: Props) => {
             <IoRefreshOutline />
           </button>
 
-          <button
-            type="button"
-            className="btn-square btn-primary flex h-[2.6rem] w-12 items-center justify-center !rounded-sm sm:!ml-0"
-            onClick={() => {
-              submit(searchParams, {
-                method: "GET",
-                action: "/products",
-              });
-            }}
-          >
-            <IoSearch />
-          </button>
+          {!loading && (
+            <button
+              type="button"
+              className="btn-square btn-primary flex h-[2.6rem] w-12 items-center justify-center !rounded-sm sm:!ml-0"
+              onClick={() => {
+                submit(searchParams, {
+                  method: "GET",
+                  action: "/products",
+                });
+                setLoading(true);
+              }}
+            >
+              <IoSearch />
+            </button>
+          )}
+
+          {loading && (
+            <div>
+              <div className="mr-3 h-6 w-6 animate-spin rounded-full border-[3px] border-brand-black border-t-blue-600" />
+            </div>
+          )}
         </div>
       </div>
     </Form>

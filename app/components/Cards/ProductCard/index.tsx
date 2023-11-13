@@ -26,7 +26,7 @@ const ProductCard = (product: Product) => {
       });
     }
 
-    Toast("success", 2000, "Item Added");
+    Toast("success", 3000, "Item Added");
   };
 
   return (
