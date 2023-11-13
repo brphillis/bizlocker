@@ -63,11 +63,9 @@ const MobileNavigation = ({ departments, productCategories, user }: Props) => {
                     className="cursor-pointer border-b-2 border-primary-content/0 px-3 text-sm font-bold tracking-wide !opacity-100"
                   >
                     <div className="collapse !visible w-full !auto-cols-auto !gap-0 !p-0">
-                      <input type="checkbox" className="absolute top-0" />
-                      <div className="relative flex w-full items-center justify-between py-3">
-                        <div className="text-sm font-semibold">{name}</div>
-                        {productSubCategories &&
-                          productSubCategories.length > 0}
+                      <input type="checkbox" className="peer absolute top-0" />
+                      <div className="relative flex w-full items-center justify-between py-3 text-sm font-semibold peer-checked:mb-2 peer-checked:border-b peer-checked:border-b-white/10 peer-checked:pl-2">
+                        {name}
                       </div>
                       <div className="collapse-content">
                         {productSubCategories?.map(
@@ -80,8 +78,9 @@ const MobileNavigation = ({ departments, productCategories, user }: Props) => {
                           ) => {
                             if (displaySubCat) {
                               return (
-                                <div
+                                <label
                                   key={"mobileMenu_productSubCategory" + i}
+                                  htmlFor="my-drawer-3"
                                   className="flex items-center justify-between py-3"
                                   onClick={() =>
                                     navigate({
@@ -97,7 +96,7 @@ const MobileNavigation = ({ departments, productCategories, user }: Props) => {
                                     {subCatName}
                                   </label>
                                   <IoChevronForward />
-                                </div>
+                                </label>
                               );
                             } else return null;
                           }
