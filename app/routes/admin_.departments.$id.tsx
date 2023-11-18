@@ -56,7 +56,7 @@ export const action = async ({ request, params }: ActionArgs) => {
       const departmentData = {
         name: name as string,
         index: parseInt(index as string),
-        isActive: id ? (isActive ? true : false) : false,
+        isActive: isActive ? true : false,
         displayInNavigation: displayInNavigation ? true : false,
         productCategories:
           productCategories && JSON.parse(productCategories as string),

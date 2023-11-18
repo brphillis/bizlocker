@@ -589,18 +589,18 @@ model ArticleCategory {
 }
 
 model ProductSubCategory {
-  id                   Int                   @id @default(autoincrement())
-  campaigns            Campaign[]            @relation("ProductSubCategoryToCampaign")
-  displayInNavigation  Boolean               @default(true)
-  image                Image?                @relation("ProductSubCategoryImage")
-  imageId              Int?
-  index                Int                   @default(0)
-  isActive             Boolean               @default(true)
-  name                 String                @unique
-  productBlockContent  ProductBlockContent[] @relation("ProductSubCategoryToProductBlock")
-  productCategory      ProductCategory?      @relation("ProductCategoryToProductSubCategory", fields: [subProductCategoryId], references: [id])
-  products             Product[]             @relation("ProductSubCategoryToProduct")
-  subProductCategoryId Int?
+  id                  Int                   @id @default(autoincrement())
+  campaigns           Campaign[]            @relation("ProductSubCategoryToCampaign")
+  displayInNavigation Boolean               @default(true)
+  image               Image?                @relation("ProductSubCategoryImage")
+  imageId             Int?
+  index               Int                   @default(0)
+  isActive            Boolean               @default(true)
+  name                String                @unique
+  productBlockContent ProductBlockContent[] @relation("ProductSubCategoryToProductBlock")
+  productCategory     ProductCategory?      @relation("ProductCategoryToProductSubCategory", fields: [productCategoryId], references: [id])
+  products            Product[]             @relation("ProductSubCategoryToProduct")
+  productCategoryId   Int?
 
   createdAt DateTime? @default(now()) //remove optional on new app
   updatedAt DateTime? @updatedAt //remove optional on new app

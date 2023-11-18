@@ -136,6 +136,11 @@ export const upsertProduct = async (request: Request, productData: any) => {
     isActive,
     discountPercentageHigh,
     discountPercentageLow,
+    promotion: promotion
+      ? {
+          connect: { id: parseInt(promotion) },
+        }
+      : undefined,
     brand: brand
       ? {
           connect: { id: parseInt(brand) },

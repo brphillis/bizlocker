@@ -18,7 +18,7 @@ const PromotionBanner = ({ promotion }: Props) => {
   const { name, bannerImage, targetGender } = promotion;
 
   return (
-    <div className="max-w-full sm:w-[1280px]">
+    <div className="max-w-full max-md:-mt-3 sm:w-[1280px]">
       <img
         src={bannerImage?.href}
         alt={name + "_bannerImage"}

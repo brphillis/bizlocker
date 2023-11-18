@@ -33,8 +33,15 @@ export const getProductSubCategory = async (id: string) => {
 };
 
 export const upsertProductSubCategory = async (categoryData: any) => {
-  const { id, index, displayInNavigation, isActive, name, image } =
-    categoryData;
+  const {
+    id,
+    index,
+    productCategory,
+    displayInNavigation,
+    isActive,
+    name,
+    image,
+  } = categoryData;
 
   let updatedProductSubCategory;
 
@@ -52,6 +59,13 @@ export const upsertProductSubCategory = async (categoryData: any) => {
             altText: image.altText,
           },
         },
+        productCategory: productCategory
+          ? {
+              connect: {
+                id: parseInt(productCategory),
+              },
+            }
+          : undefined,
       },
     });
   }
@@ -62,6 +76,13 @@ export const upsertProductSubCategory = async (categoryData: any) => {
         index,
         displayInNavigation,
         isActive,
+        productCategory: productCategory
+          ? {
+              connect: {
+                id: parseInt(productCategory),
+              },
+            }
+          : undefined,
       },
     });
   } else if (id) {
@@ -120,6 +141,13 @@ export const upsertProductSubCategory = async (categoryData: any) => {
         displayInNavigation,
         isActive,
         image: imageData,
+        productCategory: productCategory
+          ? {
+              connect: {
+                id: parseInt(productCategory),
+              },
+            }
+          : undefined,
       },
       include: {
         image: true,

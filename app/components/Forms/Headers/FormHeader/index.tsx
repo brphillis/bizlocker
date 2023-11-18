@@ -1,7 +1,7 @@
 import { useNavigate } from "@remix-run/react";
-import { useState } from "react";
 import { IoMdTrash } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
+import Toggle from "~/components/Buttons/Toggle";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
 
 type Props = {
@@ -42,8 +42,6 @@ const FormHeader = ({
     } else return false;
   };
 
-  const [isActive, setIsActive] = useState<boolean>(handleActiveStatus(mode));
-
   return (
     <>
       <div className="flex max-w-[100vw] flex-row justify-end sm:justify-between">
@@ -52,25 +50,7 @@ const FormHeader = ({
         </h1>
 
         <div className="mr-3 flex gap-6 sm:mr-0">
-          {hasIsActive && (
-            <>
-              <label className="max-xs:mt-0 label relative mt-[5px] h-1 cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="toggle toggle-sm ml-3"
-                  checked={isActive ? true : false}
-                  onChange={(e) => setIsActive(e.target.checked ? true : false)}
-                />
-                <span className="label-text ml-3">Active</span>
-              </label>
-              <input
-                name="isActive"
-                value={isActive ? "true" : undefined}
-                readOnly
-                hidden
-              />
-            </>
-          )}
+          {hasIsActive && <Toggle defaultValue={handleActiveStatus(mode)} />}
           {hasDelete && (
             <button type="submit" name="_action" value="delete">
               <IoMdTrash />

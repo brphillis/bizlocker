@@ -54,7 +54,7 @@ const Map = forwardRef<MapFunctions, Props>(
       <MapContainer
         ref={mapRef}
         center={position}
-        zoom={13}
+        zoom={4}
         scrollWheelZoom={true}
         style={{
           height: "100%",

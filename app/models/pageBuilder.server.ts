@@ -5,7 +5,7 @@ import {
   updateImage_Integration,
   uploadImage_Integration,
 } from "~/integrations/_master/storage";
-import { getUserDataFromSession } from "~/session.server";
+import { STAFF_SESSION_KEY, getUserDataFromSession } from "~/session.server";
 import { includeAllBlockTypes, includeBlocksData } from "~/utility/blockMaster";
 import {
   includeAllPageTypes,
@@ -552,7 +552,9 @@ export const publishPage = async (
     const currentTime = new Date();
     let userEmail;
     if (request) {
-      const { email } = ((await getUserDataFromSession(request)) as User) || {};
+      const { email } =
+        ((await getUserDataFromSession(request, STAFF_SESSION_KEY)) as Staff) ||
+        {};
       userEmail = email;
     }
 

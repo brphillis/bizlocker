@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import stylesheet from "~/tailwind.css";
 import SearchBar from "~/components/SearchBar";
 import { getCart } from "~/models/cart.server";
@@ -50,6 +50,10 @@ const App = () => {
     useLoaderData();
 
   const [searchActive, setSearchActive] = useState<boolean | null>(false);
+
+  useEffect(() => {
+    setSearchActive(false);
+  }, [location]);
 
   return (
     <div className="drawer" data-theme="brand-light">

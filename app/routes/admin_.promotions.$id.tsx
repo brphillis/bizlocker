@@ -86,7 +86,7 @@ export const action = async ({ request, params }: ActionArgs) => {
         products: products && JSON.parse(products as string),
         discountPercentage: discountPercentage as string,
         gender: gender as string,
-        isActive: id ? (isActive ? true : false) : false,
+        isActive: isActive ? true : false,
         id: id,
       };
 

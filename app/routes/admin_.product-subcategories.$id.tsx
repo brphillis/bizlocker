@@ -19,6 +19,8 @@ import BasicInput from "~/components/Forms/Input/BasicInput";
 import { validateForm } from "~/utility/validate";
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
+import BasicSelect from "~/components/Forms/Select/BasicSelect";
+import { getProductCategories } from "~/models/productCategories.server";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
@@ -29,7 +31,10 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const id = params?.id;
   const productSubCategory =
     id && id !== "add" && (await getProductSubCategory(id));
-  return productSubCategory;
+
+  const productCategories = await getProductCategories();
+
+  return { productSubCategory, productCategories };
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
@@ -40,8 +45,9 @@ export const action = async ({ request, params }: ActionArgs) => {
 
   const id = params.id === "add" ? undefined : params.id;
   const form = Object.fromEntries(await request.formData());
-  const { name, index, displayInNavigation, isActive, image } = form;
-  console.log("ISACTIVE", isActive);
+  const { name, productCategory, index, displayInNavigation, isActive, image } =
+    form;
+
   switch (form._action) {
     case "upsert":
       const validate = {
@@ -59,11 +65,12 @@ export const action = async ({ request, params }: ActionArgs) => {
         : undefined;
 
       const categoryData = {
-        name: name as string,
+        name: name,
         image: parsedImage,
+        productCategory: productCategory,
         index: parseInt(index as string),
         displayInNavigation: displayInNavigation ? true : false,
-        isActive: id ? (isActive ? true : false) : false,
+        isActive: isActive ? true : false,
         id: id,
       };
 
@@ -79,7 +86,11 @@ export const action = async ({ request, params }: ActionArgs) => {
 
 const ModifyProductSubCategory = () => {
   const navigate = useNavigate();
-  const productSubCategory = useLoaderData();
+  const { productSubCategory, productCategories } =
+    (useLoaderData() as unknown as {
+      productSubCategory: ProductSubCategory;
+      productCategories: ProductCategory[];
+    }) || {};
   const { validationErrors, success } =
     (useActionData() as {
       success: boolean;
@@ -144,6 +155,15 @@ const ModifyProductSubCategory = () => {
               <option value="">No</option>
             </select>
           </div>
+
+          <BasicSelect
+            name="productCategory"
+            label="Category"
+            selections={productCategories}
+            placeholder="Parent Category"
+            customWidth="w-full"
+            defaultValue={productSubCategory.productCategoryId?.toString()}
+          />
 
           <UploadImage
             defaultValue={productSubCategory?.image}

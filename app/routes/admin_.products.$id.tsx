@@ -131,7 +131,7 @@ export const action = async ({ request, params }: ActionArgs) => {
         infoURL: infoURL as string,
         description: description as string,
         gender: gender as string,
-        isActive: id ? (isActive ? true : false) : true,
+        isActive: isActive ? true : false,
         images:
           images && (JSON.parse(images as string).filter(Boolean) as Image[]),
         heroImage: parsedHeroImage,

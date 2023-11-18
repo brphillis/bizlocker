@@ -502,7 +502,7 @@ interface FormConfig {
 type VerifyTypes = "email" | "password";
 
 type SelectValue = {
-  id: string;
+  id: string | number;
   name: string;
 };
 

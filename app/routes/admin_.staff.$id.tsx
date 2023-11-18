@@ -96,7 +96,7 @@ export const action = async ({ request, params }: ActionArgs) => {
     suburb: suburb as string,
     state: state as string,
     country: country as string,
-    isActive: id ? (isActive ? true : false) : false,
+    isActive: isActive ? true : false,
     avatar: avatar ? (JSON.parse(avatar?.toString()) as Image) : undefined,
     role: role as string,
     jobTitle: jobTitle as string,

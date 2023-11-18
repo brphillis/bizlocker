@@ -6,6 +6,7 @@ import SidebarDropdown from "./SidebarDropdown";
 import SidebarItem from "./SidebarItem";
 import LoadingOverlay from "~/components/Layout/LoadingOverlay";
 import SidebarFooter from "./SidebarFooter";
+import { isEmptyObject } from "~/helpers/objectHelpers";
 
 const AdminSideBar = (user: User) => {
   const navigate = useNavigate();
@@ -37,7 +38,7 @@ const AdminSideBar = (user: User) => {
         <Outlet />
       </div>
 
-      {user && (
+      {user && !isEmptyObject(user) && (
         <div className="drawer-side z-50 min-h-screen">
           <label
             htmlFor="my-drawer-2"

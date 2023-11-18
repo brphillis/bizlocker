@@ -80,7 +80,7 @@ export const action = async ({ request, params }: ActionArgs) => {
         index: parseInt(index as string),
         department: department as string,
         displayInNavigation: displayInNavigation ? true : false,
-        isActive: id ? (isActive ? true : false) : false,
+        isActive: isActive ? true : false,
         productSubCategories:
           productSubCategories && JSON.parse(productSubCategories as string),
         articleCategories:

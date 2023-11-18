@@ -115,7 +115,7 @@ const MapBlock = ({ content, options: optionsArray }: Props) => {
                         )}`
                       : "unset",
                 }}
-                className={`relative flex flex-col justify-center overflow-hidden bg-gray-50 ${itemBorderDisplay}`}
+                className={`relative z-0 flex flex-col justify-center overflow-hidden bg-gray-50 ${itemBorderDisplay}`}
                 onClick={() =>
                   latitude &&
                   longitude &&
@@ -139,10 +139,7 @@ const MapBlock = ({ content, options: optionsArray }: Props) => {
                       >
                         <IoLocationSharp size={24} color="white" />
                       </div>
-                      <div
-                        className="font-bold text-brand-black transition-all duration-500 group-hover:text-brand-white"
-                        group-hover:text-brand-white
-                      >
+                      <div className="font-bold text-brand-black transition-all duration-500 group-hover:text-brand-white">
                         {name}
                       </div>
                     </div>
@@ -157,7 +154,7 @@ const MapBlock = ({ content, options: optionsArray }: Props) => {
                       </p>
                     </div>
                     <div className="pt-5 font-semibold leading-7 group-hover:text-brand-white">
-                      <p>
+                      <div>
                         <div className="flex cursor-pointer items-center gap-3">
                           <div
                             style={{
@@ -195,7 +192,7 @@ const MapBlock = ({ content, options: optionsArray }: Props) => {
                             {faxNumber.slice(0, 2) + " " + faxNumber.slice(2)}
                           </a>
                         </div>
-                      </p>
+                      </div>
                     </div>
                   </div>
                 </div>

@@ -28,7 +28,7 @@ const TextBlock = ({ content, options: ArrayOptions }: Props) => {
     <>
       {richText && (
         <div
-          className={`relative max-w-full py-3 max-xl:w-full ${blockSize} ${margin}`}
+          className={`!max-md:px-3 relative max-w-full py-3 max-xl:w-full ${blockSize} ${margin}`}
           style={{
             paddingTop: backgroundColor ? "3rem" : "unset",
             paddingBottom: backgroundColor ? "3rem" : "unset",
