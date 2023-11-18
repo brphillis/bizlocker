@@ -167,6 +167,15 @@ export const validationMaster: FormConfig = {
       return null;
     },
   },
+  password: {
+    required: true,
+    validator: (value: string) => {
+      if (!isValidPassword(value)) {
+        return "Password is Not Valid";
+      }
+      return null;
+    },
+  },
   postcode: {
     required: true,
     validator: (value: string) => {

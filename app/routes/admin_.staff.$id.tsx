@@ -7,6 +7,7 @@ import {
 } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { tokenAuth } from "~/auth.server";
+import BasicButton from "~/components/Buttons/BasicButton";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
 import FormHeader from "~/components/Forms/Headers/FormHeader";
 import BasicInput from "~/components/Forms/Input/BasicInput";
@@ -18,7 +19,7 @@ import DarkOverlay from "~/components/Layout/DarkOverlay";
 import { getStaff, upsertStaff } from "~/models/auth/staff.server";
 import { getAvailableRoles } from "~/models/enums.server";
 import { getStores } from "~/models/stores.server";
-import { STAFF_SESSION_KEY } from "~/session.server";
+import { STAFF_SESSION_KEY, getUserDataFromSession } from "~/session.server";
 import { validateForm } from "~/utility/validate";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
@@ -26,6 +27,9 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   if (!authenticated.valid) {
     return redirect("/admin/login");
   }
+
+  const { role } =
+    ((await getUserDataFromSession(request, STAFF_SESSION_KEY)) as Staff) || {};
 
   const id = params?.id;
 
@@ -36,7 +40,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   if (id && id !== "add") {
     staffMember = await getStaff(id);
   }
-  return { staffMember, roles, stores };
+  return { staffMember, roles, stores, role };
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
@@ -63,6 +67,7 @@ export const action = async ({ request, params }: ActionArgs) => {
     role,
     jobTitle,
     store,
+    password,
     isActive,
   } = form;
 
@@ -77,6 +82,8 @@ export const action = async ({ request, params }: ActionArgs) => {
     suburb: true,
     state: true,
     country: true,
+    password: false,
+    ...(password && { password: true }),
   };
 
   const validationErrors = validateForm(form, validate);
@@ -102,25 +109,28 @@ export const action = async ({ request, params }: ActionArgs) => {
     jobTitle: jobTitle as string,
     store: store as string,
     id: id,
+    ...(password && { password: password as string }),
   };
 
-  await upsertStaff(updateData);
+  const { success, permissionError } = await upsertStaff(request, updateData);
 
-  return { success: true };
+  return { success, permissionError };
 };
 
 const ModifyStaff = () => {
   const navigate = useNavigate();
-  const { staffMember, roles, stores } = useLoaderData() || {};
-  const { validationErrors, success } =
+  const { staffMember, roles, stores, role } = useLoaderData() || {};
+  const { validationErrors, permissionError, success } =
     (useActionData() as {
       success: boolean;
       validationErrors: ValidationErrors;
+      permissionError: string;
     }) || {};
 
   const mode = staffMember ? "edit" : "add";
 
   const [loading, setLoading] = useState<boolean>(false);
+  const [changingPassword, setChangingPassword] = useState<boolean>(false);
 
   useEffect(() => {
     if (success) {
@@ -149,7 +159,7 @@ const ModifyStaff = () => {
           <div className="flex flex-wrap justify-evenly gap-3">
             <UploadAvatar avatar={staffMember?.avatar} />
 
-            <div className="flex flex-row flex-wrap justify-center gap-6">
+            <div className="flex flex-row flex-wrap justify-center gap-3">
               <BasicSelect
                 name="role"
                 label="Role"
@@ -293,9 +303,45 @@ const ModifyStaff = () => {
                 validationErrors={validationErrors}
                 styles="!w-full"
               />
+
+              {changingPassword &&
+                (role === "DEVELOPER" || role === "ADMIN") && (
+                  <>
+                    <BasicInput
+                      name="password"
+                      label="Password"
+                      placeholder="Password"
+                      type="password"
+                      customWidth="w-full"
+                      defaultValue={undefined}
+                      validationErrors={validationErrors}
+                    />
+
+                    <BasicButton
+                      label="Cancel Password Change"
+                      extendStyle="mt-3"
+                      clickFunction={() => setChangingPassword(false)}
+                    />
+                  </>
+                )}
+
+              {!changingPassword && (
+                <BasicButton
+                  label="Change Password"
+                  extendStyle="mt-3"
+                  clickFunction={() => setChangingPassword(true)}
+                />
+              )}
             </div>
           </div>
         </div>
+
+        {permissionError && (
+          <div className="mt-3 w-full pt-3 text-center text-sm text-error">
+            {permissionError}
+          </div>
+        )}
+
         <BackSubmitButtons
           loading={loading}
           setLoading={setLoading}

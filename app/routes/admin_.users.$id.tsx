@@ -136,7 +136,7 @@ const ModifyUser = () => {
           <div className="flex flex-wrap justify-evenly gap-3">
             <UploadAvatar avatar={user?.avatar} />
 
-            <div className="flex flex-row flex-wrap justify-center gap-6">
+            <div className="flex flex-row flex-wrap justify-center gap-3">
               <BasicInput
                 name="email"
                 label="Email Address"

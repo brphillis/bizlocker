@@ -1,4 +1,6 @@
 import { prisma } from "~/db.server";
+import bcrypt from "bcryptjs";
+import { STAFF_SESSION_KEY, getUserDataFromSession } from "~/session.server";
 
 export const getStaff = async (id: string) => {
   return await prisma.staff.findUnique({
@@ -13,7 +15,7 @@ export const getStaff = async (id: string) => {
   });
 };
 
-export const upsertStaff = async (staffData: any) => {
+export const upsertStaff = async (request: Request, staffData: any) => {
   const {
     email,
     phoneNumber,
@@ -29,15 +31,33 @@ export const upsertStaff = async (staffData: any) => {
     avatar,
     role,
     jobTitle,
+    password,
     store,
     isActive,
     id,
   } = staffData;
 
+  let hashedPassword;
+
+  if (password) {
+    const { role } =
+      ((await getUserDataFromSession(request, STAFF_SESSION_KEY)) as Staff) ||
+      {};
+
+    if (role !== "DEVELOPER" && role !== "ADMIN") {
+      const permissionError = "You Are Not Authorized to Change Passwords.";
+      return { permissionError };
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    hashedPassword = await bcrypt.hash(password, salt);
+  }
+
   if (!id) {
-    return await prisma.staff.create({
+    const success = await prisma.staff.create({
       data: {
         email,
+        password: hashedPassword,
         role,
         jobTitle,
         doubleAuthentication: false,
@@ -82,11 +102,14 @@ export const upsertStaff = async (staffData: any) => {
         address: true,
       },
     });
+
+    return { success };
   } else {
-    return await prisma.staff.upsert({
+    const success = await prisma.staff.upsert({
       where: { id },
       update: {
         email,
+        ...(password && { password: hashedPassword }),
         role,
         jobTitle,
         doubleAuthentication: false,
@@ -155,6 +178,7 @@ export const upsertStaff = async (staffData: any) => {
       create: {
         id,
         email,
+        password: hashedPassword,
         role,
         jobTitle,
         userDetails: {
@@ -199,6 +223,7 @@ export const upsertStaff = async (staffData: any) => {
         address: true,
       },
     });
+    return { success };
   }
 };
 

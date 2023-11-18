@@ -23,7 +23,7 @@ export const verifyLogin = async (
   });
 
   if (!userWithPassword || !userWithPassword.password) {
-    const error = "No Email or Password Provided";
+    const error = "User Not Found";
     return { error };
   }
 

@@ -12,7 +12,7 @@ type Props = {
   onChange?: (value: string | React.ChangeEvent<HTMLSelectElement>) => void;
   placeholder: string;
   styles?: string;
-  type: "text" | "number" | "date";
+  type: "text" | "number" | "date" | "password";
   validationErrors?: ValidationErrors;
 };
 
