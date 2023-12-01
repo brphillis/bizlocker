@@ -22,6 +22,8 @@ auto_rollback = true
 internal_port = 8080
 processes = ["app"]
 protocol = "tcp"
+auto_stop_machines = true
+auto_start_machines = true
 script_checks = []
 
 [services.concurrency]

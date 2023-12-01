@@ -3,6 +3,7 @@ import { IoRefreshOutline, IoSearch } from "react-icons/io5";
 import { Form, useSearchParams, useSubmit } from "react-router-dom";
 import SearchInput from "../Forms/Input/SearchInput";
 import { useLocation } from "@remix-run/react";
+import Spinner from "../Spinner";
 
 type Props = {
   departments: Department[];
@@ -206,11 +207,7 @@ const SearchBar = ({ departments, productCategories, brands }: Props) => {
             </button>
           )}
 
-          {loading && (
-            <div>
-              <div className="mx-3 h-6 w-6 animate-spin rounded-full border-[3px] border-brand-black border-t-blue-600 pr-1" />
-            </div>
-          )}
+          {loading && <Spinner mode="circle" size="small" extendStyle="mx-3" />}
         </div>
       </div>
     </Form>

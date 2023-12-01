@@ -1,5 +1,7 @@
 import { cssBundleHref } from "@remix-run/css-bundle";
-import type { LinksFunction } from "@remix-run/node";
+import type { LinksFunction, LoaderArgs } from "@remix-run/node";
+import { keepAwake } from "./sleep.server";
+import isBot from "isbot";
 import {
   Links,
   LiveReload,
@@ -15,6 +17,13 @@ export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
 ];
+
+export const loader = async ({ request }: LoaderArgs) => {
+  const isbot = isBot(request.headers.get("user-agent"));
+  if (!isbot) {
+    void keepAwake();
+  }
+};
 
 export default function App() {
   return (

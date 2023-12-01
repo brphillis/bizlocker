@@ -2,6 +2,7 @@ import { useNavigation, useSubmit } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { IoAddCircle, IoRemoveCircle } from "react-icons/io5";
 import { Toast } from "~/components/Notifications/Toast";
+import Spinner from "~/components/Spinner";
 
 type Props = {
   mode: "add" | "subtract";
@@ -55,9 +56,11 @@ const CartAddSubtractButton = ({
           }}
         />
         {loading && (
-          <div className="absolute bottom-3 right-2">
-            <div className="h-3 w-3 animate-spin rounded-full border-[2px] border-white/0 border-t-primary" />
-          </div>
+          <Spinner
+            mode="circle"
+            size="extraSmall"
+            extendStyle="absolute bottom-3 right-3"
+          />
         )}
       </>
     );
@@ -79,9 +82,11 @@ const CartAddSubtractButton = ({
           }}
         />
         {loading && (
-          <div className="absolute bottom-3 right-2">
-            <div className="h-3 w-3 animate-spin rounded-full border-[2px] border-white/0 border-t-primary" />
-          </div>
+          <Spinner
+            mode="circle"
+            size="extraSmall"
+            extendStyle="absolute bottom-3 right-3"
+          />
         )}
       </>
     );
