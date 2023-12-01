@@ -23,6 +23,8 @@ export const loader = async ({ request }: LoaderArgs) => {
   if (!isbot) {
     void keepAwake();
   }
+
+  return null;
 };
 
 export default function App() {
