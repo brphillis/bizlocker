@@ -2,7 +2,10 @@ import { prisma } from "~/db.server";
 import bcrypt from "bcryptjs";
 import { initiateVerifyUserAccount } from "./verification.server";
 
-export const registerUser = async (email: string, password: string) => {
+export const registerUser = async (
+  email: string,
+  password: string
+): Promise<{ success: boolean }> => {
   let success;
   const existingUser = await prisma.user.findUnique({
     where: {
@@ -31,7 +34,10 @@ export const registerUser = async (email: string, password: string) => {
   return { success };
 };
 
-export const resetUserPassword = async (email: string, password: string) => {
+export const resetUserPassword = async (
+  email: string,
+  password: string
+): Promise<{ success: boolean }> => {
   const userToUpdate = await prisma.user.findUnique({
     where: {
       email,

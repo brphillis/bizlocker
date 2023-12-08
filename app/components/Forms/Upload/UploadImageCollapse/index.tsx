@@ -1,3 +1,4 @@
+import type { Image } from "@prisma/client";
 import { useState } from "react";
 import { IoIosCloseCircle } from "react-icons/io";
 import { ConvertToBase64Image } from "~/helpers/fileHelpers";
@@ -5,8 +6,8 @@ import { ConvertToBase64Image } from "~/helpers/fileHelpers";
 type Props = {
   label: string;
   name: string;
-  defaultValue: Image;
   tooltip: string;
+  defaultValue?: Image | null;
 };
 
 const UploadImageCollapse = ({ label, name, tooltip, defaultValue }: Props) => {
@@ -24,7 +25,7 @@ const UploadImageCollapse = ({ label, name, tooltip, defaultValue }: Props) => {
         <div className="flex flex-col items-center">
           <div className="text-center text-xs">{tooltip}</div>
 
-          {image && (
+          {image?.href && (
             <div className="relative mt-3 flex flex-col items-center">
               <div className="relative h-max w-max">
                 <img

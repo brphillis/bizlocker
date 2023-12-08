@@ -1,23 +1,25 @@
-import {
-  type LoaderArgs,
-  type ActionArgs,
-  redirect,
-} from "@remix-run/server-runtime";
-import { useLoaderData } from "react-router-dom";
-import PromotionBanner from "~/components/Banners/PromotionBanner";
-import ProductFilterSideBar from "~/components/Filter/ProductFilterSideBar";
-import ProductGrid from "~/components/Grids/ProductGrid";
-import PageWrapper from "~/components/Layout/_Website/PageWrapper";
-import ProductSort from "~/components/Sorting/ProductSort";
-import { getBrands } from "~/models/brands.server";
+import { useLoaderData } from "@remix-run/react";
 import { addToCart } from "~/models/cart.server";
-import { getAvailableColors } from "~/models/enums.server";
-import { getProductSubCategories } from "~/models/productSubCategories.server";
+import { getBrands } from "~/models/brands.server";
+import ProductGrid from "~/components/Grids/ProductGrid";
 import { searchProducts } from "~/models/products.server";
 import { getPromotion } from "~/models/promotions.server";
-import { getProductCategories } from "~/models/productCategories.server";
-import type { V2_MetaFunction } from "@remix-run/node";
+import ProductSort from "~/components/Sorting/ProductSort";
+import { getAvailableColors } from "~/models/enums.server";
 import { getDepartments } from "~/models/departments.server";
+import PromotionBanner from "~/components/Banners/PromotionBanner";
+import PageWrapper from "~/components/Layout/_Website/PageWrapper";
+import { getProductCategories } from "~/models/productCategories.server";
+import ProductFilterSideBar from "~/components/Filter/ProductFilterSideBar";
+import { getProductSubCategories } from "~/models/productSubCategories.server";
+
+import {
+  json,
+  redirect,
+  type ActionArgs,
+  type LoaderArgs,
+  type V2_MetaFunction,
+} from "@remix-run/node";
 
 export const meta: V2_MetaFunction = ({ data }) => {
   return [
@@ -33,35 +35,39 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const url = new URL(request.url);
   const promotion = await getPromotion(undefined, params.name);
 
-  if (promotion) {
-    const formData = new FormData();
-    formData.set("promotionId", promotion.id.toString());
-    const { products, totalPages } = await searchProducts(
-      Object.fromEntries(formData),
-      url,
-      true
-    );
-    if (promotion?.isActive) {
-      const departments = await getDepartments();
-      const productCategories = await getProductCategories();
-      const productSubCategories = await getProductSubCategories();
-      const brands = await getBrands();
-      const colors = await getAvailableColors();
-      const promotionName = promotion.name;
+  if (!promotion) {
+    return redirect(request?.referrer);
+  }
 
-      return {
-        promotion,
-        promotionName,
-        products,
-        totalPages,
-        departments,
-        productCategories,
-        productSubCategories,
-        brands,
-        colors,
-      };
-    } else redirect(request?.referrer);
-  } else return redirect(request?.referrer);
+  const formData = new FormData();
+  formData.set("promotionId", promotion.id.toString());
+
+  const { products, totalPages } = await searchProducts(
+    Object.fromEntries(formData),
+    url,
+    true
+  );
+
+  if (!promotion?.isActive) {
+    return redirect(request?.referrer);
+  }
+
+  const departments = await getDepartments();
+  const productCategories = await getProductCategories();
+  const productSubCategories = await getProductSubCategories();
+  const brands = await getBrands();
+  const colors = await getAvailableColors();
+
+  return json({
+    promotion,
+    products,
+    totalPages,
+    departments,
+    productCategories,
+    productSubCategories,
+    brands,
+    colors,
+  });
 };
 
 export const action = async ({ request }: ActionArgs) => {
@@ -83,23 +89,22 @@ const Promotion = () => {
     productSubCategories,
     brands,
     colors,
-  } =
-    (useLoaderData() as {
-      promotion: Promotion;
-      products: Product[];
-      totalPages: number;
-      departments: Department[];
-      productCategories: ProductCategory[];
-      productSubCategories: ProductSubCategory[];
-      brands: Brand[];
-      colors: string[];
-    }) || {};
+  } = useLoaderData<typeof loader>();
 
   return (
     <PageWrapper>
-      <PromotionBanner promotion={promotion} />
+      {promotion.bannerImage && (
+        <PromotionBanner
+          name={promotion.name}
+          bannerImage={promotion.bannerImage}
+          targetGender={promotion.targetGender}
+        />
+      )}
+
       <div className="w-[1280px] max-w-full">
-        <ProductSort totalCount={products.length * totalPages} />
+        <ProductSort
+          totalCount={(products && products?.length * totalPages) || 0}
+        />
         <div className="my-3 w-full border-b border-brand-black/20" />
 
         <div className="flex flex-wrap items-start justify-center gap-6 px-0 sm:w-full xl:flex-nowrap">
@@ -110,7 +115,7 @@ const Promotion = () => {
             brands={brands}
             colors={colors}
           />
-          {products?.length > 0 && (
+          {products && products?.length > 0 && (
             <ProductGrid products={products} totalPages={totalPages} />
           )}
           {!products ||

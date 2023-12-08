@@ -1,9 +1,11 @@
+import type { CartWithDetails } from "~/models/cart.server";
+import type { Address } from "@prisma/client";
 import { getShippingServices_Integration } from "~/integrations/_master/shipping";
 import { getLatLongForPostcode } from "~/models/location.server";
 import { prisma } from "~/db.server";
 import { findClosestPostcode } from "./locationHelpers";
 export const getCartDeliveryOptions = async (
-  cart: Cart,
+  cart: CartWithDetails,
   postCode: number
 ): Promise<AusPostDeliveryOption> => {
   const cartDimensions = getCartDimensions(cart);
@@ -12,8 +14,12 @@ export const getCartDeliveryOptions = async (
 
   const variantStoreIds: any = [];
 
+  if (!cart.cartItems) {
+    throw new Error("No Items In Cart");
+  }
+
   for (const { variant } of cart.cartItems) {
-    if (variant.stock) {
+    if (variant?.stock) {
       variantStoreIds.push(...variant.stock.map((e) => e.storeId));
     }
   }
@@ -62,12 +68,16 @@ export const getCartDeliveryOptions = async (
   return filteredPostageServices;
 };
 
-export const getCartDimensions = (cart: Cart): CartDimensions => {
+export const getCartDimensions = (cart: CartWithDetails): CartDimensions => {
   let totalHeight: number = 0;
   let totalWidth: number = 0;
   let totalLength: number = 0;
   let totalWeight: number = 0;
   let fragile: boolean = false;
+
+  if (!cart.cartItems) {
+    throw new Error("No Items In Cart");
+  }
 
   for (const item of cart.cartItems) {
     if (item.variant && typeof item.variant.height === "number") {
@@ -82,7 +92,7 @@ export const getCartDimensions = (cart: Cart): CartDimensions => {
     if (item.variant && typeof item.variant.weight === "number") {
       totalWeight += item.variant.weight;
     }
-    if (item.variant.isFragile) {
+    if (item?.variant?.isFragile) {
       fragile = true;
     }
   }

@@ -1,11 +1,11 @@
-import type { ActionArgs, V2_MetaFunction } from "@remix-run/node";
-import { Link, useActionData } from "@remix-run/react";
-import { googleLogin, verifyLogin } from "~/models/auth/login.server";
 import { createUserSession } from "~/session.server";
+import { Link, useActionData } from "@remix-run/react";
 import LoginGoogle from "~/components/auth/LoginGoogle";
-import { isValidEmail, isValidPassword } from "~/utility/validate";
-import AuthPageWrapper from "~/components/Layout/AuthPageWrapper";
 import AuthContainer from "~/components/Layout/AuthContainer";
+import AuthPageWrapper from "~/components/Layout/AuthPageWrapper";
+import { isValidEmail, isValidPassword } from "~/utility/validate";
+import { googleLogin, verifyLogin } from "~/models/auth/login.server";
+import { json, type ActionArgs, type V2_MetaFunction } from "@remix-run/node";
 
 export const action = async ({ request }: ActionArgs) => {
   const form = Object.fromEntries(await request.formData());
@@ -13,18 +13,18 @@ export const action = async ({ request }: ActionArgs) => {
   switch (form._action) {
     case "login":
       const { email, password, remember } = form;
-      let validationError: string[] = [];
+      let validationErrors: string[] = [];
 
       if (!isValidEmail(email as string)) {
-        validationError.push("Invalid Email Address");
+        validationErrors.push("Invalid Email Address");
       }
 
       if (!isValidPassword(password as string)) {
-        validationError.push("Password Does Not Meet Requirements");
+        validationErrors.push("Password Does Not Meet Requirements");
       }
 
-      if (validationError.length > 0) {
-        return { validationError };
+      if (validationErrors.length > 0) {
+        return json({ validationErrors });
       }
 
       const { user, error } = await verifyLogin(
@@ -33,8 +33,8 @@ export const action = async ({ request }: ActionArgs) => {
       );
 
       if (error) {
-        const validationError = [error];
-        return { validationError };
+        const validationErrors = [error];
+        return json({ validationErrors });
       }
 
       if (user) {
@@ -45,8 +45,8 @@ export const action = async ({ request }: ActionArgs) => {
           redirectTo: "/",
         });
       } else {
-        const validationError = ["Incorrect Credentials"];
-        return { validationError };
+        const validationErrors = ["Incorrect Credentials"];
+        return json({ validationErrors });
       }
 
     case "googleLogin":
@@ -60,8 +60,7 @@ export const action = async ({ request }: ActionArgs) => {
 export const meta: V2_MetaFunction = () => [{ title: "Login" }];
 
 export default function LoginPage() {
-  const { validationError } =
-    (useActionData() as { validationError: string[] }) || {};
+  const { validationErrors } = useActionData() as ActionReturnTypes;
 
   return (
     <AuthPageWrapper>
@@ -97,22 +96,16 @@ export default function LoginPage() {
         </div>
 
         <>
-          {validationError?.length > 0 && (
-            <div>
-              {validationError.map((error: string, i) => {
-                return (
-                  <p
-                    key={error + i}
-                    className="my-2 text-center text-xs text-red-500"
-                  >
-                    {error}
-                  </p>
-                );
-              })}
-            </div>
-          )}
+          {Object.values(validationErrors)?.map((error: string, i) => (
+            <p
+              key={error + i}
+              className="my-2 text-center text-xs text-red-500"
+            >
+              {error}
+            </p>
+          ))}
 
-          {validationError?.[0]?.includes("Email not Verified") && (
+          {Object.values(validationErrors)?.includes("Email not Verified") && (
             <Link
               to="/request-verification-code"
               className="link-hover link mb-2 cursor-pointer text-center text-xs text-brand-white/75"

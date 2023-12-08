@@ -1,11 +1,15 @@
-import { redirect } from "@remix-run/server-runtime";
+import type { WebPage } from "@prisma/client";
+import { type PageBlock, removeBlock } from "./pageBuilder.server";
+import { type TypedResponse, redirect } from "@remix-run/server-runtime";
 import { prisma } from "~/db.server";
 import { includeBlocksData } from "~/utility/blockMaster";
 import { getOrderBy } from "~/helpers/sortHelpers";
 import { getBlocks } from "~/helpers/blockHelpers";
-import { removeBlock } from "./pageBuilder.server";
 
-export const getWebPage = async (id?: string, title?: string) => {
+export const getWebPage = async (
+  id?: string,
+  title?: string
+): Promise<WebPage | null> => {
   let whereClause;
 
   if (id) {
@@ -25,7 +29,9 @@ export const getWebPage = async (id?: string, title?: string) => {
   });
 };
 
-export const deleteWebPage = async (id: number) => {
+export const deleteWebPage = async (
+  id: number
+): Promise<TypedResponse<void>> => {
   const webPage = await prisma.webPage.findUnique({
     where: {
       id,
@@ -45,13 +51,13 @@ export const deleteWebPage = async (id: number) => {
   });
 
   if (!webPage) {
-    return false;
+    throw new Error("WebPage Not Found");
   }
 
   //find and delete the associated blocks
   const webPageBlocks = await getBlocks(webPage as any);
 
-  webPageBlocks.map((e: Block) => removeBlock(e.id, e.name));
+  webPageBlocks.map((e: PageBlock) => removeBlock(e.id, e.name));
 
   // Delete the webPage
   await prisma.webPage.delete({
@@ -66,7 +72,7 @@ export const deleteWebPage = async (id: number) => {
 export const searchWebPages = async (
   formData?: { [k: string]: FormDataEntryValue },
   url?: URL
-) => {
+): Promise<{ webPages: WebPage[]; totalPages: number }> => {
   const title =
     formData?.title || (url && url.searchParams.get("title")?.toString()) || "";
   const sortBy = formData?.sortBy || url?.searchParams.get("sortBy") || "";

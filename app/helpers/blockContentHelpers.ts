@@ -1,10 +1,26 @@
+import type { BlockContent } from "~/models/blocks.server";
+import type { BrandWithContent } from "~/models/brands.server";
+import type { CampaignWithContent } from "~/models/campaigns.server";
+import type { PromotionWithContent } from "~/models/promotions.server";
+import type {
+  BlockOptions,
+  Brand,
+  Campaign,
+  Image,
+  Promotion,
+} from "@prisma/client";
+
 //gets the correct option for the item, example "title1"
 export const getItemOption = (
   options: BlockOptions,
   key: string,
   index: number
-) => {
-  return options[`${key}${index + 1}` as keyof BlockOptions];
+): string => {
+  const result = options[`${key}${index + 1}` as keyof BlockOptions] as string;
+
+  if (result) {
+    return result;
+  } else return "undefined";
 };
 
 export const determineSingleContentType = (
@@ -67,17 +83,17 @@ export const buildContentImageFromContent = (
   let link: string = " ";
   let imageSrc: string = " ";
   if (contentType === "promotion") {
-    const promotion = contentData?.promotion as Promotion;
+    const promotion = contentData?.promotion as PromotionWithContent;
     name = promotion?.name || name;
     link = `/promotion/${name}`;
     imageSrc = promotion?.[tileOrBanner]?.href || imageSrc;
   } else if (contentType === "campaign") {
-    const campaign = contentData?.campaign as Campaign;
+    const campaign = contentData?.campaign as CampaignWithContent;
     name = campaign?.name || name;
     link = `/campaign/${name}`;
     imageSrc = campaign?.[tileOrBanner]?.href || imageSrc;
   } else if (contentType === "brand") {
-    const brand = contentData?.brand as Brand;
+    const brand = contentData?.brand as BrandWithContent;
     name = brand?.name || name;
     link = `/products?brand=${name}`;
     imageSrc = brand?.image?.href || imageSrc;

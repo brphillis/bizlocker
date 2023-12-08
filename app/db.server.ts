@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import invariant from "tiny-invariant";
 import { createInitialDeveloper, createSeedData } from "./utility/initialize";
+import { validateISO8601 } from "prisma/validation";
 
 let prisma: PrismaClient;
 
@@ -57,6 +58,73 @@ function getClient() {
       },
     },
   });
+
+  client.$extends({
+    query: {
+      $allModels: {
+        async update({ model, operation, args, query }) {
+          if (
+            !args.data.createdAt ||
+            (args.data.createdAt &&
+              !validateISO8601(args.data.createdAt.toString()))
+          ) {
+            return new Error("Invalid createdAt Date");
+          }
+
+          if (
+            !args.data.updatedAt ||
+            (args.data.updatedAt &&
+              !validateISO8601(args.data.updatedAt.toString()))
+          ) {
+            return new Error("Invalid updatedAt Date");
+          }
+
+          return query(args);
+        },
+
+        async updateMany({ model, operation, args, query }) {
+          if (
+            !args.data.createdAt ||
+            (args.data.createdAt &&
+              !validateISO8601(args.data.createdAt.toString()))
+          ) {
+            return new Error("Invalid createdAt Date");
+          }
+
+          if (
+            !args.data.updatedAt ||
+            (args.data.updatedAt &&
+              !validateISO8601(args.data.updatedAt.toString()))
+          ) {
+            return new Error("Invalid updatedAt Date");
+          }
+
+          return query(args);
+        },
+
+        async create({ model, operation, args, query }) {
+          if (
+            !args.data?.createdAt ||
+            (args.data.createdAt &&
+              !validateISO8601(args.data.createdAt.toString()))
+          ) {
+            return new Error("Invalid createdAt Date");
+          }
+
+          if (
+            !args.data?.updatedAt ||
+            (args.data.updatedAt &&
+              !validateISO8601(args.data.updatedAt.toString()))
+          ) {
+            return new Error("Invalid updatedAt Date");
+          }
+
+          return query(args);
+        },
+      },
+    },
+  });
+
   // connect eagerly
   client.$connect();
 

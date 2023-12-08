@@ -105,12 +105,7 @@ const ModifyStockTransfer = () => {
       statusList: ApprovalStatus[];
     };
   const { validationErrors, success, notification, permissionError } =
-    (useActionData() as {
-      success: boolean;
-      notification: PageNotification;
-      validationErrors: ValidationErrors;
-      permissionError: string;
-    }) || {};
+    useActionData() as ActionReturnTypes;
   useNotification(notification);
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false);

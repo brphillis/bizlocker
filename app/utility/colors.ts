@@ -1,4 +1,4 @@
-export const generateColor = (colorName: string) => {
+export const generateColor = (colorName?: string | null) => {
   switch (colorName) {
     case "RED":
       return "#FF3A20";

@@ -61,7 +61,7 @@ const ProductGrid = ({
             onClick={() =>
               navigate({
                 pathname: "/products",
-                search: `?productSubCategory=${products[0].productSubCategories[0].name}`,
+                search: `?productSubCategory=${products?.[0].productSubCategories?.[0].name}`,
               })
             }
           >

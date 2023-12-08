@@ -1,14 +1,37 @@
-import type { Gender } from "@prisma/client";
+import type {
+  BannerBlockContent,
+  Brand,
+  Campaign,
+  Department,
+  Gender,
+  Image,
+  ProductSubCategory,
+  Promotion,
+  TileBlockContent,
+} from "@prisma/client";
 import { prisma } from "~/db.server";
 import { getRandomOneOrTwo } from "~/helpers/numberHelpers";
 import {
   updateImage_Integration,
   uploadImage_Integration,
 } from "~/integrations/_master/storage";
+import type { ProductWithDetails } from "./products.server";
+import type { ImageWithDetails } from "./images.server";
 
-export function getCampaigns(inDetail?: boolean) {
+export interface CampaignWithContent extends Campaign {
+  bannerBlockContent: BannerBlockContent[] | null;
+  bannerImage: ImageWithDetails | null;
+  brands: Brand[] | null;
+  department: Department | null;
+  excludedProducts: ProductWithDetails[] | null;
+  productSubCategories: ProductSubCategory[] | null;
+  tileBlockContent: TileBlockContent[] | null;
+  tileImage: ImageWithDetails | null;
+}
+
+export const getCampaigns = async (inDetail?: boolean): Promise<Campaign[]> => {
   if (inDetail) {
-    return prisma.campaign.findMany({
+    return await prisma.campaign.findMany({
       orderBy: {
         updatedAt: "desc",
       },
@@ -20,10 +43,10 @@ export function getCampaigns(inDetail?: boolean) {
       },
     });
   } else return prisma.campaign.findMany();
-}
+};
 
-export const getCampaign = async (id: string) => {
-  return prisma.campaign.findUnique({
+export const getCampaign = async (id: string): Promise<Campaign | null> => {
+  return await prisma.campaign.findUnique({
     where: {
       id: parseInt(id),
     },
@@ -38,7 +61,12 @@ export const getCampaign = async (id: string) => {
   });
 };
 
-export const upsertCampaign = async (updateData: any) => {
+export const upsertCampaign = async (
+  updateData: any
+): Promise<{
+  createdCampaign: Campaign | null;
+  updatedCampaign: Campaign | null;
+}> => {
   const {
     name,
     department,
@@ -52,8 +80,6 @@ export const upsertCampaign = async (updateData: any) => {
     isActive,
     id,
   } = updateData;
-
-  let updatedCampaign;
 
   const brandData = brands.map((brandId: string) => ({
     id: parseInt(brandId),
@@ -71,7 +97,7 @@ export const upsertCampaign = async (updateData: any) => {
     const repoLinkTile = await uploadImage_Integration(parsedTile);
     const repoLinkBanner = await uploadImage_Integration(parsedBanner);
 
-    updatedCampaign = await prisma.campaign.create({
+    const createdCampaign = await prisma.campaign.create({
       data: {
         name,
         department: {
@@ -103,6 +129,8 @@ export const upsertCampaign = async (updateData: any) => {
         },
       },
     });
+
+    return { createdCampaign, updatedCampaign: null };
   } else {
     // Update an existing campaign
     const existingCampaign = await prisma.campaign.findUnique({
@@ -179,7 +207,7 @@ export const upsertCampaign = async (updateData: any) => {
       data.targetGender = null; // Disconnect the old gender by setting it to null
     }
 
-    updatedCampaign = await prisma.campaign.update({
+    const updatedCampaign = await prisma.campaign.update({
       where: { id: parseInt(id) },
       data,
       include: {
@@ -187,9 +215,9 @@ export const upsertCampaign = async (updateData: any) => {
         bannerImage: true,
       },
     });
-  }
 
-  return updatedCampaign;
+    return { updatedCampaign, createdCampaign: null };
+  }
 };
 
 export const searchCampaigns = async (

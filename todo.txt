@@ -6,6 +6,10 @@ finish see all stock button for product / add ability to create a stock transfer
 background blockoption is always showing even when it isnt true for mapblock
 make it so when a block content is a selected item it will not show in search results
 
+//TODO 001 - ADD REDIRECT PAGE WHEN ORDER CANT BE FOUND
+
+DONE TO AMIN.DEPARTMENTS.ID
+
 Bug Hisory
 
 001 - [x] Add another method to close cart popup

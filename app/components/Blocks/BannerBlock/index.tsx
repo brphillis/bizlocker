@@ -1,3 +1,5 @@
+import type { BlockOptions } from "@prisma/client";
+import type { BlockContent } from "~/models/blocks.server";
 import { useNavigate } from "@remix-run/react";
 import PatternBackground from "~/components/Layout/PatternBackground";
 import {
@@ -66,7 +68,7 @@ const BannerBlock = ({ content, options: ArrayOptions }: Props) => {
     <div
       className={`relative max-w-[100vw] overflow-visible sm:w-max ${margin} ${padding} ${borderDisplay}`}
       style={{
-        borderRadius: borderRadius || "unset"
+        borderRadius: borderRadius || "unset",
       }}
     >
       <div
@@ -74,7 +76,7 @@ const BannerBlock = ({ content, options: ArrayOptions }: Props) => {
         style={{ backgroundColor: generateColor(backgroundColorSecondary) }}
       ></div>
 
-      {["small", undefined].includes(size) && imageSrc && (
+      {size && ["small", undefined].includes(size) && imageSrc && (
         <img
           onClick={() => link && navigate(link)}
           src={imageSrc}
@@ -85,7 +87,7 @@ const BannerBlock = ({ content, options: ArrayOptions }: Props) => {
         />
       )}
 
-      {["small", undefined].includes(size) && !imageSrc && (
+      {size && ["small", undefined].includes(size) && !imageSrc && (
         <div
           onClick={() => link && navigate(link)}
           className="relative mx-auto flex h-[146px] w-[1280px] max-w-full select-none items-center justify-center max-xl:h-[124px] max-lg:h-[100px] max-md:h-[88px]"
@@ -131,7 +133,7 @@ const BannerBlock = ({ content, options: ArrayOptions }: Props) => {
         />
       )}
 
-      {["medium", undefined].includes(size) && !imageSrc && (
+      {size && ["medium", undefined].includes(size) && !imageSrc && (
         <div
           onClick={() => link && navigate(link)}
           className="relative mx-auto flex h-[219px] w-[1280px] max-w-full select-none items-center justify-center max-xl:h-[186px] max-lg:h-[125px] max-md:h-[132px]"
@@ -176,7 +178,7 @@ const BannerBlock = ({ content, options: ArrayOptions }: Props) => {
         />
       )}
 
-      {["large", "native", undefined].includes(size) && !imageSrc && (
+      {size && ["large", "native", undefined].includes(size) && !imageSrc && (
         <div
           onClick={() => link && navigate(link)}
           className="relative mx-auto flex h-[292px] w-[1400px] max-w-full select-none items-center justify-center max-xl:h-[248px] max-lg:h-[224px] max-md:h-[196px]"

@@ -121,11 +121,7 @@ const ModifyStaff = () => {
   const navigate = useNavigate();
   const { staffMember, roles, stores, role } = useLoaderData() || {};
   const { validationErrors, permissionError, success } =
-    (useActionData() as {
-      success: boolean;
-      validationErrors: ValidationErrors;
-      permissionError: string;
-    }) || {};
+    useActionData() as ActionReturnTypes;
 
   const mode = staffMember ? "edit" : "add";
 

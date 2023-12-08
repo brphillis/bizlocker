@@ -1,8 +1,9 @@
+import type { ProductCategory } from "@prisma/client";
 import { prisma } from "~/db.server";
 import { getOrderBy } from "~/helpers/sortHelpers";
 export type { ProductCategory } from "@prisma/client";
 
-export const getProductCategories = async () => {
+export const getProductCategories = async (): Promise<ProductCategory[]> => {
   return prisma.productCategory.findMany({
     include: {
       productSubCategories: true,
@@ -15,7 +16,9 @@ export const getProductCategories = async () => {
   });
 };
 
-export const getProductCategory = async (id: string) => {
+export const getProductCategory = async (
+  id: string
+): Promise<ProductCategory | null> => {
   return await prisma.productCategory.findUnique({
     where: {
       id: parseInt(id),
@@ -28,7 +31,9 @@ export const getProductCategory = async (id: string) => {
   });
 };
 
-export const upsertProductCategory = async (categoryData: any) => {
+export const upsertProductCategory = async (
+  categoryData: any
+): Promise<ProductCategory> => {
   const {
     id,
     index,
@@ -129,7 +134,7 @@ export const upsertProductCategory = async (categoryData: any) => {
 export const searchProductCategories = async (
   formData?: { [k: string]: FormDataEntryValue },
   url?: URL
-) => {
+): Promise<{ productCategories: ProductCategory[]; totalPages: number }> => {
   const name =
     formData?.name || (url && url.searchParams.get("name")?.toString()) || "";
   const department =

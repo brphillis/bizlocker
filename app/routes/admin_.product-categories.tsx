@@ -8,6 +8,7 @@ import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import { searchProductCategories } from "~/models/productCategories.server";
 import { getProductSubCategories } from "~/models/productSubCategories.server";
+import { json } from "@remix-run/node";
 import {
   Form,
   Outlet,
@@ -33,18 +34,18 @@ export const loader = async ({ request }: LoaderArgs) => {
   const departments = await getDepartments();
   const productSubCategories = await getProductSubCategories();
 
-  return {
+  return json({
     productCategories,
     totalPages,
     departments,
     productSubCategories,
-  };
+  });
 };
 
 const ManageProductCategories = () => {
   const navigate = useNavigate();
   const { productCategories, totalPages, productSubCategories, departments } =
-    useLoaderData() || {};
+    useLoaderData<typeof loader>();
 
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("pageNumber")) || 1;

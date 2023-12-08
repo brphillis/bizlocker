@@ -25,3 +25,11 @@ export const isArrayofStrings = (value: any): value is string[] => {
 
   return value.every((item) => typeof item === "string");
 };
+
+export const isArrayofNumbers = (value: any): value is number[] => {
+  if (!Array.isArray(value)) {
+    return false;
+  }
+
+  return value.every((item) => typeof item === "number");
+};

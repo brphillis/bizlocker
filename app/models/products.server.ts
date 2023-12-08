@@ -1,10 +1,46 @@
 import { prisma } from "~/db.server";
-import { calculateDiscountPercentage } from "~/helpers/numberHelpers";
 import { getOrderBy } from "~/helpers/sortHelpers";
+import { calculateDiscountPercentage } from "~/helpers/numberHelpers";
 import { uploadImage_Integration } from "~/integrations/_master/storage";
-import { STAFF_SESSION_KEY, getUserDataFromSession } from "~/session.server";
+import type {
+  Brand,
+  Campaign,
+  HeroBlockContent,
+  Image,
+  Product,
+  ProductSubCategory,
+  ProductVariant,
+  Promotion,
+  Staff,
+  StockLevel,
+  StockTransferRequest,
+} from "@prisma/client";
+import { getUserDataFromSession, STAFF_SESSION_KEY } from "~/session.server";
+import type { CartItemWithDetails } from "./cart.server";
+import type { OrderItemWithDetails } from "./orders.server";
+import type { ImageWithDetails } from "./images.server";
 
-export const getProducts = async (count?: string) => {
+export interface ProductWithDetails extends Product {
+  promotion: Promotion | null;
+  productVariant: ProductVariantWithDetails | null;
+  brand: Brand | null;
+  campaigns: Campaign[] | null;
+  heroBlockContent: HeroBlockContent[] | null;
+  heroImage: ImageWithDetails | null;
+  images: ImageWithDetails[] | null;
+  productSubCategories: ProductSubCategory[] | null;
+  variants: ProductVariantWithDetails[] | null;
+}
+
+export interface ProductVariantWithDetails extends ProductVariant {
+  product: ProductWithDetails | null;
+  stock: StockLevel[] | null;
+  stockTransferRequest: StockTransferRequest[] | null;
+  cartItems: CartItemWithDetails[] | null;
+  orderItems: OrderItemWithDetails[] | null;
+}
+
+export const getProducts = async (count?: string): Promise<Product[]> => {
   if (count) {
     return await prisma.product.findMany({
       include: {
@@ -35,7 +71,7 @@ export const getProducts = async (count?: string) => {
   }
 };
 
-export const getProduct = async (id: string) => {
+export const getProduct = async (id: string): Promise<Product | null> => {
   return await prisma.product.findUnique({
     where: {
       id: parseInt(id),
@@ -395,7 +431,7 @@ export const upsertProduct = async (request: Request, productData: any) => {
       const shouldUpdateStock =
         currentStockLevel != variant.stock || !currentStockLevel;
 
-      if (variant.id && variant.stock && shouldUpdateStock) {
+      if (variant.id && variant.stock && shouldUpdateStock && storeId) {
         // Try to update the stock level; if it doesn't exist, create it
         const existingStockLevel = await prisma.stockLevel.findFirst({
           where: {
@@ -483,7 +519,7 @@ export const searchProducts = async (
   formData?: { [k: string]: FormDataEntryValue },
   url?: URL,
   activeOnly?: boolean
-) => {
+): Promise<{ products: Product[] | null; totalPages: number }> => {
   const name =
     formData?.name || (url && url?.searchParams.get("name")?.toString()) || "";
   const department =
@@ -735,7 +771,7 @@ export const searchProducts = async (
     }),
   ]);
 
-  let products;
+  let products = null;
 
   // If sorting by price is required, sort the products array after fetching
   if (sortBy === "price" && sortOrder) {
@@ -752,12 +788,12 @@ export const searchProducts = async (
       }
 
       return sortOrder === "asc" ? aPrice - bPrice : bPrice - aPrice;
-    });
+    }) as Product[];
   } else {
-    products = fetchedProducts;
+    products = fetchedProducts as Product[];
   }
 
-  const totalPages = Math.ceil(totalProducts / (perPage || 1));
+  const totalPages = Math.ceil(totalProducts / (perPage || 1)) || 0;
 
   return { products, totalPages };
 };

@@ -1,9 +1,9 @@
-import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
+import { getBlocks } from "~/helpers/blockHelpers";
+import { getArticle } from "~/models/articles.server";
 import BlockRenderer from "~/components/BlockRenderer";
 import PageWrapper from "~/components/Layout/_Website/PageWrapper";
-import { getArticle } from "~/models/articles.server";
-import { getBlocks } from "~/helpers/blockHelpers";
+import { json, type LoaderArgs, type V2_MetaFunction } from "@remix-run/node";
 
 export const meta: V2_MetaFunction = ({ data }) => {
   return [
@@ -28,21 +28,21 @@ export const loader = async ({ params }: LoaderArgs) => {
     backgroundColor = article.backgroundColor;
   }
 
-  return {
+  return json({
     title,
     description,
     backgroundColor,
     blocks,
     articleName,
-  };
+  });
 };
 
 const Home = () => {
-  const { blocks, backgroundColor } = useLoaderData();
+  const { blocks, backgroundColor } = useLoaderData<typeof loader>();
 
   return (
     <PageWrapper gap="medium" backgroundColor={backgroundColor}>
-      <BlockRenderer blocks={blocks} />
+      <>{blocks && <BlockRenderer blocks={blocks} />}</>
     </PageWrapper>
   );
 };

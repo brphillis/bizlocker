@@ -1,13 +1,14 @@
+import { useLoaderData } from "@remix-run/react";
+import { getBlocks } from "~/helpers/blockHelpers";
+import { getPreviewPage } from "~/models/previewPage";
+import BlockRenderer from "~/components/BlockRenderer";
+import PageWrapper from "~/components/Layout/_Website/PageWrapper";
 import {
+  json,
   redirect,
   type LoaderArgs,
   type V2_MetaFunction,
 } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
-import BlockRenderer from "~/components/BlockRenderer";
-import PageWrapper from "~/components/Layout/_Website/PageWrapper";
-import { getBlocks } from "~/helpers/blockHelpers";
-import { getPreviewPage } from "~/models/previewPage";
 
 export const meta: V2_MetaFunction = () => {
   return [
@@ -31,16 +32,16 @@ export const loader = async ({ params }: LoaderArgs) => {
       backgroundColor = webPage?.backgroundColor;
     }
 
-    return { blocks, backgroundColor };
+    return json({ blocks, backgroundColor });
   } else return redirect("/admin/home");
 };
 
 const Preview = () => {
-  const { blocks, backgroundColor } = useLoaderData();
+  const { blocks, backgroundColor } = useLoaderData<typeof loader>();
 
   return (
     <PageWrapper gap="medium" backgroundColor={backgroundColor}>
-      <BlockRenderer blocks={blocks} />
+      <>{blocks && <BlockRenderer blocks={blocks} />}</>
     </PageWrapper>
   );
 };

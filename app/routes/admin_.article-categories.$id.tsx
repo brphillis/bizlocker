@@ -2,11 +2,16 @@ import DarkOverlay from "~/components/Layout/DarkOverlay";
 import FormHeader from "~/components/Forms/Headers/FormHeader";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
-import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node";
+import {
+  redirect,
+  type ActionArgs,
+  type LoaderArgs,
+  json,
+} from "@remix-run/node";
 import {
   deleteArticleCategory,
-  getArticleCategories,
-  upsertArticleCategories,
+  getArticleCategory,
+  upsertArticleCategory,
 } from "~/models/articleCategories.server";
 import { useState } from "react";
 import BasicInput from "~/components/Forms/Input/BasicInput";
@@ -16,6 +21,7 @@ import { STAFF_SESSION_KEY } from "~/session.server";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+
   if (!authenticated.valid) {
     return redirect("/login");
   }
@@ -23,11 +29,27 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const id = params?.id;
 
   if (id === "add") {
-    return null;
-  } else {
-    const articleCategory = (await getArticleCategories(id)) as ArticleCategory;
-    return { articleCategory };
+    const articleCategory = {};
+    return json({ articleCategory } as { articleCategory: ArticleCategory });
   }
+
+  if (!id) {
+    throw new Response(null, {
+      status: 404,
+      statusText: "Article Not Found",
+    });
+  }
+
+  const articleCategory = await getArticleCategory(id);
+
+  if (!articleCategory) {
+    throw new Response(null, {
+      status: 404,
+      statusText: "Article Not Found",
+    });
+  }
+
+  return json({ articleCategory });
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
@@ -48,10 +70,10 @@ export const action = async ({ request, params }: ActionArgs) => {
 
       const validationErrors = validateForm(form, validate);
       if (validationErrors) {
-        return { validationErrors };
+        return json({ validationErrors });
       }
 
-      await upsertArticleCategories(name as string, id);
+      await upsertArticleCategory(name as string, id);
       return redirect("/admin/article-categories");
 
     case "delete":
@@ -61,13 +83,8 @@ export const action = async ({ request, params }: ActionArgs) => {
 };
 
 const ModifyArticleCategory = () => {
-  const { articleCategory } =
-    (useLoaderData() as {
-      articleCategory: ArticleCategory;
-    }) || {};
-  const { validationErrors } =
-    (useActionData() as { validationErrors: ValidationErrors }) || {};
-  const mode = articleCategory ? "edit" : "add";
+  const { articleCategory } = useLoaderData<typeof loader>();
+  const { validationErrors } = useActionData() as ActionReturnTypes;
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -80,7 +97,6 @@ const ModifyArticleCategory = () => {
         <FormHeader
           valueToChange={articleCategory}
           type="Category"
-          mode={mode}
           hasIsActive={true}
           hasDelete={true}
         />

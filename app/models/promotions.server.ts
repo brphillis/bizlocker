@@ -1,14 +1,23 @@
-import type { Gender } from "@prisma/client";
 import { prisma } from "~/db.server";
+import type { Department, Gender, Image, Promotion } from "@prisma/client";
 import {
   updateImage_Integration,
   uploadImage_Integration,
 } from "~/integrations/_master/storage";
+import type { ImageWithDetails } from "./images.server";
+import type { ProductWithDetails } from "./products.server";
+
+export interface PromotionWithContent extends Promotion {
+  bannerImage: ImageWithDetails | null;
+  tileImage: ImageWithDetails | null;
+  department: Department | null;
+  products: ProductWithDetails[] | null;
+}
 
 export function getPromotions(
   includeImages?: boolean,
   includeProducts?: boolean
-) {
+): Promise<Promotion[]> {
   if (includeImages) {
     return prisma.promotion.findMany({
       orderBy: {
@@ -23,7 +32,10 @@ export function getPromotions(
   } else return prisma.promotion.findMany();
 }
 
-export const getPromotion = async (id?: string, name?: string) => {
+export const getPromotion = async (
+  id?: string,
+  name?: string
+): Promise<Promotion | null> => {
   if (id) {
     return prisma.promotion.findUnique({
       where: {
@@ -62,7 +74,12 @@ export const getPromotion = async (id?: string, name?: string) => {
   } else return null;
 };
 
-export const upsertPromotion = async (updateData: any) => {
+export const upsertPromotion = async (
+  updateData: any
+): Promise<{
+  createdPromotion: Promotion | null;
+  updatedPromotion: Promotion | null;
+}> => {
   const {
     name,
     department,
@@ -75,13 +92,11 @@ export const upsertPromotion = async (updateData: any) => {
     id,
   } = updateData;
 
-  let updatedPromotion;
-
   if (!id) {
     const repoLinkTile = await uploadImage_Integration(parsedTile);
     const repoLinkBanner = await uploadImage_Integration(parsedBanner);
 
-    updatedPromotion = await prisma.promotion.create({
+    const createdPromotion = await prisma.promotion.create({
       data: {
         name,
         department: {
@@ -119,8 +134,10 @@ export const upsertPromotion = async (updateData: any) => {
         department: true,
       },
     });
+
+    return { createdPromotion, updatedPromotion: null };
   } else {
-    const existingPromotion = await prisma.promotion.findUnique({
+    const promotion = await prisma.promotion.findUnique({
       where: {
         id: parseInt(id),
       },
@@ -133,15 +150,15 @@ export const upsertPromotion = async (updateData: any) => {
     });
 
     const repoLinkTile = await updateImage_Integration(
-      existingPromotion?.tileImage as Image,
+      promotion?.tileImage as Image,
       parsedTile
     );
     const repoLinkBanner = await updateImage_Integration(
-      existingPromotion?.bannerImage as Image,
+      promotion?.bannerImage as Image,
       parsedBanner
     );
 
-    if (!existingPromotion) {
+    if (!promotion) {
       throw new Error("Promotion not found");
     }
 
@@ -182,7 +199,7 @@ export const upsertPromotion = async (updateData: any) => {
       };
     }
 
-    updatedPromotion = await prisma.promotion.update({
+    const updatedPromotion = await prisma.promotion.update({
       where: {
         id: parseInt(id),
       },
@@ -194,15 +211,14 @@ export const upsertPromotion = async (updateData: any) => {
         department: true,
       },
     });
+    return { updatedPromotion, createdPromotion: null };
   }
-
-  return updatedPromotion;
 };
 
 export const searchPromotions = async (
   formData?: { [k: string]: FormDataEntryValue },
   url?: URL
-) => {
+): Promise<{ promotions: Promotion[]; totalPages: number }> => {
   try {
     const name =
       formData?.name || (url && url.searchParams.get("name")?.toString()) || "";
@@ -271,7 +287,6 @@ export const searchPromotions = async (
 
     return { promotions, totalPages };
   } catch (error) {
-    console.error("Error in searchPromotions:", error);
-    throw error; // Rethrow the error for higher-level error handling
+    throw new Error("Error Searching Promotions");
   }
 };

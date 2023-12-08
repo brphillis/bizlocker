@@ -1,34 +1,38 @@
 import { useEffect, useState } from "react";
 import parse from "html-react-parser";
+import Spinner from "~/components/Spinner";
 import { generateColor } from "~/utility/colors";
 import { getBrand } from "~/models/brands.server";
 import { parseOptions } from "~/utility/parseOptions";
+import { json, type LoaderArgs } from "@remix-run/node";
 import { Toast } from "~/components/Notifications/Toast";
 import ProductGrid from "~/components/Grids/ProductGrid";
-import { type LoaderArgs } from "@remix-run/server-runtime";
 import { getVariantUnitPrice } from "~/helpers/numberHelpers";
+import PageWrapper from "~/components/Layout/_Website/PageWrapper";
+import { getProduct, searchProducts } from "~/models/products.server";
 import {
   Link,
   useLoaderData,
   useNavigation,
   useSubmit,
 } from "@remix-run/react";
-import PageWrapper from "~/components/Layout/_Website/PageWrapper";
-import { getProduct, searchProducts } from "~/models/products.server";
 import {
   calculateVariantStock,
   getAvailableColors,
   getAvailableSizes,
 } from "~/helpers/productHelpers";
-import Spinner from "~/components/Spinner";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
   const productId = url.searchParams.get("id");
+
   const product =
     productId && ((await getProduct(productId)) as unknown as Product);
+
   const { brandId } = product || {};
+
   let brand;
+
   if (brandId) {
     brand = await getBrand(brandId.toString());
   }
@@ -56,28 +60,32 @@ export const loader = async ({ request }: LoaderArgs) => {
     true
   );
 
-  return { product, brand, similarProducts };
+  return json({ product, brand, similarProducts });
 };
 
 const Product = () => {
-  const { product, brand, similarProducts } = useLoaderData();
+  const { product, brand, similarProducts } = useLoaderData<typeof loader>();
+
   const submit = useSubmit();
+
   const { name, images, variants, description } = product as Product;
   const { name: brandName, image: brandImage } = brand || {};
 
   const [selectedSize, setSelectedSize] = useState<string | undefined>(
-    variants[0].size
+    variants[0]?.size || undefined
   );
   const [selectedColor, setSelectedColor] = useState<string>(variants[0].color);
-  const [selectedImage, setSelectedImage] = useState<Image>(images[0]);
+  const [selectedImage, setSelectedImage] = useState<Image | undefined>(
+    images?.[0]
+  );
 
-  const availableSizes = getAvailableSizes(product);
+  const availableSizes = product && getAvailableSizes(product);
 
   const updateColors = (
     size?: string,
     initializing?: boolean
   ): string[] | undefined => {
-    if (size) {
+    if (size && product) {
       const colors = getAvailableColors(product, size);
       if (colors) {
         if (initializing) {
@@ -90,8 +98,10 @@ const Product = () => {
     }
   };
 
-  const [availableColors, setAvailableColors] = useState<string[]>(
-    updateColors(variants[0].size, true) as string[]
+  const [availableColors, setAvailableColors] = useState<string[] | undefined>(
+    variants[0]?.size
+      ? (updateColors(variants[0]?.size, true) as string[])
+      : undefined
   );
 
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant>(
@@ -135,7 +145,7 @@ const Product = () => {
   }, [selectedColor, selectedSize, variants]);
 
   useEffect(() => {
-    setSelectedImage(images[0]);
+    if (images?.[0]) setSelectedImage(images[0]);
   }, [images]);
 
   const hasSizes = availableSizes && availableSizes[0] !== null;
@@ -275,7 +285,7 @@ const Product = () => {
                       ${selectedVariant.price.toFixed(2)}
                     </div>
                   )}
-                  ${getVariantUnitPrice(selectedVariant, product)}
+                  ${product && getVariantUnitPrice(selectedVariant, product)}
                   {selectedVariant.isPromoted &&
                     selectedVariantStock.totalStock > 0 && (
                       <div className="mb-1 w-max rounded-sm bg-green-500 px-2 py-1 text-xs text-brand-white">
@@ -312,7 +322,7 @@ const Product = () => {
             </div>
             <div className="my-3 w-full border-b border-brand-black/20" />
             <div className="py-3 leading-relaxed">
-              {parse(description, parseOptions)}
+              {description && parse(description, parseOptions)}
             </div>
 
             <div className="my-3 w-full border-b border-brand-black/20" />
@@ -354,24 +364,32 @@ const Product = () => {
 
       <div className="my-3 w-full border-b border-brand-black/20" />
 
-      {similarProducts && similarProducts.length > 0 && (
-        <>
-          <p className="self-start pb-3 pl-3 text-xl font-bold md:pl-1">
-            You might also like...
-          </p>
-          <ProductGrid
-            products={similarProducts}
-            cols={5}
-            enablePlaceHolder={true}
-          />
-        </>
-      )}
+      <p className="self-start pb-3 pl-3 text-xl font-bold md:pl-1">
+        You might also like...
+      </p>
 
-      {loading && (
-        <div className="fixed bottom-3 right-3 z-50">
-          <Spinner mode="circle" />
-        </div>
-      )}
+      <>
+        {similarProducts && similarProducts.length > 0 && (
+          <>
+            <p className="self-start pb-3 pl-3 text-xl font-bold md:pl-1">
+              You might also like...
+            </p>
+            <ProductGrid
+              products={similarProducts as Product[]}
+              cols={5}
+              enablePlaceHolder={true}
+            />
+          </>
+        )}
+      </>
+
+      <>
+        {loading && (
+          <div className="fixed bottom-3 right-3 z-50">
+            <Spinner mode="circle" />
+          </div>
+        )}
+      </>
     </PageWrapper>
   );
 };

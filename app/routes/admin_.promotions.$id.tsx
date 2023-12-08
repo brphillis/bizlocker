@@ -102,11 +102,7 @@ export const action = async ({ request, params }: ActionArgs) => {
 const ModifyPromotion = () => {
   const navigate = useNavigate();
   const { promotion, departments } = useLoaderData();
-  const { validationErrors, success } =
-    (useActionData() as {
-      success: boolean;
-      validationErrors: ValidationErrors;
-    }) || {};
+  const { validationErrors, success } = useActionData() as ActionReturnTypes;
 
   const { products } = (promotion as { products: Product[] }) || {};
 

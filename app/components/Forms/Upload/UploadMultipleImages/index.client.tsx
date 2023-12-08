@@ -1,4 +1,5 @@
 import React, { Suspense, useState } from "react";
+import type { Image } from "@prisma/client";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper";
 import { ConvertToBase64Image } from "~/helpers/fileHelpers";
@@ -50,7 +51,7 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
                     />
                     <img
                       src={href}
-                      alt={altText}
+                      alt={altText || "image description placeholder"}
                       className="h-full w-full object-cover"
                     />
                   </div>

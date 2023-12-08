@@ -1,3 +1,11 @@
+import { useEffect } from "react";
+import { isValidPassword } from "~/utility/validate";
+import { json, type ActionArgs } from "@remix-run/node";
+import AuthContainer from "~/components/Layout/AuthContainer";
+import { ActionAlert } from "~/components/Notifications/Alerts";
+import AuthPageWrapper from "~/components/Layout/AuthPageWrapper";
+import { resetUserPassword } from "~/models/auth/register.server";
+import { verifyPasswordReset } from "~/models/auth/verification.server";
 import {
   Link,
   useActionData,
@@ -5,14 +13,6 @@ import {
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
-import { type ActionArgs } from "@remix-run/server-runtime";
-import { verifyPasswordReset } from "~/models/auth/verification.server";
-import AuthPageWrapper from "~/components/Layout/AuthPageWrapper";
-import AuthContainer from "~/components/Layout/AuthContainer";
-import { isValidPassword } from "~/utility/validate";
-import { resetUserPassword } from "~/models/auth/register.server";
-import { useEffect } from "react";
-import { ActionAlert } from "~/components/Notifications/Alerts";
 
 export const loader = async ({ params, request }: ActionArgs) => {
   const url = new URL(request.url);
@@ -25,7 +25,7 @@ export const loader = async ({ params, request }: ActionArgs) => {
       verificationCode,
       false
     );
-    return { verified, email };
+    return json({ verified, email });
   } else return false;
 };
 
@@ -37,18 +37,18 @@ export const action = async ({ request, params }: ActionArgs) => {
   const form = Object.fromEntries(await request.formData());
 
   const { password, confirmPassword } = form;
-  let validationError: string[] = [];
+  let validationErrors: string[] = [];
 
   if (password !== confirmPassword) {
-    validationError.push("Passwords Do Not Match");
+    validationErrors.push("Passwords Do Not Match");
   }
 
   if (!isValidPassword(password as string)) {
-    validationError.push("Password Does Not Meet Requirements");
+    validationErrors.push("Password Does Not Meet Requirements");
   }
 
-  if (validationError.length > 0) {
-    return { validationError };
+  if (validationErrors.length > 0) {
+    return { validationErrors };
   }
 
   try {
@@ -63,24 +63,23 @@ export const action = async ({ request, params }: ActionArgs) => {
         await resetUserPassword(email, password as string);
         return { success: true };
       } else {
-        const validationError = ["Not Authorized."];
-        return { validationError };
+        const validationErrors = ["Not Authorized."];
+        return { validationErrors };
       }
     } else {
-      const validationError = ["Not Authorized."];
-      return { validationError };
+      const validationErrors = ["Not Authorized."];
+      return { validationErrors };
     }
   } catch (error: any) {
-    const validationError = [error.message];
-    return { validationError };
+    const validationErrors = [error.message];
+    return { validationErrors };
   }
 };
 
 const ResetPassword = () => {
   const navigate = useNavigate();
   const verified = useLoaderData();
-  const { validationError, success } =
-    (useActionData() as { validationError: string[]; success: boolean }) || {};
+  const { validationErrors, success } = useActionData() as ActionReturnTypes;
 
   const [searchParams] = useSearchParams();
   const email = searchParams.get("email");
@@ -136,19 +135,18 @@ const ResetPassword = () => {
             </div>
 
             <>
-              {validationError?.length > 0 &&
-                validationError?.map((error: string, i) => {
-                  return (
-                    <p
-                      key={error + i}
-                      className="mt-1 text-center text-xs text-red-500/75"
-                    >
-                      {error}
-                    </p>
-                  );
-                })}
+              {Object.values(validationErrors)?.map((error: string, i) => (
+                <p
+                  key={error + i}
+                  className="mt-1 text-center text-xs text-red-500/75"
+                >
+                  {error}
+                </p>
+              ))}
 
-              {validationError?.includes("Password" && "Requirements") && (
+              {Object.values(validationErrors)?.includes(
+                "Password" && "Requirements"
+              ) && (
                 <div className="flex flex-col items-start text-[10px] text-red-500/75">
                   <div>- At least one uppercase letter (A-Z) </div>
                   <div>- At least one lowercase letter (a-z) </div>

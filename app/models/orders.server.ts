@@ -1,5 +1,12 @@
+import type {
+  Address,
+  Order,
+  OrderItem,
+  StockLevel,
+  User,
+} from "@prisma/client";
 import { prisma } from "~/db.server";
-import { redirect } from "@remix-run/server-runtime";
+import { type TypedResponse, redirect } from "@remix-run/server-runtime";
 import { squareClient } from "~/integrations/square/square.server";
 import {
   getSession,
@@ -7,14 +14,31 @@ import {
   sessionStorage,
   USER_SESSION_KEY,
 } from "~/session.server";
-import { getCart } from "./cart.server";
+import { type CartItemWithDetails, getCart } from "./cart.server";
 import { getVariantUnitPrice } from "~/helpers/numberHelpers";
 import { sendOrderReceiptEmail } from "~/integrations/sendgrid/emails/orderReceipt";
 import { createPaymentLink_Integration } from "~/integrations/_master/payments";
 import { getLatLongForPostcode } from "./location.server";
 import { findClosestPostcode } from "~/helpers/locationHelpers";
+import { isArrayofNumbers } from "~/helpers/arrayHelpers";
+import type { ProductVariantWithDetails } from "./products.server";
+import type { StoreWithDetails } from "./stores.server";
+import type { AddressWithDetails } from "./auth/userDetails";
+import type { UserWithDetails } from "./auth/users.server";
 
-export const getOrder = async (orderId: string) => {
+export interface OrderWithDetails extends Order {
+  items: OrderItemWithDetails[] | null;
+  address: AddressWithDetails | null;
+  user: UserWithDetails | null;
+}
+
+export interface OrderItemWithDetails extends OrderItem {
+  variant: ProductVariantWithDetails | null;
+  store: StoreWithDetails | null;
+  order: OrderWithDetails | null;
+}
+
+export const getOrder = async (orderId: string): Promise<Order | null> => {
   return await prisma.order.findUnique({
     where: {
       orderId: orderId,
@@ -35,11 +59,13 @@ export const getOrder = async (orderId: string) => {
   });
 };
 
-export const getOrdersCurrentUser = async (request: Request) => {
+export const getOrdersCurrentUser = async (
+  request: Request
+): Promise<OrderWithDetails[] | null> => {
   const userData = (await getUserDataFromSession(request)) as User;
   const userId = userData?.id;
 
-  return await prisma.order.findMany({
+  return (await prisma.order.findMany({
     where: {
       userId: userId,
     },
@@ -56,7 +82,7 @@ export const getOrdersCurrentUser = async (request: Request) => {
       },
       user: true,
     },
-  });
+  })) as OrderWithDetails[];
 };
 
 export const getSquareOrderDetails = async (
@@ -85,7 +111,7 @@ export const createOrder = async (
   shippingMethod: string,
   shippingPrice: string,
   rememberInformation: boolean
-) => {
+): Promise<TypedResponse<never>> => {
   const userData = (await getUserDataFromSession(request)) as User;
   const cart = await getCart(request);
 
@@ -93,7 +119,7 @@ export const createOrder = async (
     throw new Error("Cart not found");
   }
 
-  const cartItems = cart?.cartItems as unknown as CartItem[];
+  const cartItems = cart?.cartItems as unknown as CartItemWithDetails[];
   const userId = userData?.id || undefined;
 
   const { createPaymentLinkResponse, confirmCode } =
@@ -107,6 +133,10 @@ export const createOrder = async (
 
     //create the order object
     for (const { variantId, variant, quantity } of cartItems) {
+      if (!variant) {
+        throw new Error("Error Creating Order - Processing Variants");
+      }
+
       const itemTotalPrice = parseInt(
         getVariantUnitPrice(variant, undefined, variant?.product?.promotion)
       );
@@ -125,12 +155,12 @@ export const createOrder = async (
           }
 
           const variantStoreIds = variant?.stock
-            ?.filter((e) => e.quantity > 0)
-            .map((f) => f.storeId);
+            ?.filter((e: StockLevel) => e.quantity > 0)
+            .map((f: StockLevel) => f.storeId);
 
-          if (!variantStoreIds) {
+          if (!variantStoreIds || !isArrayofNumbers(variantStoreIds)) {
             throw new Error(
-              `No Available Stock for ${variant.product.name} - ${variant.sku}`
+              `No Available Stock for ${variant?.product?.name} - ${variant?.sku}`
             );
           }
 
@@ -251,7 +281,9 @@ export const createOrder = async (
   throw new Error("the order could not be generated");
 };
 
-export const confirmPayment = async (paymentCode: string) => {
+export const confirmPayment = async (
+  paymentCode: string
+): Promise<OrderWithDetails> => {
   // Find the order based on the payment code
   const order = await prisma.order.findFirst({
     where: {
@@ -391,13 +423,13 @@ export const confirmPayment = async (paymentCode: string) => {
 
   await sendOrderReceiptEmail(order.email!, order as unknown as Order);
 
-  return updatedOrder;
+  return updatedOrder as OrderWithDetails;
 };
 
 export const updateOrderStatus = async (
   orderId: string,
   updatedStatus: OrderStatus
-) => {
+): Promise<Order> => {
   return await prisma.order.update({
     where: {
       orderId: orderId,
@@ -419,8 +451,8 @@ export const updateOrderShippingDetails = async (
   postcode: string,
   country: string,
   trackingNumber: string
-) => {
-  return await prisma.order.update({
+): Promise<Order> => {
+  const updatedOrder = await prisma.order.update({
     where: { orderId: orderId },
     data: {
       firstName,
@@ -438,9 +470,12 @@ export const updateOrderShippingDetails = async (
       },
     },
   });
+  return updatedOrder as Order;
 };
 
-export const searchOrders = async (searchArgs: BasicSearchArgs) => {
+export const searchOrders = async (
+  searchArgs: BasicSearchArgs
+): Promise<{ orders: Order[]; totalPages: number }> => {
   const {
     id,
     status,
@@ -497,6 +532,7 @@ export const searchOrders = async (searchArgs: BasicSearchArgs) => {
       skip,
       take,
     }),
+
     prisma.order.count({
       where: whereClause,
     }),

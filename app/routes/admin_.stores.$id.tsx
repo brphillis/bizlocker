@@ -99,11 +99,7 @@ export const action = async ({ request, params }: ActionArgs) => {
 const ModifyStore = () => {
   const navigate = useNavigate();
   const store = useLoaderData();
-  const { validationErrors, success } =
-    (useActionData() as {
-      success: boolean;
-      validationErrors: ValidationErrors;
-    }) || {};
+  const { validationErrors, success } = useActionData() as ActionReturnTypes;
 
   const mode = store ? "edit" : "add";
 

@@ -1,28 +1,28 @@
-import type { ActionArgs, V2_MetaFunction } from "@remix-run/node";
-import { NavLink, useActionData, useNavigate } from "@remix-run/react";
-import { isValidEmail, isValidPassword } from "~/utility/validate";
 import { useEffect } from "react";
+import { verifyLogin } from "~/models/auth/login.server";
+import AuthContainer from "~/components/Layout/AuthContainer";
 import { ActionAlert } from "~/components/Notifications/Alerts";
 import AuthPageWrapper from "~/components/Layout/AuthPageWrapper";
-import AuthContainer from "~/components/Layout/AuthContainer";
+import { isValidEmail, isValidPassword } from "~/utility/validate";
+import { NavLink, useActionData, useNavigate } from "@remix-run/react";
 import { requestNewVerifyEmail } from "~/models/auth/verification.server";
-import { verifyLogin } from "~/models/auth/login.server";
+import { json, type ActionArgs, type V2_MetaFunction } from "@remix-run/node";
 
 export const action = async ({ request }: ActionArgs) => {
   const form = Object.fromEntries(await request.formData());
   const { email, password } = form;
-  let validationError: string[] = [];
+  let validationErrors: string[] = [];
 
   if (!isValidEmail(email as string)) {
-    validationError.push("Invalid Email Address");
+    validationErrors.push("Invalid Email Address");
   }
 
   if (!isValidPassword(password as string)) {
-    validationError.push("Password Does Not Meet Requirements");
+    validationErrors.push("Password Does Not Meet Requirements");
   }
 
-  if (validationError.length > 0) {
-    return { validationError };
+  if (validationErrors.length > 0) {
+    return json({ validationErrors });
   }
 
   try {
@@ -33,20 +33,20 @@ export const action = async ({ request }: ActionArgs) => {
     );
 
     if (error) {
-      const validationError = [error];
-      return { validationError };
+      const validationErrors = [error];
+      return json({ validationErrors });
     }
 
     if (user) {
       const { success } = await requestNewVerifyEmail(email as string, "email");
-      return { success };
+      return json({ success });
     }
 
-    const validationError = ["An Error Has Occured."];
-    return { validationError };
+    const validationErrors = ["An Error Has Occured."];
+    return json({ validationErrors });
   } catch (error: any) {
-    const validationError = [error.message];
-    return { validationError };
+    const validationErrors = [error.message];
+    return json({ validationErrors });
   }
 };
 
@@ -54,8 +54,7 @@ export const meta: V2_MetaFunction = () => [{ title: "Register" }];
 
 export const RequestVerificationCode = () => {
   const navigate = useNavigate();
-  const { validationError, success } =
-    (useActionData() as { validationError: string[]; success: boolean }) || {};
+  const { validationErrors, success } = useActionData() as ActionReturnTypes;
 
   useEffect(() => {
     const successPopup = () => {
@@ -103,19 +102,18 @@ export const RequestVerificationCode = () => {
         </div>
 
         <>
-          {validationError?.length > 0 &&
-            validationError?.map((error: string, i) => {
-              return (
-                <p
-                  key={error + i}
-                  className="mt-1 text-center text-xs text-red-500/75"
-                >
-                  {error}
-                </p>
-              );
-            })}
+          {Object.values(validationErrors)?.map((error: string, i) => (
+            <p
+              key={error + i}
+              className="mt-1 text-center text-xs text-red-500/75"
+            >
+              {error}
+            </p>
+          ))}
 
-          {validationError?.includes("Password" && "Requirements") && (
+          {Object.values(validationErrors)?.includes(
+            "Password" && "Requirements"
+          ) && (
             <div className="flex flex-col items-start text-[10px] text-red-500/75">
               <div>- At least one uppercase letter (A-Z) </div>
               <div>- At least one lowercase letter (a-z) </div>

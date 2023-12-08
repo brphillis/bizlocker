@@ -1,4 +1,9 @@
-import { type LoaderArgs, type ActionArgs, redirect } from "@remix-run/node";
+import {
+  type LoaderArgs,
+  type ActionArgs,
+  redirect,
+  json,
+} from "@remix-run/node";
 import {
   Form,
   useActionData,
@@ -24,31 +29,56 @@ import { validateForm } from "~/utility/validate";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+
   if (!authenticated.valid) {
     return redirect("/login");
   }
 
   const id = params?.id;
+
+  if (!id) {
+    throw new Response(null, {
+      status: 404,
+      statusText: "Campaign Not Found",
+    });
+  }
+
   const departments = await getDepartments();
   const productSubCategories = await getProductSubCategories();
   const brands = await getBrands();
-  let campaign;
+  let campaign = null;
 
-  if (id && id !== "add") {
+  if (!departments || !productSubCategories || !brands) {
+    throw new Response(null, {
+      status: 404,
+      statusText: "Error Retrieving Supporting Resources",
+    });
+  }
+
+  if (id !== "add") {
     campaign = await getCampaign(id);
   }
 
-  return { campaign, departments, productSubCategories, brands };
+  if (!campaign) {
+    throw new Response(null, {
+      status: 404,
+      statusText: "Campaign Not Found",
+    });
+  }
+
+  return json({ campaign, departments, productSubCategories, brands });
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+
   if (!authenticated.valid) {
     return redirect("/login");
   }
 
   const id = params.id === "add" ? undefined : params.id;
   const form = Object.fromEntries(await request.formData());
+
   const {
     name,
     department,
@@ -78,7 +108,7 @@ export const action = async ({ request, params }: ActionArgs) => {
 
       const validationErrors = validateForm(form, validate);
       if (validationErrors) {
-        return { validationErrors };
+        return json({ validationErrors });
       }
 
       const parsedBanner = bannerImage
@@ -106,23 +136,19 @@ export const action = async ({ request, params }: ActionArgs) => {
 
       await upsertCampaign(updateData);
 
-      return { success: true };
+      return json({ success: true });
 
     case "delete":
-      return { success: true };
+      return json({ success: true });
   }
 };
 
 const ModifyCampaign = () => {
-  const navigate = useNavigate();
   const { campaign, departments, productSubCategories, brands } =
-    useLoaderData() || {};
-  const { validationErrors, success } =
-    (useActionData() as {
-      success: boolean;
-      validationErrors: ValidationErrors;
-    }) || {};
-  const mode = campaign ? "edit" : "add";
+    useLoaderData<typeof loader>();
+  const { validationErrors, success } = useActionData() as ActionReturnTypes;
+
+  const navigate = useNavigate();
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -141,7 +167,6 @@ const ModifyCampaign = () => {
         <FormHeader
           valueToChange={campaign}
           type="Campaign"
-          mode={mode}
           hasIsActive={true}
           hasDelete={true}
         />

@@ -20,6 +20,7 @@ export const meta: V2_MetaFunction = () => [{ title: "CLUTCH - clothing." }];
 
 export const loader = async ({ request }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+
   if (!authenticated.valid) {
     return redirect("/admin/login");
   } else return null;
@@ -27,6 +28,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 const Home = () => {
   const navigate = useNavigate();
+
   return (
     <AdminPageWrapper>
       <div className="relative flex h-full w-full items-center justify-center bg-base-200 p-6">

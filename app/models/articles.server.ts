@@ -1,11 +1,23 @@
-import { redirect } from "@remix-run/server-runtime";
+import { type TypedResponse, redirect } from "@remix-run/server-runtime";
+import type { Article, ArticleCategory, PreviewPage } from "@prisma/client";
 import { prisma } from "~/db.server";
 import { includeBlocksData } from "~/utility/blockMaster";
 import { getOrderBy } from "~/helpers/sortHelpers";
-import { removeBlock } from "./pageBuilder.server";
+import { type PageBlock, removeBlock } from "./pageBuilder.server";
 import { getBlocks } from "~/helpers/blockHelpers";
+import type { ImageWithDetails } from "./images.server";
 
-export const getArticle = async (id?: string, title?: string) => {
+export interface ArticleWithContent extends Article {
+  articleCategories: ArticleCategory[] | null;
+  blocks: BlockWithBlockOptions[] | null;
+  previewPage: PreviewPage[] | null;
+  thumbnail: ImageWithDetails | null;
+}
+
+export const getArticle = async (
+  id?: string,
+  title?: string
+): Promise<Article | null> => {
   let whereClause;
 
   if (id) {
@@ -31,7 +43,9 @@ export const getArticle = async (id?: string, title?: string) => {
   });
 };
 
-export const deleteArticle = async (id: number) => {
+export const deleteArticle = async (
+  id: number
+): Promise<TypedResponse<never>> => {
   const article = await prisma.article.findUnique({
     where: {
       id,
@@ -42,13 +56,13 @@ export const deleteArticle = async (id: number) => {
   });
 
   if (!article) {
-    return false;
+    throw new Error("Article Not Found");
   }
 
   //find and delete the associated blocks
   const articleBlocks = await getBlocks(article as any);
 
-  articleBlocks.map((e: Block) => removeBlock(e.id, e.name));
+  articleBlocks.map((e: PageBlock) => removeBlock(e.id, e.name));
 
   // Delete the article
   await prisma.article.delete({
@@ -63,7 +77,7 @@ export const deleteArticle = async (id: number) => {
 export const searchArticles = async (
   formData?: { [k: string]: FormDataEntryValue },
   url?: URL
-) => {
+): Promise<{ articles: Article[]; totalPages: number }> => {
   const title =
     formData?.title || (url && url.searchParams.get("title")?.toString()) || "";
   const articleCategory =

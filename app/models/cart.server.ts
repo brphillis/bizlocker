@@ -1,7 +1,19 @@
+import type { Cart, CartItem, User } from "@prisma/client";
+import { type TypedResponse, redirect } from "@remix-run/server-runtime";
 import { prisma } from "~/db.server";
-import { redirect } from "@remix-run/server-runtime";
 import { getUserDataFromSession } from "~/session.server";
 import { getCookies } from "~/helpers/cookieHelpers";
+import type { ProductVariantWithDetails } from "./products.server";
+import type { UserWithDetails } from "./auth/users.server";
+
+export interface CartWithDetails extends Cart {
+  cartItems: CartItemWithDetails[] | null;
+  user: UserWithDetails | null;
+}
+
+export interface CartItemWithDetails extends CartItem {
+  variant: ProductVariantWithDetails | null;
+}
 
 const visitorCartCookieKey = "visitor_cart_id";
 
@@ -13,8 +25,11 @@ export const getVisitorCartId = (request: Request): number | undefined => {
   }
 };
 
-export const getCart = async (request: Request) => {
+export const getCart = async (
+  request: Request
+): Promise<CartWithDetails | null> => {
   const { id } = ((await getUserDataFromSession(request)) as User) || {};
+
   let visitorCartId;
   let whereClause;
 
@@ -63,7 +78,7 @@ export const getCart = async (request: Request) => {
       },
     });
 
-    return cart;
+    return cart as CartWithDetails;
   } else return null;
 };
 
@@ -71,7 +86,7 @@ export const addToCart = async (
   request: Request,
   variantId: string,
   quantity: string
-) => {
+): Promise<TypedResponse<never>> => {
   const headers = new Headers();
   const referer = request.headers.get("referer");
   const userData = await getUserDataFromSession(request);

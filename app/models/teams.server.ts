@@ -1,10 +1,12 @@
+import type { Staff, Team } from "@prisma/client";
 import { prisma } from "~/db.server";
+import type { StaffWithDetails } from "./auth/staff.server";
 
-export function getStores() {
-  return prisma.store.findMany();
+export interface TeamWithStaff extends Team {
+  staff: StaffWithDetails[];
 }
 
-export const getTeam = async (id: string) => {
+export const getTeam = async (id: string): Promise<TeamWithStaff | null> => {
   return prisma.team.findUnique({
     where: {
       id: parseInt(id),
@@ -20,7 +22,10 @@ export const getTeam = async (id: string) => {
   });
 };
 
-export const addTeamMemberToTeam = async (staffId: string, teamId: string) => {
+export const addTeamMemberToTeam = async (
+  staffId: string,
+  teamId: string
+): Promise<Staff | null> => {
   return await prisma.staff.update({
     where: { id: staffId },
     data: {
@@ -34,7 +39,7 @@ export const addTeamMemberToTeam = async (staffId: string, teamId: string) => {
 export const removeTeamMemberFromTeam = async (
   staffId: string,
   teamId: string
-) => {
+): Promise<Staff> => {
   return await prisma.staff.update({
     where: { id: staffId },
     data: {
@@ -45,7 +50,7 @@ export const removeTeamMemberFromTeam = async (
   });
 };
 
-export const upsertTeam = async (teamData: any) => {
+export const upsertTeam = async (teamData: any): Promise<Team> => {
   const { name, store, isActive, id } = teamData;
 
   if (!id) {
@@ -88,7 +93,7 @@ export const upsertTeam = async (teamData: any) => {
 export const searchTeams = async (
   formData?: { [k: string]: FormDataEntryValue },
   url?: URL
-) => {
+): Promise<{ teams: Team[]; totalPages: number }> => {
   const name =
     formData?.name || (url && url.searchParams.get("name")?.toString()) || "";
   const storeId =

@@ -1,9 +1,9 @@
-import { type V2_MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import BlockRenderer from "~/components/BlockRenderer";
-import PageWrapper from "~/components/Layout/_Website/PageWrapper";
-import { getHomePage } from "~/models/homePage.server";
 import { getBlocks } from "~/helpers/blockHelpers";
+import { type V2_MetaFunction } from "@remix-run/node";
+import BlockRenderer from "~/components/BlockRenderer";
+import { getHomePage } from "~/models/homePage.server";
+import PageWrapper from "~/components/Layout/_Website/PageWrapper";
 
 export const meta: V2_MetaFunction = ({ data }) => {
   return [
@@ -20,7 +20,7 @@ export const loader = async () => {
   let title, description, backgroundColor, blocks;
 
   if (homePage) {
-    blocks = await getBlocks(homePage as any, true);
+    blocks = await getBlocks(homePage, true);
     title = homePage.title;
     description = homePage.description;
     backgroundColor = homePage.backgroundColor;
@@ -35,11 +35,10 @@ export const loader = async () => {
 };
 
 const Home = () => {
-  const { blocks, backgroundColor } = useLoaderData() || {};
-
+  const { blocks, backgroundColor } = useLoaderData<typeof loader>();
   return (
     <PageWrapper gap="medium" backgroundColor={backgroundColor}>
-      <BlockRenderer blocks={blocks} />
+      <>{blocks && <BlockRenderer blocks={blocks} />}</>
     </PageWrapper>
   );
 };

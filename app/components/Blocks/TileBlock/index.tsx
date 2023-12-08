@@ -1,3 +1,5 @@
+import type { BlockContent } from "~/models/blocks.server";
+import type { BlockOptions } from "@prisma/client";
 import PatternBackground from "~/components/Layout/PatternBackground";
 import {
   buildContentImageFromContent,
@@ -110,9 +112,11 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
             {contentType !== "icon" && (
               <ContentTile
                 borderRadius={borderRadius}
-                filter={getItemOption(options, "filter", i)}
+                filter={getItemOption(options, "filter", i) as string}
                 imageSrc={imageSrc}
-                itemSecondaryColor={getItemOption(options, "colorSecondary", i)}
+                itemSecondaryColor={
+                  getItemOption(options, "colorSecondary", i) as string
+                }
                 joinedContent={joinedContent}
                 link={link}
                 name={name}

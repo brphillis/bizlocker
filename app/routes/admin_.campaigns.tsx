@@ -1,4 +1,4 @@
-import { redirect, type LoaderArgs } from "@remix-run/node";
+import { redirect, type LoaderArgs, json } from "@remix-run/node";
 import {
   Form,
   Outlet,
@@ -16,6 +16,7 @@ import { STAFF_SESSION_KEY } from "~/session.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+
   if (!authenticated.valid) {
     return redirect("/login");
   }
@@ -24,14 +25,15 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   const { campaigns, totalPages } = await searchCampaigns(undefined, url);
 
-  return { campaigns, totalPages };
+  return json({ campaigns, totalPages });
 };
 
 const Campaigns = () => {
-  const navigate = useNavigate();
-  const { campaigns, totalPages } = useLoaderData() || {};
+  const { campaigns, totalPages } = useLoaderData<typeof loader>();
 
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+
   const currentPage = Number(searchParams.get("pageNumber")) || 1;
 
   return (

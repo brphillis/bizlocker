@@ -1,7 +1,6 @@
-import type { User } from "~/models/auth/login.server";
 import invariant from "tiny-invariant";
+import type { Staff, User } from "@prisma/client";
 import { createCookieSessionStorage, redirect } from "@remix-run/node";
-
 import { generateAccessToken, generateRefreshToken } from "./auth.server";
 
 invariant(process.env.SESSION_SECRET, "SESSION_SECRET must be set");

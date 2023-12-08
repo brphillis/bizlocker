@@ -1,13 +1,18 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "@remix-run/react";
+import { validateForm } from "~/utility/validate";
+import type { StockLevel } from "@prisma/client";
+import { Toast } from "~/components/Notifications/Toast";
+import type {
+  ProductVariantWithDetails,
+  ProductWithDetails,
+} from "~/models/products.server";
 import BasicInput from "../../Input/BasicInput";
 import BasicSelect from "../../Select/BasicSelect";
-import { validateForm } from "~/utility/validate";
-import { useNavigate } from "@remix-run/react";
-import { Toast } from "~/components/Notifications/Toast";
 
 type Props = {
   storeId: number;
-  product: Product;
+  product: ProductWithDetails;
   availableColors: string[];
 };
 
@@ -18,9 +23,11 @@ const ProductVariantFormModule = ({
 }: Props) => {
   const navigate = useNavigate();
 
-  const [activeVariant, setActiveVariant] = useState<NewProductVariant>();
+  const [activeVariant, setActiveVariant] = useState<
+    ProductVariantWithDetails | NewProductVariant | {}
+  >();
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>();
-  const [variants, setVariants] = useState<ProductVariant[] | undefined>(
+  const [variants, setVariants] = useState<ProductVariantWithDetails[] | null>(
     product?.variants
   );
 
@@ -70,9 +77,12 @@ const ProductVariantFormModule = ({
       }
 
       if (variants) {
-        setVariants([...variants, updatedActiveVariant as ProductVariant]);
+        setVariants([
+          ...variants,
+          updatedActiveVariant,
+        ] as ProductVariantWithDetails[]);
       } else {
-        setVariants([updatedActiveVariant as ProductVariant]);
+        setVariants([updatedActiveVariant] as ProductVariantWithDetails[]);
       }
     }
     setValidationErrors(undefined);
@@ -82,7 +92,7 @@ const ProductVariantFormModule = ({
 
   const handleCancelEditVariant = () => {
     if (upsertState === "edit" && variants) {
-      setVariants([...variants, activeVariant as ProductVariant]);
+      setVariants([...variants, activeVariant as ProductVariantWithDetails]);
     } else if (upsertState === "add" && variants) {
       setVariants([...variants]);
     }
@@ -114,8 +124,8 @@ const ProductVariantFormModule = ({
         : 0,
     };
 
-    setActiveVariant(newActiveVariant as NewProductVariant);
-    setVariants(variants?.filter((e) => e?.name !== name));
+    setActiveVariant(newActiveVariant);
+    variants && setVariants(variants?.filter((e) => e?.name !== name));
   };
 
   const handleNewVariant = () => {
@@ -190,7 +200,9 @@ const ProductVariantFormModule = ({
               label="Variant Name"
               placeholder="Name"
               type="text"
-              defaultValue={activeVariant?.name || "BASE"}
+              defaultValue={
+                (activeVariant as ProductVariantWithDetails)?.name || "BASE"
+              }
               onChange={(e) => {
                 setActiveVariant({
                   ...activeVariant,
@@ -210,7 +222,9 @@ const ProductVariantFormModule = ({
               placeholder="Price"
               type="number"
               decimals={2}
-              defaultValue={activeVariant?.price || ""}
+              defaultValue={
+                (activeVariant as ProductVariantWithDetails)?.price || ""
+              }
               onChange={(e) => {
                 setActiveVariant({
                   ...activeVariant,
@@ -226,7 +240,9 @@ const ProductVariantFormModule = ({
               placeholder="Sale Price"
               type="number"
               decimals={2}
-              defaultValue={activeVariant?.salePrice || ""}
+              defaultValue={
+                (activeVariant as NewProductVariant)?.salePrice || ""
+              }
               onChange={(e) => {
                 setActiveVariant({
                   ...activeVariant,
@@ -244,7 +260,9 @@ const ProductVariantFormModule = ({
               selections={availableColors.map((e) => {
                 return { id: e, name: e };
               })}
-              defaultValue={activeVariant?.color || ""}
+              defaultValue={
+                (activeVariant as ProductVariantWithDetails)?.color || ""
+              }
               onChange={(e) =>
                 setActiveVariant({
                   ...activeVariant,
@@ -259,7 +277,9 @@ const ProductVariantFormModule = ({
               label="Size"
               placeholder="Size"
               type="text"
-              defaultValue={activeVariant?.size || ""}
+              defaultValue={
+                (activeVariant as ProductVariantWithDetails)?.size || ""
+              }
               onChange={(e) => {
                 setActiveVariant({
                   ...activeVariant,
@@ -274,7 +294,9 @@ const ProductVariantFormModule = ({
               label="Length (cm)"
               placeholder="Length"
               type="number"
-              defaultValue={activeVariant?.length || ""}
+              defaultValue={
+                (activeVariant as ProductVariantWithDetails)?.length || ""
+              }
               onChange={(e) => {
                 setActiveVariant({
                   ...activeVariant,
@@ -289,7 +311,9 @@ const ProductVariantFormModule = ({
               label="Width (cm)"
               placeholder="Width"
               type="number"
-              defaultValue={activeVariant?.width || ""}
+              defaultValue={
+                (activeVariant as ProductVariantWithDetails)?.width || ""
+              }
               onChange={(e) => {
                 setActiveVariant({
                   ...activeVariant,
@@ -304,7 +328,9 @@ const ProductVariantFormModule = ({
               label="Height (cm)"
               placeholder="Height"
               type="number"
-              defaultValue={activeVariant?.height || ""}
+              defaultValue={
+                (activeVariant as ProductVariantWithDetails)?.height || ""
+              }
               onChange={(e) => {
                 setActiveVariant({
                   ...activeVariant,
@@ -320,7 +346,9 @@ const ProductVariantFormModule = ({
               placeholder="Weight"
               type="number"
               decimals={2}
-              defaultValue={activeVariant?.weight || ""}
+              defaultValue={
+                (activeVariant as ProductVariantWithDetails)?.weight || ""
+              }
               onChange={(e) => {
                 setActiveVariant({
                   ...activeVariant,
@@ -340,7 +368,9 @@ const ProductVariantFormModule = ({
                 customWidth="!w-full !max-w-full"
                 // disabled={upsertState === "edit" ? true : false}
 
-                defaultValue={activeVariant?.sku || ""}
+                defaultValue={
+                  (activeVariant as ProductVariantWithDetails)?.sku || ""
+                }
                 onChange={(e) => {
                   setActiveVariant({
                     ...activeVariant,
@@ -367,7 +397,9 @@ const ProductVariantFormModule = ({
                 placeholder="Remaining Stock"
                 type="number"
                 customWidth="!w-full !max-w-full"
-                defaultValue={activeVariant?.stock || ""}
+                defaultValue={
+                  (activeVariant as ProductVariantWithDetails)?.stock || ""
+                }
                 onChange={(e) => {
                   setActiveVariant({
                     ...activeVariant,
@@ -381,7 +413,10 @@ const ProductVariantFormModule = ({
                 type="button"
                 className="btn btn-primary flex !h-[41px] !min-h-[41px] w-[103px] items-center justify-center !rounded-sm sm:!ml-0"
                 onClick={() =>
-                  navigate(`stock/${activeVariant.id}`, { replace: true })
+                  navigate(
+                    `stock/${(activeVariant as ProductVariantWithDetails)?.id}`,
+                    { replace: true }
+                  )
                 }
               >
                 See Stock
@@ -398,7 +433,7 @@ const ProductVariantFormModule = ({
                     className="toggle toggle-success ml-3"
                     checked={
                       activeVariant.hasOwnProperty("isActive")
-                        ? activeVariant.isActive
+                        ? (activeVariant as ProductVariantWithDetails)?.isActive
                         : true
                     }
                     onChange={(e) => {
@@ -419,7 +454,10 @@ const ProductVariantFormModule = ({
                   <input
                     type="checkbox"
                     className="toggle toggle-success ml-3"
-                    checked={activeVariant?.isOnSale || false}
+                    checked={
+                      (activeVariant as ProductVariantWithDetails)?.isOnSale ||
+                      false
+                    }
                     onChange={(e) => {
                       const isChecked = e.target.checked;
                       if (isChecked) {
@@ -447,7 +485,10 @@ const ProductVariantFormModule = ({
                   <input
                     type="checkbox"
                     className="toggle toggle-success ml-3"
-                    checked={activeVariant?.isPromoted || false}
+                    checked={
+                      (activeVariant as ProductVariantWithDetails)
+                        ?.isPromoted || false
+                    }
                     onChange={(e) => {
                       const isChecked = e.target.checked;
                       if (isChecked) {
@@ -478,7 +519,7 @@ const ProductVariantFormModule = ({
                   className="toggle toggle-success ml-3"
                   checked={
                     activeVariant.hasOwnProperty("isFragile")
-                      ? activeVariant.isFragile
+                      ? (activeVariant as ProductVariantWithDetails)?.isFragile
                       : false
                   }
                   onChange={(e) => {
@@ -549,7 +590,7 @@ const ProductVariantFormModule = ({
                 </tr>
               </thead>
               <tbody>
-                {variants.map((variant: ProductVariant, i) => {
+                {variants.map((variant: ProductVariantWithDetails, i) => {
                   const {
                     name,
                     color,

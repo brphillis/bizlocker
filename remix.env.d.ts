@@ -1,5 +1,6 @@
 /// <reference types="@remix-run/dev" />
 /// <reference types="@remix-run/node" />
+/// <reference types="@prisma/client" />
 
 type NavigationRouteItem = {
   name: string;
@@ -7,6 +8,22 @@ type NavigationRouteItem = {
   link?: string;
   children?: NavigationRouteItem[];
 };
+
+interface ActionReturnTypes {
+  validationErrors: ValidationErrors;
+  validationError: string;
+  permissionError: string;
+  notification: PageNotification;
+  success: boolean;
+  actionShippingOptions: AusPostDeliveryOption[];
+  publishSuccess: boolean;
+  updateSuccess: boolean;
+  searchResults: any;
+  metaValidationError: string[];
+  actionPreview: PreviewPage;
+  actionBlocks: Block[];
+  user: User;
+}
 
 // 001 - BUILDER TYPES
 type PageType = "homePage" | "article" | "webPage" | "previewPage";
@@ -37,27 +54,9 @@ type BlockContentType =
 
 type BackgroundPatternName = "wavy" | "isometric";
 
-interface PreviewPage extends Page {
-  publisher?: string;
-  publishedAt?: Date;
-}
-
-interface Article extends Page {
-  articleCategories?: ArticleCategory[];
-}
-
-interface Page {
-  id: number;
-  title: string;
-  description: string;
-  backgroundColor: string;
-  previewPage: PreviewPage[];
-  blocks: Block[];
-  blockOrder: string[];
-  isActive?: boolean;
-  thumbnail?: Image;
-  createdAt: Date;
-  updatedAt: Date;
+interface LocalImage {
+  altText: string;
+  href: string;
 }
 
 interface NewBlockData {
@@ -68,22 +67,6 @@ interface NewBlockData {
   contentType: BlockContentType;
   contentData: ContentData;
 }
-
-type BlockContent = {
-  richText?: string;
-  productCategory?: ProductCategory[] | ProductCategory;
-  productSubCategory?: ProductSubCategory[] | ProductSubCategory;
-  articleCategory?: ArticleCategory[] | ArticleCategory;
-  gender?: Gender[] | Gender;
-  brand?: Brand[] | Brand;
-  promotion?: Promotion[] | Promotion;
-  campaign?: Campaign[] | Campaign;
-  image?: Image[] | Image;
-  product?: Product[] | Product;
-  article?: Article[] | Article;
-  store?: Store[] | Store;
-  icon?: string[];
-};
 
 type BlockMaster = {
   name: BlockName;
@@ -96,15 +79,6 @@ type BlockMaster = {
   hasMultipleContent?: boolean;
   maxContentItems?: number;
 };
-
-interface Block {
-  id: string;
-  pageBlockId: string;
-  name: BlockName;
-  page: Page;
-  content: BlockContent;
-  blockOptions: BlockOptions[];
-}
 
 interface BlockMasterOptions {
   autoplay?: boolean;
@@ -185,179 +159,6 @@ interface BlockMasterOptions {
   order?: boolean;
 }
 
-interface BlockOptions {
-  id: string;
-  autoplay?: string | null;
-  backgroundColor?: Color | null;
-  backgroundWidth?: string | null;
-  backgroundBrightness?: number | null;
-  backgroundBrightnessSecondary?: number | null;
-  backgroundPatternName?: string | null;
-  backgroundPatternColor?: string | null;
-  backgroundPatternOpacity?: number | null;
-  backgroundPatternSize?: number | null;
-  backgroundPatternNameSecondary?: string | null;
-  backgroundPatternColorSecondary?: string | null;
-  backgroundPatternOpacitySecondary?: number | null;
-  backgroundPatternSizeSecondary?: number | null;
-  backgroundColorSecondary?: Color | null;
-  backgroundWidthSecondary?: string | null;
-  borderColor?: Color | null;
-  borderDisplay?: string | null;
-  borderRadius?: string | null;
-  borderSize?: string | null;
-  color1?: string | null;
-  color2?: string | null;
-  color3?: string | null;
-  color4?: string | null;
-  color5?: string | null;
-  color6?: string | null;
-  itemColor?: string | null;
-  itemSecondaryColor?: string | null;
-  titleAlign?: string | null;
-  titleSize?: string | null;
-  titleWeight?: string | null;
-  itemBorderDisplay?: string | null;
-  itemBorderSize?: string | null;
-  itemBorderColor?: string | null;
-  itemBorderRadius?: string | null;
-  colorSecondary1?: string | null;
-  colorSecondary2?: string | null;
-  colorSecondary3?: string | null;
-  colorSecondary4?: string | null;
-  colorSecondary5?: string | null;
-  colorSecondary6?: string | null;
-  title1?: string | null;
-  title2?: string | null;
-  title3?: string | null;
-  title4?: string | null;
-  title5?: string | null;
-  title6?: string | null;
-  columns?: number | null;
-  columnsMobile?: number | null;
-  count?: number | null;
-  flipX?: string | null;
-  padding?: string | null;
-  margin?: string | null;
-  link1?: string | null;
-  link2?: string | null;
-  link3?: string | null;
-  link4?: string | null;
-  link5?: string | null;
-  link6?: string | null;
-  filter1?: string | null;
-  filter2?: string | null;
-  filter3?: string | null;
-  filter4?: string | null;
-  filter5?: string | null;
-  filter6?: string | null;
-  rows?: number | null;
-  shortText?: string | null;
-  shortTextColor?: Color | null;
-  size?: "small" | "medium" | "large" | "native";
-  sizeMobile?: "small" | "medium" | "large" | "native";
-  sortBy?: SortBy | null;
-  sortOrder?: SortOrder | null;
-  speed?: string | null;
-  style?: string | null;
-  title?: string | null;
-  titleColor?: Color | null;
-  order?: int | null;
-}
-
-interface HeroBlock {
-  id: string;
-  name: string;
-  type: string;
-  block?: Block;
-  product?: Product;
-  productId?: string;
-  image?: Image;
-  imageId?: number;
-}
-
-interface BannerBlock {
-  id: string;
-  name: string;
-  type: string;
-  block?: Block;
-  campaign?: Campaign;
-  campaignId?: string;
-  promotion?: Promotion;
-  promotionId?: string;
-  image?: Image;
-  imageId?: number;
-}
-
-interface TileBlock {
-  id: string;
-  name: string;
-  type: string;
-  block?: Block;
-  campaign?: Campaign[];
-  campaignId?: string;
-  promotion: Promotion[];
-  promotionId?: string;
-  image?: Image[];
-  tile?: string[];
-}
-
-interface TextBlock {
-  id: string;
-  name: string;
-  block?: Block;
-  content: string[];
-}
-
-interface ProductBlock {
-  id: string;
-  name: string;
-  block?: Block;
-  productBlockContent: ProductBlockContent;
-  createdAt: DateTime;
-  updatedAt: DateTime;
-}
-
-interface MapBlock {
-  id: string;
-  name: string;
-  type: string;
-  block?: Block;
-  store?: Store[];
-}
-
-interface ProductBlockContent {
-  id: string;
-  productBlock?: ProductBlock;
-  productBlockId?: string;
-  productCategory?: ProductCategory;
-  productCategoryId?: number;
-  productSubCategory?: ProductSubCategory;
-  productSubCategoryId?: number;
-  brand?: Brand;
-  brandId?: number;
-  gender?: Gender;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-interface ArticleBlockContent {
-  id: string;
-  articleBlock?: ArticleBlock;
-  articleBlockId?: string;
-  articleCategory?: ArticleCategory;
-  articleCategoryId?: number;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-interface TextBlockContent {
-  id: string;
-  richText: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
 type ContentSelection = {
   type: BlockContentType;
   name: string;
@@ -404,67 +205,6 @@ type AusPostDeliveryOptionsSubOption = {
   option: AusPostDeliveryOption;
 };
 
-//// TEAM TYPES
-
-interface Team {
-  id: number;
-  name: string;
-  staff: Staff[];
-  store: Store;
-  storeId: number;
-  isActive: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-//// AUTHENTICATION TYPES
-
-interface Staff {
-  id: string;
-  address?: Address;
-  avatar?: Image | null;
-  doubleAuthentication: boolean;
-  email: string;
-  isActive: boolean;
-  password?: string | null;
-  role: Role;
-  store?: Store;
-  storeId?: number;
-  userDetails?: UserDetails;
-  jobTitle?: string;
-  team?: Team;
-  teamId?: number;
-
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-interface User {
-  id: string;
-  email: string;
-  password?: string | null;
-  avatar?: Image | null;
-  cart?: Cart;
-  cartId?: number;
-  role: Role;
-  userDetails?: UserDetails;
-  address?: Address;
-  doubleAuthentication: boolean;
-  isActive: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-interface UserDetails {
-  firstName?: string | null;
-  lastName?: string | null;
-  phoneNumber?: string | null;
-  dateOfBirth?: Date | null;
-  gender?: Gender | null;
-  user?: User;
-  userId?: string;
-}
-
 type GoogleAuthResponse = {
   iss: string;
   nbf: number;
@@ -477,16 +217,6 @@ type GoogleAuthResponse = {
   picture: string;
   given_name: string;
 };
-
-interface Verifier {
-  id: number;
-  email: string;
-  type: VerifyTypes;
-  code: string | null;
-  expiration: DateTime;
-  createdAt: DateTime;
-  updatedAt: DateTime | null;
-}
 
 interface ValidationErrors {
   [key: string]: string;
@@ -505,56 +235,6 @@ type SelectValue = {
   id: string | number;
   name: string;
 };
-
-// 004 - MEDIA TYPES
-
-interface Image {
-  id?: number;
-  href?: string;
-  repoLink?: string;
-  altText?: string;
-  user?: User;
-  userId?: string;
-  article?: Article;
-  articleId?: number;
-  product?: Product;
-  productId?: number;
-  productSubCategory?: ProductSubCategory;
-  productSubCategoryId?: number;
-  brand?: Brand;
-  brandId?: number;
-  campaignTile?: Campaign;
-  campaignBanner?: Campaign;
-  promotionTile?: Promotion;
-  promotionBanner?: Promotion;
-  createdAt?: DateTime;
-  updatedAt?: DateTime;
-}
-
-// 005 - LOCATION TYPES
-
-interface Store {
-  id: number;
-  name: string;
-  phoneNumber: string;
-  faxNumber: string;
-  paymentProviderId?: string;
-  address: Address;
-  orderItem: OrderItem[];
-  staff?: Staff[];
-  team?: Team[];
-  fromStoreStockRequest?: StockTransferRequest[];
-  toStoreStockRequest?: StockTransferRequest[];
-  isActive: boolean;
-  createdAt?: DateTime;
-  updatedAt?: DateTime;
-}
-
-interface Address extends NewAddress {
-  id?: string;
-  userId?: string;
-  user?: User;
-}
 
 type NewAddress = {
   addressLine1?: string;
@@ -585,28 +265,7 @@ type SquareShippingDetails = {
   postalCode?: string;
 };
 
-interface Order {
-  orderId: string;
-  status: OrderStatus;
-  totalPrice: number;
-  paymentCode: string;
-  paymentUrl: string;
-  paymentLinkId: string;
-  items: OrderItem[];
-  userId: string;
-  user: User;
-  address?: Address;
-  firstName: string;
-  lastName: string;
-  phoneNumber: string;
-  email: string;
-  shippingMethod: string;
-  shippingPrice: string;
-  trackingNumber: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
+type Role = "DEVELOPER" | "ADMIN" | "MANAGER" | "STAFF" | "EDITOR" | "USER";
 type OrderStatus = "created" | "cancelled" | "paid" | "shipped" | "complete";
 type ApprovalStatus =
   | "created"
@@ -614,20 +273,6 @@ type ApprovalStatus =
   | "approved"
   | "processing"
   | "complete";
-
-interface OrderItem {
-  id: number;
-  quantity: number;
-  unitPrice: number;
-  variant: ProductVariant;
-  variantId: number;
-  order: Order;
-  orderId: string;
-  store: Store;
-  storeId: number;
-  createdAt: Date;
-  updatedAt: Date;
-}
 
 type NewOrderItem = {
   id?: number;
@@ -639,26 +284,6 @@ type NewOrderItem = {
   orderId?: string;
 };
 
-interface Cart {
-  id: number;
-  user?: User;
-  userId: string;
-  cartItems: CartItem[];
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-interface CartItem {
-  id: number;
-  quantity: number;
-  cart: Cart;
-  cartId: number;
-  variant: ProductVariant;
-  variantId: number;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
 type CartDimensions = {
   height: number;
   width: number;
@@ -668,106 +293,6 @@ type CartDimensions = {
 };
 
 // 006 - CATEGORY TYPES
-
-interface Department {
-  id: number;
-  name: string;
-  index: number;
-  displayInNavigation: boolean;
-  isActive: boolean;
-  productCategories: ProductCategory[];
-  campaigns: Campaign[];
-  promotions: Promotion[];
-}
-
-type ProductCategory = {
-  id: number;
-  name: string;
-  department: Department;
-  departmentId: number;
-  articleCategories?: ArticleCategory[];
-  productSubCategories?: ProductSubCategory[];
-  index: number;
-  displayInNavigation: boolean;
-  isActive: boolean;
-};
-
-interface ProductSubCategory {
-  id: number;
-  name: string;
-  productCategory?: ProductCategory;
-  productCategoryId?: number;
-  productSubCategory?: ProductCategory;
-  productSubCategoryId?: number;
-  products: Product[];
-  productBlockContent: ProductBlockContent[];
-  image?: Image;
-  imageId?: number;
-  campaigns: Campaign[];
-  index: number;
-  displayInNavigation: boolean;
-  isActive: boolean;
-}
-
-interface ArticleCategory {
-  id: number;
-  name: string;
-  articles?: Article[];
-  productCategory?: ProductCategory | null;
-}
-
-// 007 - PRODUCT TYPES
-interface Product {
-  id: number;
-  name: string;
-  description: string;
-  images: Image[];
-  heroImage?: Image;
-  heroImageId?: number;
-  productSubCategories: ProductSubCategory[];
-  brand?: Brand;
-  brandId?: number;
-  variants: ProductVariant[];
-  discountPercentageHigh: number;
-  discountPercentageLow: number;
-  totalSold: number;
-  isActive: boolean;
-  gender?: Gender;
-  campaigns: Campaign[];
-  promotion?: Promotion;
-  promotionId?: number;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-interface ProductVariant {
-  id: number;
-  name: string;
-  sku: string;
-  price: number;
-  salePrice?: number;
-  isOnSale: boolean;
-  isFragile: boolean;
-  stock?: StockLevel[];
-  productId: number;
-  product: Product;
-  color?: Color;
-  size?: string;
-  length: number;
-  width: number;
-  height: number;
-  weight: number;
-  totalSold: number;
-  stockLevel: StockLevel;
-  stockTransferRequest?: StockTransferRequest[];
-  cartItems: CartItem[];
-  orderItems: OrderItem[];
-  orderId?: string;
-  isActive: boolean;
-  isPromoted: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-}
 
 type NewProductVariant = {
   id?: number;
@@ -789,61 +314,6 @@ type NewProductVariant = {
   isActive?: boolean;
   isPromoted?: boolean;
 };
-
-interface Brand {
-  id: number;
-  name: string;
-  products: Product[];
-  productBlockContent: ProductBlockContent[];
-  image?: Image;
-  imageId?: number;
-  campaigns: Campaign[];
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-// 008 - MARKETING TYPES
-
-interface Promotion {
-  id: number;
-  name: string;
-  products: Product[];
-  discountPercentage: number;
-  targetGender?: Gender;
-  isActive: boolean;
-  tileImage: Image;
-  tileImageId: number;
-  bannerImage: Image;
-  bannerImageId: number;
-  department: Department;
-  departmentId: number;
-  bannerBlocks: BannerBlock[];
-  tileBlocks: TileBlock[];
-  createdAt: Date;
-  updatedAt?: Date;
-}
-
-interface Campaign {
-  id: number;
-  name: string;
-  excludedProducts: Product[];
-  minSaleRange: number;
-  maxSaleRange: number;
-  targetGender?: Gender;
-  isActive: boolean;
-  tileImage: Image;
-  tileImageId: number;
-  bannerImage: Image;
-  bannerImageId: number;
-  department: Department;
-  departmentId: number;
-  productSubCategories: ProductSubCategory[];
-  brands: Brand[];
-  bannerBlocks: BannerBlock[];
-  tileBlocks: TileBlock[];
-  createdAt: Date;
-  updatedAt?: Date;
-}
 
 // 009 - SEARCH TYPES
 type BasicSearchArgs = {
@@ -968,34 +438,6 @@ interface MapFunctions {
     longitude: number,
     newZoom: number
   ) => void;
-}
-
-interface StockTransferRequest {
-  id: number;
-  productVariant: ProductVariant;
-  productVariantId: number;
-  quantity: number;
-  fromStore: Store;
-  fromStoreId: number;
-  toStore: Store;
-  toStoreId: number;
-  trackingNumber?: string;
-  status: ApprovalStatus;
-  approvedBy?: string;
-  createdBy: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-interface StockLevel {
-  id: number;
-  productVariant: ProductVariant;
-  productVariantId: number;
-  store: Store;
-  storeId: number;
-  quantity: number;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
 type TotalStock = {

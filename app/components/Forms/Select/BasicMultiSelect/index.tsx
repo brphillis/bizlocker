@@ -4,7 +4,7 @@ type Props = {
   name: string;
   label: string;
   selections: SelectValue[];
-  defaultValues: SelectValue[];
+  defaultValues?: SelectValue[] | null;
   styles?: string;
   customWidth?: string;
   labelColor?: string;
@@ -19,8 +19,8 @@ const BasicMultiSelect = ({
   customWidth,
   labelColor,
 }: Props) => {
-  const [selectedValues, setSelectedValues] = useState<string[]>(
-    defaultValues?.map((e) => e?.id.toString()) || undefined
+  const [selectedValues, setSelectedValues] = useState<string[] | undefined>(
+    defaultValues ? defaultValues?.map((e) => e?.id.toString()) : undefined
   );
 
   const handleOptionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {

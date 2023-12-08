@@ -1,5 +1,5 @@
 import type { LoaderArgs } from "@remix-run/node";
-import { redirect } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
 import {
   Form,
   Outlet,
@@ -25,12 +25,12 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   const { promotions, totalPages } = await searchPromotions(undefined, url);
 
-  return { promotions, totalPages };
+  return json({ promotions, totalPages });
 };
 
 const Promotions = () => {
   const navigate = useNavigate();
-  const { promotions, totalPages } = useLoaderData() || {};
+  const { promotions, totalPages } = useLoaderData<typeof loader>();
 
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("pageNumber")) || 1;

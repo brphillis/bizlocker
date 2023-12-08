@@ -1,3 +1,5 @@
+import type { Article, ArticleCategory, BlockOptions } from "@prisma/client";
+import type { BlockContent } from "~/models/blocks.server";
 import ArticleGrid from "~/components/Grids/ArticleGrid";
 
 type Props = {

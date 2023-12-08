@@ -1,4 +1,9 @@
-import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node";
+import {
+  redirect,
+  type ActionArgs,
+  type LoaderArgs,
+  json,
+} from "@remix-run/node";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import PageBuilder from "~/components/PageBuilder";
@@ -38,9 +43,11 @@ import Header from "~/components/PageBuilder/Header";
 import SquareIconButton from "~/components/Buttons/SquareIconButton";
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
+import type { BlockOptions } from "@prisma/client";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+
   if (!authenticated.valid) {
     return redirect("/admin/login");
   }
@@ -56,24 +63,27 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const url = new URL(request.url);
   const req = url.searchParams.get("req") || undefined;
   const id = url.searchParams.get("id") || undefined;
-
-  if (pageType === "new") {
-    return { pageToCreate: req, articleCategories };
-  }
-
   const page = await getPageType(pageType as PageType, true, id);
 
-  let previewPages;
-  let blocks;
-  let currentPreviewPage;
+  let previewPages: Page[] | null = null;
+  let blocks: PageBlock[] | null = null;
+  let currentPreviewPage: Page | null = null;
+
   if (page) {
     previewPages = sortPreviewPages(page.previewPage);
-    currentPreviewPage = await getPreviewPage(previewPages[0].id.toString());
-    blocks = await getBlocks(currentPreviewPage as any);
+
+    if (previewPages[0].id) {
+      currentPreviewPage = await getPreviewPage(previewPages[0].id.toString());
+    }
+
+    if (currentPreviewPage) {
+      blocks = await getBlocks(currentPreviewPage);
+    }
   }
 
-  return {
+  return json({
     articleCategories,
+    pageToCreate: req || null,
     blocks,
     brands,
     colors,
@@ -83,11 +93,12 @@ export const loader = async ({ request, params }: LoaderArgs) => {
     previewPages,
     productCategories,
     productSubCategories,
-  };
+  });
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+
   if (!authenticated.valid) {
     return redirect("/admin/login");
   }
@@ -128,7 +139,7 @@ export const action = async ({ request, params }: ActionArgs) => {
       actionPreview = await getPreviewPage(previewPageId as string);
       actionBlocks = await getBlocks(actionPreview as any);
 
-      return { searchResults, actionPreview, actionBlocks };
+      return json({ searchResults, actionPreview, actionBlocks });
 
     case "updateMeta":
       let metaValidationError: string[] = [];
@@ -146,7 +157,7 @@ export const action = async ({ request, params }: ActionArgs) => {
       }
 
       if (metaValidationError.length > 0) {
-        return { metaValidationError };
+        return json({ metaValidationError });
       }
 
       const newId = await upsertPageMeta(
@@ -162,7 +173,7 @@ export const action = async ({ request, params }: ActionArgs) => {
 
       if (!previewPageId) {
         return redirect(`/admin/pagebuilder/${req}?id=${newId}`);
-      } else return { metaUpdateSuccess: newId };
+      } else return json({ metaUpdateSuccess: newId });
 
     case "addpreview":
       const addPreviewSuccess = await addPreviewPage(
@@ -177,7 +188,7 @@ export const action = async ({ request, params }: ActionArgs) => {
         previewPageId as string
       );
 
-      return { deletePreviewSuccess };
+      return json({ deletePreviewSuccess });
 
     case "deletepage":
       await deletePage(pageId as string, pageType as PageType);
@@ -190,9 +201,9 @@ export const action = async ({ request, params }: ActionArgs) => {
       actionBlocks = await getBlocks(actionPreview as any);
 
       if (actionPreview && actionBlocks) {
-        return { actionPreview, actionBlocks };
+        return json({ actionPreview, actionBlocks });
       } else {
-        return { previewChangeError: true };
+        return json({ previewChangeError: true });
       }
 
     case "update":
@@ -207,7 +218,7 @@ export const action = async ({ request, params }: ActionArgs) => {
       actionPreview = await getPreviewPage(previewPageId as string);
       actionBlocks = await getBlocks(actionPreview as any);
 
-      return { updateSuccess, actionPreview, actionBlocks };
+      return json({ updateSuccess, actionPreview, actionBlocks });
 
     case "publish":
       const publishSuccess = await publishPage(
@@ -220,7 +231,7 @@ export const action = async ({ request, params }: ActionArgs) => {
       actionPreview = await getPreviewPage(previewPageId as string);
       actionBlocks = await getBlocks(actionPreview as any);
 
-      return { actionPreview, actionBlocks, publishSuccess };
+      return json({ actionPreview, actionBlocks, publishSuccess });
 
     case "revert":
       const revertSuccess = await revertPreviewChanges(
@@ -232,7 +243,7 @@ export const action = async ({ request, params }: ActionArgs) => {
       actionPreview = await getPreviewPage(previewPageId as string);
       actionBlocks = await getBlocks(actionPreview as any);
 
-      return { actionPreview, actionBlocks, revertSuccess };
+      return json({ actionPreview, actionBlocks, revertSuccess });
 
     case "rearrange":
       const { direction } = form;
@@ -247,7 +258,7 @@ export const action = async ({ request, params }: ActionArgs) => {
       actionPreview = await getPreviewPage(previewPageId as string);
       actionBlocks = await getBlocks(actionPreview as any);
 
-      return { actionPreview, actionBlocks };
+      return json({ actionPreview, actionBlocks });
 
     case "delete":
       await disconnectBlock(
@@ -258,7 +269,7 @@ export const action = async ({ request, params }: ActionArgs) => {
       actionPreview = await getPreviewPage(previewPageId as string);
       actionBlocks = await getBlocks(actionPreview as any);
 
-      return { actionPreview, actionBlocks };
+      return json({ actionPreview, actionBlocks });
 
     default:
       return null;
@@ -268,17 +279,17 @@ export const action = async ({ request, params }: ActionArgs) => {
 const ManageHomePage = () => {
   const {
     articleCategories,
+    pageToCreate,
     blocks,
     brands,
     colors,
     currentPreviewPage,
     page,
-    pageToCreate,
     pageType,
     previewPages,
     productCategories,
     productSubCategories,
-  } = useLoaderData() || {};
+  } = useLoaderData<typeof loader>();
 
   const {
     actionBlocks,
@@ -287,11 +298,15 @@ const ManageHomePage = () => {
     searchResults,
     updateSuccess,
     publishSuccess,
-  } = useActionData() || {};
+  } = useActionData() as ActionReturnTypes;
 
-  const [currentVersion, setCurrentVersion] =
-    useState<PreviewPage>(currentPreviewPage);
-  const [currentBlocks, setCurrentBlocks] = useState<Block[]>(blocks);
+  const [currentVersion, setCurrentVersion] = useState<Page | null>(
+    currentPreviewPage
+  );
+
+  const [currentBlocks, setCurrentBlocks] = useState<PageBlock[] | null>(
+    blocks || null
+  );
 
   const [isActive, setIsActive] = useState<string | undefined>(
     page?.isActive ? " " : ""
@@ -328,15 +343,19 @@ const ManageHomePage = () => {
         <div className="flex w-full justify-center">
           <div className="flex flex-col gap-6 rounded-none text-brand-white">
             <div className="relative flex flex-col items-center justify-center gap-6 bg-brand-black py-6 text-center text-xl font-bold text-brand-white max-sm:gap-3">
-              <div className="w-full">{page ? page.title : "Add Page"}</div>
+              <div className="w-full">
+                {page.title ? page.title : "Add Page"}
+              </div>
               {pageType !== "homePage" && (
                 <Form method="POST" className="absolute right-3">
-                  <input
-                    hidden
-                    readOnly
-                    name="pageId"
-                    value={page?.id.toString()}
-                  />
+                  {page?.id && (
+                    <input
+                      hidden
+                      readOnly
+                      name="pageId"
+                      value={page.id.toString()}
+                    />
+                  )}
                   <input hidden readOnly name="pageType" value={pageType} />
                   <SquareIconButton
                     color="error"
@@ -356,12 +375,12 @@ const ManageHomePage = () => {
               currentVersion={currentVersion}
               isActive={isActive}
               metaValidationError={metaValidationError}
-              pageToCreate={pageToCreate}
-              pageType={pageType}
+              pageToCreate={pageToCreate as PageType}
+              pageType={pageType as PageType}
               setIsActive={setIsActive}
             />
 
-            {page && (
+            {page && currentVersion && (
               <LargeCollapse
                 title="Content"
                 forceOpen={true}
@@ -385,7 +404,9 @@ const ManageHomePage = () => {
               <VersionControl
                 currentVersion={currentVersion}
                 page={page as Page}
-                previewPages={previewPages}
+                previewPages={
+                  previewPages as { id: number; publishedAt?: Date }[]
+                }
                 updateSuccess={publishSuccess}
               />
             )}

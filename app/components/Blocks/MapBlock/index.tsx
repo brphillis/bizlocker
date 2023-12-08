@@ -1,9 +1,13 @@
-import { ClientOnly } from "~/components/Utility/ClientOnly";
+import { useRef } from "react";
 import Map from "~/components/Map/index.client";
 import { generateColor } from "~/utility/colors";
-import { IoCall, IoLocationSharp, IoPrint } from "react-icons/io5";
+import type { BlockOptions } from "@prisma/client";
+import type { BlockContent } from "~/models/blocks.server";
+import { ClientOnly } from "~/components/Utility/ClientOnly";
 import { getCountrFromISO3166 } from "~/utility/countryList";
-import { useRef } from "react";
+import type { StoreWithDetails } from "~/models/stores.server";
+import { IoCall, IoLocationSharp, IoPrint } from "react-icons/io5";
+
 type Props = {
   content: BlockContent;
   options: BlockOptions[];
@@ -30,7 +34,7 @@ const MapBlock = ({ content, options: optionsArray }: Props) => {
     itemColor,
   } = options || {};
 
-  const locations = content.store as Store[];
+  const locations = content.store as StoreWithDetails[];
 
   const mapRef = useRef<MapFunctions | null>(null);
 
@@ -92,7 +96,10 @@ const MapBlock = ({ content, options: optionsArray }: Props) => {
 
       <div className="mx-auto grid w-max max-w-[1280px] grid-cols-3 gap-3 max-lg:grid-cols-2 max-sm:w-full max-sm:grid-cols-1">
         {locations.map(
-          ({ name, address, phoneNumber, faxNumber }: Store, index: number) => {
+          (
+            { name, address, phoneNumber, faxNumber }: StoreWithDetails,
+            index: number
+          ) => {
             const {
               addressLine1,
               addressLine2,
@@ -102,7 +109,7 @@ const MapBlock = ({ content, options: optionsArray }: Props) => {
               country,
               latitude,
               longitude,
-            } = address;
+            } = address || {};
             return (
               <div
                 key={"card_" + index}
@@ -150,7 +157,8 @@ const MapBlock = ({ content, options: optionsArray }: Props) => {
                         <br />
                         {suburb + " " + state + " " + postcode}
                         <br />
-                        {getCountrFromISO3166(country)?.toUpperCase()}
+                        {country &&
+                          getCountrFromISO3166(country)?.toUpperCase()}
                       </p>
                     </div>
                     <div className="pt-5 font-semibold leading-7 group-hover:text-brand-white">
@@ -189,7 +197,7 @@ const MapBlock = ({ content, options: optionsArray }: Props) => {
                             className="transition-all duration-500 hover:scale-110"
                             href={`tel:${faxNumber}`}
                           >
-                            {faxNumber.slice(0, 2) + " " + faxNumber.slice(2)}
+                            {faxNumber?.slice(0, 2) + " " + faxNumber?.slice(2)}
                           </a>
                         </div>
                       </div>

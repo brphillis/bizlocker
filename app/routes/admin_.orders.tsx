@@ -1,3 +1,11 @@
+import { tokenAuth } from "~/auth.server";
+import Pagination from "~/components/Pagination";
+import { STAFF_SESSION_KEY } from "~/session.server";
+import { searchOrders } from "~/models/orders.server";
+import BasicInput from "~/components/Forms/Input/BasicInput";
+import { json, redirect, type LoaderArgs } from "@remix-run/node";
+import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
+import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import {
   Form,
   Outlet,
@@ -5,22 +13,16 @@ import {
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
-import { redirect, type LoaderArgs } from "@remix-run/server-runtime";
-import { tokenAuth } from "~/auth.server";
-import BasicInput from "~/components/Forms/Input/BasicInput";
-import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
-import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
-import Pagination from "~/components/Pagination";
-import { searchOrders } from "~/models/orders.server";
-import { STAFF_SESSION_KEY } from "~/session.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+
   if (!authenticated.valid) {
     return redirect("/admin/login");
   }
 
   const url = new URL(request.url);
+
   const searchQuery = {
     id: url.searchParams.get("orderId")?.toString() || undefined,
     status: url.searchParams.get("status")?.toString() || undefined,
@@ -30,14 +32,18 @@ export const loader = async ({ request }: LoaderArgs) => {
   };
 
   const { orders, totalPages } = await searchOrders(searchQuery);
-  return { orders, totalPages };
+
+  return json({ orders, totalPages });
 };
 
 const ManageOrders = () => {
+  const { orders, totalPages } = useLoaderData<typeof loader>();
+
   const navigate = useNavigate();
-  const { orders, totalPages } = useLoaderData() || {};
   const [searchParams] = useSearchParams();
+
   const currentPage = Number(searchParams.get("pageNumber")) || 1;
+
   return (
     <AdminPageWrapper>
       <Form method="GET" className="relative h-full w-full bg-base-200 p-6">

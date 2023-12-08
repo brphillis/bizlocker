@@ -1,7 +1,10 @@
+import type { Staff, StockLevel, StockTransferRequest } from "@prisma/client";
 import { prisma } from "~/db.server";
 import { STAFF_SESSION_KEY, getUserDataFromSession } from "~/session.server";
 
-export const getProductVariantStock = async (id: string) => {
+export const getProductVariantStock = async (
+  id: string
+): Promise<StockLevel[]> => {
   return prisma.stockLevel.findMany({
     where: {
       productVariantId: parseInt(id),
@@ -17,7 +20,9 @@ export const getProductVariantStock = async (id: string) => {
   });
 };
 
-export const getStockTransfer = async (id: string) => {
+export const getStockTransfer = async (
+  id: string
+): Promise<StockTransferRequest | null> => {
   return prisma.stockTransferRequest.findUnique({
     where: {
       id: parseInt(id),
@@ -40,7 +45,7 @@ export const getStockTransfer = async (id: string) => {
 export const searchStockTransfers = async (
   formData?: { [k: string]: FormDataEntryValue },
   url?: URL
-) => {
+): Promise<{ stockTransfers: StockTransferRequest[]; totalPages: number }> => {
   const sku =
     formData?.name || (url && url.searchParams.get("sku")?.toString()) || "";
   const status =
@@ -131,7 +136,10 @@ export const approveStockTransfer = async (
   request: Request,
   stockTransferRequestId: string,
   toStoreId: string
-) => {
+): Promise<
+  | { transferRequest: StockTransferRequest; notification: PageNotification }
+  | { permissionError: string }
+> => {
   const { storeId, role } =
     ((await getUserDataFromSession(request, STAFF_SESSION_KEY)) as Staff) || {};
 
@@ -173,7 +181,13 @@ export const updateStockTransfer = async (
   toStoreId: string,
   status: ApprovalStatus,
   quantity: string
-) => {
+): Promise<
+  | {
+      transferRequest: StockTransferRequest | null;
+      notification: PageNotification;
+    }
+  | { permissionError: string }
+> => {
   const { storeId, role } =
     ((await getUserDataFromSession(request, STAFF_SESSION_KEY)) as Staff) || {};
 
@@ -223,6 +237,7 @@ export const updateStockTransfer = async (
       });
     } else {
       return {
+        transferRequest: null,
         notification: {
           type: "error",
           message: "No Stock At Sending Store.",

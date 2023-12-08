@@ -1,10 +1,11 @@
-import type { ActionArgs, V2_MetaFunction } from "@remix-run/node";
-import { Form, NavLink, useActionData, useNavigate } from "@remix-run/react";
-import background from "../assets/banners/banner-login.jpg";
-import { isValidEmail } from "~/utility/validate";
 import { useEffect } from "react";
+import { isValidEmail } from "~/utility/validate";
 import { ActionAlert } from "~/components/Notifications/Alerts";
 import { initiatePasswordReset } from "~/models/auth/verification.server";
+import { Form, NavLink, useActionData, useNavigate } from "@remix-run/react";
+import { json, type ActionArgs, type V2_MetaFunction } from "@remix-run/node";
+
+import background from "../assets/banners/banner-login.jpg";
 
 export const action = async ({ request }: ActionArgs) => {
   const form = Object.fromEntries(await request.formData());
@@ -16,16 +17,17 @@ export const action = async ({ request }: ActionArgs) => {
   }
 
   if (validationError.length > 0) {
-    return { validationError };
+    return json({ validationError });
   }
 
   try {
     const { success } = await initiatePasswordReset(email as string);
-    return { success };
-  } catch (error: any) {
-    const validationError = [error.message];
 
-    return { validationError };
+    return json({ success });
+  } catch (error: any) {
+    const validationError = [error.message] as string[];
+
+    return json({ validationError });
   }
 };
 
@@ -33,8 +35,7 @@ export const meta: V2_MetaFunction = () => [{ title: "Register" }];
 
 export const RegisterPage = () => {
   const navigate = useNavigate();
-  const { validationError, success } =
-    (useActionData() as { validationError: string[]; success: boolean }) || {};
+  const { validationErrors, success } = useActionData() as ActionReturnTypes;
 
   useEffect(() => {
     const successPopup = () => {
@@ -79,17 +80,11 @@ export const RegisterPage = () => {
           />
         </div>
 
-        {validationError?.length > 0 &&
-          validationError?.map((error: string, i) => {
-            return (
-              <p
-                key={error + i}
-                className="mt-1 text-center text-xs text-red-500/75"
-              >
-                {error}
-              </p>
-            );
-          })}
+        {Object.values(validationErrors).map((error: string, i) => (
+          <p key={i} className="mt-1 text-center text-xs text-red-500/75">
+            {error}
+          </p>
+        ))}
 
         <div className="form-control mt-12">
           <button type="submit" className="btn btn-primary mb-3">

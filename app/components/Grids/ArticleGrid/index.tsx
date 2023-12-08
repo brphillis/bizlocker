@@ -1,8 +1,9 @@
+import type { ArticleWithContent } from "~/models/articles.server";
 import ArticleCard from "../../Cards/ArticleCard";
 import React from "react";
 
 type Props = {
-  articles: Article[];
+  articles: ArticleWithContent[];
   hasDescription?: boolean;
 };
 

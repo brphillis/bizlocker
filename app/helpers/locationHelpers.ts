@@ -1,3 +1,5 @@
+import type { Address } from "@prisma/client";
+
 export const findClosestPostcode = (
   targetLat: number,
   targetLon: number,

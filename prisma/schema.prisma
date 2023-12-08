@@ -24,10 +24,10 @@ model PreviewPage {
   thumbnail         Image?            @relation("PreviewPageImage")
   articleCategories ArticleCategory[] @relation("ArticleCategoryToPreviewPage")
 
-  publishedAt DateTime?
+  publishedAt String?
   publisher   String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt   String?
+  updatedAt   String?
 }
 
 model HomePage {
@@ -38,8 +38,9 @@ model HomePage {
   description     String        @default("HomePage Description")
   backgroundColor String?
   previewPage     PreviewPage[] @relation("PreviewPageToHomePage")
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
 }
 
 model WebPage {
@@ -53,8 +54,8 @@ model WebPage {
   backgroundColor String?
   previewPage     PreviewPage[] @relation("PreviewPageToWebPage")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
 }
 
 model Block {
@@ -79,8 +80,8 @@ model Block {
   mapBlockId     String?        @unique
   webPage        WebPage[]      @relation("WebPagesToBlocks")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
 }
 
 model BlockOptions {
@@ -164,8 +165,8 @@ model BlockOptions {
   itemBorderColor                   String?
   itemBorderRadius                  String?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
 }
 
 model HeroBlock {
@@ -174,8 +175,8 @@ model HeroBlock {
   content HeroBlockContent? @relation("HeroBlockContentToHeroBlock")
   name    String            @default("hero")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
 }
 
 model HeroBlockContent {
@@ -187,8 +188,8 @@ model HeroBlockContent {
   product     Product?   @relation("ProductToHeroBlockContent", fields: [productId], references: [id])
   productId   Int?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
 }
 
 model BannerBlock {
@@ -197,8 +198,8 @@ model BannerBlock {
   content BannerBlockContent? @relation("BannerBlockContentToBannerBlock")
   name    String              @default("banner")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
 }
 
 model BannerBlockContent {
@@ -212,8 +213,8 @@ model BannerBlockContent {
   promotion     Promotion?   @relation("PromotionToBannerBlockContent", fields: [promotionId], references: [id])
   promotionId   Int?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
 }
 
 model TileBlock {
@@ -222,8 +223,8 @@ model TileBlock {
   content TileBlockContent? @relation("TileBlockContentToTileBlock")
   name    String            @default("tile")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
 }
 
 model TileBlockContent {
@@ -237,8 +238,8 @@ model TileBlockContent {
   tileBlock   TileBlock? @relation("TileBlockContentToTileBlock", fields: [tileBlockId], references: [id])
   tileBlockId String?    @unique
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
 }
 
 model TextBlock {
@@ -247,8 +248,8 @@ model TextBlock {
   content TextBlockContent? @relation("TextBlockContentToTextBlock")
   name    String            @default("text")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
 }
 
 model TextBlockContent {
@@ -257,8 +258,8 @@ model TextBlockContent {
   textBlock   TextBlock? @relation("TextBlockContentToTextBlock", fields: [textBlockId], references: [id])
   textBlockId String?    @unique
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
 }
 
 model ProductBlock {
@@ -267,8 +268,8 @@ model ProductBlock {
   content ProductBlockContent? @relation("ProductBlockContentToProductBlock")
   name    String               @default("product")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
 }
 
 model ProductBlockContent {
@@ -283,8 +284,8 @@ model ProductBlockContent {
   productSubCategory   ProductSubCategory? @relation("ProductSubCategoryToProductBlock", fields: [productSubCategoryId], references: [id])
   productSubCategoryId Int?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
 }
 
 model ArticleBlock {
@@ -293,8 +294,8 @@ model ArticleBlock {
   content ArticleBlockContent? @relation("ArticleBlockContentToArticleBlock")
   name    String               @default("product")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
 }
 
 model ArticleBlockContent {
@@ -304,17 +305,18 @@ model ArticleBlockContent {
   articleCategory   ArticleCategory? @relation("ArticleCategoryToArticleBlock", fields: [articleCategoryId], references: [id])
   articleCategoryId Int?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
 }
 
 model MapBlock {
-  id        String           @id @unique @default(cuid())
-  block     Block?           @relation("BlockToMapBlock")
-  content   MapBlockContent? @relation("MapBlockContentToMapBlock")
-  name      String           @default("map")
-  createdAt DateTime         @default(now())
-  updatedAt DateTime         @updatedAt
+  id      String           @id @unique @default(cuid())
+  block   Block?           @relation("BlockToMapBlock")
+  content MapBlockContent? @relation("MapBlockContentToMapBlock")
+  name    String           @default("map")
+
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
 }
 
 model MapBlockContent {
@@ -322,8 +324,9 @@ model MapBlockContent {
   mapBlock   MapBlock? @relation("MapBlockContentToMapBlock", fields: [mapBlockId], references: [id])
   mapBlockId String?   @unique
   store      Store[]   @relation("StoreToMapBlockContent")
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
 }
 
 model Store {
@@ -342,19 +345,21 @@ model Store {
 
   fromStoreStockRequest StockTransferRequest[] @relation("FromStoreStockRequest")
   toStoreStockRequest   StockTransferRequest[] @relation("ToStoreStockRequest")
-  createdAt             DateTime               @default(now())
-  updatedAt             DateTime               @updatedAt
+
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
 }
 
 model Team {
-  id        Int       @id @default(autoincrement())
-  name      String
-  staff     Staff[]
-  store     Store?    @relation(fields: [storeId], references: [id])
-  storeId   Int?
-  isActive  Boolean   @default(true)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt //remove optional
+  id       Int     @id @default(autoincrement())
+  name     String
+  staff    Staff[]
+  store    Store?  @relation(fields: [storeId], references: [id])
+  storeId  Int?
+  isActive Boolean @default(true)
+
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
 }
 
 model Staff {
@@ -373,8 +378,9 @@ model Staff {
   storeId              Int?
   team                 Team?        @relation(fields: [teamId], references: [id])
   teamId               Int?
-  createdAt            DateTime     @default(now())
-  updatedAt            DateTime     @updatedAt
+
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
 }
 
 model User {
@@ -396,8 +402,8 @@ model User {
   userDetailsId        String?      @unique
   verified             Boolean      @default(false)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
 }
 
 model Verifier {
@@ -407,24 +413,24 @@ model Verifier {
   expiration DateTime    @default(dbgenerated("NOW() + interval '3 hours'"))
   type       VerifyTypes
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
 }
 
 model UserDetails {
-  id          String    @id @unique @default(cuid())
-  dateOfBirth DateTime?
+  id          String  @id @unique @default(cuid())
+  dateOfBirth String?
   firstName   String?
   gender      Gender?
   lastName    String?
   phoneNumber String?
-  staff       Staff?    @relation(fields: [staffId], references: [id])
-  staffId     String?   @unique
-  user        User?     @relation(fields: [userId], references: [id])
-  userId      String?   @unique
+  staff       Staff?  @relation(fields: [staffId], references: [id])
+  staffId     String? @unique
+  user        User?   @relation(fields: [userId], references: [id])
+  userId      String? @unique
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
 }
 
 model Address {
@@ -446,8 +452,8 @@ model Address {
   latitude     String?
   longitude    String?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
 }
 
 model Cart {
@@ -456,8 +462,8 @@ model Cart {
   user      User?      @relation(fields: [userId], references: [id])
   userId    String?    @unique
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
 }
 
 model CartItem {
@@ -468,8 +474,8 @@ model CartItem {
   variant   ProductVariant @relation(fields: [variantId], references: [id])
   variantId Int
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
 }
 
 model Order {
@@ -491,8 +497,9 @@ model Order {
   trackingNumber      String?
   phoneNumber         String?
   email               String?
-  createdAt           DateTime    @default(now())
-  updatedAt           DateTime    @updatedAt
+
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
 }
 
 model OrderItem {
@@ -506,8 +513,8 @@ model OrderItem {
   store     Store?         @relation(fields: [storeId], references: [id])
   storeId   Int
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
 }
 
 model Image {
@@ -540,8 +547,8 @@ model Image {
   previewPage   PreviewPage? @relation("PreviewPageImage", fields: [previewPageId], references: [id])
   previewPageId Int?         @unique
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
 }
 
 model Department {
@@ -554,8 +561,8 @@ model Department {
   productCategories   ProductCategory[] @relation("DepartmentToProductCategory")
   promotions          Promotion[]
 
-  createdAt DateTime? @default(now()) //remove optional on new app
-  updatedAt DateTime? @updatedAt //remove optional on new app
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
 }
 
 model ProductCategory {
@@ -570,8 +577,8 @@ model ProductCategory {
   productBlockContent  ProductBlockContent[] @relation("ProductCategoryToProductBlock")
   productSubCategories ProductSubCategory[]  @relation("ProductCategoryToProductSubCategory")
 
-  createdAt DateTime? @default(now()) //remove optional on new app
-  updatedAt DateTime? @updatedAt //remove optional on new app
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
 }
 
 model ArticleCategory {
@@ -584,8 +591,8 @@ model ArticleCategory {
   productCategory      ProductCategory?      @relation("ProductCategoryToArticleCategory", fields: [subProductCategoryId], references: [id])
   subProductCategoryId Int?
 
-  createdAt DateTime? @default(now()) //remove optional on new app
-  updatedAt DateTime? @updatedAt //remove optional on new app
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
 }
 
 model ProductSubCategory {
@@ -602,8 +609,8 @@ model ProductSubCategory {
   products            Product[]             @relation("ProductSubCategoryToProduct")
   productCategoryId   Int?
 
-  createdAt DateTime? @default(now()) //remove optional on new app
-  updatedAt DateTime? @updatedAt //remove optional on new app
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
 }
 
 model Article {
@@ -612,13 +619,14 @@ model Article {
   backgroundColor   String?
   blockOrder        String[]
   blocks            Block[]           @relation("ArticlesToBlocks")
-  createdAt         DateTime          @default(now())
   description       String            @default("Article Description")
   isActive          Boolean           @default(true)
   previewPage       PreviewPage[]     @relation("PreviewPageToArticle")
   thumbnail         Image?            @relation("ArticleImage")
   title             String            @unique
-  updatedAt         DateTime          @updatedAt
+
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
 }
 
 model Campaign {
@@ -627,7 +635,6 @@ model Campaign {
   bannerImage          Image                @relation("BannerImageToCampaign", fields: [bannerImageId], references: [id])
   bannerImageId        Int                  @unique
   brands               Brand[]              @relation("BrandToCampaign")
-  createdAt            DateTime             @default(now())
   department           Department           @relation(fields: [departmentId], references: [id])
   departmentId         Int
   excludedProducts     Product[]
@@ -640,7 +647,9 @@ model Campaign {
   tileBlockContent     TileBlockContent[]   @relation("CampaignToTileBlockContent")
   tileImage            Image                @relation("TileImageToCampaign", fields: [tileImageId], references: [id])
   tileImageId          Int                  @unique
-  updatedAt            DateTime?            @default(now()) @updatedAt
+
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
 }
 
 model Promotion {
@@ -648,7 +657,6 @@ model Promotion {
   bannerBlockContent BannerBlockContent[] @relation("PromotionToBannerBlockContent")
   bannerImage        Image                @relation("BannerImageToPromotion", fields: [bannerImageId], references: [id])
   bannerImageId      Int                  @unique
-  createdAt          DateTime             @default(now())
   department         Department           @relation(fields: [departmentId], references: [id])
   departmentId       Int
   discountPercentage Float                @default(0)
@@ -659,7 +667,9 @@ model Promotion {
   tileBlockContent   TileBlockContent[]   @relation("PromotionToTileBlockContent")
   tileImage          Image                @relation("TileImageToPromotion", fields: [tileImageId], references: [id])
   tileImageId        Int                  @unique
-  updatedAt          DateTime?            @default(now()) @updatedAt
+
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
 }
 
 model Product {
@@ -667,7 +677,6 @@ model Product {
   brand                  Brand?               @relation("BrandToProduct", fields: [brandId], references: [id])
   brandId                Int?
   campaigns              Campaign[]
-  createdAt              DateTime             @default(now())
   description            String
   discountPercentageHigh Float                @default(0)
   discountPercentageLow  Float                @default(0)
@@ -683,15 +692,16 @@ model Product {
   promotion              Promotion?           @relation("PromotionToProduct", fields: [promotionId], references: [id])
   promotionId            Int?
   totalSold              Int                  @default(0)
-  updatedAt              DateTime             @updatedAt
   variants               ProductVariant[]     @relation("ProductVariants")
+
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
 }
 
 model ProductVariant {
   id                   Int                    @id @default(autoincrement())
   cartItems            CartItem[]
   color                Color?
-  createdAt            DateTime               @default(now())
   height               Int                    @default(0)
   isActive             Boolean                @default(true)
   isFragile            Boolean                @default(false)
@@ -710,20 +720,23 @@ model ProductVariant {
   stock                StockLevel[]
   stockTransferRequest StockTransferRequest[] @relation("ProductVariantStockRequest")
   totalSold            Int                    @default(0)
-  updatedAt            DateTime               @updatedAt
   weight               Float                  @default(0.0)
   width                Int                    @default(0)
+
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
 }
 
 model StockLevel {
   id               Int             @id @default(autoincrement())
-  createdAt        DateTime        @default(now())
   productVariant   ProductVariant? @relation(fields: [productVariantId], references: [id])
   productVariantId Int
   quantity         Int
   store            Store?          @relation(fields: [storeId], references: [id])
   storeId          Int
-  updatedAt        DateTime?       @updatedAt //remove optional
+
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
 
   @@unique([productVariantId, storeId])
 }
@@ -741,8 +754,9 @@ model StockTransferRequest {
   toStoreId        Int
   approvedBy       String?
   createdBy        String
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
+
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
 }
 
 model Brand {
@@ -755,8 +769,8 @@ model Brand {
   products            Product[]             @relation("BrandToProduct")
   tileBlockContent    TileBlockContent[]    @relation("BrandToTileBlockContent")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
 }
 
 enum Role {

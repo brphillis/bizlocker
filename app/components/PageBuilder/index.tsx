@@ -4,21 +4,30 @@ import { blockMaster } from "~/utility/blockMaster";
 import BlockIcon from "~/components/Blocks/BlockIcon";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
 import { getBlockDefaultValues } from "~/helpers/blockHelpers";
+import type {
+  ArticleCategory,
+  Brand,
+  Campaign,
+  Image,
+  ProductCategory,
+  ProductSubCategory,
+  Promotion,
+} from "@prisma/client";
+import BlockSelect from "./BlockSelect";
 import BlockOptions from "./BlockOptions";
+import ResultsTable from "./Content/ResultsTable";
+import ContentSearch from "./Content/ContentSearch";
+import ResultsImages from "./Content/ResultsImages";
 import SelectedContent from "./Content/SelectedContent";
 import TextBlockContent from "./Content/TextBlockContent";
+import SquareIconButton from "../Buttons/SquareIconButton";
 import ProductBlockOptions from "./Options/ProductBlockOptions";
 import ArticleBlockOptions from "./Options/ArticleBlockOptions";
 import BackSubmitButtons from "../Forms/Buttons/BackSubmitButtons";
-import BlockSelect from "./BlockSelect";
-import SquareIconButton from "../Buttons/SquareIconButton";
-import ContentSearch from "./Content/ContentSearch";
-import ResultsTable from "./Content/ResultsTable";
-import ResultsImages from "./Content/ResultsImages";
 
 type Props = {
-  previewPage: PreviewPage;
-  blocks: Block[];
+  previewPage: Page;
+  blocks: PageBlock[] | null;
   searchResults: Campaign[] | Promotion[] | Image[] | undefined;
   updateSuccess: boolean;
   productCategories: ProductCategory[];
@@ -80,8 +89,11 @@ const PageBuilder = ({
   const editBlock = (i: number) => {
     setEditingContent(true);
     setEditingIndex(i);
-    setSelectedItems(getBlockDefaultValues(blocks[i]));
-    setSelectedBlock(blocks[i].name);
+
+    if (blocks) {
+      setSelectedItems(getBlockDefaultValues(blocks[i]));
+      setSelectedBlock(blocks[i].name);
+    }
   };
 
   const disconnectBlock = (blockId: string, blockName: BlockName) => {
@@ -130,7 +142,7 @@ const PageBuilder = ({
       {!editingContent && (
         <div className="flex w-full max-w-full flex-col items-center gap-3 overflow-x-hidden">
           <div className="scrollbar-hide">
-            {blocks?.map(({ id, name }: Block, i) => {
+            {blocks?.map(({ id, name }: PageBlock, i) => {
               return (
                 <div
                   key={"block_" + i}
@@ -200,7 +212,7 @@ const PageBuilder = ({
             <div
               className="max-w-screen my-3 flex w-[400px] cursor-pointer justify-center rounded-sm border border-brand-white/50 px-3 py-3 transition duration-300 ease-in-out hover:scale-[1.01] max-md:w-[360px]"
               onClick={() => {
-                setEditingIndex(blocks.length);
+                blocks && setEditingIndex(blocks.length);
                 setEditingContent(true);
               }}
             >
@@ -221,7 +233,7 @@ const PageBuilder = ({
 
           <BlockOptions
             selectedBlock={selectedBlock}
-            defaultValues={blocks[editingIndex]?.blockOptions[0]}
+            defaultValues={blocks?.[editingIndex]?.blockOptions[0]}
             selectedItems={selectedItems}
             contentType={contentType}
             colors={colors}
@@ -241,7 +253,7 @@ const PageBuilder = ({
             productCategories={productCategories}
             productSubCategories={productSubCategories}
             brands={brands}
-            defaultValues={blocks[editingIndex]?.content as ProductBlockContent}
+            defaultValues={blocks?.[editingIndex]?.content as BlockContent}
           />
 
           <ArticleBlockOptions
@@ -249,14 +261,14 @@ const PageBuilder = ({
             selectedItems={selectedItems}
             setSelectedItems={setSelectedItems}
             articleCategories={articleCategories}
-            defaultValues={blocks[editingIndex]?.content as ArticleBlockContent}
+            defaultValues={blocks?.[editingIndex]?.content as BlockContent}
           />
 
           <TextBlockContent
             selectedBlock={selectedBlock}
             selectedItems={selectedItems}
             setSelectedItems={setSelectedItems}
-            defaultValue={blocks[editingIndex]?.content as TextBlockContent}
+            defaultValue={blocks?.[editingIndex]?.content as BlockContent}
           />
 
           <ResultsTable

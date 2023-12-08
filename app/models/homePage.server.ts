@@ -6,10 +6,11 @@ export const getHomePage = async (): Promise<Page> => {
     include: {
       blocks: includeBlocksData,
     },
-  })) as unknown as Page;
+  })) as Page;
 
   if (!homePage) {
     throw new Error(`No Homepage Found`);
   }
+
   return homePage;
 };

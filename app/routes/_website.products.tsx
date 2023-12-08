@@ -1,19 +1,23 @@
-import type { V2_MetaFunction } from "@remix-run/node";
-import { type LoaderArgs, type ActionArgs } from "@remix-run/server-runtime";
-import { useLoaderData } from "react-router-dom";
-import BannerBlock from "~/components/Blocks/BannerBlock";
-import ProductFilterSideBar from "~/components/Filter/ProductFilterSideBar";
-import ProductGrid from "~/components/Grids/ProductGrid";
-import PageWrapper from "~/components/Layout/_Website/PageWrapper";
-import ProductSort from "~/components/Sorting/ProductSort";
-import { getBrands } from "~/models/brands.server";
-import { getRandomCampaignOrPromotion } from "~/models/campaigns.server";
+import { useLoaderData } from "@remix-run/react";
 import { addToCart } from "~/models/cart.server";
-import { getDepartments } from "~/models/departments.server";
-import { getAvailableColors } from "~/models/enums.server";
-import { getProductCategories } from "~/models/productCategories.server";
-import { getProductSubCategories } from "~/models/productSubCategories.server";
+import { getBrands } from "~/models/brands.server";
+import ProductGrid from "~/components/Grids/ProductGrid";
+import BannerBlock from "~/components/Blocks/BannerBlock";
 import { searchProducts } from "~/models/products.server";
+import ProductSort from "~/components/Sorting/ProductSort";
+import { getAvailableColors } from "~/models/enums.server";
+import { getDepartments } from "~/models/departments.server";
+import PageWrapper from "~/components/Layout/_Website/PageWrapper";
+import { getRandomCampaignOrPromotion } from "~/models/campaigns.server";
+import { getProductCategories } from "~/models/productCategories.server";
+import ProductFilterSideBar from "~/components/Filter/ProductFilterSideBar";
+import { getProductSubCategories } from "~/models/productSubCategories.server";
+import {
+  json,
+  type ActionArgs,
+  type LoaderArgs,
+  type V2_MetaFunction,
+} from "@remix-run/node";
 
 export const meta: V2_MetaFunction = ({ data }) => {
   const url = new URL(data.url);
@@ -53,7 +57,7 @@ export const loader = async ({ request }: LoaderArgs) => {
       promotion: Promotion;
     }) || {};
 
-  return {
+  return json({
     campaign,
     promotion,
     products,
@@ -64,7 +68,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     brands,
     colors,
     url,
-  };
+  });
 };
 
 export const action = async ({ request }: ActionArgs) => {
@@ -87,17 +91,7 @@ const Products = () => {
     productSubCategories,
     brands,
     colors,
-  } = useLoaderData() as {
-    campaign: Campaign;
-    promotion: Promotion;
-    products: Product[];
-    totalPages: number;
-    departments: Department[];
-    productCategories: ProductCategory[];
-    productSubCategories: ProductSubCategory[];
-    brands: Brand[];
-    colors: string[];
-  };
+  } = useLoaderData<typeof loader>();
 
   return (
     <PageWrapper>
@@ -109,7 +103,9 @@ const Products = () => {
       )}
 
       <div className="w-[1280px] max-w-[100vw]">
-        <ProductSort totalCount={products.length * totalPages} />
+        <ProductSort
+          totalCount={(products && products?.length * totalPages) || 0}
+        />
         <div className="my-3 w-full border-b border-brand-black/20" />
 
         <div className="flex w-full flex-wrap items-start justify-center gap-6 px-0 sm:w-full xl:flex-nowrap">
@@ -120,7 +116,8 @@ const Products = () => {
             brands={brands}
             colors={colors}
           />
-          {products?.length > 0 && (
+
+          {products && products?.length > 0 && (
             <ProductGrid products={products} totalPages={totalPages} />
           )}
           {!products ||

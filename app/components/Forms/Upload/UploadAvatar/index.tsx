@@ -1,3 +1,4 @@
+import type { Image } from "@prisma/client";
 import { useState } from "react";
 import { ConvertToBase64Image } from "~/helpers/fileHelpers";
 import { placeholderAvatar } from "~/utility/placeholderAvatar";

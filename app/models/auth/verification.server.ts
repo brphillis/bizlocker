@@ -2,7 +2,9 @@ import { prisma } from "~/db.server";
 import { sendEmailVerificationEmail } from "~/integrations/sendgrid/emails/emailVerification";
 import { sendPasswordResetEmail } from "~/integrations/sendgrid/emails/passwordReset";
 
-export const initiateVerifyUserAccount = async (email: string) => {
+export const initiateVerifyUserAccount = async (
+  email: string
+): Promise<{ success: boolean }> => {
   const { code: verificationCode } = await prisma.verifier.create({
     data: {
       email: email,
@@ -19,7 +21,7 @@ export const initiateVerifyUserAccount = async (email: string) => {
 export const requestNewVerifyEmail = async (
   email: string,
   type: VerifyTypes
-) => {
+): Promise<{ success: boolean }> => {
   const existingVerifier = await prisma.verifier.findFirst({
     where: { email, type },
     select: { id: true, code: true, email: true, type: true },
@@ -53,7 +55,7 @@ export const requestNewVerifyEmail = async (
 export const verifyUserAccount = async (
   email: string,
   verificationCode: string
-) => {
+): Promise<{ success: boolean; email: string | null }> => {
   try {
     const {
       id,
@@ -80,14 +82,16 @@ export const verifyUserAccount = async (
 
       return { success: true, email: storedEmail };
     } else {
-      return { success: false };
+      return { success: false, email: null };
     }
   } catch (err) {
-    return { success: false };
+    return { success: false, email: null };
   }
 };
 
-export const initiatePasswordReset = async (email: string) => {
+export const initiatePasswordReset = async (
+  email: string
+): Promise<{ success: boolean }> => {
   const { code: verificationCode } = await prisma.verifier.create({
     data: {
       email: email,
@@ -105,7 +109,7 @@ export const verifyPasswordReset = async (
   email: string,
   verificationCode: string,
   deleteVerifier?: boolean
-) => {
+): Promise<{ success: boolean; email: string | null }> => {
   try {
     const {
       id,
@@ -127,9 +131,9 @@ export const verifyPasswordReset = async (
 
       return { success: true, email: storedEmail };
     } else {
-      return { success: false };
+      return { success: false, email: null };
     }
   } catch (err) {
-    return { success: false };
+    return { success: false, email: null };
   }
 };

@@ -1,6 +1,7 @@
+import type { OrderWithDetails } from "~/models/orders.server";
 import BasicInput from "../../Input/BasicInput";
 
-type Props = { order: Order };
+type Props = { order: OrderWithDetails };
 
 const index = ({ order }: Props) => {
   return (

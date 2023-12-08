@@ -1,4 +1,17 @@
-import { useNavigate } from "@remix-run/react";
+import type {
+  Article,
+  ArticleCategory,
+  Brand,
+  Campaign,
+  Product,
+  ProductCategory,
+  ProductSubCategory,
+  Promotion,
+  User,
+  Image,
+  Store,
+} from "@prisma/client";
+import { useNavigate, useParams } from "@remix-run/react";
 import { IoMdTrash } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
 import Toggle from "~/components/Buttons/Toggle";
@@ -18,7 +31,7 @@ type Props = {
     | Image
     | Store;
   type: string;
-  mode: "add" | "edit" | "view";
+  customMode?: string;
   hasIsActive?: boolean;
   hasDelete?: boolean;
   hasConnections?: boolean;
@@ -27,11 +40,18 @@ type Props = {
 const FormHeader = ({
   valueToChange,
   type,
-  mode,
+  customMode,
   hasIsActive,
   hasDelete,
 }: Props) => {
   const navigate = useNavigate();
+  const { id } = useParams() || {};
+
+  let mode = id === "add" ? "add" : "edit";
+
+  if (customMode) {
+    mode = customMode;
+  }
 
   const handleActiveStatus = (mode: string): boolean => {
     if (mode === "add") {
@@ -50,7 +70,9 @@ const FormHeader = ({
         </h1>
 
         <div className="mr-3 flex gap-6 sm:mr-0">
-          {hasIsActive && <Toggle defaultValue={handleActiveStatus(mode)} />}
+          {hasIsActive && mode && (
+            <Toggle defaultValue={handleActiveStatus(mode)} />
+          )}
           {hasDelete && (
             <button type="submit" name="_action" value="delete">
               <IoMdTrash />

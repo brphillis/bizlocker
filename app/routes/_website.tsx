@@ -1,12 +1,18 @@
 import { useEffect, useState } from "react";
 import stylesheet from "~/tailwind.css";
+import Spinner from "~/components/Spinner";
 import SearchBar from "~/components/SearchBar";
 import { getCart } from "~/models/cart.server";
-import Footer from "~/components/Layout/_Website/Footer";
 import { getBrands } from "~/models/brands.server";
 import { cssBundleHref } from "@remix-run/css-bundle";
-import type { LinksFunction, LoaderArgs } from "@remix-run/node";
+import Footer from "~/components/Layout/_Website/Footer";
+import DarkOverlay from "~/components/Layout/DarkOverlay";
+import { getUserDataFromSession } from "~/session.server";
+import { getDepartments } from "~/models/departments.server";
 import { getProductCategories } from "~/models/productCategories.server";
+import { json, type LinksFunction, type LoaderArgs } from "@remix-run/node";
+import MobileMenu from "~/components/Layout/_Website/Navigation/MobileMenu";
+import DesktopMenu from "~/components/Layout/_Website/Navigation/DesktopMenu";
 import {
   Outlet,
   useLoaderData,
@@ -14,17 +20,10 @@ import {
   useNavigate,
   useNavigation,
 } from "@remix-run/react";
-
-import "sweetalert2/dist/sweetalert2.css";
-import DarkOverlay from "~/components/Layout/DarkOverlay";
-import Spinner from "~/components/Spinner";
-import MobileMenu from "~/components/Layout/_Website/Navigation/MobileMenu";
-import DesktopMenu from "~/components/Layout/_Website/Navigation/DesktopMenu";
 import MobileButtonContainer from "~/components/Layout/_Website/Navigation/MobileButtonContainer";
 import DesktopButtonContainer from "~/components/Layout/_Website/Navigation/DesktopButtonContainer";
-import { getDepartments } from "~/models/departments.server";
-import { getUserDataFromSession } from "~/session.server";
 
+import "sweetalert2/dist/sweetalert2.css";
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
@@ -38,7 +37,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   const brands = await getBrands();
   const productCategories = await getProductCategories();
 
-  return { user, cart, departments, productCategories, brands };
+  return json({ user, cart, departments, productCategories, brands });
 };
 
 const App = () => {
@@ -47,7 +46,7 @@ const App = () => {
   const location = useLocation();
 
   const { user, cart, departments, brands, productCategories } =
-    useLoaderData();
+    useLoaderData<typeof loader>();
 
   const [searchActive, setSearchActive] = useState<boolean | null>(false);
 

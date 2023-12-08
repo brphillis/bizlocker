@@ -4,10 +4,10 @@ import CartButton from "../Buttons/CartButton";
 import { useLocation } from "@remix-run/react";
 
 type Props = {
-  user: User;
-  cart: Cart;
   setSearchState: (state: boolean) => void;
   searchState: boolean | null;
+  user?: User | null;
+  cart?: Cart | null;
 };
 
 const MobileButtonContainer = ({

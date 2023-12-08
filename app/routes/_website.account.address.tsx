@@ -1,30 +1,35 @@
+import type { User } from "@prisma/client";
 import { useEffect, useState } from "react";
+import { tokenAuth } from "~/auth.server";
+import { validateForm } from "~/utility/validate";
 import { getUserDataFromSession } from "~/session.server";
+import BasicInput from "~/components/Forms/Input/BasicInput";
 import SelectCountry from "~/components/Forms/Select/SelectCountry";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
+import { getUserAddress, upsertUserAddress } from "~/models/auth/userAddress";
 import {
+  json,
   redirect,
   type ActionArgs,
   type LoaderArgs,
-} from "@remix-run/server-runtime";
-import { getUserAddress, upsertUserAddress } from "~/models/auth/userAddress";
-import { validateForm } from "~/utility/validate";
-import BasicInput from "~/components/Forms/Input/BasicInput";
-import { tokenAuth } from "~/auth.server";
+} from "@remix-run/node";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const authenticated = await tokenAuth(request);
+
   if (!authenticated.valid) {
     return redirect("/login");
   }
 
   const { id } = ((await getUserDataFromSession(request)) as User) || {};
   const userAddress = await getUserAddress(id);
-  return { userAddress };
+
+  return json({ userAddress });
 };
 
 export const action = async ({ request }: ActionArgs) => {
   const authenticated = await tokenAuth(request);
+
   if (!authenticated.valid) {
     return redirect("/login");
   }
@@ -43,7 +48,7 @@ export const action = async ({ request }: ActionArgs) => {
 
   const validationErrors = validateForm(form, validate);
   if (validationErrors) {
-    return { validationErrors };
+    return json({ validationErrors });
   }
 
   const updateData = {
@@ -57,16 +62,12 @@ export const action = async ({ request }: ActionArgs) => {
   };
   await upsertUserAddress(updateData);
 
-  return { success: "Address Updated" };
+  return json({ success: "Address Updated" });
 };
 
 const Address = () => {
-  const { userAddress } = useLoaderData();
-  const { success, validationErrors } =
-    (useActionData() as {
-      success: string;
-      validationErrors: ValidationErrors;
-    }) || {};
+  const { userAddress } = useLoaderData<typeof loader>();
+  const { success, validationErrors } = useActionData() as ActionReturnTypes;
 
   const [loading, setLoading] = useState<boolean>(false);
 

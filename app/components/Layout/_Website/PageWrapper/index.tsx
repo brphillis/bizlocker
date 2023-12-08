@@ -4,7 +4,7 @@ type Props = {
   children: JSX.Element | JSX.Element[];
   gap?: "small" | "medium" | "large";
   noTopPadding?: boolean;
-  backgroundColor?: string;
+  backgroundColor?: string | null;
 };
 
 const PageWrapper = ({

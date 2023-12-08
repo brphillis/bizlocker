@@ -1,15 +1,17 @@
 import { useState } from "react";
 import { IoIosCloseCircle } from "react-icons/io";
 import { ConvertToBase64Image } from "~/helpers/fileHelpers";
+import type { ImageWithDetails } from "~/models/images.server";
+import type { ProductWithDetails } from "~/models/products.server";
 
 type Props = {
-  valueToChange: Product;
+  valueToChange: ProductWithDetails;
 };
 
 const UploadHeroImage = ({ valueToChange }: Props) => {
-  const [heroImage, setHeroImage] = useState<Image | undefined>(
-    valueToChange?.heroImage
-  );
+  const [heroImage, setHeroImage] = useState<
+    ImageWithDetails | null | undefined
+  >(valueToChange?.heroImage);
 
   return (
     <div className="collapse collapse-arrow mt-6 rounded-none bg-base-100">
@@ -21,7 +23,7 @@ const UploadHeroImage = ({ valueToChange }: Props) => {
         <div className="flex flex-col items-center">
           <div className="text-center text-xs">Optimal Transparent Square</div>
 
-          {heroImage && (
+          {heroImage?.href && (
             <div className="relative mt-3 flex flex-col items-center">
               <div className="relative h-max w-max">
                 <img

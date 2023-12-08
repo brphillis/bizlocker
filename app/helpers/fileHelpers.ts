@@ -1,16 +1,22 @@
 import { type ChangeEvent } from "react";
 
+export type NewImage = {
+  href: string;
+  repoLink: string;
+  altText: string;
+};
+
 export const ConvertToBase64Image = async (
   event: ChangeEvent<HTMLInputElement>
-): Promise<Image | undefined> => {
+): Promise<NewImage | undefined> => {
   const file = event.target.files?.[0];
   if (file && file.type.includes("image")) {
-    return new Promise<Image | undefined>((resolve, reject) => {
+    return new Promise<NewImage | undefined>((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = () => {
         const base64string = reader.result as string; // Get the base64 string from the FileReader
 
-        const newImage: Image = {
+        const newImage: NewImage = {
           href: base64string, // Store the base64 string in the blob property
           repoLink: base64string,
           altText: event.target.files?.[0].name || "",

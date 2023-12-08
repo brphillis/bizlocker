@@ -1,8 +1,15 @@
-import { prisma } from "~/db.server";
 import bcrypt from "bcryptjs";
-import { STAFF_SESSION_KEY, getUserDataFromSession } from "~/session.server";
+import { prisma } from "~/db.server";
+import type { Image, Staff, UserDetails } from "@prisma/client";
+import { getUserDataFromSession, STAFF_SESSION_KEY } from "~/session.server";
 
-export const getStaff = async (id: string) => {
+export interface StaffWithDetails extends Staff {
+  userDetails: UserDetails | null;
+  avatar: Image | null;
+}
+export const getStaff = async (
+  id: string
+): Promise<StaffWithDetails | null> => {
   return await prisma.staff.findUnique({
     where: {
       id,
@@ -15,7 +22,10 @@ export const getStaff = async (id: string) => {
   });
 };
 
-export const upsertStaff = async (request: Request, staffData: any) => {
+export const upsertStaff = async (
+  request: Request,
+  staffData: any
+): Promise<{ createdStaff: Staff } | { updatedStaff: Staff }> => {
   const {
     email,
     phoneNumber,
@@ -45,8 +55,7 @@ export const upsertStaff = async (request: Request, staffData: any) => {
       {};
 
     if (role !== "DEVELOPER" && role !== "ADMIN") {
-      const permissionError = "You Are Not Authorized to Change Passwords.";
-      return { permissionError };
+      throw new Error("You Are Not Authorized to Change Passwords.");
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -54,7 +63,7 @@ export const upsertStaff = async (request: Request, staffData: any) => {
   }
 
   if (!id) {
-    const success = await prisma.staff.create({
+    const createdStaff = await prisma.staff.create({
       data: {
         email,
         password: hashedPassword,
@@ -103,9 +112,9 @@ export const upsertStaff = async (request: Request, staffData: any) => {
       },
     });
 
-    return { success };
+    return { createdStaff };
   } else {
-    const success = await prisma.staff.upsert({
+    const updatedStaff = await prisma.staff.upsert({
       where: { id },
       update: {
         email,
@@ -223,14 +232,14 @@ export const upsertStaff = async (request: Request, staffData: any) => {
         address: true,
       },
     });
-    return { success };
+    return { updatedStaff };
   }
 };
 
 export const searchStaff = async (
   searchArgs: BasicSearchArgs,
   includeAvatar?: boolean
-) => {
+): Promise<{ staff: Staff[]; totalPages: number }> => {
   const { firstName, lastName, email, page, perPage } = searchArgs;
 
   const skip = (page - 1) * perPage;

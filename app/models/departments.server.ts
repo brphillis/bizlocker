@@ -1,7 +1,8 @@
+import type { Department } from "@prisma/client";
 import { prisma } from "~/db.server";
 import { getOrderBy } from "~/helpers/sortHelpers";
 
-export const getDepartment = async (id: string) => {
+export const getDepartment = async (id: string): Promise<Department | null> => {
   return prisma.department.findUnique({
     where: {
       id: parseInt(id),
@@ -12,7 +13,7 @@ export const getDepartment = async (id: string) => {
   });
 };
 
-export const getDepartments = async () => {
+export const getDepartments = async (): Promise<Department[]> => {
   return await prisma.department.findMany({
     orderBy: {
       index: "asc",
@@ -20,7 +21,9 @@ export const getDepartments = async () => {
   });
 };
 
-export const upsertDepartment = async (departmentData: any) => {
+export const upsertDepartment = async (
+  departmentData: any
+): Promise<Department> => {
   const { id, name, index, isActive, displayInNavigation, productCategories } =
     departmentData;
 
@@ -75,7 +78,9 @@ export const upsertDepartment = async (departmentData: any) => {
   }
 };
 
-export const searchDepartments = async (searchArgs: BasicSearchArgs) => {
+export const searchDepartments = async (
+  searchArgs: BasicSearchArgs
+): Promise<{ departments: Department[]; totalPages: number }> => {
   const { name, sortBy, sortOrder, page, perPage } = searchArgs;
 
   let departments;
@@ -83,6 +88,7 @@ export const searchDepartments = async (searchArgs: BasicSearchArgs) => {
 
   const skip = (page - 1) * perPage;
   let take = perPage;
+
   if (perPage !== undefined) {
     if (name) {
       departments = await prisma.department.findMany({

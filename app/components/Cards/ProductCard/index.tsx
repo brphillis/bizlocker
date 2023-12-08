@@ -1,3 +1,4 @@
+import type { ProductWithDetails } from "~/models/products.server";
 import { useNavigate, useNavigation, useSubmit } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { IoCart } from "react-icons/io5";
@@ -5,15 +6,15 @@ import { Toast } from "~/components/Notifications/Toast";
 import Spinner from "~/components/Spinner";
 import { getVariantUnitPrice } from "~/helpers/numberHelpers";
 
-const ProductCard = (product: Product) => {
+const ProductCard = (product: ProductWithDetails) => {
   const submit = useSubmit();
   const navigate = useNavigate();
   const navigation = useNavigation();
 
   const { id, name, images, variants, brand, promotion } = product;
 
-  const { id: variantId, price, isOnSale, isPromoted } = variants[0] || {};
-  const displayImage = images[0]?.href;
+  const { id: variantId, price, isOnSale, isPromoted } = variants?.[0] || {};
+  const displayImage = images?.[0]?.href;
 
   const [loading, setLoading] = useState<boolean>(false);
   const [submitted, setSubmitted] = useState<boolean>(false);
@@ -53,12 +54,14 @@ const ProductCard = (product: Product) => {
     <>
       <div className="group flex w-full flex-col overflow-hidden bg-brand-white">
         <div className="relative flex h-60 w-full max-w-full cursor-pointer overflow-hidden shadow-sm sm:h-72">
-          <img
-            className="absolute right-0 top-0 h-full w-full transform object-cover hover:scale-[1.025]"
-            src={displayImage}
-            alt={name.toLowerCase() + " product card"}
-            onClick={() => navigate(`/product/${name}?id=${id}`)}
-          />
+          {displayImage && (
+            <img
+              className="absolute right-0 top-0 h-full w-full transform object-cover hover:scale-[1.025]"
+              src={displayImage}
+              alt={name.toLowerCase() + " product card"}
+              onClick={() => navigate(`/product/${name}?id=${id}`)}
+            />
+          )}
           {isOnSale && (
             <span className="absolute left-2 top-2 mr-2 bg-red-500 px-2 py-1 text-xs text-brand-white opacity-75">
               SALE
@@ -99,11 +102,11 @@ const ProductCard = (product: Product) => {
             <p>
               {(isOnSale || (promotion && isPromoted)) && (
                 <span className="mr-2 text-sm text-gray-400 line-through">
-                  ${price.toFixed(2)}
+                  ${price?.toFixed(2)}
                 </span>
               )}
               <span className="text-sm font-bold text-gray-900">
-                ${getVariantUnitPrice(variants[0], product)}&nbsp;
+                ${variants && getVariantUnitPrice(variants[0], product)}&nbsp;
               </span>
             </p>
           </div>

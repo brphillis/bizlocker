@@ -1,27 +1,33 @@
+import type { ArticleCategory } from "@prisma/client";
 import { prisma } from "~/db.server";
 
-export const getArticleCategories = async (articleId?: string) => {
-  if (!articleId) {
-    return await prisma.articleCategory.findMany({
-      include: {
-        productCategory: {
-          include: {
-            articleCategories: true,
-            productSubCategories: true,
-          },
+export const getArticleCategories = async (): Promise<ArticleCategory[]> => {
+  return await prisma.articleCategory.findMany({
+    include: {
+      productCategory: {
+        include: {
+          articleCategories: true,
+          productSubCategories: true,
         },
       },
-    });
-  } else {
-    return await prisma.articleCategory.findUnique({
-      where: {
-        id: parseInt(articleId),
-      },
-    });
-  }
+    },
+  });
 };
 
-export const upsertArticleCategories = async (name: string, id?: string) => {
+export const getArticleCategory = async (
+  articleId: string
+): Promise<ArticleCategory | null> => {
+  return await prisma.articleCategory.findUnique({
+    where: {
+      id: parseInt(articleId),
+    },
+  });
+};
+
+export const upsertArticleCategory = async (
+  name: string,
+  id?: string
+): Promise<ArticleCategory> => {
   if (!id) {
     return await prisma.articleCategory.create({
       data: {
@@ -40,25 +46,19 @@ export const upsertArticleCategories = async (name: string, id?: string) => {
   }
 };
 
-export const deleteArticleCategory = async (id: string) => {
-  const articleCategory = await prisma.articleCategory.findUnique({
-    where: {
-      id: parseInt(id),
-    },
-  });
-
-  if (!articleCategory) {
-    return false;
-  }
-  // Delete the brand
-  return await prisma.articleCategory.delete({
+export const deleteArticleCategory = async (
+  id: string
+): Promise<ArticleCategory | null> => {
+  return await prisma.articleCategory.findUnique({
     where: {
       id: parseInt(id),
     },
   });
 };
 
-export const searchArticleCategories = async (searchArgs: BasicSearchArgs) => {
+export const searchArticleCategories = async (
+  searchArgs: BasicSearchArgs
+): Promise<{ articleCategories: ArticleCategory[]; totalPages: number }> => {
   const { name, page, perPage } = searchArgs;
 
   let articleCategories;

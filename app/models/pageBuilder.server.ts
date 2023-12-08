@@ -1,6 +1,14 @@
+import type {
+  Block,
+  BlockOptions,
+  Image,
+  PreviewPage,
+  Staff,
+} from "@prisma/client";
 import { prisma } from "~/db.server";
 import { findUniqueStringsInArrays } from "~/helpers/arrayHelpers";
 import { getContentBlockCredentialsFromPageBlock } from "~/helpers/blockHelpers";
+import { createISODate } from "~/helpers/dateHelpers";
 import {
   updateImage_Integration,
   uploadImage_Integration,
@@ -11,6 +19,22 @@ import {
   includeAllPageTypes,
   pageBlockHasPageConnection,
 } from "~/utility/pageBuilder";
+import type { BlockContent, BlockWithBlockOptions } from "./blocks.server";
+
+export interface Page extends PreviewPage {
+  previewPage?: PreviewPage | null;
+  blocks: BlockWithBlockOptions[];
+  thumbnail?: Image | null;
+}
+
+export interface PageBlock {
+  id: string;
+  pageBlockId: string;
+  name: BlockName;
+  page: Page;
+  content: BlockContent;
+  blockOptions: BlockOptions[];
+}
 
 export const getPageType = async (
   pageType: PageType,
@@ -76,7 +100,7 @@ export const upsertPageMeta = async (
   thumbnail: Image,
   previewPageId?: string,
   articleCategories?: string[]
-) => {
+): Promise<number> => {
   let page;
   const refinedPageType =
     (pageType.replace(/p/g, "P") as "article") ||
@@ -213,30 +237,34 @@ export const upsertPageMeta = async (
 const updateOrCreateBlockOptions = async (
   blockId: string,
   blockOptions: BlockOptions
-): Promise<void> => {
+): Promise<BlockOptions> => {
   // we set unndefined keys to null so the enum values can be removed/disconnected
   const sanitizedBlockOptions: BlockOptions = { ...blockOptions };
+
   for (const key in sanitizedBlockOptions) {
     if (
       sanitizedBlockOptions.hasOwnProperty(key) &&
       sanitizedBlockOptions[key as keyof BlockOptions] === undefined
     ) {
+      // @ts-ignore
       sanitizedBlockOptions[key as keyof BlockOptions] = null;
     }
   }
 
   let existingBlockOptions;
+
   existingBlockOptions = await prisma.blockOptions.findFirst({
     where: { block: { id: blockId } },
   });
 
   if (existingBlockOptions) {
-    await prisma.blockOptions.update({
+    return await prisma.blockOptions.update({
       where: { id: existingBlockOptions.id },
       data: sanitizedBlockOptions,
     });
   } else {
-    await prisma.blockOptions.create({
+    return await prisma.blockOptions.create({
+      // @ts-ignore
       data: { block: { connect: { id: blockId } }, ...sanitizedBlockOptions },
     });
   }
@@ -471,7 +499,7 @@ export const publishPage = async (
   previewPageId: string,
   pageId: string,
   request: Request
-) => {
+): Promise<{ success: true }> => {
   try {
     // Find the previewPage
     const previewPage = await prisma.previewPage.findUnique({
@@ -549,7 +577,6 @@ export const publishPage = async (
 
     // Update the published date on the previewpage
 
-    const currentTime = new Date();
     let userEmail;
     if (request) {
       const { email } =
@@ -560,7 +587,7 @@ export const publishPage = async (
 
     await prisma.previewPage.update({
       where: { id: previewPage.id },
-      data: { publishedAt: currentTime, publisher: userEmail },
+      data: { publishedAt: createISODate(), publisher: userEmail },
     });
 
     // Cleanup blocks that arent connected to anything
@@ -604,8 +631,7 @@ export const publishPage = async (
 
     return { success: true };
   } catch (error) {
-    console.error("Error publishing page:", error);
-    throw error;
+    throw new Error("Error publishing page");
   }
 };
 
@@ -613,7 +639,7 @@ export const revertPreviewChanges = async (
   pageType: PageType,
   previewPageId: string,
   pageId: string
-) => {
+): Promise<{ success: boolean }> => {
   try {
     // Find the previewPage
     const previewPage = await prisma.previewPage.findUnique({
@@ -664,9 +690,7 @@ export const revertPreviewChanges = async (
 
     return { success: true };
   } catch (error) {
-    // Handle errors here
-    console.error("Error Reverting Preivew Page:", error);
-    throw error;
+    throw new Error("Error Reverting Page Changes");
   }
 };
 
@@ -674,7 +698,7 @@ export const disconnectBlock = async (
   contentBlockId: string,
   blockName: BlockName,
   previewPageId: string
-) => {
+): Promise<{ success: boolean }> => {
   try {
     const pageBlock = await prisma.block.findFirst({
       where: { [`${blockName}BlockId`]: contentBlockId },
@@ -719,10 +743,9 @@ export const disconnectBlock = async (
       throw new Error("PageBlock Not Found");
     }
 
-    return true;
+    return { success: true };
   } catch (error) {
-    console.error("Error removing block from previewPage:", error);
-    return false;
+    throw new Error("Error Removing Block");
   }
 };
 
@@ -730,7 +753,7 @@ export const removeBlock = async (
   contentBlockId: string,
   blockName: BlockName,
   previewPageId?: string
-) => {
+): Promise<{ success: true }> => {
   // We search for the content block to find the page block
   const findBlock = prisma[`${blockName}Block`].findUnique as (
     args: any
@@ -811,5 +834,5 @@ export const removeBlock = async (
     });
   }
 
-  return true;
+  return { success: true };
 };

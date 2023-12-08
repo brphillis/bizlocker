@@ -1,4 +1,4 @@
-import type { ActionArgs } from "@remix-run/node";
+import { json, type ActionArgs } from "@remix-run/node";
 import { useEffect } from "react";
 import { createStaffSession } from "~/session.server";
 import { safeRedirect } from "~/helpers/navigateHelpers";
@@ -19,43 +19,40 @@ export const action = async ({ request }: ActionArgs) => {
   const password = formData.get("password");
   const redirectTo = safeRedirect(formData.get("redirectTo"), "/admin/home");
   const remember = formData.get("remember");
-  let validationError: string[] = [];
+  let validationErrors: string[] = [];
 
   if (!isValidEmail(email as string)) {
-    validationError.push("Invalid Email Address");
+    validationErrors.push("Invalid Email Address");
   }
 
   if (!isValidPassword(password as string)) {
-    validationError.push("Password Does Not Meet Requirements");
+    validationErrors.push("Password Does Not Meet Requirements");
   }
 
-  if (validationError.length > 0) {
-    return { validationError };
+  if (validationErrors.length > 0) {
+    return json({ validationErrors });
   }
 
-  const { user, error } = await verifyStaffLogin(
-    email as string,
-    password as string
-  );
+  try {
+    const { staff } = await verifyStaffLogin(
+      email as string,
+      password as string
+    );
 
-  if (error) {
-    const validationError = [error];
-    return { validationError };
-  }
-
-  if (user) {
     return createStaffSession({
       request,
-      user: JSON.stringify(user),
+      user: JSON.stringify(staff),
       remember: remember === "on" ? true : false,
       redirectTo,
     });
-  } else return null;
+  } catch (error) {
+    const validationErrors = [error];
+    return json({ validationErrors });
+  }
 };
 
 const AdminLogin = () => {
-  const { user, validationError } =
-    (useActionData() as { validationError: string[]; user: Object }) || {};
+  const { user, validationErrors } = useActionData() as ActionReturnTypes;
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -100,18 +97,16 @@ const AdminLogin = () => {
         </div>
 
         <>
-          {validationError?.length > 0 && (
+          {validationErrors && (
             <div>
-              {validationError.map((error: string, i) => {
-                return (
-                  <p
-                    key={error + i}
-                    className="mb-4 text-center text-xs text-red-500"
-                  >
-                    {error}
-                  </p>
-                );
-              })}
+              {Object.values(validationErrors).map((error: string, i) => (
+                <p
+                  key={error + i}
+                  className="mb-4 text-center text-xs text-red-500"
+                >
+                  {error}
+                </p>
+              ))}
             </div>
           )}
         </>

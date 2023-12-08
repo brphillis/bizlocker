@@ -1,28 +1,34 @@
+import type { PreviewPage } from "@prisma/client";
 import { prisma } from "~/db.server";
 import { getBlocks } from "~/helpers/blockHelpers";
 import { includeBlocksData } from "~/utility/blockMaster";
 import { disconnectBlock } from "./pageBuilder.server";
 
-export const getPreviewPage = async (id: string) => {
-  return await prisma.previewPage.findUnique({
+export const getPreviewPage = async (id: string): Promise<Page | null> => {
+  return (await prisma.previewPage.findUnique({
     where: { id: parseInt(id) },
     include: {
       blocks: includeBlocksData,
       articleCategories: true,
       thumbnail: true,
     },
-  });
+  })) as Page;
 };
 
-export const addPreviewPage = async (pageType: PageType, pageId: string) => {
-  await prisma.previewPage.create({
+export const addPreviewPage = async (
+  pageType: PageType,
+  pageId: string
+): Promise<PreviewPage> => {
+  return await prisma.previewPage.create({
     data: {
       [pageType]: { connect: { id: parseInt(pageId) } },
     },
   });
 };
 
-export const deletePreviewPage = async (previewPageId: string) => {
+export const deletePreviewPage = async (
+  previewPageId: string
+): Promise<PreviewPage> => {
   const previewPage = await prisma.previewPage.findUnique({
     where: { id: parseInt(previewPageId) },
     include: {
@@ -35,18 +41,21 @@ export const deletePreviewPage = async (previewPageId: string) => {
 
     // Use `Promise.all` to wait for all `disconnectBlock` promises to resolve.
     await Promise.all(
-      blocks.map(async ({ id, name }: Block) => {
+      blocks.map(async ({ id, name }: PageBlock) => {
         await disconnectBlock(id, name, previewPageId);
       })
     );
   }
 
-  await prisma.previewPage.delete({
+  return await prisma.previewPage.delete({
     where: { id: parseInt(previewPageId) },
   });
 };
 
-export const deletePage = async (pageId: string, pageType: PageType) => {
+export const deletePage = async (
+  pageId: string,
+  pageType: PageType
+): Promise<{ success: true }> => {
   // Disconnect any removed blocks from published
   const findPage = prisma[`${pageType}`].findUnique as (args: any) => any;
 
@@ -71,4 +80,6 @@ export const deletePage = async (pageId: string, pageType: PageType) => {
   await deletePageAsync({
     where: { id: parseInt(pageId) },
   });
+
+  return { success: true };
 };

@@ -1,4 +1,15 @@
-export const getOrderBy = (sortBy?: any, sortOrder?: SortOrder) => {
+import type { PreviewPage } from "@prisma/client";
+
+export const getOrderBy = (
+  sortBy?: any,
+  sortOrder?: SortOrder
+):
+  | { createdAt: SortOrder }
+  | { totalSold: SortOrder }
+  | { name: SortOrder }
+  | { title: SortOrder }
+  | { index: SortOrder }
+  | undefined => {
   if (sortBy && sortOrder) {
     switch (sortBy) {
       case "createdAt":
@@ -18,7 +29,9 @@ export const getOrderBy = (sortBy?: any, sortOrder?: SortOrder) => {
   return undefined;
 };
 
-export const sortPreviewPages = (previewPages: PreviewPage[]) => {
+export const sortPreviewPages = (
+  previewPages: PreviewPage[]
+): PreviewPage[] => {
   return previewPages.slice().sort((a, b) => {
     if (!a.publishedAt && !b.publishedAt) return 0; // Both dates are undefined, maintain the order
     if (!a.publishedAt) return 1; // 'a' has no date, so 'b' comes first

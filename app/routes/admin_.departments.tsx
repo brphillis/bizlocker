@@ -1,3 +1,12 @@
+import { tokenAuth } from "~/auth.server";
+import Pagination from "~/components/Pagination";
+import { STAFF_SESSION_KEY } from "~/session.server";
+import BasicInput from "~/components/Forms/Input/BasicInput";
+import CategorySort from "~/components/Sorting/CategorySort";
+import { searchDepartments } from "~/models/departments.server";
+import { json, redirect, type LoaderArgs } from "@remix-run/node";
+import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
+import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import {
   Form,
   Outlet,
@@ -5,18 +14,10 @@ import {
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
-import { redirect, type LoaderArgs } from "@remix-run/server-runtime";
-import { tokenAuth } from "~/auth.server";
-import BasicInput from "~/components/Forms/Input/BasicInput";
-import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
-import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
-import Pagination from "~/components/Pagination";
-import CategorySort from "~/components/Sorting/CategorySort";
-import { searchDepartments } from "~/models/departments.server";
-import { STAFF_SESSION_KEY } from "~/session.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+
   if (!authenticated.valid) {
     return redirect("/admin/login");
   }
@@ -33,17 +34,18 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   const { departments, totalPages } = await searchDepartments(searchQuery);
 
-  return {
+  return json({
     totalPages,
     departments,
-  };
+  });
 };
 
 const ManageDepartments = () => {
-  const navigate = useNavigate();
-  const { totalPages, departments } = useLoaderData() || {};
+  const { totalPages, departments } = useLoaderData<typeof loader>();
 
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+
   const currentPage = Number(searchParams.get("pageNumber")) || 1;
 
   return (

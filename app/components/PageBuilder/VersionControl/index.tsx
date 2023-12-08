@@ -5,7 +5,7 @@ import Spinner from "~/components/Spinner";
 import { formatDate } from "~/helpers/dateHelpers";
 
 type Props = {
-  currentVersion: PreviewPage;
+  currentVersion: Page | null;
   previewPages: { id: number; publishedAt?: Date }[];
   page: Page;
   updateSuccess: boolean;

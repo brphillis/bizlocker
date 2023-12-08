@@ -1,3 +1,4 @@
+import type { BlockOptions } from "@prisma/client";
 import { searchCampaigns } from "~/models/campaigns.server";
 import { searchImages } from "~/models/images.server";
 import { searchProducts } from "~/models/products.server";

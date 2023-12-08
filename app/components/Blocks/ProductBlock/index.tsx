@@ -1,5 +1,13 @@
+import type {
+  BlockOptions,
+  Brand,
+  Product,
+  ProductCategory,
+  ProductSubCategory,
+} from "@prisma/client";
 import ProductGrid from "~/components/Grids/ProductGrid";
 import Spinner from "~/components/Spinner";
+import type { BlockContent } from "~/models/blocks.server";
 
 type Props = {
   content: BlockContent;

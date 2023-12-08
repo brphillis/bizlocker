@@ -1,15 +1,50 @@
+import type {
+  Article,
+  BannerBlockContent,
+  Brand,
+  Campaign,
+  HeroBlockContent,
+  Image,
+  PreviewPage,
+  ProductSubCategory,
+  Promotion,
+  Staff,
+  TileBlockContent,
+  WebPage,
+} from "@prisma/client";
 import { prisma } from "~/db.server";
 import {
   deleteImage_Integration,
   uploadImage_Integration,
 } from "~/integrations/_master/storage";
+import type { ProductWithDetails } from "./products.server";
+import type { UserWithDetails } from "./auth/users.server";
 export type { Image } from "@prisma/client";
 
-export function getImages() {
+export interface ImageWithDetails extends Image {
+  article: Article | null;
+  bannerBlockContent: BannerBlockContent[] | null;
+  brand: Brand | null;
+  campaignBanner: Campaign[] | null;
+  campaignTile: Campaign[] | null;
+  HeroBlockContent: HeroBlockContent[] | null;
+  product: ProductWithDetails | null;
+  productHero: ProductWithDetails[] | null;
+  productSubCategory: ProductSubCategory | null;
+  promotionBanner: Promotion[] | null;
+  promotionTile: Promotion[] | null;
+  tileBlockContent: TileBlockContent[] | null;
+  user: UserWithDetails | null;
+  staff: Staff | null;
+  webPage: WebPage | null;
+  previewPage: PreviewPage | null;
+}
+
+export function getImages(): Promise<Image[]> {
   return prisma.image.findMany();
 }
 
-export const getImage = async (id: string) => {
+export const getImage = async (id: string): Promise<Image | null> => {
   return prisma.image.findUnique({
     where: {
       id: parseInt(id),
@@ -25,20 +60,18 @@ export const getImage = async (id: string) => {
 
 export const upsertImage = async (
   altText: string,
-  image?: Image,
+  image: Image,
   id?: string
-) => {
-  let updatedImage;
-
-  if (!id && image) {
+): Promise<Image> => {
+  if (!id) {
     const repoLink = await uploadImage_Integration(image);
-    updatedImage = await prisma.image.create({
+    return await prisma.image.create({
       data: {
         href: repoLink,
         altText: altText,
       },
     });
-  } else if (id && image) {
+  } else {
     const existingImage = await prisma.image.findUnique({
       where: {
         id: parseInt(id),
@@ -51,7 +84,7 @@ export const upsertImage = async (
 
     const repoLink = await uploadImage_Integration(image);
 
-    updatedImage = await prisma.image.update({
+    return await prisma.image.update({
       where: {
         id: parseInt(id),
       },
@@ -61,11 +94,9 @@ export const upsertImage = async (
       },
     });
   }
-
-  return updatedImage;
 };
 
-export const deleteImage = async (id: string) => {
+export const deleteImage = async (id: string): Promise<Image> => {
   const image = await prisma.image.findUnique({
     where: {
       id: parseInt(id),
@@ -73,7 +104,7 @@ export const deleteImage = async (id: string) => {
   });
 
   if (!image) {
-    return false;
+    throw new Error("Image Not Found");
   }
 
   if (image.href) {
@@ -90,7 +121,7 @@ export const deleteImage = async (id: string) => {
 export const searchImages = async (
   formData?: { [k: string]: FormDataEntryValue },
   url?: URL
-) => {
+): Promise<{ images: Image[]; totalPages: number }> => {
   const title =
     formData?.name || (url && url.searchParams.get("title")?.toString()) || "";
 

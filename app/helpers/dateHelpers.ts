@@ -20,3 +20,19 @@ export const formatDate = (
     return formattedDate;
   }
 };
+
+export const createISODate = (): string => {
+  const now = new Date();
+  const isoDate = now.toISOString();
+  return isoDate;
+};
+
+export const getYesterdayDate = (): string => {
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(today.getDate() - 1);
+
+  const isoDate = yesterday.toISOString().split("T")[0]; // Extract only the date part
+
+  return isoDate;
+};

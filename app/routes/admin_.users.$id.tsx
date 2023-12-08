@@ -1,4 +1,9 @@
-import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node";
+import {
+  type ActionArgs,
+  type LoaderArgs,
+  json,
+  redirect,
+} from "@remix-run/node";
 import {
   Form,
   useActionData,
@@ -20,6 +25,7 @@ import { validateForm } from "~/utility/validate";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+
   if (!authenticated.valid) {
     return redirect("/admin/login");
   }
@@ -28,18 +34,20 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   if (id && id !== "add") {
     const user = await getUser(id);
-    return user;
+    return json(user);
   } else return null;
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+
   if (!authenticated.valid) {
     return redirect("/admin/login");
   }
 
   const id = params.id === "add" ? undefined : params.id;
   const form = Object.fromEntries(await request.formData());
+
   const {
     email,
     firstName,
@@ -70,8 +78,9 @@ export const action = async ({ request, params }: ActionArgs) => {
   };
 
   const validationErrors = validateForm(form, validate);
+
   if (validationErrors) {
-    return { validationErrors };
+    return json({ validationErrors });
   }
 
   const updateData = {
@@ -93,17 +102,14 @@ export const action = async ({ request, params }: ActionArgs) => {
 
   await upsertUser(updateData);
 
-  return { success: true };
+  return json({ success: true });
 };
 
 const ModifyUser = () => {
   const navigate = useNavigate();
-  const user = useLoaderData();
-  const { validationErrors, success } =
-    (useActionData() as {
-      success: boolean;
-      validationErrors: ValidationErrors;
-    }) || {};
+
+  const user = useLoaderData<typeof loader>();
+  const { validationErrors, success } = useActionData() as ActionReturnTypes;
 
   const mode = user ? "edit" : "add";
 

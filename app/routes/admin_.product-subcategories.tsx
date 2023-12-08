@@ -1,5 +1,5 @@
 import Pagination from "~/components/Pagination";
-import { redirect, type LoaderArgs } from "@remix-run/node";
+import { type LoaderArgs, json, redirect } from "@remix-run/server-runtime";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
 import CategorySort from "~/components/Sorting/CategorySort";
 import BasicInput from "~/components/Forms/Input/BasicInput";
@@ -33,13 +33,13 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   const productCategories = await getProductCategories();
 
-  return { productSubCategories, productCategories, totalPages };
+  return json({ productSubCategories, productCategories, totalPages });
 };
 
 const ProductSubCategories = () => {
   const navigate = useNavigate();
   const { productSubCategories, productCategories, totalPages } =
-    useLoaderData() || {};
+    useLoaderData<typeof loader>();
 
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("pageNumber")) || 1;
@@ -122,7 +122,7 @@ const ProductSubCategories = () => {
                               (currentPage - 1) * productSubCategories?.length}
                           </td>
                         )}
-                        <td>{capitalizeFirst(name)}</td>
+                        <td>{name && capitalizeFirst(name)}</td>
                         <td>{index}</td>
                         <td>
                           {!displayInNavigation && (

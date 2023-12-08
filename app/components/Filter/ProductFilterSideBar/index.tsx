@@ -1,3 +1,9 @@
+import type {
+  Brand,
+  Department,
+  ProductCategory,
+  ProductSubCategory,
+} from "@prisma/client";
 import { useSearchParams, useSubmit } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { IoChevronDown, IoChevronUp } from "react-icons/io5";
@@ -40,7 +46,7 @@ const ProductFilterSideBar = ({
   const filterProductCategories = (departmentId?: number) => {
     if (departmentId) {
       const filteredCats = productCategories.filter(
-        (e) => e.department.id === departmentId
+        (e) => e?.departmentId === departmentId
       );
       setFilteredProductCategories(filteredCats);
     } else {
@@ -51,7 +57,7 @@ const ProductFilterSideBar = ({
   const filterProductSubCategories = (productCategoryId?: number) => {
     if (productCategoryId) {
       const filteredCats = productSubCategories.filter(
-        (e) => e.productCategory?.id === productCategoryId
+        (e) => e.productCategoryId === productCategoryId
       );
       setFilteredProductSubCategories(filteredCats);
     } else {

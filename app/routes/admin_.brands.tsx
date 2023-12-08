@@ -1,5 +1,5 @@
 import Pagination from "~/components/Pagination";
-import { redirect, type LoaderArgs } from "@remix-run/node";
+import { type LoaderArgs, json, redirect } from "@remix-run/server-runtime";
 import { searchBrands } from "~/models/brands.server";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
 import BasicInput from "~/components/Forms/Input/BasicInput";
@@ -17,6 +17,7 @@ import { STAFF_SESSION_KEY } from "~/session.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+
   if (!authenticated.valid) {
     return redirect("/login");
   }
@@ -25,14 +26,15 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   const { brands, totalPages } = await searchBrands(undefined, url);
 
-  return { brands, totalPages };
+  return json({ brands, totalPages });
 };
 
 const Brands = () => {
-  const navigate = useNavigate();
-  const { brands, totalPages } = useLoaderData() || {};
+  const { brands, totalPages } = useLoaderData<typeof loader>();
 
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+
   const currentPage = Number(searchParams.get("pageNumber")) || 1;
 
   return (

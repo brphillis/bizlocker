@@ -2,7 +2,7 @@ import ToolTip from "~/components/Indicators/ToolTip";
 import { ISO3166Countries } from "~/utility/countryList";
 
 type Props = {
-  defaultValue: string | undefined;
+  defaultValue?: string | null;
   validationErrors?: ValidationErrors;
   styles?: string;
 };
@@ -20,7 +20,7 @@ const SelectCountry = ({ defaultValue, validationErrors, styles }: Props) => {
             ? "select-error border !outline-none"
             : ""
         }`}
-        defaultValue={defaultValue}
+        defaultValue={defaultValue || undefined}
         placeholder="Select a Value"
       >
         {ISO3166Countries?.map(({ code, name }: CountrySelect) => {

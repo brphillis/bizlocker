@@ -1,4 +1,4 @@
-import { redirect, type LoaderArgs } from "@remix-run/node";
+import { redirect, type LoaderArgs, json } from "@remix-run/node";
 import {
   Form,
   Outlet,
@@ -34,12 +34,12 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   const { users, totalPages } = await searchUsers(searchQuery, true);
 
-  return { users, totalPages };
+  return json({ users, totalPages });
 };
 
 const Users = () => {
   const navigate = useNavigate();
-  const { users, totalPages } = useLoaderData() || {};
+  const { users, totalPages } = useLoaderData<typeof loader>();
 
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("pageNumber")) || 1;
@@ -118,7 +118,7 @@ const Users = () => {
                         <div className="avatar mx-[-10px]">
                           <div className="w-8 rounded-full">
                             <img
-                              src={avatar?.href || placeholderAvatar.href}
+                              src={avatar?.href ?? placeholderAvatar.href ?? ""}
                               alt="user_avatar"
                             />
                           </div>

@@ -102,11 +102,7 @@ const ModifyProductCategory = () => {
     productSubCategories,
     articleCategories,
   } = useLoaderData() || {};
-  const { success, validationErrors } =
-    (useActionData() as {
-      success: boolean;
-      validationErrors: ValidationErrors;
-    }) || {};
+  const { success, validationErrors } = useActionData() as ActionReturnTypes;
 
   const mode = productCategory ? "edit" : "add";
 
@@ -248,7 +244,7 @@ const ModifyProductCategory = () => {
                       return (
                         <option
                           key={"productSubCategory-" + name + "disabled"}
-                          value={name}
+                          value={name || undefined}
                           disabled
                         >
                           {name}

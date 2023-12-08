@@ -1,3 +1,4 @@
+import type { Image } from "@prisma/client";
 import { useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { ConvertToBase64Image } from "~/helpers/fileHelpers";
@@ -17,13 +18,13 @@ const UploadImage = ({ defaultValue, name, label }: Props) => {
   return (
     <>
       {label && <label className="label text-sm">{label}</label>}
-      {image && (
+      {image?.href && (
         <div className="relative my-6 flex max-w-full flex-col items-center px-3">
           <div className="max-w-screen relative h-auto max-h-96 w-[240px]">
             <img
               src={image.href}
               className="h-full w-full object-contain"
-              alt={image.altText}
+              alt={image?.altText || "image description placeholder"}
             />
 
             <IoClose

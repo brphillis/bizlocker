@@ -1,33 +1,56 @@
-import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node";
+import { IoClose } from "react-icons/io5";
+import { tokenAuth } from "~/auth.server";
+import { STAFF_SESSION_KEY } from "~/session.server";
+import DarkOverlay from "~/components/Layout/DarkOverlay";
+import BasicInput from "~/components/Forms/Input/BasicInput";
+import PhoneInput from "~/components/Forms/Input/PhoneInput";
+import SelectCountry from "~/components/Forms/Select/SelectCountry";
+import OrderStatusSteps from "~/components/Indicators/OrderStatusSteps";
 import {
   Form,
   useLoaderData,
   useLocation,
   useNavigate,
 } from "@remix-run/react";
-import { IoClose } from "react-icons/io5";
-import { tokenAuth } from "~/auth.server";
-import BasicInput from "~/components/Forms/Input/BasicInput";
-import PhoneInput from "~/components/Forms/Input/PhoneInput";
-import SelectCountry from "~/components/Forms/Select/SelectCountry";
-import OrderStatusSteps from "~/components/Indicators/OrderStatusSteps";
-import DarkOverlay from "~/components/Layout/DarkOverlay";
+import {
+  json,
+  redirect,
+  type ActionArgs,
+  type LoaderArgs,
+} from "@remix-run/node";
 import {
   getOrder,
   updateOrderShippingDetails,
   updateOrderStatus,
 } from "~/models/orders.server";
-import { STAFF_SESSION_KEY } from "~/session.server";
+import { OrderItem } from "@prisma/client";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+
   if (!authenticated.valid) {
     return redirect("/admin/login");
   }
 
   const id = params.id;
-  const order = id && (await getOrder(id));
-  return order;
+
+  if (!id) {
+    throw new Response(null, {
+      status: 404,
+      statusText: "Order Not Found",
+    });
+  }
+
+  let order = await getOrder(id);
+
+  if (!order) {
+    throw new Response(null, {
+      status: 404,
+      statusText: "Order Not Found",
+    });
+  }
+
+  return json({ order });
 };
 
 export const action = async ({ request }: ActionArgs) => {
@@ -68,12 +91,12 @@ export const action = async ({ request }: ActionArgs) => {
 };
 
 const ModifyOrder = () => {
-  const navigate = useNavigate();
-  const { pathname } = useLocation();
-  const order = useLoaderData();
+  const { order } = useLoaderData<typeof loader>();
 
-  const { items, address } =
-    (order as { items: OrderItem[]; address: Address }) || {};
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+
+  const { items, address, status, orderId } = order;
 
   return (
     <DarkOverlay>
@@ -92,7 +115,10 @@ const ModifyOrder = () => {
 
         <div className="form-control">
           <div className="flex justify-center rounded-lg bg-base-100 py-6">
-            <OrderStatusSteps status={order?.status} type="orderStatus" />
+            <OrderStatusSteps
+              status={status as OrderStatus}
+              type="orderStatus"
+            />
           </div>
 
           {order.status === "created" && (
@@ -130,7 +156,14 @@ const ModifyOrder = () => {
                 <option value="complete">Complete</option>
                 <option value="cancelled">Cancelled</option>
               </select>
-              <input readOnly hidden name="orderId" value={order.orderId} />
+
+              <input
+                readOnly
+                hidden
+                name="orderId"
+                value={orderId || undefined}
+              />
+
               <button
                 type="submit"
                 name="_action"
@@ -146,7 +179,7 @@ const ModifyOrder = () => {
 
           <div className="pb-3 text-center">Order Details</div>
           <div className="pb-6 text-center text-sm opacity-50">
-            Account: {order.user.email}
+            Account: {order?.user?.email}
           </div>
 
           <div className="flex flex-col flex-wrap items-center justify-center gap-3">
@@ -295,7 +328,12 @@ const ModifyOrder = () => {
               defaultValue={order?.trackingNumber}
             />
 
-            <input readOnly hidden value={order.orderId} name="orderId" />
+            <input
+              readOnly
+              hidden
+              value={order.orderId || undefined}
+              name="orderId"
+            />
 
             <div className="mt-6 flex flex-wrap justify-center gap-3">
               <button

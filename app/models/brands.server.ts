@@ -1,16 +1,32 @@
 import { prisma } from "~/db.server";
+import type {
+  Brand,
+  Image,
+  ProductBlockContent,
+  TileBlockContent,
+} from "@prisma/client";
 import {
   updateImage_Integration,
   uploadImage_Integration,
 } from "~/integrations/_master/storage";
-
+import type { ImageWithDetails } from "./images.server";
+import type { ProductWithDetails } from "./products.server";
+import type { CampaignWithContent } from "./campaigns.server";
 export type { Brand } from "@prisma/client";
 
-export function getBrands() {
-  return prisma.brand.findMany();
+export interface BrandWithContent extends Brand {
+  campaigns: CampaignWithContent[] | null;
+  image: ImageWithDetails | null;
+  productBlockContent: ProductBlockContent[] | null;
+  products: ProductWithDetails[] | null;
+  tileBlockContent: TileBlockContent[] | null;
 }
 
-export const getBrand = async (id: string) => {
+export const getBrands = async (): Promise<Brand[] | null> => {
+  return await prisma.brand.findMany();
+};
+
+export const getBrand = async (id: string): Promise<Brand | null> => {
   return prisma.brand.findUnique({
     where: {
       id: parseInt(id),
@@ -21,8 +37,12 @@ export const getBrand = async (id: string) => {
   });
 };
 
-export const upsertBrand = async (name: string, image?: Image, id?: string) => {
-  let updatedBrand;
+export const upsertBrand = async (
+  name: string,
+  image?: Image,
+  id?: string
+): Promise<Brand | null> => {
+  let updatedBrand = null;
 
   if (!id && image) {
     const repoLink = await uploadImage_Integration(image);
@@ -108,18 +128,8 @@ export const upsertBrand = async (name: string, image?: Image, id?: string) => {
   return updatedBrand;
 };
 
-export const deleteBrand = async (id: string) => {
-  const brand = await prisma.brand.findUnique({
-    where: {
-      id: parseInt(id),
-    },
-  });
-
-  if (!brand) {
-    return false;
-  }
-
-  return await prisma.brand.delete({
+export const deleteBrand = async (id: string): Promise<Brand | null> => {
+  return await prisma.brand.findUnique({
     where: {
       id: parseInt(id),
     },
@@ -129,7 +139,7 @@ export const deleteBrand = async (id: string) => {
 export const searchBrands = async (
   formData?: { [k: string]: FormDataEntryValue },
   url?: URL
-) => {
+): Promise<{ brands: Brand[]; totalPages: number }> => {
   const name =
     formData?.name || (url && url.searchParams.get("name")?.toString()) || "";
   const pageNumber =

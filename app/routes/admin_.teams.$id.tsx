@@ -1,19 +1,29 @@
 import { useEffect, useState } from "react";
 import { tokenAuth } from "~/auth.server";
-import {
-  getTeam,
-  removeTeamMemberFromTeam,
-  upsertTeam,
-} from "~/models/teams.server";
+import { HiTrash } from "react-icons/hi2";
 import { validateForm } from "~/utility/validate";
+import { getStores } from "~/models/stores.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
 import { IoArrowForwardCircle } from "react-icons/io5";
 import DarkOverlay from "~/components/Layout/DarkOverlay";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import FormHeader from "~/components/Forms/Headers/FormHeader";
 import { placeholderAvatar } from "~/utility/placeholderAvatar";
+import BasicSelect from "~/components/Forms/Select/BasicSelect";
+import { ActionAlert } from "~/components/Notifications/Alerts";
+import type { StaffWithDetails } from "~/models/auth/staff.server";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
-import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node";
+import {
+  json,
+  redirect,
+  type ActionArgs,
+  type LoaderArgs,
+} from "@remix-run/node";
+import {
+  getTeam,
+  removeTeamMemberFromTeam,
+  upsertTeam,
+} from "~/models/teams.server";
 import {
   Form,
   Outlet,
@@ -22,10 +32,6 @@ import {
   useNavigate,
   useSubmit,
 } from "@remix-run/react";
-import { HiTrash } from "react-icons/hi2";
-import BasicSelect from "~/components/Forms/Select/BasicSelect";
-import { getStores } from "~/models/stores.server";
-import { ActionAlert } from "~/components/Notifications/Alerts";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
@@ -35,13 +41,36 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   const id = params?.id;
 
-  if (id && id !== "add") {
-    const team = await getTeam(id);
-    const stores = await getStores();
-    return { team, stores };
-  } else {
-    return null;
+  if (!id) {
+    throw new Response(null, {
+      status: 404,
+      statusText: "Campaign Not Found",
+    });
   }
+
+  let team = null;
+
+  if (id !== "add") {
+    team = await getTeam(id);
+  }
+
+  if (!team) {
+    throw new Response(null, {
+      status: 404,
+      statusText: "Team Not Found",
+    });
+  }
+
+  const stores = await getStores();
+
+  if (!stores) {
+    throw new Response(null, {
+      status: 404,
+      statusText: "Stores Not Found",
+    });
+  }
+
+  return json({ team, stores });
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
@@ -88,13 +117,8 @@ export const action = async ({ request, params }: ActionArgs) => {
 const ModifyTeam = () => {
   const navigate = useNavigate();
   const submit = useSubmit();
-  const { team, stores } =
-    (useLoaderData() as unknown as { team: Team; stores: Store[] }) || {};
-  const { validationErrors, success } =
-    (useActionData() as {
-      success: boolean;
-      validationErrors: ValidationErrors;
-    }) || {};
+  const { team, stores } = useLoaderData<typeof loader>();
+  const { validationErrors, success } = useActionData() as ActionReturnTypes;
 
   const mode = team ? "edit" : "add";
 
@@ -134,7 +158,6 @@ const ModifyTeam = () => {
         <FormHeader
           valueToChange={team}
           type="Team"
-          mode="view"
           hasIsActive={true}
           hasDelete={false}
         />
@@ -155,21 +178,21 @@ const ModifyTeam = () => {
             customWidth="w-full"
             placeholder="Select a Location"
             selections={stores as unknown as SelectValue[]}
-            defaultValue={team.storeId.toString()}
+            defaultValue={team.storeId?.toString() || undefined}
           />
 
           {mode === "edit" && (
             <div className="mx-auto w-full">
               <div>
                 <div className="mb-3 ml-[6px] text-[0.875rem]">
-                  {`Team Members ( ${team.staff.length || 0} )`}
+                  {`Team Members ( ${team?.staff?.length || 0} )`}
                 </div>
               </div>
               <table className="table">
                 <tbody>
                   {team?.staff?.map(
                     (
-                      { id, userDetails, avatar, jobTitle }: Staff,
+                      { id, userDetails, avatar, jobTitle }: StaffWithDetails,
                       index: number
                     ) => {
                       const { firstName, lastName } = userDetails!;

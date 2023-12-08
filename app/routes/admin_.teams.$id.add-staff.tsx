@@ -71,10 +71,7 @@ const ModifyTeam = () => {
       stores: Store[];
       teamId: number;
     }) || {};
-  const { success } =
-    (useActionData() as {
-      success: boolean;
-    }) || {};
+  const { success } = useActionData() as ActionReturnTypes;
 
   const [loading, setLoading] = useState<boolean>(false);
 

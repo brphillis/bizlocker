@@ -1,16 +1,18 @@
+import type { User } from "@prisma/client";
 import { useEffect, useState } from "react";
+import { tokenAuth } from "~/auth.server";
 import { validateForm } from "~/utility/validate";
 import { getUserDataFromSession } from "~/session.server";
+import PhoneInput from "~/components/Forms/Input/PhoneInput";
+import BasicInput from "~/components/Forms/Input/BasicInput";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
+import { getUserDetails, upsertUserDetails } from "~/models/auth/userDetails";
 import {
+  json,
   redirect,
   type ActionArgs,
   type LoaderArgs,
-} from "@remix-run/server-runtime";
-import { getUserDetails, upsertUserDetails } from "~/models/auth/userDetails";
-import PhoneInput from "~/components/Forms/Input/PhoneInput";
-import BasicInput from "~/components/Forms/Input/BasicInput";
-import { tokenAuth } from "~/auth.server";
+} from "@remix-run/node";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const authenticated = await tokenAuth(request);
@@ -20,7 +22,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   const { id, email } = ((await getUserDataFromSession(request)) as User) || {};
   const userDetails = await getUserDetails(id);
-  return { userDetails, email };
+  return json({ userDetails, email });
 };
 
 export const action = async ({ request }: ActionArgs) => {
@@ -43,7 +45,7 @@ export const action = async ({ request }: ActionArgs) => {
 
   const validationErrors = validateForm(form, validate);
   if (validationErrors) {
-    return { validationErrors };
+    return json({ validationErrors });
   }
 
   const updateData = {
@@ -55,16 +57,13 @@ export const action = async ({ request }: ActionArgs) => {
   };
   await upsertUserDetails(updateData);
 
-  return { success: "Profile Updated" };
+  return json({ success: "Profile Updated" });
 };
 
 const Account = () => {
-  const { userDetails, email } = useLoaderData();
-  const { success, validationErrors } =
-    (useActionData() as {
-      success: string;
-      validationErrors: ValidationErrors;
-    }) || {};
+  const { userDetails, email } = useLoaderData<typeof loader>();
+
+  const { success, validationErrors } = useActionData() as ActionReturnTypes;
 
   const [loading, setLoading] = useState<boolean>(false);
 

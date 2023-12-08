@@ -1,8 +1,9 @@
 import React from "react";
+import type { PageBlock } from "~/models/pageBuilder.server";
 import { blockMaster } from "~/utility/blockMaster";
 
 type Props = {
-  blocks: Block[];
+  blocks: PageBlock[];
 };
 
 const BlockRenderer = ({ blocks }: Props) => {

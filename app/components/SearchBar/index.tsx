@@ -1,3 +1,9 @@
+import type {
+  Brand,
+  Department,
+  ProductCategory,
+  ProductSubCategory,
+} from "@prisma/client";
 import { useEffect, useState } from "react";
 import { IoRefreshOutline, IoSearch } from "react-icons/io5";
 import { Form, useSearchParams, useSubmit } from "react-router-dom";
@@ -6,9 +12,9 @@ import { useLocation } from "@remix-run/react";
 import Spinner from "../Spinner";
 
 type Props = {
-  departments: Department[];
-  productCategories: ProductCategory[];
-  brands: Brand[];
+  departments: Department[] | null;
+  productCategories: ProductCategory[] | null;
+  brands: Brand[] | null;
 };
 
 const SearchBar = ({ departments, productCategories, brands }: Props) => {
@@ -18,19 +24,19 @@ const SearchBar = ({ departments, productCategories, brands }: Props) => {
 
   const searchedDepartment = searchParams.get("department");
 
-  const [categories, setCategories] = useState<ProductCategory[] | undefined>(
+  const [categories, setCategories] = useState<ProductCategory[] | null>(
     productCategories
   );
   const [subCategories, setSubCategories] = useState<
-    ProductSubCategory[] | undefined
-  >(undefined);
+    ProductSubCategory[] | null
+  >(null);
 
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (searchedDepartment) {
-      const departmentsCategories = productCategories.filter(
-        (e) => e.department.name === searchedDepartment
+      const departmentsCategories = productCategories?.filter(
+        (e) => e?.department?.name === searchedDepartment
       );
       setCategories(departmentsCategories);
     }

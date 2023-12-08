@@ -1,22 +1,27 @@
-import { redirect, type ActionArgs } from "@remix-run/server-runtime";
-import { Form, useLoaderData, useNavigate } from "@remix-run/react";
-import { capitalizeFirst } from "~/helpers/stringHelpers";
-import { getOrdersCurrentUser } from "~/models/orders.server";
 import { tokenAuth } from "~/auth.server";
+import { capitalizeFirst } from "~/helpers/stringHelpers";
+import {
+  type OrderItemWithDetails,
+  type OrderWithDetails,
+  getOrdersCurrentUser,
+} from "~/models/orders.server";
+import { json, redirect, type ActionArgs } from "@remix-run/node";
+import { Form, useLoaderData, useNavigate } from "@remix-run/react";
 
 export const loader = async ({ request }: ActionArgs) => {
   const authenticated = await tokenAuth(request);
+
   if (!authenticated.valid) {
     return redirect("/login");
   }
 
   const orders = await getOrdersCurrentUser(request);
-  return orders;
+  return json(orders);
 };
 
 const Orders = () => {
   const navigate = useNavigate();
-  const orders = useLoaderData();
+  const orders = useLoaderData<typeof loader>();
 
   return (
     <Form
@@ -34,7 +39,7 @@ const Orders = () => {
           </>
         )}
 
-        {orders?.length > 0 && (
+        {orders && orders?.length > 0 && (
           <table className="table table-zebra">
             <thead>
               <tr>
@@ -47,14 +52,16 @@ const Orders = () => {
             </thead>
 
             <tbody>
-              {orders?.map((order: Order, i: number) => {
+              {orders?.map((order: OrderWithDetails, i: number) => {
                 const { createdAt, items, totalPrice, status, orderId } = order;
                 const itemNames: string[] = [];
 
-                items.forEach(({ variant, quantity }: OrderItem) => {
-                  const { name } = variant.product;
-                  itemNames.push(quantity + " x " + name);
-                });
+                items?.forEach(
+                  ({ variant, quantity }: OrderItemWithDetails) => {
+                    const { name } = variant?.product || {};
+                    itemNames.push(quantity + " x " + name);
+                  }
+                );
 
                 return (
                   <tr
@@ -84,7 +91,9 @@ const Orders = () => {
                     </td>
                     <td>{itemNames.join(", ").substring(0, 32)}</td>
                     <td>${totalPrice.toFixed(2).toString()}</td>
-                    <td className="!rounded-none">{capitalizeFirst(status)}</td>
+                    <td className="!rounded-none">
+                      {status && capitalizeFirst(status)}
+                    </td>
                   </tr>
                 );
               })}

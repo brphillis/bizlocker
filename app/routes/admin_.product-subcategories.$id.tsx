@@ -91,11 +91,7 @@ const ModifyProductSubCategory = () => {
       productSubCategory: ProductSubCategory;
       productCategories: ProductCategory[];
     }) || {};
-  const { validationErrors, success } =
-    (useActionData() as {
-      success: boolean;
-      validationErrors: ValidationErrors;
-    }) || {};
+  const { validationErrors, success } = useActionData() as ActionReturnTypes;
 
   const mode = productSubCategory ? "edit" : "add";
 

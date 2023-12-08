@@ -1,7 +1,22 @@
+import type { Campaign, Image, Promotion } from "@prisma/client";
+import { useEffect, useState } from "react";
 import { tokenAuth } from "~/auth.server";
+import { validateForm } from "~/utility/validate";
+import { STAFF_SESSION_KEY } from "~/session.server";
 import DarkOverlay from "~/components/Layout/DarkOverlay";
+import { IoCaretForwardCircleSharp } from "react-icons/io5";
+import { handleResourceSubmit } from "~/helpers/formHelpers";
+import BasicInput from "~/components/Forms/Input/BasicInput";
 import FormHeader from "~/components/Forms/Headers/FormHeader";
 import UploadImage from "~/components/Forms/Upload/UploadImage";
+import { deleteImage, getImage, upsertImage } from "~/models/images.server";
+import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
+import {
+  json,
+  redirect,
+  type ActionArgs,
+  type LoaderArgs,
+} from "@remix-run/node";
 import {
   Form,
   useActionData,
@@ -9,40 +24,49 @@ import {
   useNavigate,
   useSubmit,
 } from "@remix-run/react";
-import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
-import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node";
-import { deleteImage, getImage, upsertImage } from "~/models/images.server";
-import { IoCaretForwardCircleSharp } from "react-icons/io5";
-import { handleResourceSubmit } from "~/helpers/formHelpers";
-import { useEffect, useState } from "react";
-import { validateForm } from "~/utility/validate";
-import BasicInput from "~/components/Forms/Input/BasicInput";
-import { STAFF_SESSION_KEY } from "~/session.server";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+
   if (!authenticated.valid) {
     return redirect("/login");
   }
 
   const id = params?.id;
 
-  if (id && id !== "add") {
-    const image = await getImage(id);
-    return { image };
-  } else {
-    return null;
+  if (!id) {
+    throw new Response(null, {
+      status: 404,
+      statusText: "Campaign Not Found",
+    });
   }
+
+  let image = null;
+
+  if (id !== "add") {
+    image = await getImage(id);
+  }
+
+  if (!image) {
+    throw new Response(null, {
+      status: 404,
+      statusText: "Image Not Found",
+    });
+  }
+
+  return json({ image });
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+
   if (!authenticated.valid) {
     return redirect("/login");
   }
 
   const id = params.id === "add" ? undefined : params.id;
   const form = Object.fromEntries(await request.formData());
+
   const { image, altText } = form;
 
   switch (form._action) {
@@ -54,7 +78,7 @@ export const action = async ({ request, params }: ActionArgs) => {
 
       const validationErrors = validateForm(form, validate);
       if (validationErrors) {
-        return { validationErrors };
+        return json({ validationErrors });
       }
 
       const parsedImage = image
@@ -63,24 +87,21 @@ export const action = async ({ request, params }: ActionArgs) => {
 
       await upsertImage(altText as string, parsedImage, id);
 
-      return { success: true };
+      return json({ success: true });
 
     case "delete":
       await deleteImage(id as string);
-      return { success: true };
+      return json({ success: true });
   }
 };
 
 const ModifyImage = () => {
+  const { image } = useLoaderData<typeof loader>();
+  const { validationErrors, success } = useActionData() as ActionReturnTypes;
+
   const navigate = useNavigate();
   let submit = useSubmit();
-  const { image } = useLoaderData() || {};
-  const { validationErrors, success } =
-    (useActionData() as {
-      success: boolean;
-      validationErrors: ValidationErrors;
-    }) || {};
-  const mode = image ? "edit" : "add";
+
   const {
     altText,
     promotionBanner,
@@ -91,7 +112,7 @@ const ModifyImage = () => {
     productSubCategoryId,
     articleId,
     productId,
-  } = image || ({} as Image);
+  } = image;
 
   const determineIfConnected = (): boolean => {
     if (
@@ -128,7 +149,6 @@ const ModifyImage = () => {
         <FormHeader
           valueToChange={image}
           type="Image"
-          mode={mode}
           hasIsActive={false}
           hasDelete={true}
         />

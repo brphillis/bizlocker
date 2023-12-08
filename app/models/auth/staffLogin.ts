@@ -1,9 +1,18 @@
 import { prisma } from "~/db.server";
 import bcrypt from "bcryptjs";
 
-export type { User } from "@prisma/client";
+export interface StaffSession {
+  id: string | null;
+  storeId: number | null;
+  role: Role;
+  email: string;
+  isActive: boolean;
+}
 
-export const verifyStaffLogin = async (email: string, password: string) => {
+export const verifyStaffLogin = async (
+  email: string,
+  password: string
+): Promise<{ staff: StaffSession }> => {
   const userWithPassword = await prisma.staff.findUnique({
     where: {
       email,
@@ -19,24 +28,21 @@ export const verifyStaffLogin = async (email: string, password: string) => {
   });
 
   if (!userWithPassword || !userWithPassword.password) {
-    const error = "User Not Found";
-    return { error };
+    throw new Error("User Not Found");
   }
 
   const isValid = await bcrypt.compare(password, userWithPassword.password);
 
   if (!isValid) {
-    const error = "Incorrect Credentials";
-    return { error };
+    throw new Error("Incorrect Credentials");
   }
 
   if (!userWithPassword.isActive) {
-    const error = "Staff Member is Not Active.";
-    return { error };
+    throw new Error("Staff Member is Not Active.");
   }
 
   const { password: _password, ...userWithoutPassword } = userWithPassword;
-  const user = userWithoutPassword;
+  const staff = userWithoutPassword;
 
-  return { user };
+  return { staff };
 };

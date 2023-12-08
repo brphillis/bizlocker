@@ -1,8 +1,10 @@
+import type { ArticleWithContent } from "~/models/articles.server";
+import type { ArticleCategory } from "@prisma/client";
 import { IoArrowForward } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 
 type Props = {
-  article: Article;
+  article: ArticleWithContent;
   hasDescription?: boolean;
 };
 

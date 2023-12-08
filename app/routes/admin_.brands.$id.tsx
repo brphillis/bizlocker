@@ -10,7 +10,12 @@ import {
 } from "@remix-run/react";
 import { deleteBrand, getBrand, upsertBrand } from "~/models/brands.server";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
-import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node";
+import {
+  redirect,
+  type ActionArgs,
+  type LoaderArgs,
+  json,
+} from "@remix-run/node";
 import { useEffect, useState } from "react";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import { validateForm } from "~/utility/validate";
@@ -18,17 +23,35 @@ import { STAFF_SESSION_KEY } from "~/session.server";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+
   if (!authenticated.valid) {
     return redirect("/login");
   }
 
   const id = params?.id;
 
-  if (id && id !== "add") {
-    return await getBrand(id);
-  } else {
-    return null;
+  if (id === "add") {
+    const brand = {};
+    return json({ brand } as { brand: Brand });
   }
+
+  if (!id) {
+    throw new Response(null, {
+      status: 404,
+      statusText: "Article Not Found",
+    });
+  }
+
+  const brand = await getBrand(id);
+
+  if (!brand) {
+    throw new Response(null, {
+      status: 404,
+      statusText: "Article Not Found",
+    });
+  }
+
+  return json({ brand });
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
@@ -68,13 +91,8 @@ export const action = async ({ request, params }: ActionArgs) => {
 
 const ModifyBrand = () => {
   const navigate = useNavigate();
-  const brand = useLoaderData();
-  const { validationErrors, success } =
-    (useActionData() as {
-      success: boolean;
-      validationErrors: ValidationErrors;
-    }) || {};
-  const mode = brand ? "edit" : "add";
+  const { brand } = useLoaderData<typeof loader>();
+  const { validationErrors, success } = useActionData() as ActionReturnTypes;
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -93,7 +111,6 @@ const ModifyBrand = () => {
         <FormHeader
           valueToChange={brand}
           type="Brand"
-          mode={mode}
           hasIsActive={true}
           hasDelete={true}
         />

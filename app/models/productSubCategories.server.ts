@@ -1,3 +1,4 @@
+import type { ProductSubCategory, Image } from "@prisma/client";
 import { prisma } from "~/db.server";
 import { getOrderBy } from "~/helpers/sortHelpers";
 import {
@@ -5,7 +6,9 @@ import {
   uploadImage_Integration,
 } from "~/integrations/_master/storage";
 
-export const getProductSubCategories = async () => {
+export const getProductSubCategories = async (): Promise<
+  ProductSubCategory[]
+> => {
   return await prisma.productSubCategory.findMany({
     include: {
       productCategory: {
@@ -21,7 +24,9 @@ export const getProductSubCategories = async () => {
   });
 };
 
-export const getProductSubCategory = async (id: string) => {
+export const getProductSubCategory = async (
+  id: string
+): Promise<ProductSubCategory | null> => {
   return await prisma.productSubCategory.findUnique({
     where: {
       id: parseInt(id),
@@ -32,7 +37,12 @@ export const getProductSubCategory = async (id: string) => {
   });
 };
 
-export const upsertProductSubCategory = async (categoryData: any) => {
+export const upsertProductSubCategory = async (
+  categoryData: any
+): Promise<{
+  createdProductSubCategory: ProductSubCategory | null;
+  updatedProductSubCategory: ProductSubCategory | null;
+}> => {
   const {
     id,
     index,
@@ -43,11 +53,9 @@ export const upsertProductSubCategory = async (categoryData: any) => {
     image,
   } = categoryData;
 
-  let updatedProductSubCategory;
-
   if (!id && image) {
     const repoLink = await uploadImage_Integration(image);
-    updatedProductSubCategory = await prisma.productSubCategory.create({
+    const createdProductSubCategory = await prisma.productSubCategory.create({
       data: {
         name: name,
         index,
@@ -68,9 +76,10 @@ export const upsertProductSubCategory = async (categoryData: any) => {
           : undefined,
       },
     });
-  }
-  if (!id && !image) {
-    updatedProductSubCategory = await prisma.productSubCategory.create({
+
+    return { createdProductSubCategory, updatedProductSubCategory: null };
+  } else if (!id && !image) {
+    const createdProductSubCategory = await prisma.productSubCategory.create({
       data: {
         name: name,
         index,
@@ -85,26 +94,27 @@ export const upsertProductSubCategory = async (categoryData: any) => {
           : undefined,
       },
     });
-  } else if (id) {
-    const existingProductSubCategory =
-      await prisma.productSubCategory.findUnique({
-        where: {
-          id: parseInt(id),
-        },
-        include: {
-          image: true,
-        },
-      });
 
-    if (!existingProductSubCategory) {
+    return { createdProductSubCategory, updatedProductSubCategory: null };
+  } else if (id) {
+    const productSubCategory = await prisma.productSubCategory.findUnique({
+      where: {
+        id: parseInt(id),
+      },
+      include: {
+        image: true,
+      },
+    });
+
+    if (!productSubCategory) {
       throw new Error("Category not found");
     }
 
     let imageData = {};
 
-    if (image && existingProductSubCategory.image) {
+    if (image && productSubCategory.image) {
       const repoLink = await updateImage_Integration(
-        existingProductSubCategory.image as Image,
+        productSubCategory.image as Image,
         image
       );
 
@@ -115,7 +125,7 @@ export const upsertProductSubCategory = async (categoryData: any) => {
         },
       };
     }
-    if (image && !existingProductSubCategory.image) {
+    if (image && !productSubCategory.image) {
       const repoLink = await uploadImage_Integration(image);
 
       imageData = {
@@ -125,13 +135,13 @@ export const upsertProductSubCategory = async (categoryData: any) => {
         },
       };
     }
-    if (!image && existingProductSubCategory.image) {
+    if (!image && productSubCategory.image) {
       imageData = {
         delete: true,
       };
     }
 
-    updatedProductSubCategory = await prisma.productSubCategory.update({
+    const updatedProductSubCategory = await prisma.productSubCategory.update({
       where: {
         id: parseInt(id),
       },
@@ -153,12 +163,14 @@ export const upsertProductSubCategory = async (categoryData: any) => {
         image: true,
       },
     });
-  }
 
-  return updatedProductSubCategory;
+    return { updatedProductSubCategory, createdProductSubCategory: null };
+  } else throw new Error("No ID Provided");
 };
 
-export const deleteProductSubCategory = async (id: string) => {
+export const deleteProductSubCategory = async (
+  id: string
+): Promise<ProductSubCategory> => {
   const productSubCategory = await prisma.productSubCategory.findUnique({
     where: {
       id: parseInt(id),
@@ -166,7 +178,7 @@ export const deleteProductSubCategory = async (id: string) => {
   });
 
   if (!productSubCategory) {
-    return false;
+    throw new Error("Product Sub Category Not Found");
   }
   // Delete the productSubCategory
   return await prisma.productSubCategory.delete({
@@ -179,7 +191,10 @@ export const deleteProductSubCategory = async (id: string) => {
 export const searchProductSubCategories = async (
   formData?: { [k: string]: FormDataEntryValue },
   url?: URL
-) => {
+): Promise<{
+  productSubCategories: ProductSubCategory[];
+  totalPages: number;
+}> => {
   const name =
     formData?.name || (url && url.searchParams.get("name")?.toString()) || "";
   const productCategory =

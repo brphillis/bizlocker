@@ -1,8 +1,13 @@
 import { useNavigate } from "@remix-run/react";
+import { generateColor } from "~/utility/colors";
+import type { BlockContent } from "~/models/blocks.server";
+import type { BlockOptions, Product } from "@prisma/client";
 import PatternBackground from "~/components/Layout/PatternBackground";
 import { determineSingleContentType } from "~/helpers/blockContentHelpers";
-import { generateColor } from "~/utility/colors";
-
+import type {
+  ProductVariantWithDetails,
+  ProductWithDetails,
+} from "~/models/products.server";
 type Props = {
   content: BlockContent;
   options: BlockOptions[];
@@ -34,17 +39,24 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
     link2,
   } = options || {};
 
-  const product = content.product as Product;
+  const product = content.product as ProductWithDetails;
   const productImage = product.heroImage?.href;
 
   const contentType = determineSingleContentType(content);
 
-  const getProductLowestPrice = (product: Product, decimals?: boolean) => {
-    const prices = product.variants.map(({ price }: ProductVariant) => price);
-    const lowestPrice = Math.min(...prices);
-    if (decimals) {
-      return lowestPrice.toFixed(2);
-    } else return lowestPrice.toFixed(0);
+  const getProductLowestPrice = (
+    product: ProductWithDetails,
+    decimals?: boolean
+  ) => {
+    const prices = product?.variants?.map(
+      ({ price }: ProductVariantWithDetails) => price
+    );
+    if (prices) {
+      const lowestPrice = Math.min(...prices);
+      if (decimals) {
+        return lowestPrice.toFixed(2);
+      } else return lowestPrice.toFixed(0);
+    }
   };
 
   const lowestPrice = getProductLowestPrice(product);
@@ -143,12 +155,13 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
               </div>
             </div>
           </div>
-
-          <img
-            className="relative h-auto max-h-full max-w-full object-contain transition duration-300 ease-in-out hover:scale-[1.05] max-lg:absolute max-lg:left-[75%] max-lg:w-64 max-md:left-[52%] max-md:w-48"
-            src={productImage}
-            alt="hero"
-          />
+          {productImage && (
+            <img
+              className="relative h-auto max-h-full max-w-full object-contain transition duration-300 ease-in-out hover:scale-[1.05] max-lg:absolute max-lg:left-[75%] max-lg:w-64 max-md:left-[52%] max-md:w-48"
+              src={productImage}
+              alt="hero"
+            />
+          )}
         </div>
       </div>
     </div>

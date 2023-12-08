@@ -1,7 +1,9 @@
+import type { Image } from "@prisma/client";
 import { useFetcher } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import DarkOverlay from "~/components/Layout/DarkOverlay";
+import type { Page } from "~/models/pageBuilder.server";
 
 type Props = {
   itemIndexToUpdate: number | undefined;

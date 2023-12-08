@@ -1,3 +1,7 @@
+import type { ProductVariant, Promotion } from "@prisma/client";
+import type { CartItemWithDetails } from "~/models/cart.server";
+import type { ProductWithDetails } from "~/models/products.server";
+
 export const calculateDiscountPercentage = (
   price: number,
   salePrice: number
@@ -42,30 +46,33 @@ export const minusPercentage = (
   return initialNumber - discountAmount;
 };
 
-export const calculateCartTotal = (cartItems: CartItem[]): number => {
+export const calculateCartTotal = (
+  cartItems: CartItemWithDetails[]
+): number => {
   let total = 0;
 
   cartItems?.forEach((e) => {
-    if (e.variant.isOnSale && e.variant.salePrice) {
-      total += e.variant.salePrice * e.quantity;
-    } else {
-      let variantTotalPrice = e.variant.price;
-      if (e.variant.isPromoted) {
-        const discountPercentage =
-          e.variant.product.promotion?.discountPercentage;
-
-        if (discountPercentage) {
-          variantTotalPrice = minusPercentage(
-            variantTotalPrice,
-            discountPercentage
-          );
-        }
-
-        total += variantTotalPrice * e.quantity;
+    if (e.variant)
+      if (e.variant.isOnSale && e.variant.salePrice) {
+        total += e.variant.salePrice * e.quantity;
       } else {
-        total += e.variant.price * e.quantity;
+        let variantTotalPrice = e.variant.price;
+        if (e.variant.isPromoted && e.variant.product) {
+          const discountPercentage =
+            e.variant.product.promotion?.discountPercentage;
+
+          if (discountPercentage) {
+            variantTotalPrice = minusPercentage(
+              variantTotalPrice,
+              discountPercentage
+            );
+          }
+
+          total += variantTotalPrice * e.quantity;
+        } else {
+          total += e.variant.price * e.quantity;
+        }
       }
-    }
   });
 
   return total;
@@ -73,8 +80,8 @@ export const calculateCartTotal = (cartItems: CartItem[]): number => {
 
 export const getVariantUnitPrice = (
   variant: ProductVariant,
-  product?: Product,
-  promotion?: Promotion
+  product?: ProductWithDetails,
+  promotion?: Promotion | null
 ): string => {
   const { isOnSale, salePrice, price, isPromoted } = variant;
 

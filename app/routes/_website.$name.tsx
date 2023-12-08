@@ -1,10 +1,10 @@
-import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
-import BlockRenderer from "~/components/BlockRenderer";
-import PageWrapper from "~/components/Layout/_Website/PageWrapper";
-import { getWebPage } from "~/models/webPages.server";
 import { getBlocks } from "~/helpers/blockHelpers";
+import { getWebPage } from "~/models/webPages.server";
+import BlockRenderer from "~/components/BlockRenderer";
+import { json, type LoaderArgs } from "@remix-run/node";
 import { capitalizeWords } from "~/helpers/stringHelpers";
+import PageWrapper from "~/components/Layout/_Website/PageWrapper";
+import { type V2_MetaFunction, useLoaderData } from "@remix-run/react";
 
 export const meta: V2_MetaFunction = ({ data }) => {
   return [
@@ -18,6 +18,7 @@ export const meta: V2_MetaFunction = ({ data }) => {
 export const loader = async ({ params }: LoaderArgs) => {
   const pageName = params.name?.replace("-", " ");
   const webPage = await getWebPage(undefined, pageName);
+
   let title, description, backgroundColor, blocks;
 
   if (webPage) {
@@ -27,21 +28,21 @@ export const loader = async ({ params }: LoaderArgs) => {
     backgroundColor = webPage.backgroundColor;
   }
 
-  return {
+  return json({
     blocks,
     title,
     description,
     backgroundColor,
     pageName,
-  };
+  });
 };
 
 const WebPage = () => {
-  const { blocks, backgroundColor } = useLoaderData();
+  const { blocks, backgroundColor } = useLoaderData<typeof loader>();
 
   return (
     <PageWrapper gap="medium" backgroundColor={backgroundColor}>
-      <BlockRenderer blocks={blocks} />
+      <>{blocks && <BlockRenderer blocks={blocks} />}</>
     </PageWrapper>
   );
 };

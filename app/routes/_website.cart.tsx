@@ -1,36 +1,42 @@
-import { type LoaderArgs, type ActionArgs } from "@remix-run/server-runtime";
+import { useEffect, useState } from "react";
+import {
+  type CartItemWithDetails,
+  type CartWithDetails,
+  getCart,
+} from "~/models/cart.server";
+import { validateForm } from "~/utility/validate";
+import { createOrder } from "~/models/orders.server";
+import { getUserDataFromSession } from "~/session.server";
+import { getUserAddress } from "~/models/auth/userAddress";
+import { getUserDetails } from "~/models/auth/userDetails";
+import BasicInput from "~/components/Forms/Input/BasicInput";
+import PhoneInput from "~/components/Forms/Input/PhoneInput";
+import { getCartDeliveryOptions } from "~/helpers/cartHelpers";
+import BasicSelect from "~/components/Forms/Select/BasicSelect";
+import PageWrapper from "~/components/Layout/_Website/PageWrapper";
+import SelectCountry from "~/components/Forms/Select/SelectCountry";
+import { json, type ActionArgs, type LoaderArgs } from "@remix-run/node";
 import {
   Form,
   useActionData,
   useLoaderData,
   useSubmit,
 } from "@remix-run/react";
-import { useEffect, useState } from "react";
-import PageWrapper from "~/components/Layout/_Website/PageWrapper";
-import squareLogo from "../assets/logos/square-logo.svg";
-import googlePayLogo from "../assets/logos/googlePay-logo.svg";
-import applePayLogo from "../assets/logos/applePay-logo.svg";
-import visaLogo from "../assets/logos/visa-logo.svg";
-import mastercardLogo from "../assets/logos/mastercard-logo.svg";
-import { getCart } from "~/models/cart.server";
-import { createOrder } from "~/models/orders.server";
 import {
   calculateCartTotal,
   getVariantUnitPrice,
 } from "~/helpers/numberHelpers";
 import CartAddSubtractButton from "~/components/Layout/_Website/Navigation/Buttons/CartButton/CartAddSubtractButton";
-import { getUserDataFromSession } from "~/session.server";
-import BasicInput from "~/components/Forms/Input/BasicInput";
-import { getUserAddress } from "~/models/auth/userAddress";
-import SelectCountry from "~/components/Forms/Select/SelectCountry";
-import { getCartDeliveryOptions } from "~/helpers/cartHelpers";
-import BasicSelect from "~/components/Forms/Select/BasicSelect";
-import { getUserDetails } from "~/models/auth/userDetails";
-import { validateForm } from "~/utility/validate";
-import PhoneInput from "~/components/Forms/Input/PhoneInput";
+import visaLogo from "../assets/logos/visa-logo.svg";
+import squareLogo from "../assets/logos/square-logo.svg";
+import applePayLogo from "../assets/logos/applePay-logo.svg";
+import googlePayLogo from "../assets/logos/googlePay-logo.svg";
+import mastercardLogo from "../assets/logos/mastercard-logo.svg";
+import type { Address } from "@prisma/client";
 
 export const loader = async ({ request }: LoaderArgs) => {
   let cart, user, userAddress, loaderShippingOptions, userDetails;
+
   cart = await getCart(request);
   user = await getUserDataFromSession(request);
 
@@ -41,12 +47,12 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   if (userAddress && cart) {
     loaderShippingOptions = await getCartDeliveryOptions(
-      cart as unknown as Cart,
+      cart,
       parseInt(userAddress.postcode!)
     );
   }
 
-  return { cart, user, userAddress, userDetails, loaderShippingOptions };
+  return json({ cart, user, userAddress, userDetails, loaderShippingOptions });
 };
 
 export const action = async ({ request }: ActionArgs) => {
@@ -84,10 +90,10 @@ export const action = async ({ request }: ActionArgs) => {
 
       const validationErrors = validateForm(form, validate);
       if (validationErrors) {
-        return { validationErrors };
+        return json({ validationErrors });
       }
 
-      const address: Address = {
+      const address: NewAddress = {
         addressLine1: addressLine1 as string,
         addressLine2: addressLine2 as string,
         suburb: suburb as string,
@@ -106,12 +112,12 @@ export const action = async ({ request }: ActionArgs) => {
         lastName as string,
         email as string,
         phoneNumber as string,
-        address,
+        address as Address,
         shippingMethod as string,
         shippingPrice as string,
         rememberInformation ? true : false
       );
-      return createdOrder;
+      return json(createdOrder);
 
     case "getShipping":
       const cart = await getCart(request);
@@ -119,25 +125,25 @@ export const action = async ({ request }: ActionArgs) => {
 
       if (cart && !isNaN(parseInt(postCode as string))) {
         const actionShippingOptions = await getCartDeliveryOptions(
-          cart as unknown as Cart,
+          cart as unknown as CartWithDetails,
           parseInt(postCode as string)
         );
-        return { actionShippingOptions };
+        return json({ actionShippingOptions });
       } else return null;
   }
 };
 
 const Cart = () => {
   const submit = useSubmit();
+
   const { cart, user, userAddress, userDetails, loaderShippingOptions } =
-    useLoaderData() || {};
+    useLoaderData<typeof loader>();
+
   const { validationErrors, actionShippingOptions } =
-    (useActionData() as {
-      success: string;
-      validationErrors: ValidationErrors;
-      actionShippingOptions: AusPostDeliveryOption[];
-    }) || {};
-  const { cartItems } = (cart as { cartItems: CartItem[] }) || {};
+    useActionData() as ActionReturnTypes;
+
+  const { cartItems } = cart || {};
+
   const [orderTotal, setOrderTotal] = useState<number>(0);
 
   const handleUpdateShipping = (postCode: string) => {
@@ -148,8 +154,10 @@ const Cart = () => {
   };
 
   useEffect(() => {
-    const total = calculateCartTotal(cartItems);
-    setOrderTotal(total);
+    if (cartItems) {
+      const total = calculateCartTotal(cartItems);
+      setOrderTotal(total);
+    }
   }, [cartItems]);
 
   return (
@@ -162,53 +170,53 @@ const Cart = () => {
           </div>
 
           <div className="flex flex-col flex-wrap items-start justify-center gap-3">
-            {cartItems
-              ?.sort((a, b) =>
-                a.variant.product.name.localeCompare(b.variant.product.name)
-              )
-              .reverse()
-              .map(({ variant, quantity }: CartItem) => {
-                const { product, id: variantId } = variant;
-                const { images, name } = product;
+            {cartItems?.map(({ variant, quantity }: CartItemWithDetails) => {
+              const { product, id: variantId } = variant || {};
+              const { images, name } = product || {};
 
-                return (
-                  <div
-                    className="relative flex w-[420px] max-w-full flex-row items-center rounded-sm border border-base-300 bg-base-200/50 p-2 text-brand-black shadow-sm"
-                    key={"cartItem-" + name}
-                  >
+              return (
+                <div
+                  className="relative flex w-[420px] max-w-full flex-row items-center rounded-sm border border-base-300 bg-base-200/50 p-2 text-brand-black shadow-sm"
+                  key={"cartItem-" + name}
+                >
+                  {images?.[0].href && (
                     <img
                       className="h-20 w-20 border border-base-300 object-cover md:h-[8.8rem] md:w-[8.8rem]"
                       src={images[0].href}
                       alt={name + "_cartImage"}
                     />
-                    <div className="relative w-full text-center">
-                      <div>
-                        {name} x {quantity}
-                      </div>
-                      <div className="text-xs opacity-50">{variant?.name}</div>
-                      <div className="!rounded-none">
-                        ${getVariantUnitPrice(variant, product) + " ea"}
-                      </div>
-
-                      {variantId && (
-                        <>
-                          <CartAddSubtractButton
-                            mode="subtract"
-                            variantId={variantId?.toString()}
-                            extendStyle="absolute bottom-[34%] left-8"
-                          />
-
-                          <CartAddSubtractButton
-                            mode="add"
-                            variantId={variantId?.toString()}
-                            extendStyle="absolute bottom-[34%] right-8"
-                          />
-                        </>
-                      )}
+                  )}
+                  <div className="relative w-full text-center">
+                    <div>
+                      {name} x {quantity}
                     </div>
+                    <div className="text-xs opacity-50">{variant?.name}</div>
+                    <div className="!rounded-none">
+                      $
+                      {variant &&
+                        product &&
+                        getVariantUnitPrice(variant, product) + " ea"}
+                    </div>
+
+                    {variantId && (
+                      <>
+                        <CartAddSubtractButton
+                          mode="subtract"
+                          variantId={variantId?.toString()}
+                          extendStyle="absolute bottom-[34%] left-8"
+                        />
+
+                        <CartAddSubtractButton
+                          mode="add"
+                          variantId={variantId?.toString()}
+                          extendStyle="absolute bottom-[34%] right-8"
+                        />
+                      </>
+                    )}
                   </div>
-                );
-              })}
+                </div>
+              );
+            })}
           </div>
         </div>
 

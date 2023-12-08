@@ -1,15 +1,19 @@
-import { prisma } from "~/db.server";
-import jwt from "jsonwebtoken";
+import type { TypedResponse } from "@remix-run/server-runtime";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import { prisma } from "~/db.server";
 import { createUserSession } from "~/session.server";
 
-export type { User } from "@prisma/client";
+export interface UserLoginResponse {
+  id: string;
+  email: string;
+}
 
 export const verifyLogin = async (
   email: string,
   password: string,
   verifiedOnly: boolean = true
-) => {
+): Promise<{ user: UserLoginResponse | null; error: string | null }> => {
   const userWithPassword = await prisma.user.findUnique({
     where: {
       email,
@@ -24,32 +28,32 @@ export const verifyLogin = async (
 
   if (!userWithPassword || !userWithPassword.password) {
     const error = "User Not Found";
-    return { error };
+    return { error, user: null };
   }
 
   const isValid = await bcrypt.compare(password, userWithPassword.password);
 
   if (!isValid) {
     const error = "Incorrect Credentials";
-    return { error };
+    return { error, user: null };
   }
 
   if (!userWithPassword.verified && verifiedOnly) {
     const error = "Email not Verified, Please Check Your Email.";
-    return { error };
+    return { error, user: null };
   }
 
-  const {
-    password: _password,
-    verified: _verified,
-    ...userWithoutPassword
-  } = userWithPassword;
+  const { ...userWithoutPassword } = userWithPassword;
+
   const user = userWithoutPassword;
 
-  return { user };
+  return { user, error: null };
 };
 
-export const googleLogin = async (request: Request, credential: any) => {
+export const googleLogin = async (
+  request: Request,
+  credential: any
+): Promise<undefined | TypedResponse<never>> => {
   const credentials = jwt.decode(credential) as GoogleAuthResponse;
 
   const user = await prisma.user.findUnique({

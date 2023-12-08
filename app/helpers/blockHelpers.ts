@@ -1,10 +1,19 @@
-import { fetchBlockArticles, fetchBlockProducts } from "~/models/blocks.server";
+import type { Page, PageBlock } from "~/models/pageBuilder.server";
+import type { Article, Product, Image } from "@prisma/client";
+import {
+  type BlockWithBlockOptions,
+  fetchBlockArticles,
+  fetchBlockProducts,
+} from "~/models/blocks.server";
 import { getBlockContentTypes } from "../utility/blockMaster";
 import { isArrayofStrings } from "./arrayHelpers";
 
 // Returns the object array nessesery for populating a page in the blockrenderer
 // Main constructor function for preparing a block for the BlockRenderer
-export const getBlocks = async (page: Page, fetchNestedContent?: boolean) => {
+export const getBlocks = async (
+  page: Page,
+  fetchNestedContent?: boolean
+): Promise<PageBlock[]> => {
   // Populate the page with the active block types
   const blocks = squashPageBlockAndContentBlock(page);
   const activeBlocks = squashBlockContent(blocks);
@@ -13,11 +22,11 @@ export const getBlocks = async (page: Page, fetchNestedContent?: boolean) => {
   if (fetchNestedContent) {
     for (let i = 0; i < activeBlocks.length; i++) {
       const block = activeBlocks[i];
-      if (block.name === "product") {
-        block.content.product = (await fetchBlockProducts(block)) as any;
+      if (block.name === "product" && block.content) {
+        block.content.product = await fetchBlockProducts(block);
       }
-      if (block.name === "article") {
-        block.content.article = (await fetchBlockArticles(block)) as any;
+      if (block.name === "article" && block.content) {
+        block.content.article = await fetchBlockArticles(block);
       }
     }
   }
@@ -25,8 +34,8 @@ export const getBlocks = async (page: Page, fetchNestedContent?: boolean) => {
 };
 
 // Squash the Page Block into the Content Block
-export const squashPageBlockAndContentBlock = (page: Page): Block[] => {
-  let firstPopulatedObjects: Block[] = [];
+export const squashPageBlockAndContentBlock = (page: Page): PageBlock[] => {
+  let firstPopulatedObjects: PageBlock[] = [];
 
   // Sorting the pageblocks by the order in the blockOrder array
   const sortedPageBlocks = sortPageBlocks(page);
@@ -60,7 +69,7 @@ export const squashPageBlockAndContentBlock = (page: Page): Block[] => {
         ...firstPopulatedObject,
         pageBlockId: pageBlockId,
         blockOptions: blockOptions,
-      } as Block);
+      } as PageBlock);
     }
   }
 
@@ -68,7 +77,7 @@ export const squashPageBlockAndContentBlock = (page: Page): Block[] => {
 };
 
 // Squash the Block Content into the Block
-export const squashBlockContent = (blocks: Block[]): Block[] => {
+export const squashBlockContent = (blocks: PageBlock[]): PageBlock[] => {
   let firstPopulatedItems: any[] = [];
   for (let item of blocks) {
     // Find the first populated object or array within the current object
@@ -115,7 +124,7 @@ export const squashBlockContent = (blocks: Block[]): Block[] => {
 };
 
 // Returns the default content selection values for a block (example:selected Products)
-export const getBlockDefaultValues = (block: Block): ContentSelection[] => {
+export const getBlockDefaultValues = (block: PageBlock): ContentSelection[] => {
   const blockContentTypes = getBlockContentTypes(block.name);
 
   const defaultValues: ContentSelection[] = [];
@@ -200,11 +209,14 @@ export const getContentBlockCredentialsFromPageBlock = (
 };
 
 // sorts page blocks by the pages blockOrder array
-export const sortPageBlocks = ({ blocks, blockOrder }: Page): Block[] => {
-  const sortedBlocks = blocks?.sort((a, b) => {
+export const sortPageBlocks = ({
+  blocks,
+  blockOrder,
+}: Page): BlockWithBlockOptions[] => {
+  const sortedBlocks = blocks.sort((a, b) => {
     // Find the index of each object's ID in the string array
-    const indexA = blockOrder.indexOf(a.id.toString());
-    const indexB = blockOrder.indexOf(b.id.toString());
+    const indexA = blockOrder.indexOf(a?.id.toString());
+    const indexB = blockOrder.indexOf(b?.id.toString());
 
     // Compare the indices to determine the sorting order
     if (indexA === -1) {

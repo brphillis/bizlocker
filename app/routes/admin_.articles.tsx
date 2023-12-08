@@ -1,22 +1,23 @@
-import { redirect, type LoaderArgs } from "@remix-run/node";
+import { tokenAuth } from "~/auth.server";
+import Pagination from "~/components/Pagination";
+import { STAFF_SESSION_KEY } from "~/session.server";
+import { searchArticles } from "~/models/articles.server";
+import BasicInput from "~/components/Forms/Input/BasicInput";
+import BasicSelect from "~/components/Forms/Select/BasicSelect";
+import { json, redirect, type LoaderArgs } from "@remix-run/node";
+import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
+import { getArticleCategories } from "~/models/articleCategories.server";
+import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import {
   Form,
   useLoaderData,
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
-import { tokenAuth } from "~/auth.server";
-import BasicInput from "~/components/Forms/Input/BasicInput";
-import BasicSelect from "~/components/Forms/Select/BasicSelect";
-import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
-import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
-import Pagination from "~/components/Pagination";
-import { getArticleCategories } from "~/models/articleCategories.server";
-import { searchArticles } from "~/models/articles.server";
-import { STAFF_SESSION_KEY } from "~/session.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+
   if (!authenticated.valid) {
     return redirect("/login");
   }
@@ -26,12 +27,13 @@ export const loader = async ({ request }: LoaderArgs) => {
   const { articles, totalPages } = await searchArticles(undefined, url);
   const articleCategories = await getArticleCategories();
 
-  return { articles, totalPages, articleCategories };
+  return json({ articles, totalPages, articleCategories });
 };
 
 const Articles = () => {
   const navigate = useNavigate();
-  const { articles, articleCategories, totalPages } = useLoaderData() || {};
+  const { articles, articleCategories, totalPages } =
+    useLoaderData<typeof loader>();
 
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("pageNumber")) || 1;
@@ -58,7 +60,7 @@ const Articles = () => {
               label="Category"
               name="articleCategory"
               placeholder="Select a Category"
-              selections={articleCategories}
+              selections={articleCategories as ArticleCategory[]}
             />
           </div>
 
@@ -89,13 +91,7 @@ const Articles = () => {
               {articles &&
                 articles.map(
                   (
-                    {
-                      id,
-                      title,
-
-                      articleCategories,
-                      isActive,
-                    }: Article,
+                    { id, title, articleCategories, isActive }: Article,
                     i: number
                   ) => {
                     return (
@@ -116,7 +112,7 @@ const Articles = () => {
                         <td>
                           {articleCategories?.map(
                             ({ id, name }: ArticleCategory) => (
-                              <p key={id + name}>{name}</p>
+                              <p key={"listArticleCategory_" + id}>{name}</p>
                             )
                           )}
                         </td>

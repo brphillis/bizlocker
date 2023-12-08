@@ -1,4 +1,12 @@
-import { redirect, type LoaderArgs } from "@remix-run/node";
+import { tokenAuth } from "~/auth.server";
+import Pagination from "~/components/Pagination";
+import { STAFF_SESSION_KEY } from "~/session.server";
+import { capitalizeFirst } from "~/helpers/stringHelpers";
+import BasicInput from "~/components/Forms/Input/BasicInput";
+import { json, redirect, type LoaderArgs } from "@remix-run/node";
+import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
+import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
+import { searchArticleCategories } from "~/models/articleCategories.server";
 import {
   Form,
   Outlet,
@@ -6,17 +14,10 @@ import {
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
-import BasicInput from "~/components/Forms/Input/BasicInput";
-import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
-import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
-import Pagination from "~/components/Pagination";
-import { searchArticleCategories } from "~/models/articleCategories.server";
-import { capitalizeFirst } from "~/helpers/stringHelpers";
-import { tokenAuth } from "~/auth.server";
-import { STAFF_SESSION_KEY } from "~/session.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+
   if (!authenticated.valid) {
     return redirect("/login");
   }
@@ -33,15 +34,12 @@ export const loader = async ({ request }: LoaderArgs) => {
     searchQuery
   );
 
-  return { articleCategories, totalPages };
+  return json({ articleCategories, totalPages });
 };
 
 const ArticleCategories = () => {
   const navigate = useNavigate();
-  const { articleCategories, totalPages } = useLoaderData() as {
-    articleCategories: ArticleCategory[];
-    totalPages: number;
-  };
+  const { articleCategories, totalPages } = useLoaderData<typeof loader>();
 
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("pageNumber")) || 1;
