@@ -1,11 +1,8 @@
 import type {
   BannerBlockContent,
-  Brand,
   Campaign,
-  Department,
   Gender,
   Image,
-  ProductSubCategory,
   Promotion,
   TileBlockContent,
 } from "@prisma/client";
@@ -16,17 +13,19 @@ import {
   uploadImage_Integration,
 } from "~/integrations/_master/storage";
 import type { ProductWithDetails } from "./products.server";
-import type { ImageWithDetails } from "./images.server";
+import type { BrandWithContent } from "./brands.server";
+import type { ProductSubCategoryWithDetails } from "./productSubCategories.server";
+import type { DepartmentWithDetails } from "./departments.server";
 
 export interface CampaignWithContent extends Campaign {
-  bannerBlockContent: BannerBlockContent[] | null;
-  bannerImage: ImageWithDetails | null;
-  brands: Brand[] | null;
-  department: Department | null;
-  excludedProducts: ProductWithDetails[] | null;
-  productSubCategories: ProductSubCategory[] | null;
-  tileBlockContent: TileBlockContent[] | null;
-  tileImage: ImageWithDetails | null;
+  bannerBlockContent?: BannerBlockContent[] | null;
+  bannerImage?: Image | null;
+  brands?: BrandWithContent[] | null;
+  department?: DepartmentWithDetails | null;
+  excludedProducts?: ProductWithDetails[] | null;
+  productSubCategories?: ProductSubCategoryWithDetails[] | null;
+  tileBlockContent?: TileBlockContent[] | null;
+  tileImage?: Image | null;
 }
 
 export const getCampaigns = async (inDetail?: boolean): Promise<Campaign[]> => {
@@ -45,7 +44,9 @@ export const getCampaigns = async (inDetail?: boolean): Promise<Campaign[]> => {
   } else return prisma.campaign.findMany();
 };
 
-export const getCampaign = async (id: string): Promise<Campaign | null> => {
+export const getCampaign = async (
+  id: string
+): Promise<CampaignWithContent | null> => {
   return await prisma.campaign.findUnique({
     where: {
       id: parseInt(id),

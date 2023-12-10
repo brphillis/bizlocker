@@ -6,14 +6,19 @@ import {
   redirect,
   type LinksFunction,
   type LoaderArgs,
-} from "@remix-run/server-runtime";
+  json,
+} from "@remix-run/node";
 
 import swiper from "../../node_modules/swiper/swiper.css";
 import swiperNav from "../../node_modules/swiper/modules/navigation/navigation.min.css";
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY, getUserDataFromSession } from "~/session.server";
-import { getProductVariantStock } from "~/models/stock.server";
+import {
+  type StockLevelWithDetails,
+  getProductVariantStock,
+} from "~/models/stock.server";
 import FormHeader from "~/components/Forms/Headers/FormHeader";
+import type { Staff } from "@prisma/client";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: swiper },
@@ -22,24 +27,36 @@ export const links: LinksFunction = () => [
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+
   if (!authenticated.valid) {
     return redirect("/admin/login");
   }
 
   const id = params?.variantId;
+
   if (!id) {
-    redirect("/admin/not-found");
+    throw new Response(null, {
+      status: 404,
+      statusText: "Stock Not Found",
+    });
   }
 
-  const stock = await getProductVariantStock(id!);
+  const stock = await getProductVariantStock(id);
+
+  if (!stock) {
+    throw new Response(null, {
+      status: 404,
+      statusText: "Stock Not Found",
+    });
+  }
 
   const { storeId } =
     ((await getUserDataFromSession(request, STAFF_SESSION_KEY)) as Staff) || {};
 
-  return {
+  return json({
     storeId,
     stock,
-  };
+  });
 };
 
 // export const action = async ({ request, params }: ActionArgs) => {
@@ -61,7 +78,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 // };
 
 const ManageStock = () => {
-  const { stock } = useLoaderData();
+  const { stock } = useLoaderData<typeof loader>();
 
   return (
     <DarkOverlay>
@@ -69,12 +86,7 @@ const ManageStock = () => {
         method="POST"
         className="scrollbar-hide relative w-[600px] max-w-full overflow-y-auto bg-base-200 px-3 py-6 sm:px-6"
       >
-        <FormHeader
-          type="Stock"
-          hasIsActive={false}
-          hasDelete={false}
-          mode="edit"
-        />
+        <FormHeader type="Stock" hasIsActive={false} hasDelete={false} />
 
         <div className="mx-auto w-full">
           <table className="table">
@@ -87,24 +99,26 @@ const ManageStock = () => {
               </tr>
             </thead>
             <tbody>
-              {stock?.map(({ store, quantity }: StockLevel, index: number) => {
-                const { name } = store;
-                return (
-                  <tr key={"stockLevelTableRow_" + index}>
-                    <th>{index + 1}</th>
-                    <td>{name}</td>
-                    <td className="text-center">{quantity}</td>
-                    <td className="item-center flex justify-center">
-                      <button
-                        className="btn-primary btn-sm rounded-sm"
-                        type="button"
-                      >
-                        Transfer
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
+              {stock?.map(
+                ({ store, quantity }: StockLevelWithDetails, index: number) => {
+                  const { name } = store || {};
+                  return (
+                    <tr key={"stockLevelTableRow_" + index}>
+                      <th>{index + 1}</th>
+                      <td>{name}</td>
+                      <td className="text-center">{quantity}</td>
+                      <td className="item-center flex justify-center">
+                        <button
+                          className="btn-primary btn-sm rounded-sm"
+                          type="button"
+                        >
+                          Transfer
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                }
+              )}
             </tbody>
           </table>
         </div>

@@ -1,10 +1,13 @@
 import React, { useState } from "react";
+import type { DepartmentWithDetails } from "~/models/departments.server";
+import type { ProductCategoryWithDetails } from "~/models/productCategories.server";
+import type { User } from "@prisma/client";
 import MobileMenuDropdown from "./MobileMenuDropdown";
 import MobileMenuFooter from "./MobileMenuFooter";
 
 type Props = {
-  departments: Department[];
-  productCategories: ProductCategory[];
+  departments: DepartmentWithDetails[];
+  productCategories: ProductCategoryWithDetails[];
   user: User;
 };
 
@@ -14,7 +17,7 @@ const MobileNavigation = ({ departments, productCategories, user }: Props) => {
   );
 
   const matchingProductCategories = productCategories.filter(
-    (e: ProductCategory) => e.departmentId === selectedDepartment
+    (e: ProductCategoryWithDetails) => e.departmentId === selectedDepartment
   );
 
   return (
@@ -34,15 +37,17 @@ const MobileNavigation = ({ departments, productCategories, user }: Props) => {
           defaultValue={departments?.[0].name.toUpperCase() || ""}
           onChange={(e) => setSelectedDepartment(parseInt(e.target.value))}
         >
-          {departments.map(({ id, name, displayInNavigation }: Department) => {
-            if (displayInNavigation) {
-              return (
-                <option key={"department_" + id} value={id}>
-                  {name.toUpperCase()}
-                </option>
-              );
-            } else return null;
-          })}
+          {departments.map(
+            ({ id, name, displayInNavigation }: DepartmentWithDetails) => {
+              if (displayInNavigation) {
+                return (
+                  <option key={"department_" + id} value={id}>
+                    {name.toUpperCase()}
+                  </option>
+                );
+              } else return null;
+            }
+          )}
         </select>
 
         <div className="relative max-h-[67dvh] overflow-y-auto">
@@ -52,7 +57,7 @@ const MobileNavigation = ({ departments, productCategories, user }: Props) => {
               id,
               name,
               productSubCategories,
-            }: ProductCategory) => {
+            }: ProductCategoryWithDetails) => {
               if (displayInNavigation) {
                 return (
                   <React.Fragment key={"mobileMenu_Dropdown_" + id}>

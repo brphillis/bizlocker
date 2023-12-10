@@ -1,23 +1,23 @@
 import { prisma } from "~/db.server";
-import type { Department, Gender, Image, Promotion } from "@prisma/client";
+import type { Gender, Image, Promotion } from "@prisma/client";
 import {
   updateImage_Integration,
   uploadImage_Integration,
 } from "~/integrations/_master/storage";
-import type { ImageWithDetails } from "./images.server";
 import type { ProductWithDetails } from "./products.server";
+import type { DepartmentWithDetails } from "./departments.server";
 
 export interface PromotionWithContent extends Promotion {
-  bannerImage: ImageWithDetails | null;
-  tileImage: ImageWithDetails | null;
-  department: Department | null;
-  products: ProductWithDetails[] | null;
+  bannerImage?: Image | null;
+  tileImage?: Image | null;
+  department?: DepartmentWithDetails | null;
+  products?: ProductWithDetails[] | null;
 }
 
 export function getPromotions(
   includeImages?: boolean,
   includeProducts?: boolean
-): Promise<Promotion[]> {
+): Promise<PromotionWithContent[]> {
   if (includeImages) {
     return prisma.promotion.findMany({
       orderBy: {
@@ -35,7 +35,7 @@ export function getPromotions(
 export const getPromotion = async (
   id?: string,
   name?: string
-): Promise<Promotion | null> => {
+): Promise<PromotionWithContent | null> => {
   if (id) {
     return prisma.promotion.findUnique({
       where: {

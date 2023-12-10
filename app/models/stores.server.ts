@@ -1,17 +1,23 @@
-import type { MapBlockContent, StockLevel, Store } from "@prisma/client";
+import type { MapBlockContent, Store } from "@prisma/client";
 import { prisma } from "~/db.server";
 import type { OrderItemWithDetails } from "./orders.server";
 import type { StaffWithDetails } from "./auth/staff.server";
 import type { TeamWithStaff } from "./teams.server";
 import type { AddressWithDetails } from "./auth/userDetails";
+import type {
+  StockLevelWithDetails,
+  StockTransferRequestWithDetails,
+} from "./stock.server";
 
 export interface StoreWithDetails extends Store {
-  stock: StockLevel[] | null;
-  orderItem: OrderItemWithDetails[] | null;
-  staff: StaffWithDetails[] | null;
-  mapBlockContent: MapBlockContent[] | null;
-  team: TeamWithStaff[] | null;
-  address: AddressWithDetails | null;
+  stock?: StockLevelWithDetails[] | null;
+  orderItem?: OrderItemWithDetails[] | null;
+  staff?: StaffWithDetails[] | null;
+  mapBlockContent?: MapBlockContent[] | null;
+  team?: TeamWithStaff[] | null;
+  address?: AddressWithDetails | null;
+  fromStoreStockRequest?: StockTransferRequestWithDetails[] | null;
+  toStoreStockRequest?: StockTransferRequestWithDetails[] | null;
 }
 
 export function getStores(): Promise<Store[]> {

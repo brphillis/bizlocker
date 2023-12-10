@@ -1,6 +1,6 @@
 import Pagination from "~/components/Pagination";
 import { type LoaderArgs, json, redirect } from "@remix-run/server-runtime";
-import { searchBrands } from "~/models/brands.server";
+import { type Brand, searchBrands } from "~/models/brands.server";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";

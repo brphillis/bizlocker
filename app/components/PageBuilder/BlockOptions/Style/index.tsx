@@ -1,6 +1,8 @@
+import type { BlockOptions } from "@prisma/client";
+
 type Props = {
-  defaultValues: BlockOptions;
   selectedBlockOptions: BlockMasterOptions | undefined;
+  defaultValues?: BlockOptions;
 };
 
 const StyleOptions = ({ defaultValues, selectedBlockOptions }: Props) => {

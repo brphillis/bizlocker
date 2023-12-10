@@ -1,3 +1,4 @@
+import type { BlockOptions } from "@prisma/client";
 import { blockMaster } from "~/utility/blockMaster";
 import TitleOptions from "./Title";
 import StyleOptions from "./Style";
@@ -18,14 +19,14 @@ import ItemTitleOptions from "./ItemTitles";
 import ItemBorderOptions from "./ItemBorders";
 
 type Props = {
-  selectedBlock: BlockName | undefined;
-  defaultValues: BlockOptions;
   selectedItems: ContentSelection[];
-  contentType: BlockContentType | undefined;
   colors: string[];
+  selectedBlock?: BlockName;
+  contentType?: BlockContentType;
+  defaultValues?: BlockOptions;
 };
 
-const BlockOptions = ({
+const BlockOptionsModule = ({
   selectedBlock,
   defaultValues,
   selectedItems,
@@ -150,4 +151,4 @@ const BlockOptions = ({
   );
 };
 
-export default BlockOptions;
+export default BlockOptionsModule;

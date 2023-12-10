@@ -1,4 +1,11 @@
-import type { ProductSubCategory, Image } from "@prisma/client";
+import type { CampaignWithContent } from "./campaigns.server";
+import type { ProductCategoryWithDetails } from "./productCategories.server";
+import type { ProductWithDetails } from "./products.server";
+import type {
+  ProductSubCategory,
+  Image,
+  ProductBlockContent,
+} from "@prisma/client";
 import { prisma } from "~/db.server";
 import { getOrderBy } from "~/helpers/sortHelpers";
 import {
@@ -6,8 +13,16 @@ import {
   uploadImage_Integration,
 } from "~/integrations/_master/storage";
 
+export interface ProductSubCategoryWithDetails extends ProductSubCategory {
+  campaigns?: CampaignWithContent[] | null;
+  image?: Image | null;
+  productBlockContent?: ProductBlockContent | null;
+  productCategory?: ProductCategoryWithDetails | null;
+  products?: ProductWithDetails[] | null;
+}
+
 export const getProductSubCategories = async (): Promise<
-  ProductSubCategory[]
+  ProductSubCategoryWithDetails[]
 > => {
   return await prisma.productSubCategory.findMany({
     include: {
@@ -26,7 +41,7 @@ export const getProductSubCategories = async (): Promise<
 
 export const getProductSubCategory = async (
   id: string
-): Promise<ProductSubCategory | null> => {
+): Promise<ProductSubCategoryWithDetails | null> => {
   return await prisma.productSubCategory.findUnique({
     where: {
       id: parseInt(id),

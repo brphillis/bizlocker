@@ -1,5 +1,6 @@
 import { tokenAuth } from "~/auth.server";
 import Pagination from "~/components/Pagination";
+import type { Department } from "@prisma/client";
 import { STAFF_SESSION_KEY } from "~/session.server";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import CategorySort from "~/components/Sorting/CategorySort";

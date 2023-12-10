@@ -3,7 +3,7 @@ import { prisma } from "~/db.server";
 import type { StaffWithDetails } from "./auth/staff.server";
 
 export interface TeamWithStaff extends Team {
-  staff: StaffWithDetails[];
+  staff?: StaffWithDetails[];
 }
 
 export const getTeam = async (id: string): Promise<TeamWithStaff | null> => {

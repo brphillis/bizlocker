@@ -1,8 +1,19 @@
 import type { Department } from "@prisma/client";
+import type { CampaignWithContent } from "./campaigns.server";
+import type { ProductCategoryWithDetails } from "./productCategories.server";
+import type { PromotionWithContent } from "./promotions.server";
 import { prisma } from "~/db.server";
 import { getOrderBy } from "~/helpers/sortHelpers";
 
-export const getDepartment = async (id: string): Promise<Department | null> => {
+export interface DepartmentWithDetails extends Department {
+  campaigns?: CampaignWithContent[] | null;
+  productCategories?: ProductCategoryWithDetails[] | null;
+  promotions?: PromotionWithContent[] | null;
+}
+
+export const getDepartment = async (
+  id: string
+): Promise<DepartmentWithDetails | null> => {
   return prisma.department.findUnique({
     where: {
       id: parseInt(id),

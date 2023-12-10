@@ -1,17 +1,22 @@
 import { type TypedResponse, redirect } from "@remix-run/server-runtime";
-import type { Article, ArticleCategory, PreviewPage } from "@prisma/client";
+import type {
+  Article,
+  ArticleCategory,
+  Image,
+  PreviewPage,
+} from "@prisma/client";
+import type { BlockWithBlockOptions } from "./blocks.server";
 import { prisma } from "~/db.server";
 import { includeBlocksData } from "~/utility/blockMaster";
 import { getOrderBy } from "~/helpers/sortHelpers";
 import { type PageBlock, removeBlock } from "./pageBuilder.server";
 import { getBlocks } from "~/helpers/blockHelpers";
-import type { ImageWithDetails } from "./images.server";
 
 export interface ArticleWithContent extends Article {
-  articleCategories: ArticleCategory[] | null;
-  blocks: BlockWithBlockOptions[] | null;
-  previewPage: PreviewPage[] | null;
-  thumbnail: ImageWithDetails | null;
+  articleCategories?: ArticleCategory[] | null;
+  blocks?: BlockWithBlockOptions[] | null;
+  previewPage?: PreviewPage[] | null;
+  thumbnail?: Image | null;
 }
 
 export const getArticle = async (
@@ -77,7 +82,7 @@ export const deleteArticle = async (
 export const searchArticles = async (
   formData?: { [k: string]: FormDataEntryValue },
   url?: URL
-): Promise<{ articles: Article[]; totalPages: number }> => {
+): Promise<{ articles: ArticleWithContent[]; totalPages: number }> => {
   const title =
     formData?.title || (url && url.searchParams.get("title")?.toString()) || "";
   const articleCategory =
@@ -128,12 +133,7 @@ export const searchArticles = async (
     prisma.article.findMany({
       where: filter,
       include: {
-        articleCategories: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
+        articleCategories: true,
         thumbnail: true,
       },
       skip,

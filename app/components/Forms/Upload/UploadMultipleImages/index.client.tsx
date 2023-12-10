@@ -2,7 +2,7 @@ import React, { Suspense, useState } from "react";
 import type { Image } from "@prisma/client";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper";
-import { ConvertToBase64Image } from "~/helpers/fileHelpers";
+import { ConvertToBase64Image, type NewImage } from "~/helpers/fileHelpers";
 import { IoClose } from "react-icons/io5";
 import { findFirstNotNullInputValue } from "~/helpers/formHelpers";
 
@@ -12,14 +12,14 @@ type ImageUploadSliderProps = {
 
 const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
   const [activeSlide, setActiveSlide] = useState(0);
-  const [images, setCurrentImages] = useState<Image[] | undefined>(
+  const [images, setCurrentImages] = useState<Image[] | NewImage[] | undefined>(
     defaultImages
   );
 
   const handleRemoveImage = (index: number) => {
     const updatedImages = [...(images || [])];
     updatedImages.splice(index, 1);
-    setCurrentImages(updatedImages);
+    setCurrentImages(updatedImages as Image[]);
   };
 
   return (
@@ -35,7 +35,7 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
           centeredSlides={true}
           navigation
         >
-          {images?.map(({ href, altText }: Image, i) => {
+          {images?.map(({ href, altText }: Image | NewImage, i) => {
             if (href) {
               return (
                 <SwiperSlide key={i}>
@@ -97,7 +97,7 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
                             altTextSelector.value + " " + i;
                         }
                       }
-                      setCurrentImages(updatedImages);
+                      setCurrentImages(updatedImages as Image[]);
                     }
                   }}
                 />

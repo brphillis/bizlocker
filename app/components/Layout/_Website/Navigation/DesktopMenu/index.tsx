@@ -1,9 +1,12 @@
 import { useLocation, useNavigate, useSearchParams } from "@remix-run/react";
 import { useEffect, useState } from "react";
+import type { DepartmentWithDetails } from "~/models/departments.server";
+import type { ProductCategoryWithDetails } from "~/models/productCategories.server";
+import type { ProductSubCategoryWithDetails } from "~/models/productSubCategories.server";
 
 type Props = {
-  departments: Department[];
-  productCategories: ProductCategory[];
+  departments: DepartmentWithDetails[];
+  productCategories: ProductCategoryWithDetails[];
 };
 
 const DesktopMenu = ({ departments, productCategories }: Props) => {
@@ -17,7 +20,8 @@ const DesktopMenu = ({ departments, productCategories }: Props) => {
   );
 
   const [activeSubCategories, setActiveSubCategories] = useState<
-    { parentCategory: string; subCategories: ProductSubCategory[] } | undefined
+    | { parentCategory: string; subCategories: ProductSubCategoryWithDetails[] }
+    | undefined
   >();
 
   const [growTimeoutId, setGrowTimeoutId] = useState<NodeJS.Timeout | null>(
@@ -28,7 +32,7 @@ const DesktopMenu = ({ departments, productCategories }: Props) => {
   );
 
   const matchingProductCategories = productCategories.filter(
-    (e: ProductCategory) => e.departmentId === selectedDepartment
+    (e: ProductCategoryWithDetails) => e.departmentId === selectedDepartment
   );
 
   const [height, setHeight] = useState<number>(0);
@@ -142,7 +146,7 @@ const DesktopMenu = ({ departments, productCategories }: Props) => {
               onChange={(e) => setSelectedDepartment(parseInt(e.target.value))}
             >
               {departments.map(
-                ({ id, name, displayInNavigation }: Department) => {
+                ({ id, name, displayInNavigation }: DepartmentWithDetails) => {
                   if (displayInNavigation) {
                     return (
                       <option key={"menu_department_" + id} value={id}>
@@ -161,7 +165,7 @@ const DesktopMenu = ({ departments, productCategories }: Props) => {
               id,
               name,
               productSubCategories,
-            }: ProductCategory) => {
+            }: ProductCategoryWithDetails) => {
               if (displayInNavigation) {
                 return (
                   <li
@@ -208,7 +212,11 @@ const DesktopMenu = ({ departments, productCategories }: Props) => {
         >
           <ul className="menu menu-horizontal !h-full items-center !py-0">
             {activeSubCategories?.subCategories.map(
-              ({ id, name, displayInNavigation }: ProductSubCategory) => {
+              ({
+                id,
+                name,
+                displayInNavigation,
+              }: ProductSubCategoryWithDetails) => {
                 if (displayInNavigation) {
                   return (
                     <li

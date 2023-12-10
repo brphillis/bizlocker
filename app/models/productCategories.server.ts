@@ -1,9 +1,21 @@
-import type { ProductCategory } from "@prisma/client";
+import type { ProductBlockContent, ProductCategory } from "@prisma/client";
 import { prisma } from "~/db.server";
 import { getOrderBy } from "~/helpers/sortHelpers";
+import type { ArticleCategoryWithDetails } from "./articleCategories.server";
+import type { DepartmentWithDetails } from "./departments.server";
+import type { ProductSubCategoryWithDetails } from "./productSubCategories.server";
 export type { ProductCategory } from "@prisma/client";
 
-export const getProductCategories = async (): Promise<ProductCategory[]> => {
+export interface ProductCategoryWithDetails extends ProductCategory {
+  articleCategories?: ArticleCategoryWithDetails[] | null;
+  department?: DepartmentWithDetails | null;
+  productBlockContent?: ProductBlockContent[] | null;
+  productSubCategories?: ProductSubCategoryWithDetails[] | null;
+}
+
+export const getProductCategories = async (): Promise<
+  ProductCategoryWithDetails[]
+> => {
   return prisma.productCategory.findMany({
     include: {
       productSubCategories: true,
@@ -18,7 +30,7 @@ export const getProductCategories = async (): Promise<ProductCategory[]> => {
 
 export const getProductCategory = async (
   id: string
-): Promise<ProductCategory | null> => {
+): Promise<ProductCategoryWithDetails | null> => {
   return await prisma.productCategory.findUnique({
     where: {
       id: parseInt(id),

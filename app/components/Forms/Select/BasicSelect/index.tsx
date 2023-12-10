@@ -2,7 +2,7 @@ import ToolTip from "~/components/Indicators/ToolTip";
 
 type Props = {
   customWidth?: string;
-  defaultValue?: string;
+  defaultValue?: string | null;
   disabled?: boolean;
   id?: string;
   label: string;
@@ -54,7 +54,7 @@ const BasicSelect = ({
             : ""
         }
         `}
-        defaultValue={defaultValue}
+        defaultValue={defaultValue || undefined}
         onChange={(e) => {
           if (onChange) {
             onChange(e.target.value);

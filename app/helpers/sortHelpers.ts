@@ -1,32 +1,13 @@
 import type { PreviewPage } from "@prisma/client";
 
 export const getOrderBy = (
-  sortBy?: any,
+  sortBy?: string,
   sortOrder?: SortOrder
-):
-  | { createdAt: SortOrder }
-  | { totalSold: SortOrder }
-  | { name: SortOrder }
-  | { title: SortOrder }
-  | { index: SortOrder }
-  | undefined => {
+): { [key: string]: SortOrder } => {
   if (sortBy && sortOrder) {
-    switch (sortBy) {
-      case "createdAt":
-        return { createdAt: sortOrder };
-      case "totalSold":
-        return { totalSold: sortOrder };
-      case "name":
-        return { name: sortOrder };
-      case "title":
-        return { title: sortOrder };
-      case "index":
-        return { index: sortOrder };
-      default:
-        return undefined;
-    }
+    return { [sortBy]: sortOrder };
   }
-  return undefined;
+  return { createdAt: "asc" };
 };
 
 export const sortPreviewPages = (

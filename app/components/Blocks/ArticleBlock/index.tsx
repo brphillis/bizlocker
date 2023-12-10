@@ -1,6 +1,7 @@
-import type { Article, ArticleCategory, BlockOptions } from "@prisma/client";
+import type { ArticleCategory, BlockOptions } from "@prisma/client";
 import type { BlockContent } from "~/models/blocks.server";
 import ArticleGrid from "~/components/Grids/ArticleGrid";
+import type { ArticleWithContent } from "~/models/articles.server";
 
 type Props = {
   content: BlockContent;
@@ -9,7 +10,7 @@ type Props = {
 
 const ArticleBlock = ({ content, options: optionsArray }: Props) => {
   const options = optionsArray[0];
-  const articles = content?.article as Article[];
+  const articles = content?.article as ArticleWithContent[];
   const articleCategory = content?.articleCategory as ArticleCategory;
 
   const determineSortPhrase = (sortBy: SortBy) => {

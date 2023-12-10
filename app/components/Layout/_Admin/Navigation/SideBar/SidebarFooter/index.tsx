@@ -1,3 +1,4 @@
+import type { User } from "@prisma/client";
 import {
   IoNotificationsOutline,
   IoPersonOutline,

@@ -1,14 +1,8 @@
 import type {
-  Article,
   BannerBlockContent,
-  Brand,
-  Campaign,
   HeroBlockContent,
   Image,
   PreviewPage,
-  ProductSubCategory,
-  Promotion,
-  Staff,
   TileBlockContent,
   WebPage,
 } from "@prisma/client";
@@ -19,32 +13,40 @@ import {
 } from "~/integrations/_master/storage";
 import type { ProductWithDetails } from "./products.server";
 import type { UserWithDetails } from "./auth/users.server";
+import type { ArticleWithContent } from "./articles.server";
+import type { BrandWithContent } from "./brands.server";
+import type { CampaignWithContent } from "./campaigns.server";
+import type { ProductSubCategoryWithDetails } from "./productSubCategories.server";
+import type { PromotionWithContent } from "./promotions.server";
+import type { StaffWithDetails } from "./auth/staff.server";
 export type { Image } from "@prisma/client";
 
 export interface ImageWithDetails extends Image {
-  article: Article | null;
-  bannerBlockContent: BannerBlockContent[] | null;
-  brand: Brand | null;
-  campaignBanner: Campaign[] | null;
-  campaignTile: Campaign[] | null;
-  HeroBlockContent: HeroBlockContent[] | null;
-  product: ProductWithDetails | null;
-  productHero: ProductWithDetails[] | null;
-  productSubCategory: ProductSubCategory | null;
-  promotionBanner: Promotion[] | null;
-  promotionTile: Promotion[] | null;
-  tileBlockContent: TileBlockContent[] | null;
-  user: UserWithDetails | null;
-  staff: Staff | null;
-  webPage: WebPage | null;
-  previewPage: PreviewPage | null;
+  article?: ArticleWithContent | null;
+  bannerBlockContent?: BannerBlockContent[] | null;
+  brand?: BrandWithContent | null;
+  campaignBanner?: CampaignWithContent[] | null;
+  campaignTile?: CampaignWithContent[] | null;
+  HeroBlockContent?: HeroBlockContent[] | null;
+  product?: ProductWithDetails | null;
+  productHero?: ProductWithDetails[] | null;
+  productSubCategory?: ProductSubCategoryWithDetails | null;
+  promotionBanner?: PromotionWithContent[] | null;
+  promotionTile?: PromotionWithContent[] | null;
+  tileBlockContent?: TileBlockContent[] | null;
+  user?: UserWithDetails | null;
+  staff?: StaffWithDetails | null;
+  webPage?: WebPage | null;
+  previewPage?: PreviewPage | null;
 }
 
 export function getImages(): Promise<Image[]> {
   return prisma.image.findMany();
 }
 
-export const getImage = async (id: string): Promise<Image | null> => {
+export const getImage = async (
+  id: string
+): Promise<ImageWithDetails | null> => {
   return prisma.image.findUnique({
     where: {
       id: parseInt(id),

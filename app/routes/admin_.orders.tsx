@@ -1,7 +1,7 @@
 import { tokenAuth } from "~/auth.server";
 import Pagination from "~/components/Pagination";
 import { STAFF_SESSION_KEY } from "~/session.server";
-import { searchOrders } from "~/models/orders.server";
+import { type OrderWithDetails, searchOrders } from "~/models/orders.server";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import { json, redirect, type LoaderArgs } from "@remix-run/node";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
@@ -107,22 +107,24 @@ const ManageOrders = () => {
             </thead>
             <tbody>
               {orders &&
-                orders.map(({ orderId, status, user }: Order, i: number) => {
-                  return (
-                    <tr
-                      className="cursor-pointer transition-colors duration-200 hover:bg-base-100"
-                      key={orderId}
-                      onClick={() => navigate(`/admin/orders/${orderId}`)}
-                    >
-                      {currentPage && (
-                        <td>{i + 1 + (currentPage - 1) * orders?.length}</td>
-                      )}
-                      <td>{orderId}</td>
-                      <td>{user?.email}</td>
-                      <td>{status}</td>
-                    </tr>
-                  );
-                })}
+                orders.map(
+                  ({ orderId, status, user }: OrderWithDetails, i: number) => {
+                    return (
+                      <tr
+                        className="cursor-pointer transition-colors duration-200 hover:bg-base-100"
+                        key={orderId}
+                        onClick={() => navigate(`/admin/orders/${orderId}`)}
+                      >
+                        {currentPage && (
+                          <td>{i + 1 + (currentPage - 1) * orders?.length}</td>
+                        )}
+                        <td>{orderId}</td>
+                        <td>{user?.email}</td>
+                        <td>{status}</td>
+                      </tr>
+                    );
+                  }
+                )}
             </tbody>
           </table>
         </div>

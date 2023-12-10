@@ -7,12 +7,13 @@ import type { ProductVariantWithDetails } from "./products.server";
 import type { UserWithDetails } from "./auth/users.server";
 
 export interface CartWithDetails extends Cart {
-  cartItems: CartItemWithDetails[] | null;
-  user: UserWithDetails | null;
+  cartItems?: CartItemWithDetails[] | null;
+  user?: UserWithDetails | null;
 }
 
 export interface CartItemWithDetails extends CartItem {
-  variant: ProductVariantWithDetails | null;
+  variant?: ProductVariantWithDetails | null;
+  cart?: CartWithDetails | null;
 }
 
 const visitorCartCookieKey = "visitor_cart_id";

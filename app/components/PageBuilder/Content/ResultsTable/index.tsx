@@ -1,10 +1,16 @@
+import type {
+  Brand,
+  Campaign,
+  Product,
+  Promotion,
+  Store,
+} from "@prisma/client";
 import { IoCaretForwardCircleSharp } from "react-icons/io5";
 import Icon from "~/components/Icon";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
 
 type Props = {
   selectedBlock: BlockName | undefined;
-
   setSelectedItems: Function;
   searchResults: Campaign[] | Promotion[] | Product[] | Brand[];
   contentType: BlockContentType | undefined;

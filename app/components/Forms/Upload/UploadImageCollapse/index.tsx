@@ -1,7 +1,7 @@
 import type { Image } from "@prisma/client";
 import { useState } from "react";
 import { IoIosCloseCircle } from "react-icons/io";
-import { ConvertToBase64Image } from "~/helpers/fileHelpers";
+import { ConvertToBase64Image, type NewImage } from "~/helpers/fileHelpers";
 
 type Props = {
   label: string;
@@ -11,7 +11,7 @@ type Props = {
 };
 
 const UploadImageCollapse = ({ label, name, tooltip, defaultValue }: Props) => {
-  const [image, setImage] = useState<Image | undefined>(
+  const [image, setImage] = useState<Image | NewImage | undefined>(
     defaultValue || undefined
   );
 

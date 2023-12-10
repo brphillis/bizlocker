@@ -6,7 +6,10 @@ import BasicInput from "~/components/Forms/Input/BasicInput";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
-import { searchProductCategories } from "~/models/productCategories.server";
+import {
+  type ProductCategoryWithDetails,
+  searchProductCategories,
+} from "~/models/productCategories.server";
 import { getProductSubCategories } from "~/models/productSubCategories.server";
 import { json } from "@remix-run/node";
 import {
@@ -21,6 +24,7 @@ import { STAFF_SESSION_KEY } from "~/session.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+
   if (!authenticated.valid) {
     return redirect("/admin/login");
   }
@@ -117,7 +121,7 @@ const ManageProductCategories = () => {
                     index,
                     displayInNavigation,
                     isActive,
-                  }: ProductCategory,
+                  }: ProductCategoryWithDetails,
                   i: number
                 ) => {
                   return (

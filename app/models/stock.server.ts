@@ -1,28 +1,36 @@
 import type { Staff, StockLevel, StockTransferRequest } from "@prisma/client";
 import { prisma } from "~/db.server";
 import { STAFF_SESSION_KEY, getUserDataFromSession } from "~/session.server";
+import type { ProductVariantWithDetails } from "./products.server";
+import type { StoreWithDetails } from "./stores.server";
+
+export interface StockLevelWithDetails extends StockLevel {
+  productVariant?: ProductVariantWithDetails | null;
+  store?: StoreWithDetails | null;
+}
+
+export interface StockTransferRequestWithDetails extends StockTransferRequest {
+  fromStore?: StoreWithDetails | null;
+  toStore?: StoreWithDetails | null;
+  productVariant?: ProductVariantWithDetails | null;
+}
 
 export const getProductVariantStock = async (
   id: string
-): Promise<StockLevel[]> => {
+): Promise<StockLevelWithDetails[]> => {
   return prisma.stockLevel.findMany({
     where: {
       productVariantId: parseInt(id),
     },
     include: {
-      store: {
-        select: {
-          id: true,
-          name: true,
-        },
-      },
+      store: true,
     },
   });
 };
 
 export const getStockTransfer = async (
   id: string
-): Promise<StockTransferRequest | null> => {
+): Promise<StockTransferRequestWithDetails | null> => {
   return prisma.stockTransferRequest.findUnique({
     where: {
       id: parseInt(id),
@@ -30,14 +38,7 @@ export const getStockTransfer = async (
     include: {
       fromStore: true,
       toStore: true,
-      productVariant: {
-        select: {
-          id: true,
-          name: true,
-          sku: true,
-          stock: true,
-        },
-      },
+      productVariant: true,
     },
   });
 };

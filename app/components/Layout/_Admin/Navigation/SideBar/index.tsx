@@ -1,4 +1,5 @@
 import React from "react";
+import type { User } from "@prisma/client";
 import { Outlet, useNavigate } from "@remix-run/react";
 import { IoMenu } from "react-icons/io5";
 import { adminNavBarRoutes } from "./routes";

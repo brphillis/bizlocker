@@ -10,7 +10,7 @@ import BasicInput from "~/components/Forms/Input/BasicInput";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import Pagination from "~/components/Pagination";
-import { searchUsers } from "~/models/auth/users.server";
+import { type UserWithDetails, searchUsers } from "~/models/auth/users.server";
 import { placeholderAvatar } from "~/utility/placeholderAvatar";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
 import { tokenAuth } from "~/auth.server";
@@ -100,7 +100,7 @@ const Users = () => {
             <tbody>
               {users?.map(
                 (
-                  { id, email, avatar, userDetails, isActive }: User,
+                  { id, email, avatar, userDetails, isActive }: UserWithDetails,
                   i: number
                 ) => {
                   const { firstName, lastName } = userDetails || {};

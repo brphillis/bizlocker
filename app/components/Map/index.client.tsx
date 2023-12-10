@@ -1,4 +1,5 @@
 import type { LatLngTuple, Map as LeafletMap } from "leaflet";
+import type { StoreWithDetails } from "~/models/stores.server";
 import { IoCall, IoPrint } from "react-icons/io5";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { getCountrFromISO3166 } from "~/utility/countryList";
@@ -7,7 +8,7 @@ import "leaflet/dist/leaflet.css";
 import { forwardRef, useImperativeHandle, useRef } from "react";
 
 type Props = {
-  locations: Store[];
+  locations: StoreWithDetails[];
   markerColor?: string;
 };
 
@@ -15,11 +16,11 @@ const Map = forwardRef<MapFunctions, Props>(
   ({ locations, markerColor }, ref) => {
     Map.displayName = "Map";
     const mapRef = useRef<LeafletMap | null>(null);
-    const startLat = locations[0].address.latitude
-      ? parseFloat(locations[0].address.latitude)
+    const startLat = locations?.[0]?.address?.latitude
+      ? parseFloat(locations?.[0]?.address.latitude)
       : 0;
-    const startLong = locations[0].address.longitude
-      ? parseFloat(locations[0].address.longitude)
+    const startLong = locations?.[0]?.address?.longitude
+      ? parseFloat(locations?.[0].address.longitude)
       : 0;
     let position: LatLngTuple = [startLat, startLong];
 
@@ -68,7 +69,7 @@ const Map = forwardRef<MapFunctions, Props>(
         {locations &&
           locations.map(
             (
-              { name, phoneNumber, faxNumber, address }: Store,
+              { name, phoneNumber, faxNumber, address }: StoreWithDetails,
               index: number
             ) => {
               const {
@@ -80,7 +81,7 @@ const Map = forwardRef<MapFunctions, Props>(
                 postcode,
                 latitude,
                 longitude,
-              } = address;
+              } = address || {};
 
               if (latitude && longitude) {
                 return (
@@ -100,7 +101,8 @@ const Map = forwardRef<MapFunctions, Props>(
                           <div>{addressLine2}</div>
                           <div>{suburb + " " + state + " " + postcode}</div>
                           <div>
-                            {getCountrFromISO3166(country)?.toUpperCase()}
+                            {country &&
+                              getCountrFromISO3166(country)?.toUpperCase()}
                           </div>
                         </div>
 
@@ -118,7 +120,9 @@ const Map = forwardRef<MapFunctions, Props>(
                               <IoPrint size={14} />
                             </div>
                             <a href={`tel:${faxNumber}`} className="mt-1">
-                              {faxNumber.slice(0, 2) + " " + faxNumber.slice(2)}
+                              {faxNumber?.slice(0, 2) +
+                                " " +
+                                faxNumber?.slice(2)}
                             </a>
                           </div>
                         </div>

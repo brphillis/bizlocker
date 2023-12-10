@@ -8,7 +8,12 @@ import {
   useLoaderData,
   useNavigate,
 } from "@remix-run/react";
-import { deleteBrand, getBrand, upsertBrand } from "~/models/brands.server";
+import {
+  type BrandWithContent,
+  deleteBrand,
+  getBrand,
+  upsertBrand,
+} from "~/models/brands.server";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
 import {
   redirect,
@@ -20,6 +25,7 @@ import { useEffect, useState } from "react";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import { validateForm } from "~/utility/validate";
 import { STAFF_SESSION_KEY } from "~/session.server";
+import type { ImageWithDetails } from "~/models/images.server";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
@@ -32,7 +38,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   if (id === "add") {
     const brand = {};
-    return json({ brand } as { brand: Brand });
+    return json({ brand } as { brand: BrandWithContent });
   }
 
   if (!id) {
@@ -76,7 +82,7 @@ export const action = async ({ request, params }: ActionArgs) => {
       }
 
       const parsedImage = image
-        ? (JSON.parse(image?.toString()) as Image)
+        ? (JSON.parse(image?.toString()) as ImageWithDetails)
         : undefined;
 
       await upsertBrand(name as string, parsedImage, id);

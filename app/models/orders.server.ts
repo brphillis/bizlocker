@@ -27,18 +27,20 @@ import type { AddressWithDetails } from "./auth/userDetails";
 import type { UserWithDetails } from "./auth/users.server";
 
 export interface OrderWithDetails extends Order {
-  items: OrderItemWithDetails[] | null;
-  address: AddressWithDetails | null;
-  user: UserWithDetails | null;
+  items?: OrderItemWithDetails[] | null;
+  address?: AddressWithDetails | null;
+  user?: UserWithDetails | null;
 }
 
 export interface OrderItemWithDetails extends OrderItem {
-  variant: ProductVariantWithDetails | null;
-  store: StoreWithDetails | null;
-  order: OrderWithDetails | null;
+  variant?: ProductVariantWithDetails | null;
+  store?: StoreWithDetails | null;
+  order?: OrderWithDetails | null;
 }
 
-export const getOrder = async (orderId: string): Promise<Order | null> => {
+export const getOrder = async (
+  orderId: string
+): Promise<OrderWithDetails | null> => {
   return await prisma.order.findUnique({
     where: {
       orderId: orderId,

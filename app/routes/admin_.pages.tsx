@@ -1,4 +1,5 @@
-import { redirect, type LoaderArgs } from "@remix-run/node";
+import type { WebPage } from "@prisma/client";
+import { redirect, type LoaderArgs, json } from "@remix-run/node";
 import {
   Form,
   useLoaderData,
@@ -7,7 +8,6 @@ import {
 } from "@remix-run/react";
 import { tokenAuth } from "~/auth.server";
 import BasicInput from "~/components/Forms/Input/BasicInput";
-
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import Pagination from "~/components/Pagination";
@@ -16,6 +16,7 @@ import { STAFF_SESSION_KEY } from "~/session.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+
   if (!authenticated.valid) {
     return redirect("/admin/login");
   }
@@ -24,12 +25,12 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   const { webPages, totalPages } = await searchWebPages(undefined, url);
 
-  return { webPages, totalPages };
+  return json({ webPages, totalPages });
 };
 
 const Pages = () => {
   const navigate = useNavigate();
-  const { webPages, totalPages } = useLoaderData() || {};
+  const { webPages, totalPages } = useLoaderData<typeof loader>();
 
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("pageNumber")) || 1;
@@ -76,7 +77,7 @@ const Pages = () => {
             </thead>
             <tbody>
               {webPages &&
-                webPages.map(({ id, title, isActive }: Page, i: number) => {
+                webPages.map(({ id, title, isActive }: WebPage, i: number) => {
                   return (
                     <tr
                       className="cursor-pointer transition-colors duration-200 hover:bg-base-100"

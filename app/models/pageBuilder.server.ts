@@ -22,7 +22,7 @@ import {
 import type { BlockContent, BlockWithBlockOptions } from "./blocks.server";
 
 export interface Page extends PreviewPage {
-  previewPage?: PreviewPage | null;
+  previewPage?: PreviewPage[] | null;
   blocks: BlockWithBlockOptions[];
   thumbnail?: Image | null;
 }

@@ -1,35 +1,13 @@
-import type {
-  Article,
-  ArticleCategory,
-  Brand,
-  Campaign,
-  Product,
-  ProductCategory,
-  ProductSubCategory,
-  Promotion,
-  User,
-  Image,
-  Store,
-} from "@prisma/client";
 import { useNavigate, useParams } from "@remix-run/react";
 import { IoMdTrash } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
 import Toggle from "~/components/Buttons/Toggle";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
 
+type ValueToChange<T extends { isActive: boolean }> = T;
+
 type Props = {
-  valueToChange?:
-    | Promotion
-    | Product
-    | ProductSubCategory
-    | Brand
-    | Article
-    | ArticleCategory
-    | ProductCategory
-    | User
-    | Campaign
-    | Image
-    | Store;
+  valueToChange?: ValueToChange<any>;
   type: string;
   customMode?: string;
   hasIsActive?: boolean;

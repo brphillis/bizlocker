@@ -1,3 +1,4 @@
+import type { Cart, User } from "@prisma/client";
 import { IoMenu, IoSearchOutline } from "react-icons/io5";
 import AccountButton from "../Buttons/AccountButton";
 import CartButton from "../Buttons/CartButton";

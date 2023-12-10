@@ -1,3 +1,4 @@
+import type { Cart, User } from "@prisma/client";
 import { useLocation } from "@remix-run/react";
 import { IoSearchOutline } from "react-icons/io5";
 import LoginButton from "~/components/Buttons/LoginButton";

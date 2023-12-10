@@ -1,7 +1,9 @@
+import type { BlockOptions } from "@prisma/client";
+
 type Props = {
-  defaultValues: BlockOptions;
+  defaultValues?: BlockOptions;
   colors: string[];
-  selectedBlockOptions: BlockMasterOptions | undefined;
+  selectedBlockOptions?: BlockMasterOptions;
   selectedItems: ContentSelection[];
 };
 

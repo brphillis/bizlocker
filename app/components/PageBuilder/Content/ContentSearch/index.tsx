@@ -1,3 +1,4 @@
+import type { PreviewPage } from "@prisma/client";
 import { useSubmit } from "@remix-run/react";
 import { useState } from "react";
 import BasicInput from "~/components/Forms/Input/BasicInput";

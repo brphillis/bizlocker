@@ -9,24 +9,25 @@ import {
   updateImage_Integration,
   uploadImage_Integration,
 } from "~/integrations/_master/storage";
-import type { ImageWithDetails } from "./images.server";
 import type { ProductWithDetails } from "./products.server";
 import type { CampaignWithContent } from "./campaigns.server";
 export type { Brand } from "@prisma/client";
 
 export interface BrandWithContent extends Brand {
-  campaigns: CampaignWithContent[] | null;
-  image: ImageWithDetails | null;
-  productBlockContent: ProductBlockContent[] | null;
-  products: ProductWithDetails[] | null;
-  tileBlockContent: TileBlockContent[] | null;
+  campaigns?: CampaignWithContent[] | null;
+  image?: Image | null;
+  productBlockContent?: ProductBlockContent[] | null;
+  products?: ProductWithDetails[] | null;
+  tileBlockContent?: TileBlockContent[] | null;
 }
 
 export const getBrands = async (): Promise<Brand[] | null> => {
   return await prisma.brand.findMany();
 };
 
-export const getBrand = async (id: string): Promise<Brand | null> => {
+export const getBrand = async (
+  id: string
+): Promise<BrandWithContent | null> => {
   return prisma.brand.findUnique({
     where: {
       id: parseInt(id),

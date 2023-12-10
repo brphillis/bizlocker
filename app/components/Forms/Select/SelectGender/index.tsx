@@ -2,7 +2,7 @@ import type { Gender } from "@prisma/client";
 
 type Props = {
   label: string;
-  defaultValue?: Gender;
+  defaultValue?: Gender | string | null;
   onChange?: (value: string | React.ChangeEvent<HTMLSelectElement>) => void;
   customWidth?: string;
   labelColor?: string;

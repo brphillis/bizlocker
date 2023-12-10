@@ -1,3 +1,4 @@
+import type { Page } from "./pageBuilder.server";
 import { prisma } from "~/db.server";
 import { includeBlocksData } from "~/utility/blockMaster";
 
@@ -6,7 +7,7 @@ export const getHomePage = async (): Promise<Page> => {
     include: {
       blocks: includeBlocksData,
     },
-  })) as Page;
+  })) as unknown as Page;
 
   if (!homePage) {
     throw new Error(`No Homepage Found`);

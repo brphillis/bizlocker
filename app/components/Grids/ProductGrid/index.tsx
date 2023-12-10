@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
+import type { ProductWithDetails } from "~/models/products.server";
 import ProductCard from "../../Cards/ProductCard";
 import Pagination from "~/components/Pagination";
 import { IoShirtSharp } from "react-icons/io5";
 import { useNavigate } from "@remix-run/react";
 
 type Props = {
-  products: Product[];
+  products: ProductWithDetails[];
   totalPages?: number;
   cols?: number;
   enablePlaceHolder?: boolean;

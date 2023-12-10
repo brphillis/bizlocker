@@ -1,8 +1,10 @@
+import type { BlockOptions } from "@prisma/client";
+
 type Props = {
-  selectedBlock: BlockName | undefined;
-  defaultValues: BlockOptions;
+  selectedBlock?: BlockName;
+  defaultValues?: BlockOptions;
   colors: string[];
-  selectedBlockOptions: BlockMasterOptions | undefined;
+  selectedBlockOptions?: BlockMasterOptions;
 };
 
 const TitleOptions = ({

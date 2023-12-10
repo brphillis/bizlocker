@@ -85,7 +85,7 @@ export const action = async ({ request, params }: ActionArgs) => {
         ? (JSON.parse(image?.toString()) as Image)
         : undefined;
 
-      await upsertImage(altText as string, parsedImage, id);
+      parsedImage && (await upsertImage(altText as string, parsedImage, id));
 
       return json({ success: true });
 
@@ -176,7 +176,7 @@ const ModifyImage = () => {
               </tr>
             </thead>
             <tbody>
-              {promotionBanner?.length > 0 && (
+              {promotionBanner && promotionBanner?.length > 0 && (
                 <>
                   {promotionBanner.map(({ id }: Promotion) => {
                     return (
@@ -198,7 +198,7 @@ const ModifyImage = () => {
                   })}
                 </>
               )}
-              {promotionTile?.length > 0 && (
+              {promotionTile && promotionTile?.length > 0 && (
                 <>
                   {promotionTile.map(({ id }: Promotion) => {
                     return (
@@ -220,7 +220,7 @@ const ModifyImage = () => {
                   })}
                 </>
               )}
-              {campaignBanner?.length > 0 && (
+              {campaignBanner && campaignBanner?.length > 0 && (
                 <>
                   {campaignBanner.map(({ id }: Campaign) => {
                     return (
@@ -242,7 +242,7 @@ const ModifyImage = () => {
                   })}
                 </>
               )}
-              {campaignTile?.length > 0 && (
+              {campaignTile && campaignTile?.length > 0 && (
                 <>
                   {campaignTile.map(({ id }: Campaign) => {
                     return (

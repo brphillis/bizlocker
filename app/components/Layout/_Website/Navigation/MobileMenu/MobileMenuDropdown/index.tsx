@@ -1,11 +1,11 @@
 import React from "react";
-
+import type { ProductSubCategoryWithDetails } from "~/models/productSubCategories.server";
 import MobileMenuItem from "./MobileMenuItem";
 
 type Props = {
   id: number;
   name: string;
-  productSubCategories?: ProductSubCategory[];
+  productSubCategories?: ProductSubCategoryWithDetails[] | null;
 };
 
 const MobileMenuDropdown = ({ name, productSubCategories }: Props) => {
@@ -22,7 +22,7 @@ const MobileMenuDropdown = ({ name, productSubCategories }: Props) => {
               {
                 name: productSubCategoryName,
                 displayInNavigation: displaySubCategory,
-              }: ProductSubCategory,
+              }: ProductSubCategoryWithDetails,
               i: number
             ) => {
               if (displaySubCategory) {

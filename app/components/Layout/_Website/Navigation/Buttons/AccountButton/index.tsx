@@ -1,3 +1,4 @@
+import type { User } from "@prisma/client";
 import { useSubmit } from "@remix-run/react";
 import { useRef } from "react";
 import { IoClose, IoPersonOutline } from "react-icons/io5";

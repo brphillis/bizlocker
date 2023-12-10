@@ -1,62 +1,84 @@
-export const getAvailableSizes = (product: Product): (string | undefined)[] => {
+import type {
+  ProductVariantWithDetails,
+  ProductWithDetails,
+} from "~/models/products.server";
+import type { StockLevelWithDetails } from "~/models/stock.server";
+
+export const getAvailableSizes = (
+  product: ProductWithDetails
+): (string | undefined | null)[] => {
   const sizeSet = new Set();
   const sizes = [];
 
-  for (const variant of product.variants) {
-    const size = variant.size;
-    if (!sizeSet.has(size)) {
-      sizeSet.add(size);
-      sizes.push(size);
+  if (product.variants) {
+    for (const variant of product.variants) {
+      const size = variant.size;
+      if (!sizeSet.has(size)) {
+        sizeSet.add(size);
+        sizes.push(size);
+      }
     }
   }
+
   return sizes;
 };
 
 export const getAvailableColors = (
-  product: Product,
+  product: ProductWithDetails,
   size: string
-): string[] | undefined => {
+): (string | undefined | null)[] => {
   const colorSet = new Set();
   const colors = [];
 
-  for (const variant of product.variants) {
-    const color = variant.color;
-    if (!colorSet.has(color) && variant.size === size) {
-      colorSet.add(color);
-      colors.push(color);
+  if (product.variants) {
+    for (const variant of product.variants) {
+      const color = variant.color;
+      if (!colorSet.has(color) && variant.size === size) {
+        colorSet.add(color);
+        colors.push(color);
+      }
     }
   }
+
   return colors;
 };
 
-export const calculateVariantStock = (variant: ProductVariant): TotalStock => {
-  const stockLevels: StockLevel[] | undefined = variant.stock;
+export const calculateVariantStock = (
+  variant: ProductVariantWithDetails
+): TotalStock => {
+  const stockLevels: StockLevelWithDetails[] | null | undefined = variant.stock;
 
   let totalStock: TotalStock = {
     totalStock: 0,
     storeStock: [],
   };
 
-  stockLevels?.forEach(({ quantity, storeId, store }: StockLevel) => {
-    const { name } = store;
+  stockLevels?.forEach(
+    ({ quantity, storeId, store }: StockLevelWithDetails) => {
+      const { name } = store || {};
 
-    const storeStock: StoreStock = {
-      total: quantity,
-      storeName: name,
-      storeId: storeId,
-    };
+      if (!name) {
+        throw new Error("Invalid Stock Store Name");
+      }
 
-    totalStock.totalStock += quantity;
-    totalStock.storeStock.push(storeStock);
-  });
+      const storeStock: StoreStock = {
+        total: quantity,
+        storeName: name,
+        storeId: storeId,
+      };
+
+      totalStock.totalStock += quantity;
+      totalStock.storeStock.push(storeStock);
+    }
+  );
 
   return totalStock;
 };
 
-export const calculateProductStock = (product: Product): number => {
+export const calculateProductStock = (product: ProductWithDetails): number => {
   let total: number = 0;
 
-  product.variants.forEach((variant: ProductVariant) => {
+  product?.variants?.forEach((variant: ProductVariantWithDetails) => {
     const variantTotalStock = calculateVariantStock(variant);
 
     if (variantTotalStock.totalStock) {

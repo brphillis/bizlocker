@@ -6,15 +6,15 @@ import type { StoreWithDetails } from "../stores.server";
 import type { UserWithDetails } from "./users.server";
 
 export interface UserDetailsDetailed extends UserDetails {
-  staff: StaffWithDetails | null;
-  user: UserWithDetails | null;
+  staff?: StaffWithDetails | null;
+  user?: UserWithDetails | null;
 }
 
 export interface AddressWithDetails extends Address {
-  user: UserWithDetails | null;
-  staff: StaffWithDetails | null;
-  order: OrderWithDetails | null;
-  store: StoreWithDetails | null;
+  user?: UserWithDetails | null;
+  staff?: StaffWithDetails | null;
+  order?: OrderWithDetails | null;
+  store?: StoreWithDetails | null;
 }
 
 export const getUserDetails = async (

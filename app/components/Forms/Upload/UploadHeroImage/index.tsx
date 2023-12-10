@@ -1,7 +1,7 @@
+import type { Image } from "@prisma/client";
 import { useState } from "react";
 import { IoIosCloseCircle } from "react-icons/io";
-import { ConvertToBase64Image } from "~/helpers/fileHelpers";
-import type { ImageWithDetails } from "~/models/images.server";
+import { ConvertToBase64Image, type NewImage } from "~/helpers/fileHelpers";
 import type { ProductWithDetails } from "~/models/products.server";
 
 type Props = {
@@ -10,7 +10,7 @@ type Props = {
 
 const UploadHeroImage = ({ valueToChange }: Props) => {
   const [heroImage, setHeroImage] = useState<
-    ImageWithDetails | null | undefined
+    Image | NewImage | null | undefined
   >(valueToChange?.heroImage);
 
   return (

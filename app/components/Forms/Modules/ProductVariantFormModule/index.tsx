@@ -27,9 +27,9 @@ const ProductVariantFormModule = ({
     ProductVariantWithDetails | NewProductVariant | {}
   >();
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>();
-  const [variants, setVariants] = useState<ProductVariantWithDetails[] | null>(
-    product?.variants
-  );
+  const [variants, setVariants] = useState<
+    ProductVariantWithDetails[] | null | undefined
+  >(product?.variants);
 
   const [upsertState, setUpsertState] = useState<"edit" | "add" | undefined>();
 

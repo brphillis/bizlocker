@@ -1,7 +1,22 @@
-import type { ArticleCategory } from "@prisma/client";
+import type {
+  ArticleBlockContent,
+  ArticleCategory,
+  PreviewPage,
+} from "@prisma/client";
+import type { ArticleWithContent } from "./articles.server";
+import type { ProductCategoryWithDetails } from "./productCategories.server";
 import { prisma } from "~/db.server";
 
-export const getArticleCategories = async (): Promise<ArticleCategory[]> => {
+export interface ArticleCategoryWithDetails extends ArticleCategory {
+  articleBlockContent?: ArticleBlockContent[];
+  articles?: ArticleWithContent[];
+  previewPages?: PreviewPage[];
+  productCategory?: ProductCategoryWithDetails;
+}
+
+export const getArticleCategories = async (): Promise<
+  ArticleCategoryWithDetails[]
+> => {
   return await prisma.articleCategory.findMany({
     include: {
       productCategory: {

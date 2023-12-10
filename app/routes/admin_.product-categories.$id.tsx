@@ -1,14 +1,28 @@
 import { useEffect, useState } from "react";
 import { validateForm } from "~/utility/validate";
 import DarkOverlay from "~/components/Layout/DarkOverlay";
-import { getDepartments } from "~/models/departments.server";
+import {
+  type DepartmentWithDetails,
+  getDepartments,
+} from "~/models/departments.server";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import FormHeader from "~/components/Forms/Headers/FormHeader";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
-import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node";
-import { getArticleCategories } from "~/models/articleCategories.server";
+import {
+  redirect,
+  type ActionArgs,
+  type LoaderArgs,
+  json,
+} from "@remix-run/node";
+import {
+  type ArticleCategoryWithDetails,
+  getArticleCategories,
+} from "~/models/articleCategories.server";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
-import { getProductSubCategories } from "~/models/productSubCategories.server";
+import {
+  type ProductSubCategoryWithDetails,
+  getProductSubCategories,
+} from "~/models/productSubCategories.server";
 import {
   Form,
   useActionData,
@@ -16,6 +30,7 @@ import {
   useNavigate,
 } from "@remix-run/react";
 import {
+  type ProductCategoryWithDetails,
   getProductCategory,
   upsertProductCategory,
 } from "~/models/productCategories.server";
@@ -29,17 +44,36 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   }
 
   const id = params.id;
-  const productCategory = id && id !== "add" && (await getProductCategory(id));
+
   const departments = await getDepartments();
   const productSubCategories = await getProductSubCategories();
   const articleCategories = await getArticleCategories();
 
-  return {
+  if (id === "add") {
+    const productCategory = {};
+    return json({ productCategory } as {
+      productCategory: ProductCategoryWithDetails;
+      departments: DepartmentWithDetails[];
+      productSubCategories: ProductSubCategoryWithDetails[];
+      articleCategories: ArticleCategoryWithDetails[];
+    });
+  }
+
+  if (!id) {
+    throw new Response(null, {
+      status: 404,
+      statusText: "Product Category Not Found",
+    });
+  }
+
+  const productCategory = await getProductCategory(id);
+
+  return json({
     productCategory,
     departments,
     productSubCategories,
     articleCategories,
-  };
+  });
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
@@ -101,21 +135,20 @@ const ModifyProductCategory = () => {
     departments,
     productSubCategories,
     articleCategories,
-  } = useLoaderData() || {};
-  const { success, validationErrors } = useActionData() as ActionReturnTypes;
+  } = useLoaderData<typeof loader>();
 
-  const mode = productCategory ? "edit" : "add";
+  const { success, validationErrors } = useActionData() as ActionReturnTypes;
 
   const [selectedProductSubCategories, setSelectedProductSubCategories] =
     useState<string[]>(
-      productCategory?.productSubCategories?.map((e: ProductSubCategory) =>
-        e?.id.toString()
+      productCategory?.productSubCategories?.map(
+        (e: ProductSubCategoryWithDetails) => e?.id.toString()
       ) || []
     );
   const [selectedArticleCategories, setSelectedArticleCategories] = useState<
     string[]
   >(
-    productCategory?.articleCategories?.map((e: ArticleCategory) =>
+    productCategory?.articleCategories?.map((e: ArticleCategoryWithDetails) =>
       e?.id.toString()
     ) || []
   );
@@ -157,7 +190,6 @@ const ModifyProductCategory = () => {
         <FormHeader
           hasDelete={false}
           hasIsActive={true}
-          mode={mode}
           type="Category"
           valueToChange={productCategory}
         />
@@ -197,7 +229,9 @@ const ModifyProductCategory = () => {
               <select
                 name="displayInNavigation"
                 className="select w-full text-brand-black/75"
-                defaultValue={productCategory.displayInNavigation ? "true" : ""}
+                defaultValue={
+                  productCategory?.displayInNavigation ? "true" : ""
+                }
               >
                 <option value="true">Yes</option>
                 <option value="">No</option>
@@ -226,10 +260,10 @@ const ModifyProductCategory = () => {
                     id,
                     name,
                     productCategory: parentProductCategory,
-                  }: ProductSubCategory) => {
+                  }: ProductSubCategoryWithDetails) => {
                     const isAssignedToThis =
                       productCategory?.productSubCategories?.some(
-                        (e: ProductSubCategory) => e.id === id
+                        (e: ProductSubCategoryWithDetails) => e.id === id
                       );
                     const isAssigned =
                       parentProductCategory?.productSubCategories;
@@ -282,10 +316,10 @@ const ModifyProductCategory = () => {
                     id,
                     name,
                     productCategory: parentProductCategory,
-                  }: ArticleCategory) => {
+                  }: ArticleCategoryWithDetails) => {
                     const isAssignedToThis =
                       productCategory?.articleCategories?.some(
-                        (e: ArticleCategory) => e.id === id
+                        (e: ArticleCategoryWithDetails) => e.id === id
                       );
                     const isAssigned = parentProductCategory?.articleCategories;
 

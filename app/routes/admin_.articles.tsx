@@ -1,7 +1,10 @@
 import { tokenAuth } from "~/auth.server";
 import Pagination from "~/components/Pagination";
 import { STAFF_SESSION_KEY } from "~/session.server";
-import { searchArticles } from "~/models/articles.server";
+import {
+  type ArticleWithContent,
+  searchArticles,
+} from "~/models/articles.server";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import { json, redirect, type LoaderArgs } from "@remix-run/node";
@@ -14,6 +17,7 @@ import {
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
+import type { ArticleCategory } from "@prisma/client";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
@@ -91,7 +95,12 @@ const Articles = () => {
               {articles &&
                 articles.map(
                   (
-                    { id, title, articleCategories, isActive }: Article,
+                    {
+                      id,
+                      title,
+                      articleCategories,
+                      isActive,
+                    }: ArticleWithContent,
                     i: number
                   ) => {
                     return (

@@ -1,9 +1,10 @@
+import type { BlockOptions } from "@prisma/client";
 import ToolTip from "~/components/Indicators/ToolTip";
 
 type Props = {
-  defaultValues: BlockOptions;
+  defaultValues?: BlockOptions;
   colors: string[];
-  selectedBlockOptions: BlockMasterOptions | undefined;
+  selectedBlockOptions?: BlockMasterOptions;
 };
 
 const BackgroundOptions = ({

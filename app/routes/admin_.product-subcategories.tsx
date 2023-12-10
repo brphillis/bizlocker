@@ -7,7 +7,10 @@ import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import { getProductCategories } from "~/models/productCategories.server";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
-import { searchProductSubCategories } from "~/models/productSubCategories.server";
+import {
+  type ProductSubCategoryWithDetails,
+  searchProductSubCategories,
+} from "~/models/productSubCategories.server";
 import {
   Form,
   Outlet,
@@ -102,7 +105,7 @@ const ProductSubCategories = () => {
                       index,
                       displayInNavigation,
                       isActive,
-                    }: ProductSubCategory,
+                    }: ProductSubCategoryWithDetails,
                     i: number
                   ) => {
                     return (

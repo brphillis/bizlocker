@@ -1,3 +1,4 @@
+import type { Image } from "@prisma/client";
 import {
   type LoaderArgs,
   type ActionArgs,

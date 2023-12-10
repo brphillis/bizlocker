@@ -10,11 +10,14 @@ import { Form, useSearchParams, useSubmit } from "react-router-dom";
 import SearchInput from "../Forms/Input/SearchInput";
 import { useLocation } from "@remix-run/react";
 import Spinner from "../Spinner";
+import type { ProductCategoryWithDetails } from "~/models/productCategories.server";
+import type { DepartmentWithDetails } from "~/models/departments.server";
+import type { BrandWithContent } from "~/models/brands.server";
 
 type Props = {
-  departments: Department[] | null;
-  productCategories: ProductCategory[] | null;
-  brands: Brand[] | null;
+  departments: DepartmentWithDetails[] | null;
+  productCategories: ProductCategoryWithDetails[] | null;
+  brands: BrandWithContent[] | null;
 };
 
 const SearchBar = ({ departments, productCategories, brands }: Props) => {
@@ -22,11 +25,12 @@ const SearchBar = ({ departments, productCategories, brands }: Props) => {
   const [searchParams] = useSearchParams();
   const location = useLocation();
 
-  const searchedDepartment = searchParams.get("department");
+  const searchedDepartment: string | null = searchParams.get("department");
 
-  const [categories, setCategories] = useState<ProductCategory[] | null>(
-    productCategories
-  );
+  const [categories, setCategories] = useState<
+    ProductCategoryWithDetails[] | null | undefined
+  >(productCategories);
+
   const [subCategories, setSubCategories] = useState<
     ProductSubCategory[] | null
   >(null);
@@ -38,7 +42,10 @@ const SearchBar = ({ departments, productCategories, brands }: Props) => {
       const departmentsCategories = productCategories?.filter(
         (e) => e?.department?.name === searchedDepartment
       );
-      setCategories(departmentsCategories);
+
+      if (departmentsCategories) {
+        setCategories(departmentsCategories);
+      }
     }
   }, [productCategories, searchedDepartment]);
 
@@ -87,10 +94,12 @@ const SearchBar = ({ departments, productCategories, brands }: Props) => {
             placeholder="Select a Department"
             onChange={(e) => {
               if (e.target.selectedIndex === 0) {
-                setSubCategories(undefined);
-              } else {
+                setSubCategories(null);
+              } else if (
+                departments?.[e.target.selectedIndex - 1].productCategories
+              ) {
                 setCategories(
-                  departments[e.target.selectedIndex - 1].productCategories
+                  departments?.[e.target.selectedIndex - 1]?.productCategories
                 );
               }
               searchParams.delete("productCategory");
@@ -116,12 +125,14 @@ const SearchBar = ({ departments, productCategories, brands }: Props) => {
             placeholder="Select a Category"
             onChange={(e) => {
               if (e.target.selectedIndex === 0) {
-                setSubCategories(undefined);
+                setSubCategories(null);
               } else {
-                const selectedCategory = productCategories.find(
+                const selectedCategory = productCategories?.find(
                   (f: ProductCategory) => f.name === e.target.value
                 );
-                setSubCategories(selectedCategory?.productSubCategories);
+                if (selectedCategory?.productSubCategories) {
+                  setSubCategories(selectedCategory?.productSubCategories);
+                }
               }
               searchParams.delete("productSubCategory");
               searchParams.delete("brand");

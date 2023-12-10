@@ -8,6 +8,7 @@ import BasicInput from "~/components/Forms/Input/BasicInput";
 import FormHeader from "~/components/Forms/Headers/FormHeader";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
 import { getDepartment, upsertDepartment } from "~/models/departments.server";
+import type { ProductCategory } from "@prisma/client";
 import {
   Form,
   useActionData,
@@ -42,7 +43,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   let department = null;
 
   if (id !== "add") {
-    department = (await getDepartment(id)) as Department;
+    department = await getDepartment(id);
   }
 
   if (!department) {

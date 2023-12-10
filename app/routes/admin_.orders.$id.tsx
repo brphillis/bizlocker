@@ -19,11 +19,11 @@ import {
   type LoaderArgs,
 } from "@remix-run/node";
 import {
+  type OrderItemWithDetails,
   getOrder,
   updateOrderShippingDetails,
   updateOrderStatus,
 } from "~/models/orders.server";
-import { OrderItem } from "@prisma/client";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
@@ -183,34 +183,29 @@ const ModifyOrder = () => {
           </div>
 
           <div className="flex flex-col flex-wrap items-center justify-center gap-3">
-            {items
-              ?.sort((a, b) =>
-                a.variant.product.name.localeCompare(b.variant.product.name)
-              )
-              .reverse()
-              .map(({ variant, quantity }: OrderItem) => {
-                const { product, price, salePrice, isOnSale } = variant;
+            {items?.map(({ variant, quantity }: OrderItemWithDetails) => {
+              const { product, price, salePrice, isOnSale } = variant || {};
 
-                return (
-                  <div
-                    className="relative flex w-full max-w-full flex-row items-center rounded-lg bg-base-100 p-3"
-                    key={"cartItem-" + product.name}
-                  >
-                    <div className="relative w-full text-center">
-                      <div>
-                        {product?.name} x {quantity}
-                      </div>
-                      <div className="text-xs opacity-50">{variant?.name}</div>
-                      <div className="!rounded-none">
-                        $
-                        {isOnSale
-                          ? salePrice?.toFixed(2)
-                          : price?.toFixed(2) + " ea"}
-                      </div>
+              return (
+                <div
+                  className="relative flex w-full max-w-full flex-row items-center rounded-lg bg-base-100 p-3"
+                  key={"cartItem-" + product?.name}
+                >
+                  <div className="relative w-full text-center">
+                    <div>
+                      {product?.name} x {quantity}
+                    </div>
+                    <div className="text-xs opacity-50">{variant?.name}</div>
+                    <div className="!rounded-none">
+                      $
+                      {isOnSale
+                        ? salePrice?.toFixed(2)
+                        : price?.toFixed(2) + " ea"}
                     </div>
                   </div>
-                );
-              })}
+                </div>
+              );
+            })}
 
             <div className="mt-3 text-center">
               <div>Order Total: ${order.totalPrice.toFixed(2)}</div>

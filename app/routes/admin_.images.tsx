@@ -1,3 +1,4 @@
+import type { Image } from "@prisma/client";
 import { tokenAuth } from "~/auth.server";
 import Pagination from "~/components/Pagination";
 import { STAFF_SESSION_KEY } from "~/session.server";

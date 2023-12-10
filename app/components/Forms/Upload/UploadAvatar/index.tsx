@@ -1,6 +1,6 @@
 import type { Image } from "@prisma/client";
 import { useState } from "react";
-import { ConvertToBase64Image } from "~/helpers/fileHelpers";
+import { ConvertToBase64Image, type NewImage } from "~/helpers/fileHelpers";
 import { placeholderAvatar } from "~/utility/placeholderAvatar";
 
 type Props = {
@@ -8,7 +8,9 @@ type Props = {
 };
 
 const UploadAvatar = ({ avatar }: Props) => {
-  const [image, setImage] = useState<Image | undefined>(avatar || undefined);
+  const [image, setImage] = useState<NewImage | Image | undefined>(
+    avatar || undefined
+  );
 
   return (
     <>

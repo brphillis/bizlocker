@@ -1,3 +1,5 @@
+import type { ArticleCategory } from "@prisma/client";
+import type { BlockContent } from "~/models/blocks.server";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
 
 type Props = {
@@ -5,7 +7,7 @@ type Props = {
   selectedItems: ContentSelection[];
   setSelectedItems: Function;
   articleCategories: ArticleCategory[];
-  defaultValues: ArticleBlockContent;
+  defaultValues: BlockContent;
 };
 
 const ArticleBlockOptions = ({

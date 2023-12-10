@@ -1,3 +1,4 @@
+import type { Campaign } from "@prisma/client";
 import { redirect, type LoaderArgs, json } from "@remix-run/node";
 import {
   Form,
@@ -87,16 +88,7 @@ const Campaigns = () => {
                         <td>{i + 1 + (currentPage - 1) * campaigns?.length}</td>
                       )}
                       <td>{name}</td>
-                      <td>
-                        {new Date(updatedAt as Date).toLocaleDateString(
-                          "en-US",
-                          {
-                            day: "numeric",
-                            month: "long",
-                            year: "numeric",
-                          }
-                        )}
-                      </td>
+                      <td>{updatedAt}</td>
                       <td>
                         {new Date(createdAt).toLocaleDateString("en-US", {
                           day: "numeric",

@@ -1,19 +1,18 @@
-import type { User } from "@prisma/client";
+import type { User, Image } from "@prisma/client";
 import { prisma } from "~/db.server";
 import type { AddressWithDetails, UserDetailsDetailed } from "./userDetails";
 import type { CartItemWithDetails } from "../cart.server";
 import type { OrderWithDetails } from "../orders.server";
-import type { ImageWithDetails } from "../images.server";
 
 export interface UserWithDetails extends User {
-  avatar: ImageWithDetails | null;
-  address: AddressWithDetails | null;
-  cart: CartItemWithDetails | null;
-  orders: OrderWithDetails[] | null;
-  userDetails: UserDetailsDetailed | null;
+  avatar?: Image | null;
+  address?: AddressWithDetails | null;
+  cart?: CartItemWithDetails | null;
+  orders?: OrderWithDetails[] | null;
+  userDetails?: UserDetailsDetailed | null;
 }
 
-export const getUser = async (id: string): Promise<User | null> => {
+export const getUser = async (id: string): Promise<UserWithDetails | null> => {
   return await prisma.user.findUnique({
     where: {
       id,

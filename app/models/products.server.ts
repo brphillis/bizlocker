@@ -3,53 +3,51 @@ import { getOrderBy } from "~/helpers/sortHelpers";
 import { calculateDiscountPercentage } from "~/helpers/numberHelpers";
 import { uploadImage_Integration } from "~/integrations/_master/storage";
 import type {
-  Brand,
-  Campaign,
   HeroBlockContent,
   Image,
   Product,
-  ProductSubCategory,
   ProductVariant,
-  Promotion,
   Staff,
-  StockLevel,
-  StockTransferRequest,
 } from "@prisma/client";
 import { getUserDataFromSession, STAFF_SESSION_KEY } from "~/session.server";
 import type { CartItemWithDetails } from "./cart.server";
 import type { OrderItemWithDetails } from "./orders.server";
-import type { ImageWithDetails } from "./images.server";
+import type { CampaignWithContent } from "./campaigns.server";
+import type { BrandWithContent } from "./brands.server";
+import type { PromotionWithContent } from "./promotions.server";
+import type { ProductSubCategoryWithDetails } from "./productSubCategories.server";
+import type {
+  StockLevelWithDetails,
+  StockTransferRequestWithDetails,
+} from "./stock.server";
 
 export interface ProductWithDetails extends Product {
-  promotion: Promotion | null;
-  productVariant: ProductVariantWithDetails | null;
-  brand: Brand | null;
-  campaigns: Campaign[] | null;
-  heroBlockContent: HeroBlockContent[] | null;
-  heroImage: ImageWithDetails | null;
-  images: ImageWithDetails[] | null;
-  productSubCategories: ProductSubCategory[] | null;
-  variants: ProductVariantWithDetails[] | null;
+  promotion?: PromotionWithContent | null;
+  productVariant?: ProductVariantWithDetails | null;
+  brand?: BrandWithContent | null;
+  campaigns?: CampaignWithContent[] | null;
+  heroBlockContent?: HeroBlockContent[] | null;
+  heroImage?: Image | null;
+  images?: Image[] | null;
+  productSubCategories?: ProductSubCategoryWithDetails[] | null;
+  variants?: ProductVariantWithDetails[] | null;
 }
 
 export interface ProductVariantWithDetails extends ProductVariant {
-  product: ProductWithDetails | null;
-  stock: StockLevel[] | null;
-  stockTransferRequest: StockTransferRequest[] | null;
-  cartItems: CartItemWithDetails[] | null;
-  orderItems: OrderItemWithDetails[] | null;
+  product?: ProductWithDetails | null;
+  stock?: StockLevelWithDetails[] | null;
+  stockTransferRequest?: StockTransferRequestWithDetails[] | null;
+  cartItems?: CartItemWithDetails[] | null;
+  orderItems?: OrderItemWithDetails[] | null;
 }
 
-export const getProducts = async (count?: string): Promise<Product[]> => {
+export const getProducts = async (
+  count?: string
+): Promise<ProductWithDetails[]> => {
   if (count) {
     return await prisma.product.findMany({
       include: {
-        productSubCategories: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
+        productSubCategories: true,
         images: true,
         brand: true,
       },
@@ -58,12 +56,7 @@ export const getProducts = async (count?: string): Promise<Product[]> => {
   } else {
     return await prisma.product.findMany({
       include: {
-        productSubCategories: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
+        productSubCategories: true,
         brand: true,
         variants: true,
       },
@@ -71,26 +64,19 @@ export const getProducts = async (count?: string): Promise<Product[]> => {
   }
 };
 
-export const getProduct = async (id: string): Promise<Product | null> => {
+export const getProduct = async (
+  id: string
+): Promise<ProductWithDetails | null> => {
   return await prisma.product.findUnique({
     where: {
       id: parseInt(id),
     },
     include: {
       productSubCategories: {
-        select: {
-          id: true,
-          name: true,
+        include: {
           productCategory: {
-            select: {
-              id: true,
-              name: true,
-              department: {
-                select: {
-                  id: true,
-                  name: true,
-                },
-              },
+            include: {
+              department: true,
             },
           },
         },
@@ -101,14 +87,8 @@ export const getProduct = async (id: string): Promise<Product | null> => {
       variants: {
         include: {
           stock: {
-            select: {
-              quantity: true,
-              storeId: true,
-              store: {
-                select: {
-                  name: true,
-                },
-              },
+            include: {
+              store: true,
             },
           },
         },

@@ -18,6 +18,7 @@ import BasicInput from "~/components/Forms/Input/BasicInput";
 import { validateForm } from "~/utility/validate";
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
+import type { ArticleCategory } from "@prisma/client";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);

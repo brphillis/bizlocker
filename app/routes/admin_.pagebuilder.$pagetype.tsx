@@ -8,6 +8,8 @@ import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import PageBuilder from "~/components/PageBuilder";
 import {
+  type Page,
+  type PageBlock,
   changeBlockOrder,
   disconnectBlock,
   getPageType,
@@ -43,7 +45,7 @@ import Header from "~/components/PageBuilder/Header";
 import SquareIconButton from "~/components/Buttons/SquareIconButton";
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
-import type { BlockOptions } from "@prisma/client";
+import type { BlockOptions, PreviewPage } from "@prisma/client";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
@@ -65,14 +67,14 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const id = url.searchParams.get("id") || undefined;
   const page = await getPageType(pageType as PageType, true, id);
 
-  let previewPages: Page[] | null = null;
+  let previewPages: PreviewPage[] | null | undefined = null;
   let blocks: PageBlock[] | null = null;
   let currentPreviewPage: Page | null = null;
 
   if (page) {
-    previewPages = sortPreviewPages(page.previewPage);
+    previewPages = page.previewPage && sortPreviewPages(page.previewPage);
 
-    if (previewPages[0].id) {
+    if (previewPages && previewPages[0].id) {
       currentPreviewPage = await getPreviewPage(previewPages[0].id.toString());
     }
 
@@ -404,9 +406,7 @@ const ManageHomePage = () => {
               <VersionControl
                 currentVersion={currentVersion}
                 page={page as Page}
-                previewPages={
-                  previewPages as { id: number; publishedAt?: Date }[]
-                }
+                previewPages={previewPages}
                 updateSuccess={publishSuccess}
               />
             )}

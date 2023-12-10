@@ -14,6 +14,7 @@ import {
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
+import type { ArticleCategory } from "@prisma/client";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);

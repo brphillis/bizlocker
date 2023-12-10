@@ -1,8 +1,12 @@
 import type { PreviewPage } from "@prisma/client";
 import { prisma } from "~/db.server";
+import {
+  type Page,
+  type PageBlock,
+  disconnectBlock,
+} from "./pageBuilder.server";
 import { getBlocks } from "~/helpers/blockHelpers";
 import { includeBlocksData } from "~/utility/blockMaster";
-import { disconnectBlock } from "./pageBuilder.server";
 
 export const getPreviewPage = async (id: string): Promise<Page | null> => {
   return (await prisma.previewPage.findUnique({
@@ -12,7 +16,7 @@ export const getPreviewPage = async (id: string): Promise<Page | null> => {
       articleCategories: true,
       thumbnail: true,
     },
-  })) as Page;
+  })) as unknown as Page;
 };
 
 export const addPreviewPage = async (

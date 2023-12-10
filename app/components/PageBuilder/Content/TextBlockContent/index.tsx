@@ -1,14 +1,15 @@
 import { useState } from "react";
+import type { BlockContent } from "~/models/blocks.server";
 import RichTextInput from "~/components/Forms/Input/RichTextInput/index.client";
 
 type Props = {
   selectedBlock: BlockName | undefined;
   selectedItems: ContentSelection[];
   setSelectedItems: Function;
-  defaultValue: TextBlockContent;
+  defaultValue: BlockContent;
 };
 
-const TextBlockContent = ({
+const TextBlockContentModule = ({
   selectedBlock,
   defaultValue,
   selectedItems,
@@ -28,7 +29,7 @@ const TextBlockContent = ({
     });
   };
 
-  if (!selectedItems) {
+  if (!selectedItems && defaultValue?.richText) {
     selectItem("richText", defaultValue?.richText);
   }
 
@@ -49,4 +50,4 @@ const TextBlockContent = ({
   );
 };
 
-export default TextBlockContent;
+export default TextBlockContentModule;

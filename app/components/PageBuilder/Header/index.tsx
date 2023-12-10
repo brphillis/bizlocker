@@ -4,9 +4,10 @@ import BasicInput from "~/components/Forms/Input/BasicInput";
 import BasicMultiSelect from "~/components/Forms/Select/BasicMultiSelect";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import UploadImage from "~/components/Forms/Upload/UploadImage";
+import type { Page } from "~/models/pageBuilder.server";
 
 type Props = {
-  currentVersion: PreviewPage;
+  currentVersion: Page | null;
   pageToCreate: PageType;
   pageType: PageType;
   isActive: string | undefined;

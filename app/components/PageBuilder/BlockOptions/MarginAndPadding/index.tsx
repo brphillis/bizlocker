@@ -1,8 +1,10 @@
+import type { BlockOptions } from "@prisma/client";
+
 import ToolTip from "~/components/Indicators/ToolTip";
 
 type Props = {
-  defaultValues: BlockOptions;
-  selectedBlockOptions: BlockMasterOptions | undefined;
+  defaultValues?: BlockOptions;
+  selectedBlockOptions?: BlockMasterOptions;
 };
 
 const MarginAndPaddingOptions = ({

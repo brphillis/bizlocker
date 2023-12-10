@@ -1,3 +1,5 @@
+import type { Page } from "~/models/pageBuilder.server";
+import type { PreviewPage } from "@prisma/client";
 import { Form, useSubmit } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import SquareIconButton from "~/components/Buttons/SquareIconButton";
@@ -6,7 +8,7 @@ import { formatDate } from "~/helpers/dateHelpers";
 
 type Props = {
   currentVersion: Page | null;
-  previewPages: { id: number; publishedAt?: Date }[];
+  previewPages?: PreviewPage[] | null;
   page: Page;
   updateSuccess: boolean;
 };
@@ -46,28 +48,30 @@ const VersionControl = ({
               formData.set("pageId", e.target.value);
               submit(formData, { method: "POST" });
             }}
-            defaultValue={previewPages[0].id}
+            defaultValue={previewPages?.[0].id}
           >
-            {previewPages
-              .slice()
-              .sort(
-                (a: any, b: any) => (b.publishedAt || 0) - (a.publishedAt || 0)
-              )
-              .map((previewPageData: any, i: number) => {
-                const { id, publishedAt } = previewPageData;
-                const publishedDate = publishedAt
-                  ? formatDate(publishedAt, true)
-                  : "unpublished";
+            {previewPages &&
+              previewPages
+                .slice()
+                .sort(
+                  (a: any, b: any) =>
+                    (b.publishedAt || 0) - (a.publishedAt || 0)
+                )
+                .map((previewPageData: any, i: number) => {
+                  const { id, publishedAt } = previewPageData;
+                  const publishedDate = publishedAt
+                    ? formatDate(publishedAt, true)
+                    : "unpublished";
 
-                const optionLabel =
-                  i === 0 ? "Current Version" : "Previous Version";
+                  const optionLabel =
+                    i === 0 ? "Current Version" : "Previous Version";
 
-                return (
-                  <option key={"preivewPageVersionSelection_" + i} value={id}>
-                    {optionLabel}: {publishedDate}
-                  </option>
-                );
-              })}
+                  return (
+                    <option key={"preivewPageVersionSelection_" + i} value={id}>
+                      {optionLabel}: {publishedDate}
+                    </option>
+                  );
+                })}
           </select>
 
           <input hidden readOnly name="pageId" value={page?.id.toString()} />

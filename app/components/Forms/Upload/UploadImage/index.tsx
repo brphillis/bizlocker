@@ -1,7 +1,7 @@
 import type { Image } from "@prisma/client";
 import { useState } from "react";
 import { IoClose } from "react-icons/io5";
-import { ConvertToBase64Image } from "~/helpers/fileHelpers";
+import { ConvertToBase64Image, type NewImage } from "~/helpers/fileHelpers";
 import { findFirstNotNullInputValue } from "~/helpers/formHelpers";
 
 type Props = {
@@ -11,7 +11,7 @@ type Props = {
 };
 
 const UploadImage = ({ defaultValue, name, label }: Props) => {
-  const [image, setImage] = useState<Image | undefined>(
+  const [image, setImage] = useState<Image | NewImage | undefined>(
     defaultValue || undefined
   );
 

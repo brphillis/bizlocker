@@ -1,3 +1,9 @@
+import type {
+  Brand,
+  ProductCategory,
+  ProductSubCategory,
+} from "@prisma/client";
+import type { BlockContent } from "~/models/blocks.server";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import SelectGender from "~/components/Forms/Select/SelectGender";
 
@@ -7,8 +13,8 @@ type Props = {
   setSelectedItems: Function;
   productCategories: ProductCategory[];
   productSubCategories: ProductSubCategory[];
-  brands: Brand[];
-  defaultValues: ProductBlockContent;
+  brands: Brand[] | null;
+  defaultValues: BlockContent;
 };
 
 const ProductBlockOptions = ({

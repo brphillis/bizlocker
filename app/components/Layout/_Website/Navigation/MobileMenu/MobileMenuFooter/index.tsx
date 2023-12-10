@@ -1,3 +1,4 @@
+import type { User } from "@prisma/client";
 import { useNavigate, useSubmit } from "@remix-run/react";
 import { IoLogOutOutline } from "react-icons/io5";
 

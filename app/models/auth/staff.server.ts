@@ -4,8 +4,8 @@ import type { Image, Staff, UserDetails } from "@prisma/client";
 import { getUserDataFromSession, STAFF_SESSION_KEY } from "~/session.server";
 
 export interface StaffWithDetails extends Staff {
-  userDetails: UserDetails | null;
-  avatar: Image | null;
+  userDetails?: UserDetails | null;
+  avatar?: Image | null;
 }
 export const getStaff = async (
   id: string

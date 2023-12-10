@@ -13,17 +13,19 @@ import type {
   ProductSubCategory,
   Promotion,
 } from "@prisma/client";
+import type { BlockContent } from "~/models/blocks.server";
+import type { Page, PageBlock } from "~/models/pageBuilder.server";
 import BlockSelect from "./BlockSelect";
-import BlockOptions from "./BlockOptions";
 import ResultsTable from "./Content/ResultsTable";
 import ContentSearch from "./Content/ContentSearch";
 import ResultsImages from "./Content/ResultsImages";
 import SelectedContent from "./Content/SelectedContent";
-import TextBlockContent from "./Content/TextBlockContent";
 import SquareIconButton from "../Buttons/SquareIconButton";
 import ProductBlockOptions from "./Options/ProductBlockOptions";
 import ArticleBlockOptions from "./Options/ArticleBlockOptions";
 import BackSubmitButtons from "../Forms/Buttons/BackSubmitButtons";
+import BlockOptionsModule from "./BlockOptions";
+import TextBlockContentModule from "./Content/TextBlockContent";
 
 type Props = {
   previewPage: Page;
@@ -32,7 +34,7 @@ type Props = {
   updateSuccess: boolean;
   productCategories: ProductCategory[];
   productSubCategories: ProductSubCategory[];
-  brands: Brand[];
+  brands: Brand[] | null;
   articleCategories: ArticleCategory[];
   colors: string[];
 };
@@ -231,7 +233,7 @@ const PageBuilder = ({
             setSelectedBlock={setSelectedBlock}
           />
 
-          <BlockOptions
+          <BlockOptionsModule
             selectedBlock={selectedBlock}
             defaultValues={blocks?.[editingIndex]?.blockOptions[0]}
             selectedItems={selectedItems}
@@ -264,7 +266,7 @@ const PageBuilder = ({
             defaultValues={blocks?.[editingIndex]?.content as BlockContent}
           />
 
-          <TextBlockContent
+          <TextBlockContentModule
             selectedBlock={selectedBlock}
             selectedItems={selectedItems}
             setSelectedItems={setSelectedItems}

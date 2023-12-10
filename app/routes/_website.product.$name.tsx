@@ -9,7 +9,12 @@ import { Toast } from "~/components/Notifications/Toast";
 import ProductGrid from "~/components/Grids/ProductGrid";
 import { getVariantUnitPrice } from "~/helpers/numberHelpers";
 import PageWrapper from "~/components/Layout/_Website/PageWrapper";
-import { getProduct, searchProducts } from "~/models/products.server";
+import {
+  type ProductVariantWithDetails,
+  type ProductWithDetails,
+  getProduct,
+  searchProducts,
+} from "~/models/products.server";
 import {
   Link,
   useLoaderData,
@@ -21,13 +26,27 @@ import {
   getAvailableColors,
   getAvailableSizes,
 } from "~/helpers/productHelpers";
+import type { Image } from "~/models/images.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
   const productId = url.searchParams.get("id");
 
-  const product =
-    productId && ((await getProduct(productId)) as unknown as Product);
+  if (!productId) {
+    throw new Response(null, {
+      status: 404,
+      statusText: "Product Not Found",
+    });
+  }
+
+  const product = await getProduct(productId);
+
+  if (!product) {
+    throw new Response(null, {
+      status: 404,
+      statusText: "Product Not Found",
+    });
+  }
 
   const { brandId } = product || {};
 
@@ -38,21 +57,18 @@ export const loader = async ({ request }: LoaderArgs) => {
   }
 
   // get recommended products
-  const recommendCategory = (product as Product).productSubCategories?.[0]
-    .productCategory?.name;
-  const recommendGender = (product as Product).gender;
+  const recommendCategory =
+    product?.productSubCategories?.[0].productCategory?.name;
+  const recommendGender = product?.gender;
 
   const formData = new FormData();
-  if (recommendCategory) {
-    formData.set("productCategory", recommendCategory);
-  }
-  if (productId) {
-    formData.set("excludeId", productId);
-  }
-  formData.set("gender", recommendGender);
-  formData.set("isActive", "true");
 
+  formData.set("excludeId", productId);
+  formData.set("isActive", "true");
   formData.set("perPage", "5");
+
+  recommendCategory && formData.set("productCategory", recommendCategory);
+  recommendGender && formData.set("gender", recommendGender);
 
   const { products: similarProducts } = await searchProducts(
     Object.fromEntries(formData),
@@ -68,13 +84,15 @@ const Product = () => {
 
   const submit = useSubmit();
 
-  const { name, images, variants, description } = product as Product;
+  const { name, images, variants, description } = product;
   const { name: brandName, image: brandImage } = brand || {};
 
   const [selectedSize, setSelectedSize] = useState<string | undefined>(
-    variants[0]?.size || undefined
+    variants?.[0]?.size || undefined
   );
-  const [selectedColor, setSelectedColor] = useState<string>(variants[0].color);
+  const [selectedColor, setSelectedColor] = useState<string | null | undefined>(
+    variants?.[0]?.color
+  );
   const [selectedImage, setSelectedImage] = useState<Image | undefined>(
     images?.[0]
   );
@@ -84,7 +102,7 @@ const Product = () => {
   const updateColors = (
     size?: string,
     initializing?: boolean
-  ): string[] | undefined => {
+  ): (string | null | undefined)[] | undefined => {
     if (size && product) {
       const colors = getAvailableColors(product, size);
       if (colors) {
@@ -98,15 +116,17 @@ const Product = () => {
     }
   };
 
-  const [availableColors, setAvailableColors] = useState<string[] | undefined>(
-    variants[0]?.size
+  const [availableColors, setAvailableColors] = useState<
+    (string | null | undefined)[] | undefined
+  >(
+    variants?.[0]?.size
       ? (updateColors(variants[0]?.size, true) as string[])
       : undefined
   );
 
-  const [selectedVariant, setSelectedVariant] = useState<ProductVariant>(
-    variants[0]
-  );
+  const [selectedVariant, setSelectedVariant] = useState<
+    ProductVariantWithDetails | undefined
+  >(variants?.[0]);
 
   const handleAddToCart = () => {
     const selectedProduct = returnProductFromSelections();
@@ -128,14 +148,16 @@ const Product = () => {
     }
   };
 
-  const returnProductFromSelections = (): ProductVariant => {
-    return variants.filter(
+  const returnProductFromSelections = ():
+    | ProductVariantWithDetails
+    | undefined => {
+    return variants?.filter(
       (e) => e.size === selectedSize && e.color === selectedColor
     )[0];
   };
 
   useEffect(() => {
-    const selection = variants.filter(
+    const selection = variants?.filter(
       (e) => e.size === selectedSize && e.color === selectedColor
     )[0];
 
@@ -151,7 +173,8 @@ const Product = () => {
   const hasSizes = availableSizes && availableSizes[0] !== null;
   const hasColors = availableColors && availableColors[0] !== null;
 
-  const selectedVariantStock = calculateVariantStock(selectedVariant);
+  const selectedVariantStock =
+    selectedVariant && calculateVariantStock(selectedVariant);
 
   const [loading, setLoading] = useState<boolean>(false);
   const [submitted, setSubmitted] = useState<boolean>(false);
@@ -180,23 +203,27 @@ const Product = () => {
           <div className="flex h-[740px] gap-3 max-xl:h-max max-xl:flex-col max-xl:gap-6">
             <div className="scrollbar-hide flex h-full flex-col justify-start gap-3 overflow-auto max-xl:order-2 max-xl:h-[200px] max-xl:flex-row">
               {images?.map(({ href }: Image, i: number) => {
-                return (
-                  <img
-                    key={"productImage_" + i}
-                    alt="ecommerce"
-                    className="m-0 h-[calc(100%/3)] w-auto cursor-pointer object-cover shadow-sm max-xl:h-[200px] max-sm:shadow-md"
-                    onClick={() => setSelectedImage(images[i])}
-                    src={href}
-                  />
-                );
+                if (href) {
+                  return (
+                    <img
+                      key={"productImage_" + i}
+                      alt="ecommerce"
+                      className="m-0 h-[calc(100%/3)] w-auto cursor-pointer object-cover shadow-sm max-xl:h-[200px] max-sm:shadow-md"
+                      onClick={() => setSelectedImage(images[i])}
+                      src={href}
+                    />
+                  );
+                } else return null;
               })}
             </div>
             <div className="relative mx-auto block h-full w-max max-w-[100vw] max-xl:order-1 max-xl:h-2/3">
-              <img
-                alt={name + "_focusedImage"}
-                className="h-full w-auto object-cover object-center shadow-md max-xl:px-3 max-xl:shadow-none"
-                src={selectedImage?.href}
-              />
+              {selectedImage?.href && (
+                <img
+                  alt={name + "_focusedImage"}
+                  className="h-full w-auto object-cover object-center shadow-md max-xl:px-3 max-xl:shadow-none"
+                  src={selectedImage?.href}
+                />
+              )}
 
               {brandImage?.href && (
                 <img
@@ -234,11 +261,13 @@ const Product = () => {
                         }}
                       >
                         {availableSizes?.map((size) => {
-                          return (
-                            <option key={size} value={size}>
-                              {size}
-                            </option>
-                          );
+                          if (size) {
+                            return (
+                              <option key={size} value={size}>
+                                {size}
+                              </option>
+                            );
+                          } else return null;
                         })}
                       </select>
                     </div>
@@ -280,35 +309,44 @@ const Product = () => {
                 </div>
 
                 <div className="title-font flex items-end gap-3 text-2xl font-medium text-gray-900">
-                  {(selectedVariant.isOnSale || selectedVariant.isPromoted) && (
+                  {(selectedVariant?.isOnSale ||
+                    selectedVariant?.isPromoted) && (
                     <div className="text-sm text-gray-400 line-through">
-                      ${selectedVariant.price.toFixed(2)}
+                      ${selectedVariant?.price.toFixed(2)}
                     </div>
                   )}
-                  ${product && getVariantUnitPrice(selectedVariant, product)}
-                  {selectedVariant.isPromoted &&
+                  $
+                  {selectedVariant &&
+                    product &&
+                    getVariantUnitPrice(selectedVariant, product)}
+                  {selectedVariant?.isPromoted &&
+                    selectedVariantStock &&
                     selectedVariantStock.totalStock > 0 && (
                       <div className="mb-1 w-max rounded-sm bg-green-500 px-2 py-1 text-xs text-brand-white">
                         PROMO
                       </div>
                     )}
-                  {selectedVariant.isOnSale &&
+                  {selectedVariant?.isOnSale &&
+                    selectedVariantStock &&
                     selectedVariantStock.totalStock > 0 && (
                       <div className="mb-1 w-max rounded-sm bg-red-500 px-2 py-1 text-xs text-brand-white">
                         SALE
                       </div>
                     )}
-                  {selectedVariantStock.totalStock <= 0 && (
-                    <div className="mb-1 w-max rounded-sm bg-red-500 px-2 py-1 text-xs text-brand-white">
-                      NO STOCK
-                    </div>
-                  )}
+                  {selectedVariantStock &&
+                    selectedVariantStock.totalStock <= 0 && (
+                      <div className="mb-1 w-max rounded-sm bg-red-500 px-2 py-1 text-xs text-brand-white">
+                        NO STOCK
+                      </div>
+                    )}
                 </div>
               </div>
 
               <div className="flex items-center gap-3">
                 <button
-                  disabled={selectedVariantStock.totalStock <= 0}
+                  disabled={
+                    selectedVariantStock && selectedVariantStock.totalStock <= 0
+                  }
                   className="ml-auto flex !rounded-sm border-0 bg-primary px-3 py-2 text-white hover:bg-primary focus:outline-none disabled:opacity-50 max-sm:order-2"
                   onClick={handleAddToCart}
                 >
@@ -375,7 +413,7 @@ const Product = () => {
               You might also like...
             </p>
             <ProductGrid
-              products={similarProducts as Product[]}
+              products={similarProducts as ProductWithDetails[]}
               cols={5}
               enablePlaceHolder={true}
             />

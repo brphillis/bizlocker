@@ -1,7 +1,9 @@
+import type { BlockOptions } from "@prisma/client";
+
 type Props = {
-  selectedBlock: BlockName | undefined;
-  defaultValues: BlockOptions;
-  selectedBlockOptions: BlockMasterOptions | undefined;
+  selectedBlock?: BlockName;
+  defaultValues?: BlockOptions;
+  selectedBlockOptions?: BlockMasterOptions;
 };
 
 const SizeOptions = ({

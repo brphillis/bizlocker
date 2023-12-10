@@ -1,3 +1,7 @@
+import type {
+  CartItemWithDetails,
+  CartWithDetails,
+} from "~/models/cart.server";
 import { IoCartOutline, IoClose } from "react-icons/io5";
 import { useEffect, useRef, useState } from "react";
 import { Form, useNavigate } from "react-router-dom";
@@ -7,7 +11,7 @@ import {
   getVariantUnitPrice,
 } from "~/helpers/numberHelpers";
 
-const CartButton = ({ id: cartId, cartItems }: Cart) => {
+const CartButton = ({ id: cartId, cartItems }: CartWithDetails) => {
   const navigate = useNavigate();
   const cartModalRef = useRef<HTMLDivElement | null>(null);
 
@@ -26,8 +30,10 @@ const CartButton = ({ id: cartId, cartItems }: Cart) => {
   };
 
   useEffect(() => {
-    const total = calculateCartTotal(cartItems);
-    setTotalPrice(total);
+    if (cartItems) {
+      const total = calculateCartTotal(cartItems);
+      setTotalPrice(total);
+    }
   }, [cartItems]);
 
   return (
@@ -37,7 +43,7 @@ const CartButton = ({ id: cartId, cartItems }: Cart) => {
         onClick={handleOpen}
         className="relative cursor-pointer marker:h-20"
       >
-        {cartItems?.length > 0 && (
+        {cartItems && cartItems?.length > 0 && (
           <div className="absolute right-[-6px] top-[-6px] flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">
             {cartItems?.length}
           </div>
@@ -63,28 +69,29 @@ const CartButton = ({ id: cartId, cartItems }: Cart) => {
           <div className="mt-3 text-center font-bold">Your Cart</div>
           <ul className="mb-12">
             <div className="max-h-[400px] overflow-y-auto">
-              {cartItems
-                ?.sort((a, b) =>
-                  a.variant.product.name.localeCompare(b.variant.product.name)
-                )
-                .reverse()
-                .map(({ variant, quantity }: CartItem, index) => {
-                  const { product, id: variantId, name } = variant;
-                  const { href: imageSrc, altText } = product.images?.[0];
+              {cartItems?.map(
+                ({ variant, quantity }: CartItemWithDetails, index) => {
+                  const { product, id: variantId, name } = variant || {};
+                  const { href: imageSrc, altText } =
+                    product?.images?.[0] || {};
 
                   return (
                     <div
                       key={"cartButton_item_" + variant + "_" + index}
                       className="relative mx-3 mb-1 flex flex-col items-center justify-center gap-1 rounded-sm border border-base-300 bg-base-200/50 px-3 py-3 text-brand-black"
                     >
-                      <img
-                        alt={"cartItem_" + altText}
-                        src={imageSrc}
-                        className="h-20 w-20 cursor-pointer rounded-sm border border-base-300 object-cover"
-                        onClick={() =>
-                          navigate(`/product/${product?.name}?id=${product.id}`)
-                        }
-                      />
+                      {imageSrc && (
+                        <img
+                          alt={"cartItem_" + altText}
+                          src={imageSrc}
+                          className="h-20 w-20 cursor-pointer rounded-sm border border-base-300 object-cover"
+                          onClick={() =>
+                            navigate(
+                              `/product/${product?.name}?id=${product?.id}`
+                            )
+                          }
+                        />
+                      )}
 
                       {variantId && (
                         <CartAddSubtractButton
@@ -97,7 +104,9 @@ const CartButton = ({ id: cartId, cartItems }: Cart) => {
                       <div
                         className="cursor-pointer hover:font-semibold"
                         onClick={() =>
-                          navigate(`/product/${product?.name}?id=${product.id}`)
+                          navigate(
+                            `/product/${product?.name}?id=${product?.id}`
+                          )
                         }
                       >
                         {product?.name}
@@ -106,7 +115,12 @@ const CartButton = ({ id: cartId, cartItems }: Cart) => {
                       <div className="text-xs opacity-50">{name}</div>
 
                       <div className="flex flex-row gap-3">
-                        <div>${getVariantUnitPrice(variant, product)}</div>
+                        <div>
+                          $
+                          {variant &&
+                            product &&
+                            getVariantUnitPrice(variant, product)}
+                        </div>
                         <div> x {quantity}</div>
                       </div>
 
@@ -119,7 +133,8 @@ const CartButton = ({ id: cartId, cartItems }: Cart) => {
                       )}
                     </div>
                   );
-                })}
+                }
+              )}
             </div>
 
             <input name="cartId" value={cartId || ""} readOnly hidden />
