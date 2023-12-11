@@ -304,7 +304,7 @@ const ManageHomePage = () => {
     searchResults,
     updateSuccess,
     publishSuccess,
-  } = useActionData() as ActionReturnTypes;
+  } = (useActionData() as ActionReturnTypes) || {};
 
   const [currentVersion, setCurrentVersion] = useState<Page | null>(
     currentPreviewPage

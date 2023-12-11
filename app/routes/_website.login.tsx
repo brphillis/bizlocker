@@ -61,7 +61,7 @@ export const action = async ({ request }: ActionArgs) => {
 export const meta: V2_MetaFunction = () => [{ title: "Login" }];
 
 export default function LoginPage() {
-  const { validationErrors } = useActionData() as ActionReturnTypes;
+  const { validationErrors } = (useActionData() as ActionReturnTypes) || {};
 
   return (
     <AuthPageWrapper>

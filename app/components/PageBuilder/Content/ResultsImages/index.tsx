@@ -58,7 +58,7 @@ const ResultsImages = ({
                       className="relative h-32 w-32 overflow-hidden transition-all duration-300 hover:scale-105"
                     >
                       <div
-                        className="absolute bottom-3 right-3 flex h-6 w-6 cursor-pointer select-none items-center justify-center rounded-full bg-primary text-brand-white transition hover:bg-primary-focus"
+                        className="absolute bottom-3 right-3 flex h-6 w-6 cursor-pointer select-none items-center justify-center rounded-full bg-primary text-brand-white transition hover:bg-primary-dark"
                         onClick={() => {
                           const imageId = searchResults[index].id;
                           if (imageId) {
@@ -69,7 +69,7 @@ const ResultsImages = ({
                         <IoAdd size={12} />
                       </div>
 
-                      <button className="absolute bottom-3 left-3 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-primary text-brand-white transition hover:bg-primary-focus">
+                      <button className="absolute bottom-3 left-3 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-primary text-brand-white transition hover:bg-primary-dark">
                         <IoEllipsisVertical size={12} />
                       </button>
                       {href && (

@@ -68,7 +68,8 @@ export const action = async ({ request }: ActionArgs) => {
 
 const Address = () => {
   const { userAddress } = useLoaderData<typeof loader>();
-  const { success, validationErrors } = useActionData() as ActionReturnTypes;
+  const { success, validationErrors } =
+    (useActionData() as ActionReturnTypes) || {};
 
   const [loading, setLoading] = useState<boolean>(false);
 

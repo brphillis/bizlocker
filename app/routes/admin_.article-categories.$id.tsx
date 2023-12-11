@@ -85,7 +85,7 @@ export const action = async ({ request, params }: ActionArgs) => {
 
 const ModifyArticleCategory = () => {
   const { articleCategory } = useLoaderData<typeof loader>();
-  const { validationErrors } = useActionData() as ActionReturnTypes;
+  const { validationErrors } = (useActionData() as ActionReturnTypes) || {};
 
   const [loading, setLoading] = useState<boolean>(false);
 

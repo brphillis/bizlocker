@@ -80,7 +80,8 @@ export const action = async ({ request, params }: ActionArgs) => {
 const ResetPassword = () => {
   const navigate = useNavigate();
   const verified = useLoaderData();
-  const { validationErrors, success } = useActionData() as ActionReturnTypes;
+  const { validationErrors, success } =
+    (useActionData() as ActionReturnTypes) || {};
 
   const [searchParams] = useSearchParams();
   const email = searchParams.get("email");

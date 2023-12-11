@@ -140,7 +140,8 @@ const ModifyProductCategory = () => {
     articleCategories,
   } = useLoaderData<typeof loader>();
 
-  const { success, validationErrors } = useActionData() as ActionReturnTypes;
+  const { success, validationErrors } =
+    (useActionData() as ActionReturnTypes) || {};
 
   const [selectedProductSubCategories, setSelectedProductSubCategories] =
     useState<string[]>(

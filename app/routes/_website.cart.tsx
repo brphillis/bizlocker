@@ -142,7 +142,7 @@ const Cart = () => {
     useLoaderData<typeof loader>();
 
   const { validationErrors, actionShippingOptions } =
-    useActionData() as ActionReturnTypes;
+    (useActionData() as ActionReturnTypes) || {};
 
   const { cartItems } = cart || {};
 

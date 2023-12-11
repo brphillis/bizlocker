@@ -1,6 +1,6 @@
 import { useLoaderData } from "@remix-run/react";
 import { getBlocks } from "~/helpers/blockHelpers";
-import { type V2_MetaFunction } from "@remix-run/node";
+import { json, type V2_MetaFunction } from "@remix-run/node";
 import BlockRenderer from "~/components/BlockRenderer";
 import { getHomePage } from "~/models/homePage.server";
 import PageWrapper from "~/components/Layout/_Website/PageWrapper";
@@ -26,16 +26,17 @@ export const loader = async () => {
     backgroundColor = homePage.backgroundColor;
   }
 
-  return {
+  return json({
     blocks,
     title,
     description,
     backgroundColor,
-  };
+  });
 };
 
 const Home = () => {
   const { blocks, backgroundColor } = useLoaderData<typeof loader>();
+
   return (
     <PageWrapper gap="medium" backgroundColor={backgroundColor}>
       <>{blocks && <BlockRenderer blocks={blocks} />}</>

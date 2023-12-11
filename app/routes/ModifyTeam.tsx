@@ -150,7 +150,7 @@
 //                           <td>
 //                             <IoAdd
 //                               size={24}
-//                               className="cursor-pointer rounded-full bg-primary p-[0.3rem] text-primary-content transition-colors duration-300 hover:bg-primary-focus"
+//                               className="cursor-pointer rounded-full bg-primary p-[0.3rem] text-primary-content transition-colors duration-300 hover:bg-primary-dark"
 //                               onClick={() => navigate(`/admin/staff/${id}`)}
 //                             />
 //                           </td>

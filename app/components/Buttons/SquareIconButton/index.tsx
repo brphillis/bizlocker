@@ -48,7 +48,7 @@ const SquareIconButton = ({
 
   switch (color) {
     case "primary":
-      coloring = "bg-primary hover:bg-primary-focus";
+      coloring = "bg-primary hover:bg-primary-dark";
       break;
 
     case "error":

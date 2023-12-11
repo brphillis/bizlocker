@@ -179,7 +179,8 @@ const Product = () => {
     promotions,
     availableColors,
   } = useLoaderData<typeof loader>();
-  const { validationErrors, success } = useActionData() as ActionReturnTypes;
+  const { validationErrors, success } =
+    (useActionData() as ActionReturnTypes) || {};
 
   const navigate = useNavigate();
 

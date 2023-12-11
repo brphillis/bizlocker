@@ -42,7 +42,8 @@ export const meta: V2_MetaFunction = () => [{ title: "Register" }];
 
 export const RegisterPage = () => {
   const navigate = useNavigate();
-  const { validationErrors, success } = useActionData() as ActionReturnTypes;
+  const { validationErrors, success } =
+    (useActionData() as ActionReturnTypes) || {};
 
   useEffect(() => {
     const successPopup = () => {

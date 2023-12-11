@@ -104,7 +104,8 @@ export const action = async ({ request, params }: ActionArgs) => {
 
 const ModifyDepartment = () => {
   const department = useLoaderData<typeof loader>();
-  const { validationErrors, success } = useActionData() as ActionReturnTypes;
+  const { validationErrors, success } =
+    (useActionData() as ActionReturnTypes) || {};
 
   const navigate = useNavigate();
 

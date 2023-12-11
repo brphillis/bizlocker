@@ -78,7 +78,7 @@ export const action = async ({ request, params }: ActionArgs) => {
 const ModifyTeam = () => {
   const { staff, totalPages, stores, teamId } = useLoaderData<typeof loader>();
 
-  const { success } = useActionData() as ActionReturnTypes;
+  const { success } = (useActionData() as ActionReturnTypes) || {};
   const navigate = useNavigate();
   const submit = useSubmit();
 
@@ -198,7 +198,7 @@ const ModifyTeam = () => {
                         <td>
                           <IoAdd
                             size={24}
-                            className="cursor-pointer rounded-full bg-primary p-[0.3rem] text-primary-content transition-colors duration-300 hover:bg-primary-focus"
+                            className="cursor-pointer rounded-full bg-primary p-[0.3rem] text-primary-content transition-colors duration-300 hover:bg-primary-dark"
                             onClick={() =>
                               handleAddUserToTeam(id, firstName, lastName)
                             }

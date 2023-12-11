@@ -122,7 +122,7 @@ const ModifyStockTransfer = () => {
   const { stockTransferRequest, stores, statusList } =
     useLoaderData<typeof loader>();
   const { validationErrors, success, notification, permissionError } =
-    useActionData() as ActionReturnTypes;
+    (useActionData() as ActionReturnTypes) || {};
 
   useNotification(notification);
   const navigate = useNavigate();
