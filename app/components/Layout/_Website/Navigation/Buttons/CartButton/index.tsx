@@ -62,7 +62,7 @@ const CartButton = ({ id: cartId, cartItems }: CartWithDetails) => {
           className="
           absolute right-2 top-2
           cursor-pointer
-          rounded-full bg-primary p-[0.2rem] text-white hover:bg-primary-focus"
+          rounded-full bg-primary p-[0.2rem] text-white hover:bg-primary-dark"
         />
 
         <Form method="POST" className="mb-6 flex flex-col gap-3">
@@ -150,7 +150,7 @@ const CartButton = ({ id: cartId, cartItems }: CartWithDetails) => {
           <div className="absolute bottom-0 left-1/2 my-3 flex w-full translate-x-[-50%] flex-col gap-1 px-3">
             <button
               type="button"
-              className="lg btn-md relative bottom-[-1px] rounded-sm bg-primary pr-4 font-bold tracking-wide !text-white hover:bg-primary-focus"
+              className="lg btn-md relative bottom-[-1px] rounded-sm bg-primary pr-4 font-bold tracking-wide !text-white hover:bg-primary-dark"
               onClick={() => navigate(`/cart`)}
             >
               Buy Now

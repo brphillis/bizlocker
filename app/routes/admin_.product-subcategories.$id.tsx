@@ -115,7 +115,8 @@ const ModifyProductSubCategory = () => {
   const navigate = useNavigate();
   const { productSubCategory, productCategories } =
     useLoaderData<typeof loader>();
-  const { validationErrors, success } = useActionData() as ActionReturnTypes;
+  const { validationErrors, success } =
+    (useActionData() as ActionReturnTypes) || {};
 
   const [loading, setLoading] = useState<boolean>(false);
 

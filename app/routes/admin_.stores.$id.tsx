@@ -125,7 +125,8 @@ export const action = async ({ request, params }: ActionArgs) => {
 
 const ModifyStore = () => {
   const { store } = useLoaderData<typeof loader>();
-  const { validationErrors, success } = useActionData() as ActionReturnTypes;
+  const { validationErrors, success } =
+    (useActionData() as ActionReturnTypes) || {};
 
   const navigate = useNavigate();
 

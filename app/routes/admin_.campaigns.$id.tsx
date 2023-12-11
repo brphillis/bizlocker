@@ -151,7 +151,8 @@ export const action = async ({ request, params }: ActionArgs) => {
 const ModifyCampaign = () => {
   const { campaign, departments, productSubCategories, brands } =
     useLoaderData<typeof loader>();
-  const { validationErrors, success } = useActionData() as ActionReturnTypes;
+  const { validationErrors, success } =
+    (useActionData() as ActionReturnTypes) || {};
 
   const navigate = useNavigate();
 

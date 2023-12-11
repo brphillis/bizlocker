@@ -577,7 +577,7 @@ const ProductVariantFormModule = ({
 
             <button
               type="button"
-              className="btn rounded-sm !border-base-300 bg-primary text-white hover:bg-primary-focus"
+              className="btn rounded-sm !border-base-300 bg-primary text-white hover:bg-primary-dark"
               onClick={handleAddVariant}
             >
               Confirm Variant

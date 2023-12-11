@@ -20,6 +20,7 @@ export const action = async ({ request }: ActionArgs) => {
   const password = formData.get("password");
   const redirectTo = safeRedirect(formData.get("redirectTo"), "/admin/home");
   const remember = formData.get("remember");
+
   let validationErrors: string[] = [];
 
   if (!isValidEmail(email as string)) {
@@ -47,13 +48,21 @@ export const action = async ({ request }: ActionArgs) => {
       redirectTo,
     });
   } catch (error) {
-    const validationErrors = [error];
-    return json({ validationErrors });
+    if (error instanceof Error) {
+      const validationErrors = [error.message];
+      return json({ validationErrors });
+    } else {
+      throw new Response(null, {
+        status: 500,
+        statusText: "An Unexpected Error Has Occured",
+      });
+    }
   }
 };
 
 const AdminLogin = () => {
-  const { user, validationErrors } = useActionData() as ActionReturnTypes;
+  const { user, validationErrors } =
+    (useActionData() as ActionReturnTypes) || {};
 
   const navigate = useNavigate();
   const location = useLocation();

@@ -128,7 +128,8 @@ export const action = async ({ request, params }: ActionArgs) => {
 const ModifyPromotion = () => {
   const navigate = useNavigate();
   const { promotion, departments } = useLoaderData<typeof loader>();
-  const { validationErrors, success } = useActionData() as ActionReturnTypes;
+  const { validationErrors, success } =
+    (useActionData() as ActionReturnTypes) || {};
 
   const { products } = (promotion as { products: ProductWithDetails[] }) || {};
 

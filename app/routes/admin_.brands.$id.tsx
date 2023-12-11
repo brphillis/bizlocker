@@ -94,7 +94,8 @@ export const action = async ({ request, params }: ActionArgs) => {
 const ModifyBrand = () => {
   const navigate = useNavigate();
   const { brand } = useLoaderData<typeof loader>();
-  const { validationErrors, success } = useActionData() as ActionReturnTypes;
+  const { validationErrors, success } =
+    (useActionData() as ActionReturnTypes) || {};
 
   const [loading, setLoading] = useState<boolean>(false);
 

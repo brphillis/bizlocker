@@ -99,7 +99,8 @@ export const action = async ({ request, params }: ActionArgs) => {
 
 const ModifyImage = () => {
   const { image } = useLoaderData<typeof loader>();
-  const { validationErrors, success } = useActionData() as ActionReturnTypes;
+  const { validationErrors, success } =
+    (useActionData() as ActionReturnTypes) || {};
 
   const navigate = useNavigate();
   let submit = useSubmit();

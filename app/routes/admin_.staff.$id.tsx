@@ -154,7 +154,7 @@ const ModifyStaff = () => {
   const navigate = useNavigate();
   const { staffMember, roles, stores, role } = useLoaderData<typeof loader>();
   const { validationErrors, permissionError, success } =
-    useActionData() as ActionReturnTypes;
+    (useActionData() as ActionReturnTypes) || {};
 
   const [loading, setLoading] = useState<boolean>(false);
   const [changingPassword, setChangingPassword] = useState<boolean>(false);
