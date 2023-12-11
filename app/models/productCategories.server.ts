@@ -13,6 +13,17 @@ export interface ProductCategoryWithDetails extends ProductCategory {
   productSubCategories?: ProductSubCategoryWithDetails[] | null;
 }
 
+export type NewProductCategory = {
+  name: string;
+  index: number;
+  department: string;
+  displayInNavigation: boolean;
+  isActive: boolean;
+  productSubCategories?: string[];
+  articleCategories?: string[];
+  id?: string;
+};
+
 export const getProductCategories = async (): Promise<
   ProductCategoryWithDetails[]
 > => {
@@ -44,7 +55,7 @@ export const getProductCategory = async (
 };
 
 export const upsertProductCategory = async (
-  categoryData: any
+  categoryData: NewProductCategory
 ): Promise<ProductCategory> => {
   const {
     id,

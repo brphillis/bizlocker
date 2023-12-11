@@ -32,6 +32,7 @@ import {
 } from "@remix-run/react";
 import {
   type ProductCategoryWithDetails,
+  type NewProductCategory,
   getProductCategory,
   upsertProductCategory,
 } from "~/models/productCategories.server";
@@ -79,6 +80,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
 export const action = async ({ request, params }: ActionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+
   if (!authenticated.valid) {
     return redirect("/admin/login");
   }
@@ -110,7 +112,7 @@ export const action = async ({ request, params }: ActionArgs) => {
         return json({ validationErrors });
       }
 
-      const categoryData = {
+      const categoryData: NewProductCategory = {
         name: name as string,
         index: parseInt(index as string),
         department: department as string,

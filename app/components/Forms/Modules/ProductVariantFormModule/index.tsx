@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import type { ValidationErrors } from "~/utility/validate";
 import { useNavigate } from "@remix-run/react";
 import { validateForm } from "~/utility/validate";
-import type { StockLevel } from "@prisma/client";
+import type { Color, Order, Product, StockLevel } from "@prisma/client";
 import { Toast } from "~/components/Notifications/Toast";
 import type {
   ProductVariantWithDetails,
@@ -15,6 +15,27 @@ type Props = {
   storeId: number | null;
   product: ProductWithDetails;
   availableColors: string[];
+};
+
+type NewProductVariant = {
+  id?: number;
+  name?: string;
+  sku?: string;
+  price?: number;
+  salePrice?: number;
+  isOnSale?: boolean;
+  isFragile?: boolean;
+  stock?: number;
+  product?: Product;
+  color?: Color;
+  size?: string;
+  length?: number;
+  width?: number;
+  height?: number;
+  weight?: number;
+  orders?: Order[];
+  isActive?: boolean;
+  isPromoted?: boolean;
 };
 
 const ProductVariantFormModule = ({

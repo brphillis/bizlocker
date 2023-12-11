@@ -1,4 +1,5 @@
 import type { BlockOptions } from "@prisma/client";
+import type { BlockContentType, BlockName } from "./blockMaster/types";
 import { searchCampaigns } from "~/models/campaigns.server";
 import { searchImages } from "~/models/images.server";
 import { searchProducts } from "~/models/products.server";
@@ -8,8 +9,7 @@ import {
   blockMaster,
   blockTypes,
   getBlockContentTypes,
-  type BlockName,
-} from "./blockMaster";
+} from "./blockMaster/blockMaster";
 import { searchBrands } from "~/models/brands.server";
 import { searchIcons } from "./icons";
 import { searchStores } from "~/models/stores.server";

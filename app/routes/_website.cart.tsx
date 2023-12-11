@@ -34,6 +34,7 @@ import applePayLogo from "../assets/logos/applePay-logo.svg";
 import googlePayLogo from "../assets/logos/googlePay-logo.svg";
 import mastercardLogo from "../assets/logos/mastercard-logo.svg";
 import type { Address } from "@prisma/client";
+import type { NewAddress } from "~/helpers/addressHelpers";
 
 export const loader = async ({ request }: LoaderArgs) => {
   let cart, user, userAddress, loaderShippingOptions, userDetails;

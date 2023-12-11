@@ -23,6 +23,7 @@ import {
   type StoreWithDetails,
   getStore,
   upsertStore,
+  type NewStore,
 } from "~/models/stores.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
 import { validateForm } from "~/utility/validate";
@@ -99,7 +100,7 @@ export const action = async ({ request, params }: ActionArgs) => {
     return json({ validationErrors });
   }
 
-  const updateData = {
+  const updateData: NewStore = {
     name: name as string,
     dateOfBirth: new Date(dateofbirth as string),
     phoneNumber: phoneNumber as string,

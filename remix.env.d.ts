@@ -1,6 +1,5 @@
 /// <reference types="@remix-run/dev" />
 /// <reference types="@remix-run/node" />
-/// <reference types="@prisma/client" />
 
 type Role = "DEVELOPER" | "ADMIN" | "MANAGER" | "STAFF" | "EDITOR" | "USER";
 
@@ -17,21 +16,6 @@ type ApprovalStatus =
   | "processing"
   | "complete";
 
-type BlockContentType =
-  | "campaign"
-  | "promotion"
-  | "image"
-  | "product"
-  | "productCategory"
-  | "productSubCategory"
-  | "brand"
-  | "article"
-  | "articleCategory"
-  | "richText"
-  | "gender"
-  | "icon"
-  | "store";
-
 type NavigationRouteItem = {
   name: string;
   icon?: string;
@@ -44,8 +28,10 @@ type SelectValue = {
   name: string;
 };
 
-type TransformToOptionalBooleans<T> = {
-  [K in keyof T]?: boolean;
+type ContentSelection = {
+  type: BlockContentType;
+  name: string;
+  contentId: number | string;
 };
 
 type BackgroundPatternName = "wavy" | "isometric";
@@ -54,44 +40,6 @@ interface LocalImage {
   altText: string;
   href: string;
 }
-
-type ContentSelection = {
-  type: BlockContentType;
-  name: string;
-  contentId: number | string;
-};
-
-type NewAddress = {
-  addressLine1?: string;
-  addressLine2?: string;
-  postcode?: string;
-  suburb?: string;
-  state?: string;
-  country?: string;
-  latitude?: string;
-  longitude?: string;
-};
-
-type NewProductVariant = {
-  id?: number;
-  name?: string;
-  sku?: string;
-  price?: number;
-  salePrice?: number;
-  isOnSale?: boolean;
-  isFragile?: boolean;
-  stock?: number;
-  product?: Product;
-  color?: Color;
-  size?: string;
-  length?: number;
-  width?: number;
-  height?: number;
-  weight?: number;
-  orders?: Order[];
-  isActive?: boolean;
-  isPromoted?: boolean;
-};
 
 type BasicSearchArgs = {
   id?: string;
@@ -118,4 +66,8 @@ type BasicSearchArgs = {
   perPage: number;
   sortBy?: string;
   sortOrder?: string;
+};
+
+type TransformToOptionalBooleans<T> = {
+  [K in keyof T]?: boolean;
 };

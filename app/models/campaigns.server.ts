@@ -28,6 +28,19 @@ export interface CampaignWithContent extends Campaign {
   tileImage?: Image | null;
 }
 
+export type NewCampaign = {
+  name: string;
+  department: string;
+  productSubCategories?: string[];
+  brands?: string[];
+  minSaleRange: string;
+  maxSaleRange: string;
+  gender: string;
+  parsedBanner: Image;
+  parsedTile: Image;
+  isActive: boolean;
+  id?: string;
+};
 export const getCampaigns = async (inDetail?: boolean): Promise<Campaign[]> => {
   if (inDetail) {
     return await prisma.campaign.findMany({
@@ -63,7 +76,7 @@ export const getCampaign = async (
 };
 
 export const upsertCampaign = async (
-  updateData: any
+  updateData: NewCampaign
 ): Promise<{
   createdCampaign: Campaign | null;
   updatedCampaign: Campaign | null;
@@ -82,11 +95,11 @@ export const upsertCampaign = async (
     id,
   } = updateData;
 
-  const brandData = brands.map((brandId: string) => ({
+  const brandData = brands?.map((brandId: string) => ({
     id: parseInt(brandId),
   }));
 
-  const productSubCategoryData = productSubCategories.map(
+  const productSubCategoryData = productSubCategories?.map(
     (categoryId: string) => ({
       id: parseInt(categoryId),
     })

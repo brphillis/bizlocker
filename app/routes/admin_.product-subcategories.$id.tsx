@@ -20,6 +20,7 @@ import {
   deleteProductSubCategory,
   getProductSubCategory,
   upsertProductSubCategory,
+  type NewProductSubCategory,
 } from "~/models/productSubCategories.server";
 import { useEffect, useState } from "react";
 import BasicInput from "~/components/Forms/Input/BasicInput";
@@ -27,10 +28,7 @@ import { validateForm } from "~/utility/validate";
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
-import {
-  type ProductCategoryWithDetails,
-  getProductCategories,
-} from "~/models/productCategories.server";
+import { getProductCategories } from "~/models/productCategories.server";
 import type { Image } from "@prisma/client";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
@@ -44,14 +42,6 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   const id = params?.id;
 
-  if (id === "add") {
-    const productSubCategory = {};
-    return json({ productSubCategory } as {
-      productSubCategory: ProductSubCategoryWithDetails;
-      productCategories: ProductCategoryWithDetails[];
-    });
-  }
-
   if (!id) {
     throw new Response(null, {
       status: 404,
@@ -59,7 +49,10 @@ export const loader = async ({ request, params }: LoaderArgs) => {
     });
   }
 
-  const productSubCategory = await getProductSubCategory(id);
+  const productSubCategory =
+    id === "add"
+      ? ({} as ProductSubCategoryWithDetails)
+      : await getProductSubCategory(id);
 
   if (!productSubCategory) {
     throw new Response(null, {
@@ -98,10 +91,10 @@ export const action = async ({ request, params }: ActionArgs) => {
         ? (JSON.parse(image?.toString()) as Image)
         : undefined;
 
-      const categoryData = {
-        name: name,
+      const categoryData: NewProductSubCategory = {
+        name: name as string,
         image: parsedImage,
-        productCategory: productCategory,
+        productCategory: productCategory as string,
         index: parseInt(index as string),
         displayInNavigation: displayInNavigation ? true : false,
         isActive: isActive ? true : false,

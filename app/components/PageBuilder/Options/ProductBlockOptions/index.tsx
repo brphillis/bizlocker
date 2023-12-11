@@ -6,7 +6,7 @@ import type {
 import type { BlockContent } from "~/models/blocks.server";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import SelectGender from "~/components/Forms/Select/SelectGender";
-import type { BlockName } from "~/utility/blockMaster";
+import type { BlockContentType, BlockName } from "~/utility/blockMaster/types";
 
 type Props = {
   selectedBlock: BlockName | undefined;

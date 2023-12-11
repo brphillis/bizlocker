@@ -6,7 +6,7 @@ import {
   disconnectBlock,
 } from "./pageBuilder.server";
 import { getBlocks } from "~/helpers/blockHelpers";
-import { includeBlocksData } from "~/utility/blockMaster";
+import { includeBlocksData } from "~/utility/blockMaster/blockMaster";
 import type { PageType } from "~/utility/pageBuilder";
 
 export const getPreviewPage = async (id: string): Promise<Page | null> => {

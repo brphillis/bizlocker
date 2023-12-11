@@ -23,7 +23,12 @@ import SelectGender from "~/components/Forms/Select/SelectGender";
 import UploadImageCollapse from "~/components/Forms/Upload/UploadImageCollapse";
 import DarkOverlay from "~/components/Layout/DarkOverlay";
 import { getBrands } from "~/models/brands.server";
-import { getCampaign, upsertCampaign } from "~/models/campaigns.server";
+import {
+  type CampaignWithContent,
+  getCampaign,
+  upsertCampaign,
+  type NewCampaign,
+} from "~/models/campaigns.server";
 import { getDepartments } from "~/models/departments.server";
 import { getProductSubCategories } from "~/models/productSubCategories.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
@@ -48,7 +53,6 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const departments = await getDepartments();
   const productSubCategories = await getProductSubCategories();
   const brands = await getBrands();
-  let campaign = null;
 
   if (!departments || !productSubCategories || !brands) {
     throw new Response(null, {
@@ -57,9 +61,8 @@ export const loader = async ({ request, params }: LoaderArgs) => {
     });
   }
 
-  if (id !== "add") {
-    campaign = await getCampaign(id);
-  }
+  const campaign =
+    id === "add" ? ({} as CampaignWithContent) : await getCampaign(id);
 
   if (!campaign) {
     throw new Response(null, {
@@ -121,7 +124,7 @@ export const action = async ({ request, params }: ActionArgs) => {
         ? (JSON.parse(tileImage?.toString()) as Image)
         : undefined;
 
-      const updateData = {
+      const updateData: NewCampaign = {
         name: name as string,
         department: department as string,
         productSubCategories:
@@ -130,8 +133,8 @@ export const action = async ({ request, params }: ActionArgs) => {
         minSaleRange: minSaleRange as string,
         maxSaleRange: maxSaleRange as string,
         gender: gender as string,
-        parsedBanner: parsedBanner,
-        parsedTile: parsedTile,
+        parsedBanner: parsedBanner as Image,
+        parsedTile: parsedTile as Image,
         isActive: isActive ? true : false,
         id: id,
       };

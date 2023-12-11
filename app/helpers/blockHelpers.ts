@@ -1,12 +1,13 @@
+import type { Article, Image, Product } from "@prisma/client";
 import type { Page, PageBlock } from "~/models/pageBuilder.server";
-import type { Article, Product, Image } from "@prisma/client";
+import type { BlockContentType, BlockName } from "~/utility/blockMaster/types";
 import {
-  type BlockWithBlockOptions,
   fetchBlockArticles,
   fetchBlockProducts,
+  type BlockWithBlockOptions,
 } from "~/models/blocks.server";
-import { type BlockName, getBlockContentTypes } from "../utility/blockMaster";
 import { isArrayofStrings } from "./arrayHelpers";
+import { getBlockContentTypes } from "../utility/blockMaster/blockMaster";
 
 // Returns the object array nessesery for populating a page in the blockrenderer
 // Main constructor function for preparing a block for the BlockRenderer

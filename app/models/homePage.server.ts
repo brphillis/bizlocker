@@ -1,6 +1,6 @@
 import type { Page } from "./pageBuilder.server";
 import { prisma } from "~/db.server";
-import { includeBlocksData } from "~/utility/blockMaster";
+import { includeBlocksData } from "~/utility/blockMaster/blockMaster";
 
 export const getHomePage = async (): Promise<Page> => {
   const homePage = (await prisma.homePage.findFirst({

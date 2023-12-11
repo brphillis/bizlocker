@@ -5,10 +5,10 @@ import type {
   Promotion,
   Store,
 } from "@prisma/client";
+import type { BlockContentType, BlockName } from "~/utility/blockMaster/types";
 import { IoCaretForwardCircleSharp } from "react-icons/io5";
 import Icon from "~/components/Icon";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
-import { type BlockName } from "~/utility/blockMaster";
 
 type Props = {
   selectedBlock: BlockName | undefined;

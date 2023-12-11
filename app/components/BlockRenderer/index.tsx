@@ -1,6 +1,6 @@
 import React from "react";
 import type { PageBlock } from "~/models/pageBuilder.server";
-import { blockMaster } from "~/utility/blockMaster";
+import { blockMaster } from "~/utility/blockMaster/blockMaster";
 
 type Props = {
   blocks: PageBlock[];

@@ -1,5 +1,6 @@
+import type { BlockName } from "~/utility/blockMaster/types";
 import { IoCloseCircle } from "react-icons/io5";
-import { type BlockName, blockMaster } from "~/utility/blockMaster";
+import { blockMaster } from "~/utility/blockMaster/blockMaster";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
 
 type Props = {

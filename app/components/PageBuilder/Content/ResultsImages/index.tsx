@@ -1,6 +1,6 @@
 import type { Image } from "@prisma/client";
 import { IoAdd, IoEllipsisVertical } from "react-icons/io5";
-import { type BlockName } from "~/utility/blockMaster";
+import type { BlockContentType, BlockName } from "~/utility/blockMaster/types";
 
 type Props = {
   selectedBlock: BlockName | undefined;

@@ -8,7 +8,11 @@ import DarkOverlay from "~/components/Layout/DarkOverlay";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import FormHeader from "~/components/Forms/Headers/FormHeader";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
-import { getDepartment, upsertDepartment } from "~/models/departments.server";
+import {
+  type NewDepartment,
+  getDepartment,
+  upsertDepartment,
+} from "~/models/departments.server";
 import type { ProductCategory } from "@prisma/client";
 import {
   Form,
@@ -82,7 +86,7 @@ export const action = async ({ request, params }: ActionArgs) => {
         return json({ validationErrors });
       }
 
-      const departmentData = {
+      const departmentData: NewDepartment = {
         name: name as string,
         index: parseInt(index as string),
         isActive: isActive ? true : false,
@@ -93,6 +97,7 @@ export const action = async ({ request, params }: ActionArgs) => {
       };
 
       await upsertDepartment(departmentData);
+
       return json({ success: true });
   }
 };

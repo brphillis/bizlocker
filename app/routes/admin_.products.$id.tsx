@@ -26,6 +26,7 @@ import {
   deleteProduct,
   getProduct,
   upsertProduct,
+  type NewProduct,
 } from "~/models/products.server";
 import ProductVariantFormModule from "~/components/Forms/Modules/ProductVariantFormModule";
 import UploadMultipleImages from "~/components/Forms/Upload/UploadMultipleImages/index.client";
@@ -142,7 +143,7 @@ export const action = async ({ request, params }: ActionArgs) => {
         ? (JSON.parse(heroImage?.toString()) as Image)
         : undefined;
 
-      const updateData = {
+      const updateData: NewProduct = {
         name: name as string,
         productSubCategories:
           productSubCategories && JSON.parse(productSubCategories as string),
@@ -152,8 +153,8 @@ export const action = async ({ request, params }: ActionArgs) => {
         gender: gender as string,
         isActive: isActive ? true : false,
         images:
-          images && (JSON.parse(images as string).filter(Boolean) as Image[]),
-        heroImage: parsedHeroImage,
+          (JSON.parse(images as string).filter(Boolean) as Image[]) || null,
+        heroImage: parsedHeroImage || null,
         brand: brand as string,
         promotion: promotion as string,
         id: id,

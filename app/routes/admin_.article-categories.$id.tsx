@@ -10,6 +10,7 @@ import {
   json,
 } from "@remix-run/node";
 import {
+  type ArticleCategoryWithDetails,
   deleteArticleCategory,
   getArticleCategory,
   upsertArticleCategory,
@@ -19,7 +20,6 @@ import BasicInput from "~/components/Forms/Input/BasicInput";
 import { validateForm } from "~/utility/validate";
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
-import type { ArticleCategory } from "@prisma/client";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
@@ -30,11 +30,6 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   const id = params?.id;
 
-  if (id === "add") {
-    const articleCategory = {};
-    return json({ articleCategory } as { articleCategory: ArticleCategory });
-  }
-
   if (!id) {
     throw new Response(null, {
       status: 404,
@@ -42,7 +37,10 @@ export const loader = async ({ request, params }: LoaderArgs) => {
     });
   }
 
-  const articleCategory = await getArticleCategory(id);
+  const articleCategory =
+    id === "add"
+      ? ({} as ArticleCategoryWithDetails)
+      : await getArticleCategory(id);
 
   if (!articleCategory) {
     throw new Response(null, {
@@ -56,6 +54,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
 export const action = async ({ request, params }: ActionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+
   if (!authenticated.valid) {
     return redirect("/login");
   }

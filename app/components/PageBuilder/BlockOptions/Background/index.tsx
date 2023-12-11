@@ -1,5 +1,5 @@
 import type { BlockOptions } from "@prisma/client";
-import type { BlockMasterOptions } from "~/utility/blockMaster";
+import type { BlockMasterOptions } from "~/utility/blockMaster/blockMaster";
 import ToolTip from "~/components/Indicators/ToolTip";
 
 type Props = {

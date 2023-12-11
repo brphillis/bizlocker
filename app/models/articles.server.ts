@@ -7,7 +7,7 @@ import type {
 } from "@prisma/client";
 import type { BlockWithBlockOptions } from "./blocks.server";
 import { prisma } from "~/db.server";
-import { includeBlocksData } from "~/utility/blockMaster";
+import { includeBlocksData } from "~/utility/blockMaster/blockMaster";
 import { getOrderBy } from "~/helpers/sortHelpers";
 import { type PageBlock, removeBlock } from "./pageBuilder.server";
 import { getBlocks } from "~/helpers/blockHelpers";

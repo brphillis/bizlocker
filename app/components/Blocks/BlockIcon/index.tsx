@@ -1,6 +1,6 @@
 import Icon from "~/components/Icon";
 import type * as IconsIO5 from "react-icons/io5";
-import { blockMaster } from "~/utility/blockMaster";
+import { blockMaster } from "~/utility/blockMaster/blockMaster";
 
 type BlockIconProps = {
   blockName: string;

@@ -20,6 +20,24 @@ export interface StoreWithDetails extends Store {
   toStoreStockRequest?: StockTransferRequestWithDetails[] | null;
 }
 
+export type NewStore = {
+  name: string;
+  dateOfBirth: string | Date;
+  phoneNumber: string;
+  faxNumber: string;
+  addressLine1: string;
+  addressLine2: string;
+  postcode: string;
+  suburb: string;
+  state: string;
+  country: string;
+  longitude: string;
+  latitude: string;
+  paymentProviderId: string;
+  isActive: boolean;
+  id?: string;
+};
+
 export function getStores(): Promise<Store[]> {
   return prisma.store.findMany();
 }
@@ -38,7 +56,7 @@ export const getStore = async (
 };
 
 export const upsertStore = async (
-  storeData: any
+  storeData: NewStore
 ): Promise<{ createdStore: Store | null; updatedStore: Store | null }> => {
   const {
     name,

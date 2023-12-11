@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Form, useSubmit } from "@remix-run/react";
-import { type BlockName, blockMaster } from "~/utility/blockMaster";
+import { blockMaster } from "~/utility/blockMaster/blockMaster";
+import type { BlockContentType, BlockName } from "~/utility/blockMaster/types";
 import BlockIcon from "~/components/Blocks/BlockIcon";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
 import { getBlockDefaultValues } from "~/helpers/blockHelpers";

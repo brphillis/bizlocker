@@ -41,6 +41,21 @@ export interface ProductVariantWithDetails extends ProductVariant {
   orderItems?: OrderItemWithDetails[] | null;
 }
 
+export type NewProduct = {
+  name: string;
+  productSubCategories: string[];
+  variants: ProductVariantWithDetails[];
+  infoURL: string;
+  description: string;
+  gender: string;
+  isActive: boolean;
+  images?: Image[] | null;
+  heroImage: Image | null;
+  brand: string;
+  promotion: string;
+  id?: string;
+};
+
 export const getProducts = async (
   count?: string
 ): Promise<ProductWithDetails[]> => {
@@ -98,7 +113,10 @@ export const getProduct = async (
   });
 };
 
-export const upsertProduct = async (request: Request, productData: any) => {
+export const upsertProduct = async (
+  request: Request,
+  productData: NewProduct
+) => {
   const {
     name,
     description,
@@ -133,9 +151,11 @@ export const upsertProduct = async (request: Request, productData: any) => {
 
   const repoLinksProduct: string[] = [];
 
-  for (const e of images) {
-    const repoLink = await uploadImage_Integration(e);
-    repoLinksProduct.push(repoLink);
+  if (images) {
+    for (const e of images) {
+      const repoLink = await uploadImage_Integration(e);
+      repoLinksProduct.push(repoLink);
+    }
   }
 
   let heroRepoLink = "";
@@ -252,21 +272,23 @@ export const upsertProduct = async (request: Request, productData: any) => {
     const createImages = [];
     const updateImages = [];
 
-    for (let i = 0; i < images.length; i++) {
-      const existingImage = existingProduct?.images[i];
-      const image = images[i];
+    if (images) {
+      for (let i = 0; i < images.length; i++) {
+        const existingImage = existingProduct?.images[i];
+        const image = images?.[i];
 
-      if (existingImage) {
-        updateImages.push({
-          id: existingImage.id,
-          href: repoLinksProduct[i],
-          altText: image.altText,
-        });
-      } else {
-        createImages.push({
-          href: repoLinksProduct[i],
-          altText: image.altText,
-        });
+        if (existingImage) {
+          updateImages.push({
+            id: existingImage.id,
+            href: repoLinksProduct[i],
+            altText: image.altText,
+          });
+        } else {
+          createImages.push({
+            href: repoLinksProduct[i],
+            altText: image.altText,
+          });
+        }
       }
     }
 

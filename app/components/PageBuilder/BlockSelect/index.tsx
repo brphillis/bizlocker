@@ -3,9 +3,9 @@ import BlockIcon from "~/components/Blocks/BlockIcon";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
 import {
   type BlockMaster,
-  type BlockName,
   blockMaster,
-} from "~/utility/blockMaster";
+} from "~/utility/blockMaster/blockMaster";
+import type { BlockName } from "~/utility/blockMaster/types";
 
 type Props = {
   setSelectedBlock: Function;

@@ -11,6 +11,15 @@ export interface DepartmentWithDetails extends Department {
   promotions?: PromotionWithContent[] | null;
 }
 
+export type NewDepartment = {
+  name: string;
+  index: number;
+  isActive: boolean;
+  displayInNavigation: boolean;
+  productCategories?: string[];
+  id?: string;
+};
+
 export const getDepartment = async (
   id: string
 ): Promise<DepartmentWithDetails | null> => {
@@ -33,7 +42,7 @@ export const getDepartments = async (): Promise<DepartmentWithDetails[]> => {
 };
 
 export const upsertDepartment = async (
-  departmentData: any
+  departmentData: NewDepartment
 ): Promise<Department> => {
   const { id, name, index, isActive, displayInNavigation, productCategories } =
     departmentData;
@@ -77,7 +86,7 @@ export const upsertDepartment = async (
     });
 
     data.productCategories = {
-      connect: productCategories.map((category: any) => ({
+      connect: productCategories?.map((category: any) => ({
         id: category.id,
       })),
     };

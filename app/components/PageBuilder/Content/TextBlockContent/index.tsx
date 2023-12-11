@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { BlockContent } from "~/models/blocks.server";
 import RichTextInput from "~/components/Forms/Input/RichTextInput/index.client";
-import { type BlockName } from "~/utility/blockMaster";
+import type { BlockName, BlockContentType } from "~/utility/blockMaster/types";
 
 type Props = {
   selectedBlock: BlockName | undefined;

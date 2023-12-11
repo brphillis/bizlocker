@@ -10,7 +10,12 @@ import { handleResourceSubmit } from "~/helpers/formHelpers";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import FormHeader from "~/components/Forms/Headers/FormHeader";
 import UploadImage from "~/components/Forms/Upload/UploadImage";
-import { deleteImage, getImage, upsertImage } from "~/models/images.server";
+import {
+  type ImageWithDetails,
+  deleteImage,
+  getImage,
+  upsertImage,
+} from "~/models/images.server";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
 import {
   json,
@@ -42,11 +47,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
     });
   }
 
-  let image = null;
-
-  if (id !== "add") {
-    image = await getImage(id);
-  }
+  const image = id === "add" ? ({} as ImageWithDetails) : await getImage(id);
 
   if (!image) {
     throw new Response(null, {

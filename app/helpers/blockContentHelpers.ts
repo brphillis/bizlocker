@@ -2,6 +2,7 @@ import type { BlockContent } from "~/models/blocks.server";
 import type { BrandWithContent } from "~/models/brands.server";
 import type { CampaignWithContent } from "~/models/campaigns.server";
 import type { PromotionWithContent } from "~/models/promotions.server";
+import type { BlockContentType } from "~/utility/blockMaster/types";
 import type {
   BlockOptions,
   Brand,

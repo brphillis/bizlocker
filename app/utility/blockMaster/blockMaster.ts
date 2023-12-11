@@ -6,15 +6,7 @@ import ProductBlock from "~/components/Blocks/ProductBlock";
 import ArticleBlock from "~/components/Blocks/ArticleBlock";
 import MapBlock from "~/components/Blocks/MapBlock";
 import type { BlockOptions } from "@prisma/client";
-
-export type BlockName =
-  | "tile"
-  | "banner"
-  | "map"
-  | "text"
-  | "product"
-  | "article"
-  | "hero";
+import type { BlockContentType, BlockName } from "./types";
 
 export type BlockMasterOptions = TransformToOptionalBooleans<BlockOptions>;
 

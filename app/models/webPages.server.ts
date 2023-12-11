@@ -2,7 +2,7 @@ import type { WebPage } from "@prisma/client";
 import { type PageBlock, removeBlock } from "./pageBuilder.server";
 import { type TypedResponse, redirect } from "@remix-run/server-runtime";
 import { prisma } from "~/db.server";
-import { includeBlocksData } from "~/utility/blockMaster";
+import { includeBlocksData } from "~/utility/blockMaster/blockMaster";
 import { getOrderBy } from "~/helpers/sortHelpers";
 import { getBlocks } from "~/helpers/blockHelpers";
 
