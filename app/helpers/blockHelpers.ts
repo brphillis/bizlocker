@@ -145,12 +145,13 @@ export const getBlockDefaultValues = (block: PageBlock): ContentSelection[] => {
       Array.isArray(block.content[contentName]) &&
       !isArrayofStrings(block.content[contentName])
     ) {
-      (block.content[contentName] as Product[]).map((j) =>
-        defaultValues.push({
-          type: contentName,
-          contentId: j.id,
-          name: j.name,
-        })
+      (block.content[contentName] as Product[] | Image[]).map(
+        (j: Product | Image) =>
+          defaultValues.push({
+            type: contentName,
+            contentId: j.id,
+            name: (j as Product).name || (j as Image).altText || "",
+          })
       );
     } else if (
       Array.isArray(block.content[contentName]) &&

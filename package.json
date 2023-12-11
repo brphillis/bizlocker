@@ -33,7 +33,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.433.0",
     "@isaacs/express-prometheus-middleware": "^1.2.1",
-    "@prisma/client": "^5.3.1",
+    "@prisma/client": "^5.7.0",
     "@react-oauth/google": "^0.11.0",
     "@remix-run/css-bundle": "^1.17.1",
     "@remix-run/express": "^1.17.1",

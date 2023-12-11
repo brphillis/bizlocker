@@ -15,6 +15,7 @@ type Props = {
   setSelectedItems: Function;
   searchResults: Campaign[] | Promotion[] | Product[] | Brand[];
   contentType: BlockContentType | undefined;
+  selectedItems: ContentSelection[];
 };
 
 const ResultsTable = ({
@@ -22,18 +23,26 @@ const ResultsTable = ({
   selectedBlock,
   searchResults,
   contentType,
+  selectedItems,
 }: Props) => {
   const selectItems = (
     type: BlockContentType,
     contentId: number,
     name: string
   ) => {
-    setSelectedItems((prevSelectedItems: any) => {
-      if (!Array.isArray(prevSelectedItems)) {
-        prevSelectedItems = [];
-      }
-      return [...prevSelectedItems, { type, contentId, name }];
-    });
+    const itemExists = selectedItems.some(
+      (item) =>
+        item.type === type && item.contentId === contentId && item.name === name
+    );
+
+    if (!itemExists) {
+      setSelectedItems((prevSelectedItems: any) => {
+        if (!Array.isArray(prevSelectedItems)) {
+          prevSelectedItems = [];
+        }
+        return [...prevSelectedItems, { type, contentId, name }];
+      });
+    }
   };
 
   const shouldDisplay = () => {

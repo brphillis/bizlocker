@@ -13,7 +13,7 @@ export default {
         "brand-black": "#232227",
         "brand-white": "#F0F0F0",
         "brand-red": "#FF3A20",
-        "primary-dark": "#FF3A20",
+        "primary-dark": "#2563EB",
       },
       scale: {
         "-100": "-1",

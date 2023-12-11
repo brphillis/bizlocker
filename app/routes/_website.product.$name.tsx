@@ -402,10 +402,6 @@ const Product = () => {
 
       <div className="my-3 w-full border-b border-brand-black/20" />
 
-      <p className="self-start pb-3 pl-3 text-xl font-bold md:pl-1">
-        You might also like...
-      </p>
-
       <>
         {similarProducts && similarProducts.length > 0 && (
           <>
