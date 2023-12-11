@@ -6,6 +6,7 @@ import { getCountrFromISO3166 } from "~/utility/countryList";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { forwardRef, useImperativeHandle, useRef } from "react";
+import type { MapFunctions } from "./types";
 
 type Props = {
   locations: StoreWithDetails[];

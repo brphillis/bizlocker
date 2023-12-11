@@ -25,6 +25,7 @@ import type { ProductVariantWithDetails } from "./products.server";
 import type { StoreWithDetails } from "./stores.server";
 import type { AddressWithDetails } from "./auth/userDetails";
 import type { UserWithDetails } from "./auth/users.server";
+import type { SquareShippingDetails } from "~/integrations/square/types";
 
 export interface OrderWithDetails extends Order {
   items?: OrderItemWithDetails[] | null;

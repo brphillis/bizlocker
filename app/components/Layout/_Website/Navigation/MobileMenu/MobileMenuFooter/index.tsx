@@ -3,7 +3,7 @@ import { useNavigate, useSubmit } from "@remix-run/react";
 import { IoLogOutOutline } from "react-icons/io5";
 
 type Props = {
-  user?: User;
+  user: User | null;
 };
 
 const MobileMenuFooter = ({ user }: Props) => {

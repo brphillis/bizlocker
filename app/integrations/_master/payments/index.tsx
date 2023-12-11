@@ -1,3 +1,4 @@
+import type { CartItem } from "@prisma/client";
 import type { CreatePaymentLinkResponse } from "square";
 import { createSquarePaymentLink } from "~/integrations/square/square.server";
 

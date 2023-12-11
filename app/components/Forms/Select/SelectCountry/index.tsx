@@ -1,5 +1,6 @@
+import type { ValidationErrors } from "~/utility/validate";
+import { type CountrySelect, ISO3166Countries } from "~/utility/countryList";
 import ToolTip from "~/components/Indicators/ToolTip";
-import { ISO3166Countries } from "~/utility/countryList";
 
 type Props = {
   defaultValue?: string | null;

@@ -1,6 +1,7 @@
 import type { ArticleCategory } from "@prisma/client";
 import type { BlockContent } from "~/models/blocks.server";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
+import type { BlockName } from "~/utility/blockMaster";
 
 type Props = {
   selectedBlock: BlockName | undefined;

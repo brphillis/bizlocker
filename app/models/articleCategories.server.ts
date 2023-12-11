@@ -8,10 +8,10 @@ import type { ProductCategoryWithDetails } from "./productCategories.server";
 import { prisma } from "~/db.server";
 
 export interface ArticleCategoryWithDetails extends ArticleCategory {
-  articleBlockContent?: ArticleBlockContent[];
-  articles?: ArticleWithContent[];
-  previewPages?: PreviewPage[];
-  productCategory?: ProductCategoryWithDetails;
+  articleBlockContent?: ArticleBlockContent[] | null;
+  articles?: ArticleWithContent[] | null;
+  previewPages?: PreviewPage[] | null;
+  productCategory?: ProductCategoryWithDetails | null;
 }
 
 export const getArticleCategories = async (): Promise<

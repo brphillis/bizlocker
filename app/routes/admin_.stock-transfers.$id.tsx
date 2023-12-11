@@ -1,4 +1,5 @@
 import { tokenAuth } from "~/auth.server";
+import type { ActionReturnTypes } from "~/utility/actionTypes";
 import DarkOverlay from "~/components/Layout/DarkOverlay";
 import FormHeader from "~/components/Forms/Headers/FormHeader";
 import {
@@ -8,11 +9,17 @@ import {
   useNavigate,
 } from "@remix-run/react";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
-import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node";
+import {
+  redirect,
+  type ActionArgs,
+  type LoaderArgs,
+  json,
+} from "@remix-run/node";
 import { useEffect, useState } from "react";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import { STAFF_SESSION_KEY } from "~/session.server";
 import {
+  type StockTransferRequestWithDetails,
   approveStockTransfer,
   getStockTransfer,
   updateStockTransfer,
@@ -26,22 +33,36 @@ import useNotification from "~/hooks/PageNotification";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+
   if (!authenticated.valid) {
     return redirect("/login");
   }
 
   const id = params?.id;
 
-  let stockTransferRequest;
-
-  if (id && id !== "add") {
-    stockTransferRequest = await getStockTransfer(id);
-    const stores = await getStores();
-    const statusList = await getApprovalStatusList();
-    return { stockTransferRequest, stores, statusList };
-  } else {
-    return null;
+  if (!id) {
+    throw new Response(null, {
+      status: 404,
+      statusText: "Request Not Found",
+    });
   }
+
+  const stores = await getStores();
+  const statusList = await getApprovalStatusList();
+
+  const stockTransferRequest =
+    id === "add"
+      ? ({} as StockTransferRequestWithDetails)
+      : await getStockTransfer(id);
+
+  if (!stockTransferRequest) {
+    throw new Response(null, {
+      status: 404,
+      statusText: "Request Not Found",
+    });
+  }
+
+  return json({ stockTransferRequest, stores, statusList });
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
@@ -58,7 +79,7 @@ export const action = async ({ request, params }: ActionArgs) => {
       const { permissionError: approvePermissionError } =
         await approveStockTransfer(request, id as string, toStoreId as string);
       if (approvePermissionError) {
-        return { permissionError: approvePermissionError };
+        return json({ permissionError: approvePermissionError });
       } else
         return {
           permissionError: null,
@@ -78,20 +99,20 @@ export const action = async ({ request, params }: ActionArgs) => {
           quantity as string
         );
       if (updatePermissionError) {
-        return {
+        return json({
           permissionError: updatePermissionError,
-        };
+        });
       } else {
         if (status === "cancelled") {
-          return {
+          return json({
             permissionError: null,
             notification,
-          };
+          });
         } else {
-          return {
+          return json({
             permissionError: null,
             notification,
-          };
+          });
         }
       }
   }
@@ -99,18 +120,13 @@ export const action = async ({ request, params }: ActionArgs) => {
 
 const ModifyStockTransfer = () => {
   const { stockTransferRequest, stores, statusList } =
-    useLoaderData() as unknown as {
-      stockTransferRequest: StockTransferRequest;
-      stores: Store[];
-      statusList: ApprovalStatus[];
-    };
+    useLoaderData<typeof loader>();
   const { validationErrors, success, notification, permissionError } =
     useActionData() as ActionReturnTypes;
+
   useNotification(notification);
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false);
-
-  const mode = stockTransferRequest ? "edit" : "add";
 
   useEffect(() => {
     if (success) {
@@ -129,7 +145,6 @@ const ModifyStockTransfer = () => {
       >
         <FormHeader
           type="Stock Transfer"
-          mode={mode}
           hasIsActive={false}
           hasDelete={false}
         />
@@ -188,7 +203,9 @@ const ModifyStockTransfer = () => {
             type="text"
             customWidth="w-full"
             disabled={true}
-            defaultValue={stockTransferRequest?.productVariant.sku || undefined}
+            defaultValue={
+              stockTransferRequest?.productVariant?.sku || undefined
+            }
             validationErrors={validationErrors}
           />
 

@@ -24,7 +24,7 @@ export const getDepartment = async (
   });
 };
 
-export const getDepartments = async (): Promise<Department[]> => {
+export const getDepartments = async (): Promise<DepartmentWithDetails[]> => {
   return await prisma.department.findMany({
     orderBy: {
       index: "asc",

@@ -1,4 +1,6 @@
 import { useLoaderData } from "@remix-run/react";
+import type { BlockOptions, Campaign, Promotion } from "@prisma/client";
+import type { BlockContent } from "~/models/blocks.server";
 import { addToCart } from "~/models/cart.server";
 import { getBrands } from "~/models/brands.server";
 import ProductGrid from "~/components/Grids/ProductGrid";

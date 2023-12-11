@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import type { ActionReturnTypes } from "~/utility/actionTypes";
 import { HiTrash } from "react-icons/hi2";
 import { tokenAuth } from "~/auth.server";
 import { validateForm } from "~/utility/validate";

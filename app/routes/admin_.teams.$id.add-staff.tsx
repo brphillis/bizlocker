@@ -1,14 +1,25 @@
 import { useEffect, useState } from "react";
-import { tokenAuth } from "~/auth.server";
-import { addTeamMemberToTeam } from "~/models/teams.server";
-import { STAFF_SESSION_KEY } from "~/session.server";
+import type { ActionReturnTypes } from "~/utility/actionTypes";
 import { IoAdd } from "react-icons/io5";
+import { tokenAuth } from "~/auth.server";
+import Pagination from "~/components/Pagination";
+import { getStores } from "~/models/stores.server";
+import { STAFF_SESSION_KEY } from "~/session.server";
 import DarkOverlay from "~/components/Layout/DarkOverlay";
+import { addTeamMemberToTeam } from "~/models/teams.server";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import FormHeader from "~/components/Forms/Headers/FormHeader";
 import { placeholderAvatar } from "~/utility/placeholderAvatar";
+import BasicSelect from "~/components/Forms/Select/BasicSelect";
+import { ActionAlert } from "~/components/Notifications/Alerts";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
-import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node";
+import { searchStaff, type StaffWithDetails } from "~/models/auth/staff.server";
+import {
+  json,
+  redirect,
+  type ActionArgs,
+  type LoaderArgs,
+} from "@remix-run/node";
 import {
   Form,
   Outlet,
@@ -17,14 +28,9 @@ import {
   useNavigate,
   useSubmit,
 } from "@remix-run/react";
-import BasicSelect from "~/components/Forms/Select/BasicSelect";
-import { getStores } from "~/models/stores.server";
-import { ActionAlert } from "~/components/Notifications/Alerts";
-import { searchStaff } from "~/models/auth/staff.server";
-import Pagination from "~/components/Pagination";
-
 export const loader = async ({ request, params }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+
   if (!authenticated.valid) {
     return redirect("/login");
   }
@@ -40,38 +46,41 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   };
 
   const { staff, totalPages } = await searchStaff(searchQuery, true);
+
   const stores = await getStores();
   const teamId = params?.id;
 
-  return { staff, totalPages, stores, teamId };
+  return json({ staff, totalPages, stores, teamId });
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+
   if (!authenticated.valid) {
     return redirect("/login");
   }
+
   const form = Object.fromEntries(await request.formData());
 
   switch (form._action) {
     case "addUser":
       const { staffId, teamId } = form;
 
-      return await addTeamMemberToTeam(staffId as string, teamId as string);
+      const res = await addTeamMemberToTeam(
+        staffId as string,
+        teamId as string
+      );
+
+      return json({ success: res ? true : false });
   }
 };
 
 const ModifyTeam = () => {
+  const { staff, totalPages, stores, teamId } = useLoaderData<typeof loader>();
+
+  const { success } = useActionData() as ActionReturnTypes;
   const navigate = useNavigate();
   const submit = useSubmit();
-  const { staff, totalPages, stores, teamId } =
-    (useLoaderData() as unknown as {
-      staff: Staff[];
-      totalPages: number;
-      stores: Store[];
-      teamId: number;
-    }) || {};
-  const { success } = useActionData() as ActionReturnTypes;
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -81,17 +90,19 @@ const ModifyTeam = () => {
     lastName?: string | null
   ) => {
     const hasFullName = firstName && lastName;
-    ActionAlert(
-      "Confirm",
-      `Add ${hasFullName ? firstName + " " + lastName : "User"} To Team?`,
-      () => {
-        const formData = new FormData();
-        formData.set("_action", "addUser");
-        formData.set("staffId", staffId);
-        formData.set("teamId", teamId.toString());
-        submit(formData, { method: "POST" });
-      }
-    );
+
+    if (teamId)
+      ActionAlert(
+        "Confirm",
+        `Add ${hasFullName ? firstName + " " + lastName : "User"} To Team?`,
+        () => {
+          const formData = new FormData();
+          formData.set("_action", "addUser");
+          formData.set("staffId", staffId);
+          formData.set("teamId", teamId.toString());
+          submit(formData, { method: "POST" });
+        }
+      );
   };
 
   useEffect(() => {
@@ -106,12 +117,7 @@ const ModifyTeam = () => {
         method="GET"
         className="scrollbar-hide relative w-[500px] max-w-[100vw] overflow-y-auto bg-base-200 px-3 py-6 sm:px-6"
       >
-        <FormHeader
-          type="Team"
-          mode="view"
-          hasIsActive={false}
-          hasDelete={false}
-        />
+        <FormHeader type="Team" hasIsActive={false} hasDelete={false} />
         <div className="flex flex-col gap-6">
           <div className="flex flex-col">
             <div className="flex justify-between gap-3">
@@ -157,7 +163,7 @@ const ModifyTeam = () => {
               <tbody>
                 {staff?.map(
                   (
-                    { id, userDetails, avatar, jobTitle }: Staff,
+                    { id, userDetails, avatar, jobTitle }: StaffWithDetails,
                     index: number
                   ) => {
                     const { firstName, lastName } = userDetails!;

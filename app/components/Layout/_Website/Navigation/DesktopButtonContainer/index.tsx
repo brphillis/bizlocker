@@ -6,8 +6,8 @@ import CartButton from "../Buttons/CartButton";
 import AccountButton from "../Buttons/AccountButton";
 
 type Props = {
-  user: User;
-  cart: Cart;
+  user: User | null;
+  cart: Cart | null;
   setSearchState: (state: boolean) => void;
   searchState: boolean | null;
 };

@@ -8,7 +8,7 @@ import MobileMenuFooter from "./MobileMenuFooter";
 type Props = {
   departments: DepartmentWithDetails[];
   productCategories: ProductCategoryWithDetails[];
-  user: User;
+  user: User | null;
 };
 
 const MobileNavigation = ({ departments, productCategories, user }: Props) => {

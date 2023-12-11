@@ -1,5 +1,7 @@
 import Swal from "sweetalert2/dist/sweetalert2.js";
 
+export type ToastType = "success" | "error" | "warning" | "info" | "question";
+
 export const Toast = (type: ToastType, time?: number, text?: string) => {
   let color: string;
 

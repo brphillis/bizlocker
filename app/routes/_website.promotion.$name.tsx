@@ -93,13 +93,15 @@ const Promotion = () => {
 
   return (
     <PageWrapper>
-      {promotion.bannerImage && (
-        <PromotionBanner
-          name={promotion.name}
-          bannerImage={promotion.bannerImage}
-          targetGender={promotion.targetGender}
-        />
-      )}
+      <>
+        {promotion?.bannerImage && (
+          <PromotionBanner
+            name={promotion.name}
+            bannerImage={promotion.bannerImage}
+            targetGender={promotion.targetGender}
+          />
+        )}
+      </>
 
       <div className="w-[1280px] max-w-full">
         <ProductSort

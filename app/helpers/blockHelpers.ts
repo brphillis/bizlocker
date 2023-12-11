@@ -5,7 +5,7 @@ import {
   fetchBlockArticles,
   fetchBlockProducts,
 } from "~/models/blocks.server";
-import { getBlockContentTypes } from "../utility/blockMaster";
+import { type BlockName, getBlockContentTypes } from "../utility/blockMaster";
 import { isArrayofStrings } from "./arrayHelpers";
 
 // Returns the object array nessesery for populating a page in the blockrenderer

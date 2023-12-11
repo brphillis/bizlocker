@@ -3,7 +3,7 @@ import { useSubmit } from "@remix-run/react";
 import { useState } from "react";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
-import { getBlockContentTypes } from "~/utility/blockMaster";
+import { type BlockName, getBlockContentTypes } from "~/utility/blockMaster";
 
 type Props = {
   selectedBlock: BlockName | undefined;

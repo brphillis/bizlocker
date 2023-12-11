@@ -5,8 +5,30 @@ import HeroBlock from "~/components/Blocks/HeroBlock";
 import ProductBlock from "~/components/Blocks/ProductBlock";
 import ArticleBlock from "~/components/Blocks/ArticleBlock";
 import MapBlock from "~/components/Blocks/MapBlock";
+import type { BlockOptions } from "@prisma/client";
 
-export type BlockName = (typeof blockMaster)[number]["name"];
+export type BlockName =
+  | "tile"
+  | "banner"
+  | "map"
+  | "text"
+  | "product"
+  | "article"
+  | "hero";
+
+export type BlockMasterOptions = TransformToOptionalBooleans<BlockOptions>;
+
+export interface BlockMaster {
+  name: string;
+  component: React.ComponentType<any>;
+  icon: string;
+  options: BlockMasterOptions;
+  content: Object;
+  addOns?: string[];
+  contentRequired?: boolean;
+  hasMultipleContent?: boolean;
+  maxContentItems?: number;
+}
 
 export const blockMaster: BlockMaster[] = [
   {

@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import type { ActionReturnTypes } from "~/utility/actionTypes";
 import { verifyLogin } from "~/models/auth/login.server";
 import AuthContainer from "~/components/Layout/AuthContainer";
 import { ActionAlert } from "~/components/Notifications/Alerts";

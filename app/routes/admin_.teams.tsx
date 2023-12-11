@@ -1,6 +1,9 @@
+import { tokenAuth } from "~/auth.server";
 import Pagination from "~/components/Pagination";
-import { redirect, type LoaderArgs } from "@remix-run/server-runtime";
+import { STAFF_SESSION_KEY } from "~/session.server";
 import BasicInput from "~/components/Forms/Input/BasicInput";
+import { json, redirect, type LoaderArgs } from "@remix-run/node";
+import { searchTeams, type TeamWithStaff } from "~/models/teams.server";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import {
@@ -10,12 +13,9 @@ import {
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
-import { tokenAuth } from "~/auth.server";
-import { STAFF_SESSION_KEY } from "~/session.server";
-import { searchTeams } from "~/models/teams.server";
-
 export const loader = async ({ request }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+
   if (!authenticated.valid) {
     return redirect("/admin/login");
   }
@@ -24,17 +24,19 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   const { teams, totalPages } = await searchTeams(undefined, url);
 
-  return {
+  return json({
     teams,
     totalPages,
-  };
+  });
 };
 
 const ManageTeams = () => {
+  const { teams, totalPages } = useLoaderData<typeof loader>();
+
   const navigate = useNavigate();
-  const { teams, totalPages } = useLoaderData();
   const [searchParams] = useSearchParams();
-  const currentPage = Number(searchParams.get("pageNumber")) || 1;
+
+  const currentPage: number = Number(searchParams.get("pageNumber")) || 1;
 
   return (
     <AdminPageWrapper>
@@ -74,34 +76,37 @@ const ManageTeams = () => {
             </thead>
             <tbody>
               {teams &&
-                teams?.map(({ id, name, store, isActive }: Team, i: number) => {
-                  const { name: storeName } = store;
-                  return (
-                    <tr
-                      className="cursor-pointer transition-colors duration-200 hover:bg-base-100"
-                      key={"product" + id}
-                      onClick={() => {
-                        navigate(
-                          `${location.pathname + "/" + id}${location.search}`
-                        );
-                      }}
-                    >
-                      {currentPage && (
-                        <td>{i + 1 + (currentPage - 1) * teams?.length}</td>
-                      )}
-                      <td>{name}</td>
-                      <td>{storeName}</td>
-                      <td>
-                        {!isActive && (
-                          <div className="ml-4 h-3 w-3 rounded-full bg-red-500" />
+                teams?.map(
+                  ({ id, name, store, isActive }: TeamWithStaff, i: number) => {
+                    const { name: storeName } = store || {};
+
+                    return (
+                      <tr
+                        className="cursor-pointer transition-colors duration-200 hover:bg-base-100"
+                        key={"product" + id}
+                        onClick={() => {
+                          navigate(
+                            `${location.pathname + "/" + id}${location.search}`
+                          );
+                        }}
+                      >
+                        {currentPage && (
+                          <td>{i + 1 + (currentPage - 1) * teams?.length}</td>
                         )}
-                        {isActive && (
-                          <div className="ml-4 h-3 w-3 self-center rounded-full bg-success" />
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
+                        <td>{name}</td>
+                        <td>{storeName}</td>
+                        <td>
+                          {!isActive && (
+                            <div className="ml-4 h-3 w-3 rounded-full bg-red-500" />
+                          )}
+                          {isActive && (
+                            <div className="ml-4 h-3 w-3 self-center rounded-full bg-success" />
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  }
+                )}
             </tbody>
           </table>
         </div>

@@ -7,14 +7,14 @@ import { IoClose } from "react-icons/io5";
 import { findFirstNotNullInputValue } from "~/helpers/formHelpers";
 
 type ImageUploadSliderProps = {
-  defaultImages: Image[] | undefined;
+  defaultImages?: Image[] | null;
 };
 
 const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
   const [activeSlide, setActiveSlide] = useState(0);
-  const [images, setCurrentImages] = useState<Image[] | NewImage[] | undefined>(
-    defaultImages
-  );
+  const [images, setCurrentImages] = useState<
+    Image[] | NewImage[] | null | undefined
+  >(defaultImages);
 
   const handleRemoveImage = (index: number) => {
     const updatedImages = [...(images || [])];

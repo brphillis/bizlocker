@@ -1,5 +1,5 @@
 import type { BlockOptions } from "@prisma/client";
-import { blockMaster } from "~/utility/blockMaster";
+import { type BlockName, blockMaster } from "~/utility/blockMaster";
 import TitleOptions from "./Title";
 import StyleOptions from "./Style";
 import ShortTextOptions from "./ShortText";

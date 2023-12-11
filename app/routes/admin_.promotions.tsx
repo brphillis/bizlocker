@@ -1,3 +1,4 @@
+import type { Promotion } from "@prisma/client";
 import type { LoaderArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import {
@@ -17,6 +18,7 @@ import { STAFF_SESSION_KEY } from "~/session.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+
   if (!authenticated.valid) {
     return redirect("/admin/login");
   }
@@ -100,16 +102,7 @@ const Promotions = () => {
                       )}
                       <td>{name}</td>
                       <td>{discountPercentage}%</td>
-                      <td>
-                        {new Date(updatedAt as Date).toLocaleDateString(
-                          "en-US",
-                          {
-                            day: "numeric",
-                            month: "long",
-                            year: "numeric",
-                          }
-                        )}
-                      </td>
+                      <td>{updatedAt}</td>
                       <td>
                         {new Date(createdAt).toLocaleDateString("en-US", {
                           day: "numeric",

@@ -1,4 +1,4 @@
-import { redirect, type LoaderArgs } from "@remix-run/node";
+import { redirect, type LoaderArgs, json } from "@remix-run/node";
 import {
   Form,
   Outlet,
@@ -14,7 +14,7 @@ import { placeholderAvatar } from "~/utility/placeholderAvatar";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
-import { searchStaff } from "~/models/auth/staff.server";
+import { type StaffWithDetails, searchStaff } from "~/models/auth/staff.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
@@ -34,12 +34,12 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   const { staff, totalPages } = await searchStaff(searchQuery, true);
 
-  return { staff, totalPages };
+  return json({ staff, totalPages });
 };
 
 const Staff = () => {
   const navigate = useNavigate();
-  const { staff, totalPages } = useLoaderData() || {};
+  const { staff, totalPages } = useLoaderData<typeof loader>();
 
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("pageNumber")) || 1;
@@ -100,7 +100,13 @@ const Staff = () => {
             <tbody>
               {staff?.map(
                 (
-                  { id, email, avatar, userDetails, isActive }: Staff,
+                  {
+                    id,
+                    email,
+                    avatar,
+                    userDetails,
+                    isActive,
+                  }: StaffWithDetails,
                   i: number
                 ) => {
                   const { firstName, lastName } = userDetails || {};

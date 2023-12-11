@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import type { ActionReturnTypes } from "~/utility/actionTypes";
 import { validateForm } from "~/utility/validate";
 import { getBrands } from "~/models/brands.server";
 import DarkOverlay from "~/components/Layout/DarkOverlay";
@@ -21,6 +22,7 @@ import {
   useNavigate,
 } from "@remix-run/react";
 import {
+  type ProductWithDetails,
   deleteProduct,
   getProduct,
   upsertProduct,
@@ -32,13 +34,15 @@ import {
   type ActionArgs,
   type LinksFunction,
   type LoaderArgs,
-} from "@remix-run/server-runtime";
+  json,
+} from "@remix-run/node";
 
 import swiper from "../../node_modules/swiper/swiper.css";
 import swiperNav from "../../node_modules/swiper/modules/navigation/navigation.min.css";
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY, getUserDataFromSession } from "~/session.server";
 import { ClientOnly } from "~/components/Utility/ClientOnly";
+import type { Image, Staff } from "@prisma/client";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: swiper },
@@ -47,31 +51,46 @@ export const links: LinksFunction = () => [
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+
   if (!authenticated.valid) {
     return redirect("/admin/login");
   }
 
-  const id = params?.id;
+  const { storeId } =
+    ((await getUserDataFromSession(request, STAFF_SESSION_KEY)) as Staff) || {};
+
   const productSubCategories = await getProductSubCategories();
   const brands = await getBrands();
   const promotions = await getPromotions();
   const availableColors = await getAvailableColors();
-  const { storeId } =
-    ((await getUserDataFromSession(request, STAFF_SESSION_KEY)) as Staff) || {};
-  let product;
 
-  if (id && id !== "add") {
-    product = await getProduct(id);
+  const id = params?.id;
+
+  if (!id) {
+    throw new Response(null, {
+      status: 404,
+      statusText: "Product Not Found",
+    });
   }
 
-  return {
+  const product =
+    id === "add" ? ({} as ProductWithDetails) : await getProduct(id);
+
+  if (!product) {
+    throw new Response(null, {
+      status: 404,
+      statusText: "Product Not Found",
+    });
+  }
+
+  return json({
     storeId,
     product,
     productSubCategories,
     brands,
     promotions,
     availableColors,
-  };
+  });
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
@@ -158,12 +177,10 @@ const Product = () => {
     brands,
     promotions,
     availableColors,
-  } = useLoaderData();
+  } = useLoaderData<typeof loader>();
   const { validationErrors, success } = useActionData() as ActionReturnTypes;
 
   const navigate = useNavigate();
-
-  const mode = product ? "edit" : "add";
 
   const [richText, setRichText] = useState<string>(product?.description);
   const [loading, setLoading] = useState<boolean>(false);
@@ -184,7 +201,6 @@ const Product = () => {
           <FormHeader
             valueToChange={product}
             type="Product"
-            mode={mode}
             hasIsActive={true}
             hasDelete={false}
           />

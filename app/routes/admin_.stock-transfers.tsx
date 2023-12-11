@@ -1,6 +1,12 @@
+import { tokenAuth } from "~/auth.server";
 import Pagination from "~/components/Pagination";
-import { redirect, type LoaderArgs } from "@remix-run/server-runtime";
+import { getStores } from "~/models/stores.server";
+import { STAFF_SESSION_KEY } from "~/session.server";
+import { capitalizeFirst } from "~/helpers/stringHelpers";
 import BasicInput from "~/components/Forms/Input/BasicInput";
+import { getApprovalStatusList } from "~/models/enums.server";
+import BasicSelect from "~/components/Forms/Select/BasicSelect";
+import { json, redirect, type LoaderArgs } from "@remix-run/node";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import {
@@ -10,16 +16,14 @@ import {
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
-import { tokenAuth } from "~/auth.server";
-import { STAFF_SESSION_KEY } from "~/session.server";
-import BasicSelect from "~/components/Forms/Select/BasicSelect";
-import { getApprovalStatusList } from "~/models/enums.server";
-import { capitalizeFirst } from "~/helpers/stringHelpers";
-import { getStores } from "~/models/stores.server";
-import { searchStockTransfers } from "~/models/stock.server";
+import {
+  searchStockTransfers,
+  type StockTransferRequestWithDetails,
+} from "~/models/stock.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+
   if (!authenticated.valid) {
     return redirect("/admin/login");
   }
@@ -33,12 +37,12 @@ export const loader = async ({ request }: LoaderArgs) => {
   const statusList = await getApprovalStatusList();
   const stores = await getStores();
 
-  return {
+  return json({
     stockTransfers,
     totalPages,
     statusList,
     stores,
-  };
+  });
 };
 
 const ManageStockTransfers = () => {
@@ -116,12 +120,12 @@ const ManageStockTransfers = () => {
                     fromStore,
                     status,
                     createdAt,
-                  }: StockTransferRequest,
+                  }: StockTransferRequestWithDetails,
                   i: number
                 ) => {
-                  const { sku } = productVariant;
-                  const { name: toStoreName } = toStore;
-                  const { name: fromStoreName } = fromStore;
+                  const { sku } = productVariant || {};
+                  const { name: toStoreName } = toStore || {};
+                  const { name: fromStoreName } = fromStore || {};
 
                   return (
                     <tr

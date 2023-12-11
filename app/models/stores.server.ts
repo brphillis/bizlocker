@@ -24,7 +24,9 @@ export function getStores(): Promise<Store[]> {
   return prisma.store.findMany();
 }
 
-export const getStore = async (id: string): Promise<Store | null> => {
+export const getStore = async (
+  id: string
+): Promise<StoreWithDetails | null> => {
   return prisma.store.findUnique({
     where: {
       id: parseInt(id),

@@ -3,6 +3,7 @@ import { prisma } from "~/db.server";
 import { STAFF_SESSION_KEY, getUserDataFromSession } from "~/session.server";
 import type { ProductVariantWithDetails } from "./products.server";
 import type { StoreWithDetails } from "./stores.server";
+import type { PageNotification } from "~/hooks/PageNotification";
 
 export interface StockLevelWithDetails extends StockLevel {
   productVariant?: ProductVariantWithDetails | null;
@@ -137,16 +138,17 @@ export const approveStockTransfer = async (
   request: Request,
   stockTransferRequestId: string,
   toStoreId: string
-): Promise<
-  | { transferRequest: StockTransferRequest; notification: PageNotification }
-  | { permissionError: string }
-> => {
+): Promise<{
+  transferRequest: StockTransferRequest | null;
+  notification: PageNotification | null;
+  permissionError: string | null;
+}> => {
   const { storeId, role } =
     ((await getUserDataFromSession(request, STAFF_SESSION_KEY)) as Staff) || {};
 
   if (!storeId || storeId.toString() !== toStoreId) {
     const permissionError = "You must be a manager at the receiving store.";
-    return { permissionError };
+    return { permissionError, transferRequest: null, notification: null };
   }
 
   if (
@@ -155,7 +157,7 @@ export const approveStockTransfer = async (
     role.toLowerCase() !== "admin"
   ) {
     const permissionError = "Permission Denied.";
-    return { permissionError };
+    return { permissionError, transferRequest: null, notification: null };
   }
 
   const transferRequest = await prisma.stockTransferRequest.update({
@@ -168,6 +170,7 @@ export const approveStockTransfer = async (
   });
 
   return {
+    permissionError: null,
     transferRequest,
     notification: {
       type: "success",
@@ -182,19 +185,17 @@ export const updateStockTransfer = async (
   toStoreId: string,
   status: ApprovalStatus,
   quantity: string
-): Promise<
-  | {
-      transferRequest: StockTransferRequest | null;
-      notification: PageNotification;
-    }
-  | { permissionError: string }
-> => {
+): Promise<{
+  transferRequest: StockTransferRequest | null;
+  notification: PageNotification | null;
+  permissionError: string | null;
+}> => {
   const { storeId, role } =
     ((await getUserDataFromSession(request, STAFF_SESSION_KEY)) as Staff) || {};
 
   if (!storeId || storeId.toString() !== toStoreId) {
     const permissionError = "You must be a manager at the receiving store.";
-    return { permissionError };
+    return { permissionError, notification: null, transferRequest: null };
   }
 
   if (
@@ -203,7 +204,7 @@ export const updateStockTransfer = async (
     role.toLowerCase() !== "admin"
   ) {
     const permissionError = "Permission Denied.";
-    return { permissionError };
+    return { permissionError, notification: null, transferRequest: null };
   }
 
   const transferRequest = await prisma.stockTransferRequest.update({
@@ -238,6 +239,7 @@ export const updateStockTransfer = async (
       });
     } else {
       return {
+        permissionError: null,
         transferRequest: null,
         notification: {
           type: "error",
@@ -283,6 +285,7 @@ export const updateStockTransfer = async (
 
   if (status === "cancelled") {
     return {
+      permissionError: null,
       transferRequest,
       notification: {
         type: "warning",
@@ -291,6 +294,7 @@ export const updateStockTransfer = async (
     };
   } else {
     return {
+      permissionError: null,
       transferRequest,
       notification: {
         type: "success",

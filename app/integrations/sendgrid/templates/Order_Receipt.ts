@@ -1,13 +1,17 @@
+import type {
+  OrderItemWithDetails,
+  OrderWithDetails,
+} from "~/models/orders.server";
 import { staticPathImageToBase64 } from "../sendgrid.server";
 
 export const Order_Receipt = (
   recipient: string,
-  order: Order,
+  order: OrderWithDetails,
   subject: string,
   message: string,
   footerMessage: string
 ) => {
-  const { items } = order;
+  const { items } = order || {};
 
   const { firstName, lastName, address } = order;
 
@@ -497,8 +501,13 @@ export const Order_Receipt = (
 
 
                    ${items
-                     .map(({ variant, unitPrice, quantity }: OrderItem) => {
-                       return `
+                     ?.map(
+                       ({
+                         variant,
+                         unitPrice,
+                         quantity,
+                       }: OrderItemWithDetails) => {
+                         return `
 
 
 <div class="u-row-container" style="padding: 0px;background-color: transparent">
@@ -534,7 +543,7 @@ export const Order_Receipt = (
                                             style="line-height: 22px;"></span><span
                                             style="line-height: 22px;"></span><span
                                             style="line-height: 22px;">${
-                                              variant.product.name
+                                              variant?.product?.name
                                             }</span>
                                     </h1>
 
@@ -629,7 +638,8 @@ export const Order_Receipt = (
 </div>
 </div>
 `;
-                     })
+                       }
+                     )
                      .join("")}
 
                     <div class="u-row-container" style="padding: 0px;background-color: transparent">

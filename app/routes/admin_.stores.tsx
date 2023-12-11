@@ -1,5 +1,5 @@
 import Pagination from "~/components/Pagination";
-import { redirect, type LoaderArgs } from "@remix-run/server-runtime";
+import { redirect, type LoaderArgs, json } from "@remix-run/node";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
@@ -12,10 +12,11 @@ import {
 } from "@remix-run/react";
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
-import { searchStores } from "~/models/stores.server";
+import { type StoreWithDetails, searchStores } from "~/models/stores.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+
   if (!authenticated.valid) {
     return redirect("/admin/login");
   }
@@ -24,17 +25,19 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   const { stores, totalPages } = await searchStores(undefined, url);
 
-  return {
+  return json({
     stores,
     totalPages,
-  };
+  });
 };
 
 const ManageStores = () => {
+  const { stores, totalPages } = useLoaderData<typeof loader>();
+
   const navigate = useNavigate();
-  const { stores, totalPages } = useLoaderData();
   const [searchParams] = useSearchParams();
-  const currentPage = Number(searchParams.get("pageNumber")) || 1;
+
+  const currentPage: number = Number(searchParams.get("pageNumber")) || 1;
 
   return (
     <AdminPageWrapper>
@@ -75,7 +78,10 @@ const ManageStores = () => {
             <tbody>
               {stores &&
                 stores?.map(
-                  ({ id, name, address, isActive }: Store, i: number) => {
+                  (
+                    { id, name, address, isActive }: StoreWithDetails,
+                    i: number
+                  ) => {
                     return (
                       <tr
                         className="cursor-pointer transition-colors duration-200 hover:bg-base-100"

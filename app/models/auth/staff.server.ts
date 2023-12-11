@@ -2,11 +2,18 @@ import bcrypt from "bcryptjs";
 import { prisma } from "~/db.server";
 import type { Image, Staff, UserDetails } from "@prisma/client";
 import { getUserDataFromSession, STAFF_SESSION_KEY } from "~/session.server";
+import type { AddressWithDetails } from "./userDetails";
+import type { StoreWithDetails } from "../stores.server";
+import type { TeamWithStaff } from "../teams.server";
 
 export interface StaffWithDetails extends Staff {
   userDetails?: UserDetails | null;
   avatar?: Image | null;
+  address?: AddressWithDetails | null;
+  store?: StoreWithDetails | null;
+  team?: TeamWithStaff | null;
 }
+
 export const getStaff = async (
   id: string
 ): Promise<StaffWithDetails | null> => {

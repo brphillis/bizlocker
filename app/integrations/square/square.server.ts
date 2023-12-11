@@ -1,5 +1,6 @@
 import { Client, Environment } from "square";
 import { randomUUID } from "crypto";
+import type { CartItemWithDetails } from "~/models/cart.server";
 import type {
   CreatePaymentLinkRequest,
   CreatePaymentLinkResponse,
@@ -14,17 +15,17 @@ export const squareClient = new Client({
 export const squareLocationId = "LB9PSX20NJ5X8";
 
 export const CartItemsToSquareApiLineItems = (
-  cartItems: CartItem[]
+  cartItems: CartItemWithDetails[]
 ): OrderLineItem[] => {
-  return cartItems.map((item: CartItem) => {
+  return cartItems.map((item: CartItemWithDetails) => {
     const lineItem: OrderLineItem = {
-      name: item.variant.product.name,
+      name: item?.variant?.product?.name,
       quantity: item.quantity.toString(),
       basePriceMoney: {
         amount: BigInt(
-          item.variant.isOnSale
+          item?.variant?.isOnSale
             ? Math.round(item.variant.salePrice! * 100)
-            : Math.round(item.variant.price * 100)
+            : Math.round(item.variant!.price * 100)
         ),
         currency: "AUD",
       },
@@ -35,7 +36,7 @@ export const CartItemsToSquareApiLineItems = (
 };
 
 export const createSquarePaymentLink = async (
-  cartItems: CartItem[]
+  cartItems: CartItemWithDetails[]
 ): Promise<{
   createPaymentLinkResponse: CreatePaymentLinkResponse;
   confirmCode: string;

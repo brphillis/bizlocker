@@ -1,4 +1,5 @@
 import { getAusPostServices } from "~/integrations/auspost/auspost.server";
+import type { GetPostageServicesType } from "~/integrations/auspost/types";
 
 export const getShippingServices_Integration = async ({
   from_postcode,

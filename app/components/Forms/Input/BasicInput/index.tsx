@@ -1,3 +1,4 @@
+import type { ValidationErrors } from "~/utility/validate";
 import ToolTip from "~/components/Indicators/ToolTip";
 
 type Props = {

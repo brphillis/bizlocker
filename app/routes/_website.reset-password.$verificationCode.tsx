@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import type { ActionReturnTypes } from "~/utility/actionTypes";
 import { isValidPassword } from "~/utility/validate";
 import { json, type ActionArgs } from "@remix-run/node";
 import AuthContainer from "~/components/Layout/AuthContainer";

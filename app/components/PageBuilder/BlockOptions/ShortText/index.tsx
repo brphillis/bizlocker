@@ -1,4 +1,5 @@
 import type { BlockOptions } from "@prisma/client";
+import type { BlockMasterOptions, BlockName } from "~/utility/blockMaster";
 
 type Props = {
   colors: string[];

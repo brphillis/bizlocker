@@ -3,12 +3,29 @@ import { searchCampaigns } from "~/models/campaigns.server";
 import { searchImages } from "~/models/images.server";
 import { searchProducts } from "~/models/products.server";
 import { searchPromotions } from "~/models/promotions.server";
-import { blockMaster, blockTypes, getBlockContentTypes } from "./blockMaster";
+import {
+  type BlockMaster,
+  blockMaster,
+  blockTypes,
+  getBlockContentTypes,
+  type BlockName,
+} from "./blockMaster";
 import { searchBrands } from "~/models/brands.server";
 import { searchIcons } from "./icons";
 import { searchStores } from "~/models/stores.server";
 
+export type PageType = "homePage" | "webPage" | "article" | "previewPage";
+
 export const pageTypes = ["homePage", "webPage", "article", "previewPage"];
+
+export interface NewBlockData {
+  previewPageId: number;
+  blockName: BlockName;
+  itemIndex: number;
+  contentBlockId: string;
+  contentType: BlockContentType;
+  contentData: any;
+}
 
 // Prisma include to include all pagetypes with all blocks
 // eg = include: includeAllPageTypesWithBlocks()

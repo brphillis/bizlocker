@@ -1,9 +1,11 @@
 import type { Staff, Team } from "@prisma/client";
 import { prisma } from "~/db.server";
 import type { StaffWithDetails } from "./auth/staff.server";
+import type { StoreWithDetails } from "./stores.server";
 
 export interface TeamWithStaff extends Team {
-  staff?: StaffWithDetails[];
+  staff?: StaffWithDetails[] | null;
+  store?: StoreWithDetails | null;
 }
 
 export const getTeam = async (id: string): Promise<TeamWithStaff | null> => {

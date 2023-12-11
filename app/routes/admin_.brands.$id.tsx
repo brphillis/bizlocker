@@ -1,4 +1,5 @@
 import { tokenAuth } from "~/auth.server";
+import type { ActionReturnTypes } from "~/utility/actionTypes";
 import DarkOverlay from "~/components/Layout/DarkOverlay";
 import FormHeader from "~/components/Forms/Headers/FormHeader";
 import UploadImage from "~/components/Forms/Upload/UploadImage";
@@ -36,24 +37,19 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   const id = params?.id;
 
-  if (id === "add") {
-    const brand = {};
-    return json({ brand } as { brand: BrandWithContent });
-  }
-
   if (!id) {
     throw new Response(null, {
       status: 404,
-      statusText: "Article Not Found",
+      statusText: "Brand Not Found",
     });
   }
 
-  const brand = await getBrand(id);
+  const brand = id === "add" ? ({} as BrandWithContent) : await getBrand(id);
 
   if (!brand) {
     throw new Response(null, {
       status: 404,
-      statusText: "Article Not Found",
+      statusText: "Brand Not Found",
     });
   }
 

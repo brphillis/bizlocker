@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import type { ValidationErrors } from "~/utility/validate";
 import { useNavigate } from "@remix-run/react";
 import { validateForm } from "~/utility/validate";
 import type { StockLevel } from "@prisma/client";
@@ -11,7 +12,7 @@ import BasicInput from "../../Input/BasicInput";
 import BasicSelect from "../../Select/BasicSelect";
 
 type Props = {
-  storeId: number;
+  storeId: number | null;
   product: ProductWithDetails;
   availableColors: string[];
 };

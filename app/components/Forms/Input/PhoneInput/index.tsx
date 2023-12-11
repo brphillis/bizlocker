@@ -1,3 +1,4 @@
+import type { ValidationErrors } from "~/utility/validate";
 import { useState } from "react";
 import ToolTip from "~/components/Indicators/ToolTip";
 import { ISO3166Countries } from "~/utility/countryList";

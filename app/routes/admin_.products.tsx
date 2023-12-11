@@ -1,8 +1,11 @@
 import Pagination from "~/components/Pagination";
 import { getBrands } from "~/models/brands.server";
-import { searchProducts } from "~/models/products.server";
+import {
+  type ProductWithDetails,
+  searchProducts,
+} from "~/models/products.server";
 import ProductSort from "~/components/Sorting/ProductSort";
-import { redirect, type LoaderArgs } from "@remix-run/server-runtime";
+import { redirect, type LoaderArgs, json } from "@remix-run/node";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
@@ -17,9 +20,11 @@ import {
 } from "@remix-run/react";
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
+import type { ProductSubCategory } from "@prisma/client";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+
   if (!authenticated.valid) {
     return redirect("/admin/login");
   }
@@ -30,18 +35,18 @@ export const loader = async ({ request }: LoaderArgs) => {
   const brands = await getBrands();
   const productSubCategories = await getProductSubCategories();
 
-  return {
+  return json({
     products,
     brands,
     productSubCategories,
     totalPages,
-  };
+  });
 };
 
 const ManageProducts = () => {
   const navigate = useNavigate();
   const { products, totalPages, productSubCategories, brands } =
-    useLoaderData();
+    useLoaderData<typeof loader>();
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("pageNumber")) || 1;
 
@@ -110,7 +115,7 @@ const ManageProducts = () => {
                       brand,
                       totalSold,
                       isActive,
-                    }: Product,
+                    }: ProductWithDetails,
                     i: number
                   ) => {
                     return (

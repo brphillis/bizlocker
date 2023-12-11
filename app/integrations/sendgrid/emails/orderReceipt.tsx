@@ -1,3 +1,4 @@
+import type { Order } from "@prisma/client";
 import sgMail from "@sendgrid/mail";
 import { Order_Receipt } from "../templates/Order_Receipt";
 sgMail.setApiKey(process.env.SENDGRID_KEY!);

@@ -1,7 +1,11 @@
 import React from "react";
 import BlockIcon from "~/components/Blocks/BlockIcon";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
-import { blockMaster } from "~/utility/blockMaster";
+import {
+  type BlockMaster,
+  type BlockName,
+  blockMaster,
+} from "~/utility/blockMaster";
 
 type Props = {
   setSelectedBlock: Function;

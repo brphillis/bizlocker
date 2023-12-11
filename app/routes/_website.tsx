@@ -24,13 +24,14 @@ import MobileButtonContainer from "~/components/Layout/_Website/Navigation/Mobil
 import DesktopButtonContainer from "~/components/Layout/_Website/Navigation/DesktopButtonContainer";
 
 import "sweetalert2/dist/sweetalert2.css";
+import type { User } from "@prisma/client";
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
 ];
 
 export const loader = async ({ request }: LoaderArgs) => {
-  const user = await getUserDataFromSession(request);
+  const user = (await getUserDataFromSession(request)) as User | null;
   let cart = await getCart(request);
 
   const departments = await getDepartments();

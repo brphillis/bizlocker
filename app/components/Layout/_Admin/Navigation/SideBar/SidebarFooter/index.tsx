@@ -1,12 +1,12 @@
-import type { User } from "@prisma/client";
 import {
   IoNotificationsOutline,
   IoPersonOutline,
   IoSettingsOutline,
 } from "react-icons/io5";
 import LogoutButton from "~/components/Buttons/LogoutButton";
+import { type StaffWithDetails } from "~/models/auth/staff.server";
 
-const SidebarFooter = (user: User) => {
+const SidebarFooter = (user: StaffWithDetails) => {
   return (
     <div className="border-t-1 absolute bottom-0 flex w-full items-center justify-between border-t border-t-brand-white/10 bg-brand-white/5 p-3">
       <div className="flex items-center gap-6">

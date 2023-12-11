@@ -1,8 +1,9 @@
+import type { ValidationErrors } from "~/utility/validate";
 import ToolTip from "~/components/Indicators/ToolTip";
 
 type Props = {
   customWidth?: string;
-  defaultValue?: string | null;
+  defaultValue?: string | number | null;
   disabled?: boolean;
   id?: string;
   label: string;
@@ -10,7 +11,7 @@ type Props = {
   name: string;
   onChange?: (value: string | React.ChangeEvent<HTMLSelectElement>) => void;
   placeholder: string;
-  selections: Array<SelectValue>;
+  selections: Array<SelectValue> | null;
   validationErrors?: ValidationErrors;
 };
 

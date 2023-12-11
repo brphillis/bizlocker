@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import type { ActionReturnTypes } from "~/utility/actionTypes";
 import { isValidEmail } from "~/utility/validate";
 import { ActionAlert } from "~/components/Notifications/Alerts";
 import { initiatePasswordReset } from "~/models/auth/verification.server";

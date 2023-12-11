@@ -1,4 +1,5 @@
 import type { TypedResponse } from "@remix-run/server-runtime";
+import type { GoogleAuthResponse } from "~/components/auth/LoginGoogle/types";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { prisma } from "~/db.server";

@@ -1,4 +1,5 @@
 import { createUserSession } from "~/session.server";
+import type { ActionReturnTypes } from "~/utility/actionTypes";
 import { Link, useActionData } from "@remix-run/react";
 import LoginGoogle from "~/components/auth/LoginGoogle";
 import AuthContainer from "~/components/Layout/AuthContainer";

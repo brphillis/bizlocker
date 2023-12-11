@@ -1,4 +1,5 @@
 import DarkOverlay from "~/components/Layout/DarkOverlay";
+import type { ActionReturnTypes } from "~/utility/actionTypes";
 import FormHeader from "~/components/Forms/Headers/FormHeader";
 import UploadImage from "~/components/Forms/Upload/UploadImage";
 import {
@@ -8,8 +9,14 @@ import {
   useNavigate,
 } from "@remix-run/react";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
-import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node";
 import {
+  redirect,
+  type ActionArgs,
+  type LoaderArgs,
+  json,
+} from "@remix-run/node";
+import {
+  type ProductSubCategoryWithDetails,
   deleteProductSubCategory,
   getProductSubCategory,
   upsertProductSubCategory,
@@ -20,21 +27,48 @@ import { validateForm } from "~/utility/validate";
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
-import { getProductCategories } from "~/models/productCategories.server";
+import {
+  type ProductCategoryWithDetails,
+  getProductCategories,
+} from "~/models/productCategories.server";
+import type { Image } from "@prisma/client";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+
   if (!authenticated.valid) {
     return redirect("/admin/login");
   }
 
-  const id = params?.id;
-  const productSubCategory =
-    id && id !== "add" && (await getProductSubCategory(id));
-
   const productCategories = await getProductCategories();
 
-  return { productSubCategory, productCategories };
+  const id = params?.id;
+
+  if (id === "add") {
+    const productSubCategory = {};
+    return json({ productSubCategory } as {
+      productSubCategory: ProductSubCategoryWithDetails;
+      productCategories: ProductCategoryWithDetails[];
+    });
+  }
+
+  if (!id) {
+    throw new Response(null, {
+      status: 404,
+      statusText: "Product Sub Category Not Found",
+    });
+  }
+
+  const productSubCategory = await getProductSubCategory(id);
+
+  if (!productSubCategory) {
+    throw new Response(null, {
+      status: 404,
+      statusText: "Product Sub Category Not Found",
+    });
+  }
+
+  return json({ productSubCategory, productCategories });
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
@@ -57,7 +91,7 @@ export const action = async ({ request, params }: ActionArgs) => {
 
       const validationErrors = validateForm(form, validate);
       if (validationErrors) {
-        return { validationErrors };
+        return json({ validationErrors });
       }
 
       const parsedImage = image
@@ -76,24 +110,19 @@ export const action = async ({ request, params }: ActionArgs) => {
 
       await upsertProductSubCategory(categoryData);
 
-      return { success: true };
+      return json({ success: true });
 
     case "delete":
       await deleteProductSubCategory(id as string);
-      return { success: true };
+      return json({ success: true });
   }
 };
 
 const ModifyProductSubCategory = () => {
   const navigate = useNavigate();
   const { productSubCategory, productCategories } =
-    (useLoaderData() as unknown as {
-      productSubCategory: ProductSubCategory;
-      productCategories: ProductCategory[];
-    }) || {};
+    useLoaderData<typeof loader>();
   const { validationErrors, success } = useActionData() as ActionReturnTypes;
-
-  const mode = productSubCategory ? "edit" : "add";
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -112,7 +141,6 @@ const ModifyProductSubCategory = () => {
         <FormHeader
           valueToChange={productSubCategory}
           type="Category"
-          mode={mode}
           hasIsActive={true}
           hasDelete={true}
         />

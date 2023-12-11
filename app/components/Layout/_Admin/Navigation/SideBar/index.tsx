@@ -1,5 +1,5 @@
 import React from "react";
-import type { User } from "@prisma/client";
+import type { StaffWithDetails } from "~/models/auth/staff.server";
 import { Outlet, useNavigate } from "@remix-run/react";
 import { IoMenu } from "react-icons/io5";
 import { adminNavBarRoutes } from "./routes";
@@ -9,7 +9,7 @@ import LoadingOverlay from "~/components/Layout/LoadingOverlay";
 import SidebarFooter from "./SidebarFooter";
 import { isEmptyObject } from "~/helpers/objectHelpers";
 
-const AdminSideBar = (user: User) => {
+const AdminSideBar = (staffMember: StaffWithDetails | null) => {
   const navigate = useNavigate();
 
   return (
@@ -39,7 +39,7 @@ const AdminSideBar = (user: User) => {
         <Outlet />
       </div>
 
-      {user && !isEmptyObject(user) && (
+      {staffMember && !isEmptyObject(staffMember) && (
         <div className="drawer-side z-50 min-h-screen">
           <label
             htmlFor="my-drawer-2"
@@ -50,7 +50,7 @@ const AdminSideBar = (user: User) => {
               CLUTCH.
             </h1>
             <p className="pt-3 text-center text-[12px]">
-              Welcome, {user?.email}
+              Welcome, {staffMember?.email}
             </p>
             <div className="divider w-full" />
 
@@ -89,7 +89,7 @@ const AdminSideBar = (user: User) => {
               )}
             </div>
 
-            <SidebarFooter {...user} />
+            <SidebarFooter {...(staffMember as StaffWithDetails)} />
           </ul>
         </div>
       )}

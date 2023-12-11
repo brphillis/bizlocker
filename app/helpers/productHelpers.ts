@@ -4,6 +4,17 @@ import type {
 } from "~/models/products.server";
 import type { StockLevelWithDetails } from "~/models/stock.server";
 
+type TotalStock = {
+  totalStock: number;
+  storeStock: StoreStock[];
+};
+
+type StoreStock = {
+  total: number;
+  storeName: string;
+  storeId: number;
+};
+
 export const getAvailableSizes = (
   product: ProductWithDetails
 ): (string | undefined | null)[] => {

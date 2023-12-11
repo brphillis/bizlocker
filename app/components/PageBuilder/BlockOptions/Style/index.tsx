@@ -1,4 +1,5 @@
 import type { BlockOptions } from "@prisma/client";
+import type { BlockMasterOptions } from "~/utility/blockMaster";
 
 type Props = {
   selectedBlockOptions: BlockMasterOptions | undefined;

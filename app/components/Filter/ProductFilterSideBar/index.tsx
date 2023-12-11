@@ -9,10 +9,10 @@ import { useEffect, useState } from "react";
 import { IoChevronDown, IoChevronUp } from "react-icons/io5";
 
 type Props = {
-  departments: Department[];
-  productCategories: ProductCategory[];
-  productSubCategories: ProductSubCategory[];
-  brands: Brand[];
+  departments: Department[] | null;
+  productCategories: ProductCategory[] | null;
+  productSubCategories: ProductSubCategory[] | null;
+  brands: Brand[] | null;
   colors: string[];
 };
 
@@ -26,11 +26,12 @@ const ProductFilterSideBar = ({
   const [searchParams] = useSearchParams();
   const submit = useSubmit();
 
-  const [filteredProductCategories, setFilteredProductCategories] =
-    useState<ProductCategory[]>(productCategories);
+  const [filteredProductCategories, setFilteredProductCategories] = useState<
+    ProductCategory[] | null
+  >(productCategories);
 
   const [filteredProductSubCategories, setFilteredProductSubCategories] =
-    useState<ProductSubCategory[]>(productSubCategories);
+    useState<ProductSubCategory[] | null>(productSubCategories);
 
   const searchedGender = searchParams.get("gender");
   const searchedDepartment = searchParams.get("department");
@@ -44,7 +45,7 @@ const ProductFilterSideBar = ({
   const [menuIsExpanded, setMenuIsExpanded] = useState<boolean>(true);
 
   const filterProductCategories = (departmentId?: number) => {
-    if (departmentId) {
+    if (departmentId && productCategories) {
       const filteredCats = productCategories.filter(
         (e) => e?.departmentId === departmentId
       );
@@ -55,7 +56,7 @@ const ProductFilterSideBar = ({
   };
 
   const filterProductSubCategories = (productCategoryId?: number) => {
-    if (productCategoryId) {
+    if (productCategoryId && productSubCategories) {
       const filteredCats = productSubCategories.filter(
         (e) => e.productCategoryId === productCategoryId
       );

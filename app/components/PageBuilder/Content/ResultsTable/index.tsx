@@ -8,6 +8,7 @@ import type {
 import { IoCaretForwardCircleSharp } from "react-icons/io5";
 import Icon from "~/components/Icon";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
+import { type BlockName } from "~/utility/blockMaster";
 
 type Props = {
   selectedBlock: BlockName | undefined;

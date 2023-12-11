@@ -1,3 +1,14 @@
+export interface ValidationErrors {
+  [key: string]: string;
+}
+
+export interface FormConfig {
+  [key: string]: {
+    required: boolean;
+    validator?: (value: string) => string | null;
+  };
+}
+
 //the master object, validation helpers below
 
 export const validationMaster: FormConfig = {

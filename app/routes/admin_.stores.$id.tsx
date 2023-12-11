@@ -1,4 +1,10 @@
-import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node";
+import {
+  redirect,
+  type ActionArgs,
+  type LoaderArgs,
+  json,
+} from "@remix-run/node";
+import type { ActionReturnTypes } from "~/utility/actionTypes";
 import {
   Form,
   useActionData,
@@ -13,26 +19,45 @@ import BasicInput from "~/components/Forms/Input/BasicInput";
 import PhoneInput from "~/components/Forms/Input/PhoneInput";
 import SelectCountry from "~/components/Forms/Select/SelectCountry";
 import DarkOverlay from "~/components/Layout/DarkOverlay";
-import { getStore, upsertStore } from "~/models/stores.server";
+import {
+  type StoreWithDetails,
+  getStore,
+  upsertStore,
+} from "~/models/stores.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
 import { validateForm } from "~/utility/validate";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+
   if (!authenticated.valid) {
     return redirect("/admin/login");
   }
 
   const id = params?.id;
 
-  if (id && id !== "add") {
-    const store = await getStore(id);
-    return store;
-  } else return null;
+  if (!id) {
+    throw new Response(null, {
+      status: 404,
+      statusText: "Store Not Found",
+    });
+  }
+
+  const store = id === "add" ? ({} as StoreWithDetails) : await getStore(id);
+
+  if (!store) {
+    throw new Response(null, {
+      status: 404,
+      statusText: "Store Not Found",
+    });
+  }
+
+  return json({ store });
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+
   if (!authenticated.valid) {
     return redirect("/admin/login");
   }
@@ -69,8 +94,9 @@ export const action = async ({ request, params }: ActionArgs) => {
   };
 
   const validationErrors = validateForm(form, validate);
+
   if (validationErrors) {
-    return { validationErrors };
+    return json({ validationErrors });
   }
 
   const updateData = {
@@ -93,15 +119,14 @@ export const action = async ({ request, params }: ActionArgs) => {
 
   await upsertStore(updateData);
 
-  return { success: true };
+  return json({ success: true });
 };
 
 const ModifyStore = () => {
-  const navigate = useNavigate();
-  const store = useLoaderData();
+  const { store } = useLoaderData<typeof loader>();
   const { validationErrors, success } = useActionData() as ActionReturnTypes;
 
-  const mode = store ? "edit" : "add";
+  const navigate = useNavigate();
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -123,7 +148,6 @@ const ModifyStore = () => {
         <FormHeader
           hasDelete={false}
           hasIsActive={true}
-          mode={mode}
           type="Store"
           valueToChange={store}
         />

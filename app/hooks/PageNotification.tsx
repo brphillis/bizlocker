@@ -1,5 +1,10 @@
 import { useEffect } from "react";
-import { Toast } from "~/components/Notifications/Toast";
+import { Toast, type ToastType } from "~/components/Notifications/Toast";
+
+export type PageNotification = {
+  message: string;
+  type: ToastType;
+};
 
 const useNotification = (notification: PageNotification) => {
   useEffect(() => {

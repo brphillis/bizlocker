@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import type { ActionReturnTypes } from "~/utility/actionTypes";
 import { validateForm } from "~/utility/validate";
 import DarkOverlay from "~/components/Layout/DarkOverlay";
 import BasicInput from "~/components/Forms/Input/BasicInput";
@@ -6,8 +7,17 @@ import { getDepartments } from "~/models/departments.server";
 import FormHeader from "~/components/Forms/Headers/FormHeader";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import SelectGender from "~/components/Forms/Select/SelectGender";
-import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node";
-import { getPromotion, upsertPromotion } from "~/models/promotions.server";
+import {
+  redirect,
+  type ActionArgs,
+  type LoaderArgs,
+  json,
+} from "@remix-run/node";
+import {
+  type PromotionWithContent,
+  getPromotion,
+  upsertPromotion,
+} from "~/models/promotions.server";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
 import {
   Form,
@@ -18,22 +28,38 @@ import {
 import UploadImageCollapse from "~/components/Forms/Upload/UploadImageCollapse";
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
+import type { Image, Product } from "@prisma/client";
+import type { ProductWithDetails } from "~/models/products.server";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+
   if (!authenticated.valid) {
     return redirect("/admin/login");
   }
 
-  const id = params?.id;
   const departments = await getDepartments();
-  let promotion;
 
-  if (id && id !== "add") {
-    promotion = await getPromotion(id);
+  const id = params?.id;
+
+  if (!id) {
+    throw new Response(null, {
+      status: 404,
+      statusText: "Promotion Not Found",
+    });
   }
 
-  return { promotion, departments };
+  const promotion =
+    id === "add" ? ({} as PromotionWithContent) : await getPromotion(id);
+
+  if (!promotion) {
+    throw new Response(null, {
+      status: 404,
+      statusText: "Promotion Not Found",
+    });
+  }
+
+  return json({ promotion, departments });
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
@@ -67,7 +93,7 @@ export const action = async ({ request, params }: ActionArgs) => {
 
       const validationErrors = validateForm(form, validate);
       if (validationErrors) {
-        return { validationErrors };
+        return json({ validationErrors });
       }
 
       const parsedBanner = bannerImage
@@ -92,21 +118,19 @@ export const action = async ({ request, params }: ActionArgs) => {
 
       await upsertPromotion(updateData);
 
-      return { success: true };
+      return json({ success: true });
 
     case "delete":
-      return { success: true };
+      return json({ success: true });
   }
 };
 
 const ModifyPromotion = () => {
   const navigate = useNavigate();
-  const { promotion, departments } = useLoaderData();
+  const { promotion, departments } = useLoaderData<typeof loader>();
   const { validationErrors, success } = useActionData() as ActionReturnTypes;
 
-  const { products } = (promotion as { products: Product[] }) || {};
-
-  const mode = promotion ? "edit" : "add";
+  const { products } = (promotion as { products: ProductWithDetails[] }) || {};
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -125,7 +149,6 @@ const ModifyPromotion = () => {
         <FormHeader
           valueToChange={promotion}
           type="Promotion"
-          mode={mode}
           hasIsActive={true}
           hasDelete={true}
         />

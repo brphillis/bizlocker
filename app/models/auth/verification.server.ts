@@ -2,6 +2,8 @@ import { prisma } from "~/db.server";
 import { sendEmailVerificationEmail } from "~/integrations/sendgrid/emails/emailVerification";
 import { sendPasswordResetEmail } from "~/integrations/sendgrid/emails/passwordReset";
 
+type VerifyTypes = "email" | "password";
+
 export const initiateVerifyUserAccount = async (
   email: string
 ): Promise<{ success: boolean }> => {

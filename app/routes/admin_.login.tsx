@@ -1,4 +1,5 @@
 import { json, type ActionArgs } from "@remix-run/node";
+import type { ActionReturnTypes } from "~/utility/actionTypes";
 import { useEffect } from "react";
 import { createStaffSession } from "~/session.server";
 import { safeRedirect } from "~/helpers/navigateHelpers";

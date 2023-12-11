@@ -1,4 +1,5 @@
 import type { Image } from "@prisma/client";
+import type { ActionReturnTypes } from "~/utility/actionTypes";
 import {
   type LoaderArgs,
   type ActionArgs,

@@ -1,4 +1,5 @@
 import type { Campaign, Image, Promotion } from "@prisma/client";
+import type { ActionReturnTypes } from "~/utility/actionTypes";
 import { useEffect, useState } from "react";
 import { tokenAuth } from "~/auth.server";
 import { validateForm } from "~/utility/validate";

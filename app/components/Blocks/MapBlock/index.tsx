@@ -3,11 +3,11 @@ import Map from "~/components/Map/index.client";
 import { generateColor } from "~/utility/colors";
 import type { BlockOptions } from "@prisma/client";
 import type { BlockContent } from "~/models/blocks.server";
+import type { MapFunctions } from "~/components/Map/types";
 import { ClientOnly } from "~/components/Utility/ClientOnly";
 import { getCountrFromISO3166 } from "~/utility/countryList";
 import type { StoreWithDetails } from "~/models/stores.server";
 import { IoCall, IoLocationSharp, IoPrint } from "react-icons/io5";
-
 type Props = {
   content: BlockContent;
   options: BlockOptions[];

@@ -1,5 +1,5 @@
 import { IoCloseCircle } from "react-icons/io5";
-import { blockMaster } from "~/utility/blockMaster";
+import { type BlockName, blockMaster } from "~/utility/blockMaster";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
 
 type Props = {
@@ -25,8 +25,6 @@ const SelectedContent = ({
       return true;
     } else return false;
   };
-
-
 
   return (
     <>

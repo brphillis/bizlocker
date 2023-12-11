@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import type { ActionReturnTypes } from "~/utility/actionTypes";
 import { validateForm } from "~/utility/validate";
 import DarkOverlay from "~/components/Layout/DarkOverlay";
 import {
@@ -106,7 +107,7 @@ export const action = async ({ request, params }: ActionArgs) => {
 
       const validationErrors = validateForm(form, validate);
       if (validationErrors) {
-        return { validationErrors };
+        return json({ validationErrors });
       }
 
       const categoryData = {
@@ -124,7 +125,7 @@ export const action = async ({ request, params }: ActionArgs) => {
 
       await upsertProductCategory(categoryData);
 
-      return { success: true };
+      return json({ success: true });
   }
 };
 

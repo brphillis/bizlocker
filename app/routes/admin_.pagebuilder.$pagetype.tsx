@@ -4,6 +4,7 @@ import {
   type LoaderArgs,
   json,
 } from "@remix-run/node";
+import type { ActionReturnTypes } from "~/utility/actionTypes";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import PageBuilder from "~/components/PageBuilder";
@@ -26,6 +27,8 @@ import {
   getFormBlockOptions,
   getBlockUpdateValues,
   searchContentData,
+  type PageType,
+  type NewBlockData,
 } from "~/utility/pageBuilder";
 import { getArticleCategories } from "~/models/articleCategories.server";
 import { getAvailableColors } from "~/models/enums.server";
@@ -46,6 +49,7 @@ import SquareIconButton from "~/components/Buttons/SquareIconButton";
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
 import type { BlockOptions, PreviewPage } from "@prisma/client";
+import { type BlockName } from "~/utility/blockMaster";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);

@@ -5,6 +5,7 @@ import BasicMultiSelect from "~/components/Forms/Select/BasicMultiSelect";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import UploadImage from "~/components/Forms/Upload/UploadImage";
 import type { Page } from "~/models/pageBuilder.server";
+import type { PageType } from "~/utility/pageBuilder";
 
 type Props = {
   currentVersion: Page | null;

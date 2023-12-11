@@ -1,3 +1,8 @@
+export type CountrySelect = {
+  code: string;
+  name: string;
+};
+
 export const getCountryISO3166 = (
   countryName: string | undefined
 ): string | undefined => {

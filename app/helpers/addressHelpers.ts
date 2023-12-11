@@ -1,4 +1,5 @@
 import type { Address } from "@prisma/client";
+import type { SquareShippingDetails } from "~/integrations/square/types";
 
 export const SquareAddressToAddress = (
   squareAddress: SquareShippingDetails

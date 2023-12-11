@@ -1,4 +1,5 @@
 import type { Image } from "@prisma/client";
+import type { ActionReturnTypes } from "~/utility/actionTypes";
 import {
   type ActionArgs,
   type LoaderArgs,
@@ -20,7 +21,11 @@ import PhoneInput from "~/components/Forms/Input/PhoneInput";
 import SelectCountry from "~/components/Forms/Select/SelectCountry";
 import UploadAvatar from "~/components/Forms/Upload/UploadAvatar";
 import DarkOverlay from "~/components/Layout/DarkOverlay";
-import { getUser, upsertUser } from "~/models/auth/users.server";
+import {
+  type UserWithDetails,
+  getUser,
+  upsertUser,
+} from "~/models/auth/users.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
 import { validateForm } from "~/utility/validate";
 
@@ -33,10 +38,23 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   const id = params?.id;
 
-  if (id && id !== "add") {
-    const user = await getUser(id);
-    return json(user);
-  } else return null;
+  if (!id) {
+    throw new Response(null, {
+      status: 404,
+      statusText: "User Not Found",
+    });
+  }
+
+  const user = id === "add" ? ({} as UserWithDetails) : await getUser(id);
+
+  if (!user) {
+    throw new Response(null, {
+      status: 404,
+      statusText: "User Not Found",
+    });
+  }
+
+  return json({ user });
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
@@ -107,12 +125,10 @@ export const action = async ({ request, params }: ActionArgs) => {
 };
 
 const ModifyUser = () => {
-  const navigate = useNavigate();
-
-  const user = useLoaderData<typeof loader>();
+  const { user } = useLoaderData<typeof loader>();
   const { validationErrors, success } = useActionData() as ActionReturnTypes;
 
-  const mode = user ? "edit" : "add";
+  const navigate = useNavigate();
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -134,7 +150,6 @@ const ModifyUser = () => {
         <FormHeader
           hasDelete={false}
           hasIsActive={true}
-          mode={mode}
           type="User"
           valueToChange={user}
         />

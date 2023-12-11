@@ -7,6 +7,7 @@ import {
 } from "./pageBuilder.server";
 import { getBlocks } from "~/helpers/blockHelpers";
 import { includeBlocksData } from "~/utility/blockMaster";
+import type { PageType } from "~/utility/pageBuilder";
 
 export const getPreviewPage = async (id: string): Promise<Page | null> => {
   return (await prisma.previewPage.findUnique({

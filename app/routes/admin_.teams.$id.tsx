@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import type { ActionReturnTypes } from "~/utility/actionTypes";
 import { tokenAuth } from "~/auth.server";
 import { HiTrash } from "react-icons/hi2";
 import { validateForm } from "~/utility/validate";
@@ -20,11 +21,6 @@ import {
   type LoaderArgs,
 } from "@remix-run/node";
 import {
-  getTeam,
-  removeTeamMemberFromTeam,
-  upsertTeam,
-} from "~/models/teams.server";
-import {
   Form,
   Outlet,
   useActionData,
@@ -32,7 +28,12 @@ import {
   useNavigate,
   useSubmit,
 } from "@remix-run/react";
-
+import {
+  getTeam,
+  removeTeamMemberFromTeam,
+  type TeamWithStaff,
+  upsertTeam,
+} from "~/models/teams.server";
 export const loader = async ({ request, params }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
   if (!authenticated.valid) {
@@ -48,11 +49,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
     });
   }
 
-  let team = null;
-
-  if (id !== "add") {
-    team = await getTeam(id);
-  }
+  const team = id === "add" ? ({} as TeamWithStaff) : await getTeam(id);
 
   if (!team) {
     throw new Response(null, {

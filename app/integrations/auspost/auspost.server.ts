@@ -1,4 +1,9 @@
+import type {
+  CalculateDeliveryPriceType,
+  GetPostageServicesType,
+} from "./types";
 import { fetch } from "@remix-run/node";
+
 const baseURL = "https://digitalapi.auspost.com.au";
 
 const apiKey = process.env.AUSPOST_ACCESS!;

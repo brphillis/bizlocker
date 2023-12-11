@@ -1,4 +1,11 @@
-import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node";
+import type { Image, Staff } from "@prisma/client";
+import type { ActionReturnTypes } from "~/utility/actionTypes";
+import {
+  redirect,
+  type ActionArgs,
+  type LoaderArgs,
+  json,
+} from "@remix-run/node";
 import {
   Form,
   useActionData,
@@ -16,7 +23,11 @@ import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import SelectCountry from "~/components/Forms/Select/SelectCountry";
 import UploadAvatar from "~/components/Forms/Upload/UploadAvatar";
 import DarkOverlay from "~/components/Layout/DarkOverlay";
-import { getStaff, upsertStaff } from "~/models/auth/staff.server";
+import {
+  type StaffWithDetails,
+  getStaff,
+  upsertStaff,
+} from "~/models/auth/staff.server";
 import { getAvailableRoles } from "~/models/enums.server";
 import { getStores } from "~/models/stores.server";
 import { STAFF_SESSION_KEY, getUserDataFromSession } from "~/session.server";
@@ -24,6 +35,7 @@ import { validateForm } from "~/utility/validate";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+
   if (!authenticated.valid) {
     return redirect("/admin/login");
   }
@@ -31,20 +43,34 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const { role } =
     ((await getUserDataFromSession(request, STAFF_SESSION_KEY)) as Staff) || {};
 
-  const id = params?.id;
-
   const roles = await getAvailableRoles();
   const stores = await getStores();
-  let staffMember;
 
-  if (id && id !== "add") {
-    staffMember = await getStaff(id);
+  const id = params?.id;
+
+  if (!id) {
+    throw new Response(null, {
+      status: 404,
+      statusText: "Staff Not Found",
+    });
   }
-  return { staffMember, roles, stores, role };
+
+  const staffMember =
+    id === "add" ? ({} as StaffWithDetails) : await getStaff(id);
+
+  if (!staffMember) {
+    throw new Response(null, {
+      status: 404,
+      statusText: "Staff Not Found",
+    });
+  }
+
+  return json({ staffMember, roles, stores, role });
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+
   if (!authenticated.valid) {
     return redirect("/admin/login");
   }
@@ -88,7 +114,7 @@ export const action = async ({ request, params }: ActionArgs) => {
 
   const validationErrors = validateForm(form, validate);
   if (validationErrors) {
-    return { validationErrors };
+    return json({ validationErrors });
   }
 
   const updateData = {
@@ -112,18 +138,23 @@ export const action = async ({ request, params }: ActionArgs) => {
     ...(password && { password: password as string }),
   };
 
-  const { success, permissionError } = await upsertStaff(request, updateData);
+  let permissionError, success;
 
-  return { success, permissionError };
+  try {
+    await upsertStaff(request, updateData);
+    success = true;
+  } catch (err) {
+    permissionError = err;
+  }
+
+  return json({ success, permissionError });
 };
 
 const ModifyStaff = () => {
   const navigate = useNavigate();
-  const { staffMember, roles, stores, role } = useLoaderData() || {};
+  const { staffMember, roles, stores, role } = useLoaderData<typeof loader>();
   const { validationErrors, permissionError, success } =
     useActionData() as ActionReturnTypes;
-
-  const mode = staffMember ? "edit" : "add";
 
   const [loading, setLoading] = useState<boolean>(false);
   const [changingPassword, setChangingPassword] = useState<boolean>(false);
@@ -146,7 +177,6 @@ const ModifyStaff = () => {
         <FormHeader
           hasDelete={false}
           hasIsActive={true}
-          mode={mode}
           type="Staff"
           valueToChange={staffMember}
         />

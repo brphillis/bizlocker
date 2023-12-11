@@ -1,3 +1,4 @@
+import type { ValidationErrors } from "~/utility/validate";
 import { useNavigate } from "@remix-run/react";
 import { useState } from "react";
 

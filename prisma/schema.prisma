@@ -849,3 +849,10 @@ enum Color {
   TRANSPARENTLG
   TRANSPARENT
 }
+
+enum PageType {
+  homePage
+  article
+  webPage
+  previewPage
+}
