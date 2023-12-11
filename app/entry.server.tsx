@@ -95,7 +95,7 @@ function handleBrowserRequest(
           const body = new PassThrough();
 
           responseHeaders.set("Content-Type", "text/html");
-          responseHeaders.set("Cache-Control", "public, max-age=43200");
+          //responseHeaders.set("Cache-Control", "public, max-age=43200");
 
           resolve(
             new Response(body, {

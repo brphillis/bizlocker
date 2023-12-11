@@ -119,7 +119,7 @@ export const action = async ({ request }: ActionArgs) => {
         shippingPrice as string,
         rememberInformation ? true : false
       );
-      return json(createdOrder);
+      return createdOrder;
 
     case "getShipping":
       const cart = await getCart(request);

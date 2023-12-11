@@ -97,23 +97,25 @@ export default function LoginPage() {
         </div>
 
         <>
-          {Object.values(validationErrors)?.map((error: string, i) => (
-            <p
-              key={error + i}
-              className="my-2 text-center text-xs text-red-500"
-            >
-              {error}
-            </p>
-          ))}
+          {validationErrors &&
+            Object.values(validationErrors)?.map((error: string, i) => (
+              <p
+                key={error + i}
+                className="my-2 text-center text-xs text-red-500"
+              >
+                {error}
+              </p>
+            ))}
 
-          {Object.values(validationErrors)?.includes("Email not Verified") && (
-            <Link
-              to="/request-verification-code"
-              className="link-hover link mb-2 cursor-pointer text-center text-xs text-brand-white/75"
-            >
-              Resend Email?
-            </Link>
-          )}
+          {validationErrors &&
+            Object.values(validationErrors)?.includes("Email not Verified") && (
+              <Link
+                to="/request-verification-code"
+                className="link-hover link mb-2 cursor-pointer text-center text-xs text-brand-white/75"
+              >
+                Resend Email?
+              </Link>
+            )}
         </>
 
         <div className="form-control mt-3 gap-3">
