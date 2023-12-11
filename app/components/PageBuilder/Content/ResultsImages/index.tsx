@@ -36,12 +36,19 @@ const ResultsImages = ({
     contentId: number,
     name: string
   ) => {
-    setSelectedItems((prevSelectedItems: any) => {
-      if (!Array.isArray(prevSelectedItems)) {
-        prevSelectedItems = [];
-      }
-      return [...prevSelectedItems, { type, contentId, name }];
-    });
+    const itemExists = selectedItems.some(
+      (item) =>
+        item.type === type && item.contentId === contentId && item.name === name
+    );
+
+    if (!itemExists) {
+      setSelectedItems((prevSelectedItems: any) => {
+        if (!Array.isArray(prevSelectedItems)) {
+          prevSelectedItems = [];
+        }
+        return [...prevSelectedItems, { type, contentId, name }];
+      });
+    }
   };
 
   return (

@@ -279,6 +279,7 @@ const PageBuilder = ({
             setSelectedItems={handleLimitedItemSelect}
             searchResults={searchResults as Campaign[] | Promotion[] | Brand[]}
             contentType={contentType}
+            selectedItems={selectedItems}
           />
 
           <ResultsImages
@@ -294,6 +295,7 @@ const PageBuilder = ({
             selectedItems={selectedItems}
             setSelectedItems={setSelectedItems}
           />
+
           {selectedItems && (
             <input
               name="contentSelection"
