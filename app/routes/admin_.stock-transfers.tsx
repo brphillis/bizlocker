@@ -6,7 +6,7 @@ import { capitalizeFirst } from "~/helpers/stringHelpers";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import { getApprovalStatusList } from "~/models/enums.server";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
-import { json, redirect, type LoaderArgs } from "@remix-run/node";
+import { json, redirect, type LoaderFunctionArgs } from "@remix-run/node";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import {
@@ -21,7 +21,7 @@ import {
   type StockTransferRequestWithDetails,
 } from "~/models/stock.server";
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
 
   if (!authenticated.valid) {
@@ -47,7 +47,8 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 const ManageStockTransfers = () => {
   const navigate = useNavigate();
-  const { stockTransfers, totalPages, statusList, stores } = useLoaderData();
+  const { stockTransfers, totalPages, statusList, stores } =
+    useLoaderData<typeof loader>();
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("pageNumber")) || 1;
 

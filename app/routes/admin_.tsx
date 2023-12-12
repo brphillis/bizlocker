@@ -1,11 +1,11 @@
-import { json, type LoaderArgs } from "@remix-run/node";
+import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { useEffect } from "react";
 import { STAFF_SESSION_KEY, getUserDataFromSession } from "~/session.server";
 import { useLoaderData, useLocation, useNavigate } from "@remix-run/react";
 import AdminSideBar from "~/components/Layout/_Admin/Navigation/SideBar";
 import { type StaffWithDetails } from "~/models/auth/staff.server";
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const staffMember = await getUserDataFromSession(request, STAFF_SESSION_KEY);
   return json({ staffMember });
 };

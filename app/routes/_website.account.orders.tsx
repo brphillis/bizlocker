@@ -5,10 +5,10 @@ import {
   type OrderWithDetails,
   getOrdersCurrentUser,
 } from "~/models/orders.server";
-import { json, redirect, type ActionArgs } from "@remix-run/node";
+import { json, redirect, type ActionFunctionArgs } from "@remix-run/node";
 import { Form, useLoaderData, useNavigate } from "@remix-run/react";
 
-export const loader = async ({ request }: ActionArgs) => {
+export const loader = async ({ request }: ActionFunctionArgs) => {
   const authenticated = await tokenAuth(request);
 
   if (!authenticated.valid) {

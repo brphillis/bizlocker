@@ -10,7 +10,11 @@ import DarkOverlay from "~/components/Layout/DarkOverlay";
 import { getUserDataFromSession } from "~/session.server";
 import { getDepartments } from "~/models/departments.server";
 import { getProductCategories } from "~/models/productCategories.server";
-import { json, type LinksFunction, type LoaderArgs } from "@remix-run/node";
+import {
+  json,
+  type LinksFunction,
+  type LoaderFunctionArgs,
+} from "@remix-run/node";
 import MobileMenu from "~/components/Layout/_Website/Navigation/MobileMenu";
 import DesktopMenu from "~/components/Layout/_Website/Navigation/DesktopMenu";
 import {
@@ -30,7 +34,7 @@ export const links: LinksFunction = () => [
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
 ];
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const user = (await getUserDataFromSession(request)) as User | null;
   let cart = await getCart(request);
 

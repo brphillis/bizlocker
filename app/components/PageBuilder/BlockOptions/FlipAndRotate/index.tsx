@@ -26,7 +26,6 @@ const FlipAndRotateOptions = ({
             <select
               name="flipX"
               className=" select w-[95vw] max-w-full text-brand-black/75 sm:w-[215px]"
-              placeholder="Select a Type"
               defaultValue={!flipX ? undefined : flipX}
             >
               <option value="">No</option>

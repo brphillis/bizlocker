@@ -32,14 +32,13 @@ import ProductVariantFormModule from "~/components/Forms/Modules/ProductVariantF
 import UploadMultipleImages from "~/components/Forms/Upload/UploadMultipleImages/index.client";
 import {
   redirect,
-  type ActionArgs,
+  type ActionFunctionArgs,
   type LinksFunction,
-  type LoaderArgs,
+  type LoaderFunctionArgs,
   json,
 } from "@remix-run/node";
-
-import swiper from "../../node_modules/swiper/swiper.css";
-import swiperNav from "../../node_modules/swiper/modules/navigation/navigation.min.css";
+import swiper from "../../node_modules/swiper/swiper.min.css";
+import swiperNav from "../../node_modules/swiper/modules/navigation.min.css";
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY, getUserDataFromSession } from "~/session.server";
 import { ClientOnly } from "~/components/Utility/ClientOnly";
@@ -50,7 +49,7 @@ export const links: LinksFunction = () => [
   { rel: "stylesheet", href: swiperNav },
 ];
 
-export const loader = async ({ request, params }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
 
   if (!authenticated.valid) {
@@ -94,7 +93,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   });
 };
 
-export const action = async ({ request, params }: ActionArgs) => {
+export const action = async ({ request, params }: ActionFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
   if (!authenticated.valid) {
     return redirect("/admin/login");

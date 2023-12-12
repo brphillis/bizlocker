@@ -64,7 +64,7 @@ const SearchBar = ({ departments, productCategories, brands }: Props) => {
       <div className="flex flex-row flex-wrap items-center justify-center gap-3">
         <button
           type="button"
-          className="btn-square btn-primary !ml-[85%] flex h-[2.6rem] w-12 items-center justify-center !rounded-sm max-lg:hidden sm:!ml-0"
+          className="btn-square btn-primary !ml-[85%] flex  h-[2.6rem] w-12 items-center justify-center !rounded-sm bg-primary hover:bg-primary-dark max-lg:hidden sm:!ml-0"
           onClick={() => {
             searchParams.delete("name");
             searchParams.delete("productCategory");
@@ -91,7 +91,6 @@ const SearchBar = ({ departments, productCategories, brands }: Props) => {
             name="department"
             title="department"
             className="select w-[215px] !rounded-sm !font-normal text-brand-black/50 max-lg:w-[95vw]"
-            placeholder="Select a Department"
             onChange={(e) => {
               if (e.target.selectedIndex === 0) {
                 setSubCategories(null);
@@ -122,7 +121,6 @@ const SearchBar = ({ departments, productCategories, brands }: Props) => {
             name="productCategory"
             title="category"
             className="select w-[215px] !rounded-sm !font-normal text-brand-black/50 max-lg:w-[95vw]"
-            placeholder="Select a Category"
             onChange={(e) => {
               if (e.target.selectedIndex === 0) {
                 setSubCategories(null);
@@ -154,7 +152,6 @@ const SearchBar = ({ departments, productCategories, brands }: Props) => {
               name="productSubCategory"
               title="Sub Category"
               className="select w-[215px] !rounded-sm !font-normal text-brand-black/50 max-lg:w-[95vw]"
-              placeholder="Select a SubCategory"
               onChange={(e) => {
                 searchParams.delete("brand");
                 searchParams.set("productSubCategory", e.target.value);
@@ -177,7 +174,6 @@ const SearchBar = ({ departments, productCategories, brands }: Props) => {
             name="brand"
             title="brand"
             className="select w-[215px] !rounded-sm !font-normal text-brand-black/50 max-lg:w-[95vw]"
-            placeholder="Select a Value"
             onChange={(e) => {
               searchParams.set("brand", e.target.value);
             }}
@@ -196,7 +192,7 @@ const SearchBar = ({ departments, productCategories, brands }: Props) => {
         <div className="flex w-max items-center justify-between px-0 max-lg:w-full max-lg:px-4">
           <button
             type="button"
-            className="btn-square btn-primary hidden h-[2.6rem] w-12 items-center justify-center !rounded-sm max-lg:flex "
+            className="btn-square btn-primary hidden h-[2.6rem] w-12 items-center justify-center !rounded-sm bg-primary hover:bg-primary-dark max-lg:flex "
             onClick={() => {
               searchParams.delete("name");
               searchParams.delete("productCategory");
@@ -211,7 +207,7 @@ const SearchBar = ({ departments, productCategories, brands }: Props) => {
           {!loading && (
             <button
               type="button"
-              className="btn-square btn-primary flex h-[2.6rem] w-12 items-center justify-center !rounded-sm sm:!ml-0"
+              className="btn-square btn-primary flex h-[2.6rem] w-12 items-center justify-center !rounded-sm bg-primary hover:bg-primary-dark sm:!ml-0"
               onClick={() => {
                 submit(searchParams, {
                   method: "GET",

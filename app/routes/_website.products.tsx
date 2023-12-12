@@ -1,47 +1,39 @@
 import { useLoaderData } from "@remix-run/react";
-import type { BlockOptions, Campaign, Promotion } from "@prisma/client";
-import type { BlockContent } from "~/models/blocks.server";
 import { addToCart } from "~/models/cart.server";
 import { getBrands } from "~/models/brands.server";
 import ProductGrid from "~/components/Grids/ProductGrid";
-import BannerBlock from "~/components/Blocks/BannerBlock";
 import { searchProducts } from "~/models/products.server";
 import ProductSort from "~/components/Sorting/ProductSort";
 import { getAvailableColors } from "~/models/enums.server";
 import { getDepartments } from "~/models/departments.server";
 import PageWrapper from "~/components/Layout/_Website/PageWrapper";
-import { getRandomCampaignOrPromotion } from "~/models/campaigns.server";
+import {
+  type CampaignWithContent,
+  getRandomCampaignOrPromotion,
+} from "~/models/campaigns.server";
 import { getProductCategories } from "~/models/productCategories.server";
 import ProductFilterSideBar from "~/components/Filter/ProductFilterSideBar";
 import { getProductSubCategories } from "~/models/productSubCategories.server";
 import {
   json,
-  type ActionArgs,
-  type LoaderArgs,
-  type V2_MetaFunction,
+  type ActionFunctionArgs,
+  type LoaderFunctionArgs,
+  type MetaFunction,
 } from "@remix-run/node";
+import type { PromotionWithContent } from "~/models/promotions.server";
+import PromotionBanner from "~/components/Banners/PromotionBanner";
 
-export const meta: V2_MetaFunction = ({ data }) => {
-  const url = new URL(data.url);
-  const paramsArray = Array.from(url.searchParams.entries());
-  const specificParam = paramsArray[paramsArray.length - 1];
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
   return [
+    { title: "CLUTCH | Products" },
     {
-      title:
-        "CLUTCH Clothing | " +
-        (specificParam?.[1] ? specificParam?.[1] : "Products"),
-    },
-    {
-      name: "description",
-      content:
-        "Shopping at CLUTCH clothing not only ensures the best quality fashion in Australia but we also have all the latest " +
-        (specificParam?.[1] ? specificParam?.[1] : "products") +
-        " in stock today available to be shipped straight to your door.",
+      name: "CLUTCH | Products",
+      content: "CLUTCH | Products",
     },
   ];
 };
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
   const { products, totalPages } = await searchProducts(undefined, url, true);
   const departments = await getDepartments();
@@ -55,8 +47,8 @@ export const loader = async ({ request }: LoaderArgs) => {
     ?.toString();
   const { campaign, promotion } =
     ((await getRandomCampaignOrPromotion(productSubCategory)) as {
-      campaign: Campaign;
-      promotion: Promotion;
+      campaign: CampaignWithContent;
+      promotion: PromotionWithContent;
     }) || {};
 
   return json({
@@ -73,7 +65,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   });
 };
 
-export const action = async ({ request }: ActionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const form = Object.fromEntries(await request.formData());
   const { variantId, quantity } = form;
   switch (form._action) {
@@ -84,7 +76,6 @@ export const action = async ({ request }: ActionArgs) => {
 
 const Products = () => {
   const {
-    campaign,
     promotion,
     products,
     totalPages,
@@ -97,12 +88,15 @@ const Products = () => {
 
   return (
     <PageWrapper>
-      {(campaign || promotion) && (
-        <BannerBlock
-          content={{ campaign: campaign, promotion: promotion } as BlockContent}
-          options={[{ margin: " max-md:-mt-[13px]" }] as BlockOptions[]}
-        />
-      )}
+      <>
+        {promotion?.bannerImage && (
+          <PromotionBanner
+            name={promotion.name}
+            bannerImage={promotion.bannerImage}
+            targetGender={promotion.targetGender}
+          />
+        )}
+      </>
 
       <div className="w-[1280px] max-w-[100vw]">
         <ProductSort

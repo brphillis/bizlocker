@@ -27,7 +27,6 @@ const SizeOptions = ({
             <select
               name="size"
               className=" select w-[95vw] max-w-full text-brand-black/75 sm:w-[215px]"
-              placeholder="Select a Type"
               defaultValue={!size ? undefined : size}
             >
               <option value="small">Small</option>
@@ -48,7 +47,6 @@ const SizeOptions = ({
             <select
               name="sizeMobile"
               className=" select w-[95vw] max-w-full text-brand-black/75 sm:w-[215px]"
-              placeholder="Select a Type"
               defaultValue={!sizeMobile ? undefined : sizeMobile}
             >
               <option value="small">Small</option>

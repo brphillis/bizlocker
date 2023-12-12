@@ -16,22 +16,22 @@ import { getProductSubCategories } from "~/models/productSubCategories.server";
 import {
   json,
   redirect,
-  type ActionArgs,
-  type LoaderArgs,
-  type V2_MetaFunction,
+  type ActionFunctionArgs,
+  type LoaderFunctionArgs,
+  type MetaFunction,
 } from "@remix-run/node";
 
-export const meta: V2_MetaFunction = ({ data }) => {
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
   return [
-    { title: data.promotionName },
+    { title: data?.promotion.name },
     {
       name: "description",
-      content: data.promotionName,
+      content: data?.promotion.name,
     },
   ];
 };
 
-export const loader = async ({ request, params }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
   const promotion = await getPromotion(undefined, params.name);
 
@@ -70,7 +70,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   });
 };
 
-export const action = async ({ request }: ActionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const form = Object.fromEntries(await request.formData());
   const { variantId, quantity } = form;
   switch (form._action) {

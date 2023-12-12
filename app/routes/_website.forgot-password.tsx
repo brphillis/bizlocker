@@ -4,11 +4,11 @@ import { isValidEmail } from "~/utility/validate";
 import { ActionAlert } from "~/components/Notifications/Alerts";
 import { initiatePasswordReset } from "~/models/auth/verification.server";
 import { Form, NavLink, useActionData, useNavigate } from "@remix-run/react";
-import { json, type ActionArgs, type V2_MetaFunction } from "@remix-run/node";
+import { json, type ActionFunctionArgs, type MetaFunction } from "@remix-run/node";
 
 import background from "../assets/banners/banner-login.jpg";
 
-export const action = async ({ request }: ActionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const form = Object.fromEntries(await request.formData());
   const { email } = form;
   let validationError: string[] = [];
@@ -32,7 +32,7 @@ export const action = async ({ request }: ActionArgs) => {
   }
 };
 
-export const meta: V2_MetaFunction = () => [{ title: "Register" }];
+export const meta: MetaFunction = () => [{ title: "Register" }];
 
 export const RegisterPage = () => {
   const navigate = useNavigate();

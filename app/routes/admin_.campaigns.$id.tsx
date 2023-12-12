@@ -1,8 +1,8 @@
 import type { Image } from "@prisma/client";
 import type { ActionReturnTypes } from "~/utility/actionTypes";
 import {
-  type LoaderArgs,
-  type ActionArgs,
+  type LoaderFunctionArgs,
+  type ActionFunctionArgs,
   redirect,
   json,
 } from "@remix-run/node";
@@ -34,7 +34,7 @@ import { getProductSubCategories } from "~/models/productSubCategories.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
 import { validateForm } from "~/utility/validate";
 
-export const loader = async ({ request, params }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
 
   if (!authenticated.valid) {
@@ -74,7 +74,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   return json({ campaign, departments, productSubCategories, brands });
 };
 
-export const action = async ({ request, params }: ActionArgs) => {
+export const action = async ({ request, params }: ActionFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
 
   if (!authenticated.valid) {

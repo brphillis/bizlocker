@@ -21,7 +21,6 @@ const StyleOptions = ({ defaultValues, selectedBlockOptions }: Props) => {
             <select
               name="style"
               className=" select w-[95vw] max-w-full text-brand-black/75 sm:w-[215px]"
-              placeholder="Select a Type"
               defaultValue={!style ? undefined : style}
             >
               <option value={undefined}>Default</option>

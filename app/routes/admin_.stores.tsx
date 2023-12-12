@@ -1,5 +1,5 @@
 import Pagination from "~/components/Pagination";
-import { redirect, type LoaderArgs, json } from "@remix-run/node";
+import { redirect, type LoaderFunctionArgs, json } from "@remix-run/node";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
@@ -14,7 +14,7 @@ import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
 import { type StoreWithDetails, searchStores } from "~/models/stores.server";
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
 
   if (!authenticated.valid) {

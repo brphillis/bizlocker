@@ -4,10 +4,10 @@ import {
   type OrderItemWithDetails,
   confirmPayment,
 } from "~/models/orders.server";
-import { type ActionArgs } from "@remix-run/server-runtime";
+import { type ActionFunctionArgs } from "@remix-run/server-runtime";
 import PageWrapper from "~/components/Layout/_Website/PageWrapper";
 
-export const loader = async ({ params }: ActionArgs) => {
+export const loader = async ({ params }: ActionFunctionArgs) => {
   const paymentCode = params.paymentCode;
   if (paymentCode) {
     const order = await confirmPayment(paymentCode);

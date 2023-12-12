@@ -8,7 +8,7 @@ const LogoutButton = ({ extendStyles }: Props) => {
   const submit = useSubmit();
   return (
     <button
-      className={"btn-primary btn-md !rounded-sm " + extendStyles}
+      className={"btn-primary btn-md !rounded-sm bg-primary " + extendStyles}
       onClick={() => submit(null, { method: "post", action: "/logout" })}
     >
       Log Out

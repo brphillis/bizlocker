@@ -11,8 +11,8 @@ import FormHeader from "~/components/Forms/Headers/FormHeader";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import {
   redirect,
-  type ActionArgs,
-  type LoaderArgs,
+  type ActionFunctionArgs,
+  type LoaderFunctionArgs,
   json,
 } from "@remix-run/node";
 import {
@@ -39,7 +39,7 @@ import {
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
 
-export const loader = async ({ request, params }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
   if (!authenticated.valid) {
     return redirect("/admin/login");
@@ -78,7 +78,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   });
 };
 
-export const action = async ({ request, params }: ActionArgs) => {
+export const action = async ({ request, params }: ActionFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
 
   if (!authenticated.valid) {

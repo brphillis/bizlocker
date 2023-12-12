@@ -3,19 +3,23 @@ import { getBlocks } from "~/helpers/blockHelpers";
 import { getArticle } from "~/models/articles.server";
 import BlockRenderer from "~/components/BlockRenderer";
 import PageWrapper from "~/components/Layout/_Website/PageWrapper";
-import { json, type LoaderArgs, type V2_MetaFunction } from "@remix-run/node";
+import {
+  json,
+  type LoaderFunctionArgs,
+  type MetaFunction,
+} from "@remix-run/node";
 
-export const meta: V2_MetaFunction = ({ data }) => {
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
   return [
-    { title: data.title },
+    { title: data?.title },
     {
-      name: "description",
-      content: data.description,
+      name: data?.title,
+      content: data?.description,
     },
   ];
 };
 
-export const loader = async ({ params }: LoaderArgs) => {
+export const loader = async ({ params }: LoaderFunctionArgs) => {
   const articleName = params.name;
   const article = await getArticle(undefined, articleName);
 

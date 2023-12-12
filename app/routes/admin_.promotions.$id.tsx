@@ -9,8 +9,8 @@ import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import SelectGender from "~/components/Forms/Select/SelectGender";
 import {
   redirect,
-  type ActionArgs,
-  type LoaderArgs,
+  type ActionFunctionArgs,
+  type LoaderFunctionArgs,
   json,
 } from "@remix-run/node";
 import {
@@ -31,7 +31,7 @@ import { STAFF_SESSION_KEY } from "~/session.server";
 import type { Image, Product } from "@prisma/client";
 import type { ProductWithDetails } from "~/models/products.server";
 
-export const loader = async ({ request, params }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
 
   if (!authenticated.valid) {
@@ -62,7 +62,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   return json({ promotion, departments });
 };
 
-export const action = async ({ request, params }: ActionArgs) => {
+export const action = async ({ request, params }: ActionFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
   if (!authenticated.valid) {
     return redirect("/admin/login");

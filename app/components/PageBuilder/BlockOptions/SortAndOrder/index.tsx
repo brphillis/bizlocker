@@ -29,7 +29,6 @@ const SortAndOrderOptions = ({
             <select
               name="sortBy"
               className=" select w-[95vw] max-w-full text-brand-black/75 sm:w-[215px]"
-              placeholder="Select a Type"
               defaultValue={!sortBy ? undefined : sortBy}
             >
               <option value={undefined}>Select Order</option>
@@ -65,7 +64,6 @@ const SortAndOrderOptions = ({
             <select
               name="sortOrder"
               className=" select w-[95vw] max-w-full text-brand-black/75 sm:w-[215px]"
-              placeholder="Select a Type"
               defaultValue={!sortOrder ? undefined : sortOrder}
             >
               <option value={undefined}>Select Order</option>

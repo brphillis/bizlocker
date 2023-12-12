@@ -1,9 +1,6 @@
 import type { CartWithDetails } from "~/models/cart.server";
 import type { Address } from "@prisma/client";
-import type {
-  AusPostDeliveryOption,
-  GetPostageServicesType,
-} from "~/integrations/auspost/types";
+import type { AusPostDeliveryOption } from "~/integrations/auspost/types";
 import { getShippingServices_Integration } from "~/integrations/_master/shipping";
 import { getLatLongForPostcode } from "~/models/location.server";
 import { prisma } from "~/db.server";
@@ -20,7 +17,7 @@ type CartDimensions = {
 export const getCartDeliveryOptions = async (
   cart: CartWithDetails,
   postCode: number
-): Promise<AusPostDeliveryOption> => {
+): Promise<AusPostDeliveryOption[]> => {
   const cartDimensions = getCartDimensions(cart);
 
   const shippingCoords = await getLatLongForPostcode(postCode.toString());
@@ -65,7 +62,7 @@ export const getCartDeliveryOptions = async (
   };
 
   const postageServices = await getShippingServices_Integration(
-    postageServicesArgs as GetPostageServicesType
+    postageServicesArgs
   );
 
   const filteredPostageServices = postageServices

@@ -1,7 +1,7 @@
 import {
-  type LoaderArgs,
+  type LoaderFunctionArgs,
   redirect,
-  type V2_MetaFunction,
+  type MetaFunction,
 } from "@remix-run/node";
 import {
   IoCallOutline,
@@ -16,9 +16,9 @@ import { generateColor } from "~/utility/colors";
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
 
-export const meta: V2_MetaFunction = () => [{ title: "CLUTCH - clothing." }];
+export const meta: MetaFunction = () => [{ title: "CLUTCH - clothing." }];
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
 
   if (!authenticated.valid) {

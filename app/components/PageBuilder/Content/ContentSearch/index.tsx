@@ -62,10 +62,8 @@ const ContentSearch = ({
               <select
                 name="contentType"
                 className=" select w-[95vw] max-w-full sm:w-[215px]"
-                placeholder="Select a Type"
                 onChange={(e) => {
                   handleSearchSubmit(e.target.value, undefined);
-
                   setContentType(e.target.value);
                 }}
               >

@@ -29,7 +29,6 @@ const ItemFilterOptions = ({
             <select
               name="filter1"
               className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
-              placeholder="Select a Filter"
               defaultValue={!filter1 ? undefined : filter1}
             >
               <option value="">Select a Filter</option>
@@ -68,7 +67,6 @@ const ItemFilterOptions = ({
             <select
               name="filter2"
               className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
-              placeholder="Select a Filter"
               defaultValue={!filter2 ? undefined : filter2}
             >
               <option value="">Select a Filter</option>
@@ -107,7 +105,6 @@ const ItemFilterOptions = ({
             <select
               name="filter3"
               className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
-              placeholder="Select a Filter"
               defaultValue={!filter3 ? undefined : filter3}
             >
               <option value="">Select a Filter</option>
@@ -146,7 +143,6 @@ const ItemFilterOptions = ({
             <select
               name="filter4"
               className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
-              placeholder="Select a Filter"
               defaultValue={!filter4 ? undefined : filter4}
             >
               <option value="">Select a Filter</option>
@@ -185,7 +181,6 @@ const ItemFilterOptions = ({
             <select
               name="filter5"
               className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
-              placeholder="Select a Filter"
               defaultValue={!filter5 ? undefined : filter5}
             >
               <option value="">Select a Filter</option>
@@ -224,7 +219,6 @@ const ItemFilterOptions = ({
             <select
               name="filter6"
               className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
-              placeholder="Select a Filter"
               defaultValue={!filter6 ? undefined : filter6}
             >
               <option value="">Select a Filter</option>

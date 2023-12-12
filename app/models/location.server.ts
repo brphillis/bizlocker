@@ -1,4 +1,7 @@
-import { fetch } from "@remix-run/node";
+type LocationResponseType = {
+  lat: string;
+  lon: string;
+};
 
 export const getLatLongForPostcode = async (
   postcode: string
@@ -14,8 +17,8 @@ export const getLatLongForPostcode = async (
 
     const data = await response.json();
 
-    if (data.length > 0) {
-      const location = data[0];
+    if (data) {
+      const location = data as LocationResponseType;
       return { lat: parseFloat(location.lat), long: parseFloat(location.lon) };
     } else {
       return null; // Postcode not found

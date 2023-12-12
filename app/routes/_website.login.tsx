@@ -6,9 +6,9 @@ import AuthContainer from "~/components/Layout/AuthContainer";
 import AuthPageWrapper from "~/components/Layout/AuthPageWrapper";
 import { isValidEmail, isValidPassword } from "~/utility/validate";
 import { googleLogin, verifyLogin } from "~/models/auth/login.server";
-import { json, type ActionArgs, type V2_MetaFunction } from "@remix-run/node";
+import { json, type ActionFunctionArgs, type MetaFunction } from "@remix-run/node";
 
-export const action = async ({ request }: ActionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const form = Object.fromEntries(await request.formData());
 
   switch (form._action) {
@@ -58,7 +58,7 @@ export const action = async ({ request }: ActionArgs) => {
   }
 };
 
-export const meta: V2_MetaFunction = () => [{ title: "Login" }];
+export const meta: MetaFunction = () => [{ title: "Login" }];
 
 export default function LoginPage() {
   const { validationErrors } = (useActionData() as ActionReturnTypes) || {};

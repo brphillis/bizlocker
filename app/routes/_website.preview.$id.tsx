@@ -6,11 +6,11 @@ import PageWrapper from "~/components/Layout/_Website/PageWrapper";
 import {
   json,
   redirect,
-  type LoaderArgs,
-  type V2_MetaFunction,
+  type LoaderFunctionArgs,
+  type MetaFunction,
 } from "@remix-run/node";
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
   return [
     { title: "Page Preview" },
     {
@@ -20,7 +20,7 @@ export const meta: V2_MetaFunction = () => {
   ];
 };
 
-export const loader = async ({ params }: LoaderArgs) => {
+export const loader = async ({ params }: LoaderFunctionArgs) => {
   const pageId = params.id;
   if (pageId && !isNaN(parseInt(pageId))) {
     const webPage = await getPreviewPage(pageId as string);

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import type { ActionReturnTypes } from "~/utility/actionTypes";
 import { isValidPassword } from "~/utility/validate";
-import { json, type ActionArgs } from "@remix-run/node";
+import { json, type ActionFunctionArgs } from "@remix-run/node";
 import AuthContainer from "~/components/Layout/AuthContainer";
 import { ActionAlert } from "~/components/Notifications/Alerts";
 import AuthPageWrapper from "~/components/Layout/AuthPageWrapper";
@@ -15,7 +15,7 @@ import {
   useSearchParams,
 } from "@remix-run/react";
 
-export const loader = async ({ params, request }: ActionArgs) => {
+export const loader = async ({ params, request }: ActionFunctionArgs) => {
   const url = new URL(request.url);
   const verificationCode = params.verificationCode;
   const emailAddress = url.searchParams.get("email");
@@ -30,7 +30,7 @@ export const loader = async ({ params, request }: ActionArgs) => {
   } else return false;
 };
 
-export const action = async ({ request, params }: ActionArgs) => {
+export const action = async ({ request, params }: ActionFunctionArgs) => {
   const url = new URL(request.url);
   const verificationCode = params.verificationCode;
   const emailAddress = url.searchParams.get("email");

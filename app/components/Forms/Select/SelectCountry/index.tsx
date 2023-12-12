@@ -22,7 +22,6 @@ const SelectCountry = ({ defaultValue, validationErrors, styles }: Props) => {
             : ""
         }`}
         defaultValue={defaultValue || undefined}
-        placeholder="Select a Value"
       >
         {ISO3166Countries?.map(({ code, name }: CountrySelect) => {
           return (

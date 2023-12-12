@@ -44,7 +44,7 @@ const SelectPageLinkPopupFormModule = ({
     }
 
     if (fetcher.data) {
-      const { webPages } = fetcher.data;
+      const { webPages } = fetcher.data as any;
       setCurrentWebPages(webPages);
     }
   }, [fetcher, currentWebPages, count, title]);
@@ -68,7 +68,7 @@ const SelectPageLinkPopupFormModule = ({
     fetcher.load(query);
 
     if (fetcher.data) {
-      const { webPages } = fetcher.data;
+      const { webPages } = fetcher.data as any;
       setCurrentWebPages(webPages);
     }
   };
