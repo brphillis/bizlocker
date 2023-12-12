@@ -1,11 +1,11 @@
 import { useEffect } from "react";
 import { IoCheckmarkCircle } from "react-icons/io5";
-import { json, type ActionArgs } from "@remix-run/node";
+import { json, type ActionFunctionArgs } from "@remix-run/node";
 import { useLoaderData, useNavigate } from "@remix-run/react";
 import PageWrapper from "~/components/Layout/_Website/PageWrapper";
 import { verifyUserAccount } from "~/models/auth/verification.server";
 
-export const loader = async ({ params, request }: ActionArgs) => {
+export const loader = async ({ params, request }: ActionFunctionArgs) => {
   const url = new URL(request.url);
   const verificationCode = params.verificationCode;
   const emailAddress = url.searchParams.get("email");

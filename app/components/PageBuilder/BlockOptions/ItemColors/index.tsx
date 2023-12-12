@@ -45,7 +45,6 @@ const ItemColorOptions = ({
             <select
               name="itemColor"
               className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
-              placeholder="Select a Color"
               defaultValue={!itemColor ? undefined : itemColor}
             >
               <option value="">Select a Color</option>
@@ -70,7 +69,6 @@ const ItemColorOptions = ({
             <select
               name="itemSecondaryColor"
               className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
-              placeholder="Select a Color"
               defaultValue={
                 !itemSecondaryColor ? undefined : itemSecondaryColor
               }
@@ -95,7 +93,6 @@ const ItemColorOptions = ({
             <select
               name="color1"
               className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
-              placeholder="Select a Color"
               defaultValue={!color1 ? undefined : color1}
             >
               <option value="">Select a Color</option>
@@ -120,7 +117,6 @@ const ItemColorOptions = ({
             <select
               name="colorSecondary1"
               className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
-              placeholder="Select a Color"
               defaultValue={!colorSecondary1 ? undefined : colorSecondary1}
             >
               <option value="">Select a Color</option>
@@ -143,7 +139,6 @@ const ItemColorOptions = ({
             <select
               name="color2"
               className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
-              placeholder="Select a Color"
               defaultValue={!color2 ? undefined : color2}
             >
               <option value="">Select a Color</option>
@@ -168,7 +163,6 @@ const ItemColorOptions = ({
             <select
               name="colorSecondary2"
               className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
-              placeholder="Select a Color"
               defaultValue={!colorSecondary2 ? undefined : colorSecondary2}
             >
               <option value="">Select a Color</option>
@@ -191,7 +185,6 @@ const ItemColorOptions = ({
             <select
               name="color3"
               className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
-              placeholder="Select a Color"
               defaultValue={!color3 ? undefined : color3}
             >
               <option value="">Select a Color</option>
@@ -216,7 +209,6 @@ const ItemColorOptions = ({
             <select
               name="colorSecondary3"
               className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
-              placeholder="Select a Color"
               defaultValue={!colorSecondary3 ? undefined : colorSecondary3}
             >
               <option value="">Select a Color</option>
@@ -239,7 +231,6 @@ const ItemColorOptions = ({
             <select
               name="color4"
               className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
-              placeholder="Select a Color"
               defaultValue={!color4 ? undefined : color4}
             >
               <option value="">Select a Color</option>
@@ -264,7 +255,6 @@ const ItemColorOptions = ({
             <select
               name="colorSecondary4"
               className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
-              placeholder="Select a Color"
               defaultValue={!colorSecondary4 ? undefined : colorSecondary4}
             >
               <option value="">Select a Color</option>
@@ -287,7 +277,6 @@ const ItemColorOptions = ({
             <select
               name="color5"
               className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
-              placeholder="Select a Color"
               defaultValue={!color5 ? undefined : color5}
             >
               <option value="">Select a Color</option>
@@ -312,7 +301,6 @@ const ItemColorOptions = ({
             <select
               name="colorSecondary5"
               className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
-              placeholder="Select a Color"
               defaultValue={!colorSecondary5 ? undefined : colorSecondary5}
             >
               <option value="">Select a Color</option>
@@ -335,7 +323,6 @@ const ItemColorOptions = ({
             <select
               name="color6"
               className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
-              placeholder="Select a Color"
               defaultValue={!color6 ? undefined : color6}
             >
               <option value="">Select a Color</option>
@@ -360,7 +347,6 @@ const ItemColorOptions = ({
             <select
               name="colorSecondary6"
               className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
-              placeholder="Select a Color"
               defaultValue={!colorSecondary6 ? undefined : colorSecondary6}
             >
               <option value="">Select a Color</option>

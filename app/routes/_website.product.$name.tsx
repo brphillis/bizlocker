@@ -4,7 +4,7 @@ import Spinner from "~/components/Spinner";
 import { generateColor } from "~/utility/colors";
 import { getBrand } from "~/models/brands.server";
 import { parseOptions } from "~/utility/parseOptions";
-import { json, type LoaderArgs } from "@remix-run/node";
+import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { Toast } from "~/components/Notifications/Toast";
 import ProductGrid from "~/components/Grids/ProductGrid";
 import { getVariantUnitPrice } from "~/helpers/numberHelpers";
@@ -28,7 +28,7 @@ import {
 } from "~/helpers/productHelpers";
 import type { Image } from "~/models/images.server";
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
   const productId = url.searchParams.get("id");
 

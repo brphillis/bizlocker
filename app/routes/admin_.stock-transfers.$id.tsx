@@ -11,8 +11,8 @@ import {
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
 import {
   redirect,
-  type ActionArgs,
-  type LoaderArgs,
+  type ActionFunctionArgs,
+  type LoaderFunctionArgs,
   json,
 } from "@remix-run/node";
 import { useEffect, useState } from "react";
@@ -31,7 +31,7 @@ import { getApprovalStatusList } from "~/models/enums.server";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
 import useNotification from "~/hooks/PageNotification";
 
-export const loader = async ({ request, params }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
 
   if (!authenticated.valid) {
@@ -65,7 +65,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   return json({ stockTransferRequest, stores, statusList });
 };
 
-export const action = async ({ request, params }: ActionArgs) => {
+export const action = async ({ request, params }: ActionFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
   if (!authenticated.valid) {
     return redirect("/login");

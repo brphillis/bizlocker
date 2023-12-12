@@ -30,7 +30,6 @@ const ProductCard = (product: ProductWithDetails) => {
         method: "POST",
         action: "/products",
         preventScrollReset: true,
-        replace: true,
       });
     }
   };

@@ -47,7 +47,6 @@ const TitleOptions = ({
             <select
               name="titleSize"
               className=" select w-[95vw] max-w-full text-brand-black/75 sm:w-[215px]"
-              placeholder="Select a Type"
               defaultValue={!titleSize ? undefined : titleSize}
             >
               <option value="text-xs">XSmall</option>
@@ -75,7 +74,6 @@ const TitleOptions = ({
             <select
               name="titleWeight"
               className=" select w-[95vw] max-w-full text-brand-black/75 sm:w-[215px]"
-              placeholder="Select a Type"
               defaultValue={!titleWeight ? undefined : titleWeight}
             >
               <option value="font-thin">Thin</option>
@@ -99,7 +97,6 @@ const TitleOptions = ({
             <select
               name="titleAlign"
               className=" select w-[95vw] max-w-full text-brand-black/75 sm:w-[215px]"
-              placeholder="Select a Type"
               defaultValue={!titleAlign ? undefined : titleAlign}
             >
               <option value="text-left">Left</option>
@@ -119,7 +116,6 @@ const TitleOptions = ({
             <select
               name="titleColor"
               className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
-              placeholder="Select a Color"
               defaultValue={!titleColor ? undefined : titleColor}
             >
               <option value="">Select a Color</option>

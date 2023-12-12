@@ -15,8 +15,8 @@ import {
 import {
   json,
   redirect,
-  type ActionArgs,
-  type LoaderArgs,
+  type ActionFunctionArgs,
+  type LoaderFunctionArgs,
 } from "@remix-run/node";
 import {
   type OrderItemWithDetails,
@@ -25,7 +25,7 @@ import {
   updateOrderStatus,
 } from "~/models/orders.server";
 
-export const loader = async ({ request, params }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
 
   if (!authenticated.valid) {
@@ -53,7 +53,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   return json({ order });
 };
 
-export const action = async ({ request }: ActionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const form = Object.fromEntries(await request.formData());
   const { orderId } = form;
 
@@ -145,11 +145,7 @@ const ModifyOrder = () => {
               action={pathname}
               className="mt-6 flex flex-col items-center justify-center gap-3"
             >
-              <select
-                name="status"
-                className=" select w-full max-w-xs"
-                placeholder="Select a Value"
-              >
+              <select name="status" className=" select w-full max-w-xs">
                 <option value="">Select Status</option>
                 <option value="paid">Paid</option>
                 <option value="shipped">Shipped</option>

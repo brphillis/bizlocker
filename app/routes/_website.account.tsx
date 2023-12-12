@@ -1,11 +1,11 @@
 import { Outlet } from "@remix-run/react";
 import { tokenAuth } from "~/auth.server";
-import { redirect, type LoaderArgs } from "@remix-run/node";
+import { redirect, type LoaderFunctionArgs } from "@remix-run/node";
 import PageWrapper from "~/components/Layout/_Website/PageWrapper";
 import AccountMenuMobile from "~/components/Menus/AccountMenuMobile";
 import AccountMenuDesktop from "~/components/Menus/AccountMenuDesktop";
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request);
   if (!authenticated.valid) {
     return redirect("/login");

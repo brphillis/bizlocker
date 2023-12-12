@@ -1,4 +1,4 @@
-import { redirect, type LoaderArgs } from "@remix-run/node";
+import { redirect, type LoaderFunctionArgs } from "@remix-run/node";
 import { Form, Outlet, useLoaderData } from "@remix-run/react";
 import PieReChart from "~/components/Charts/PieChart";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
@@ -15,7 +15,7 @@ type ReportData = {
   totalSalesYesterday: number;
 };
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
   if (!authenticated.valid) {
     return redirect("/admin/login");

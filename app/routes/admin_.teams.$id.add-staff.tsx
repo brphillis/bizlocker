@@ -17,8 +17,8 @@ import { searchStaff, type StaffWithDetails } from "~/models/auth/staff.server";
 import {
   json,
   redirect,
-  type ActionArgs,
-  type LoaderArgs,
+  type ActionFunctionArgs,
+  type LoaderFunctionArgs,
 } from "@remix-run/node";
 import {
   Form,
@@ -28,7 +28,7 @@ import {
   useNavigate,
   useSubmit,
 } from "@remix-run/react";
-export const loader = async ({ request, params }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
 
   if (!authenticated.valid) {
@@ -53,7 +53,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   return json({ staff, totalPages, stores, teamId });
 };
 
-export const action = async ({ request, params }: ActionArgs) => {
+export const action = async ({ request, params }: ActionFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
 
   if (!authenticated.valid) {

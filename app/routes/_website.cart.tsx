@@ -16,7 +16,7 @@ import { getCartDeliveryOptions } from "~/helpers/cartHelpers";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import PageWrapper from "~/components/Layout/_Website/PageWrapper";
 import SelectCountry from "~/components/Forms/Select/SelectCountry";
-import { json, type ActionArgs, type LoaderArgs } from "@remix-run/node";
+import { json, type ActionFunctionArgs, type LoaderFunctionArgs } from "@remix-run/node";
 import {
   Form,
   useActionData,
@@ -36,7 +36,7 @@ import mastercardLogo from "../assets/logos/mastercard-logo.svg";
 import type { Address } from "@prisma/client";
 import type { NewAddress } from "~/helpers/addressHelpers";
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   let cart, user, userAddress, loaderShippingOptions, userDetails;
 
   cart = await getCart(request);
@@ -57,7 +57,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   return json({ cart, user, userAddress, userDetails, loaderShippingOptions });
 };
 
-export const action = async ({ request }: ActionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const form = Object.fromEntries(await request.formData());
 
   switch (form._action) {
@@ -119,7 +119,7 @@ export const action = async ({ request }: ActionArgs) => {
         shippingPrice as string,
         rememberInformation ? true : false
       );
-      return json(createdOrder);
+      return createdOrder;
 
     case "getShipping":
       const cart = await getCart(request);

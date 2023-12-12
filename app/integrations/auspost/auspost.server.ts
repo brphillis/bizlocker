@@ -1,8 +1,8 @@
 import type {
+  AusPostDeliveryOption,
   CalculateDeliveryPriceType,
   GetPostageServicesType,
 } from "./types";
-import { fetch } from "@remix-run/node";
 
 const baseURL = "https://digitalapi.auspost.com.au";
 
@@ -15,7 +15,7 @@ export const getAusPostServices = async ({
   width,
   height,
   weight,
-}: GetPostageServicesType) => {
+}: GetPostageServicesType): Promise<AusPostDeliveryOption[]> => {
   const queryParams = new URLSearchParams({
     from_postcode,
     to_postcode,
@@ -38,7 +38,7 @@ export const getAusPostServices = async ({
   }
 
   const serviceTypesJSON = await response.json();
-  return serviceTypesJSON.services.service;
+  return (serviceTypesJSON as any).services.service as AusPostDeliveryOption[];
 };
 
 export const calculateDeliveryPrice = async ({

@@ -3,7 +3,7 @@ import Pagination from "~/components/Pagination";
 import { STAFF_SESSION_KEY } from "~/session.server";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
 import BasicInput from "~/components/Forms/Input/BasicInput";
-import { json, redirect, type LoaderArgs } from "@remix-run/node";
+import { json, redirect, type LoaderFunctionArgs } from "@remix-run/node";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import { searchArticleCategories } from "~/models/articleCategories.server";
@@ -16,7 +16,7 @@ import {
 } from "@remix-run/react";
 import type { ArticleCategory } from "@prisma/client";
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
 
   if (!authenticated.valid) {

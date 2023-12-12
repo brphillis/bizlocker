@@ -6,9 +6,9 @@ import AuthContainer from "~/components/Layout/AuthContainer";
 import AuthPageWrapper from "~/components/Layout/AuthPageWrapper";
 import { isValidEmail, isValidPassword } from "~/utility/validate";
 import { googleLogin, verifyLogin } from "~/models/auth/login.server";
-import { json, type ActionArgs, type V2_MetaFunction } from "@remix-run/node";
+import { json, type ActionFunctionArgs, type MetaFunction } from "@remix-run/node";
 
-export const action = async ({ request }: ActionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const form = Object.fromEntries(await request.formData());
 
   switch (form._action) {
@@ -58,7 +58,7 @@ export const action = async ({ request }: ActionArgs) => {
   }
 };
 
-export const meta: V2_MetaFunction = () => [{ title: "Login" }];
+export const meta: MetaFunction = () => [{ title: "Login" }];
 
 export default function LoginPage() {
   const { validationErrors } = (useActionData() as ActionReturnTypes) || {};
@@ -97,23 +97,25 @@ export default function LoginPage() {
         </div>
 
         <>
-          {Object.values(validationErrors)?.map((error: string, i) => (
-            <p
-              key={error + i}
-              className="my-2 text-center text-xs text-red-500"
-            >
-              {error}
-            </p>
-          ))}
+          {validationErrors &&
+            Object.values(validationErrors)?.map((error: string, i) => (
+              <p
+                key={error + i}
+                className="my-2 text-center text-xs text-red-500"
+              >
+                {error}
+              </p>
+            ))}
 
-          {Object.values(validationErrors)?.includes("Email not Verified") && (
-            <Link
-              to="/request-verification-code"
-              className="link-hover link mb-2 cursor-pointer text-center text-xs text-brand-white/75"
-            >
-              Resend Email?
-            </Link>
-          )}
+          {validationErrors &&
+            Object.values(validationErrors)?.includes("Email not Verified") && (
+              <Link
+                to="/request-verification-code"
+                className="link-hover link mb-2 cursor-pointer text-center text-xs text-brand-white/75"
+              >
+                Resend Email?
+              </Link>
+            )}
         </>
 
         <div className="form-control mt-3 gap-3">

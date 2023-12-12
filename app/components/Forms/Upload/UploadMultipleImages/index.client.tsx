@@ -1,7 +1,7 @@
 import React, { Suspense, useState } from "react";
 import type { Image } from "@prisma/client";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from "swiper";
+import { Navigation } from "swiper/modules";
 import { ConvertToBase64Image, type NewImage } from "~/helpers/fileHelpers";
 import { IoClose } from "react-icons/io5";
 import { findFirstNotNullInputValue } from "~/helpers/formHelpers";

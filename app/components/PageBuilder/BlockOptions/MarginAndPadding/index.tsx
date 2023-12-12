@@ -29,7 +29,6 @@ const MarginAndPaddingOptions = ({
             <select
               name="margin"
               className=" select w-[95vw] max-w-full text-brand-black/75 sm:w-[215px]"
-              placeholder="Customize Margin"
               defaultValue={!margin ? undefined : margin}
             >
               <option value={undefined}>Normal Margin</option>
@@ -61,7 +60,6 @@ const MarginAndPaddingOptions = ({
             <select
               name="padding"
               className=" select w-[95vw] max-w-full text-brand-black/75 sm:w-[215px]"
-              placeholder="Customize Padding"
               defaultValue={!padding ? undefined : padding}
             >
               <option value={undefined}>Normal Padding</option>

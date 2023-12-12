@@ -1,5 +1,8 @@
 import { getAusPostServices } from "~/integrations/auspost/auspost.server";
-import type { GetPostageServicesType } from "~/integrations/auspost/types";
+import type {
+  AusPostDeliveryOption,
+  GetPostageServicesType,
+} from "~/integrations/auspost/types";
 
 export const getShippingServices_Integration = async ({
   from_postcode,
@@ -8,7 +11,7 @@ export const getShippingServices_Integration = async ({
   width,
   height,
   weight,
-}: GetPostageServicesType) => {
+}: GetPostageServicesType): Promise<AusPostDeliveryOption[]> => {
   return await getAusPostServices({
     from_postcode,
     to_postcode,

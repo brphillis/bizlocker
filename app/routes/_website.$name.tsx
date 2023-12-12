@@ -1,21 +1,22 @@
 import { getBlocks } from "~/helpers/blockHelpers";
 import { getWebPage } from "~/models/webPages.server";
 import BlockRenderer from "~/components/BlockRenderer";
-import { json, type LoaderArgs } from "@remix-run/node";
+import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { capitalizeWords } from "~/helpers/stringHelpers";
 import PageWrapper from "~/components/Layout/_Website/PageWrapper";
-import { type V2_MetaFunction, useLoaderData } from "@remix-run/react";
+import { type MetaFunction, useLoaderData } from "@remix-run/react";
 
-export const meta: V2_MetaFunction = ({ data }) => {
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
   return [
-    { title: "CLUTCH | " + data.title },
+    { title: data?.title },
     {
-      content: data.description,
+      name: data?.title,
+      content: data?.description,
     },
   ];
 };
 
-export const loader = async ({ params }: LoaderArgs) => {
+export const loader = async ({ params }: LoaderFunctionArgs) => {
   const pageName = params.name?.replace("-", " ");
   const webPage = await getWebPage(undefined, pageName);
 

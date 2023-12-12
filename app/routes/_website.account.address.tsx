@@ -11,11 +11,11 @@ import { getUserAddress, upsertUserAddress } from "~/models/auth/userAddress";
 import {
   json,
   redirect,
-  type ActionArgs,
-  type LoaderArgs,
+  type ActionFunctionArgs,
+  type LoaderFunctionArgs,
 } from "@remix-run/node";
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request);
 
   if (!authenticated.valid) {
@@ -28,7 +28,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   return json({ userAddress });
 };
 
-export const action = async ({ request }: ActionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const authenticated = await tokenAuth(request);
 
   if (!authenticated.valid) {

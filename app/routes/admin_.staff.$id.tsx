@@ -2,8 +2,8 @@ import type { Image, Staff } from "@prisma/client";
 import type { ActionReturnTypes } from "~/utility/actionTypes";
 import {
   redirect,
-  type ActionArgs,
-  type LoaderArgs,
+  type ActionFunctionArgs,
+  type LoaderFunctionArgs,
   json,
 } from "@remix-run/node";
 import {
@@ -33,7 +33,7 @@ import { getStores } from "~/models/stores.server";
 import { STAFF_SESSION_KEY, getUserDataFromSession } from "~/session.server";
 import { validateForm } from "~/utility/validate";
 
-export const loader = async ({ request, params }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
 
   if (!authenticated.valid) {
@@ -68,7 +68,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   return json({ staffMember, roles, stores, role });
 };
 
-export const action = async ({ request, params }: ActionArgs) => {
+export const action = async ({ request, params }: ActionFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
 
   if (!authenticated.valid) {

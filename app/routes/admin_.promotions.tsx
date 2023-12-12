@@ -1,5 +1,5 @@
 import type { Promotion } from "@prisma/client";
-import type { LoaderArgs } from "@remix-run/node";
+import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import {
   Form,
@@ -16,7 +16,7 @@ import Pagination from "~/components/Pagination";
 import { searchPromotions } from "~/models/promotions.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
 
   if (!authenticated.valid) {

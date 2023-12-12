@@ -36,7 +36,7 @@ const PromotionBanner = ({ name, bannerImage, targetGender }: Props) => {
                 All
               </button>
               <button
-                className="sm:text-md px-6 py-2 text-sm font-semibold tracking-wide hover:bg-primary-content/10"
+                className="sm:text-md px-6 py-2 text-sm font-semibold tracking-wide hover:bg-base-200"
                 onClick={() => {
                   searchParams.set("gender", "MALE");
                   submit(searchParams, {
@@ -48,7 +48,7 @@ const PromotionBanner = ({ name, bannerImage, targetGender }: Props) => {
                 Mens
               </button>
               <button
-                className="sm:text-md px-6 py-2 text-sm font-semibold tracking-wide hover:bg-primary-content/10"
+                className="sm:text-md px-6 py-2 text-sm font-semibold tracking-wide hover:bg-base-200"
                 onClick={() => {
                   searchParams.set("gender", "FEMALE");
                   submit(searchParams, {
@@ -60,7 +60,7 @@ const PromotionBanner = ({ name, bannerImage, targetGender }: Props) => {
                 Womans
               </button>
               <button
-                className="sm:text-md px-6 py-2 text-sm font-semibold tracking-wide hover:bg-primary-content/10"
+                className="sm:text-md px-6 py-2 text-sm font-semibold tracking-wide hover:bg-base-200"
                 onClick={() => {
                   searchParams.set("gender", "KIDS");
                   submit(searchParams, {

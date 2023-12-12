@@ -48,7 +48,6 @@ const BackgroundOptions = ({
               <select
                 name="backgroundColor"
                 className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
-                placeholder="Select a Color"
                 defaultValue={!backgroundColor ? undefined : backgroundColor}
               >
                 <option value="">Select a Color</option>
@@ -74,7 +73,6 @@ const BackgroundOptions = ({
               <select
                 name="backgroundWidth"
                 className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
-                placeholder="Select a Width"
                 defaultValue={!backgroundWidth ? undefined : backgroundWidth}
               >
                 <option value="">Select a Width</option>
@@ -114,7 +112,6 @@ const BackgroundOptions = ({
               <select
                 name="backgroundPatternName"
                 className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
-                placeholder="Select a Color"
                 defaultValue={
                   !backgroundPatternName ? undefined : backgroundPatternName
                 }
@@ -137,7 +134,6 @@ const BackgroundOptions = ({
               <select
                 name="backgroundPatternColor"
                 className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
-                placeholder="Select a Color"
                 defaultValue={
                   !backgroundPatternColor ? undefined : backgroundPatternColor
                 }
@@ -205,7 +201,6 @@ const BackgroundOptions = ({
               <select
                 name="backgroundColorSecondary"
                 className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
-                placeholder="Select a Color"
                 defaultValue={
                   !backgroundColorSecondary
                     ? undefined
@@ -235,7 +230,6 @@ const BackgroundOptions = ({
               <select
                 name="backgroundWidthSecondary"
                 className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
-                placeholder="Select a Width"
                 defaultValue={
                   !backgroundWidthSecondary
                     ? undefined
@@ -279,7 +273,6 @@ const BackgroundOptions = ({
               <select
                 name="backgroundPatternNameSecondary"
                 className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
-                placeholder="Select a Color"
                 defaultValue={
                   !backgroundPatternNameSecondary
                     ? undefined
@@ -304,7 +297,6 @@ const BackgroundOptions = ({
               <select
                 name="backgroundPatternColorSecondary"
                 className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
-                placeholder="Select a Color"
                 defaultValue={
                   !backgroundPatternColorSecondary
                     ? undefined

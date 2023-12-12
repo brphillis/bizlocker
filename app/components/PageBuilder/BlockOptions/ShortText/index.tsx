@@ -33,7 +33,6 @@ const ShortTextOptions = ({
             <select
               name="shortTextColor"
               className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
-              placeholder="Select a Color"
               defaultValue={!shortTextColor ? undefined : shortTextColor}
             >
               <option value="">Select a Color</option>

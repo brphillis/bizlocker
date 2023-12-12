@@ -1,4 +1,4 @@
-import { redirect, type LoaderArgs, json } from "@remix-run/node";
+import { redirect, type LoaderFunctionArgs, json } from "@remix-run/node";
 import {
   Form,
   Outlet,
@@ -16,7 +16,7 @@ import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
 import { type StaffWithDetails, searchStaff } from "~/models/auth/staff.server";
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
   if (!authenticated.valid) {
     return redirect("/admin/login");

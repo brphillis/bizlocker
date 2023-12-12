@@ -1,5 +1,5 @@
 import Pagination from "~/components/Pagination";
-import { redirect, type LoaderArgs } from "@remix-run/server-runtime";
+import { redirect, type LoaderFunctionArgs } from "@remix-run/server-runtime";
 import CategorySort from "~/components/Sorting/CategorySort";
 import { getDepartments } from "~/models/departments.server";
 import BasicInput from "~/components/Forms/Input/BasicInput";
@@ -22,7 +22,7 @@ import {
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
 
   if (!authenticated.valid) {

@@ -1,4 +1,4 @@
-import { json, type ActionArgs } from "@remix-run/node";
+import { json, type ActionFunctionArgs } from "@remix-run/node";
 import type { ActionReturnTypes } from "~/utility/actionTypes";
 import { useEffect } from "react";
 import { createStaffSession } from "~/session.server";
@@ -14,7 +14,7 @@ import {
 } from "@remix-run/react";
 import { verifyStaffLogin } from "~/models/auth/staffLogin";
 
-export const action = async ({ request }: ActionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const email = formData.get("email");
   const password = formData.get("password");

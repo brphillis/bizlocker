@@ -35,7 +35,6 @@ const SelectGender = ({
         name="gender"
         className="select w-full text-brand-black/75"
         defaultValue={defaultValue || "UNISEX"}
-        placeholder="Select a Gender"
         onChange={(e) => {
           if (onChange) {
             onChange(e.target.value);

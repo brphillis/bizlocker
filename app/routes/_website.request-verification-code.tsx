@@ -7,9 +7,9 @@ import AuthPageWrapper from "~/components/Layout/AuthPageWrapper";
 import { isValidEmail, isValidPassword } from "~/utility/validate";
 import { NavLink, useActionData, useNavigate } from "@remix-run/react";
 import { requestNewVerifyEmail } from "~/models/auth/verification.server";
-import { json, type ActionArgs, type V2_MetaFunction } from "@remix-run/node";
+import { json, type ActionFunctionArgs, type MetaFunction } from "@remix-run/node";
 
-export const action = async ({ request }: ActionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const form = Object.fromEntries(await request.formData());
   const { email, password } = form;
   let validationErrors: string[] = [];
@@ -51,7 +51,7 @@ export const action = async ({ request }: ActionArgs) => {
   }
 };
 
-export const meta: V2_MetaFunction = () => [{ title: "Register" }];
+export const meta: MetaFunction = () => [{ title: "Register" }];
 
 export const RequestVerificationCode = () => {
   const navigate = useNavigate();

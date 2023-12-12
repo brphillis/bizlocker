@@ -29,7 +29,6 @@ const BorderOptions = ({
             <select
               name="borderDisplay"
               className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
-              placeholder="Select a Color"
               defaultValue={!borderDisplay ? undefined : borderDisplay}
             >
               <option value=" !border-none">No Border</option>
@@ -48,7 +47,6 @@ const BorderOptions = ({
             <select
               name="borderSize"
               className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
-              placeholder="Select a Size"
               defaultValue={!borderSize ? undefined : borderSize}
             >
               <option value="">Select a Size</option>
@@ -81,7 +79,6 @@ const BorderOptions = ({
             <select
               name="borderColor"
               className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
-              placeholder="Select a Color"
               defaultValue={!borderColor ? undefined : borderColor}
             >
               <option value="">Select a Color</option>
@@ -104,7 +101,6 @@ const BorderOptions = ({
             <select
               name="borderRadius"
               className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
-              placeholder="Select a Color"
               defaultValue={!borderRadius ? undefined : borderRadius}
             >
               <option value="">Select Radius</option>

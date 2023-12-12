@@ -1,31 +1,27 @@
-import DarkOverlay from "~/components/Layout/DarkOverlay";
-
+import { tokenAuth } from "~/auth.server";
+import type { Staff } from "@prisma/client";
 import { Form, useLoaderData } from "@remix-run/react";
-
+import DarkOverlay from "~/components/Layout/DarkOverlay";
+import FormHeader from "~/components/Forms/Headers/FormHeader";
+import { getUserDataFromSession, STAFF_SESSION_KEY } from "~/session.server";
 import {
+  getProductVariantStock,
+  type StockLevelWithDetails,
+} from "~/models/stock.server";
+import {
+  json,
   redirect,
   type LinksFunction,
-  type LoaderArgs,
-  json,
+  type LoaderFunctionArgs,
 } from "@remix-run/node";
-
-import swiper from "../../node_modules/swiper/swiper.css";
-import swiperNav from "../../node_modules/swiper/modules/navigation/navigation.min.css";
-import { tokenAuth } from "~/auth.server";
-import { STAFF_SESSION_KEY, getUserDataFromSession } from "~/session.server";
-import {
-  type StockLevelWithDetails,
-  getProductVariantStock,
-} from "~/models/stock.server";
-import FormHeader from "~/components/Forms/Headers/FormHeader";
-import type { Staff } from "@prisma/client";
-
+import swiper from "../../node_modules/swiper/swiper.min.css";
+import swiperNav from "../../node_modules/swiper/modules/navigation.css";
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: swiper },
   { rel: "stylesheet", href: swiperNav },
 ];
 
-export const loader = async ({ request, params }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
 
   if (!authenticated.valid) {
@@ -59,7 +55,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   });
 };
 
-// export const action = async ({ request, params }: ActionArgs) => {
+// export const action = async ({ request, params }: ActionFunctionArgs) => {
 //   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
 //   if (!authenticated.valid) {
 //     return redirect("/admin/login");

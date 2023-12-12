@@ -110,7 +110,7 @@ const VersionControl = ({
           type="submit"
           name="_action"
           value="revert"
-          className={`btn-primary btn-md block w-max !rounded-sm ${
+          className={`btn-primary btn-md block w-max !rounded-sm bg-primary hover:bg-primary-dark ${
             loading && "hidden"
           }`}
         >
@@ -119,7 +119,7 @@ const VersionControl = ({
 
         <a
           type="button"
-          className={`btn-primary btn-md flex w-max items-center justify-center !rounded-sm ${
+          className={`btn-primary btn-md flex w-max items-center justify-center !rounded-sm bg-primary hover:bg-primary-dark ${
             loading && "hidden"
           }`}
           target="_blank"
@@ -133,7 +133,7 @@ const VersionControl = ({
           type="submit"
           name="_action"
           value="publish"
-          className={`btn-primary btn-md block w-max !rounded-sm ${
+          className={`btn-primary btn-md block w-max !rounded-sm bg-primary hover:bg-primary-dark ${
             loading && "hidden"
           }`}
           onClick={() => setLoading(true)}
