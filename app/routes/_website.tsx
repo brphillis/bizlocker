@@ -12,6 +12,7 @@ import { getDepartments } from "~/models/departments.server";
 import { getProductCategories } from "~/models/productCategories.server";
 import {
   json,
+  type MetaFunction,
   type LinksFunction,
   type LoaderFunctionArgs,
 } from "@remix-run/node";
@@ -33,6 +34,16 @@ export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
 ];
+
+export const meta: MetaFunction = ({ data }) => {
+  return [
+    { title: "CLUTCH Clothing" },
+    {
+      name: "CLUTCH Clothing",
+      content: "CLUTCH Clothing",
+    },
+  ];
+};
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const user = (await getUserDataFromSession(request)) as User | null;

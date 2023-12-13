@@ -7,7 +7,21 @@ import AuthPageWrapper from "~/components/Layout/AuthPageWrapper";
 import { isValidEmail, isValidPassword } from "~/utility/validate";
 import { NavLink, useActionData, useNavigate } from "@remix-run/react";
 import { requestNewVerifyEmail } from "~/models/auth/verification.server";
-import { json, type ActionFunctionArgs, type MetaFunction } from "@remix-run/node";
+import {
+  json,
+  type ActionFunctionArgs,
+  type MetaFunction,
+} from "@remix-run/node";
+
+export const meta: MetaFunction = ({ data }) => {
+  return [
+    { title: "CLUTCH | Verification" },
+    {
+      name: "CLUTCH | Verification",
+      content: "CLUTCH | Verification",
+    },
+  ];
+};
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const form = Object.fromEntries(await request.formData());
@@ -50,8 +64,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     return json({ validationErrors });
   }
 };
-
-export const meta: MetaFunction = () => [{ title: "Register" }];
 
 export const RequestVerificationCode = () => {
   const navigate = useNavigate();

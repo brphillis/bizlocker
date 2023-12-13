@@ -172,7 +172,7 @@ const ModifyStaff = () => {
     <DarkOverlay>
       <Form
         method="POST"
-        className="absolute top-0 w-[600px] bg-base-200 py-6 sm:px-6"
+        className="scrollbar-hide relative w-[600px] max-w-[100vw] overflow-y-auto bg-base-200 px-3 py-6 sm:px-6"
       >
         <FormHeader
           hasDelete={false}
@@ -182,183 +182,178 @@ const ModifyStaff = () => {
         />
 
         <div className="form-control gap-3">
-          <div className="flex flex-wrap justify-evenly gap-3">
-            <UploadAvatar avatar={staffMember?.avatar} />
+          <UploadAvatar avatar={staffMember?.avatar} />
 
-            <div className="flex flex-row flex-wrap justify-center gap-3">
-              <BasicSelect
-                name="role"
-                label="Role"
-                customWidth="w-full"
-                placeholder="Role"
-                selections={roles?.map((e: string) => {
-                  return { id: e, name: e };
-                })}
-                defaultValue={staffMember?.role || ""}
-              />
+          <div className="flex flex-row flex-wrap justify-center gap-3">
+            <BasicSelect
+              name="role"
+              label="Role"
+              customWidth="w-full"
+              placeholder="Role"
+              selections={roles?.map((e: string) => {
+                return { id: e, name: e };
+              })}
+              defaultValue={staffMember?.role || ""}
+            />
 
-              <BasicInput
-                name="jobTitle"
-                label="Job Title"
-                placeholder="Job Title"
-                type="text"
-                customWidth="w-full"
-                defaultValue={staffMember?.jobTitle || undefined}
-                validationErrors={validationErrors}
-              />
+            <BasicInput
+              name="jobTitle"
+              label="Job Title"
+              placeholder="Job Title"
+              type="text"
+              customWidth="w-full"
+              defaultValue={staffMember?.jobTitle || undefined}
+              validationErrors={validationErrors}
+            />
 
-              <BasicSelect
-                label="Store"
-                name="store"
-                customWidth="w-full"
-                placeholder="Select a Store"
-                selections={stores}
-                defaultValue={staffMember?.storeId || ""}
-              />
+            <BasicSelect
+              label="Store"
+              name="store"
+              customWidth="w-full"
+              placeholder="Select a Store"
+              selections={stores}
+              defaultValue={staffMember?.storeId || ""}
+            />
 
-              <BasicInput
-                name="email"
-                label="Email Address"
-                placeholder="Email Address"
-                type="text"
-                customWidth="w-full"
-                defaultValue={staffMember?.email || undefined}
-                validationErrors={validationErrors}
-              />
+            <BasicInput
+              name="email"
+              label="Email Address"
+              placeholder="Email Address"
+              type="text"
+              customWidth="w-full"
+              defaultValue={staffMember?.email || undefined}
+              validationErrors={validationErrors}
+            />
 
-              <BasicInput
-                name="firstName"
-                label="First Name"
-                placeholder="First Name"
-                type="text"
-                customWidth="w-full"
-                defaultValue={staffMember?.userDetails?.firstName || undefined}
-                validationErrors={validationErrors}
-              />
+            <BasicInput
+              name="firstName"
+              label="First Name"
+              placeholder="First Name"
+              type="text"
+              customWidth="w-full"
+              defaultValue={staffMember?.userDetails?.firstName || undefined}
+              validationErrors={validationErrors}
+            />
 
-              <BasicInput
-                name="lastName"
-                label="Last Name"
-                placeholder="Last Name"
-                type="text"
-                customWidth="w-full"
-                defaultValue={staffMember?.userDetails?.lastName || undefined}
-                validationErrors={validationErrors}
-              />
+            <BasicInput
+              name="lastName"
+              label="Last Name"
+              placeholder="Last Name"
+              type="text"
+              customWidth="w-full"
+              defaultValue={staffMember?.userDetails?.lastName || undefined}
+              validationErrors={validationErrors}
+            />
 
-              <PhoneInput
-                name="phoneNumber"
-                label="Phone Number"
-                placeholder="Phone Number"
-                type="text"
-                customWidth="w-full"
-                defaultValue={
-                  staffMember?.userDetails?.phoneNumber || undefined
-                }
-                validationErrors={validationErrors}
-              />
+            <PhoneInput
+              name="phoneNumber"
+              label="Phone Number"
+              placeholder="Phone Number"
+              type="text"
+              customWidth="w-full"
+              defaultValue={staffMember?.userDetails?.phoneNumber || undefined}
+              validationErrors={validationErrors}
+            />
 
-              <BasicInput
-                name="dateofbirth"
-                label="Date of Birth"
-                placeholder="Date of Birth"
-                type="date"
-                customWidth="w-full"
-                defaultValue={
-                  staffMember?.userDetails?.dateOfBirth
-                    ? new Date(staffMember?.userDetails?.dateOfBirth)
-                        .toISOString()
-                        .split("T")[0]
-                    : undefined
-                }
-                validationErrors={validationErrors}
-              />
+            <BasicInput
+              name="dateofbirth"
+              label="Date of Birth"
+              placeholder="Date of Birth"
+              type="date"
+              customWidth="w-full"
+              defaultValue={
+                staffMember?.userDetails?.dateOfBirth
+                  ? new Date(staffMember?.userDetails?.dateOfBirth)
+                      .toISOString()
+                      .split("T")[0]
+                  : undefined
+              }
+              validationErrors={validationErrors}
+            />
 
-              <BasicInput
-                name="addressLine1"
-                label="Address Line 1"
-                placeholder="Address Line 1"
-                type="text"
-                customWidth="w-full"
-                defaultValue={staffMember?.address?.addressLine1 || undefined}
-                validationErrors={validationErrors}
-              />
+            <BasicInput
+              name="addressLine1"
+              label="Address Line 1"
+              placeholder="Address Line 1"
+              type="text"
+              customWidth="w-full"
+              defaultValue={staffMember?.address?.addressLine1 || undefined}
+              validationErrors={validationErrors}
+            />
 
-              <BasicInput
-                name="addressLine2"
-                label="Address Line 2"
-                placeholder="Address Line 2"
-                type="text"
-                customWidth="w-full"
-                defaultValue={staffMember?.address?.addressLine2 || undefined}
-                validationErrors={validationErrors}
-              />
+            <BasicInput
+              name="addressLine2"
+              label="Address Line 2"
+              placeholder="Address Line 2"
+              type="text"
+              customWidth="w-full"
+              defaultValue={staffMember?.address?.addressLine2 || undefined}
+              validationErrors={validationErrors}
+            />
 
-              <BasicInput
-                name="suburb"
-                label="Suburb"
-                placeholder="Suburb"
-                type="text"
-                customWidth="w-full"
-                defaultValue={staffMember?.address?.suburb || undefined}
-                validationErrors={validationErrors}
-              />
+            <BasicInput
+              name="suburb"
+              label="Suburb"
+              placeholder="Suburb"
+              type="text"
+              customWidth="w-full"
+              defaultValue={staffMember?.address?.suburb || undefined}
+              validationErrors={validationErrors}
+            />
 
-              <BasicInput
-                name="postcode"
-                label="PostCode"
-                placeholder="PostCode"
-                type="text"
-                customWidth="w-full"
-                defaultValue={staffMember?.address?.postcode || undefined}
-                validationErrors={validationErrors}
-              />
+            <BasicInput
+              name="postcode"
+              label="PostCode"
+              placeholder="PostCode"
+              type="text"
+              customWidth="w-full"
+              defaultValue={staffMember?.address?.postcode || undefined}
+              validationErrors={validationErrors}
+            />
 
-              <BasicInput
-                name="state"
-                label="State"
-                placeholder="State"
-                type="text"
-                customWidth="w-full"
-                defaultValue={staffMember?.address?.state || undefined}
-                validationErrors={validationErrors}
-              />
+            <BasicInput
+              name="state"
+              label="State"
+              placeholder="State"
+              type="text"
+              customWidth="w-full"
+              defaultValue={staffMember?.address?.state || undefined}
+              validationErrors={validationErrors}
+            />
 
-              <SelectCountry
-                defaultValue={staffMember?.address?.country}
-                validationErrors={validationErrors}
-                styles="!w-full"
-              />
+            <SelectCountry
+              defaultValue={staffMember?.address?.country}
+              validationErrors={validationErrors}
+              styles="!w-full"
+            />
 
-              {changingPassword &&
-                (role === "DEVELOPER" || role === "ADMIN") && (
-                  <>
-                    <BasicInput
-                      name="password"
-                      label="Password"
-                      placeholder="Password"
-                      type="password"
-                      customWidth="w-full"
-                      defaultValue={undefined}
-                      validationErrors={validationErrors}
-                    />
-
-                    <BasicButton
-                      label="Cancel Password Change"
-                      extendStyle="mt-3"
-                      clickFunction={() => setChangingPassword(false)}
-                    />
-                  </>
-                )}
-
-              {!changingPassword && (
-                <BasicButton
-                  label="Change Password"
-                  extendStyle="mt-3"
-                  clickFunction={() => setChangingPassword(true)}
+            {changingPassword && (role === "DEVELOPER" || role === "ADMIN") && (
+              <>
+                <BasicInput
+                  name="password"
+                  label="Password"
+                  placeholder="Password"
+                  type="password"
+                  customWidth="w-full"
+                  defaultValue={undefined}
+                  validationErrors={validationErrors}
                 />
-              )}
-            </div>
+
+                <BasicButton
+                  label="Cancel Password Change"
+                  extendStyle="mt-3"
+                  clickFunction={() => setChangingPassword(false)}
+                />
+              </>
+            )}
+
+            {!changingPassword && (
+              <BasicButton
+                label="Change Password"
+                extendStyle="mt-3"
+                clickFunction={() => setChangingPassword(true)}
+              />
+            )}
           </div>
         </div>
 

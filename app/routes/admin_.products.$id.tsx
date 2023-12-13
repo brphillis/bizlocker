@@ -186,6 +186,13 @@ const Product = () => {
   const [richText, setRichText] = useState<string>(product?.description);
   const [loading, setLoading] = useState<boolean>(false);
 
+  const tabNames = ["general", "images", "variants", "other"];
+  const [activeTab, setActiveTab] = useState<string | undefined>(tabNames?.[0]);
+
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+  };
+
   useEffect(() => {
     if (success) {
       navigate(-1);
@@ -204,83 +211,58 @@ const Product = () => {
             type="Product"
             hasIsActive={true}
             hasDelete={false}
+            tabNames={tabNames}
+            activeTab={activeTab}
+            onTabChange={handleTabChange}
           />
 
-          <div className="form-control">
+          <div
+            className={`form-control ${activeTab !== "general" && "hidden"}`}
+          >
             <div className="form-control gap-3">
-              <div className="flex flex-wrap justify-evenly gap-3">
-                <BasicInput
-                  id="ProductName"
-                  label="Name"
-                  type="text"
-                  name="name"
-                  placeholder="Name"
-                  defaultValue={product?.name}
-                  validationErrors={validationErrors}
-                />
+              <BasicInput
+                id="ProductName"
+                label="Name"
+                type="text"
+                name="name"
+                placeholder="Name"
+                customWidth="w-full"
+                defaultValue={product?.name}
+                validationErrors={validationErrors}
+              />
 
-                <BasicSelect
-                  name="brand"
-                  label="Brand"
-                  placeholder="Brand"
-                  selections={brands}
-                  defaultValue={product?.brandId?.toString() || "1"}
-                />
-              </div>
+              <BasicSelect
+                name="brand"
+                label="Brand"
+                placeholder="Brand"
+                customWidth="w-full"
+                selections={brands}
+                defaultValue={product?.brandId?.toString() || "1"}
+              />
 
-              <div className="flex flex-wrap justify-evenly gap-3">
-                <SelectGender
-                  defaultValue={product?.gender}
-                  label="Product is Gendered?"
-                />
+              <SelectGender
+                defaultValue={product?.gender}
+                label="Product is Gendered?"
+                customWidth="w-full"
+              />
 
-                <BasicSelect
-                  name="promotion"
-                  label="Promotion"
-                  placeholder="Promotion"
-                  selections={promotions}
-                  defaultValue={product?.promotionId?.toString()}
-                />
-              </div>
+              <BasicSelect
+                name="promotion"
+                label="Promotion"
+                placeholder="Promotion"
+                customWidth="w-full"
+                selections={promotions}
+                defaultValue={product?.promotionId?.toString()}
+              />
 
-              <div className="flex flex-wrap justify-evenly gap-3">
-                <BasicMultiSelect
-                  name="productSubCategories"
-                  label="Categories"
-                  selections={productSubCategories}
-                  defaultValues={product?.productSubCategories}
-                />
-
-                <BasicInput
-                  label="Info URL"
-                  type="text"
-                  name="infoURL"
-                  placeholder="Info URL"
-                  defaultValue={product?.infoURL}
-                  validationErrors={validationErrors}
-                />
-              </div>
+              <BasicMultiSelect
+                name="productSubCategories"
+                label="Categories"
+                customWidth="w-full"
+                selections={productSubCategories}
+                defaultValues={product?.productSubCategories}
+              />
             </div>
-
-            <div className="divider w-full pt-4" />
-
-            <ClientOnly fallback={<div id="skeleton" />}>
-              {() => <UploadMultipleImages defaultImages={product?.images} />}
-            </ClientOnly>
-
-            <div className="divider w-full pt-4" />
-
-            <UploadHeroImage valueToChange={product} />
-
-            <div className="divider w-full pt-4" />
-
-            <ProductVariantFormModule
-              storeId={storeId}
-              product={product}
-              availableColors={availableColors}
-            />
-
-            <div className="divider w-full pt-4" />
 
             <div className="form-control my-3 w-[495px] max-w-[95vw] self-center">
               <label className="label">
@@ -304,13 +286,45 @@ const Product = () => {
                 value={richText || product?.description}
               />
             </div>
+          </div>
 
-            <BackSubmitButtons
-              loading={loading}
-              setLoading={setLoading}
+          <div className={`form-control ${activeTab !== "images" && "hidden"}`}>
+            <ClientOnly fallback={<div id="skeleton" />}>
+              {() => <UploadMultipleImages defaultImages={product?.images} />}
+            </ClientOnly>
+
+            <div className="divider w-full pt-4" />
+
+            <UploadHeroImage valueToChange={product} />
+          </div>
+
+          <div
+            className={`form-control ${activeTab !== "variants" && "hidden"}`}
+          >
+            <ProductVariantFormModule
+              storeId={storeId}
+              product={product}
+              availableColors={availableColors}
+            />
+          </div>
+
+          <div className={`form-control ${activeTab !== "other" && "hidden"}`}>
+            <BasicInput
+              label="Dropship URL"
+              type="text"
+              name="infoURL"
+              placeholder="Info URL"
+              customWidth="w-full"
+              defaultValue={product?.infoURL}
               validationErrors={validationErrors}
             />
           </div>
+
+          <BackSubmitButtons
+            loading={loading}
+            setLoading={setLoading}
+            validationErrors={validationErrors}
+          />
         </Form>
       </DarkOverlay>
       <Outlet />

@@ -1,36 +1,37 @@
 import { useEffect, useState } from "react";
-import type { ActionReturnTypes } from "~/utility/actionTypes";
+import { tokenAuth } from "~/auth.server";
 import { validateForm } from "~/utility/validate";
+import { STAFF_SESSION_KEY } from "~/session.server";
+import type { Image, Product } from "@prisma/client";
 import DarkOverlay from "~/components/Layout/DarkOverlay";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import { getDepartments } from "~/models/departments.server";
 import FormHeader from "~/components/Forms/Headers/FormHeader";
+import type { ActionReturnTypes } from "~/utility/actionTypes";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import SelectGender from "~/components/Forms/Select/SelectGender";
-import {
-  redirect,
-  type ActionFunctionArgs,
-  type LoaderFunctionArgs,
-  json,
-} from "@remix-run/node";
-import {
-  type PromotionWithContent,
-  getPromotion,
-  upsertPromotion,
-} from "~/models/promotions.server";
+import type { ProductWithDetails } from "~/models/products.server";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
+import UploadImageCollapse from "~/components/Forms/Upload/UploadImageCollapse";
 import {
   Form,
   useActionData,
   useLoaderData,
   useNavigate,
 } from "@remix-run/react";
-import UploadImageCollapse from "~/components/Forms/Upload/UploadImageCollapse";
-import { tokenAuth } from "~/auth.server";
-import { STAFF_SESSION_KEY } from "~/session.server";
-import type { Image, Product } from "@prisma/client";
-import type { ProductWithDetails } from "~/models/products.server";
-
+import {
+  json,
+  redirect,
+  type ActionFunctionArgs,
+  type LoaderFunctionArgs,
+} from "@remix-run/node";
+import {
+  getPromotion,
+  type NewPromotion,
+  type PromotionWithContent,
+  upsertPromotion,
+} from "~/models/promotions.server";
+import BasicTextArea from "~/components/Forms/TextArea/BasicInput";
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
 
@@ -64,6 +65,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 
 export const action = async ({ request, params }: ActionFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+
   if (!authenticated.valid) {
     return redirect("/admin/login");
   }
@@ -72,6 +74,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   const form = Object.fromEntries(await request.formData());
   const {
     name,
+    metaDescription,
     department,
     products,
     discountPercentage,
@@ -96,18 +99,15 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
         return json({ validationErrors });
       }
 
-      const parsedBanner = bannerImage
-        ? (JSON.parse(bannerImage?.toString()) as Image)
-        : undefined;
+      const parsedBanner = JSON.parse(bannerImage?.toString()) as Image;
 
-      const parsedTile = tileImage
-        ? (JSON.parse(tileImage?.toString()) as Image)
-        : undefined;
+      const parsedTile = JSON.parse(tileImage?.toString()) as Image;
 
-      const updateData = {
+      const updateData: NewPromotion = {
         parsedBanner: parsedBanner,
         parsedTile: parsedTile,
         name: name as string,
+        metaDescription: metaDescription as string,
         department: department as string,
         products: products && JSON.parse(products as string),
         discountPercentage: discountPercentage as string,
@@ -126,7 +126,6 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 };
 
 const ModifyPromotion = () => {
-  const navigate = useNavigate();
   const { promotion, departments } = useLoaderData<typeof loader>();
   const { validationErrors, success } =
     (useActionData() as ActionReturnTypes) || {};
@@ -134,6 +133,14 @@ const ModifyPromotion = () => {
   const { products } = (promotion as { products: ProductWithDetails[] }) || {};
 
   const [loading, setLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
+
+  const tabNames = ["general", "images", "meta", "products"];
+  const [activeTab, setActiveTab] = useState<string | undefined>(tabNames?.[0]);
+
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+  };
 
   useEffect(() => {
     if (success) {
@@ -152,52 +159,80 @@ const ModifyPromotion = () => {
           type="Promotion"
           hasIsActive={true}
           hasDelete={true}
+          tabNames={tabNames}
+          activeTab={activeTab}
+          onTabChange={handleTabChange}
         />
 
-        <div className="form-control">
+        <div className={`form-control ${activeTab !== "general" && "hidden"}`}>
           <div className="form-control gap-3">
-            <div className="flex flex-wrap justify-evenly gap-3">
-              <BasicInput
-                label="Name"
-                name="name"
-                type="text"
-                placeholder="Name"
-                defaultValue={promotion?.name || undefined}
-                validationErrors={validationErrors}
-              />
+            <BasicInput
+              label="Name"
+              name="name"
+              type="text"
+              placeholder="Name"
+              customWidth="w-full"
+              defaultValue={promotion?.name || undefined}
+              validationErrors={validationErrors}
+            />
 
-              <BasicSelect
-                name="department"
-                label="Department"
-                selections={departments}
-                placeholder="Department"
-                defaultValue={promotion?.department?.id.toString()}
-              />
-            </div>
+            <BasicSelect
+              name="department"
+              label="Department"
+              selections={departments}
+              placeholder="Department"
+              customWidth="w-full"
+              defaultValue={promotion?.department?.id.toString()}
+            />
 
-            <div className="divider w-full pt-4" />
+            <BasicInput
+              name="discountPercentage"
+              label="Discount %"
+              placeholder="Discount %"
+              type="number"
+              customWidth="w-full"
+              defaultValue={promotion?.discountPercentage || ""}
+              validationErrors={validationErrors}
+            />
 
-            <div className="text-center">Promotion Paramters</div>
-
-            <div className="flex flex-wrap justify-evenly gap-3">
-              <BasicInput
-                name="discountPercentage"
-                label="Discount %"
-                placeholder="Discount %"
-                type="number"
-                defaultValue={promotion?.discountPercentage || ""}
-                validationErrors={validationErrors}
-              />
-
-              <SelectGender
-                defaultValue={promotion?.targetGender}
-                label="Has Target Gender?"
-              />
-            </div>
+            <SelectGender
+              defaultValue={promotion?.targetGender}
+              label="Has Target Gender?"
+              customWidth="w-full"
+            />
           </div>
+        </div>
 
-          <div className="divider w-full pt-8" />
+        <div className={`form-control ${activeTab !== "images" && "hidden"}`}>
+          <UploadImageCollapse
+            name="bannerImage"
+            label="Banner Image"
+            tooltip="Optimal 8.09:1 Aspect Ratio"
+            defaultValue={promotion?.bannerImage}
+          />
 
+          <div className="divider w-full pt-4" />
+
+          <UploadImageCollapse
+            name="tileImage"
+            label="Tile Image"
+            tooltip="Optimal Square Image"
+            defaultValue={promotion?.tileImage}
+          />
+        </div>
+
+        <div className={`form-control ${activeTab !== "meta" && "hidden"}`}>
+          <BasicTextArea
+            name="metaDescription"
+            label="Meta Description"
+            placeholder="Meta Description"
+            customWidth="w-full"
+            defaultValue={promotion?.metaDescription || ""}
+            validationErrors={validationErrors}
+          />
+        </div>
+
+        <div className={`form-control ${activeTab !== "products" && "hidden"}`}>
           <div className="max-w-full overflow-x-auto sm:max-w-none">
             <table className="table table-md">
               <thead>
@@ -241,24 +276,6 @@ const ModifyPromotion = () => {
               value={JSON.stringify(products) || ""}
             />
           </div>
-
-          <div className="divider w-full pt-8" />
-
-          <UploadImageCollapse
-            name="bannerImage"
-            label="Banner Image"
-            tooltip="Optimal 8.09:1 Aspect Ratio"
-            defaultValue={promotion?.bannerImage}
-          />
-
-          <div className="divider w-full pt-4" />
-
-          <UploadImageCollapse
-            name="tileImage"
-            label="Tile Image"
-            tooltip="Optimal Square Image"
-            defaultValue={promotion?.tileImage}
-          />
         </div>
 
         <BackSubmitButtons

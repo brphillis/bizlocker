@@ -1,7 +1,11 @@
 import { useEffect } from "react";
 import type { ActionReturnTypes } from "~/utility/actionTypes";
 import { isValidPassword } from "~/utility/validate";
-import { json, type ActionFunctionArgs } from "@remix-run/node";
+import {
+  json,
+  type ActionFunctionArgs,
+  type MetaFunction,
+} from "@remix-run/node";
 import AuthContainer from "~/components/Layout/AuthContainer";
 import { ActionAlert } from "~/components/Notifications/Alerts";
 import AuthPageWrapper from "~/components/Layout/AuthPageWrapper";
@@ -14,6 +18,16 @@ import {
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
+
+export const meta: MetaFunction = ({ data }) => {
+  return [
+    { title: "CLUTCH | Verification" },
+    {
+      name: "CLUTCH | Verification",
+      content: "CLUTCH | Verification",
+    },
+  ];
+};
 
 export const loader = async ({ params, request }: ActionFunctionArgs) => {
   const url = new URL(request.url);

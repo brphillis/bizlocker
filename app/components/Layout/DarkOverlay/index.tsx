@@ -22,7 +22,7 @@ const DarkOverlay = ({ children, fadeIn }: Props) => {
   return (
     <div
       className={
-        "fixed inset-0 z-50 flex h-screen max-h-screen w-full max-w-[100vw] flex-col items-center justify-start overflow-y-auto bg-black/90 opacity-0 sm:justify-center sm:pt-0" +
+        "fixed inset-0 z-50 flex h-screen max-h-screen w-full max-w-[100vw] flex-col items-center justify-start overflow-y-auto bg-black/90 pt-6 opacity-0 max-md:pt-0" +
         fadeClass
       }
     >

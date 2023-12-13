@@ -145,7 +145,7 @@ const ModifyStore = () => {
     <DarkOverlay>
       <Form
         method="POST"
-        className="absolute top-0 w-[600px] bg-base-200 py-6 sm:px-6"
+        className="scrollbar-hide relative w-[600px] max-w-[100vw] overflow-y-auto bg-base-200 px-3 py-6 sm:px-6"
       >
         <FormHeader
           hasDelete={false}
@@ -155,125 +155,121 @@ const ModifyStore = () => {
         />
 
         <div className="form-control gap-3">
-          <div className="flex flex-wrap justify-evenly gap-3">
-            <div className="flex flex-row flex-wrap justify-center gap-6">
-              <BasicInput
-                name="name"
-                label="Name"
-                placeholder="Name"
-                type="text"
-                customWidth="w-full"
-                defaultValue={store?.name || undefined}
-                validationErrors={validationErrors}
-              />
+          <BasicInput
+            name="name"
+            label="Name"
+            placeholder="Name"
+            type="text"
+            customWidth="w-full"
+            defaultValue={store?.name || undefined}
+            validationErrors={validationErrors}
+          />
 
-              <PhoneInput
-                name="phoneNumber"
-                label="Phone Number"
-                placeholder="Phone Number"
-                type="text"
-                customWidth="w-full"
-                defaultValue={store?.phoneNumber || undefined}
-                validationErrors={validationErrors}
-              />
+          <PhoneInput
+            name="phoneNumber"
+            label="Phone Number"
+            placeholder="Phone Number"
+            type="text"
+            customWidth="w-full"
+            defaultValue={store?.phoneNumber || undefined}
+            validationErrors={validationErrors}
+          />
 
-              <BasicInput
-                name="faxNumber"
-                label="Fax Number"
-                placeholder="Fax Number"
-                type="number"
-                customWidth="w-full"
-                defaultValue={store?.faxNumber || undefined}
-                validationErrors={validationErrors}
-              />
+          <BasicInput
+            name="faxNumber"
+            label="Fax Number"
+            placeholder="Fax Number"
+            type="number"
+            customWidth="w-full"
+            defaultValue={store?.faxNumber || undefined}
+            validationErrors={validationErrors}
+          />
 
-              <BasicInput
-                name="addressLine1"
-                label="Address Line 1"
-                placeholder="Address Line 1"
-                type="text"
-                customWidth="w-full"
-                defaultValue={store?.address?.addressLine1 || undefined}
-                validationErrors={validationErrors}
-              />
+          <BasicInput
+            name="addressLine1"
+            label="Address Line 1"
+            placeholder="Address Line 1"
+            type="text"
+            customWidth="w-full"
+            defaultValue={store?.address?.addressLine1 || undefined}
+            validationErrors={validationErrors}
+          />
 
-              <BasicInput
-                name="addressLine2"
-                label="Address Line 2"
-                placeholder="Address Line 2"
-                type="text"
-                customWidth="w-full"
-                defaultValue={store?.address?.addressLine2 || undefined}
-                validationErrors={validationErrors}
-              />
+          <BasicInput
+            name="addressLine2"
+            label="Address Line 2"
+            placeholder="Address Line 2"
+            type="text"
+            customWidth="w-full"
+            defaultValue={store?.address?.addressLine2 || undefined}
+            validationErrors={validationErrors}
+          />
 
-              <BasicInput
-                name="suburb"
-                label="Suburb"
-                placeholder="Suburb"
-                type="text"
-                customWidth="w-full"
-                defaultValue={store?.address?.suburb || undefined}
-                validationErrors={validationErrors}
-              />
+          <BasicInput
+            name="suburb"
+            label="Suburb"
+            placeholder="Suburb"
+            type="text"
+            customWidth="w-full"
+            defaultValue={store?.address?.suburb || undefined}
+            validationErrors={validationErrors}
+          />
 
-              <BasicInput
-                name="postcode"
-                label="PostCode"
-                placeholder="PostCode"
-                type="text"
-                customWidth="w-full"
-                defaultValue={store?.address?.postcode || undefined}
-                validationErrors={validationErrors}
-              />
+          <BasicInput
+            name="postcode"
+            label="PostCode"
+            placeholder="PostCode"
+            type="text"
+            customWidth="w-full"
+            defaultValue={store?.address?.postcode || undefined}
+            validationErrors={validationErrors}
+          />
 
-              <BasicInput
-                name="state"
-                label="State"
-                placeholder="State"
-                type="text"
-                customWidth="w-full"
-                defaultValue={store?.address?.state || undefined}
-                validationErrors={validationErrors}
-              />
+          <BasicInput
+            name="state"
+            label="State"
+            placeholder="State"
+            type="text"
+            customWidth="w-full"
+            defaultValue={store?.address?.state || undefined}
+            validationErrors={validationErrors}
+          />
 
-              <SelectCountry
-                defaultValue={store?.address?.country}
-                validationErrors={validationErrors}
-                styles="!w-full"
-              />
+          <SelectCountry
+            defaultValue={store?.address?.country}
+            validationErrors={validationErrors}
+            styles="!w-full"
+          />
 
-              <BasicInput
-                name="longitude"
-                label="Longitude"
-                placeholder="Longitude"
-                type="text"
-                customWidth="w-full"
-                defaultValue={store?.address?.longitude || undefined}
-                validationErrors={validationErrors}
-              />
+          <BasicInput
+            name="longitude"
+            label="Longitude"
+            placeholder="Longitude"
+            type="text"
+            customWidth="w-full"
+            defaultValue={store?.address?.longitude || undefined}
+            validationErrors={validationErrors}
+          />
 
-              <BasicInput
-                name="latitude"
-                label="Latitude"
-                placeholder="Latitude"
-                type="text"
-                customWidth="w-full"
-                defaultValue={store?.address?.latitude || undefined}
-                validationErrors={validationErrors}
-              />
+          <BasicInput
+            name="latitude"
+            label="Latitude"
+            placeholder="Latitude"
+            type="text"
+            customWidth="w-full"
+            defaultValue={store?.address?.latitude || undefined}
+            validationErrors={validationErrors}
+          />
 
-              <BasicInput
-                name="paymentProviderId"
-                label="Payment Provider Id"
-                placeholder="Payment Provider Id"
-                type="text"
-                customWidth="w-full"
-                defaultValue={store?.paymentProviderId || undefined}
-                validationErrors={validationErrors}
-              />
-            </div>
-          </div>
+          <BasicInput
+            name="paymentProviderId"
+            label="Payment Provider Id"
+            placeholder="Payment Provider Id"
+            type="text"
+            customWidth="w-full"
+            defaultValue={store?.paymentProviderId || undefined}
+            validationErrors={validationErrors}
+          />
         </div>
         <BackSubmitButtons
           loading={loading}

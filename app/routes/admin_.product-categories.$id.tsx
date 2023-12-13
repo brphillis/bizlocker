@@ -38,6 +38,7 @@ import {
 } from "~/models/productCategories.server";
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
+import BasicMultiSelect from "~/components/Forms/Select/BasicMultiSelect";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
@@ -103,11 +104,11 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
         name: true,
         index: true,
         department: true,
-        articleCategories: true,
         productSubCategories: true,
       };
 
       const validationErrors = validateForm(form, validate);
+
       if (validationErrors) {
         return json({ validationErrors });
       }
@@ -133,49 +134,11 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
 const ModifyProductCategory = () => {
   const navigate = useNavigate();
-  const {
-    productCategory,
-    departments,
-    productSubCategories,
-    articleCategories,
-  } = useLoaderData<typeof loader>();
+  const { productCategory, departments, productSubCategories } =
+    useLoaderData<typeof loader>();
 
   const { success, validationErrors } =
     (useActionData() as ActionReturnTypes) || {};
-
-  const [selectedProductSubCategories, setSelectedProductSubCategories] =
-    useState<string[]>(
-      productCategory?.productSubCategories?.map(
-        (e: ProductSubCategoryWithDetails) => e?.id.toString()
-      ) || []
-    );
-  const [selectedArticleCategories, setSelectedArticleCategories] = useState<
-    string[]
-  >(
-    productCategory?.articleCategories?.map((e: ArticleCategoryWithDetails) =>
-      e?.id.toString()
-    ) || []
-  );
-
-  const handleProductSubCategoryChange = (
-    e: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    const selectedOptions = Array.from(
-      e.target.selectedOptions,
-      (option: HTMLOptionElement) => option.value
-    );
-    setSelectedProductSubCategories(selectedOptions);
-  };
-
-  const handleArticleCategoryChange = (
-    e: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    const selectedOptions = Array.from(
-      e.target.selectedOptions,
-      (option: HTMLOptionElement) => option.value
-    );
-    setSelectedArticleCategories(selectedOptions);
-  };
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -199,162 +162,60 @@ const ModifyProductCategory = () => {
         />
 
         <div className="form-control gap-3">
-          <div className="flex flex-wrap justify-evenly gap-3">
-            <BasicInput
-              name="name"
-              label="Name"
-              placeholder="Name"
-              type="text"
-              defaultValue={productCategory?.name || ""}
-              validationErrors={validationErrors}
+          <BasicInput
+            name="name"
+            label="Name"
+            placeholder="Name"
+            customWidth="w-full"
+            type="text"
+            defaultValue={productCategory?.name || ""}
+            validationErrors={validationErrors}
+          />
+
+          <BasicSelect
+            name="department"
+            label="Department"
+            selections={departments}
+            placeholder="Department"
+            customWidth="w-full"
+            defaultValue={productCategory?.department?.id.toString()}
+          />
+
+          <BasicInput
+            label="Index"
+            type="number"
+            name="index"
+            placeholder="Index"
+            customWidth="w-full"
+            defaultValue={productCategory?.index || 0}
+            validationErrors={validationErrors}
+          />
+
+          <BasicSelect
+            name="displayInNavigation"
+            label="Display In Navigation"
+            selections={[
+              { id: "yes", name: "Yes" },
+              { id: "no", name: "No" },
+            ]}
+            placeholder="Display In Navigation"
+            customWidth="w-full"
+            defaultValue={productCategory?.displayInNavigation ? "yes" : "no"}
+          />
+
+          {productSubCategories && (
+            <BasicMultiSelect
+              name="productSubCategories"
+              label="Sub Categories"
+              customWidth="w-full"
+              selections={productSubCategories.filter(
+                (e) =>
+                  !e.productCategoryId ||
+                  e.productCategoryId === productCategory?.id
+              )}
+              defaultValues={productCategory?.productSubCategories}
             />
-
-            <BasicSelect
-              name="department"
-              label="Department"
-              selections={departments}
-              placeholder="Department"
-              defaultValue={productCategory?.department?.id.toString()}
-            />
-          </div>
-
-          <div className="flex flex-wrap justify-evenly gap-3">
-            <BasicInput
-              label="Index"
-              type="number"
-              name="index"
-              placeholder="Index"
-              defaultValue={productCategory?.index || 0}
-              validationErrors={validationErrors}
-            />
-
-            <div className="form-control w-full sm:w-[215px]">
-              <label className="label text-sm">In Navigation</label>
-              <select
-                name="displayInNavigation"
-                className="select w-full text-brand-black/75"
-                defaultValue={
-                  productCategory?.displayInNavigation ? "true" : ""
-                }
-              >
-                <option value="true">Yes</option>
-                <option value="">No</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="flex flex-wrap justify-evenly gap-3">
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Sub Categories</span>
-              </label>
-              <select
-                className=" select !h-40 w-[95vw] sm:w-[215px]"
-                onChange={handleProductSubCategoryChange}
-                value={selectedProductSubCategories}
-                multiple
-              >
-                {!productSubCategories && (
-                  <option disabled value="">
-                    No Product Categories
-                  </option>
-                )}
-                {productSubCategories?.map(
-                  ({
-                    id,
-                    name,
-                    productCategory: parentProductCategory,
-                  }: ProductSubCategoryWithDetails) => {
-                    const isAssignedToThis =
-                      productCategory?.productSubCategories?.some(
-                        (e: ProductSubCategoryWithDetails) => e.id === id
-                      );
-                    const isAssigned =
-                      parentProductCategory?.productSubCategories;
-
-                    if (isAssignedToThis || !isAssigned) {
-                      return (
-                        <option key={"productSubCategory-" + name} value={id}>
-                          {name}
-                        </option>
-                      );
-                    } else {
-                      return (
-                        <option
-                          key={"productSubCategory-" + name + "disabled"}
-                          value={name || undefined}
-                          disabled
-                        >
-                          {name}
-                        </option>
-                      );
-                    }
-                  }
-                )}
-              </select>
-              <input
-                hidden
-                readOnly
-                name="productSubCategories"
-                value={JSON.stringify(selectedProductSubCategories) || ""}
-              />
-            </div>
-
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Article Categories</span>
-              </label>
-              <select
-                className=" select !h-40 w-[95vw] sm:w-[215px]"
-                onChange={handleArticleCategoryChange}
-                value={selectedArticleCategories}
-                multiple
-              >
-                {!articleCategories && (
-                  <option disabled value="">
-                    No Article Categories
-                  </option>
-                )}
-                {articleCategories?.map(
-                  ({
-                    id,
-                    name,
-                    productCategory: parentProductCategory,
-                  }: ArticleCategoryWithDetails) => {
-                    const isAssignedToThis =
-                      productCategory?.articleCategories?.some(
-                        (e: ArticleCategoryWithDetails) => e.id === id
-                      );
-                    const isAssigned = parentProductCategory?.articleCategories;
-
-                    if (isAssignedToThis || !isAssigned) {
-                      return (
-                        <option key={"articleCategory-" + name} value={id}>
-                          {name}
-                        </option>
-                      );
-                    } else {
-                      return (
-                        <option
-                          key={"articleCategory-" + name + "disabled"}
-                          value={name}
-                          disabled
-                        >
-                          {name}
-                        </option>
-                      );
-                    }
-                  }
-                )}
-              </select>
-              <input
-                hidden
-                readOnly
-                name="articleCategories"
-                value={JSON.stringify(selectedArticleCategories) || ""}
-              />
-            </div>
-          </div>
+          )}
         </div>
 
         <BackSubmitButtons

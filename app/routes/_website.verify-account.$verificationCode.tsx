@@ -1,9 +1,23 @@
 import { useEffect } from "react";
 import { IoCheckmarkCircle } from "react-icons/io5";
-import { json, type ActionFunctionArgs } from "@remix-run/node";
+import {
+  json,
+  type ActionFunctionArgs,
+  type MetaFunction,
+} from "@remix-run/node";
 import { useLoaderData, useNavigate } from "@remix-run/react";
 import PageWrapper from "~/components/Layout/_Website/PageWrapper";
 import { verifyUserAccount } from "~/models/auth/verification.server";
+
+export const meta: MetaFunction = ({ data }) => {
+  return [
+    { title: "CLUTCH | Verification" },
+    {
+      name: "CLUTCH | Verification",
+      content: "CLUTCH | Verification",
+    },
+  ];
+};
 
 export const loader = async ({ params, request }: ActionFunctionArgs) => {
   const url = new URL(request.url);

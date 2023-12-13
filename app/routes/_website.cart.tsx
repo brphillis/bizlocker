@@ -16,7 +16,12 @@ import { getCartDeliveryOptions } from "~/helpers/cartHelpers";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import PageWrapper from "~/components/Layout/_Website/PageWrapper";
 import SelectCountry from "~/components/Forms/Select/SelectCountry";
-import { json, type ActionFunctionArgs, type LoaderFunctionArgs } from "@remix-run/node";
+import {
+  json,
+  type ActionFunctionArgs,
+  type LoaderFunctionArgs,
+  type MetaFunction,
+} from "@remix-run/node";
 import {
   Form,
   useActionData,
@@ -35,6 +40,16 @@ import googlePayLogo from "../assets/logos/googlePay-logo.svg";
 import mastercardLogo from "../assets/logos/mastercard-logo.svg";
 import type { Address } from "@prisma/client";
 import type { NewAddress } from "~/helpers/addressHelpers";
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  return [
+    { title: "CLUTCH | Your Cart" },
+    {
+      name: "CLUTCH | Your Cart",
+      content: "CLUTCH | Your Cart",
+    },
+  ];
+};
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   let cart, user, userAddress, loaderShippingOptions, userDetails;

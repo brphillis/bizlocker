@@ -4,7 +4,11 @@ import Spinner from "~/components/Spinner";
 import { generateColor } from "~/utility/colors";
 import { getBrand } from "~/models/brands.server";
 import { parseOptions } from "~/utility/parseOptions";
-import { json, type LoaderFunctionArgs } from "@remix-run/node";
+import {
+  json,
+  type MetaFunction,
+  type LoaderFunctionArgs,
+} from "@remix-run/node";
 import { Toast } from "~/components/Notifications/Toast";
 import ProductGrid from "~/components/Grids/ProductGrid";
 import { getVariantUnitPrice } from "~/helpers/numberHelpers";
@@ -27,6 +31,18 @@ import {
   getAvailableSizes,
 } from "~/helpers/productHelpers";
 import type { Image } from "~/models/images.server";
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  return [
+    {
+      title: `CLUTCH | ${data?.product.name}`,
+    },
+    {
+      name: `CLUTCH | ${data?.product.name}`,
+      description: `${data?.product.name} available now at CLUTCH, with store locations all over Australia we can provide next day shipping of our top quality ${data?.product.name} straight to your door.`,
+    },
+  ];
+};
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);

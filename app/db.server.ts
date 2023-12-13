@@ -57,6 +57,7 @@ function getClient() {
         url: databaseUrl.toString(),
       },
     },
+    log: ["error"],
   });
 
   client.$extends({

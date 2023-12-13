@@ -10,6 +10,8 @@ import type {
 } from "~/models/products.server";
 import BasicInput from "../../Input/BasicInput";
 import BasicSelect from "../../Select/BasicSelect";
+import BoxedTabs from "~/components/Tabs/BoxedTabs";
+import BasicToggle from "~/components/Forms/Toggle/BasicToggle";
 
 type Props = {
   storeId: number | null;
@@ -54,6 +56,13 @@ const ProductVariantFormModule = ({
   >(product?.variants);
 
   const [upsertState, setUpsertState] = useState<"edit" | "add" | undefined>();
+
+  const tabNames = ["general", "price", "shipping"];
+  const [activeTab, setActiveTab] = useState<string>(tabNames[0]);
+
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+  };
 
   const handleAddVariant = () => {
     const form = new FormData();
@@ -216,11 +225,23 @@ const ProductVariantFormModule = ({
     <div>
       {activeVariant && (
         <div className="form-control gap-3">
-          <div className="flex flex-wrap justify-evenly gap-3">
+          <div> Variant Editor </div>
+          <BoxedTabs
+            tabNames={tabNames}
+            activeTab={activeTab}
+            onTabChange={handleTabChange}
+          />
+
+          <div
+            className={`form-control gap-3 ${
+              activeTab !== "general" && "hidden"
+            }`}
+          >
             <BasicInput
               name="name"
               label="Variant Name"
               placeholder="Name"
+              customWidth="w-full"
               type="text"
               defaultValue={
                 (activeVariant as ProductVariantWithDetails)?.name || "BASE"
@@ -234,51 +255,12 @@ const ProductVariantFormModule = ({
               validationErrors={validationErrors}
             />
 
-            <div className="w-[95vw] sm:w-[215px]" />
-          </div>
-
-          <div className="flex flex-wrap justify-evenly gap-3">
-            <BasicInput
-              name="price"
-              label="Price"
-              placeholder="Price"
-              type="number"
-              decimals={2}
-              defaultValue={
-                (activeVariant as ProductVariantWithDetails)?.price || ""
-              }
-              onChange={(e) => {
-                setActiveVariant({
-                  ...activeVariant,
-                  price: Number(e as string),
-                });
-              }}
-              validationErrors={validationErrors}
-            />
-
-            <BasicInput
-              name="salePrice"
-              label="Sale Price"
-              placeholder="Sale Price"
-              type="number"
-              decimals={2}
-              defaultValue={
-                (activeVariant as NewProductVariant)?.salePrice || ""
-              }
-              onChange={(e) => {
-                setActiveVariant({
-                  ...activeVariant,
-                  salePrice: Number(e as string),
-                });
-              }}
-              validationErrors={validationErrors}
-            />
-
             <BasicSelect
               id="VariantColor"
               name="color"
               label="Color"
               placeholder="Color"
+              customWidth="w-full"
               selections={availableColors.map((e) => {
                 return { id: e, name: e };
               })}
@@ -298,6 +280,7 @@ const ProductVariantFormModule = ({
               name="size"
               label="Size"
               placeholder="Size"
+              customWidth="w-full"
               type="text"
               defaultValue={
                 (activeVariant as ProductVariantWithDetails)?.size || ""
@@ -311,76 +294,7 @@ const ProductVariantFormModule = ({
               validationErrors={validationErrors}
             />
 
-            <BasicInput
-              name="length"
-              label="Length (cm)"
-              placeholder="Length"
-              type="number"
-              defaultValue={
-                (activeVariant as ProductVariantWithDetails)?.length || ""
-              }
-              onChange={(e) => {
-                setActiveVariant({
-                  ...activeVariant,
-                  length: parseInt(e as string),
-                });
-              }}
-              validationErrors={validationErrors}
-            />
-
-            <BasicInput
-              name="width"
-              label="Width (cm)"
-              placeholder="Width"
-              type="number"
-              defaultValue={
-                (activeVariant as ProductVariantWithDetails)?.width || ""
-              }
-              onChange={(e) => {
-                setActiveVariant({
-                  ...activeVariant,
-                  width: parseInt(e as string),
-                });
-              }}
-              validationErrors={validationErrors}
-            />
-
-            <BasicInput
-              name="height"
-              label="Height (cm)"
-              placeholder="Height"
-              type="number"
-              defaultValue={
-                (activeVariant as ProductVariantWithDetails)?.height || ""
-              }
-              onChange={(e) => {
-                setActiveVariant({
-                  ...activeVariant,
-                  height: parseFloat(e as string),
-                });
-              }}
-              validationErrors={validationErrors}
-            />
-
-            <BasicInput
-              name="weight"
-              label="Weight (kg)"
-              placeholder="Weight"
-              type="number"
-              decimals={2}
-              defaultValue={
-                (activeVariant as ProductVariantWithDetails)?.weight || ""
-              }
-              onChange={(e) => {
-                setActiveVariant({
-                  ...activeVariant,
-                  weight: parseFloat(e as string),
-                });
-              }}
-              validationErrors={validationErrors}
-            />
-
-            <div className="flex w-full items-end justify-center gap-3 justify-self-start px-[2.3rem] max-md:px-0">
+            <div className="flex w-full items-end justify-center gap-3 justify-self-start max-md:px-0">
               <BasicInput
                 id="VariantSKU"
                 name="sku"
@@ -412,7 +326,7 @@ const ProductVariantFormModule = ({
               </button>
             </div>
 
-            <div className="flex w-full items-end justify-center gap-3 justify-self-start px-[2.3rem] max-md:px-0">
+            <div className="flex w-full items-end justify-center gap-3 justify-self-start max-md:px-0">
               <BasicInput
                 name="remainingStock"
                 label="Remaining Stock"
@@ -444,116 +358,209 @@ const ProductVariantFormModule = ({
                 See Stock
               </button>
             </div>
-          </div>
 
-          <div className="flex flex-col flex-wrap gap-3">
-            <div className="mt-3 flex flex-wrap justify-evenly gap-3 self-start">
-              <div className="form-control pl-0 sm:pl-6">
-                <label className="label cursor-pointer !pb-0">
-                  <input
-                    type="checkbox"
-                    className="toggle toggle-success ml-3"
-                    checked={
-                      activeVariant.hasOwnProperty("isActive")
-                        ? (activeVariant as ProductVariantWithDetails)?.isActive
-                        : true
-                    }
-                    onChange={(e) => {
-                      setActiveVariant({
-                        ...activeVariant,
-                        isActive: e.target.checked,
-                      });
-                    }}
-                  />
-                  <span className="label-text ml-3">Active</span>
-                </label>
-              </div>
-            </div>
-
-            <div className="mt-3 flex flex-wrap justify-evenly gap-3 self-start">
-              <div className="form-control pl-0 sm:pl-6">
-                <label className="label cursor-pointer !pb-0">
-                  <input
-                    type="checkbox"
-                    className="toggle toggle-success ml-3"
-                    checked={
-                      (activeVariant as ProductVariantWithDetails)?.isOnSale ||
-                      false
-                    }
-                    onChange={(e) => {
-                      const isChecked = e.target.checked;
-                      if (isChecked) {
-                        setActiveVariant((prevVariant) => ({
-                          ...prevVariant,
-                          isOnSale: true,
-                          isPromoted: false,
-                        }));
-                      } else {
-                        setActiveVariant((prevVariant) => ({
-                          ...prevVariant,
-                          isOnSale: false,
-                        }));
-                      }
-                    }}
-                  />
-                  <span className="label-text ml-3">On Sale</span>
-                </label>
-              </div>
-            </div>
-
-            <div className="mt-3 flex flex-wrap justify-evenly gap-3 self-start">
-              <div className="form-control pl-0 sm:pl-6">
-                <label className="label cursor-pointer !pb-0">
-                  <input
-                    type="checkbox"
-                    className="toggle toggle-success ml-3"
-                    checked={
-                      (activeVariant as ProductVariantWithDetails)
-                        ?.isPromoted || false
-                    }
-                    onChange={(e) => {
-                      const isChecked = e.target.checked;
-                      if (isChecked) {
-                        setActiveVariant((prevVariant) => ({
-                          ...prevVariant,
-                          isPromoted: true,
-                          isOnSale: false,
-                        }));
-                      } else {
-                        setActiveVariant((prevVariant) => ({
-                          ...prevVariant,
-                          isPromoted: false,
-                        }));
-                      }
-                    }}
-                  />
-                  <span className="label-text ml-3">Promo Item</span>
-                </label>
-              </div>
+            <div className="mt-3">
+              <BasicToggle
+                label="Active"
+                defaultValue={
+                  activeVariant.hasOwnProperty("isActive")
+                    ? (activeVariant as ProductVariantWithDetails)?.isActive
+                    : true
+                }
+                onChange={(e) => {
+                  setActiveVariant({
+                    ...activeVariant,
+                    isActive: e.target.checked,
+                  });
+                }}
+              />
             </div>
           </div>
 
-          <div className="mt-3 flex flex-wrap justify-evenly gap-3 self-start">
-            <div className="form-control pl-0 sm:pl-6">
-              <label className="label cursor-pointer !pb-0">
-                <input
-                  type="checkbox"
-                  className="toggle toggle-success ml-3"
-                  checked={
-                    activeVariant.hasOwnProperty("isFragile")
-                      ? (activeVariant as ProductVariantWithDetails)?.isFragile
-                      : false
+          <div
+            className={`form-control gap-3 ${
+              activeTab !== "price" && "hidden"
+            }`}
+          >
+            <BasicInput
+              name="price"
+              label="Price"
+              placeholder="Price"
+              customWidth="w-full"
+              type="number"
+              decimals={2}
+              defaultValue={
+                (activeVariant as ProductVariantWithDetails)?.price || ""
+              }
+              onChange={(e) => {
+                setActiveVariant({
+                  ...activeVariant,
+                  price: Number(e as string),
+                });
+              }}
+              validationErrors={validationErrors}
+            />
+
+            <BasicInput
+              name="salePrice"
+              label="Sale Price"
+              placeholder="Sale Price"
+              customWidth="w-full"
+              type="number"
+              decimals={2}
+              defaultValue={
+                (activeVariant as NewProductVariant)?.salePrice || ""
+              }
+              onChange={(e) => {
+                setActiveVariant({
+                  ...activeVariant,
+                  salePrice: Number(e as string),
+                });
+              }}
+              validationErrors={validationErrors}
+            />
+
+            <div className="mt-3">
+              <BasicToggle
+                label="On Sale"
+                defaultValue={
+                  (activeVariant as ProductVariantWithDetails)?.isOnSale ||
+                  false
+                }
+                onChange={(e) => {
+                  const isChecked = e.target.checked;
+                  if (isChecked) {
+                    setActiveVariant((prevVariant) => ({
+                      ...prevVariant,
+                      isOnSale: true,
+                      isPromoted: false,
+                    }));
+                  } else {
+                    setActiveVariant((prevVariant) => ({
+                      ...prevVariant,
+                      isOnSale: false,
+                    }));
                   }
-                  onChange={(e) => {
-                    setActiveVariant({
-                      ...activeVariant,
-                      isFragile: e.target.checked,
-                    });
-                  }}
-                />
-                <span className="label-text ml-3">Fragile</span>
-              </label>
+                }}
+              />
+
+              <BasicToggle
+                label="On Promo"
+                defaultValue={
+                  (activeVariant as ProductVariantWithDetails)?.isPromoted ||
+                  false
+                }
+                onChange={(e) => {
+                  const isChecked = e.target.checked;
+                  if (isChecked) {
+                    setActiveVariant((prevVariant) => ({
+                      ...prevVariant,
+                      isPromoted: true,
+                      isOnSale: false,
+                    }));
+                  } else {
+                    setActiveVariant((prevVariant) => ({
+                      ...prevVariant,
+                      isPromoted: false,
+                    }));
+                  }
+                }}
+              />
             </div>
+          </div>
+
+          <div
+            className={`form-control gap-3 ${
+              activeTab !== "shipping" && "hidden"
+            }`}
+          >
+            <BasicInput
+              name="length"
+              label="Length (cm)"
+              placeholder="Length"
+              customWidth="w-full"
+              type="number"
+              defaultValue={
+                (activeVariant as ProductVariantWithDetails)?.length || ""
+              }
+              onChange={(e) => {
+                setActiveVariant({
+                  ...activeVariant,
+                  length: parseInt(e as string),
+                });
+              }}
+              validationErrors={validationErrors}
+            />
+
+            <BasicInput
+              name="width"
+              label="Width (cm)"
+              placeholder="Width"
+              customWidth="w-full"
+              type="number"
+              defaultValue={
+                (activeVariant as ProductVariantWithDetails)?.width || ""
+              }
+              onChange={(e) => {
+                setActiveVariant({
+                  ...activeVariant,
+                  width: parseInt(e as string),
+                });
+              }}
+              validationErrors={validationErrors}
+            />
+
+            <BasicInput
+              name="height"
+              label="Height (cm)"
+              placeholder="Height"
+              customWidth="w-full"
+              type="number"
+              defaultValue={
+                (activeVariant as ProductVariantWithDetails)?.height || ""
+              }
+              onChange={(e) => {
+                setActiveVariant({
+                  ...activeVariant,
+                  height: parseFloat(e as string),
+                });
+              }}
+              validationErrors={validationErrors}
+            />
+
+            <BasicInput
+              name="weight"
+              label="Weight (kg)"
+              placeholder="Weight"
+              customWidth="w-full"
+              type="number"
+              decimals={2}
+              defaultValue={
+                (activeVariant as ProductVariantWithDetails)?.weight || ""
+              }
+              onChange={(e) => {
+                setActiveVariant({
+                  ...activeVariant,
+                  weight: parseFloat(e as string),
+                });
+              }}
+              validationErrors={validationErrors}
+            />
+
+            <BasicToggle
+              label="Is Fragile"
+              defaultValue={
+                activeVariant.hasOwnProperty("isFragile")
+                  ? (activeVariant as ProductVariantWithDetails)?.isFragile
+                  : false
+              }
+              onChange={(e) => {
+                setActiveVariant({
+                  ...activeVariant,
+                  isFragile: e.target.checked,
+                });
+              }}
+            />
           </div>
 
           <div className="mt-6 flex flex-wrap justify-center gap-3">
@@ -669,7 +676,7 @@ const ProductVariantFormModule = ({
             </table>
 
             <button
-              className="btn-primary btn-md mx-auto mt-6 block !rounded-sm"
+              className="btn-primary btn-md mx-auto mt-6 block !rounded-sm bg-primary hover:bg-primary-dark"
               onClick={() => handleNewVariant()}
             >
               Add Variant

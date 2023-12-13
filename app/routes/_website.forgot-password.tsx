@@ -4,9 +4,23 @@ import { isValidEmail } from "~/utility/validate";
 import { ActionAlert } from "~/components/Notifications/Alerts";
 import { initiatePasswordReset } from "~/models/auth/verification.server";
 import { Form, NavLink, useActionData, useNavigate } from "@remix-run/react";
-import { json, type ActionFunctionArgs, type MetaFunction } from "@remix-run/node";
+import {
+  json,
+  type ActionFunctionArgs,
+  type MetaFunction,
+} from "@remix-run/node";
 
 import background from "../assets/banners/banner-login.jpg";
+
+export const meta: MetaFunction = ({ data }) => {
+  return [
+    { title: "CLUTCH | Forgot Password" },
+    {
+      name: "CLUTCH | Forgot Password",
+      content: "CLUTCH | Forgot Password",
+    },
+  ];
+};
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const form = Object.fromEntries(await request.formData());
@@ -31,8 +45,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     return json({ validationError });
   }
 };
-
-export const meta: MetaFunction = () => [{ title: "Register" }];
 
 export const RegisterPage = () => {
   const navigate = useNavigate();

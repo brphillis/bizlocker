@@ -14,7 +14,7 @@ const UploadAvatar = ({ avatar }: Props) => {
 
   return (
     <>
-      <div className="flex items-center justify-center gap-6">
+      <div className="flex items-center justify-center gap-6 py-1">
         <div className="avatar">
           <div className="w-24 rounded-full ring ring-primary ring-offset-2 ring-offset-base-100 sm:w-32">
             <img
@@ -27,7 +27,7 @@ const UploadAvatar = ({ avatar }: Props) => {
           <input
             type="file"
             accept="image/*"
-            className="file-input file-input-bordered w-full max-w-[50vw] bg-primary/50"
+            className="file-input file-input-bordered w-full max-w-[50vw] bg-primary/50 text-brand-white"
             onChange={async (e) => {
               const convertedImage = await ConvertToBase64Image(e);
               convertedImage && setImage(convertedImage);

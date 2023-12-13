@@ -1,7 +1,8 @@
 import { useNavigate, useParams } from "@remix-run/react";
 import { IoMdTrash } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
-import Toggle from "~/components/Buttons/Toggle";
+import BasicToggle from "~/components/Forms/Toggle/BasicToggle";
+import BoxedTabs from "~/components/Tabs/BoxedTabs";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
 
 type ValueToChange<T extends { isActive: boolean }> = T;
@@ -13,6 +14,9 @@ type Props = {
   hasIsActive?: boolean;
   hasDelete?: boolean;
   hasConnections?: boolean;
+  tabNames?: string[];
+  activeTab?: string;
+  onTabChange?: (tab: string) => void;
 };
 
 const FormHeader = ({
@@ -21,6 +25,9 @@ const FormHeader = ({
   customMode,
   hasIsActive,
   hasDelete,
+  tabNames,
+  activeTab,
+  onTabChange,
 }: Props) => {
   const navigate = useNavigate();
   const { id } = useParams() || {};
@@ -42,27 +49,46 @@ const FormHeader = ({
 
   return (
     <>
-      <div className="flex max-w-[100vw] flex-row justify-end sm:justify-between">
-        <h1 className="absolute left-3 top-[1.2rem] sm:relative sm:left-0 sm:top-0">
-          {mode && capitalizeFirst(mode)} {type}
-        </h1>
+      <div className="absolute left-[50%] top-0 flex w-full max-w-[100vw] translate-x-[-50%] flex-col items-center border-[1px] border-b-0 border-brand-white bg-primary text-brand-white sm:justify-between">
+        <div className="flex w-full items-center justify-between px-6 py-4 max-md:px-3">
+          <h1 className="sm:relative sm:left-0 sm:top-0">
+            {mode && capitalizeFirst(mode)} {type}
+          </h1>
 
-        <div className="mr-3 flex gap-6 sm:mr-0">
-          {hasIsActive && mode && (
-            <Toggle defaultValue={handleActiveStatus(mode)} />
-          )}
-          {hasDelete && (
-            <button type="submit" name="_action" value="delete">
-              <IoMdTrash />
+          <div className="flex items-center gap-6">
+            {hasIsActive && mode && (
+              <div className="-mt-1">
+                <BasicToggle
+                  label="Active"
+                  name="isActive"
+                  size="sm"
+                  defaultValue={handleActiveStatus(mode)}
+                  labelStyle="text-brand-white"
+                  extendStyle="ml-3 max-xs:mt-0 mt-[5px] h-1"
+                />
+              </div>
+            )}
+            {hasDelete && (
+              <button type="submit" name="_action" value="delete">
+                <IoMdTrash />
+              </button>
+            )}
+            <button type="button" className="cursor-pointer">
+              <IoClose onClick={() => navigate("..", { replace: true })} />
             </button>
-          )}
-          <button type="button" className="cursor-pointer">
-            <IoClose onClick={() => navigate("..", { replace: true })} />
-          </button>
+          </div>
         </div>
+
+        {activeTab && tabNames && onTabChange && (
+          <BoxedTabs
+            tabNames={tabNames}
+            activeTab={activeTab}
+            onTabChange={onTabChange}
+          />
+        )}
       </div>
 
-      <div className="divider my-3 w-full" />
+      <div className={tabNames ? "h-[90px]" : "h-[45px]"}></div>
     </>
   );
 };

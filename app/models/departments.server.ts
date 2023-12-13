@@ -86,8 +86,8 @@ export const upsertDepartment = async (
     });
 
     data.productCategories = {
-      connect: productCategories?.map((category: any) => ({
-        id: category.id,
+      connect: productCategories?.map((categoryId: string) => ({
+        id: parseInt(categoryId),
       })),
     };
 

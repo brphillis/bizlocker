@@ -12,7 +12,6 @@ import PageWrapper from "~/components/Layout/_Website/PageWrapper";
 import { getProductCategories } from "~/models/productCategories.server";
 import ProductFilterSideBar from "~/components/Filter/ProductFilterSideBar";
 import { getProductSubCategories } from "~/models/productSubCategories.server";
-
 import {
   json,
   redirect,
@@ -25,8 +24,8 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
   return [
     { title: data?.promotion.name },
     {
-      name: "description",
-      content: data?.promotion.name,
+      name: data?.promotion.name,
+      content: data?.promotion.metaDescription,
     },
   ];
 };

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import type { ActionReturnTypes } from "~/utility/actionTypes";
-import { HiTrash } from "react-icons/hi2";
 import { tokenAuth } from "~/auth.server";
 import { validateForm } from "~/utility/validate";
 import { STAFF_SESSION_KEY } from "~/session.server";
@@ -12,8 +11,8 @@ import {
   type NewDepartment,
   getDepartment,
   upsertDepartment,
+  type DepartmentWithDetails,
 } from "~/models/departments.server";
-import type { ProductCategory } from "@prisma/client";
 import {
   Form,
   useActionData,
@@ -28,6 +27,8 @@ import {
 } from "@remix-run/node";
 
 import "~/models/productSubCategories.server";
+import BasicMultiSelect from "~/components/Forms/Select/BasicMultiSelect";
+import { getProductCategories } from "~/models/productCategories.server";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
@@ -45,11 +46,8 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
     });
   }
 
-  let department = null;
-
-  if (id !== "add") {
-    department = await getDepartment(id);
-  }
+  const department =
+    id === "add" ? ({} as DepartmentWithDetails) : await getDepartment(id);
 
   if (!department) {
     throw new Response(null, {
@@ -58,7 +56,9 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
     });
   }
 
-  return json(department);
+  const productCategories = await getProductCategories();
+
+  return json({ department, productCategories });
 };
 
 export const action = async ({ request, params }: ActionFunctionArgs) => {
@@ -103,32 +103,14 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 };
 
 const ModifyDepartment = () => {
-  const department = useLoaderData<typeof loader>();
+  const { department, productCategories } = useLoaderData<typeof loader>();
+
   const { validationErrors, success } =
     (useActionData() as ActionReturnTypes) || {};
 
   const navigate = useNavigate();
 
-  const { productCategories } = department || {};
-  const [currentProductCategories, setCurrentProductCategories] = useState<
-    ProductCategory[] | undefined
-  >(productCategories ? productCategories : undefined);
-
   const [loading, setLoading] = useState<boolean>(false);
-
-  const removeProductCategory = (index: number) => {
-    if (
-      currentProductCategories &&
-      index >= 0 &&
-      index < currentProductCategories.length
-    ) {
-      const newArray = [...currentProductCategories];
-      newArray.splice(index, 1);
-      setCurrentProductCategories(newArray);
-    } else {
-      console.error("Invalid index to remove.");
-    }
-  };
 
   useEffect(() => {
     if (success) {
@@ -149,78 +131,49 @@ const ModifyDepartment = () => {
           hasDelete={false}
         />
 
-        <div className="form-control min-w-[400px] gap-3 max-md:gap-0 max-sm:min-w-full">
-          <div className="flex flex-wrap justify-evenly gap-3">
-            <BasicInput
-              label="Name"
-              type="text"
-              name="name"
-              placeholder="Name"
-              defaultValue={department?.name || ""}
-              validationErrors={validationErrors}
-            />
+        <BasicInput
+          label="Name"
+          type="text"
+          name="name"
+          placeholder="Name"
+          customWidth="w-full"
+          defaultValue={department?.name || ""}
+          validationErrors={validationErrors}
+        />
 
-            <div className="w-full sm:w-[215px]"></div>
-          </div>
+        <BasicInput
+          label="Index"
+          type="number"
+          name="index"
+          placeholder="Index"
+          customWidth="w-full"
+          defaultValue={department?.index || 0}
+          validationErrors={validationErrors}
+        />
 
-          <div className="flex flex-wrap justify-evenly gap-3">
-            <BasicInput
-              label="Index"
-              type="number"
-              name="index"
-              placeholder="Index"
-              defaultValue={department?.index || 0}
-              validationErrors={validationErrors}
-            />
-
-            <div className="form-control w-full sm:w-[215px]">
-              <label className="label text-sm">In Navigation</label>
-              <select
-                name="displayInNavigation"
-                className="select w-full text-brand-black/75"
-                defaultValue={department?.displayInNavigation ? "true" : ""}
-              >
-                <option value="true">Yes</option>
-                <option value="">No</option>
-              </select>
-            </div>
-          </div>
-
-          {department &&
-            currentProductCategories &&
-            currentProductCategories?.length > 0 && (
-              <>
-                <div className="divider m-0 w-full" />
-
-                <div className="flex max-h-[400px] w-full flex-col items-center justify-center gap-1 overflow-y-auto">
-                  {currentProductCategories?.map(
-                    ({ name }: ProductCategory, i: number) => {
-                      return (
-                        <div
-                          key={"department_productCategory_" + name}
-                          className="flex w-full items-center justify-between bg-base-300 p-3 text-brand-black"
-                        >
-                          <div>{name}</div>
-                          <HiTrash
-                            size={24}
-                            className="cursor-pointer rounded-full bg-error p-[0.3rem] text-primary-content"
-                            onClick={() => removeProductCategory(i)}
-                          />
-                        </div>
-                      );
-                    }
-                  )}
-                </div>
-              </>
-            )}
-
-          <input
-            hidden
-            readOnly
-            name="productCategories"
-            value={JSON.stringify(currentProductCategories) || ""}
-          />
+        <div className="form-control w-full">
+          <label className="label text-sm">In Navigation</label>
+          <select
+            name="displayInNavigation"
+            className="select w-full text-brand-black/75"
+            defaultValue={department?.displayInNavigation ? "true" : ""}
+          >
+            <option value="true">Yes</option>
+            <option value="">No</option>
+          </select>
         </div>
+
+        {productCategories && (
+          <BasicMultiSelect
+            name="productCategories"
+            label="Categories"
+            customWidth="w-full"
+            selections={productCategories.filter(
+              (e) => !e.departmentId || e.departmentId === department.id
+            )}
+            defaultValues={department?.productCategories}
+          />
+        )}
 
         <BackSubmitButtons
           loading={loading}

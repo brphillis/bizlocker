@@ -13,7 +13,18 @@ import {
   redirect,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
+  type MetaFunction,
 } from "@remix-run/node";
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  return [
+    { title: "CLUTCH | Your Account" },
+    {
+      name: "CLUTCH | Your Account",
+      content: "CLUTCH | Your Account",
+    },
+  ];
+};
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request);

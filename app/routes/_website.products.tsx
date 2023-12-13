@@ -23,12 +23,29 @@ import {
 import type { PromotionWithContent } from "~/models/promotions.server";
 import PromotionBanner from "~/components/Banners/PromotionBanner";
 
-export const meta: MetaFunction<typeof loader> = ({ data }) => {
+export const meta: MetaFunction<typeof loader> = ({ location }) => {
+  const queries = location.search.replace("?", "&").split("&");
+
+  const department = queries
+    .find((e) => e.toLowerCase().includes("department"))
+    ?.split("=")[1];
+  const productCategory = queries
+    .find((e) => e.toLowerCase().includes("productcategory"))
+    ?.split("=")[1];
+  const productSubCategory = queries
+    .find((e) => e.toLowerCase().includes("productsubcategory"))
+    ?.split("=")[1];
+
+  const prioritizedMetaTitle =
+    productSubCategory || productCategory || department || "Products";
+
   return [
-    { title: "CLUTCH | Products" },
     {
-      name: "CLUTCH | Products",
-      content: "CLUTCH | Products",
+      title: `CLUTCH | ${prioritizedMetaTitle}`,
+    },
+    {
+      name: `CLUTCH | ${prioritizedMetaTitle}`,
+      description: `Shop the best in ${prioritizedMetaTitle} at CLUTCH, with store locations all over Australia we can provide next day shipping of our top quality ${prioritizedMetaTitle} straight to your door.`,
     },
   ];
 };
@@ -68,6 +85,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 export const action = async ({ request }: ActionFunctionArgs) => {
   const form = Object.fromEntries(await request.formData());
   const { variantId, quantity } = form;
+
   switch (form._action) {
     default:
       return await addToCart(request, variantId as string, quantity as string);

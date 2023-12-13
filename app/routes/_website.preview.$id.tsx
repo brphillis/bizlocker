@@ -14,7 +14,7 @@ export const meta: MetaFunction = () => {
   return [
     { title: "Page Preview" },
     {
-      name: "description",
+      name: "Page Preview",
       content: "Page Preview",
     },
   ];
