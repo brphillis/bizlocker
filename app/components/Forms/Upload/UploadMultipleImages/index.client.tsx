@@ -1,10 +1,11 @@
-import React, { Suspense, useState } from "react";
+import { type ChangeEvent, Suspense, useState } from "react";
 import type { Image } from "@prisma/client";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import { ConvertToBase64Image, type NewImage } from "~/helpers/fileHelpers";
 import { IoClose } from "react-icons/io5";
 import { findFirstNotNullInputValue } from "~/helpers/formHelpers";
+import Icon from "~/components/Icon";
 
 type ImageUploadSliderProps = {
   defaultImages?: Image[] | null;
@@ -22,9 +23,36 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
     setCurrentImages(updatedImages as Image[]);
   };
 
+  const handleAddImage = async (
+    inputEvent: ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    const convertedImage = await ConvertToBase64Image(inputEvent);
+    if (convertedImage) {
+      const updatedImages = [...(images || [])];
+      updatedImages[index] = convertedImage;
+      if (updatedImages[index]?.altText?.includes(".") || null) {
+        const nameSelector = findFirstNotNullInputValue("name");
+        const titleSelector = findFirstNotNullInputValue("title");
+        const altTextSelector = findFirstNotNullInputValue("altText");
+
+        if (nameSelector) {
+          updatedImages[index].altText = nameSelector.value + " " + index;
+        } else if (titleSelector) {
+          updatedImages[index].altText = titleSelector.value + " " + index;
+        } else if (altTextSelector) {
+          updatedImages[index].altText = altTextSelector.value + " " + index;
+        }
+      }
+      setCurrentImages(updatedImages as Image[]);
+    }
+  };
+
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <div className="text-center">Upload Images</div>
+
+      {/* // FOCUSED IMAGE */}
       {images && images?.some((image) => image) ? (
         <Swiper
           modules={[Navigation]}
@@ -52,7 +80,7 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
                     <img
                       src={href}
                       alt={altText || "image description placeholder"}
-                      className="h-full w-full object-cover"
+                      className="h-full w-full select-none object-cover"
                     />
                   </div>
                 </SwiperSlide>
@@ -63,59 +91,61 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
         </Swiper>
       ) : null}
 
-      <div className="form-control my-6 w-[495px] max-w-[95vw] items-center gap-3 self-center sm:items-start">
-        <div className="flex w-full flex-row justify-center gap-6">
-          {Array.from({ length: 5 }).map((_, i) => {
-            const image = images?.[i] || null;
-            return (
-              <React.Fragment key={i}>
-                <input
-                  type="file"
-                  id={`image${i + 1}`}
-                  accept="image/*"
-                  className="file-input file-input-bordered hidden w-full"
-                  onChange={async (e) => {
-                    const convertedImage = await ConvertToBase64Image(e);
-                    if (convertedImage) {
-                      const updatedImages = [...(images || [])];
-                      updatedImages[i] = convertedImage;
-                      if (updatedImages[i]?.altText?.includes(".") || null) {
-                        const nameSelector = findFirstNotNullInputValue("name");
-                        const titleSelector =
-                          findFirstNotNullInputValue("title");
-                        const altTextSelector =
-                          findFirstNotNullInputValue("altText");
-
-                        if (nameSelector) {
-                          updatedImages[i].altText =
-                            nameSelector.value + " " + i;
-                        } else if (titleSelector) {
-                          updatedImages[i].altText =
-                            titleSelector.value + " " + i;
-                        } else if (altTextSelector) {
-                          updatedImages[i].altText =
-                            altTextSelector.value + " " + i;
-                        }
-                      }
-                      setCurrentImages(updatedImages as Image[]);
-                    }
-                  }}
-                />
-                <label
-                  htmlFor={`image${i + 1}`}
-                  className={`h-4 w-4 cursor-pointer rounded-full ${
-                    image ? "bg-success" : "bg-gray-500"
-                  }
+      {/* BOTTOM IMAGES */}
+      <div className="mt-6 flex flex-wrap justify-center gap-3">
+        {images?.map(({ href, altText }: Image | NewImage, i: number) => {
+          return (
+            <label
+              key={"uploadMultipleImages_BottomImage_" + i}
+              htmlFor={`image${i + 1}`}
+              className={`h-20 w-20 cursor-pointer rounded-full
                   ${
                     activeSlide === i &&
-                    "border-none outline outline-[4px] outline-success"
+                    "scale-[1.1] transition-transform duration-300"
                   }
                   `}
-                />
-              </React.Fragment>
-            );
-          })}
-        </div>
+            >
+              <img
+                src={href || ""}
+                alt={altText || "image description placeholder"}
+                className="h-full w-full object-cover"
+              />
+
+              <input
+                type="file"
+                id={`image${i + 1}`}
+                accept="image/*"
+                className="file-input file-input-bordered hidden h-full w-full"
+                onChange={async (e) => {
+                  handleAddImage(e, i);
+                }}
+              />
+            </label>
+          );
+        })}
+
+        {/*  ADD BUTTON */}
+        <label
+          className="trnasition-colors group flex h-20 w-20 cursor-pointer items-center justify-center border-[1px] border-primary bg-none duration-700 hover:border-none hover:bg-primary"
+          htmlFor="UploadMultipleImages_NewImage"
+        >
+          <input
+            id="UploadMultipleImages_NewImage"
+            type="file"
+            accept="image/*"
+            className="file-input file-input-bordered hidden h-full w-full"
+            onChange={async (e) => {
+              const indexToAdd =
+                images && images.length ? images.length + 1 : 0;
+              handleAddImage(e, indexToAdd);
+            }}
+          />
+          <Icon
+            iconName="IoAdd"
+            size={36}
+            styles="text-primary group-hover:text-brand-white"
+          />
+        </label>
       </div>
 
       <input

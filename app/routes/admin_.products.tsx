@@ -78,6 +78,7 @@ const ManageProducts = () => {
               selections={brands}
             />
           </div>
+
           <div className="flex flex-row justify-end sm:justify-start">
             <button
               type="submit"

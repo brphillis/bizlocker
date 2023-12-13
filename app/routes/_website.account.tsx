@@ -1,9 +1,23 @@
 import { Outlet } from "@remix-run/react";
 import { tokenAuth } from "~/auth.server";
-import { redirect, type LoaderFunctionArgs } from "@remix-run/node";
+import {
+  redirect,
+  type LoaderFunctionArgs,
+  type MetaFunction,
+} from "@remix-run/node";
 import PageWrapper from "~/components/Layout/_Website/PageWrapper";
 import AccountMenuMobile from "~/components/Menus/AccountMenuMobile";
 import AccountMenuDesktop from "~/components/Menus/AccountMenuDesktop";
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  return [
+    { title: "CLUTCH | Your Account" },
+    {
+      name: "CLUTCH | Your Account",
+      content: "CLUTCH | Your Account",
+    },
+  ];
+};
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request);

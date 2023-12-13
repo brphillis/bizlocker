@@ -5,6 +5,17 @@ import type {
   OrderWithDetails,
   OrderItemWithDetails,
 } from "~/models/orders.server";
+import { type MetaFunction } from "@remix-run/node";
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: "CLUTCH | Your Order" },
+    {
+      name: "CLUTCH | Your Order",
+      content: "CLUTCH | Your Order",
+    },
+  ];
+};
 
 const Order = () => {
   const location = useLocation();

@@ -1,7 +1,5 @@
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "~/db.server";
 import { createISODate, getYesterdayDate } from "~/helpers/dateHelpers";
-
-const prisma = new PrismaClient();
 
 export const getSalesToday = async (): Promise<{
   totalSalesToday: number | null;

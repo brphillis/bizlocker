@@ -160,19 +160,19 @@ const ModifyProductSubCategory = () => {
             validationErrors={validationErrors}
           />
 
-          <div className="form-control w-full">
-            <label className="label text-sm">In Navigation</label>
-            <select
-              name="displayInNavigation"
-              className="select w-full text-brand-black/75"
-              defaultValue={
-                productSubCategory.displayInNavigation ? "true" : ""
-              }
-            >
-              <option value="true">Yes</option>
-              <option value="">No</option>
-            </select>
-          </div>
+          <BasicSelect
+            name="displayInNavigation"
+            label="Display In Navigation"
+            selections={[
+              { id: "yes", name: "Yes" },
+              { id: "no", name: "No" },
+            ]}
+            placeholder="Display In Navigation"
+            customWidth="w-full"
+            defaultValue={
+              productSubCategory?.displayInNavigation ? "yes" : "no"
+            }
+          />
 
           <BasicSelect
             name="productCategory"

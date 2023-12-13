@@ -6,7 +6,21 @@ import { ActionAlert } from "~/components/Notifications/Alerts";
 import AuthPageWrapper from "~/components/Layout/AuthPageWrapper";
 import { isValidEmail, isValidPassword } from "~/utility/validate";
 import { NavLink, useActionData, useNavigate } from "@remix-run/react";
-import { json, type ActionFunctionArgs, type MetaFunction } from "@remix-run/node";
+import {
+  json,
+  type ActionFunctionArgs,
+  type MetaFunction,
+} from "@remix-run/node";
+
+export const meta: MetaFunction = ({ data }) => {
+  return [
+    { title: "CLUTCH | Register" },
+    {
+      name: "CLUTCH | Register",
+      content: "CLUTCH | Register",
+    },
+  ];
+};
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const form = Object.fromEntries(await request.formData());
@@ -37,8 +51,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     return json({ validationErrors });
   }
 };
-
-export const meta: MetaFunction = () => [{ title: "Register" }];
 
 export const RegisterPage = () => {
   const navigate = useNavigate();

@@ -6,6 +6,17 @@ import {
 } from "~/models/orders.server";
 import { type ActionFunctionArgs } from "@remix-run/server-runtime";
 import PageWrapper from "~/components/Layout/_Website/PageWrapper";
+import type { MetaFunction } from "@remix-run/node";
+
+export const meta: MetaFunction = ({ data }) => {
+  return [
+    { title: "CLUTCH | Confirm Payment" },
+    {
+      name: "CLUTCH | Confirm Payment",
+      content: "CLUTCH | Confirm Payment",
+    },
+  ];
+};
 
 export const loader = async ({ params }: ActionFunctionArgs) => {
   const paymentCode = params.paymentCode;

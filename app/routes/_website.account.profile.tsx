@@ -13,7 +13,18 @@ import {
   redirect,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
+  type MetaFunction,
 } from "@remix-run/node";
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  return [
+    { title: "CLUTCH | Your Profile" },
+    {
+      name: "CLUTCH | Your Profile",
+      content: "CLUTCH | Your Profile",
+    },
+  ];
+};
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request);
@@ -129,7 +140,7 @@ const Account = () => {
             name="emailAddress"
             type="text"
             placeholder="Email"
-            className="input input-bordered w-full !border-brand-black/10 !bg-brand-white/50"
+            className="input w-full !border-brand-black/10 !bg-brand-white/50"
             defaultValue={email || undefined}
           />
         </div>

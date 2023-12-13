@@ -6,7 +6,21 @@ import AuthContainer from "~/components/Layout/AuthContainer";
 import AuthPageWrapper from "~/components/Layout/AuthPageWrapper";
 import { isValidEmail, isValidPassword } from "~/utility/validate";
 import { googleLogin, verifyLogin } from "~/models/auth/login.server";
-import { json, type ActionFunctionArgs, type MetaFunction } from "@remix-run/node";
+import {
+  json,
+  type ActionFunctionArgs,
+  type MetaFunction,
+} from "@remix-run/node";
+
+export const meta: MetaFunction = ({ data }) => {
+  return [
+    { title: "CLUTCH | Login" },
+    {
+      name: "CLUTCH | Login",
+      content: "CLUTCH | Login",
+    },
+  ];
+};
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const form = Object.fromEntries(await request.formData());
@@ -57,8 +71,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       }
   }
 };
-
-export const meta: MetaFunction = () => [{ title: "Login" }];
 
 export default function LoginPage() {
   const { validationErrors } = (useActionData() as ActionReturnTypes) || {};

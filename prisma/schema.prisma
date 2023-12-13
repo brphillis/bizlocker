@@ -662,6 +662,7 @@ model Promotion {
   discountPercentage Float                @default(0)
   isActive           Boolean              @default(false)
   name               String
+  metaDescription    String?
   products           Product[]            @relation("PromotionToProduct")
   targetGender       Gender?
   tileBlockContent   TileBlockContent[]   @relation("PromotionToTileBlockContent")

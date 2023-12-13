@@ -64,7 +64,6 @@ export const upsertProductCategory = async (
     displayInNavigation,
     isActive,
     department,
-    articleCategories,
     productSubCategories,
   } = categoryData;
 
@@ -81,23 +80,11 @@ export const upsertProductCategory = async (
     };
   }
 
-  if (articleCategories && articleCategories.length > 0) {
-    data.articleCategories = {
-      connect: articleCategories
-        .filter((categoryId: any) => !isNaN(parseInt(categoryId)))
-        .map((categoryId: any) => ({
-          id: parseInt(categoryId),
-        })),
-    };
-  }
-
-  if (productSubCategories && productSubCategories.length > 0) {
+  if (productSubCategories) {
     data.productSubCategories = {
-      connect: productSubCategories
-        .filter((categoryId: any) => !isNaN(parseInt(categoryId)))
-        .map((categoryId: any) => ({
-          id: parseInt(categoryId),
-        })),
+      connect: productSubCategories?.map((categoryId: string) => ({
+        id: parseInt(categoryId),
+      })),
     };
   }
 

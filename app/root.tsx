@@ -45,7 +45,7 @@ export default function App() {
         <Outlet />
         <ScrollRestoration />
         <Scripts />
-        <LiveReload />
+        <LiveReload port={8002} />
       </body>
     </html>
   );
@@ -54,7 +54,7 @@ export default function App() {
 export function ErrorBoundary() {
   const response = useRouteError();
   const navigate = useNavigate();
-
+  console.log("RESPONSE", response);
   const errorCode = (response as any).status;
   const message = (response as any).statusText;
 
@@ -83,7 +83,6 @@ export function ErrorBoundary() {
         </AuthPageWrapper>
         <ScrollRestoration />
         <Scripts />
-        <LiveReload />
       </body>
     </html>
   );

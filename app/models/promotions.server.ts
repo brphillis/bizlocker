@@ -14,6 +14,19 @@ export interface PromotionWithContent extends Promotion {
   products?: ProductWithDetails[] | null;
 }
 
+export type NewPromotion = {
+  parsedBanner: Image;
+  parsedTile: Image;
+  name: string;
+  metaDescription?: string;
+  department: string;
+  products?: string[];
+  discountPercentage: string;
+  gender: string;
+  isActive: boolean;
+  id?: string;
+};
+
 export function getPromotions(
   includeImages?: boolean,
   includeProducts?: boolean
@@ -75,13 +88,14 @@ export const getPromotion = async (
 };
 
 export const upsertPromotion = async (
-  updateData: any
+  updateData: NewPromotion
 ): Promise<{
   createdPromotion: Promotion | null;
   updatedPromotion: Promotion | null;
 }> => {
   const {
     name,
+    metaDescription,
     department,
     discountPercentage,
     gender = "",
@@ -99,6 +113,7 @@ export const upsertPromotion = async (
     const createdPromotion = await prisma.promotion.create({
       data: {
         name,
+        metaDescription,
         department: {
           connect: {
             id: parseInt(department),
@@ -164,6 +179,7 @@ export const upsertPromotion = async (
 
     const data: any = {
       name,
+      metaDescription,
       department: {
         connect: {
           id: parseInt(department),

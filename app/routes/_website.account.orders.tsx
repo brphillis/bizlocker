@@ -5,8 +5,23 @@ import {
   type OrderWithDetails,
   getOrdersCurrentUser,
 } from "~/models/orders.server";
-import { json, redirect, type ActionFunctionArgs } from "@remix-run/node";
+import {
+  json,
+  redirect,
+  type ActionFunctionArgs,
+  type MetaFunction,
+} from "@remix-run/node";
 import { Form, useLoaderData, useNavigate } from "@remix-run/react";
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  return [
+    { title: "CLUTCH | Your Orders" },
+    {
+      name: "CLUTCH | Your Orders",
+      content: "CLUTCH | Your Orders",
+    },
+  ];
+};
 
 export const loader = async ({ request }: ActionFunctionArgs) => {
   const authenticated = await tokenAuth(request);

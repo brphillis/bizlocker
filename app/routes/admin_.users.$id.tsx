@@ -156,122 +156,120 @@ const ModifyUser = () => {
         />
 
         <div className="form-control gap-3">
-          <div className="flex flex-wrap justify-evenly gap-3">
-            <UploadAvatar avatar={user?.avatar} />
+          <UploadAvatar avatar={user?.avatar} />
 
-            <div className="flex flex-row flex-wrap justify-center gap-3">
-              <BasicInput
-                name="email"
-                label="Email Address"
-                placeholder="Email Address"
-                type="text"
-                customWidth="w-full"
-                defaultValue={user?.email || undefined}
-                validationErrors={validationErrors}
-              />
+          <div className="flex flex-row flex-wrap justify-center gap-3">
+            <BasicInput
+              name="email"
+              label="Email Address"
+              placeholder="Email Address"
+              type="text"
+              customWidth="w-full"
+              defaultValue={user?.email || undefined}
+              validationErrors={validationErrors}
+            />
 
-              <BasicInput
-                name="firstName"
-                label="First Name"
-                placeholder="First Name"
-                type="text"
-                customWidth="w-full"
-                defaultValue={user?.userDetails?.firstName || undefined}
-                validationErrors={validationErrors}
-              />
+            <BasicInput
+              name="firstName"
+              label="First Name"
+              placeholder="First Name"
+              type="text"
+              customWidth="w-full"
+              defaultValue={user?.userDetails?.firstName || undefined}
+              validationErrors={validationErrors}
+            />
 
-              <BasicInput
-                name="lastName"
-                label="Last Name"
-                placeholder="Last Name"
-                type="text"
-                customWidth="w-full"
-                defaultValue={user?.userDetails?.lastName || undefined}
-                validationErrors={validationErrors}
-              />
+            <BasicInput
+              name="lastName"
+              label="Last Name"
+              placeholder="Last Name"
+              type="text"
+              customWidth="w-full"
+              defaultValue={user?.userDetails?.lastName || undefined}
+              validationErrors={validationErrors}
+            />
 
-              <PhoneInput
-                name="phoneNumber"
-                label="Phone Number"
-                placeholder="Phone Number"
-                type="text"
-                customWidth="w-full"
-                defaultValue={user?.userDetails?.phoneNumber || undefined}
-                validationErrors={validationErrors}
-              />
+            <PhoneInput
+              name="phoneNumber"
+              label="Phone Number"
+              placeholder="Phone Number"
+              type="text"
+              customWidth="w-full"
+              defaultValue={user?.userDetails?.phoneNumber || undefined}
+              validationErrors={validationErrors}
+            />
 
-              <BasicInput
-                name="dateofbirth"
-                label="Date of Birth"
-                placeholder="Date of Birth"
-                type="date"
-                customWidth="w-full"
-                defaultValue={
-                  user?.userDetails?.dateOfBirth
-                    ? new Date(user?.userDetails?.dateOfBirth)
-                        .toISOString()
-                        .split("T")[0]
-                    : undefined
-                }
-                validationErrors={validationErrors}
-              />
+            <BasicInput
+              name="dateofbirth"
+              label="Date of Birth"
+              placeholder="Date of Birth"
+              type="date"
+              customWidth="w-full"
+              defaultValue={
+                user?.userDetails?.dateOfBirth
+                  ? new Date(user?.userDetails?.dateOfBirth)
+                      .toISOString()
+                      .split("T")[0]
+                  : undefined
+              }
+              validationErrors={validationErrors}
+            />
 
-              <BasicInput
-                name="addressLine1"
-                label="Address Line 1"
-                placeholder="Address Line 1"
-                type="text"
-                customWidth="w-full"
-                defaultValue={user?.address?.addressLine1 || undefined}
-                validationErrors={validationErrors}
-              />
+            <BasicInput
+              name="addressLine1"
+              label="Address Line 1"
+              placeholder="Address Line 1"
+              type="text"
+              customWidth="w-full"
+              defaultValue={user?.address?.addressLine1 || undefined}
+              validationErrors={validationErrors}
+            />
 
-              <BasicInput
-                name="addressLine2"
-                label="Address Line 2"
-                placeholder="Address Line 2"
-                type="text"
-                customWidth="w-full"
-                defaultValue={user?.address?.addressLine2 || undefined}
-                validationErrors={validationErrors}
-              />
+            <BasicInput
+              name="addressLine2"
+              label="Address Line 2"
+              placeholder="Address Line 2"
+              type="text"
+              customWidth="w-full"
+              defaultValue={user?.address?.addressLine2 || undefined}
+              validationErrors={validationErrors}
+            />
 
-              <BasicInput
-                name="suburb"
-                label="Suburb"
-                placeholder="Suburb"
-                type="text"
-                customWidth="w-full"
-                defaultValue={user?.address?.suburb || undefined}
-                validationErrors={validationErrors}
-              />
+            <BasicInput
+              name="suburb"
+              label="Suburb"
+              placeholder="Suburb"
+              type="text"
+              customWidth="w-full"
+              defaultValue={user?.address?.suburb || undefined}
+              validationErrors={validationErrors}
+            />
 
-              <BasicInput
-                name="postcode"
-                label="PostCode"
-                placeholder="PostCode"
-                type="text"
-                customWidth="w-full"
-                defaultValue={user?.address?.postcode || undefined}
-                validationErrors={validationErrors}
-              />
+            <BasicInput
+              name="postcode"
+              label="PostCode"
+              placeholder="PostCode"
+              type="text"
+              customWidth="w-full"
+              defaultValue={user?.address?.postcode || undefined}
+              validationErrors={validationErrors}
+            />
 
-              <BasicInput
-                name="state"
-                label="State"
-                placeholder="State"
-                type="text"
-                customWidth="w-full"
-                defaultValue={user?.address?.state || undefined}
-                validationErrors={validationErrors}
-              />
+            <BasicInput
+              name="state"
+              label="State"
+              placeholder="State"
+              type="text"
+              customWidth="w-full"
+              defaultValue={user?.address?.state || undefined}
+              validationErrors={validationErrors}
+            />
 
-              <SelectCountry
-                defaultValue={user?.address?.country}
-                validationErrors={validationErrors}
-                styles="!w-full"
-              />
-            </div>
+            <SelectCountry
+              defaultValue={user?.address?.country}
+              validationErrors={validationErrors}
+              styles="!w-full"
+            />
           </div>
         </div>
         <BackSubmitButtons
