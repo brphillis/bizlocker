@@ -1,29 +1,27 @@
+import { useEffect, useState } from "react";
 import type { BlockOptions } from "@prisma/client";
-import type { BlockContentType, BlockName } from "~/utility/blockMaster/types";
+import type { BlockName } from "~/utility/blockMaster/types";
 import { blockMaster } from "~/utility/blockMaster/blockMaster";
-import TitleOptions from "./Title";
-import StyleOptions from "./Style";
-import ShortTextOptions from "./ShortText";
-import BackgroundOptions from "./Background";
-import BorderOptions from "./Border";
-import SortAndOrderOptions from "./SortAndOrder";
-import SizeOptions from "./Size";
-import FlipAndRotateOptions from "./FlipAndRotate";
-import CountOptions from "./Count";
-import MarginAndPaddingOptions from "./MarginAndPadding";
-import MotionOptions from "./Motion";
-import ColumnsAndRowsOptions from "./ColumnsAndRows";
-import ItemColorOptions from "./ItemColors";
-import ItemFilterOptions from "./ItemFilters";
-import LinkOptions from "./Links";
-import ItemTitleOptions from "./ItemTitles";
-import ItemBorderOptions from "./ItemBorders";
+import TitleOptions from "./Options/Title";
+import StyleOptions from "./Options/Style";
+import ShortTextOptions from "./Options/ShortText";
+import BackgroundOptions from "./Options/Background";
+import BorderOptions from "./Options/Border";
+import SortAndOrderOptions from "./Options/SortAndOrder";
+import SizeOptions from "./Options/Size";
+import FlipAndRotateOptions from "./Options/FlipAndRotate";
+import CountOptions from "./Options/Count";
+import MarginAndPaddingOptions from "./Options/MarginAndPadding";
+import MotionOptions from "./Options/Motion";
+import ColumnsAndRowsOptions from "./Options/ColumnsAndRows";
+import ItemOptions from "./ItemOptions";
+import BoxedTabs from "~/components/Tabs/BoxedTabs";
+import { blockHasMaxContentItems } from "~/helpers/blockContentHelpers";
 
 type Props = {
   selectedItems: ContentSelection[];
   colors: string[];
   selectedBlock?: BlockName;
-  contentType?: BlockContentType;
   defaultValues?: BlockOptions;
 };
 
@@ -31,21 +29,44 @@ const BlockOptionsModule = ({
   selectedBlock,
   defaultValues,
   selectedItems,
-  contentType,
   colors,
 }: Props) => {
   const selectedBlockOptions = blockMaster.find(
     (e) => e.name === selectedBlock
   )?.options;
 
+  const [tabNames, setTabNames] = useState<string[]>(["block"]);
+  const [activeTab, setActiveTab] = useState<string>(tabNames?.[0]);
+
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+  };
+
+  useEffect(() => {
+    if (selectedBlock && blockHasMaxContentItems(selectedBlock)) {
+      setTabNames(["block", "items"]);
+    } else {
+      setTabNames(["block"]);
+    }
+  }, [selectedBlock]);
+
   return (
     <>
       {selectedBlock && (
-        <div className="w-full pb-3">
-          <p className="mb-3 px-1 pt-3 font-semibold text-brand-white">
-            Options
-          </p>
-          <div className="flex flex-wrap gap-6">
+        <div className="!min-h-[300px] w-full pb-3">
+          <div className="mx-auto mb-6 block max-w-[400px] rounded-sm">
+            <BoxedTabs
+              tabNames={tabNames}
+              activeTab={activeTab}
+              onTabChange={handleTabChange}
+            />
+          </div>
+
+          <div
+            className={`flex flex-wrap gap-6 ${
+              activeTab !== "block" && "hidden"
+            }`}
+          >
             <StyleOptions
               defaultValues={defaultValues}
               selectedBlockOptions={selectedBlockOptions}
@@ -53,7 +74,6 @@ const BlockOptionsModule = ({
 
             <TitleOptions
               selectedBlock={selectedBlock}
-              colors={colors}
               defaultValues={defaultValues}
               selectedBlockOptions={selectedBlockOptions}
             />
@@ -66,13 +86,11 @@ const BlockOptionsModule = ({
             />
 
             <BackgroundOptions
-              colors={colors}
               defaultValues={defaultValues}
               selectedBlockOptions={selectedBlockOptions}
             />
 
             <BorderOptions
-              colors={colors}
               defaultValues={defaultValues}
               selectedBlockOptions={selectedBlockOptions}
             />
@@ -113,37 +131,17 @@ const BlockOptionsModule = ({
               defaultValues={defaultValues}
               selectedBlockOptions={selectedBlockOptions}
             />
+          </div>
 
-            <ItemBorderOptions
-              colors={colors}
-              defaultValues={defaultValues}
-              selectedBlockOptions={selectedBlockOptions}
-            />
-
-            <ItemColorOptions
-              colors={colors}
-              defaultValues={defaultValues}
-              selectedBlockOptions={selectedBlockOptions}
+          <div
+            className={`flex flex-wrap gap-6 ${
+              activeTab !== "items" && "hidden"
+            }`}
+          >
+            <ItemOptions
               selectedItems={selectedItems}
-            />
-
-            <ItemFilterOptions
-              defaultValues={defaultValues}
               selectedBlockOptions={selectedBlockOptions}
-              selectedItems={selectedItems}
-            />
-
-            <ItemTitleOptions
               defaultValues={defaultValues}
-              selectedBlockOptions={selectedBlockOptions}
-              selectedItems={selectedItems}
-            />
-
-            <LinkOptions
-              defaultValues={defaultValues}
-              selectedBlockOptions={selectedBlockOptions}
-              selectedItems={selectedItems}
-              contentType={contentType}
             />
           </div>
         </div>

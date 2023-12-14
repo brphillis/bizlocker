@@ -14,6 +14,10 @@ const BoxedTabs = (props: Props) => {
     props.onTabChange(activeTab);
   }, [activeTab, props]);
 
+  useEffect(() => {
+    setActiveTab(props.tabNames[0]);
+  }, [props.tabNames]);
+
   return (
     <div
       id="BoxTabContainer"

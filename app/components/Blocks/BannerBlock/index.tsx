@@ -6,7 +6,7 @@ import {
   buildContentImageFromContent,
   determineSingleContentType,
 } from "~/helpers/blockContentHelpers";
-import { generateColor } from "~/utility/colors";
+import { getThemeColorValueByName } from "~/utility/colors";
 
 type Props = {
   content: BlockContent;
@@ -26,7 +26,7 @@ const BannerBlock = ({ content, options: ArrayOptions }: Props) => {
     borderSize,
     margin,
     padding,
-    link1,
+    primaryLink,
     size,
     title,
     titleColor,
@@ -48,7 +48,7 @@ const BannerBlock = ({ content, options: ArrayOptions }: Props) => {
       contentType!,
       content,
       "bannerImage",
-      link1 as string
+      primaryLink as string
     );
     name = imageProps.name;
     link = imageProps.link;
@@ -57,23 +57,14 @@ const BannerBlock = ({ content, options: ArrayOptions }: Props) => {
 
   const imageStyle = {
     cursor: link ? "pointer" : "auto",
-    borderRadius: borderRadius || "unset",
-    border:
-      borderSize && borderColor
-        ? `${borderSize} solid ${generateColor(borderColor)}`
-        : "unset",
   };
 
   return (
     <div
-      className={`relative max-w-[100vw] overflow-visible sm:w-max ${margin} ${padding} ${borderDisplay}`}
-      style={{
-        borderRadius: borderRadius || "unset",
-      }}
+      className={`relative max-w-[100vw] overflow-visible sm:w-max ${margin} ${padding} ${borderDisplay} ${borderRadius}`}
     >
       <div
-        className="absolute left-[50%] top-0 z-0 h-full w-screen translate-x-[-50%]"
-        style={{ backgroundColor: generateColor(backgroundColorSecondary) }}
+        className={`absolute left-[50%] top-0 z-0 h-full w-screen translate-x-[-50%] ${backgroundColorSecondary}`}
       ></div>
 
       {size && ["small", undefined].includes(size) && imageSrc && (
@@ -82,6 +73,7 @@ const BannerBlock = ({ content, options: ArrayOptions }: Props) => {
           src={imageSrc}
           alt={name}
           className={`relative mx-auto block h-[146px] w-full max-w-[1280px] overflow-hidden object-cover max-xl:h-[124px] max-lg:h-[100px] max-md:h-[88px]
+          ${borderSize} ${borderColor} ${borderRadius}
           ${backgroundColorSecondary ? "h-[170px] py-3" : " "}`}
           style={imageStyle}
         />
@@ -90,15 +82,19 @@ const BannerBlock = ({ content, options: ArrayOptions }: Props) => {
       {size && ["small", undefined].includes(size) && !imageSrc && (
         <div
           onClick={() => link && navigate(link)}
-          className="relative mx-auto flex h-[146px] w-[1280px] max-w-full select-none items-center justify-center max-xl:h-[124px] max-lg:h-[100px] max-md:h-[88px]"
+          className={`relative mx-auto flex h-[146px] w-[1280px] max-w-full select-none items-center justify-center max-xl:h-[124px] max-lg:h-[100px] max-md:h-[88px]
+          ${borderSize} ${borderColor} ${borderRadius}
+          `}
           style={imageStyle}
         >
           <PatternBackground
             name={backgroundPatternName as BackgroundPatternName}
-            backgroundColor={generateColor(backgroundColor)}
+            backgroundColor={
+              backgroundColor ? getThemeColorValueByName(backgroundColor) : ""
+            }
             patternColor={
               backgroundPatternColor
-                ? generateColor(backgroundPatternColor)
+                ? getThemeColorValueByName(backgroundPatternColor)
                 : ""
             }
             patternOpacity={backgroundPatternOpacity || 0.5}
@@ -106,16 +102,10 @@ const BannerBlock = ({ content, options: ArrayOptions }: Props) => {
             brightness={backgroundBrightness || undefined}
           />
           <div className="relative flex flex-col items-center">
-            <h1
-              className="text-4xl max-md:text-2xl"
-              style={{ color: generateColor(titleColor) }}
-            >
+            <h1 className={`text-4xl max-md:text-2xl ${titleColor}`}>
               {title}
             </h1>
-            <h2
-              className="text-2xl max-md:text-lg"
-              style={{ color: generateColor(shortTextColor) }}
-            >
+            <h2 className={`text-2xl max-md:text-lg ${shortTextColor}`}>
               {shortText}
             </h2>
           </div>
@@ -128,6 +118,7 @@ const BannerBlock = ({ content, options: ArrayOptions }: Props) => {
           src={imageSrc}
           alt={name}
           className={`relative mx-auto block h-[219px] w-full max-w-[1280px] object-cover max-xl:h-[186px] max-lg:h-[125px] max-md:h-[132px]
+          ${borderSize} ${borderColor} ${borderRadius}
           ${backgroundColorSecondary ? "h-[243px] py-3" : " "}`}
           style={imageStyle}
         />
@@ -136,15 +127,18 @@ const BannerBlock = ({ content, options: ArrayOptions }: Props) => {
       {size && ["medium", undefined].includes(size) && !imageSrc && (
         <div
           onClick={() => link && navigate(link)}
-          className="relative mx-auto flex h-[219px] w-[1280px] max-w-full select-none items-center justify-center max-xl:h-[186px] max-lg:h-[125px] max-md:h-[132px]"
+          className={`relative mx-auto flex h-[219px] w-[1280px] max-w-full select-none items-center justify-center max-xl:h-[186px] max-lg:h-[125px] max-md:h-[132px]
+          ${borderSize} ${borderColor} ${borderRadius}`}
           style={imageStyle}
         >
           <PatternBackground
             name={backgroundPatternName as BackgroundPatternName}
-            backgroundColor={generateColor(backgroundColor)}
+            backgroundColor={
+              backgroundColor ? getThemeColorValueByName(backgroundColor) : ""
+            }
             patternColor={
               backgroundPatternColor
-                ? generateColor(backgroundPatternColor)
+                ? getThemeColorValueByName(backgroundPatternColor)
                 : ""
             }
             patternOpacity={backgroundPatternOpacity || 0.5}
@@ -152,16 +146,10 @@ const BannerBlock = ({ content, options: ArrayOptions }: Props) => {
             brightness={backgroundBrightness || undefined}
           />
           <div className="relative flex flex-col items-center gap-2 max-md:gap-1">
-            <h1
-              className="text-6xl max-md:text-4xl"
-              style={{ color: generateColor(titleColor) }}
-            >
+            <h1 className={`text-6xl max-md:text-4xl ${titleColor}`}>
               {title}
             </h1>
-            <h2
-              className="text-3xl max-md:text-lg"
-              style={{ color: generateColor(shortTextColor) }}
-            >
+            <h2 className={`text-3xl max-md:text-lg ${shortTextColor}`}>
               {shortText}
             </h2>
           </div>
@@ -173,7 +161,8 @@ const BannerBlock = ({ content, options: ArrayOptions }: Props) => {
           onClick={() => link && navigate(link)}
           src={imageSrc}
           alt={name}
-          className="relative h-[292px] w-[1400px] max-w-[1280px] object-cover max-xl:h-[248px] max-lg:h-[224px] max-md:h-[196px]"
+          className={`relative h-[292px] w-[1400px] max-w-[1280px] object-cover max-xl:h-[248px] max-lg:h-[224px] max-md:h-[196px] 
+          ${borderSize} ${borderColor} ${borderRadius}`}
           style={imageStyle}
         />
       )}
@@ -181,15 +170,18 @@ const BannerBlock = ({ content, options: ArrayOptions }: Props) => {
       {size && ["large", "native", undefined].includes(size) && !imageSrc && (
         <div
           onClick={() => link && navigate(link)}
-          className="relative mx-auto flex h-[292px] w-[1400px] max-w-full select-none items-center justify-center max-xl:h-[248px] max-lg:h-[224px] max-md:h-[196px]"
+          className={`relative mx-auto flex h-[292px] w-[1400px] max-w-full select-none items-center justify-center max-xl:h-[248px] max-lg:h-[224px] max-md:h-[196px]
+          ${borderSize} ${borderColor} ${borderRadius}`}
           style={imageStyle}
         >
           <PatternBackground
             name={backgroundPatternName as BackgroundPatternName}
-            backgroundColor={generateColor(backgroundColor)}
+            backgroundColor={
+              backgroundColor ? getThemeColorValueByName(backgroundColor) : ""
+            }
             patternColor={
               backgroundPatternColor
-                ? generateColor(backgroundPatternColor)
+                ? getThemeColorValueByName(backgroundPatternColor)
                 : ""
             }
             patternOpacity={backgroundPatternOpacity || 0.5}
@@ -198,16 +190,10 @@ const BannerBlock = ({ content, options: ArrayOptions }: Props) => {
           />
 
           <div className="relative flex flex-col items-center gap-3 max-md:gap-2">
-            <h1
-              className="text-7xl max-md:text-4xl"
-              style={{ color: generateColor(titleColor) }}
-            >
+            <h1 className={`text-7xl max-md:text-4xl ${titleColor}`}>
               {title}
             </h1>
-            <h2
-              className="text-4xl max-md:text-lg"
-              style={{ color: generateColor(shortTextColor) }}
-            >
+            <h2 className={`text-4xl max-md:text-lg ${shortTextColor}`}>
               {shortText}
             </h2>
           </div>
@@ -219,7 +205,8 @@ const BannerBlock = ({ content, options: ArrayOptions }: Props) => {
           onClick={() => link && navigate(link)}
           src={imageSrc}
           alt={name}
-          className={`relative object-cover shadow-md max-xl:h-[248px] max-lg:h-[224px] max-md:h-[148px]
+          className={`relative object-cover shadow-md max-xl:h-[248px] max-lg:h-[224px] max-md:h-[148px] 
+          ${borderSize} ${borderColor} ${borderRadius}
           ${backgroundColorSecondary ? "h-[272px] py-3" : " "}
           `}
           style={imageStyle}

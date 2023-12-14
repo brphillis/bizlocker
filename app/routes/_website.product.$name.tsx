@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import parse from "html-react-parser";
 import Spinner from "~/components/Spinner";
-import { generateColor } from "~/utility/colors";
 import { getBrand } from "~/models/brands.server";
 import { parseOptions } from "~/utility/parseOptions";
 import {
@@ -31,6 +30,7 @@ import {
   getAvailableSizes,
 } from "~/helpers/productHelpers";
 import type { Image } from "~/models/images.server";
+import { generateColor } from "~/utility/colors";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   return [

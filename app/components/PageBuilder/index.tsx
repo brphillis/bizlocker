@@ -238,7 +238,6 @@ const PageBuilder = ({
             selectedBlock={selectedBlock}
             defaultValues={blocks?.[editingIndex]?.blockOptions[0]}
             selectedItems={selectedItems}
-            contentType={contentType}
             colors={colors}
           />
 

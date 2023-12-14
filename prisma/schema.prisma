@@ -89,8 +89,8 @@ model BlockOptions {
   autoplay                          String?
   backgroundBrightness              Float?
   backgroundBrightnessSecondary     Float?
-  backgroundColor                   Color?
-  backgroundColorSecondary          Color?
+  backgroundColor                   String?
+  backgroundColorSecondary          String?
   backgroundPatternColor            String?
   backgroundPatternColorSecondary   String?
   backgroundPatternName             String?
@@ -101,46 +101,38 @@ model BlockOptions {
   backgroundPatternSizeSecondary    Int?
   backgroundWidth                   String?
   backgroundWidthSecondary          String?
-  block                             Block?     @relation("BlockToBlockOptions", fields: [blockId], references: [id])
-  blockId                           String?
-  borderColor                       Color?
+  block                             Block      @relation("BlockToBlockOptions", fields: [blockId], references: [id])
+  blockId                           String
+  borderColor                       String?
   borderDisplay                     String?
   borderRadius                      String?
   borderSize                        String?
-  color1                            String?
-  color2                            String?
-  color3                            String?
-  color4                            String?
-  color5                            String?
-  color6                            String?
-  colorSecondary1                   String?
-  colorSecondary2                   String?
-  colorSecondary3                   String?
-  colorSecondary4                   String?
-  colorSecondary5                   String?
-  colorSecondary6                   String?
   columns                           Int?
   columnsMobile                     Int?
   count                             Int?
-  filter1                           String?
-  filter2                           String?
-  filter3                           String?
-  filter4                           String?
-  filter5                           String?
-  filter6                           String?
   flipX                             String?
-  link1                             String?
-  link2                             String?
-  link3                             String?
-  link4                             String?
-  link5                             String?
-  link6                             String?
+  itemBorderColors                  String[]
+  itemBorderDisplays                String[]
+  itemBorderRadius                  String[]
+  itemBorderSizes                   String[]
+  itemColors                        String[]
+  itemBackgroundColors              String[]
+  itemSecondaryBackgroundColors     String[]
+  itemFilters                       String[]
+  itemLinks                         String[]
+  itemSecondaryColors               String[]
+  itemTitles                        String[]
+  itemTitleColors                   String[]
   margin                            String?
   order                             Int?
   padding                           String?
+  primaryColor                      String?
+  primaryLink                       String?
   rows                              Int?
+  secondaryColor                    String?
+  secondaryLink                     String?
   shortText                         String?
-  shortTextColor                    Color?
+  shortTextColor                    String?
   size                              String?
   sizeMobile                        String?
   sortBy                            SortBy?
@@ -148,22 +140,10 @@ model BlockOptions {
   speed                             String?
   style                             String?
   title                             String?
-  title1                            String?
-  title2                            String?
-  title3                            String?
-  title4                            String?
-  title5                            String?
-  title6                            String?
-  titleColor                        Color?
-  itemColor                         String?
-  itemSecondaryColor                String?
   titleAlign                        String?
+  titleColor                        String?
   titleSize                         String?
   titleWeight                       String?
-  itemBorderDisplay                 String?
-  itemBorderSize                    String?
-  itemBorderColor                   String?
-  itemBorderRadius                  String?
 
   createdAt String @default("2023-12-07T15:30:00Z")
   updatedAt String @default("2023-12-07T15:30:00Z")

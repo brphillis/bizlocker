@@ -1,5 +1,5 @@
 import { useNavigate } from "@remix-run/react";
-import { generateColor } from "~/utility/colors";
+import { getThemeColorValueByName } from "~/utility/colors";
 import type { BlockContent } from "~/models/blocks.server";
 import type { BlockOptions, Product } from "@prisma/client";
 import PatternBackground from "~/components/Layout/PatternBackground";
@@ -35,8 +35,8 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
     borderSize,
     borderRadius,
     padding,
-    link1,
-    link2,
+    primaryLink,
+    secondaryLink,
   } = options || {};
 
   const product = content.product as ProductWithDetails;
@@ -71,10 +71,14 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
     >
       <PatternBackground
         name={backgroundPatternNameSecondary as BackgroundPatternName}
-        backgroundColor={generateColor(backgroundColorSecondary)}
+        backgroundColor={
+          backgroundColorSecondary
+            ? getThemeColorValueByName(backgroundColorSecondary)
+            : ""
+        }
         patternColor={
           backgroundPatternColorSecondary
-            ? generateColor(backgroundPatternColorSecondary)
+            ? getThemeColorValueByName(backgroundPatternColorSecondary)
             : ""
         }
         patternOpacity={backgroundPatternOpacitySecondary || 0.5}
@@ -84,34 +88,23 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
       />
 
       <div
-        className={`relative flex items-center bg-white shadow-sm ${borderDisplay} ${flipX}`}
-        style={{
-          backgroundColor: generateColor(backgroundColor),
-          border:
-            borderSize && borderColor
-              ? borderSize + " solid " + generateColor(borderColor)
-              : "unset",
-          borderRadius: borderRadius ? borderRadius : "unset",
-        }}
+        className={`relative flex items-center bg-white shadow-sm 
+        ${borderDisplay} ${borderRadius} ${flipX} ${backgroundColor} ${borderSize} ${borderColor}`}
       >
         <div className="container relative mx-auto flex px-20 py-12 max-xl:px-16 max-lg:px-12 max-md:px-3 max-md:py-6">
           <div className="relative mr-16 flex w-[60%] flex-col gap-[20%] max-md:w-4/5 max-md:justify-between max-md:gap-16 max-sm:mr-0">
             <div>
               <h1
-                className={`flex max-w-[500px] select-none flex-col text-7xl font-bold uppercase leading-none max-md:max-w-[200px] max-md:text-4xl max-md:leading-10 ${flipX}`}
-                style={{
-                  color: generateColor(titleColor),
-                }}
+                className={`flex max-w-[500px] select-none flex-col text-7xl font-bold uppercase leading-none max-md:max-w-[200px] max-md:text-4xl max-md:leading-10 
+                ${flipX} ${titleColor}`}
               >
                 {title}
               </h1>
 
               {lowestPrice && (
                 <h2
-                  className={`mt-6 flex max-w-[500px] flex-col text-4xl font-bold uppercase leading-none max-md:mt-3 max-md:max-w-[250px] max-md:text-2xl ${flipX}`}
-                  style={{
-                    color: generateColor(titleColor),
-                  }}
+                  className={`mt-6 flex max-w-[500px] flex-col text-4xl font-bold uppercase leading-none max-md:mt-3 max-md:max-w-[250px] max-md:text-2xl 
+                  ${flipX} ${titleColor}`}
                 >
                   From ${parseFloat(lowestPrice).toFixed(2)}
                 </h2>
@@ -120,15 +113,12 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
 
             <div className="flex flex-col items-start">
               <p
-                className={`select-none text-lg max-md:max-w-[220px] max-md:text-sm ${flipX}`}
-                style={{
-                  color: generateColor(shortTextColor),
-                }}
+                className={`select-none text-lg max-md:max-w-[220px] max-md:text-sm ${flipX} ${shortTextColor}`}
               >
                 {shortText}
               </p>
               <div className={`mt-8 flex ${flipX}`}>
-                {(contentType === "product" || link1) && (
+                {(contentType === "product" || primaryLink) && (
                   <div
                     onClick={() =>
                       navigate(
@@ -136,7 +126,7 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
                           ? `/product/SlackSki%20Jacket?id=${
                               (content.product as Product).id
                             }`
-                          : (link1 as string)
+                          : (primaryLink as string)
                       )
                     }
                     className="text-md mr-4 cursor-pointer rounded-sm border-2 border-transparent bg-primary px-4 py-2 uppercase text-white hover:bg-primary"
@@ -144,10 +134,10 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
                     Buy Now
                   </div>
                 )}
-                {link2 && (
+                {secondaryLink && (
                   <div
                     className="text-md cursor-pointer rounded-sm border-2 border-primary bg-transparent px-4 py-2 uppercase text-primary hover:bg-primary hover:text-white dark:text-white"
-                    onClick={() => navigate(link2 as string)}
+                    onClick={() => navigate(secondaryLink as string)}
                   >
                     Read more
                   </div>

@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+const colors = require('./theme');
 
 export default {
   content: ["./app/**/*.{js,jsx,ts,tsx}"],
@@ -9,12 +10,7 @@ export default {
       notosans: ["Noto Sans", "sans-serif"],
     },
     extend: {
-      colors: {
-        "brand-black": "#232227",
-        "brand-white": "#F0F0F0",
-        "brand-red": "#FF3A20",
-        "primary-dark": "#2563EB",
-      },
+      colors: colors,
       scale: {
         "-100": "-1",
       },
@@ -23,21 +19,8 @@ export default {
   plugins: [require("daisyui"), require("tailwindcss-bg-patterns")],
   daisyui: {
     themes: [
-      // prettier-ignore
       {
-        "brand-light": {
-          "primary": "#3B82F6",
-          "--primary-dark": "#2563EB",
-          "primary-content": "#F0F0F0",
-          "secondary": "#A78BFA",
-          "secondary-content": "#FFFFFF",
-          "base-100": "#F0F0F0",
-          "base-200": "#e0e0e0",
-          "base-300": "#c4c4c4",
-          "base-content": "#232227",
-          "--brand-black": "#232227",
-          "--brand-white": "#F0F0F0",
-        },
+        "brand-light": colors,
       },
     ],
   },

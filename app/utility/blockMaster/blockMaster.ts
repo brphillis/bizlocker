@@ -1,3 +1,5 @@
+import type { BlockOptions } from "@prisma/client";
+import type { BlockContentType, BlockName } from "./types";
 import TileBlock from "~/components/Blocks/TileBlock";
 import BannerBlock from "~/components/Blocks/BannerBlock";
 import TextBlock from "~/components/Blocks/TextBlock";
@@ -5,8 +7,6 @@ import HeroBlock from "~/components/Blocks/HeroBlock";
 import ProductBlock from "~/components/Blocks/ProductBlock";
 import ArticleBlock from "~/components/Blocks/ArticleBlock";
 import MapBlock from "~/components/Blocks/MapBlock";
-import type { BlockOptions } from "@prisma/client";
-import type { BlockContentType, BlockName } from "./types";
 
 export type BlockMasterOptions = TransformToOptionalBooleans<BlockOptions>;
 
@@ -38,7 +38,6 @@ export const blockMaster: BlockMaster[] = [
       borderDisplay: true,
       borderRadius: true,
       borderSize: true,
-      link1: true,
       margin: true,
       padding: true,
       shortText: true,
@@ -70,51 +69,25 @@ export const blockMaster: BlockMaster[] = [
     hasMultipleContent: true,
     maxContentItems: 6,
     options: {
-      backgroundColor: true,
       backgroundBrightness: true,
+      backgroundColor: true,
       borderRadius: true,
-      color5: true,
-      color4: true,
-      color1: true,
-      color6: true,
-      color3: true,
-      color2: true,
-      colorSecondary5: true,
-      colorSecondary4: true,
-      colorSecondary1: true,
-      colorSecondary6: true,
-      colorSecondary3: true,
-      colorSecondary2: true,
       columns: true,
       columnsMobile: true,
-      filter5: true,
-      filter4: true,
-      filter1: true,
-      filter6: true,
-      filter3: true,
-      filter2: true,
-      link5: true,
-      link4: true,
-      link1: true,
-      link6: true,
-      link3: true,
-      link2: true,
       margin: true,
       padding: true,
-      backgroundPatternColor: true,
-      backgroundWidth: true,
       backgroundPatternName: true,
       backgroundPatternOpacity: true,
       backgroundPatternSize: true,
-      borderColor: true,
+      backgroundPatternColor: true,
+      backgroundWidth: true,
       borderDisplay: true,
-      borderSize: true,
-      title1: true,
-      title2: true,
-      title3: true,
-      title4: true,
-      title5: true,
-      title6: true,
+      itemFilters: true,
+      itemColors: true,
+      itemLinks: true,
+      itemTitles: true,
+      itemTitleColors: true,
+      itemBackgroundColors: true,
     },
     addOns: ["icon"],
     content: {
@@ -157,8 +130,6 @@ export const blockMaster: BlockMaster[] = [
       borderRadius: true,
       borderSize: true,
       flipX: true,
-      link1: true,
-      link2: true,
       margin: true,
       padding: true,
       shortText: true,
@@ -194,11 +165,11 @@ export const blockMaster: BlockMaster[] = [
       borderDisplay: true,
       borderRadius: true,
       borderSize: true,
-      itemBorderColor: true,
-      itemBorderDisplay: true,
+      itemBorderColors: true,
+      itemBorderDisplays: true,
       itemBorderRadius: true,
-      itemBorderSize: true,
-      itemColor: true,
+      itemBorderSizes: true,
+      primaryColor: true,
       margin: true,
       size: true,
       style: true,

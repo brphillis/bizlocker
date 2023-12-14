@@ -246,14 +246,12 @@ const updateOrCreateBlockOptions = async (
 ): Promise<BlockOptions> => {
   // we set unndefined keys to null so the enum values can be removed/disconnected
   const sanitizedBlockOptions: BlockOptions = { ...blockOptions };
-
   for (const key in sanitizedBlockOptions) {
     if (
       sanitizedBlockOptions.hasOwnProperty(key) &&
       sanitizedBlockOptions[key as keyof BlockOptions] === undefined
     ) {
-      // @ts-ignore
-      sanitizedBlockOptions[key as keyof BlockOptions] = null;
+      delete sanitizedBlockOptions[key as keyof BlockOptions];
     }
   }
 
@@ -269,9 +267,15 @@ const updateOrCreateBlockOptions = async (
       data: sanitizedBlockOptions,
     });
   } else {
-    return await prisma.blockOptions.create({
-      // @ts-ignore
-      data: { block: { connect: { id: blockId } }, ...sanitizedBlockOptions },
+    const newBlockOptions = await prisma.blockOptions.create({
+      data: {
+        block: { connect: { id: blockId } },
+      },
+    });
+
+    return await prisma.blockOptions.update({
+      where: { id: newBlockOptions.id },
+      data: sanitizedBlockOptions,
     });
   }
 };
@@ -282,6 +286,7 @@ export const updatePageBlock = async (
   blockData: NewBlockData,
   blockOptions?: BlockOptions
 ): Promise<number | Page> => {
+  console.log("OPTIONS", blockOptions);
   const { blockName, itemIndex, contentData } = blockData;
 
   const previewPage = await prisma.previewPage.findUnique({
@@ -795,6 +800,15 @@ export const removeBlock = async (
     });
   }
 
+  // Delete the BlockOptions
+  if (blockOptionsIds) {
+    blockOptionsIds.forEach(async (e: string) => {
+      await prisma.blockOptions.delete({
+        where: { id: e },
+      });
+    });
+  }
+
   // Delete the blockType eg: BannerBlock
   if (blockTypeId) {
     const deleteBlockType = prisma[`${blockName}Block`].delete as (
@@ -803,15 +817,6 @@ export const removeBlock = async (
 
     await deleteBlockType({
       where: { id: blockTypeId },
-    });
-  }
-
-  // Delete the BlockOptions
-  if (blockOptionsIds) {
-    blockOptionsIds.forEach(async (e: string) => {
-      await prisma.blockOptions.delete({
-        where: { id: e },
-      });
     });
   }
 
