@@ -27,6 +27,8 @@ import ArticleBlockOptions from "./Options/ArticleBlockOptions";
 import BackSubmitButtons from "../Forms/Buttons/BackSubmitButtons";
 import BlockOptionsModule from "./BlockOptions";
 import TextBlockContentModule from "./Content/TextBlockContent";
+import BoxedTabs from "../Tabs/BoxedTabs";
+import { blockHasMaxContentItems } from "~/helpers/blockContentHelpers";
 
 type Props = {
   previewPage: Page;
@@ -138,6 +140,29 @@ const PageBuilder = ({
     setLoading(false);
   }, [updateSuccess]);
 
+  const [tabNames, setTabNames] = useState<string[]>(["block"]);
+  const [activeTab, setActiveTab] = useState<string>(tabNames?.[0]);
+
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+  };
+
+  useEffect(() => {
+    if (selectedBlock && blockHasMaxContentItems(selectedBlock)) {
+      if (!selectedItems || selectedItems.length === 0) {
+        setTabNames(["content", "block"]);
+      } else {
+        setTabNames(["content", "block", "items"]);
+      }
+    } else {
+      setTabNames(["block"]);
+    }
+  }, [selectedBlock, selectedItems]);
+
+  useEffect(() => {
+    setSelectedItems([]);
+  }, [selectedBlock]);
+
   return (
     <Form className="relative w-full" method="POST">
       <input name="previewPageId" value={previewPage?.id} hidden readOnly />
@@ -234,18 +259,57 @@ const PageBuilder = ({
             setSelectedBlock={setSelectedBlock}
           />
 
+          <div
+            className={`${
+              !selectedBlock || tabNames.length === 1 ? "hidden" : ""
+            }`}
+          >
+            <BoxedTabs
+              tabNames={tabNames}
+              activeTab={activeTab}
+              onTabChange={handleTabChange}
+            />
+          </div>
+
+          <div className={`${activeTab !== "content" && "hidden"}`}>
+            <ContentSearch
+              selectedBlock={selectedBlock}
+              previewPage={previewPage}
+              contentType={contentType}
+              setContentType={setContentType}
+            />
+
+            <ResultsTable
+              selectedBlock={selectedBlock}
+              setSelectedItems={handleLimitedItemSelect}
+              searchResults={
+                searchResults as Campaign[] | Promotion[] | Brand[]
+              }
+              contentType={contentType}
+              selectedItems={selectedItems}
+            />
+
+            <ResultsImages
+              selectedBlock={selectedBlock}
+              selectedItems={selectedItems}
+              setSelectedItems={handleLimitedItemSelect}
+              searchResults={searchResults as Image[]}
+              contentType={contentType}
+            />
+
+            <SelectedContent
+              selectedBlock={selectedBlock}
+              selectedItems={selectedItems}
+              setSelectedItems={setSelectedItems}
+            />
+          </div>
+
           <BlockOptionsModule
             selectedBlock={selectedBlock}
             defaultValues={blocks?.[editingIndex]?.blockOptions[0]}
             selectedItems={selectedItems}
             colors={colors}
-          />
-
-          <ContentSearch
-            selectedBlock={selectedBlock}
-            previewPage={previewPage}
-            contentType={contentType}
-            setContentType={setContentType}
+            activeTab={activeTab}
           />
 
           <ProductBlockOptions
@@ -271,28 +335,6 @@ const PageBuilder = ({
             selectedItems={selectedItems}
             setSelectedItems={setSelectedItems}
             defaultValue={blocks?.[editingIndex]?.content as BlockContent}
-          />
-
-          <ResultsTable
-            selectedBlock={selectedBlock}
-            setSelectedItems={handleLimitedItemSelect}
-            searchResults={searchResults as Campaign[] | Promotion[] | Brand[]}
-            contentType={contentType}
-            selectedItems={selectedItems}
-          />
-
-          <ResultsImages
-            selectedBlock={selectedBlock}
-            selectedItems={selectedItems}
-            setSelectedItems={handleLimitedItemSelect}
-            searchResults={searchResults as Image[]}
-            contentType={contentType}
-          />
-
-          <SelectedContent
-            selectedBlock={selectedBlock}
-            selectedItems={selectedItems}
-            setSelectedItems={setSelectedItems}
           />
 
           {selectedItems && (

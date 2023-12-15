@@ -56,7 +56,7 @@ const ResultsImages = ({
       {contentType === "image" && (
         <>
           {searchResults && contentType && shouldDisplay() && (
-            <div className="flex w-full flex-wrap justify-center gap-6 overflow-x-auto pb-3 max-lg:gap-3">
+            <div className="mt-6 flex w-full flex-wrap justify-center gap-6 overflow-x-auto pb-3 max-lg:gap-3">
               {searchResults?.map(
                 ({ id, href, altText }: Image, index: number) => {
                   return (

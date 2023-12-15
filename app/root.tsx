@@ -1,7 +1,6 @@
 import { cssBundleHref } from "@remix-run/css-bundle";
-import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
-import { keepAwake } from "./sleep.server";
-import isBot from "isbot";
+import type { LinksFunction } from "@remix-run/node";
+
 import {
   Links,
   LiveReload,
@@ -18,16 +17,7 @@ export const links: LinksFunction = () => [
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
 ];
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const isbot = isBot(request.headers.get("user-agent"));
-  if (!isbot) {
-    void keepAwake();
-  }
-
-  return null;
-};
-
-export default function App() {
+export default function Root() {
   return (
     <html lang="en" className="h-full min-h-screen">
       <head>
@@ -39,8 +29,8 @@ export default function App() {
       <body className="h-full min-h-screen">
         <Outlet />
         <ScrollRestoration />
+        <LiveReload />
         <Scripts />
-        <LiveReload port={8002} />
       </body>
     </html>
   );

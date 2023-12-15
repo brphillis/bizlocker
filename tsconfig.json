@@ -3,7 +3,7 @@
     "remix.env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "app/routes/admin/._brands.tsx",
+    "app/routes/admin_/._brands.tsx",
     "app/routes/._index.tsx",
     "node_modules/@prisma/client/index.d.ts"
   ],

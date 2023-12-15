@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import type { BlockOptions } from "@prisma/client";
 import type { BlockName } from "~/utility/blockMaster/types";
 import { blockMaster } from "~/utility/blockMaster/blockMaster";
@@ -15,14 +14,13 @@ import MarginAndPaddingOptions from "./Options/MarginAndPadding";
 import MotionOptions from "./Options/Motion";
 import ColumnsAndRowsOptions from "./Options/ColumnsAndRows";
 import ItemOptions from "./ItemOptions";
-import BoxedTabs from "~/components/Tabs/BoxedTabs";
-import { blockHasMaxContentItems } from "~/helpers/blockContentHelpers";
 
 type Props = {
   selectedItems: ContentSelection[];
   colors: string[];
   selectedBlock?: BlockName;
   defaultValues?: BlockOptions;
+  activeTab: string;
 };
 
 const BlockOptionsModule = ({
@@ -30,42 +28,19 @@ const BlockOptionsModule = ({
   defaultValues,
   selectedItems,
   colors,
+  activeTab,
 }: Props) => {
   const selectedBlockOptions = blockMaster.find(
     (e) => e.name === selectedBlock
   )?.options;
 
-  const [tabNames, setTabNames] = useState<string[]>(["block"]);
-  const [activeTab, setActiveTab] = useState<string>(tabNames?.[0]);
-
-  const handleTabChange = (tab: string) => {
-    setActiveTab(tab);
-  };
-
-  useEffect(() => {
-    if (selectedBlock && blockHasMaxContentItems(selectedBlock)) {
-      setTabNames(["block", "items"]);
-    } else {
-      setTabNames(["block"]);
-    }
-  }, [selectedBlock]);
-
   return (
     <>
       {selectedBlock && (
-        <div className="!min-h-[300px] w-full pb-3">
-          <div className="mx-auto mb-6 block max-w-[400px] rounded-sm">
-            <BoxedTabs
-              tabNames={tabNames}
-              activeTab={activeTab}
-              onTabChange={handleTabChange}
-            />
-          </div>
-
+        <div className="w-full">
           <div
-            className={`flex flex-wrap gap-6 ${
-              activeTab !== "block" && "hidden"
-            }`}
+            className={`flex flex-wrap gap-6 
+            ${activeTab !== "block" ? "hidden" : "pb-3"}`}
           >
             <StyleOptions
               defaultValues={defaultValues}

@@ -42,7 +42,7 @@ const ProductBlockOptions = ({
     <>
       {selectedBlock === "product" && (
         <div className="w-full pb-3">
-          <p className="mb-3 px-1 pt-3 font-semibold">Filters</p>
+          <p className="mb-3 px-1 font-semibold">Filters</p>
           <div className="flex flex-wrap gap-6">
             <div className="flex w-full flex-wrap justify-start gap-3 empty:hidden">
               <BasicSelect

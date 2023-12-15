@@ -6,6 +6,7 @@ import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import UploadImage from "~/components/Forms/Upload/UploadImage";
 import type { Page } from "~/models/pageBuilder.server";
 import type { PageType } from "~/utility/pageBuilder";
+import { colorSelection } from "../BlockOptions/Values/colors";
 
 type Props = {
   currentVersion: Page | null;
@@ -94,10 +95,7 @@ const Header = ({
               labelColor="text-brand-white"
               name="backgroundColor"
               placeholder="Select a Color"
-              selections={colors?.map((color: string) => ({
-                id: color,
-                name: color,
-              }))}
+              selections={colorSelection}
             />
           )}
 
@@ -140,7 +138,7 @@ const Header = ({
 
           <button
             type="submit"
-            className="btn-primary btn-md mx-auto block w-max !rounded-sm"
+            className="btn-primary btn-md  mx-auto block w-max !rounded-sm bg-primary hover:bg-primary-dark"
           >
             {currentVersion ? "Submit" : "Next Step"}
           </button>
