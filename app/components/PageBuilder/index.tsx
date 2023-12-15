@@ -159,10 +159,6 @@ const PageBuilder = ({
     }
   }, [selectedBlock, selectedItems]);
 
-  useEffect(() => {
-    setSelectedItems([]);
-  }, [selectedBlock]);
-
   return (
     <Form className="relative w-full" method="POST">
       <input name="previewPageId" value={previewPage?.id} hidden readOnly />

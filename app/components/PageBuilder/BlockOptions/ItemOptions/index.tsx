@@ -4,15 +4,11 @@ import ItemInput from "../Components/ItemInput";
 import ItemSelectInput from "../Components/ItemSelectInput";
 import { filterSelectValues } from "../Values/filters";
 import {
-  backgroundColorSelection,
-  colorSelection,
-  textColorSelection,
-} from "../Values/colors";
-import {
   borderDisplaySelectValues,
   borderRadiusSelectValues,
   borderSizeSelectValues,
 } from "../Values/borders";
+import ItemColorInput from "../Components/ItemColorInput";
 
 type Props = {
   selectedItems: ContentSelection[];
@@ -27,34 +23,31 @@ const ItemOptions = ({
 }: Props) => {
   return (
     <>
-      <ItemSelectInput
+      <ItemColorInput
         title="Item Colors"
         formName="itemColors"
         selectedItems={selectedItems}
         valueName="Color"
         blockMasterOption={selectedBlockOptions?.itemColors}
         defaultValues={defaultValues?.itemColors}
-        selections={colorSelection}
       />
 
-      <ItemSelectInput
+      <ItemColorInput
         title="Item Secondary Colors"
         formName="itemSecondaryColors"
         selectedItems={selectedItems}
         valueName="Secondary Color"
         blockMasterOption={selectedBlockOptions?.itemSecondaryColors}
         defaultValues={defaultValues?.itemSecondaryColors}
-        selections={colorSelection}
       />
 
-      <ItemSelectInput
+      <ItemColorInput
         title="Item Border Colors"
         formName="itemBorderColors"
         selectedItems={selectedItems}
         valueName="Border Color"
         blockMasterOption={selectedBlockOptions?.itemBorderColors}
         defaultValues={defaultValues?.itemBorderColors}
-        selections={colorSelection}
       />
 
       <ItemSelectInput
@@ -87,24 +80,22 @@ const ItemOptions = ({
         selections={borderSizeSelectValues}
       />
 
-      <ItemSelectInput
+      <ItemColorInput
         title="Item Background Colors"
         formName="itemBackgroundColors"
         selectedItems={selectedItems}
         valueName="Background Color"
         blockMasterOption={selectedBlockOptions?.itemBackgroundColors}
         defaultValues={defaultValues?.itemBackgroundColors}
-        selections={backgroundColorSelection}
       />
 
-      <ItemSelectInput
+      <ItemColorInput
         title="Item Secondary Background Colors"
         formName="itemSecondaryBackgroundColors"
         selectedItems={selectedItems}
-        valueName="Background Color"
+        valueName="Background Secondary Color"
         blockMasterOption={selectedBlockOptions?.itemSecondaryBackgroundColors}
         defaultValues={defaultValues?.itemSecondaryBackgroundColors}
-        selections={backgroundColorSelection}
       />
 
       <ItemSelectInput
@@ -126,14 +117,13 @@ const ItemOptions = ({
         defaultValues={defaultValues?.itemTitles}
       />
 
-      <ItemSelectInput
-        title="Item Title Colors"
+      <ItemColorInput
+        title="Item Secondary Title Colors"
         formName="itemTitleColors"
         selectedItems={selectedItems}
         valueName="Title Color"
         blockMasterOption={selectedBlockOptions?.itemTitleColors}
         defaultValues={defaultValues?.itemTitleColors}
-        selections={textColorSelection}
       />
 
       <ItemInput

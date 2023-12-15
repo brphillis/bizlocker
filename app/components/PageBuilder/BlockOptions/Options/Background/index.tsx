@@ -6,6 +6,7 @@ import { blockWidthSelectValues } from "../../Values/width";
 import BlockSelectInput from "../../Components/BlockSelectInput";
 import { backgroundPatternSelectValues } from "../../Values/background";
 import { backgroundColorSelection, colorSelection } from "../../Values/colors";
+import BlockColorInput from "../../Components/BlockColorInput";
 
 type Props = {
   defaultValues?: BlockOptions;
@@ -18,18 +19,18 @@ const BackgroundOptions = ({ defaultValues, selectedBlockOptions }: Props) => {
     hasTruePropertyStartingWith("background", selectedBlockOptions)
   ) {
     return (
-      <details className="collapse !hidden !max-w-full !rounded-sm bg-brand-white/20 [&:has(div>div)]:!grid">
+      <details className="bg-brand-white/20 collapse collapse-plus !hidden !max-w-full !rounded-sm [&:has(div>div)]:!grid">
         <summary className="collapse-title text-xl font-medium">
           Background
         </summary>
         <div className="collapse-content relative sm:!px-3">
           <div className="flex max-w-full flex-wrap justify-start !gap-3 pb-3 max-md:justify-center">
-            <BlockSelectInput
+            <BlockColorInput
               valueName="Background Color"
               formName="backgroundColor"
               blockMasterOption={selectedBlockOptions?.backgroundColor}
               defaultValue={defaultValues?.backgroundColor}
-              selections={backgroundColorSelection}
+              type="bg"
             />
 
             <BlockSelectInput

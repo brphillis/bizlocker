@@ -9,7 +9,7 @@ type Props = {
 
 const CountOptions = ({ defaultValues, selectedBlockOptions }: Props) => {
   return (
-    <details className="collapse !hidden !max-w-full !rounded-sm bg-brand-white/20 [&:has(div>div)]:!grid">
+    <details className="collapse collapse-plus !hidden !max-w-full !rounded-sm bg-brand-white/20 [&:has(div>div)]:!grid">
       <summary className="collapse-title text-xl font-medium">Count</summary>
       <div className="flex max-w-full flex-wrap justify-start !gap-3 px-3 pb-3 max-md:justify-center max-md:px-0">
         <BlockInput

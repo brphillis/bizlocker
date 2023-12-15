@@ -117,6 +117,7 @@ export const blockMaster: BlockMaster[] = [
     name: "hero",
     component: HeroBlock,
     icon: "IoLayers",
+    maxContentItems: 1,
     options: {
       backgroundColor: true,
       backgroundColorSecondary: true,

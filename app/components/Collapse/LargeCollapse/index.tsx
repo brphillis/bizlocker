@@ -8,8 +8,8 @@ type Props = {
 const LargeCollapse = ({ content, title, forceOpen, forceClose }: Props) => {
   return (
     <div
-      className={`collapse collapse-plus w-[800px] max-w-full rounded-sm bg-brand-black py-3 text-brand-white max-md:w-screen
-        ${forceOpen ? " collapse-open " : ""} 
+      className={`collapse w-[800px] max-w-full rounded-sm bg-brand-black py-3 text-brand-white max-md:w-screen
+        ${forceOpen ? " collapse-open " : "collapse-plus"} 
         ${forceClose ? " collapse-close " : ""}
         `}
     >

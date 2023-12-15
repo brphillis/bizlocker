@@ -23,9 +23,9 @@ const ItemSelectInput = ({
   const [items, setItems] = useState<string[]>(defaultValues || []);
 
   return (
-    <details className="collapse !hidden !max-w-full !rounded-sm bg-brand-white/20 [&:has(div>div)]:!grid">
+    <details className="collapse collapse-plus !hidden !max-w-full !rounded-sm bg-brand-white/20 [&:has(div>div)]:!grid">
       <summary className="collapse-title text-xl font-medium">{title}</summary>
-      <div className="flex max-w-full flex-wrap justify-center !gap-3 px-3 pb-3 max-md:justify-center max-md:px-0">
+      <div className="flex max-w-full flex-wrap justify-start !gap-3 px-3 pb-3 max-md:justify-center max-md:px-0">
         {selectedItems.map((_, i) => {
           const relativeIndex = i + 1;
 
@@ -35,9 +35,9 @@ const ItemSelectInput = ({
             return (
               <div
                 key={`${valueName}Options_Item${valueName}_` + i}
-                className="form-control max-w-[215px] max-sm:items-center"
+                className="form-control w-[215px] max-md:w-full max-md:items-center"
               >
-                <label className="label max-sm:ml-3 max-sm:!self-start">
+                <label className="label max-md:ml-3 max-md:!self-start">
                   <span className="label-text text-brand-white">
                     {"Item " + relativeIndex.toString() + " " + valueName}
                   </span>

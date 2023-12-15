@@ -61,6 +61,8 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
 
   const lowestPrice = getProductLowestPrice(product);
 
+  console.log(backgroundColor);
+
   return (
     <div
       className={`relative h-max w-full ${margin} ${padding}`}
@@ -89,9 +91,11 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
 
       <div
         className={`relative flex items-center bg-white shadow-sm 
-        ${borderDisplay} ${borderRadius} ${flipX} ${backgroundColor} ${borderSize} ${borderColor}`}
+        ${borderDisplay} ${borderRadius} ${flipX} ${borderSize} ${borderColor}`}
       >
-        <div className="container relative mx-auto flex px-20 py-12 max-xl:px-16 max-lg:px-12 max-md:px-3 max-md:py-6">
+        <div
+          className={`container relative mx-auto flex px-20 py-12 max-xl:px-16 max-lg:px-12 max-md:px-3 max-md:py-6 ${backgroundColor}`}
+        >
           <div className="relative mr-16 flex w-[60%] flex-col gap-[20%] max-md:w-4/5 max-md:justify-between max-md:gap-16 max-sm:mr-0">
             <div>
               <h1

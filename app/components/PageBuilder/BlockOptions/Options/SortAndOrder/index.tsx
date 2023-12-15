@@ -19,7 +19,7 @@ const SortAndOrderOptions = ({
   selectedBlockOptions,
 }: Props) => {
   return (
-    <details className="collapse !hidden !max-w-full !rounded-sm bg-brand-white/20 [&:has(div>div)]:!grid">
+    <details className="collapse collapse-plus !hidden !max-w-full !rounded-sm bg-brand-white/20 [&:has(div>div)]:!grid">
       <summary className="collapse-title text-xl font-medium">
         Sort & Order
       </summary>

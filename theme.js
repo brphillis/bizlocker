@@ -1,5 +1,5 @@
 //prettier-ignore
-module.exports = {
+const themeColors ={
     "primary": "#3B82F6",
     "primary-dark": "#2563EB",
     "primary-content": "#F0F0F0",
@@ -13,3 +13,5 @@ module.exports = {
     "brand-white": "#F0F0F0",
     "brand-red": "#FF3A20",
   }
+
+module.exports = themeColors;

@@ -5,7 +5,9 @@
     "**/*.tsx",
     "app/routes/admin_/._brands.tsx",
     "app/routes/._index.tsx",
-    "node_modules/@prisma/client/index.d.ts"
+    "node_modules/@prisma/client/index.d.ts",
+    "tailwindTypeBuild.js",
+    "themebuilder.jslder.jslder.js"
   ],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2019"],
