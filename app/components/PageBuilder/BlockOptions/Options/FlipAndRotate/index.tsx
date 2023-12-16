@@ -1,6 +1,6 @@
 import type { BlockOptions } from "@prisma/client";
 import type { BlockMasterOptions } from "~/utility/blockMaster/blockMaster";
-import BlockSelectInput from "../../Components/BlockSelectInput";
+import BlockSelectInput from "../../Components/Blocks/BlockSelectInput";
 import { flipXSelectValues } from "../../Values/flipRotate";
 
 type Props = {
@@ -13,7 +13,7 @@ const FlipAndRotateOptions = ({
   selectedBlockOptions,
 }: Props) => {
   return (
-    <details className="collapse collapse-plus !hidden !max-w-full !rounded-sm bg-brand-white/20 [&:has(div>div)]:!grid">
+    <details className="bg-brand-white/20 collapse collapse-plus !hidden !max-w-full !rounded-sm [&:has(div>div)]:!grid">
       <summary className="collapse-title text-xl font-medium">
         Flip & Rotate
       </summary>

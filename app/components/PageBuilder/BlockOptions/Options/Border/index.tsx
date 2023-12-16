@@ -1,12 +1,12 @@
 import type { BlockOptions } from "@prisma/client";
 import type { BlockMasterOptions } from "~/utility/blockMaster/blockMaster";
-import { borderColorSelection } from "../../Values/colors";
-import BlockSelectInput from "../../Components/BlockSelectInput";
+import BlockSelectInput from "../../Components/Blocks/BlockSelectInput";
 import {
   borderDisplaySelectValues,
   borderRadiusSelectValues,
   borderSizeSelectValues,
 } from "../../Values/borders";
+import BlockColorInput from "../../Components/Blocks/BlockColorInput";
 
 type Props = {
   defaultValues?: BlockOptions;
@@ -34,12 +34,12 @@ const BorderOptions = ({ defaultValues, selectedBlockOptions }: Props) => {
           selections={borderSizeSelectValues}
         />
 
-        <BlockSelectInput
+        <BlockColorInput
           valueName="Border Color"
           formName="borderColor"
           blockMasterOption={selectedBlockOptions?.borderColor}
           defaultValue={defaultValues?.borderColor}
-          selections={borderColorSelection}
+          type="border"
         />
 
         <BlockSelectInput

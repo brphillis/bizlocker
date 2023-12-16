@@ -1,12 +1,11 @@
 import type { BlockOptions } from "@prisma/client";
 import { hasTruePropertyStartingWith } from "~/helpers/objectHelpers";
 import type { BlockMasterOptions } from "~/utility/blockMaster/blockMaster";
-import BlockInput from "../../Components/BlockInput";
+import BlockInput from "../../Components/Blocks/BlockInput";
 import { blockWidthSelectValues } from "../../Values/width";
-import BlockSelectInput from "../../Components/BlockSelectInput";
+import BlockSelectInput from "../../Components/Blocks/BlockSelectInput";
 import { backgroundPatternSelectValues } from "../../Values/background";
-import { backgroundColorSelection, colorSelection } from "../../Values/colors";
-import BlockColorInput from "../../Components/BlockColorInput";
+import BlockColorInput from "../../Components/Blocks/BlockColorInput";
 
 type Props = {
   defaultValues?: BlockOptions;
@@ -19,7 +18,7 @@ const BackgroundOptions = ({ defaultValues, selectedBlockOptions }: Props) => {
     hasTruePropertyStartingWith("background", selectedBlockOptions)
   ) {
     return (
-      <details className="bg-brand-white/20 collapse collapse-plus !hidden !max-w-full !rounded-sm [&:has(div>div)]:!grid">
+      <details className="collapse collapse-plus !hidden !max-w-full !rounded-sm bg-brand-white/20 [&:has(div>div)]:!grid">
         <summary className="collapse-title text-xl font-medium">
           Background
         </summary>
@@ -58,12 +57,11 @@ const BackgroundOptions = ({ defaultValues, selectedBlockOptions }: Props) => {
               selections={backgroundPatternSelectValues}
             />
 
-            <BlockSelectInput
+            <BlockColorInput
               valueName="Background Pattern Color"
               formName="backgroundPatternColor"
               blockMasterOption={selectedBlockOptions?.backgroundPatternColor}
               defaultValue={defaultValues?.backgroundPatternColor}
-              selections={colorSelection}
             />
 
             <BlockInput
@@ -84,12 +82,12 @@ const BackgroundOptions = ({ defaultValues, selectedBlockOptions }: Props) => {
               type="number"
             />
 
-            <BlockSelectInput
+            <BlockColorInput
               valueName="Background Color 2"
               formName="backgroundColorSecondary"
               blockMasterOption={selectedBlockOptions?.backgroundColorSecondary}
               defaultValue={defaultValues?.backgroundColorSecondary}
-              selections={backgroundColorSelection}
+              type="bg"
             />
 
             <BlockSelectInput
@@ -121,14 +119,13 @@ const BackgroundOptions = ({ defaultValues, selectedBlockOptions }: Props) => {
               selections={backgroundPatternSelectValues}
             />
 
-            <BlockSelectInput
+            <BlockColorInput
               valueName="Background Pattern Color 2"
               formName="backgroundPatternColorSecondary"
               blockMasterOption={
                 selectedBlockOptions?.backgroundPatternColorSecondary
               }
               defaultValue={defaultValues?.backgroundPatternColorSecondary}
-              selections={colorSelection}
             />
 
             <BlockInput

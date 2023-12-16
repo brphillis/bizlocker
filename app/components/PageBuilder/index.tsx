@@ -253,6 +253,8 @@ const PageBuilder = ({
           <BlockSelect
             selectedBlock={selectedBlock}
             setSelectedBlock={setSelectedBlock}
+            selectedItems={selectedItems}
+            setSelectedItems={setSelectedItems}
           />
 
           <div
@@ -262,6 +264,7 @@ const PageBuilder = ({
           >
             <BoxedTabs
               tabNames={tabNames}
+              dynamicTabNames={true}
               activeTab={activeTab}
               onTabChange={handleTabChange}
             />

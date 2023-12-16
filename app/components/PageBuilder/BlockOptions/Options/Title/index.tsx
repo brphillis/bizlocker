@@ -1,14 +1,14 @@
 import type { BlockOptions } from "@prisma/client";
 import type { BlockName } from "~/utility/blockMaster/types";
 import type { BlockMasterOptions } from "~/utility/blockMaster/blockMaster";
-import BlockInput from "../../Components/BlockInput";
-import BlockSelectInput from "../../Components/BlockSelectInput";
+import BlockInput from "../../Components/Blocks/BlockInput";
+import BlockSelectInput from "../../Components/Blocks/BlockSelectInput";
 import {
   fontAlignSelectValues,
   fontSizeSelectValues,
   fontWeightSelectValues,
 } from "../../Values/font";
-import { textColorSelection } from "../../Values/colors";
+import BlockColorInput from "../../Components/Blocks/BlockColorInput";
 
 type Props = {
   selectedBlock?: BlockName;
@@ -58,12 +58,12 @@ const TitleOptions = ({
           selections={fontAlignSelectValues}
         />
 
-        <BlockSelectInput
+        <BlockColorInput
           valueName="Title Color"
           formName="titleColor"
           blockMasterOption={selectedBlockOptions?.titleColor}
           defaultValue={defaultValues?.titleColor}
-          selections={textColorSelection}
+          type="text"
         />
       </div>
     </details>

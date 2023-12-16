@@ -6,9 +6,8 @@ import type {
   Store,
 } from "@prisma/client";
 import type { BlockContentType, BlockName } from "~/utility/blockMaster/types";
-import { IoCaretForwardCircleSharp } from "react-icons/io5";
-import Icon from "~/components/Icon";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
+import SquareIconButton from "~/components/Buttons/SquareIconButton";
 
 type Props = {
   selectedBlock: BlockName | undefined;
@@ -68,73 +67,69 @@ const ResultsTable = ({
 
   return (
     <>
-      {searchResults && contentType && shouldDisplay() && (
-        <div className="w-full overflow-x-auto">
-          <p className="my-3 text-sm font-bold">Select an Item</p>
-          <table className="table table-sm">
-            <thead className="text-brand-white">
-              <tr>
-                <th className="w-1/4">#</th>
-                <th className="w-1/4">Name</th>
+      {searchResults &&
+        selectedItems &&
+        selectedItems.length > 0 &&
+        shouldDisplay() && (
+          <div className="py-6">
+            <div className="ml-3 pb-3">Results</div>
 
-                {searchResults?.[0]?.createdAt && (
-                  <th className="w-1/4">Created</th>
-                )}
+            {searchResults && searchResults.length === 0 && (
+              <div className="ml-6 pt-6">No Results</div>
+            )}
 
-                {contentType === "icon" && <th className="w-1/4">Icon</th>}
+            <div className="flex flex-col gap-3">
+              {contentType &&
+                searchResults?.map(
+                  (
+                    { name }: Promotion | Campaign | Product | Brand | Store,
+                    index: number
+                  ) => {
+                    return (
+                      <div
+                        key={"selectedContent_" + name + index}
+                        className="flex cursor-pointer items-center justify-between rounded-sm bg-brand-white/20 p-3 hover:scale-[1.005]"
+                        onClick={() => {
+                          selectItems(
+                            contentType,
+                            searchResults[index].id,
+                            name
+                          );
+                        }}
+                      >
+                        <div>{name && capitalizeFirst(name)}</div>
+                        <div className="flex items-center gap-3">
+                          <SquareIconButton
+                            iconName="IoSearch"
+                            size="small"
+                            color="primary"
+                            onClickFunction={() =>
+                              setSelectedItems(
+                                selectedItems.filter((_, i) => i !== index)
+                              )
+                            }
+                          />
 
-                <th className="w-1/4">Go To</th>
-              </tr>
-            </thead>
-            <tbody>
-              {searchResults?.map(
-                (
-                  {
-                    name,
-                    createdAt,
-                  }: Promotion | Campaign | Product | Brand | Store,
-                  index: number
-                ) => {
-                  return (
-                    <tr
-                      key={"tableContentResult_" + name + index}
-                      className="cursor-pointer"
-                      onClick={() => {
-                        selectItems(contentType, searchResults[index].id, name);
-                      }}
-                    >
-                      <td className="w-1/4">{index + 1}</td>
-                      <td className="w-1/4">{name && capitalizeFirst(name)}</td>
-
-                      {searchResults?.[0]?.createdAt && (
-                        <td className="w-1/4">
-                          {new Date(createdAt).toLocaleDateString("en-US", {
-                            day: "numeric",
-                            month: "long",
-                            year: "numeric",
-                          })}
-                        </td>
-                      )}
-
-                      {contentType === "icon" && (
-                        <td className="w-1/4">
-                          <Icon iconName={name as any} size={16} styles="" />
-                        </td>
-                      )}
-
-                      <td className="w-1/4">
-                        <div className="ml-2">
-                          <IoCaretForwardCircleSharp size={18} />
+                          <SquareIconButton
+                            iconName="IoAdd"
+                            size="small"
+                            color="primary"
+                            onClickFunction={() => {
+                              selectItems(
+                                contentType,
+                                searchResults[index].id,
+                                name
+                              );
+                            }}
+                          />
                         </div>
-                      </td>
-                    </tr>
-                  );
-                }
-              )}
-            </tbody>
-          </table>
-        </div>
-      )}
+                      </div>
+                    );
+                  }
+                )}
+            </div>
+          </div>
+        )}
     </>
   );
 };

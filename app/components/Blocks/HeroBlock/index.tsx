@@ -61,8 +61,6 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
 
   const lowestPrice = getProductLowestPrice(product);
 
-  console.log(backgroundColor);
-
   return (
     <div
       className={`relative h-max w-full ${margin} ${padding}`}

@@ -1,7 +1,7 @@
 import type { BlockName } from "~/utility/blockMaster/types";
-import { IoCloseCircle } from "react-icons/io5";
 import { blockMaster } from "~/utility/blockMaster/blockMaster";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
+import SquareIconButton from "~/components/Buttons/SquareIconButton";
 
 type Props = {
   selectedItems: ContentSelection[];
@@ -30,56 +30,59 @@ const SelectedContent = ({
   return (
     <>
       {selectedItems && selectedItems.length > 0 && shouldDisplay() && (
-        <div className="max-w-3xl overflow-x-auto">
-          <div className="divider my-0 w-full py-0" />
-          <div className="my-3 flex items-center gap-3 text-sm font-bold">
-            <p>Selected Content</p>
+        <div className="py-6">
+          <div className="ml-3 pb-3">
+            Selected Items{" "}
             {"( " +
               selectedItemsTotal +
               " / " +
               selectedBlocksContentLimit +
               " )"}
           </div>
-          <table className="table table-sm">
-            <thead className="text-brand-white">
-              <tr>
-                <th className="w-1/4">#</th>
-                <th className="w-1/4">Name</th>
-                <th className="w-1/4">Type</th>
-                <th className="w-1/4">Delete</th>
-              </tr>
-            </thead>
-            <tbody>
-              {selectedItems?.map((data: ContentSelection, index) => {
+          <div className="flex flex-col gap-3">
+            {selectedItems &&
+              selectedItems.length > 0 &&
+              shouldDisplay() &&
+              selectedItems?.map((data: ContentSelection, index) => {
                 const { name, type } = data || {};
 
                 return (
-                  <tr
+                  <div
                     key={"selectedContent_" + name + index}
-                    className="cursor-pointer"
+                    className="flex cursor-pointer items-center justify-between rounded-sm bg-brand-white/20 p-3 hover:scale-[1.005]"
                   >
-                    <td className="w-1/4">{index + 1}</td>
-                    <td className="w-1/4">{name && capitalizeFirst(name)}</td>
-                    <td className="w-1/4">{type && capitalizeFirst(type)}</td>
-                    <td className="w-1/4">
-                      <div
-                        className="ml-2"
-                        onClick={() =>
+                    <div>
+                      {type && capitalizeFirst(type)}
+                      {" / "}
+                      {name && capitalizeFirst(name)}
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <SquareIconButton
+                        iconName="IoSearch"
+                        size="small"
+                        color="primary"
+                        onClickFunction={() =>
                           setSelectedItems(
                             selectedItems.filter((_, i) => i !== index)
                           )
                         }
-                      >
-                        <IoCloseCircle size={18} />
-                      </div>
-                    </td>
-                  </tr>
+                      />
+
+                      <SquareIconButton
+                        iconName="IoTrashBin"
+                        size="small"
+                        color="error"
+                        onClickFunction={() =>
+                          setSelectedItems(
+                            selectedItems.filter((_, i) => i !== index)
+                          )
+                        }
+                      />
+                    </div>
+                  </div>
                 );
               })}
-            </tbody>
-          </table>
-
-          <div className="divider w-full" />
+          </div>
         </div>
       )}
     </>

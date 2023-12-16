@@ -5,7 +5,7 @@ import {
   marginSelectValues,
   paddingSelectValues,
 } from "../../Values/marginAndPadding";
-import BlockSelectInput from "../../Components/BlockSelectInput";
+import BlockSelectInput from "../../Components/Blocks/BlockSelectInput";
 
 type Props = {
   defaultValues?: BlockOptions;
@@ -17,7 +17,7 @@ const MarginAndPaddingOptions = ({
   selectedBlockOptions,
 }: Props) => {
   return (
-    <details className="collapse collapse-plus !hidden !max-w-full !rounded-sm bg-brand-white/20 [&:has(div>div)]:!grid">
+    <details className="bg-brand-white/20 collapse collapse-plus !hidden !max-w-full !rounded-sm [&:has(div>div)]:!grid">
       <summary className="collapse-title text-xl font-medium">
         Margin & Padding
       </summary>

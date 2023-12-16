@@ -12,6 +12,23 @@ const themeColors ={
     "brand-black": "#232227",
     "brand-white": "#F0F0F0",
     "brand-red": "#FF3A20",
+    "brand-blue": "#3B82F6",
+    "brand-green": "#44AF69",
+    "brand-yellow": "#F7C548",
+    "brand-orange": "#FFA500",
+    "brand-purple": "#694873",
+    "brand-pink": "#F7567C",
+    "brand-gray": "#808080",
+    "brand-brown" : "#A98743",
+    "brand-silver": "#D7D9D7",
+    "brand-gold" : "#FFD700",
+    "brand-navy" : "#000080",
+    "brand-teal": "#008080",
+    "brand-maroon" : "#800000",
+    "brand-lime" : "#61E786",
+    "brand-olive": "#808000",
+    "brand-aqua" : "#00FFFF",
+    "brand-indigo" : "#4B0082"
   }
 
 module.exports = themeColors;

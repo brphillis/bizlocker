@@ -1,13 +1,21 @@
 import Swal from "sweetalert2";
 
+export type ActionAlertType =
+  | "success"
+  | "error"
+  | "warning"
+  | "info"
+  | "question";
+
 export const ActionAlert = async (
   title: string,
   text: string,
-  action: () => void
+  action: () => void,
+  type?: ActionAlertType
 ) => {
   Swal.fire({
     position: "center",
-    icon: "success",
+    icon: type ? type : "success",
     title: title,
     text: text,
     showConfirmButton: true,

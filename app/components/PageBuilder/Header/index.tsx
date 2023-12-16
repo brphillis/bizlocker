@@ -2,11 +2,10 @@ import { Form } from "@remix-run/react";
 import LargeCollapse from "~/components/Collapse/LargeCollapse";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import BasicMultiSelect from "~/components/Forms/Select/BasicMultiSelect";
-import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import UploadImage from "~/components/Forms/Upload/UploadImage";
 import type { Page } from "~/models/pageBuilder.server";
 import type { PageType } from "~/utility/pageBuilder";
-import { colorSelection } from "../BlockOptions/Values/colors";
+import ColorPicker from "~/components/Forms/ColorPicker";
 
 type Props = {
   currentVersion: Page | null;
@@ -87,17 +86,12 @@ const Header = ({
             />
           )}
 
-          {colors && (
-            <BasicSelect
-              customWidth="w-[320px]"
-              defaultValue={currentVersion?.backgroundColor}
-              label="Background Color"
-              labelColor="text-brand-white"
-              name="backgroundColor"
-              placeholder="Select a Color"
-              selections={colorSelection}
-            />
-          )}
+          <ColorPicker
+            label="Background Color"
+            formName="backgroundColor"
+            defaultValue={currentVersion?.backgroundColor}
+            customWidth="w-[320px]"
+          />
 
           {pageType !== "homePage" && (
             <div className="form-control w-full max-w-xs">

@@ -1,10 +1,8 @@
 import type { BlockOptions } from "@prisma/client";
 import type { BlockMasterOptions } from "~/utility/blockMaster/blockMaster";
 import type { BlockName } from "~/utility/blockMaster/types";
-import { textColorSelection } from "../../Values/colors";
-import BlockSelectInput from "../../Components/BlockSelectInput";
-import BlockInput from "../../Components/BlockInput";
-
+import BlockColorInput from "../../Components/Blocks/BlockColorInput";
+import BlockInput from "../../Components/Blocks/BlockInput";
 type Props = {
   colors: string[];
   selectedBlock?: BlockName;
@@ -23,12 +21,12 @@ const ShortTextOptions = ({
         {selectedBlock === "text" ? "Text" : "Short Text"}
       </summary>
       <div className="flex max-w-full flex-wrap justify-start !gap-3 px-3 pb-3 max-md:justify-center max-md:px-0">
-        <BlockSelectInput
+        <BlockColorInput
           valueName="Short Text Color"
           formName="shortTextColor"
           blockMasterOption={selectedBlockOptions?.shortTextColor}
           defaultValue={defaultValues?.shortTextColor}
-          selections={textColorSelection}
+          type="text"
         />
 
         <BlockInput

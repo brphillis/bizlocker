@@ -30,7 +30,7 @@ import {
   getAvailableSizes,
 } from "~/helpers/productHelpers";
 import type { Image } from "~/models/images.server";
-import { generateColor } from "~/utility/colors";
+import { generateProductColor } from "~/utility/colors";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   return [
@@ -298,14 +298,8 @@ const Product = () => {
                       return (
                         <button
                           key={color}
-                          style={{
-                            backgroundColor: generateColor(color),
-                            border:
-                              selectedColor === color
-                                ? "3px solid #FFFFFF80"
-                                : "none",
-                          }}
-                          className="ml-2 h-6 w-6 rounded-full border-2 border-gray-300 focus:outline-none"
+                          className={`ml-2 h-6 w-6 rounded-full border-2 border-gray-300 focus:outline-none 
+                          ${"bg-" + generateProductColor(color)}`}
                           onClick={() => setSelectedColor(color)}
                         ></button>
                       );

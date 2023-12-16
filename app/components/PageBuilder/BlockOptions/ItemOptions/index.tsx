@@ -1,14 +1,14 @@
 import type { BlockMasterOptions } from "~/utility/blockMaster/types";
 import type { BlockOptions } from "@prisma/client";
-import ItemInput from "../Components/ItemInput";
-import ItemSelectInput from "../Components/ItemSelectInput";
+import ItemInput from "../Components/Items/ItemInput";
+import ItemSelectInput from "../Components/Items/ItemSelectInput";
 import { filterSelectValues } from "../Values/filters";
 import {
   borderDisplaySelectValues,
   borderRadiusSelectValues,
   borderSizeSelectValues,
 } from "../Values/borders";
-import ItemColorInput from "../Components/ItemColorInput";
+import ItemColorInput from "../Components/Items/ItemColorInput";
 
 type Props = {
   selectedItems: ContentSelection[];
@@ -48,6 +48,7 @@ const ItemOptions = ({
         valueName="Border Color"
         blockMasterOption={selectedBlockOptions?.itemBorderColors}
         defaultValues={defaultValues?.itemBorderColors}
+        type="border"
       />
 
       <ItemSelectInput
@@ -87,6 +88,7 @@ const ItemOptions = ({
         valueName="Background Color"
         blockMasterOption={selectedBlockOptions?.itemBackgroundColors}
         defaultValues={defaultValues?.itemBackgroundColors}
+        type="bg"
       />
 
       <ItemColorInput
@@ -96,6 +98,7 @@ const ItemOptions = ({
         valueName="Background Secondary Color"
         blockMasterOption={selectedBlockOptions?.itemSecondaryBackgroundColors}
         defaultValues={defaultValues?.itemSecondaryBackgroundColors}
+        type="bg"
       />
 
       <ItemSelectInput
@@ -124,6 +127,7 @@ const ItemOptions = ({
         valueName="Title Color"
         blockMasterOption={selectedBlockOptions?.itemTitleColors}
         defaultValues={defaultValues?.itemTitleColors}
+        type="text"
       />
 
       <ItemInput

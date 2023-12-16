@@ -286,7 +286,6 @@ export const updatePageBlock = async (
   blockData: NewBlockData,
   blockOptions?: BlockOptions
 ): Promise<number | Page> => {
-  console.log("OPTIONS", blockOptions);
   const { blockName, itemIndex, contentData } = blockData;
 
   const previewPage = await prisma.previewPage.findUnique({
