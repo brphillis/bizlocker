@@ -2,7 +2,7 @@ import type { BlockContent } from "~/models/blocks.server";
 import type { BlockOptions } from "@prisma/client";
 import { parseOptions } from "~/utility/parseOptions";
 import parse from "html-react-parser";
-import { generateColor } from "~/utility/colors";
+import { getThemeColorValueByName } from "~/utility/colors";
 
 type Props = {
   content: BlockContent;
@@ -41,7 +41,9 @@ const TextBlock = ({ content, options: ArrayOptions }: Props) => {
           <div
             className="absolute left-[50%] top-0 z-0 h-full w-screen translate-x-[-50%]"
             style={{
-              backgroundColor: generateColor(backgroundColor),
+              backgroundColor: backgroundColor
+                ? getThemeColorValueByName(backgroundColor)
+                : "",
               width: backgroundWidth ? backgroundWidth : "unset",
             }}
           ></div>

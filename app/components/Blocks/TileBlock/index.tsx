@@ -5,11 +5,10 @@ import {
   buildContentImageFromContent,
   concatBlockContent,
   determineSingleContentType,
-  getItemOption,
 } from "~/helpers/blockContentHelpers";
-import { generateColor } from "~/utility/colors";
 import ContentTile from "./ContentTile";
 import IconTile from "./IconTile";
+import { getThemeColorValueByName } from "~/utility/colors";
 
 type Props = {
   content: BlockContent;
@@ -22,19 +21,23 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
   const {
     backgroundBrightness,
     backgroundColor,
-    borderRadius,
-    columns,
-    columnsMobile,
-    margin,
-    padding,
     backgroundPatternColor,
     backgroundPatternName,
     backgroundPatternOpacity,
     backgroundPatternSize,
     backgroundWidth,
-    borderColor,
-    borderSize,
     borderDisplay,
+    borderRadius,
+    columns,
+    columnsMobile,
+    itemBackgroundColors,
+    itemColors,
+    itemFilters,
+    itemLinks,
+    itemTitleColors,
+    itemTitles,
+    margin,
+    padding,
   } = options || {};
 
   const joinedContent = concatBlockContent(content);
@@ -42,9 +45,8 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
 
   return (
     <div
-      className={`relative grid h-max place-items-center gap-3 px-3 sm:gap-6 ${margin} ${padding} ${
-        colsMobile || "max-md:!grid-cols-2"
-      }`}
+      className={`relative grid h-max place-items-center gap-3 px-3 sm:gap-6 ${margin} ${padding} 
+      ${colsMobile || "max-md:!grid-cols-2"}`}
       style={{
         gridTemplateColumns: columns
           ? `repeat(${columns}, minmax(0, 1fr))`
@@ -55,9 +57,13 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
     >
       <PatternBackground
         name={backgroundPatternName as BackgroundPatternName}
-        backgroundColor={generateColor(backgroundColor)}
+        backgroundColor={
+          backgroundColor ? getThemeColorValueByName(backgroundColor) : ""
+        }
         patternColor={
-          backgroundPatternColor ? generateColor(backgroundPatternColor) : ""
+          backgroundPatternColor
+            ? getThemeColorValueByName(backgroundPatternColor)
+            : ""
         }
         patternOpacity={backgroundPatternOpacity || 0.5}
         patternSize={backgroundPatternSize || 32}
@@ -75,48 +81,40 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
             contentType!,
             contentData,
             "tileImage",
-            getItemOption(options, "link", i)
+            itemLinks[i]
           ) || {};
 
         return (
           <div
             key={"tileImage_" + (name || i)}
-            className={`relative flex aspect-square cursor-pointer items-center justify-center transition duration-300 ease-in-out hover:scale-[1.01] ${borderDisplay}
-            ${joinedContent.length % 2 !== 0 ? "max-sm:last:col-span-full" : ""}
-            `}
-            style={{
-              backgroundColor: getItemOption(options, "colorSecondary", i)
-                ? generateColor(getItemOption(options, "colorSecondary", i))
-                : "unset",
-              borderRadius: borderRadius || "unset",
-              border:
-                borderSize && borderColor
-                  ? `${borderSize} solid ${generateColor(borderColor)}`
-                  : "unset",
-            }}
+            className={`relative flex aspect-square cursor-pointer items-center justify-center transition duration-300 ease-in-out hover:scale-[1.01] 
+            ${borderDisplay} ${borderRadius}
+            ${
+              joinedContent.length % 2 !== 0 ? "max-sm:last:col-span-full" : ""
+            }`}
           >
             {contentType === "icon" && (
               <IconTile
                 borderRadius={borderRadius}
-                filter={getItemOption(options, "filter", i)}
+                filter={itemFilters[i]}
                 imageSrc={imageSrc}
                 index={i}
-                title={getItemOption(options, "title", i)}
+                title={itemTitles[i]}
                 joinedContent={joinedContent}
-                link={getItemOption(options, "link", i)}
+                link={itemLinks[i]}
                 name={name}
-                itemColor={getItemOption(options, "color", i)}
+                itemColor={itemColors[i]}
+                itemTitleColor={itemTitleColors[i]}
+                itemBackgroundColor={itemBackgroundColors[i]}
               />
             )}
 
             {contentType !== "icon" && (
               <ContentTile
                 borderRadius={borderRadius}
-                filter={getItemOption(options, "filter", i) as string}
+                filter={itemFilters[i]}
                 imageSrc={imageSrc}
-                itemSecondaryColor={
-                  getItemOption(options, "colorSecondary", i) as string
-                }
+                itemBackgroundColor={itemBackgroundColors[i]}
                 joinedContent={joinedContent}
                 link={link}
                 name={name}

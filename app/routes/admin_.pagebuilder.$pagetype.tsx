@@ -36,7 +36,7 @@ import { getArticleCategories } from "~/models/articleCategories.server";
 import { getAvailableColors } from "~/models/enums.server";
 import { getBlocks } from "~/helpers/blockHelpers";
 import PatternBackground from "~/components/Layout/PatternBackground";
-import { generateColor } from "~/utility/colors";
+import { getThemeColorValueByName } from "~/utility/colors";
 import { sortPreviewPages } from "~/helpers/sortHelpers";
 import {
   addPreviewPage,
@@ -338,16 +338,16 @@ const ManageHomePage = () => {
       <div className="relative h-full p-6 max-sm:p-0 sm:w-full">
         <div className="absolute left-0 top-0 h-full w-full bg-brand-white"></div>
         <PatternBackground
-          backgroundColor={generateColor("BLACK")}
+          backgroundColor={getThemeColorValueByName("brand-black")}
           brightness={-1.5}
           name="isometric"
-          patternColor={generateColor("WHITE")}
+          patternColor={getThemeColorValueByName("brand-white")}
           patternOpacity={0.2}
           patternSize={140}
         />
 
         <div className="flex w-full justify-center">
-          <div className="flex flex-col gap-6 rounded-none text-brand-white">
+          <div className="flex flex-col gap-3 rounded-none text-brand-white">
             <div className="relative flex flex-col items-center justify-center gap-6 bg-brand-black py-6 text-center text-xl font-bold text-brand-white max-sm:gap-3">
               <div className="w-full">
                 {page.title ? page.title : "Add Page"}

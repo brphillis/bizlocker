@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import Map from "~/components/Map/index.client";
-import { generateColor } from "~/utility/colors";
+import { getThemeColorValueByName } from "~/utility/colors";
 import type { BlockOptions } from "@prisma/client";
 import type { BlockContent } from "~/models/blocks.server";
 import type { MapFunctions } from "~/components/Map/types";
@@ -27,11 +27,8 @@ const MapBlock = ({ content, options: optionsArray }: Props) => {
     titleAlign,
     titleColor,
     margin,
-    itemBorderColor,
-    itemBorderDisplay,
-    itemBorderRadius,
-    itemBorderSize,
-    itemColor,
+    itemBorderDisplays,
+    primaryColor,
   } = options || {};
 
   const locations = content.store as StoreWithDetails[];
@@ -66,29 +63,21 @@ const MapBlock = ({ content, options: optionsArray }: Props) => {
     >
       {title && (
         <h1
-          style={{ color: generateColor(titleColor || "BLACK") }}
-          className={`relative ${titleSize} ${titleAlign} ${titleWeight} w-full pb-0 max-md:py-3`}
+          className={`relative w-full pb-0 max-md:py-3 ${titleSize} ${titleAlign} ${titleWeight} ${titleColor}`}
         >
           {title}
         </h1>
       )}
       <div
-        className={`relative z-0 w-full ${borderDisplay} overflow-hidden`}
-        style={{
-          borderRadius: borderRadius || "unset",
-          height: blockHeight(),
-          border:
-            borderSize && borderColor
-              ? `${borderSize} solid ${generateColor(borderColor)}`
-              : "unset",
-        }}
+        className={`relative z-0 w-full overflow-hidden ${borderDisplay} ${borderRadius} ${borderSize} ${borderColor}`}
+        style={{ height: blockHeight() }}
       >
         <ClientOnly fallback={<div id="skeleton" />}>
           {() => (
             <Map
               ref={mapRef}
               locations={locations}
-              markerColor={generateColor(itemColor || "BLUE")}
+              markerColor={getThemeColorValueByName(primaryColor || "BLUE")}
             />
           )}
         </ClientOnly>
@@ -113,16 +102,7 @@ const MapBlock = ({ content, options: optionsArray }: Props) => {
             return (
               <div
                 key={"card_" + index}
-                style={{
-                  borderRadius: itemBorderRadius || "unset",
-                  border:
-                    itemBorderSize && itemBorderColor
-                      ? `${itemBorderSize} solid ${generateColor(
-                          itemBorderColor
-                        )}`
-                      : "unset",
-                }}
-                className={`relative z-0 flex flex-col justify-center overflow-hidden bg-gray-50 ${itemBorderDisplay}`}
+                className={`relative z-0 flex flex-col justify-center overflow-hidden bg-gray-50 ${itemBorderDisplays[index]} ${borderRadius}`}
                 onClick={() =>
                   latitude &&
                   longitude &&
@@ -131,18 +111,12 @@ const MapBlock = ({ content, options: optionsArray }: Props) => {
               >
                 <div className="group relative bg-white px-6 pb-8 pt-6 shadow-xl ring-1 ring-gray-900/5 transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl sm:mx-auto sm:px-10">
                   <span
-                    style={{
-                      backgroundColor: generateColor(itemColor || "BLUE"),
-                    }}
-                    className="absolute top-6 z-0 h-14 w-14 rounded-full  transition-all duration-500 group-hover:scale-[18]"
+                    className={`absolute top-6 z-0 h-14 w-14 rounded-full  transition-all duration-500 group-hover:scale-[18] ${primaryColor}`}
                   ></span>
                   <div className="relative z-10 mx-auto">
                     <div className="flex flex-row items-center gap-3">
                       <div
-                        style={{
-                          backgroundColor: generateColor(itemColor || "BLUE"),
-                        }}
-                        className="grid h-14 w-14 place-items-center rounded-full transition-all duration-500 "
+                        className={`grid h-14 w-14 place-items-center rounded-full transition-all duration-500 ${primaryColor}`}
                       >
                         <IoLocationSharp size={24} color="white" />
                       </div>
@@ -165,12 +139,7 @@ const MapBlock = ({ content, options: optionsArray }: Props) => {
                       <div>
                         <div className="flex cursor-pointer items-center gap-3">
                           <div
-                            style={{
-                              backgroundColor: generateColor(
-                                itemColor || "BLUE"
-                              ),
-                            }}
-                            className="rounded-full p-1 text-brand-white"
+                            className={`rounded-full p-1 text-brand-white ${primaryColor}`}
                           >
                             <IoCall size={14} />
                           </div>
@@ -183,12 +152,7 @@ const MapBlock = ({ content, options: optionsArray }: Props) => {
                         </div>
                         <div className="mt-1 flex cursor-pointer items-center gap-3">
                           <div
-                            style={{
-                              backgroundColor: generateColor(
-                                itemColor || "BLUE"
-                              ),
-                            }}
-                            className="rounded-full p-1 text-brand-white"
+                            className={`rounded-full p-1 text-brand-white ${primaryColor}`}
                           >
                             <IoPrint size={14} />
                           </div>

@@ -2,7 +2,7 @@ import type { BlockContent } from "~/models/blocks.server";
 import type { BrandWithContent } from "~/models/brands.server";
 import type { CampaignWithContent } from "~/models/campaigns.server";
 import type { PromotionWithContent } from "~/models/promotions.server";
-import type { BlockContentType } from "~/utility/blockMaster/types";
+import type { BlockContentType, BlockName } from "~/utility/blockMaster/types";
 import type {
   BlockOptions,
   Brand,
@@ -10,18 +10,19 @@ import type {
   Image,
   Promotion,
 } from "@prisma/client";
+import { blockMaster } from "~/utility/blockMaster/blockMaster";
 
 //gets the correct option for the item, example "title1"
 export const getItemOption = (
   options: BlockOptions,
   key: string,
   index: number
-): string => {
+): string | undefined => {
   const result = options[`${key}${index + 1}` as keyof BlockOptions] as string;
 
   if (result) {
     return result;
-  } else return "undefined";
+  } else return undefined;
 };
 
 export const determineSingleContentType = (
@@ -78,7 +79,7 @@ export const buildContentImageFromContent = (
   contentType: BlockContentType,
   contentData: BlockContent,
   tileOrBanner: "tileImage" | "bannerImage",
-  itemLink: string
+  itemLink?: string
 ) => {
   let name: string = "tileImage";
   let link: string = " ";
@@ -110,4 +111,12 @@ export const buildContentImageFromContent = (
 
   //if a custom links is set in the editor we over ride with it
   return { name, link, imageSrc };
+};
+
+export const blockHasMaxContentItems = (blockName: BlockName): boolean => {
+  const blockDetails = blockMaster.find((e) => e.name === blockName);
+
+  if (blockDetails && blockDetails.maxContentItems) {
+    return true;
+  } else return false;
 };

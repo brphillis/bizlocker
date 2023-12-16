@@ -12,7 +12,7 @@ import {
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import { useNavigate } from "@remix-run/react";
 import PatternBackground from "~/components/Layout/PatternBackground";
-import { generateColor } from "~/utility/colors";
+import { getThemeColorValueByName } from "~/utility/colors";
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
 
@@ -34,8 +34,8 @@ const Home = () => {
       <div className="relative flex h-full w-full items-center justify-center bg-base-200 p-6">
         <PatternBackground
           name="isometric"
-          backgroundColor={generateColor("BLACK")}
-          patternColor={generateColor("WHITE")}
+          backgroundColor={getThemeColorValueByName("brand-black")}
+          patternColor={getThemeColorValueByName("brand-white")}
           patternOpacity={0.2}
           patternSize={140}
           brightness={-1.5}

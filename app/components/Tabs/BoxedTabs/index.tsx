@@ -5,6 +5,7 @@ type Props = {
   tabNames: string[];
   activeTab: string;
   onTabChange: (tab: string) => void;
+  dynamicTabNames?: boolean;
 };
 
 const BoxedTabs = (props: Props) => {
@@ -13,6 +14,12 @@ const BoxedTabs = (props: Props) => {
   useEffect(() => {
     props.onTabChange(activeTab);
   }, [activeTab, props]);
+
+  useEffect(() => {
+    if (props.dynamicTabNames) {
+      setActiveTab(props.tabNames[0]);
+    }
+  }, [props.tabNames, props.dynamicTabNames]);
 
   return (
     <div

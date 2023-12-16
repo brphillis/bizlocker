@@ -1,23 +1,26 @@
 import { useNavigate } from "@remix-run/react";
-import React from "react";
 import Icon from "~/components/Icon";
-import { generateColor } from "~/utility/colors";
+import { getThemeColorValueByName } from "~/utility/colors";
 
 type Props = {
   index: number;
   joinedContent: any;
-  itemColor: string;
+  itemColor?: string;
+  itemTitleColor?: string;
+  itemBackgroundColor?: string;
   borderRadius: string | null | undefined;
-  filter: string;
-  title: string;
+  filter?: string;
+  title?: string;
   name: string;
   imageSrc: string;
-  link: string;
+  link?: string;
 };
 
 const IconTile = ({
   index,
   itemColor,
+  itemTitleColor,
+  itemBackgroundColor,
   title,
   filter,
   borderRadius,
@@ -25,31 +28,36 @@ const IconTile = ({
   link,
 }: Props) => {
   const navigate = useNavigate();
+
   return (
     <div
-      className={`h-fit w-fit
-  ${filter} 
-  ${borderRadius ? "p-3" : " "}
-  ${borderRadius === "100%" ? "max-md:!p-2" : " "}
-
-  flex flex-col items-center justify-center`}
-      onClick={() => link && navigate(link || "")}
+      className={`flex h-full w-full flex-col items-center justify-center
+      ${filter} 
+      ${itemBackgroundColor}
+      ${borderRadius ? "p-3" : " "}
+      ${
+        borderRadius === "rounded-full" || borderRadius?.includes("mask")
+          ? "max-md:!p-2"
+          : " "
+      }`}
+      onClick={() => (link ? navigate(link) : null)}
     >
       <Icon
         iconName={joinedContent[index].icon as any}
         size={1000}
         styles="h-[80%] w-[80%] p-[20%] -mb-2 -mt-[20%] max-md:-mt-3"
-        color={generateColor(itemColor || "BLACK")}
+        color={itemColor ? getThemeColorValueByName(itemColor) : undefined}
       />
-      <p
-        className="-mt-[15%] font-bold max-md:-mt-1 max-md:!text-xs"
-        style={{
-          color: generateColor(itemColor || "BLACK"),
-          fontSize: "150%",
-        }}
-      >
-        {title}
-      </p>
+      {title && title !== "undefined" && (
+        <p
+          className={`-mt-[15%] font-bold max-md:-mt-1 max-md:!text-xs ${itemTitleColor}`}
+          style={{
+            fontSize: "150%",
+          }}
+        >
+          {title}
+        </p>
+      )}
     </div>
   );
 };

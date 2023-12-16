@@ -54,14 +54,14 @@ const ContentSearch = ({
           <span className="absolute -mt-10 block font-bold">
             Content Selection
           </span>
-          <div className="flex flex-wrap items-end gap-3">
-            <div className="form-control text-brand-black">
+          <div className="flex flex-wrap items-end justify-start gap-3 max-md:justify-end">
+            <div className="form-control w-[215px] text-brand-black max-md:w-full">
               <label className="label text-sm text-brand-white">
-                Content Selection
+                Content Type
               </label>
               <select
                 name="contentType"
-                className=" select w-[95vw] max-w-full sm:w-[215px]"
+                className="select w-full"
                 onChange={(e) => {
                   handleSearchSubmit(e.target.value, undefined);
                   setContentType(e.target.value);
@@ -96,7 +96,7 @@ const ContentSearch = ({
 
             <button
               type="button"
-              className="btn-primary btn-sm !h-[42px] rounded-sm"
+              className="btn-primary btn-sm !h-[42px] rounded-sm bg-primary hover:bg-primary-dark max-md:mt-3"
               onClick={() => {
                 handleSearchSubmit(contentType, searchValue);
               }}

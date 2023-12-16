@@ -11,3 +11,23 @@ export const hasTruePropertyStartingWith = (
   Object.entries(obj).some(
     ([key, value]) => key.startsWith(prefix) && value === true
   );
+
+export const searchObjectByKey = (
+  obj: AnyObject,
+  key: string
+): any | undefined => {
+  if (obj.hasOwnProperty(key)) {
+    return obj[key];
+  }
+
+  for (const objKey in obj) {
+    if (obj.hasOwnProperty(objKey) && typeof obj[objKey] === "object") {
+      const nestedResult = searchObjectByKey(obj[objKey], key);
+      if (nestedResult !== undefined) {
+        return nestedResult;
+      }
+    }
+  }
+
+  return undefined;
+};
