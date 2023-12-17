@@ -19,17 +19,9 @@ const SelectedContent = ({
 
   const selectedItemsTotal = selectedItems?.length;
 
-  const shouldDisplay = () => {
-    const blockTypes = ["banner", "tile", "map", "hero"];
-
-    if (selectedBlock && blockTypes.includes(selectedBlock)) {
-      return true;
-    } else return false;
-  };
-
   return (
     <>
-      {selectedItems && selectedItems.length > 0 && shouldDisplay() && (
+      {selectedItems && selectedItems.length > 0 && (
         <div className="py-6">
           <div className="ml-3 pb-3">
             Selected Items{" "}
@@ -42,7 +34,6 @@ const SelectedContent = ({
           <div className="flex flex-col gap-3">
             {selectedItems &&
               selectedItems.length > 0 &&
-              shouldDisplay() &&
               selectedItems?.map((data: ContentSelection, index) => {
                 const { name, type } = data || {};
 

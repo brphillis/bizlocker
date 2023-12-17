@@ -244,6 +244,7 @@ const updateOrCreateBlockOptions = async (
   blockId: string,
   blockOptions: BlockOptions
 ): Promise<BlockOptions> => {
+  console.log("BO", blockOptions);
   // we set unndefined keys to null so the enum values can be removed/disconnected
   const sanitizedBlockOptions: BlockOptions = { ...blockOptions };
   for (const key in sanitizedBlockOptions) {

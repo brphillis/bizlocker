@@ -28,7 +28,10 @@ import {
 import MobileButtonContainer from "~/components/Layout/_Website/Navigation/MobileButtonContainer";
 import DesktopButtonContainer from "~/components/Layout/_Website/Navigation/DesktopButtonContainer";
 
+import "../../node_modules/swiper/swiper.min.css";
+import "../../node_modules/swiper/modules/navigation.min.css";
 import "sweetalert2/dist/sweetalert2.css";
+
 import type { User } from "@prisma/client";
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },

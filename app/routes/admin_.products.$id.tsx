@@ -33,21 +33,13 @@ import UploadMultipleImages from "~/components/Forms/Upload/UploadMultipleImages
 import {
   redirect,
   type ActionFunctionArgs,
-  type LinksFunction,
   type LoaderFunctionArgs,
   json,
 } from "@remix-run/node";
-import swiper from "../../node_modules/swiper/swiper.min.css";
-import swiperNav from "../../node_modules/swiper/modules/navigation.min.css";
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY, getUserDataFromSession } from "~/session.server";
 import { ClientOnly } from "~/components/Utility/ClientOnly";
 import type { Image, Staff } from "@prisma/client";
-
-export const links: LinksFunction = () => [
-  { rel: "stylesheet", href: swiper },
-  { rel: "stylesheet", href: swiperNav },
-];
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);

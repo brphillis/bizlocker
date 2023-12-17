@@ -45,7 +45,7 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
 
   return (
     <div
-      className={`relative grid h-max place-items-center gap-3 px-3 sm:gap-6 ${margin} ${padding} 
+      className={`relative grid h-max place-items-center gap-3 max-md:px-3 sm:gap-6 ${margin} ${padding} 
       ${colsMobile || "max-md:!grid-cols-2"}`}
       style={{
         gridTemplateColumns: columns
@@ -58,12 +58,12 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
       <PatternBackground
         name={backgroundPatternName as BackgroundPatternName}
         backgroundColor={
-          backgroundColor ? getThemeColorValueByName(backgroundColor) : ""
+          backgroundColor ? getThemeColorValueByName(backgroundColor) : "unset"
         }
         patternColor={
           backgroundPatternColor
             ? getThemeColorValueByName(backgroundPatternColor)
-            : ""
+            : "unset"
         }
         patternOpacity={backgroundPatternOpacity || 0.5}
         patternSize={backgroundPatternSize || 32}

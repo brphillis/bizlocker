@@ -17,18 +17,20 @@ const ResultsImages = ({
   searchResults,
   contentType,
 }: Props) => {
-  const shouldDisplay = () => {
-    const blockTypes = ["banner", "tile", "hero"];
-    const contentTypes = ["image"];
+  const shouldDisplay = (): boolean => {
+    if (!searchResults) {
+      return false;
+    }
 
-    if (
-      contentType &&
-      selectedBlock &&
-      contentTypes.includes(contentType) &&
-      blockTypes.includes(selectedBlock)
-    ) {
-      return true;
-    } else return false;
+    let displayBool = true;
+
+    searchResults.forEach((e) => {
+      if (!e.hasOwnProperty("href")) {
+        displayBool = false;
+      }
+    });
+
+    return displayBool;
   };
 
   const selectItems = (

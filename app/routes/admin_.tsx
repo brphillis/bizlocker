@@ -9,6 +9,10 @@ import { useLoaderData, useLocation, useNavigate } from "@remix-run/react";
 import AdminSideBar from "~/components/Layout/_Admin/Navigation/SideBar";
 import { type StaffWithDetails } from "~/models/auth/staff.server";
 
+import "../../node_modules/swiper/swiper.min.css";
+import "../../node_modules/swiper/modules/navigation.min.css";
+import "sweetalert2/dist/sweetalert2.css";
+
 export const meta: MetaFunction = ({ data }) => {
   return [
     { title: "CLUTCH | Admin Portal" },

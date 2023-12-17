@@ -9,6 +9,10 @@ import {
   borderSizeSelectValues,
 } from "../Values/borders";
 import ItemColorInput from "../Components/Items/ItemColorInput";
+import {
+  fontSizeSelectValues,
+  mobileFontSizeSelectValues,
+} from "../Values/font";
 
 type Props = {
   selectedItems: ContentSelection[];
@@ -118,6 +122,26 @@ const ItemOptions = ({
         valueName="Title"
         blockMasterOption={selectedBlockOptions?.itemTitles}
         defaultValues={defaultValues?.itemTitles}
+      />
+
+      <ItemSelectInput
+        title="Item Title Sizes"
+        formName="itemTitleSizes"
+        selectedItems={selectedItems}
+        valueName="Title Size"
+        blockMasterOption={selectedBlockOptions?.itemTitleSizes}
+        defaultValues={defaultValues?.itemTitleSizes}
+        selections={fontSizeSelectValues}
+      />
+
+      <ItemSelectInput
+        title="Item Title Sizes Mobile"
+        formName="itemTitleSizesMobile"
+        selectedItems={selectedItems}
+        valueName="Title Size Mobile"
+        blockMasterOption={selectedBlockOptions?.itemTitleSizesMobile}
+        defaultValues={defaultValues?.itemTitleSizesMobile}
+        selections={mobileFontSizeSelectValues}
       />
 
       <ItemColorInput

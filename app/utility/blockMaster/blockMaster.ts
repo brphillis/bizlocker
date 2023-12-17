@@ -7,6 +7,7 @@ import HeroBlock from "~/components/Blocks/HeroBlock";
 import ProductBlock from "~/components/Blocks/ProductBlock";
 import ArticleBlock from "~/components/Blocks/ArticleBlock";
 import MapBlock from "~/components/Blocks/MapBlock";
+import CarouselBlock from "~/components/Blocks/CarouselBlock";
 
 export type BlockMasterOptions = TransformToOptionalBooleans<BlockOptions>;
 
@@ -18,7 +19,6 @@ export interface BlockMaster {
   content: Object;
   addOns?: string[];
   contentRequired?: boolean;
-  hasMultipleContent?: boolean;
   maxContentItems?: number;
 }
 
@@ -27,6 +27,7 @@ export const blockMaster: BlockMaster[] = [
     name: "banner",
     component: BannerBlock,
     icon: "IoTabletLandscape",
+    maxContentItems: 1,
     options: {
       backgroundColor: true,
       backgroundColorSecondary: true,
@@ -63,10 +64,34 @@ export const blockMaster: BlockMaster[] = [
     },
   },
   {
+    name: "carousel",
+    component: CarouselBlock,
+    icon: "IoLaptopSharp",
+    maxContentItems: 10,
+    options: {
+      size: true,
+      sizeMobile: true,
+      margin: true,
+      itemBackgroundColors: true,
+      itemBorderColors: true,
+      itemBorderRadius: true,
+      itemColors: true,
+      itemSecondaryColors: true,
+      itemTitles: true,
+      itemTitleColors: true,
+      itemTitleSizes: true,
+      itemTitleSizesMobile: true,
+    },
+    content: {
+      include: {
+        image: true,
+      },
+    },
+  },
+  {
     name: "tile",
     component: TileBlock,
     icon: "IoGrid",
-    hasMultipleContent: true,
     maxContentItems: 6,
     options: {
       backgroundBrightness: true,
@@ -138,6 +163,8 @@ export const blockMaster: BlockMaster[] = [
       style: true,
       title: true,
       titleColor: true,
+      titleSize: true,
+      titleSizeMobile: true,
     },
     content: {
       include: {
@@ -159,7 +186,6 @@ export const blockMaster: BlockMaster[] = [
     name: "map",
     component: MapBlock,
     icon: "IoMap",
-    hasMultipleContent: true,
     maxContentItems: 100,
     options: {
       borderColor: true,

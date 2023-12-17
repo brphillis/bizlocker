@@ -124,12 +124,16 @@ export const getFormBlockOptions = (form: {
     primaryColor,
     secondaryColor,
     titleAlign,
+    titleColor,
     titleSize,
+    titleSizeMobile,
     titleWeight,
     itemBorderDisplays,
     itemBorderSizes,
     itemBorderColors,
     itemBorderRadius,
+    itemTitleSizes,
+    itemTitleSizesMobile,
   } = form;
 
   const blockOptions = {
@@ -183,6 +187,12 @@ export const getFormBlockOptions = (form: {
     flipX: flipX ? (flipX as string) : undefined,
     itemLinks: itemLinks ? JSON.parse(itemLinks as string) : undefined,
     itemTitles: itemTitles ? JSON.parse(itemTitles as string) : undefined,
+    itemTitleSizes: itemTitleSizes
+      ? JSON.parse(itemTitleSizes as string)
+      : undefined,
+    itemTitleSizesMobile: itemTitleSizesMobile
+      ? JSON.parse(itemTitleSizesMobile as string)
+      : undefined,
     itemTitleColors: itemTitleColors
       ? JSON.parse(itemTitleColors as string)
       : undefined,
@@ -212,6 +222,8 @@ export const getFormBlockOptions = (form: {
     secondaryColor: secondaryColor ? (secondaryColor as string) : undefined,
     titleAlign: titleAlign ? (titleAlign as string) : undefined,
     titleSize: titleSize ? (titleSize as string) : undefined,
+    titleSizeMobile: titleSizeMobile ? (titleSizeMobile as string) : undefined,
+    titleColor: titleColor ? (titleColor as string) : undefined,
     titleWeight: titleWeight ? (titleWeight as string) : undefined,
     itemBorderDisplays: itemBorderDisplays
       ? JSON.parse(itemBorderDisplays as string)
@@ -258,7 +270,9 @@ export const buildNewBlockData = (
   let newData: any = {};
 
   // we go through the blockmaster object getting the relevant data
-  blockMaster.map(({ name, hasMultipleContent }: BlockMaster) => {
+  blockMaster.map(({ name, maxContentItems }: BlockMaster) => {
+    const hasMultipleContent = maxContentItems && maxContentItems > 1;
+
     if (blockName === name) {
       // we get the types of content by key that the block requires
       const blockContentTypes = getBlockContentTypes(name);

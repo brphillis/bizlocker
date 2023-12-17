@@ -40,7 +40,7 @@ const UploadImage = ({ defaultValue, name, label }: Props) => {
         </div>
       )}
 
-      {!image && (
+      {!image?.href && (
         <input
           name="imageUpload"
           type="file"

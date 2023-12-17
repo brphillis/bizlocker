@@ -16,6 +16,22 @@ const ColorPickerInput = ({
   tooltip,
   customWidth,
 }: Props) => {
+  const handleInputBackgroundString = (bgString: string): string => {
+    let formattedString = bgString;
+
+    if (formattedString.includes("-")) {
+      let stringArray = formattedString.split("-");
+
+      stringArray[0] = "bg";
+
+      formattedString = stringArray.join("-");
+
+      return formattedString;
+    }
+
+    return formattedString;
+  };
+
   return (
     <div
       className={`form-control relative w-[215px] max-md:w-full max-md:items-center ${
@@ -30,12 +46,11 @@ const ColorPickerInput = ({
       </label>
 
       <div
-        className={`h-[42px] w-full cursor-pointer border-[1px] border-brand-white/25 
-       ${
-         inputBackgroundColor?.startsWith("bg-")
-           ? inputBackgroundColor
-           : "bg-" + inputBackgroundColor
-       }`}
+        className={`h-[42px] w-full cursor-pointer border-[1px] border-brand-white/25 ${
+          inputBackgroundColor
+            ? handleInputBackgroundString(inputBackgroundColor)
+            : "bg-transparent"
+        }`}
         onClick={() => {
           inputOnClick();
         }}

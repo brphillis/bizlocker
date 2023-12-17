@@ -19,6 +19,8 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
   const {
     title,
     titleColor,
+    titleSize,
+    titleSizeMobile,
     shortText,
     shortTextColor,
     backgroundColor,
@@ -74,12 +76,12 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
         backgroundColor={
           backgroundColorSecondary
             ? getThemeColorValueByName(backgroundColorSecondary)
-            : ""
+            : "unset"
         }
         patternColor={
           backgroundPatternColorSecondary
             ? getThemeColorValueByName(backgroundPatternColorSecondary)
-            : ""
+            : "unset"
         }
         patternOpacity={backgroundPatternOpacitySecondary || 0.5}
         patternSize={backgroundPatternSizeSecondary || 32}
@@ -88,7 +90,7 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
       />
 
       <div
-        className={`relative flex items-center bg-white shadow-sm 
+        className={`relative flex items-center shadow-sm 
         ${borderDisplay} ${borderRadius} ${flipX} ${borderSize} ${borderColor}`}
       >
         <div
@@ -97,8 +99,8 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
           <div className="relative mr-16 flex w-[60%] flex-col gap-[20%] max-md:w-4/5 max-md:justify-between max-md:gap-16 max-sm:mr-0">
             <div>
               <h1
-                className={`flex max-w-[500px] select-none flex-col text-7xl font-bold uppercase leading-none max-md:max-w-[200px] max-md:text-4xl max-md:leading-10 
-                ${flipX} ${titleColor}`}
+                className={`flex max-w-[500px] select-none flex-col font-bold uppercase leading-none max-md:max-w-[200px] max-md:leading-10 
+                ${flipX} ${titleColor} ${titleSize} ${titleSizeMobile}`}
               >
                 {title}
               </h1>
