@@ -4,7 +4,7 @@
 
 .btn {
   @apply rounded-none;
-  @apply border-white/20;
+  /* @apply border-white/20; */
 }
 
 .input,

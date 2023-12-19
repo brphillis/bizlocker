@@ -1,37 +1,32 @@
 const fs = require("fs");
 const themeColors = require("./theme");
+const colorPrefixList = require("./themeColorPrefixList");
 
-// BACKGROUND TYPES
-const tailwindTypes_BG = Object.keys(themeColors).map((key) => `bg-${key}`);
-const fileContent_BG = `export const bgColors = ${JSON.stringify(
-  tailwindTypes_BG,
-  null,
-  2
-)};\n`;
+let combinedContent = "";
 
-// TEXT TYPES
-const tailwindTypes_TEXT = Object.keys(themeColors).map((key) => `text-${key}`);
-const fileContent_TEXT = `export const textColors = ${JSON.stringify(
-  tailwindTypes_TEXT,
-  null,
-  2
-)};\n`;
+// Build an object with all opacity values added onto each color
+const opacitySteps = Array.from({ length: 10 }, (_, index) => (index + 1) * 10);
 
-// BORDER TYPES
-const tailwindTypes_BORDER = Object.keys(themeColors).map(
-  (key) => `border-${key}`
-);
-const fileContent_BORDER = `export const borderColors = ${JSON.stringify(
-  tailwindTypes_BORDER,
-  null,
-  2
-)};\n`;
+const themeColorsWithOpacity = Object.keys(themeColors).flatMap((key) => {
+  const colorWithNumericValues = opacitySteps.map((value) => `${key}/${value}`);
+  return [key, ...colorWithNumericValues];
+});
 
-// Combine all content
-const combinedContent = fileContent_BG + fileContent_TEXT + fileContent_BORDER;
+// Build Theme Colors
+for (const prefix of colorPrefixList) {
+  const currentType = themeColorsWithOpacity.map((key) => `${prefix}${key}`);
+
+  const content = `export const ${
+    prefix.replace("-", "_") + "Colorlist"
+  } = ${JSON.stringify(currentType, null, 2)};\n`;
+
+  combinedContent += content;
+}
 
 // Specify the file path
 const filePath = "./app/utility/build/tailwindtypes.ts";
 
-// Write the combined content to the file
-fs.writeFileSync(filePath, combinedContent);
+if (combinedContent) {
+  // Write the combined content to the file
+  fs.writeFileSync(filePath, combinedContent);
+}

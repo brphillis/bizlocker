@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["relationJoins"]
 }
 
 datasource db {
@@ -89,12 +90,13 @@ model Block {
 }
 
 model BlockOptions {
-  id                                String     @id @unique @default(cuid())
+  id                                String   @id @unique @default(cuid())
   autoplay                          String?
   backgroundBrightness              Float?
   backgroundBrightnessSecondary     Float?
   backgroundColor                   String?
   backgroundColorSecondary          String?
+  backgroundDisplay                 String?
   backgroundPatternColor            String?
   backgroundPatternColorSecondary   String?
   backgroundPatternName             String?
@@ -105,55 +107,97 @@ model BlockOptions {
   backgroundPatternSizeSecondary    Int?
   backgroundWidth                   String?
   backgroundWidthSecondary          String?
-  block                             Block      @relation("BlockToBlockOptions", fields: [blockId], references: [id])
+  block                             Block    @relation("BlockToBlockOptions", fields: [blockId], references: [id])
   blockId                           String
   borderColor                       String?
   borderDisplay                     String?
   borderRadius                      String?
   borderSize                        String?
-  columns                           Int?
-  columnsMobile                     Int?
+  columns                           Float?
+  columnsMobile                     Float?
   count                             Int?
   flipX                             String?
+  imagePosition                     String?
+  imagePositionMobile               String?
+  align                             String?
+  justify                           String?
+  alignMobile                       String?
+  justifyMobile                     String?
+  itemAlign                         String[]
+  itemJustify                       String[]
+  itemAlignMobile                   String[]
+  itemJustifyMobile                 String[]
+  itemBackgroundColors              String[]
   itemBorderColors                  String[]
   itemBorderDisplays                String[]
   itemBorderRadius                  String[]
   itemBorderSizes                   String[]
+  itemColorOpacity                  String[]
   itemColors                        String[]
-  itemBackgroundColors              String[]
-  itemSecondaryBackgroundColors     String[]
   itemFilters                       String[]
+  itemImagePositions                String[]
+  itemImagePositionsMobile          String[]
   itemLinks                         String[]
-  itemSecondaryColors               String[]
-  itemTitles                        String[]
-  itemTitleSizes                    String[]
-  itemTitleSizesMobile              String[]
-  itemTitleColors                   String[]
-  margin                            String?
-  order                             Int?
-  padding                           String?
-  primaryColor                      String?
-  primaryLink                       String?
-  rows                              Int?
-  secondaryColor                    String?
-  secondaryLink                     String?
-  shortText                         String?
-  shortTextColor                    String?
-  size                              String?
-  sizeMobile                        String?
-  sortBy                            SortBy?
-  sortOrder                         SortOrder?
-  speed                             String?
-  style                             String?
-  title                             String?
-  titleAlign                        String?
-  titleColor                        String?
-  titleSize                         String?
-  titleSizeMobile                   String?
-  titleWeight                       String?
+  itemPrimaryButtonLinks            String[]
+  itemPrimaryButtonLabels           String[]
+  itemPrimaryButtonLabelColors      String[]
+  itemPrimaryButtonColors           String[]
+  itemPrimaryButtonBorderColors     String[]
+  itemPrimaryButtons                String[]
+  itemSecondaryBackgroundColors     String[]
+  itemSecondaryButtonLinks          String[]
 
-  createdAt String @default("2023-12-07T15:30:00Z")
-  updatedAt String @default("2023-12-07T15:30:00Z")
+  itemSecondaryButtonLabels       String[]
+  itemSecondaryButtonLabelColors  String[]
+  itemSecondaryButtonColors       String[]
+  itemSecondaryButtonBorderColors String[]
+
+  itemSecondaryButtons       String[]
+  itemSecondaryColors        String[]
+  itemShortText              String[]
+  itemShortTextColors        String[]
+  itemShortTextSizes         String[]
+  itemShortTextSizesMobile   String[]
+  itemTitleColors            String[]
+  itemTitles                 String[]
+  itemTitleSizes             String[]
+  itemTitleSizesMobile       String[]
+  margin                     String?
+  order                      Int?
+  padding                    String?
+  primaryButton              String?
+  primaryButtonLabel         String?
+  primaryButtonLabelColor    String?
+  primaryButtonColor         String?
+  primaryButtonBorderColor   String?
+  primaryButtonLink          String?
+  primaryColor               String?
+  primaryLink                String?
+  rows                       Int?
+  secondaryButton            String?
+  secondaryButtonLabel       String?
+  secondaryButtonColor       String?
+  secondaryButtonLabelColor  String?
+  secondaryButtonBorderColor String?
+  secondaryButtonLink        String?
+  secondaryColor             String?
+  secondaryLink              String?
+  shortText                  String?
+  shortTextColor             String?
+  size                       String?
+  sizeMobile                 String?
+  sortBy                     SortBy?
+  sortOrder                  SortOrder?
+  speed                      String?
+  style                      String?
+  title                      String?
+  titleAlign                 String?
+  titleColor                 String?
+  titleSize                  String?
+  titleSizeMobile            String?
+  titleWeight                String?
+  createdAt                  String     @default("2023-12-07T15:30:00Z")
+  updatedAt                  String     @default("2023-12-07T15:30:00Z")
 }
 
 model HeroBlock {

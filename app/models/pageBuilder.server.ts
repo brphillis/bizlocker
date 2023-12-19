@@ -244,13 +244,13 @@ const updateOrCreateBlockOptions = async (
   blockId: string,
   blockOptions: BlockOptions
 ): Promise<BlockOptions> => {
-  console.log("BO", blockOptions);
   // we set unndefined keys to null so the enum values can be removed/disconnected
   const sanitizedBlockOptions: BlockOptions = { ...blockOptions };
   for (const key in sanitizedBlockOptions) {
     if (
-      sanitizedBlockOptions.hasOwnProperty(key) &&
-      sanitizedBlockOptions[key as keyof BlockOptions] === undefined
+      (sanitizedBlockOptions.hasOwnProperty(key) &&
+        sanitizedBlockOptions[key as keyof BlockOptions] === undefined) ||
+      null
     ) {
       delete sanitizedBlockOptions[key as keyof BlockOptions];
     }
@@ -622,22 +622,24 @@ export const publishPage = async (
     );
 
     if (blocksToValidate) {
-      blocksToValidate.map(async (id: string) => {
-        const blockToCheck = await prisma.block.findUnique({
-          where: { id },
-          include: includeAllPageTypes(undefined, true),
-        });
+      await Promise.all(
+        blocksToValidate.map(async (id: string) => {
+          const blockToCheck = await prisma.block.findUnique({
+            where: { id },
+            include: includeAllPageTypes(undefined, true),
+          });
 
-        if (blockToCheck && !pageBlockHasPageConnection(blockToCheck)) {
-          const blockCredentials =
-            getContentBlockCredentialsFromPageBlock(blockToCheck);
+          if (blockToCheck && !pageBlockHasPageConnection(blockToCheck)) {
+            const blockCredentials =
+              getContentBlockCredentialsFromPageBlock(blockToCheck);
 
-          if (blockCredentials) {
-            const { blockId, blockName } = blockCredentials;
-            removeBlock(blockId, blockName as BlockName);
+            if (blockCredentials) {
+              const { blockId, blockName } = blockCredentials;
+              await removeBlock(blockId, blockName as BlockName);
+            }
           }
-        }
-      });
+        })
+      );
     }
 
     return { success: true };
@@ -747,7 +749,7 @@ export const disconnectBlock = async (
           getContentBlockCredentialsFromPageBlock(disconnectedBlock);
         if (blockCredentials) {
           const { blockId, blockName } = blockCredentials;
-          removeBlock(blockId, blockName as BlockName);
+          await removeBlock(blockId, blockName as BlockName);
         }
       }
     } else {
@@ -789,6 +791,17 @@ export const removeBlock = async (
   );
   const pageBlockId = foundBlockType.block.id; // page block id
 
+  // Delete the BlockOptions
+  if (blockOptionsIds) {
+    await prisma.blockOptions.deleteMany({
+      where: {
+        id: {
+          in: blockOptionsIds,
+        },
+      },
+    });
+  }
+
   // Delete the blockContent eg: BannerBlockContent
   if (blockContentId) {
     const deleteBlockContent = prisma[`${blockName}BlockContent`].delete as (
@@ -797,15 +810,6 @@ export const removeBlock = async (
 
     await deleteBlockContent({
       where: { id: blockContentId },
-    });
-  }
-
-  // Delete the BlockOptions
-  if (blockOptionsIds) {
-    blockOptionsIds.forEach(async (e: string) => {
-      await prisma.blockOptions.delete({
-        where: { id: e },
-      });
     });
   }
 

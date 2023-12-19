@@ -84,6 +84,7 @@ export const getFormBlockOptions = (form: {
     backgroundBrightnessSecondary,
     backgroundColor,
     backgroundColorSecondary,
+    backgroundDisplay,
     backgroundPatternColor,
     backgroundPatternColorSecondary,
     backgroundPatternName,
@@ -103,13 +104,15 @@ export const getFormBlockOptions = (form: {
     count,
     flipX,
     itemLinks,
-    itemTitleColors,
     itemColors,
     itemSecondaryColors,
     itemBackgroundColors,
     itemSecondaryBackgroundColors,
     itemFilters,
-    itemTitles,
+    imagePosition,
+    imagePositionMobile,
+    itemImagePositions,
+    itemImagePositionsMobile,
     margin,
     padding,
     rows,
@@ -132,8 +135,46 @@ export const getFormBlockOptions = (form: {
     itemBorderSizes,
     itemBorderColors,
     itemBorderRadius,
+    primaryButton,
+    secondaryButton,
+    primaryButtonLink,
+    secondaryButtonLink,
+    itemPrimaryButtons,
+    itemSecondaryButtons,
+    itemPrimaryButtonLinks,
+    itemSecondaryButtonLinks,
     itemTitleSizes,
     itemTitleSizesMobile,
+    itemTitles,
+    itemTitleColors,
+    itemShortTextSizes,
+    itemShortTextSizesMobile,
+    itemShortText,
+    itemShortTextColors,
+    align,
+    justify,
+    alignMobile,
+    justifyMobile,
+    itemAlign,
+    itemJustify,
+    itemAlignMobile,
+    itemJustifyMobile,
+    primaryButtonLabel,
+    primaryButtonLabelColor,
+    primaryButtonColor,
+    primaryButtonBorderColor,
+    secondaryButtonLabel,
+    secondaryButtonLabelColor,
+    secondaryButtonColor,
+    secondaryButtonBorderColor,
+    itemPrimaryButtonLabels,
+    itemPrimaryButtonLabelColors,
+    itemPrimaryButtonColors,
+    itemPrimaryButtonBorderColors,
+    itemSecondaryButtonLabels,
+    itemSecondaryButtonLabelColors,
+    itemSecondaryButtonColors,
+    itemSecondaryButtonBorderColors,
   } = form;
 
   const blockOptions = {
@@ -144,6 +185,9 @@ export const getFormBlockOptions = (form: {
       ? parseFloat(backgroundBrightnessSecondary as string)
       : undefined,
     backgroundColor: backgroundColor ? (backgroundColor as string) : undefined,
+    backgroundDisplay: backgroundDisplay
+      ? (backgroundDisplay as string)
+      : undefined,
     backgroundWidth: backgroundWidth ? (backgroundWidth as string) : undefined,
     backgroundPatternName: backgroundPatternName
       ? (backgroundPatternName as string)
@@ -179,9 +223,9 @@ export const getFormBlockOptions = (form: {
     borderDisplay: borderDisplay ? (borderDisplay as string) : undefined,
     borderRadius: borderRadius ? (borderRadius as string) : undefined,
     borderSize: borderSize ? (borderSize as string) : undefined,
-    columns: columns ? parseInt(columns as string) : undefined,
+    columns: columns ? parseFloat(columns as string) : undefined,
     columnsMobile: columnsMobile
-      ? parseInt(columnsMobile as string)
+      ? parseFloat(columnsMobile as string)
       : undefined,
     count: count ? parseInt(count as string) : undefined,
     flipX: flipX ? (flipX as string) : undefined,
@@ -196,6 +240,26 @@ export const getFormBlockOptions = (form: {
     itemTitleColors: itemTitleColors
       ? JSON.parse(itemTitleColors as string)
       : undefined,
+    itemShortText: itemShortText
+      ? JSON.parse(itemShortText as string)
+      : undefined,
+    itemShortTextSizes: itemShortTextSizes
+      ? JSON.parse(itemShortTextSizes as string)
+      : undefined,
+    itemShortTextSizesMobile: itemShortTextSizesMobile
+      ? JSON.parse(itemShortTextSizesMobile as string)
+      : undefined,
+    itemShortTextColors: itemShortTextColors
+      ? JSON.parse(itemShortTextColors as string)
+      : undefined,
+    itemAlign: itemAlign ? JSON.parse(itemAlign as string) : undefined,
+    itemJustify: itemJustify ? JSON.parse(itemJustify as string) : undefined,
+    itemAlignMobile: itemAlignMobile
+      ? JSON.parse(itemAlignMobile as string)
+      : undefined,
+    itemJustifyMobile: itemJustifyMobile
+      ? JSON.parse(itemJustifyMobile as string)
+      : undefined,
     itemColors: itemColors ? JSON.parse(itemColors as string) : undefined,
     itemSecondaryColors: itemSecondaryColors
       ? JSON.parse(itemSecondaryColors as string)
@@ -207,8 +271,93 @@ export const getFormBlockOptions = (form: {
     itemSecondaryBackgroundColors: itemSecondaryBackgroundColors
       ? JSON.parse(itemSecondaryBackgroundColors as string)
       : undefined,
+    itemImagePositions: itemImagePositions
+      ? JSON.parse(itemImagePositions as string)
+      : undefined,
+    itemImagePositionsMobile: itemImagePositionsMobile
+      ? JSON.parse(itemImagePositionsMobile as string)
+      : undefined,
+    imagePosition: imagePosition ? (imagePosition as string) : undefined,
+    imagePositionMobile: imagePositionMobile
+      ? (imagePositionMobile as string)
+      : undefined,
     margin: margin ? (margin as string) : undefined,
     padding: padding ? (padding as string) : undefined,
+    primaryButton: primaryButton ? (primaryButton as string) : undefined,
+    primaryButtonLink: primaryButtonLink
+      ? (primaryButtonLink as string)
+      : undefined,
+    primaryButtonLabel: primaryButtonLabel
+      ? (primaryButtonLabel as string)
+      : undefined,
+    primaryButtonLabelColor: primaryButtonLabelColor
+      ? (primaryButtonLabelColor as string)
+      : undefined,
+    primaryButtonColor: primaryButtonColor
+      ? (primaryButtonColor as string)
+      : undefined,
+    primaryButtonBorderColor: primaryButtonBorderColor
+      ? (primaryButtonBorderColor as string)
+      : undefined,
+    secondaryButton: secondaryButton ? (secondaryButton as string) : undefined,
+    secondaryButtonLink: secondaryButtonLink
+      ? (secondaryButtonLink as string)
+      : undefined,
+    secondaryButtonLabel: secondaryButtonLabel
+      ? (secondaryButtonLabel as string)
+      : undefined,
+    secondaryButtonLabelColor: secondaryButtonLabelColor
+      ? (secondaryButtonLabelColor as string)
+      : undefined,
+    secondaryButtonColor: secondaryButtonColor
+      ? (secondaryButtonColor as string)
+      : undefined,
+    secondaryButtonBorderColor: secondaryButtonBorderColor
+      ? (secondaryButtonBorderColor as string)
+      : undefined,
+
+    itemPrimaryButtons: itemPrimaryButtons
+      ? JSON.parse(itemPrimaryButtons as string)
+      : undefined,
+
+    itemSecondaryButtons: itemSecondaryButtons
+      ? JSON.parse(itemSecondaryButtons as string)
+      : undefined,
+
+    itemPrimaryButtonLinks: itemPrimaryButtonLinks
+      ? JSON.parse(itemPrimaryButtonLinks as string)
+      : undefined,
+
+    itemSecondaryButtonLinks: itemSecondaryButtonLinks
+      ? JSON.parse(itemSecondaryButtonLinks as string)
+      : undefined,
+
+    itemPrimaryButtonLabels: itemPrimaryButtonLabels
+      ? JSON.parse(itemPrimaryButtonLabels as string)
+      : undefined,
+    itemPrimaryButtonBorderColors: itemPrimaryButtonBorderColors
+      ? JSON.parse(itemPrimaryButtonBorderColors as string)
+      : undefined,
+    itemPrimaryButtonLabelColors: itemPrimaryButtonLabelColors
+      ? JSON.parse(itemPrimaryButtonLabelColors as string)
+      : undefined,
+    itemPrimaryButtonColors: itemPrimaryButtonColors
+      ? JSON.parse(itemPrimaryButtonColors as string)
+      : undefined,
+
+    itemSecondaryButtonColors: itemSecondaryButtonColors
+      ? JSON.parse(itemSecondaryButtonColors as string)
+      : undefined,
+    itemSecondaryButtonBorderColors: itemSecondaryButtonBorderColors
+      ? JSON.parse(itemSecondaryButtonBorderColors as string)
+      : undefined,
+    itemSecondaryButtonLabels: itemSecondaryButtonLabels
+      ? JSON.parse(itemSecondaryButtonLabels as string)
+      : undefined,
+    itemSecondaryButtonLabelColors: itemSecondaryButtonLabelColors
+      ? JSON.parse(itemSecondaryButtonLabelColors as string)
+      : undefined,
+
     rows: rows ? parseInt(rows as string) : undefined,
     shortText: shortText ? (shortText as string) : undefined,
     shortTextColor: shortTextColor ? (shortTextColor as string) : undefined,
@@ -218,6 +367,10 @@ export const getFormBlockOptions = (form: {
     sortOrder: sortOrder as SortOrder,
     style: style ? (style as string) : undefined,
     title: title ? (title as string) : undefined,
+    align: align ? (align as string) : undefined,
+    justify: justify ? (justify as string) : undefined,
+    alignMobile: alignMobile ? (alignMobile as string) : undefined,
+    justifyMobile: justifyMobile ? (justifyMobile as string) : undefined,
     primaryColor: primaryColor ? (primaryColor as string) : undefined,
     secondaryColor: secondaryColor ? (secondaryColor as string) : undefined,
     titleAlign: titleAlign ? (titleAlign as string) : undefined,
@@ -225,6 +378,31 @@ export const getFormBlockOptions = (form: {
     titleSizeMobile: titleSizeMobile ? (titleSizeMobile as string) : undefined,
     titleColor: titleColor ? (titleColor as string) : undefined,
     titleWeight: titleWeight ? (titleWeight as string) : undefined,
+    // itemPrimaryButtons: itemPrimaryButtons
+    //   ? JSON.parse(itemPrimaryButtons as string)
+    //   : undefined,
+    // itemPrimaryButtonLinks: itemPrimaryButtonLinks
+    //   ? JSON.parse(itemPrimaryButtonLinks as string)
+    //   : undefined,
+    //   itemPrimaryButtonLabels: itemPrimaryButtonLabels
+    //   ? JSON.parse(itemPrimaryButtonLabels as string)
+    //   : undefined,
+    //   itemPrimaryButtonTextColors: itemPrimaryButtonTextColors
+    //   ? JSON.parse(itemPrimaryButtonTextColors as string)
+    //   : undefined,
+    //   itemPrimaryButtonColors: itemPrimaryButtonColors
+    //   ? JSON.parse(itemPrimaryButtonColors as string)
+    //   : undefined,
+    //   itemPrimaryButtonBorderColors: itemPrimaryButtonBorderColors
+    //   ? JSON.parse(itemPrimaryButtonBorderColors as string)
+    //   : undefined,
+    // itemSecondaryButtons: itemSecondaryButtons
+    //   ? JSON.parse(itemSecondaryButtons as string)
+    //   : undefined,
+    // itemSecondaryButtonLinks: itemSecondaryButtonLinks
+    //   ? JSON.parse(itemSecondaryButtonLinks as string)
+    //   : undefined,
+
     itemBorderDisplays: itemBorderDisplays
       ? JSON.parse(itemBorderDisplays as string)
       : undefined,

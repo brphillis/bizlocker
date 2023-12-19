@@ -1,9 +1,10 @@
 import ToolTip from "~/components/Indicators/ToolTip";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
+import { returnOtherColorPrefix } from "~/utility/colors";
 
 type Props = {
   label: string;
-  inputBackgroundColor?: string | null;
+  inputBackgroundColor?: string;
   inputOnClick: () => void;
   tooltip?: string;
   customWidth?: string;
@@ -16,30 +17,14 @@ const ColorPickerInput = ({
   tooltip,
   customWidth,
 }: Props) => {
-  const handleInputBackgroundString = (bgString: string): string => {
-    let formattedString = bgString;
-
-    if (formattedString.includes("-")) {
-      let stringArray = formattedString.split("-");
-
-      stringArray[0] = "bg";
-
-      formattedString = stringArray.join("-");
-
-      return formattedString;
-    }
-
-    return formattedString;
-  };
-
   return (
     <div
-      className={`form-control relative w-[215px] max-md:w-full max-md:items-center ${
+      className={`form-control relative w-[215px] max-md:w-full max-md:items-center max-md:px-3 ${
         customWidth ? customWidth : "w-[215px]"
       }`}
     >
       {tooltip && <ToolTip tip={tooltip} />}
-      <label className="label self-start max-md:ml-3">
+      <label className="label self-start">
         <span className="label-text text-brand-white">
           {capitalizeFirst(label)}
         </span>
@@ -48,7 +33,7 @@ const ColorPickerInput = ({
       <div
         className={`h-[42px] w-full cursor-pointer border-[1px] border-brand-white/25 ${
           inputBackgroundColor
-            ? handleInputBackgroundString(inputBackgroundColor)
+            ? returnOtherColorPrefix(inputBackgroundColor, "bg-")
             : "bg-transparent"
         }`}
         onClick={() => {

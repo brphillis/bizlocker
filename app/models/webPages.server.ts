@@ -57,7 +57,9 @@ export const deleteWebPage = async (
   //find and delete the associated blocks
   const webPageBlocks = await getBlocks(webPage as any);
 
-  webPageBlocks.map((e: PageBlock) => removeBlock(e.id, e.name));
+  await Promise.all(
+    webPageBlocks.map(async (e: PageBlock) => await removeBlock(e.id, e.name))
+  );
 
   // Delete the webPage
   await prisma.webPage.delete({

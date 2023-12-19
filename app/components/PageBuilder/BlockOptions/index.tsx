@@ -14,6 +14,7 @@ import MarginAndPaddingOptions from "./Options/MarginAndPadding";
 import MotionOptions from "./Options/Motion";
 import ColumnsAndRowsOptions from "./Options/ColumnsAndRows";
 import ItemOptions from "./ItemOptions";
+import ButtonOptions from "./Options/Buttons";
 
 type Props = {
   selectedItems: ContentSelection[];
@@ -42,24 +43,6 @@ const BlockOptionsModule = ({
             className={`flex flex-wrap gap-6 
             ${activeTab !== "block" ? "hidden" : "pb-3"}`}
           >
-            <StyleOptions
-              defaultValues={defaultValues}
-              selectedBlockOptions={selectedBlockOptions}
-            />
-
-            <TitleOptions
-              selectedBlock={selectedBlock}
-              defaultValues={defaultValues}
-              selectedBlockOptions={selectedBlockOptions}
-            />
-
-            <ShortTextOptions
-              selectedBlock={selectedBlock}
-              colors={colors}
-              defaultValues={defaultValues}
-              selectedBlockOptions={selectedBlockOptions}
-            />
-
             <BackgroundOptions
               defaultValues={defaultValues}
               selectedBlockOptions={selectedBlockOptions}
@@ -70,24 +53,22 @@ const BlockOptionsModule = ({
               selectedBlockOptions={selectedBlockOptions}
             />
 
-            <SortAndOrderOptions
-              selectedBlock={selectedBlock}
+            <ButtonOptions
               defaultValues={defaultValues}
               selectedBlockOptions={selectedBlockOptions}
             />
 
-            <SizeOptions
-              selectedBlock={selectedBlock}
-              defaultValues={defaultValues}
-              selectedBlockOptions={selectedBlockOptions}
-            />
-
-            <FlipAndRotateOptions
+            <ColumnsAndRowsOptions
               defaultValues={defaultValues}
               selectedBlockOptions={selectedBlockOptions}
             />
 
             <CountOptions
+              defaultValues={defaultValues}
+              selectedBlockOptions={selectedBlockOptions}
+            />
+
+            <FlipAndRotateOptions
               defaultValues={defaultValues}
               selectedBlockOptions={selectedBlockOptions}
             />
@@ -102,7 +83,32 @@ const BlockOptionsModule = ({
               selectedBlockOptions={selectedBlockOptions}
             />
 
-            <ColumnsAndRowsOptions
+            <ShortTextOptions
+              selectedBlock={selectedBlock}
+              colors={colors}
+              defaultValues={defaultValues}
+              selectedBlockOptions={selectedBlockOptions}
+            />
+
+            <SizeOptions
+              selectedBlock={selectedBlock}
+              defaultValues={defaultValues}
+              selectedBlockOptions={selectedBlockOptions}
+            />
+
+            <SortAndOrderOptions
+              selectedBlock={selectedBlock}
+              defaultValues={defaultValues}
+              selectedBlockOptions={selectedBlockOptions}
+            />
+
+            <StyleOptions
+              defaultValues={defaultValues}
+              selectedBlockOptions={selectedBlockOptions}
+            />
+
+            <TitleOptions
+              selectedBlock={selectedBlock}
               defaultValues={defaultValues}
               selectedBlockOptions={selectedBlockOptions}
             />

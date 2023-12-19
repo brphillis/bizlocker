@@ -5,7 +5,7 @@ import ColorPickerPopup from "./ColorPickerPopup";
 type Props = {
   label: string;
   formName: string;
-  defaultValue?: string | null;
+  defaultValue?: string;
   tooltip?: string;
   type?: "bg" | "text" | "border" | "outline" | "decoration";
   customWidth?: string;
@@ -38,14 +38,25 @@ const ColorPicker = ({
         <ColorPickerPopup
           closeFunction={() => setEditing(false)}
           selectFunction={(selectedColor) => {
-            setSelectedValue(type ? type + "-" + selectedColor : selectedColor);
+            setSelectedValue(
+              selectedColor
+                ? type
+                  ? type + "-" + selectedColor
+                  : selectedColor
+                : undefined
+            );
             setEditing(false);
           }}
           type={type}
         />
       )}
 
-      <input hidden readOnly name={formName} value={selectedValue} />
+      <input
+        hidden
+        readOnly
+        name={formName}
+        value={selectedValue || undefined}
+      />
     </>
   );
 };

@@ -34,7 +34,7 @@ const BlockSelectInput = ({
               className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
               defaultValue={defaultValue || undefined}
             >
-              <option value="">None</option>
+              <option value="">Default</option>
               {selections?.map(({ id, name }: SelectValue, index: number) => (
                 <option
                   key={`blockOptionSelect_${name}_${id}_${index}`}

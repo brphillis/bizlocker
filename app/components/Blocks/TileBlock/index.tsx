@@ -45,14 +45,12 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
 
   return (
     <div
-      className={`relative grid h-max place-items-center gap-3 max-md:px-3 sm:gap-6 ${margin} ${padding} 
+      className={`relative grid h-max place-items-center gap-3 py-6 max-md:px-3 sm:gap-6 ${margin} ${padding} 
       ${colsMobile || "max-md:!grid-cols-2"}`}
       style={{
         gridTemplateColumns: columns
           ? `repeat(${columns}, minmax(0, 1fr))`
           : "repeat(2, minmax(0, 1fr))",
-        paddingTop: backgroundColor ? "24px" : "unset",
-        paddingBottom: backgroundColor ? "24px" : "unset",
       }}
     >
       <PatternBackground

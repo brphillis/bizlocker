@@ -8,6 +8,7 @@ type Props = {
   patternSize: number;
   screenWidth?: boolean;
   brightness?: number;
+  displayStyle?: string | null;
 };
 
 const PatternBackground = ({
@@ -18,6 +19,7 @@ const PatternBackground = ({
   patternSize,
   screenWidth,
   brightness,
+  displayStyle,
 }: Props) => {
   const styles: Record<string, CSSProperties> = {
     wavy: {
@@ -79,7 +81,12 @@ const PatternBackground = ({
 
   const selectedStyle = name ? styles[name] : noPatternStyle;
 
-  return <div style={selectedStyle} className="brightness-[0.3]"></div>;
+  return (
+    <div
+      style={selectedStyle}
+      className={`brightness-[0.3] ${displayStyle}`}
+    ></div>
+  );
 };
 
 export default PatternBackground;

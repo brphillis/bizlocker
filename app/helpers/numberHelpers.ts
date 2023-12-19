@@ -120,3 +120,7 @@ export const extractNumbersFromString = (inputString: string): number => {
 
   return numericValue;
 };
+
+export const isDecimal = (number: number): boolean => {
+  return number % 1 !== 0;
+};

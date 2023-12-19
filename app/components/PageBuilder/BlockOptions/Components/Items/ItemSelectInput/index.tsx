@@ -20,7 +20,7 @@ const ItemSelectInput = ({
   selectedItems,
   selections,
 }: Props) => {
-  const [items, setItems] = useState<string[]>(defaultValues || []);
+  const [items, setItems] = useState<(string | null)[]>(defaultValues || []);
 
   return (
     <details className="collapse collapse-plus !hidden !max-w-full !rounded-sm bg-brand-white/20 [&:has(div>div)]:!grid">
@@ -55,7 +55,7 @@ const ItemSelectInput = ({
                     )
                   }
                 >
-                  <option value="">None</option>
+                  <option value="">Unselected</option>
                   {selections?.map(
                     ({ id, name }: SelectValue, index: number) => (
                       <option
