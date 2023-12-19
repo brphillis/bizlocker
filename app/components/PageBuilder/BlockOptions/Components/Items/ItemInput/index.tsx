@@ -24,7 +24,9 @@ const ItemInput = ({
   type = "string",
   max,
 }: Props) => {
-  const [items, setItems] = useState<string[]>(defaultValues || []);
+  const [items, setItems] = useState<(string | undefined)[]>(
+    defaultValues || []
+  );
 
   return (
     <details className="collapse collapse-plus !hidden !max-w-full !rounded-sm bg-brand-white/20 [&:has(div>div)]:!grid">

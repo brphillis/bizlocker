@@ -117,7 +117,6 @@ export const blockMaster: BlockMaster[] = [
       size: true,
       sizeMobile: true,
     },
-
     content: {
       include: {
         image: true,
@@ -149,6 +148,10 @@ export const blockMaster: BlockMaster[] = [
       itemTitles: true,
       itemTitleColors: true,
       itemBackgroundColors: true,
+      itemBorderDisplays: true,
+      itemBorderColors: true,
+      itemBorderSizes: true,
+      itemBorderRadius: true,
     },
     addOns: ["icon"],
     content: {

@@ -87,10 +87,12 @@ const Header = ({
           )}
 
           <ColorPicker
-            label="Background Color"
-            formName="backgroundColor"
-            defaultValue={currentVersion?.backgroundColor}
             customWidth="w-[320px]"
+            defaultValue={currentVersion?.backgroundColor || undefined}
+            extendStyle="max-md:!px-0"
+            formName="backgroundColor"
+            label="Background Color"
+            type="bg"
           />
 
           {pageType !== "homePage" && (

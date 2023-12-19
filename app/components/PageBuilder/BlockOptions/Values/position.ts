@@ -74,10 +74,10 @@ export const alignSelectValues = [
 ];
 
 export const alignSelectMobileValues = [
-  { id: "max-md:align-center", name: "Center" },
-  { id: "max-md:align-start", name: "Start" },
-  { id: "max-md:align-end", name: "End" },
-  { id: "max-md:align-between", name: "Space Between" },
-  { id: "max-md:align-around", name: "Space Around" },
-  { id: "max-md:align-evenly", name: "Space Evenly" },
+  { id: "max-md:items-center", name: "Center" },
+  { id: "max-md:items-start", name: "Start" },
+  { id: "max-md:items-end", name: "End" },
+  { id: "max-md:items-between", name: "Space Between" },
+  { id: "max-md:items-around", name: "Space Around" },
+  { id: "max-md:items-evenly", name: "Space Evenly" },
 ];

@@ -1,7 +1,7 @@
 import type { BlockOptions } from "@prisma/client";
 import type { BlockContent } from "~/models/blocks.server";
 import { Suspense } from "react";
-import { Navigation } from "swiper/modules";
+import { Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { isDecimal } from "~/helpers/numberHelpers";
 import { getThemeColorValueByName } from "~/utility/colors";
@@ -31,6 +31,7 @@ const Carousel = ({ joinedContent, options }: Props) => {
     columnsMobile,
     margin,
     padding,
+    size,
   } = options?.[0] || {};
 
   // we generate enough slides for the loop functionality
@@ -71,14 +72,14 @@ const Carousel = ({ joinedContent, options }: Props) => {
 
       <Suspense fallback={<div>Loading...</div>}>
         <Swiper
-          modules={[Navigation]}
-          className={`!relative left-[50%] !z-0 h-[540px] w-screen translate-x-[-50%]`}
+          modules={[Pagination]}
+          className={`!relative left-[50%] !z-0 w-screen translate-x-[-50%] 
+          ${size ? size : "h-[540px]"}`}
           slidesPerView={columns || 1}
           spaceBetween={20}
           centeredSlides={true}
           loop={true}
           pagination={true}
-          navigation
           breakpoints={{
             768: {
               slidesPerView: columns || 1,
@@ -86,6 +87,20 @@ const Carousel = ({ joinedContent, options }: Props) => {
             0: {
               slidesPerView: columnsMobile || 1,
             },
+          }}
+          style={{
+            // @ts-ignore
+            "--swiper-pagination-color": "#FFFFFF",
+            "--swiper-pagination-bullet-border-radius": "0px",
+            "--swiper-pagination-bullet-inactive-color": "#999999",
+            "--swiper-pagination-bullet-inactive-opacity": "1",
+            "--swiper-pagination-bullet-horizontal-gap": "6px",
+            "--swiper-pagination-bullet-width": "18px",
+            "--swiper-pagination-bullet-height": "4px",
+            // --swiper-pagination-left: auto;
+            // --swiper-pagination-right: 8px;
+            // --swiper-pagination-bottom: 8px;
+            // --swiper-pagination-top: auto;
           }}
         >
           {generateSlidesForPartialViews(joinedContent)?.map(

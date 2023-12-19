@@ -55,7 +55,7 @@ const CartButton = ({ id: cartId, cartItems }: CartWithDetails) => {
       <div
         ref={cartModalRef}
         tabIndex={0}
-        className="dropdown-content z-10 mr-2 mt-4 w-max min-w-[300px] overflow-hidden rounded-md border-2 border-base-200/75 bg-base-100 shadow-xl"
+        className="dropdown-content z-50 mr-2 mt-4 w-max min-w-[300px] overflow-hidden rounded-md border-2 border-base-200/75 bg-base-100 shadow-xl"
       >
         <IoClose
           onClick={handleClose}

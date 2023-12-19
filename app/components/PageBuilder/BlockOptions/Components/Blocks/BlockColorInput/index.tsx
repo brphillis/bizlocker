@@ -4,7 +4,7 @@ import ColorPickerPopup from "~/components/Forms/ColorPicker/ColorPickerPopup";
 type Props = {
   valueName: string;
   formName: string;
-  defaultValue?: string;
+  defaultValue?: string | null;
   blockMasterOption?: boolean;
   tooltip?: string;
   type?: "bg" | "text" | "border" | "outline" | "decoration";
@@ -19,7 +19,7 @@ const BlockColorInput = ({
   type,
 }: Props) => {
   const [selectedValue, setSelectedValue] = useState<string | undefined>(
-    defaultValue
+    defaultValue || undefined
   );
   const [editing, setEditing] = useState<boolean>(false);
 
@@ -30,24 +30,19 @@ const BlockColorInput = ({
           <ColorPickerInput
             label={valueName}
             tooltip={tooltip}
-            inputBackgroundColor={selectedValue || defaultValue}
+            inputBackgroundColor={selectedValue || defaultValue || undefined}
             inputOnClick={() => setEditing(true)}
           />
 
           {editing && (
             <ColorPickerPopup
+              type={type}
               closeFunction={() => setEditing(false)}
+              defaultValue={selectedValue || defaultValue || undefined}
               selectFunction={(selectedColor) => {
-                setSelectedValue(
-                  selectedColor
-                    ? type
-                      ? type + "-" + selectedColor
-                      : selectedColor
-                    : undefined
-                );
+                setSelectedValue(selectedColor);
                 setEditing(false);
               }}
-              type={type}
             />
           )}
 

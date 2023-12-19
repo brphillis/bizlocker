@@ -15,6 +15,10 @@ export const getThemeColorValueByName = (colorName?: string | null): string => {
   if (colorName) {
     let currentColorName = colorName;
 
+    if (currentColorName.includes("/")) {
+      currentColorName = currentColorName.split("/")[0];
+    }
+
     colorPrefixList.forEach((prefix: string) => {
       if (currentColorName.startsWith(prefix)) {
         currentColorName = currentColorName.slice(prefix.length);
@@ -52,6 +56,25 @@ export const returnOtherColorPrefix = (
     return newPrefix + formattedString;
   } else {
     return newPrefix + initialString;
+  }
+};
+
+export const removeColorPrefix = (initialString: string) => {
+  let formattedString = initialString;
+
+  let hasExistingPrefix = false;
+
+  colorPrefixList.forEach((prefix: string) => {
+    if (initialString.startsWith(prefix)) {
+      formattedString = formattedString.slice(prefix.length);
+      hasExistingPrefix = true;
+    }
+  });
+
+  if (hasExistingPrefix) {
+    return formattedString;
+  } else {
+    return initialString;
   }
 };
 

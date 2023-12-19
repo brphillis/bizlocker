@@ -30,6 +30,7 @@ import DesktopButtonContainer from "~/components/Layout/_Website/Navigation/Desk
 
 import "../../node_modules/swiper/swiper.min.css";
 import "../../node_modules/swiper/modules/navigation.min.css";
+import "../../node_modules/swiper/modules/pagination.min.css";
 import "sweetalert2/dist/sweetalert2.css";
 
 import type { User } from "@prisma/client";
@@ -126,7 +127,7 @@ const App = () => {
           location.pathname.includes("/forgot-password") ||
           location.pathname.includes("/account")
         ) && (
-          <div className="navbar relative flex !min-h-[50px] w-full items-center justify-center bg-base-200 !py-0 text-sm font-bold text-brand-black/80 shadow-md">
+          <div className="navbar relative z-10 flex !min-h-[50px] w-full items-center justify-center bg-base-200 !py-0 text-sm font-bold text-brand-black/80 shadow-md">
             <p className="cursor-pointer">
               BUY NOW - SELL LATER - FREE RETURNS
             </p>
