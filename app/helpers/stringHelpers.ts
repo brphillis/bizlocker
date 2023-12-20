@@ -1,3 +1,18 @@
+export const includesWords = (
+  testWord: string,
+  includesWords: string[]
+): boolean => {
+  let bool = false;
+
+  for (var word of includesWords) {
+    if (testWord.includes(word)) {
+      bool = true;
+    }
+  }
+
+  return bool;
+};
+
 export const capitalizeFirst = (str: string): string => {
   if (str.length === 0) {
     return str;

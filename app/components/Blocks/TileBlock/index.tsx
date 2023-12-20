@@ -78,6 +78,8 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
             itemLinks[i]
           ) || {};
 
+        console.log("current", itemBorderRadius[i]);
+
         return (
           <div
             key={"tileImage_" + (name || i)}

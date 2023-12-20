@@ -2,27 +2,27 @@ import { useState } from "react";
 import { handleBlockOptionItemInputChange } from "~/helpers/blockOptionHelpers";
 
 type Props = {
-  title: string;
-  valueName: string;
-  formName: string;
-  defaultValues?: string[];
   blockMasterOption?: boolean;
+  defaultValues?: string[];
+  formName: string;
+  max?: string;
   selectedItems: ContentSelection[];
+  title: string;
   tooltip?: string;
   type?: "string" | "number";
-  max?: string;
+  valueName: string;
 };
 
 const ItemInput = ({
-  title,
-  valueName,
-  formName,
-  defaultValues,
   blockMasterOption,
+  defaultValues,
+  formName,
+  max,
   selectedItems,
+  title,
   tooltip,
   type = "string",
-  max,
+  valueName,
 }: Props) => {
   const [items, setItems] = useState<(string | undefined)[]>(
     defaultValues || []

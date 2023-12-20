@@ -2,23 +2,23 @@ import { useState } from "react";
 import { handleBlockOptionItemInputChange } from "~/helpers/blockOptionHelpers";
 
 type Props = {
-  title: string;
-  valueName: string;
-  formName: string;
-  defaultValues?: string[];
   blockMasterOption?: boolean;
+  defaultValues?: string[];
+  formName: string;
   selectedItems: ContentSelection[];
   selections: Array<SelectValue> | null;
+  title: string;
+  valueName: string;
 };
 
 const ItemSelectInput = ({
-  title,
-  valueName,
-  formName,
-  defaultValues,
   blockMasterOption,
+  defaultValues,
+  formName,
   selectedItems,
   selections,
+  title,
+  valueName,
 }: Props) => {
   const [items, setItems] = useState<(string | undefined)[]>(
     defaultValues || []

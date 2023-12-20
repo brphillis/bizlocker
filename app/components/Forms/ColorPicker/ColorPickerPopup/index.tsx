@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import { IoClose } from "react-icons/io5";
-import { capitalizeWords } from "~/helpers/stringHelpers";
+import { useRef, useState } from "react";
+import { IoArrowDownOutline, IoArrowUpOutline, IoClose } from "react-icons/io5";
+import { capitalizeWords, includesWords } from "~/helpers/stringHelpers";
 import {
   getThemeColorNames,
   removeColorPrefix,
@@ -31,6 +31,20 @@ const ColorPickerPopup = ({
         : 100
       : 100
   );
+
+  const colorSelectionRef = useRef<HTMLDivElement>(null);
+
+  const handleScrollUp = () => {
+    if (colorSelectionRef.current) {
+      colorSelectionRef.current.scrollTop -= 100;
+    }
+  };
+
+  const handleScrollDown = () => {
+    if (colorSelectionRef.current) {
+      colorSelectionRef.current.scrollTop += 100;
+    }
+  };
 
   const handleChangeOpacity = (mode: "add" | "subtract", opacity?: number) => {
     if (!opacity) {
@@ -76,19 +90,12 @@ const ColorPickerPopup = ({
     selectFunction(formattedValue);
   };
 
-  useEffect(() => {
-    console.log(
-      "DEF",
-      defaultValue && returnOtherColorPrefix(defaultValue, "bg-")
-    );
-  }, [defaultValue]);
-
   return (
     <div className="fixed left-[50%] top-0 z-50 flex h-screen w-screen translate-x-[-50%] items-center justify-center bg-black/90">
-      <div className="relative flex max-w-[400px] flex-wrap items-center justify-center gap-3 rounded-sm bg-brand-black px-3 pb-6 pt-16">
+      <div className="relative flex max-w-[400px] flex-wrap items-center justify-center gap-3 rounded-sm bg-brand-black px-6 pb-6 pt-12 max-md:w-screen">
         {/* SELECTED COLOR PREVIEW */}
         {defaultValue && (
-          <div className="absolute left-3 top-3 flex items-center gap-3">
+          <div className="absolute left-6 top-3 flex items-center gap-3">
             <div
               className={`flex h-3 w-3 cursor-pointer items-center justify-center rounded-full border-[1px] border-brand-white/25 
             ${
@@ -108,37 +115,98 @@ const ColorPickerPopup = ({
         )}
 
         {/* CLOSE BUTTON */}
-        <button type="button" className="absolute right-3 top-3 cursor-pointer">
+        <button
+          type="button"
+          className="absolute right-2 top-2 cursor-pointer text-brand-white/50 hover:text-brand-white"
+        >
           <IoClose onClick={() => closeFunction()} />
         </button>
 
-        {/* UNDEFINED COLOR */}
-        <div
-          className="flex h-6 w-6 cursor-pointer items-center justify-center rounded-full border-[1px] border-brand-white/25 bg-transparent text-brand-white hover:scale-[1.1]"
-          onClick={() => selectFunction(undefined)}
-          onMouseEnter={() => setHoverColor("None")}
-        >
-          <div className="text-brand-white/50">
-            <IoClose />
+        <div>
+          <div className="select-none">Brand Colors</div>
+          <div className="scrollbar-hide flex max-h-[210px] flex-row flex-wrap items-center justify-center gap-3 overflow-scroll py-3">
+            {/* UNDEFINED COLOR */}
+            <div
+              className="flex h-6 w-6 cursor-pointer items-center justify-center rounded-full border-[1px] border-brand-white/25 bg-transparent text-brand-white hover:scale-[1.1]"
+              onClick={() => selectFunction(undefined)}
+              onMouseEnter={() => setHoverColor("None")}
+            >
+              <div className="text-brand-white/50">
+                <IoClose />
+              </div>
+            </div>
+
+            {/* BRAND COLOR LIST */}
+            {colors.map((colorVal: string, index: number) => {
+              if (
+                includesWords(colorVal.toLocaleLowerCase(), [
+                  "brand",
+                  "base",
+                  "primary",
+                  "secondary",
+                ])
+              ) {
+                return (
+                  <div
+                    key={"colorPickerPopupSelection_" + index}
+                    className={`h-6 w-6 cursor-pointer rounded-full border-[1px] border-brand-white/25 hover:scale-[1.1] 
+                ${"bg-" + colorVal}`}
+                    onClick={() => handleColorSelect(colorVal)}
+                    onMouseEnter={() => setHoverColor(colorVal)}
+                  ></div>
+                );
+              } else return null;
+            })}
           </div>
         </div>
 
-        {/* COLOR LIST */}
-        {colors.map((colorVal: string, index: number) => {
-          return (
-            <div
-              key={"colorPickerPopupSelection_" + index}
-              className={`h-6 w-6 cursor-pointer rounded-full border-[1px] border-brand-white/25 hover:scale-[1.1] 
-              ${"bg-" + colorVal}`}
-              onClick={() => handleColorSelect(colorVal)}
-              onMouseEnter={() => setHoverColor(colorVal)}
-            ></div>
-          );
-        })}
+        <div className="relative mt-3">
+          <div className="select-none">Other Colors</div>
+          <div
+            ref={colorSelectionRef}
+            className="scrollbar-hide flex max-h-[220px] flex-row flex-wrap items-center justify-center gap-3 overflow-scroll py-3"
+          >
+            {/* TAILWIND COLOR LIST */}
+            {colors.map((colorVal: string, index: number) => {
+              if (
+                !includesWords(colorVal.toLocaleLowerCase(), [
+                  "brand",
+                  "base",
+                  "primary",
+                  "secondary",
+                ])
+              ) {
+                return (
+                  <div
+                    key={"colorPickerPopupSelection_" + index}
+                    className={`h-6 w-6 cursor-pointer rounded-full border-[1px] border-brand-white/25 hover:scale-[1.1] 
+                ${"bg-" + colorVal}`}
+                    onClick={() => handleColorSelect(colorVal)}
+                    onMouseEnter={() => setHoverColor(colorVal)}
+                  ></div>
+                );
+              } else return null;
+            })}
+          </div>
+
+          <div
+            className="absolute -right-4 top-3 cursor-pointer text-brand-white/50 hover:text-brand-white"
+            onClick={handleScrollUp}
+          >
+            <IoArrowUpOutline size={12} />
+          </div>
+
+          <div
+            className="absolute -bottom-4 -right-4 cursor-pointer text-brand-white/50 hover:text-brand-white"
+            onClick={handleScrollDown}
+          >
+            <IoArrowDownOutline size={12} />
+          </div>
+        </div>
 
         {/* OPACITY SELECTION */}
         {type !== "bg" && (
-          <div className="flex items-end gap-3">
+          <div className="flex items-end gap-3 pt-3">
             <SquareIconButton
               iconName="IoRemove"
               size="medium"

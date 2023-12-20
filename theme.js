@@ -1,3 +1,5 @@
+const tailwindColors = require("./tailwindColors");
+
 //prettier-ignore
 const themeColors ={
     "primary": "#3B82F6",
@@ -28,7 +30,8 @@ const themeColors ={
     "brand-lime" : "#61E786",
     "brand-olive": "#808000",
     "brand-aqua" : "#00FFFF",
-    "brand-indigo" : "#4B0082"
+    "brand-indigo" : "#4B0082",
+    ...tailwindColors
   }
 
 module.exports = themeColors;
