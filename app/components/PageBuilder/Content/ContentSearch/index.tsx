@@ -4,7 +4,10 @@ import { useSubmit } from "@remix-run/react";
 import { useState } from "react";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
-import { getBlockContentTypes } from "~/utility/blockMaster/blockMaster";
+import {
+  blockMaster,
+  getBlockContentTypes,
+} from "~/utility/blockMaster/blockMaster";
 
 type Props = {
   selectedBlock: BlockName | undefined;
@@ -40,9 +43,9 @@ const ContentSearch = ({
   };
 
   const shouldDisplay = () => {
-    const blockTypes = ["banner", "tile", "map", "hero"];
+    const currentBlockData = blockMaster.find((e) => e.name === selectedBlock);
 
-    if (selectedBlock && blockTypes.includes(selectedBlock)) {
+    if (currentBlockData?.maxContentItems) {
       return true;
     } else return false;
   };

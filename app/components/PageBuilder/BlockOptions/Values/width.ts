@@ -1,4 +1,4 @@
 export const blockWidthSelectValues = [
-  { id: "100%", name: "Container Width" },
-  { id: "100vw", name: "Screen Width" },
+  { id: "w-full", name: "Container Width" },
+  { id: "w-screen", name: "Screen Width" },
 ];

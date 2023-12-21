@@ -7,7 +7,8 @@ export type BlockName =
   | "text"
   | "product"
   | "article"
-  | "hero";
+  | "hero"
+  | "carousel";
 
 export type BlockContentType =
   | "campaign"

@@ -1,3 +1,18 @@
+export const includesWords = (
+  testWord: string,
+  includesWords: string[]
+): boolean => {
+  let bool = false;
+
+  for (var word of includesWords) {
+    if (testWord.includes(word)) {
+      bool = true;
+    }
+  }
+
+  return bool;
+};
+
 export const capitalizeFirst = (str: string): string => {
   if (str.length === 0) {
     return str;
@@ -9,16 +24,18 @@ export const capitalizeFirst = (str: string): string => {
   return firstLetter + resOfWord;
 };
 
-export const capitalizeWords = (input: string): string => {
-  const words = input.split(" ");
+export const capitalizeWords = (input?: string): string => {
+  if (input) {
+    const words = input.split(" ");
 
-  const capitalizedWords = words.map(
-    (word) => word.charAt(0).toUpperCase() + word.slice(1)
-  );
+    const capitalizedWords = words.map(
+      (word) => word.charAt(0).toUpperCase() + word.slice(1)
+    );
 
-  const result = capitalizedWords.join(" ");
+    const result = capitalizedWords.join(" ");
 
-  return result;
+    return result;
+  } else return "";
 };
 
 export const limitString = (

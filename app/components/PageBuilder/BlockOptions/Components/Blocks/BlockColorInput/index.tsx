@@ -26,28 +26,29 @@ const BlockColorInput = ({
   return (
     <>
       {blockMasterOption && (
-        <div className="px-3">
+        <div className="px-3 max-md:w-full max-md:px-0">
           <ColorPickerInput
             label={valueName}
             tooltip={tooltip}
-            inputBackgroundColor={selectedValue || defaultValue}
+            inputBackgroundColor={selectedValue || defaultValue || undefined}
             inputOnClick={() => setEditing(true)}
           />
+
+          {editing && (
+            <ColorPickerPopup
+              type={type}
+              closeFunction={() => setEditing(false)}
+              defaultValue={selectedValue || defaultValue || undefined}
+              selectFunction={(selectedColor) => {
+                setSelectedValue(selectedColor);
+                setEditing(false);
+              }}
+            />
+          )}
+
+          <input hidden readOnly name={formName} value={selectedValue || ""} />
         </div>
       )}
-
-      {editing && (
-        <ColorPickerPopup
-          closeFunction={() => setEditing(false)}
-          selectFunction={(selectedColor) => {
-            setSelectedValue(type ? type + "-" + selectedColor : selectedColor);
-            setEditing(false);
-          }}
-          type={type}
-        />
-      )}
-
-      <input hidden readOnly name={formName} value={selectedValue} />
     </>
   );
 };

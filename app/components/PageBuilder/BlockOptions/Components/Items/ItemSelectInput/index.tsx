@@ -2,25 +2,27 @@ import { useState } from "react";
 import { handleBlockOptionItemInputChange } from "~/helpers/blockOptionHelpers";
 
 type Props = {
-  title: string;
-  valueName: string;
-  formName: string;
-  defaultValues?: string[];
   blockMasterOption?: boolean;
+  defaultValues?: string[];
+  formName: string;
   selectedItems: ContentSelection[];
   selections: Array<SelectValue> | null;
+  title: string;
+  valueName: string;
 };
 
 const ItemSelectInput = ({
-  title,
-  valueName,
-  formName,
-  defaultValues,
   blockMasterOption,
+  defaultValues,
+  formName,
   selectedItems,
   selections,
+  title,
+  valueName,
 }: Props) => {
-  const [items, setItems] = useState<string[]>(defaultValues || []);
+  const [items, setItems] = useState<(string | undefined)[]>(
+    defaultValues || []
+  );
 
   return (
     <details className="collapse collapse-plus !hidden !max-w-full !rounded-sm bg-brand-white/20 [&:has(div>div)]:!grid">
@@ -55,7 +57,7 @@ const ItemSelectInput = ({
                     )
                   }
                 >
-                  <option value="">None</option>
+                  <option value="">Unselected</option>
                   {selections?.map(
                     ({ id, name }: SelectValue, index: number) => (
                       <option

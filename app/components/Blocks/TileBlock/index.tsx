@@ -26,8 +26,6 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
     backgroundPatternOpacity,
     backgroundPatternSize,
     backgroundWidth,
-    borderDisplay,
-    borderRadius,
     columns,
     columnsMobile,
     itemBackgroundColors,
@@ -38,6 +36,10 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
     itemTitles,
     margin,
     padding,
+    itemBorderDisplays,
+    itemBorderColors,
+    itemBorderRadius,
+    itemBorderSizes,
   } = options || {};
 
   const joinedContent = concatBlockContent(content);
@@ -45,29 +47,21 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
 
   return (
     <div
-      className={`relative grid h-max place-items-center gap-3 px-3 sm:gap-6 ${margin} ${padding} 
+      className={`relative grid h-max place-items-center gap-6 py-3 max-md:gap-3 max-md:px-3 ${margin} ${padding} 
       ${colsMobile || "max-md:!grid-cols-2"}`}
       style={{
         gridTemplateColumns: columns
           ? `repeat(${columns}, minmax(0, 1fr))`
           : "repeat(2, minmax(0, 1fr))",
-        paddingTop: backgroundColor ? "24px" : "unset",
-        paddingBottom: backgroundColor ? "24px" : "unset",
       }}
     >
       <PatternBackground
         name={backgroundPatternName as BackgroundPatternName}
-        backgroundColor={
-          backgroundColor ? getThemeColorValueByName(backgroundColor) : ""
-        }
-        patternColor={
-          backgroundPatternColor
-            ? getThemeColorValueByName(backgroundPatternColor)
-            : ""
-        }
+        backgroundColor={getThemeColorValueByName(backgroundColor)}
+        patternColor={getThemeColorValueByName(backgroundPatternColor)}
         patternOpacity={backgroundPatternOpacity || 0.5}
         patternSize={backgroundPatternSize || 32}
-        screenWidth={backgroundWidth === "100vw" ? true : false}
+        screenWidth={backgroundWidth === "w-screen" ? true : false}
         brightness={backgroundBrightness || undefined}
       />
 
@@ -88,14 +82,15 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
           <div
             key={"tileImage_" + (name || i)}
             className={`relative flex aspect-square cursor-pointer items-center justify-center transition duration-300 ease-in-out hover:scale-[1.01] 
-            ${borderDisplay} ${borderRadius}
+            ${itemBorderDisplays[i]} ${itemBorderRadius[i]} 
+            ${itemBorderSizes[i]} ${itemBorderColors[i]} ${itemBorderColors[i]}
             ${
               joinedContent.length % 2 !== 0 ? "max-sm:last:col-span-full" : ""
             }`}
           >
             {contentType === "icon" && (
               <IconTile
-                borderRadius={borderRadius}
+                borderRadius={itemBorderRadius[i]}
                 filter={itemFilters[i]}
                 imageSrc={imageSrc}
                 index={i}
@@ -111,7 +106,7 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
 
             {contentType !== "icon" && (
               <ContentTile
-                borderRadius={borderRadius}
+                borderRadius={itemBorderRadius[i]}
                 filter={itemFilters[i]}
                 imageSrc={imageSrc}
                 itemBackgroundColor={itemBackgroundColors[i]}

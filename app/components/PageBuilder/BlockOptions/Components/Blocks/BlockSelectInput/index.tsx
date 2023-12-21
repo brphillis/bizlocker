@@ -4,7 +4,7 @@ import { capitalizeFirst } from "~/helpers/stringHelpers";
 type Props = {
   valueName: string;
   formName: string;
-  defaultValue?: string | null;
+  defaultValue?: string | number | boolean | null;
   blockMasterOption?: boolean;
   selections: Array<SelectValue> | null;
   tooltip?: string;
@@ -18,6 +18,16 @@ const BlockSelectInput = ({
   selections,
   tooltip,
 }: Props) => {
+  const processDefaultValue = (
+    defaultValue: boolean | any
+  ): number | undefined => {
+    if (typeof defaultValue === "boolean") {
+      return defaultValue ? undefined : 0;
+    } else {
+      return defaultValue !== undefined ? defaultValue : undefined;
+    }
+  };
+
   return (
     <>
       {blockMasterOption && (
@@ -32,9 +42,9 @@ const BlockSelectInput = ({
             <select
               name={formName}
               className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
-              defaultValue={defaultValue || undefined}
+              defaultValue={processDefaultValue(defaultValue)}
             >
-              <option value="">None</option>
+              <option value="">Default</option>
               {selections?.map(({ id, name }: SelectValue, index: number) => (
                 <option
                   key={`blockOptionSelect_${name}_${id}_${index}`}

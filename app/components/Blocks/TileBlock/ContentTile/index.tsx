@@ -15,13 +15,18 @@ const ContentTile = ({
   filter,
   imageSrc,
   itemBackgroundColor,
+  borderRadius,
   link,
   name,
 }: Props) => {
   const navigate = useNavigate();
 
   return (
-    <div className={`h-full w-full ${itemBackgroundColor}`}>
+    <div
+      className={`h-full w-full ${itemBackgroundColor} ${borderRadius} ${
+        borderRadius ? "p-6 max-md:p-3" : "p-0"
+      }`}
+    >
       <img
         className={`object-fit h-full w-full ${filter}`}
         onClick={() => link && navigate(link)}

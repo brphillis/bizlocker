@@ -28,22 +28,29 @@ export const getItemOption = (
 export const determineSingleContentType = (
   content: BlockContent
 ): BlockContentType | undefined => {
-  if (content?.product) {
-    return "product";
-  } else if (content?.promotion) {
-    return "promotion";
-  } else if (content?.campaign) {
-    return "campaign";
-  } else if (content?.brand) {
-    return "brand";
-  } else if (content?.image) {
-    return "image";
-  } else if (content?.icon) {
-    return "icon";
+  if (content) {
+    for (const key in content) {
+      if (
+        content.hasOwnProperty(key) &&
+        typeof content[key as keyof BlockContent] === "object" &&
+        content[key as keyof BlockContent] !== null // Check for null or undefined
+      ) {
+        // Ensure that the value is an object before calling Object.keys
+        const nestedObject = content[key as keyof BlockContent] as Record<
+          string,
+          any
+        >;
+
+        if (Object.keys(nestedObject).length > 0) {
+          return key as BlockContentType;
+        }
+      }
+    }
   }
+  return undefined;
 };
 
-export const concatBlockContent = (content: BlockContent): any => {
+export const concatBlockContent = (content: BlockContent): BlockContent[] => {
   const joinedContent: any = [];
 
   if ((content?.image as Image[])?.length > 0) {
@@ -78,18 +85,18 @@ export const concatBlockContent = (content: BlockContent): any => {
 export const buildContentImageFromContent = (
   contentType: BlockContentType,
   contentData: BlockContent,
-  tileOrBanner: "tileImage" | "bannerImage",
+  tileOrBanner?: "tileImage" | "bannerImage",
   itemLink?: string
 ) => {
   let name: string = "tileImage";
   let link: string = " ";
   let imageSrc: string = " ";
-  if (contentType === "promotion") {
+  if (contentType === "promotion" && tileOrBanner) {
     const promotion = contentData?.promotion as PromotionWithContent;
     name = promotion?.name || name;
     link = `/promotion/${name}`;
     imageSrc = promotion?.[tileOrBanner]?.href || imageSrc;
-  } else if (contentType === "campaign") {
+  } else if (contentType === "campaign" && tileOrBanner) {
     const campaign = contentData?.campaign as CampaignWithContent;
     name = campaign?.name || name;
     link = `/campaign/${name}`;

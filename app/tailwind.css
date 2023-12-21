@@ -2,9 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+  @apply subpixel-antialiased;
+}
+
 .btn {
   @apply rounded-none;
-  @apply border-white/20;
+  /* @apply border-white/20; */
 }
 
 .input,

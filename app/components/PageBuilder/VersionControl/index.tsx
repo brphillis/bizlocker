@@ -125,7 +125,6 @@ const VersionControl = ({
           target="_blank"
           rel="noreferrer"
           href={`/preview/${currentVersion?.id}`}
-          onClick={() => setLoading(true)}
         >
           {loading ? "Loading..." : "Preview"}
         </a>

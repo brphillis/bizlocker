@@ -8,18 +8,7 @@ import {
   getProductVariantStock,
   type StockLevelWithDetails,
 } from "~/models/stock.server";
-import {
-  json,
-  redirect,
-  type LinksFunction,
-  type LoaderFunctionArgs,
-} from "@remix-run/node";
-import swiper from "../../node_modules/swiper/swiper.min.css";
-import swiperNav from "../../node_modules/swiper/modules/navigation.css";
-export const links: LinksFunction = () => [
-  { rel: "stylesheet", href: swiper },
-  { rel: "stylesheet", href: swiperNav },
-];
+import { json, redirect, type LoaderFunctionArgs } from "@remix-run/node";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);

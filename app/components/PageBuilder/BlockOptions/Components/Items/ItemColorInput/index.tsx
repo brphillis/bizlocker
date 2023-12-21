@@ -22,8 +22,11 @@ const ItemColorInput = ({
   selectedItems,
   type,
 }: Props) => {
-  const [items, setItems] = useState<string[]>(defaultValues || []);
+  const [items, setItems] = useState<(string | undefined)[]>(
+    defaultValues || []
+  );
   const [editingItem, setEditingItem] = useState<number | null>(null);
+  const [valuesEdited, setValuesEdited] = useState<boolean>(false);
 
   return (
     <details className="collapse collapse-plus !hidden !max-w-full !rounded-sm bg-brand-white/20 [&:has(div>div)]:!grid">
@@ -39,21 +42,27 @@ const ItemColorInput = ({
               >
                 <ColorPickerInput
                   label={"Item " + relativeIndex.toString() + " " + valueName}
-                  inputBackgroundColor={items[index] || defaultValues?.[index]}
+                  inputBackgroundColor={
+                    !valuesEdited
+                      ? items[index] || defaultValues?.[index]
+                      : items[index]
+                  }
                   inputOnClick={() => setEditingItem(relativeIndex)}
                 />
 
                 {editingItem && (
                   <ColorPickerPopup
                     type={type}
+                    defaultValue={items?.[editingItem - 1]}
                     closeFunction={() => setEditingItem(null)}
                     selectFunction={(selectedColor) => {
                       handleBlockOptionItemInputChange(
                         editingItem - 1,
-                        type ? type + "-" + selectedColor : selectedColor,
+                        selectedColor,
                         items,
                         setItems
                       );
+                      setValuesEdited(true);
                       setEditingItem(null);
                     }}
                   />

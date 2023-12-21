@@ -28,8 +28,13 @@ import {
 import MobileButtonContainer from "~/components/Layout/_Website/Navigation/MobileButtonContainer";
 import DesktopButtonContainer from "~/components/Layout/_Website/Navigation/DesktopButtonContainer";
 
+import "../../node_modules/swiper/swiper.min.css";
+import "../../node_modules/swiper/modules/navigation.min.css";
+import "../../node_modules/swiper/modules/pagination.min.css";
 import "sweetalert2/dist/sweetalert2.css";
+
 import type { User } from "@prisma/client";
+import CountDown from "~/components/Indicators/Countdown";
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
@@ -123,10 +128,9 @@ const App = () => {
           location.pathname.includes("/forgot-password") ||
           location.pathname.includes("/account")
         ) && (
-          <div className="navbar relative flex !min-h-[50px] w-full items-center justify-center bg-base-200 !py-0 text-sm font-bold text-brand-black/80 shadow-md">
-            <p className="cursor-pointer">
-              BUY NOW - SELL LATER - FREE RETURNS
-            </p>
+          <div className="navbar relative z-10 flex !min-h-[50px] w-full select-none items-center justify-center gap-6 bg-brand-white !py-0 text-sm font-bold text-brand-black/80 shadow-md">
+            <div className="max-md:text-xs">CHRISTMAS SALES END SOON!</div>
+            <CountDown targetDate={new Date("2024-01-01T00:00:00")} />
           </div>
         )}
 

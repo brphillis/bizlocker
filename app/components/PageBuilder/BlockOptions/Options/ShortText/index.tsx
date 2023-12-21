@@ -21,19 +21,19 @@ const ShortTextOptions = ({
         {selectedBlock === "text" ? "Text" : "Short Text"}
       </summary>
       <div className="flex max-w-full flex-wrap justify-start !gap-3 px-3 pb-3 max-md:justify-center max-md:px-0">
+        <BlockInput
+          valueName="Short Text"
+          formName="shortText"
+          blockMasterOption={selectedBlockOptions?.shortText}
+          defaultValue={defaultValues?.shortText}
+        />
+
         <BlockColorInput
           valueName="Short Text Color"
           formName="shortTextColor"
           blockMasterOption={selectedBlockOptions?.shortTextColor}
           defaultValue={defaultValues?.shortTextColor}
           type="text"
-        />
-
-        <BlockInput
-          valueName="Short Text"
-          formName="shortText"
-          blockMasterOption={selectedBlockOptions?.shortText}
-          defaultValue={defaultValues?.shortText}
         />
       </div>
     </details>

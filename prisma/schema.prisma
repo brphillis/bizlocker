@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["relationJoins"]
 }
 
 datasource db {
@@ -59,13 +60,17 @@ model WebPage {
 }
 
 model Block {
-  id             String         @id @unique @default(cuid())
-  previewPage    PreviewPage[]  @relation("PreviewPageToBlocks")
-  article        Article[]      @relation("ArticlesToBlocks")
-  articleBlock   ArticleBlock?  @relation("BlockToArticleBlock", fields: [articleBlockId], references: [id])
-  articleBlockId String?        @unique
-  bannerBlock    BannerBlock?   @relation("BlockToBannerBlock", fields: [bannerBlockId], references: [id])
-  bannerBlockId  String?        @unique
+  id             String        @id @unique @default(cuid())
+  previewPage    PreviewPage[] @relation("PreviewPageToBlocks")
+  article        Article[]     @relation("ArticlesToBlocks")
+  articleBlock   ArticleBlock? @relation("BlockToArticleBlock", fields: [articleBlockId], references: [id])
+  articleBlockId String?       @unique
+  bannerBlock    BannerBlock?  @relation("BlockToBannerBlock", fields: [bannerBlockId], references: [id])
+  bannerBlockId  String?       @unique
+
+  carouselBlock   CarouselBlock? @relation("BlockToCarouselBlock", fields: [carouselBlockId], references: [id])
+  carouselBlockId String?        @unique
+
   blockOptions   BlockOptions[] @relation("BlockToBlockOptions")
   heroBlock      HeroBlock?     @relation("BlockToHeroBlock", fields: [heroBlockId], references: [id])
   heroBlockId    String?        @unique
@@ -86,11 +91,14 @@ model Block {
 
 model BlockOptions {
   id                                String     @id @unique @default(cuid())
-  autoplay                          String?
+  align                             String?
+  alignMobile                       String?
+  autoplay                          Boolean?
   backgroundBrightness              Float?
   backgroundBrightnessSecondary     Float?
   backgroundColor                   String?
   backgroundColorSecondary          String?
+  backgroundDisplay                 String?
   backgroundPatternColor            String?
   backgroundPatternColorSecondary   String?
   backgroundPatternName             String?
@@ -107,46 +115,93 @@ model BlockOptions {
   borderDisplay                     String?
   borderRadius                      String?
   borderSize                        String?
-  columns                           Int?
-  columnsMobile                     Int?
+  buttonAlign                       String?
+  buttonBorderColorPrimary          String?
+  buttonBorderColorSecondary        String?
+  buttonColorPrimary                String?
+  buttonColorSecondary              String?
+  buttonLabelColorPrimary           String?
+  buttonLabelColorSecondary         String?
+  buttonLabelPrimary                String?
+  buttonLabelSecondary              String?
+  buttonLinkPrimary                 String?
+  buttonLinkSecondary               String?
+  buttonPrimary                     String?
+  buttonSecondary                   String?
+  colorPrimary                      String?
+  colorSecondary                    String?
+  columns                           Float?
+  columnsMobile                     Float?
   count                             Int?
   flipX                             String?
+  height                            String?
+  heightMobile                      String?
+  imagePosition                     String?
+  imagePositionMobile               String?
+  itemAlign                         String[]
+  itemAlignMobile                   String[]
+  itemBackgroundColors              String[]
   itemBorderColors                  String[]
   itemBorderDisplays                String[]
   itemBorderRadius                  String[]
   itemBorderSizes                   String[]
+  itemButtonAlign                   String[]
+  itemColorOpacity                  String[]
   itemColors                        String[]
-  itemBackgroundColors              String[]
-  itemSecondaryBackgroundColors     String[]
   itemFilters                       String[]
+  itemImagePositions                String[]
+  itemImagePositionsMobile          String[]
+  itemJustify                       String[]
+  itemJustifyMobile                 String[]
   itemLinks                         String[]
-  itemSecondaryColors               String[]
-  itemTitles                        String[]
+  itemButtonBorderColorsPrimary     String[]
+  itemButtonColorsPrimary           String[]
+  itemButtonLabelColorsPrimary      String[]
+  itemButtonLabelsPrimary           String[]
+  itemButtonLinksPrimary            String[]
+  itemButtonsPrimary                String[]
+  itemBackgroundColorsSecondary     String[]
+  itemButtonBorderColorsSecondary   String[]
+  itemButtonColorsSecondary         String[]
+  itemButtonLabelColorsSecondary    String[]
+  itemButtonLabelsSecondary         String[]
+  itemButtonLinksSecondary          String[]
+  itemButtonsSecondary              String[]
+  itemColorsSecondary               String[]
+  itemShortText                     String[]
+  itemShortTextColors               String[]
+  itemShortTextSizes                String[]
+  itemShortTextSizesMobile          String[]
   itemTitleColors                   String[]
+  itemTitles                        String[]
+  itemTitleSizes                    String[]
+  itemTitleSizesMobile              String[]
+  justify                           String?
+  justifyMobile                     String?
+  linkPrimary                       String?
+  linkSecondary                     String?
   margin                            String?
   order                             Int?
   padding                           String?
-  primaryColor                      String?
-  primaryLink                       String?
   rows                              Int?
-  secondaryColor                    String?
-  secondaryLink                     String?
   shortText                         String?
   shortTextColor                    String?
   size                              String?
   sizeMobile                        String?
   sortBy                            SortBy?
   sortOrder                         SortOrder?
-  speed                             String?
+  speed                             Int?
   style                             String?
   title                             String?
   titleAlign                        String?
   titleColor                        String?
   titleSize                         String?
+  titleSizeMobile                   String?
   titleWeight                       String?
-
-  createdAt String @default("2023-12-07T15:30:00Z")
-  updatedAt String @default("2023-12-07T15:30:00Z")
+  width                             String?
+  widthMobile                       String?
+  createdAt                         String     @default("2023-12-07T15:30:00Z")
+  updatedAt                         String     @default("2023-12-07T15:30:00Z")
 }
 
 model HeroBlock {
@@ -192,6 +247,27 @@ model BannerBlockContent {
   imageId       Int?
   promotion     Promotion?   @relation("PromotionToBannerBlockContent", fields: [promotionId], references: [id])
   promotionId   Int?
+
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
+}
+
+model CarouselBlock {
+  id      String                @id @unique @default(cuid())
+  block   Block?                @relation("BlockToCarouselBlock")
+  content CarouselBlockContent? @relation("CarouselBlockContentToCarouselBlock")
+  name    String                @default("carousel")
+
+  createdAt String @default("2023-12-07T15:30:00Z")
+  updatedAt String @default("2023-12-07T15:30:00Z")
+}
+
+model CarouselBlockContent {
+  id              String         @id @unique @default(cuid())
+  carouselBlock   CarouselBlock? @relation("CarouselBlockContentToCarouselBlock", fields: [carouselBlockId], references: [id])
+  carouselBlockId String?        @unique
+  image           Image[]        @relation("ImageToCarouselBlockContent")
+  emptyItem       String[]
 
   createdAt String @default("2023-12-07T15:30:00Z")
   updatedAt String @default("2023-12-07T15:30:00Z")
@@ -498,31 +574,32 @@ model OrderItem {
 }
 
 model Image {
-  id                   Int                  @id @default(autoincrement())
+  id                   Int                    @id @default(autoincrement())
   href                 String?
   altText              String?
-  article              Article?             @relation("ArticleImage", fields: [articleId], references: [id])
-  articleId            Int?                 @unique
-  bannerBlockContent   BannerBlockContent[] @relation("ImageToBannerBlockContent")
-  brand                Brand?               @relation("BrandImage", fields: [brandId], references: [id])
-  brandId              Int?                 @unique
-  campaignBanner       Campaign[]           @relation("BannerImageToCampaign")
-  campaignTile         Campaign[]           @relation("TileImageToCampaign")
-  HeroBlockContent     HeroBlockContent[]   @relation("ImageToHeroBlockContent")
-  product              Product?             @relation(fields: [productId], references: [id])
-  productHero          Product[]            @relation("ProductHeroToProduct")
+  article              Article?               @relation("ArticleImage", fields: [articleId], references: [id])
+  articleId            Int?                   @unique
+  bannerBlockContent   BannerBlockContent[]   @relation("ImageToBannerBlockContent")
+  brand                Brand?                 @relation("BrandImage", fields: [brandId], references: [id])
+  brandId              Int?                   @unique
+  campaignBanner       Campaign[]             @relation("BannerImageToCampaign")
+  campaignTile         Campaign[]             @relation("TileImageToCampaign")
+  carouselBlockContent CarouselBlockContent[] @relation("ImageToCarouselBlockContent")
+  HeroBlockContent     HeroBlockContent[]     @relation("ImageToHeroBlockContent")
+  product              Product?               @relation(fields: [productId], references: [id])
+  productHero          Product[]              @relation("ProductHeroToProduct")
   productId            Int?
-  productSubCategory   ProductSubCategory?  @relation("ProductSubCategoryImage", fields: [productSubCategoryId], references: [id])
-  productSubCategoryId Int?                 @unique
-  promotionBanner      Promotion[]          @relation("BannerImageToPromotion")
-  promotionTile        Promotion[]          @relation("TileImageToPromotion")
-  tileBlockContent     TileBlockContent[]   @relation("ImageToTileBlockContent")
-  user                 User?                @relation("AvatarImage", fields: [userId], references: [id])
-  userId               String?              @unique
-  staff                Staff?               @relation("StaffAvatarImage", fields: [staffId], references: [id])
-  staffId              String?              @unique
-  webPage              WebPage?             @relation("WebPageImage", fields: [webPageId], references: [id])
-  webPageId            Int?                 @unique
+  productSubCategory   ProductSubCategory?    @relation("ProductSubCategoryImage", fields: [productSubCategoryId], references: [id])
+  productSubCategoryId Int?                   @unique
+  promotionBanner      Promotion[]            @relation("BannerImageToPromotion")
+  promotionTile        Promotion[]            @relation("TileImageToPromotion")
+  tileBlockContent     TileBlockContent[]     @relation("ImageToTileBlockContent")
+  user                 User?                  @relation("AvatarImage", fields: [userId], references: [id])
+  userId               String?                @unique
+  staff                Staff?                 @relation("StaffAvatarImage", fields: [staffId], references: [id])
+  staffId              String?                @unique
+  webPage              WebPage?               @relation("WebPageImage", fields: [webPageId], references: [id])
+  webPageId            Int?                   @unique
 
   previewPage   PreviewPage? @relation("PreviewPageImage", fields: [previewPageId], references: [id])
   previewPageId Int?         @unique

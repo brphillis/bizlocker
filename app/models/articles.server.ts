@@ -67,7 +67,9 @@ export const deleteArticle = async (
   //find and delete the associated blocks
   const articleBlocks = await getBlocks(article as any);
 
-  articleBlocks.map((e: PageBlock) => removeBlock(e.id, e.name));
+  await Promise.all(
+    articleBlocks.map(async (e: PageBlock) => await removeBlock(e.id, e.name))
+  );
 
   // Delete the article
   await prisma.article.delete({

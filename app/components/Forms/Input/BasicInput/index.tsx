@@ -12,9 +12,11 @@ type Props = {
   name: string;
   onChange?: (value: string | React.ChangeEvent<HTMLSelectElement>) => void;
   placeholder: string;
+  step?: number;
   styles?: string;
   type: "text" | "number" | "date" | "password";
   validationErrors?: ValidationErrors;
+  value?: number | string;
 };
 
 const BasicInput = ({
@@ -28,9 +30,11 @@ const BasicInput = ({
   name,
   onChange,
   placeholder,
+  step,
   styles,
   type,
   validationErrors,
+  value,
 }: Props) => {
   return (
     <div
@@ -53,6 +57,8 @@ const BasicInput = ({
         type={type}
         placeholder={placeholder}
         disabled={disabled}
+        step={step || undefined}
+        value={value || undefined}
         className={`input w-full text-brand-black/75
         disabled:!border-base-100/25 disabled:!bg-base-100/25 disabled:!text-brand-black/50
         ${
@@ -63,7 +69,7 @@ const BasicInput = ({
         defaultValue={
           decimals
             ? parseFloat(defaultValue).toFixed(decimals)
-            : defaultValue || ""
+            : defaultValue || undefined
         }
         onChange={(e) => {
           if (onChange) {

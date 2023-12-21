@@ -7,6 +7,7 @@ import {
   fontAlignSelectValues,
   fontSizeSelectValues,
   fontWeightSelectValues,
+  mobileFontSizeSelectValues,
 } from "../../Values/font";
 import BlockColorInput from "../../Components/Blocks/BlockColorInput";
 
@@ -34,12 +35,28 @@ const TitleOptions = ({
           defaultValue={defaultValues?.title}
         />
 
+        <BlockColorInput
+          valueName="Title Color"
+          formName="titleColor"
+          blockMasterOption={selectedBlockOptions?.titleColor}
+          defaultValue={defaultValues?.titleColor}
+          type="text"
+        />
+
         <BlockSelectInput
           valueName="Title Size"
           formName="titleSize"
           blockMasterOption={selectedBlockOptions?.titleSize}
           defaultValue={defaultValues?.titleSize}
           selections={fontSizeSelectValues}
+        />
+
+        <BlockSelectInput
+          valueName="Title Size Mobile"
+          formName="titleSizeMobile"
+          blockMasterOption={selectedBlockOptions?.titleSizeMobile}
+          defaultValue={defaultValues?.titleSizeMobile}
+          selections={mobileFontSizeSelectValues}
         />
 
         <BlockSelectInput
@@ -56,14 +73,6 @@ const TitleOptions = ({
           blockMasterOption={selectedBlockOptions?.titleAlign}
           defaultValue={defaultValues?.titleAlign}
           selections={fontAlignSelectValues}
-        />
-
-        <BlockColorInput
-          valueName="Title Color"
-          formName="titleColor"
-          blockMasterOption={selectedBlockOptions?.titleColor}
-          defaultValue={defaultValues?.titleColor}
-          type="text"
         />
       </div>
     </details>

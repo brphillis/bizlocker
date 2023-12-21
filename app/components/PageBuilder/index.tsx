@@ -22,8 +22,8 @@ import ContentSearch from "./Content/ContentSearch";
 import ResultsImages from "./Content/ResultsImages";
 import SelectedContent from "./Content/SelectedContent";
 import SquareIconButton from "../Buttons/SquareIconButton";
-import ProductBlockOptions from "./Options/ProductBlockOptions";
-import ArticleBlockOptions from "./Options/ArticleBlockOptions";
+import ProductBlockOptions from "./Specific/ProductBlockOptions";
+import ArticleBlockOptions from "./Specific/ArticleBlockOptions";
 import BackSubmitButtons from "../Forms/Buttons/BackSubmitButtons";
 import BlockOptionsModule from "./BlockOptions";
 import TextBlockContentModule from "./Content/TextBlockContent";
@@ -311,30 +311,32 @@ const PageBuilder = ({
             activeTab={activeTab}
           />
 
-          <ProductBlockOptions
-            selectedBlock={selectedBlock}
-            selectedItems={selectedItems}
-            setSelectedItems={setSelectedItems}
-            productCategories={productCategories}
-            productSubCategories={productSubCategories}
-            brands={brands}
-            defaultValues={blocks?.[editingIndex]?.content as BlockContent}
-          />
+          <div className={`${activeTab !== "block" && "hidden"}`}>
+            <ProductBlockOptions
+              selectedBlock={selectedBlock}
+              selectedItems={selectedItems}
+              setSelectedItems={setSelectedItems}
+              productCategories={productCategories}
+              productSubCategories={productSubCategories}
+              brands={brands}
+              defaultValues={blocks?.[editingIndex]?.content as BlockContent}
+            />
 
-          <ArticleBlockOptions
-            selectedBlock={selectedBlock}
-            selectedItems={selectedItems}
-            setSelectedItems={setSelectedItems}
-            articleCategories={articleCategories}
-            defaultValues={blocks?.[editingIndex]?.content as BlockContent}
-          />
+            <ArticleBlockOptions
+              selectedBlock={selectedBlock}
+              selectedItems={selectedItems}
+              setSelectedItems={setSelectedItems}
+              articleCategories={articleCategories}
+              defaultValues={blocks?.[editingIndex]?.content as BlockContent}
+            />
 
-          <TextBlockContentModule
-            selectedBlock={selectedBlock}
-            selectedItems={selectedItems}
-            setSelectedItems={setSelectedItems}
-            defaultValue={blocks?.[editingIndex]?.content as BlockContent}
-          />
+            <TextBlockContentModule
+              selectedBlock={selectedBlock}
+              selectedItems={selectedItems}
+              setSelectedItems={setSelectedItems}
+              defaultValue={blocks?.[editingIndex]?.content as BlockContent}
+            />
+          </div>
 
           {selectedItems && (
             <input

@@ -1,14 +1,14 @@
 import type { BlockMasterOptions } from "~/utility/blockMaster/types";
 import type { BlockOptions } from "@prisma/client";
-import ItemInput from "../Components/Items/ItemInput";
-import ItemSelectInput from "../Components/Items/ItemSelectInput";
-import { filterSelectValues } from "../Values/filters";
-import {
-  borderDisplaySelectValues,
-  borderRadiusSelectValues,
-  borderSizeSelectValues,
-} from "../Values/borders";
-import ItemColorInput from "../Components/Items/ItemColorInput";
+import Alignment from "./Alignment";
+import Borders from "./Borders";
+import Backgrounds from "./Backgrounds";
+import Buttons from "./Buttons";
+import Colors from "./Colors";
+import Effects from "./Effects";
+import Links from "./Links";
+import Text from "./Text";
+import Titles from "./Titles";
 
 type Props = {
   selectedItems: ContentSelection[];
@@ -23,120 +23,58 @@ const ItemOptions = ({
 }: Props) => {
   return (
     <>
-      <ItemColorInput
-        title="Item Colors"
-        formName="itemColors"
+      <Alignment
         selectedItems={selectedItems}
-        valueName="Color"
-        blockMasterOption={selectedBlockOptions?.itemColors}
-        defaultValues={defaultValues?.itemColors}
+        selectedBlockOptions={selectedBlockOptions}
+        defaultValues={defaultValues}
       />
 
-      <ItemColorInput
-        title="Item Secondary Colors"
-        formName="itemSecondaryColors"
+      <Backgrounds
         selectedItems={selectedItems}
-        valueName="Secondary Color"
-        blockMasterOption={selectedBlockOptions?.itemSecondaryColors}
-        defaultValues={defaultValues?.itemSecondaryColors}
+        selectedBlockOptions={selectedBlockOptions}
+        defaultValues={defaultValues}
       />
 
-      <ItemColorInput
-        title="Item Border Colors"
-        formName="itemBorderColors"
+      <Borders
         selectedItems={selectedItems}
-        valueName="Border Color"
-        blockMasterOption={selectedBlockOptions?.itemBorderColors}
-        defaultValues={defaultValues?.itemBorderColors}
-        type="border"
+        selectedBlockOptions={selectedBlockOptions}
+        defaultValues={defaultValues}
       />
 
-      <ItemSelectInput
-        title="Item Border Displays"
-        formName="itemBorderDisplays"
+      <Buttons
         selectedItems={selectedItems}
-        valueName="Border Display"
-        blockMasterOption={selectedBlockOptions?.itemBorderDisplays}
-        defaultValues={defaultValues?.itemBorderDisplays}
-        selections={borderDisplaySelectValues}
+        selectedBlockOptions={selectedBlockOptions}
+        defaultValues={defaultValues}
       />
 
-      <ItemSelectInput
-        title="Item Border Radius"
-        formName="itemBorderRadius"
+      <Colors
         selectedItems={selectedItems}
-        valueName="Border Radius"
-        blockMasterOption={selectedBlockOptions?.itemBorderRadius}
-        defaultValues={defaultValues?.itemBorderRadius}
-        selections={borderRadiusSelectValues}
+        selectedBlockOptions={selectedBlockOptions}
+        defaultValues={defaultValues}
       />
 
-      <ItemSelectInput
-        title="Item Border Size"
-        formName="itemBorderSizes"
+      <Effects
         selectedItems={selectedItems}
-        valueName="Border Radius"
-        blockMasterOption={selectedBlockOptions?.itemBorderSizes}
-        defaultValues={defaultValues?.itemBorderSizes}
-        selections={borderSizeSelectValues}
+        selectedBlockOptions={selectedBlockOptions}
+        defaultValues={defaultValues}
       />
 
-      <ItemColorInput
-        title="Item Background Colors"
-        formName="itemBackgroundColors"
+      <Links
         selectedItems={selectedItems}
-        valueName="Background Color"
-        blockMasterOption={selectedBlockOptions?.itemBackgroundColors}
-        defaultValues={defaultValues?.itemBackgroundColors}
-        type="bg"
+        selectedBlockOptions={selectedBlockOptions}
+        defaultValues={defaultValues}
       />
 
-      <ItemColorInput
-        title="Item Secondary Background Colors"
-        formName="itemSecondaryBackgroundColors"
+      <Text
         selectedItems={selectedItems}
-        valueName="Background Secondary Color"
-        blockMasterOption={selectedBlockOptions?.itemSecondaryBackgroundColors}
-        defaultValues={defaultValues?.itemSecondaryBackgroundColors}
-        type="bg"
+        selectedBlockOptions={selectedBlockOptions}
+        defaultValues={defaultValues}
       />
 
-      <ItemSelectInput
-        title="Item Filters"
-        formName="itemFilters"
+      <Titles
         selectedItems={selectedItems}
-        valueName="Filter"
-        blockMasterOption={selectedBlockOptions?.itemFilters}
-        defaultValues={defaultValues?.itemFilters}
-        selections={filterSelectValues}
-      />
-
-      <ItemInput
-        title="Item Titles"
-        formName="itemTitles"
-        selectedItems={selectedItems}
-        valueName="Title"
-        blockMasterOption={selectedBlockOptions?.itemTitles}
-        defaultValues={defaultValues?.itemTitles}
-      />
-
-      <ItemColorInput
-        title="Item Secondary Title Colors"
-        formName="itemTitleColors"
-        selectedItems={selectedItems}
-        valueName="Title Color"
-        blockMasterOption={selectedBlockOptions?.itemTitleColors}
-        defaultValues={defaultValues?.itemTitleColors}
-        type="text"
-      />
-
-      <ItemInput
-        title="Item Links"
-        formName="itemLinks"
-        selectedItems={selectedItems}
-        valueName="Link"
-        blockMasterOption={selectedBlockOptions?.itemLinks}
-        defaultValues={defaultValues?.itemLinks}
+        selectedBlockOptions={selectedBlockOptions}
+        defaultValues={defaultValues}
       />
     </>
   );

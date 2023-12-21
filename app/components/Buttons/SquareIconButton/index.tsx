@@ -9,6 +9,7 @@ type Props = {
   name?: string;
   type?: "button" | "submit" | "reset";
   value?: string;
+  extendStyle?: string;
 };
 
 const SquareIconButton = ({
@@ -19,6 +20,7 @@ const SquareIconButton = ({
   name,
   type,
   value,
+  extendStyle,
 }: Props) => {
   let sizing: { style: string; size: number } | null = null;
   let coloring: string = "";
@@ -58,7 +60,7 @@ const SquareIconButton = ({
 
   return (
     <button
-      className={`flex items-center justify-center !rounded-sm bg-error ${coloring} ${sizing?.style}`}
+      className={`flex items-center justify-center !rounded-sm bg-error ${coloring} ${sizing?.style} ${extendStyle}`}
       onClick={() => {
         onClickFunction && onClickFunction();
       }}

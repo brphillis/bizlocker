@@ -14,6 +14,22 @@ export const fontSizeSelectValues = [
   { id: "text-9xl", name: "9XL" },
 ];
 
+export const mobileFontSizeSelectValues = [
+  { id: "max-md:text-xs", name: "XSmall" },
+  { id: "max-md:text-sm", name: "Small" },
+  { id: "max-md:text-base", name: "Medium" },
+  { id: "max-md:text-lg", name: "Large" },
+  { id: "max-md:text-xl", name: "XL" },
+  { id: "max-md:text-2xl", name: "2XL" },
+  { id: "max-md:text-3xl", name: "3XL" },
+  { id: "max-md:text-4xl", name: "4XL" },
+  { id: "max-md:text-5xl", name: "5XL" },
+  { id: "max-md:text-6xl", name: "6XL" },
+  { id: "max-md:text-7xl", name: "7XL" },
+  { id: "max-md:text-8xl", name: "8XL" },
+  { id: "max-md:text-9xl", name: "9XL" },
+];
+
 export const fontWeightSelectValues = [
   { id: "font-thin", name: "Thin" },
   { id: "font-extralight", name: "X Light" },

@@ -16,27 +16,67 @@ const Pagination = ({ totalPages }: Props) => {
         <div className="flex flex-row items-start justify-center gap-1 pb-3 pt-6">
           {Array.from({ length: totalPages }).map((_, i) => {
             const pageNumber = i + 1;
-            return (
-              <button
-                type="button"
-                key={"pagination" + i}
-                className={`flex h-8 w-8 items-center justify-center rounded-sm bg-primary text-brand-white hover:bg-primary-dark ${
-                  currentPage === pageNumber && "bg-primary-dark"
-                }`}
-                onClick={() => {
-                  searchParams.set("pageNumber", pageNumber.toString());
-                  submit(searchParams, { method: "GET" });
-                  setCurrentPage(pageNumber);
-                }}
-              >
-                {pageNumber}
-              </button>
-            );
+
+            // Show only up to 6 pages
+            if (currentPage <= 3 && pageNumber <= 3) {
+              return renderPageButton(pageNumber);
+            } else if (currentPage > 3 && currentPage <= totalPages - 3) {
+              if (pageNumber === 1 || pageNumber === totalPages) {
+                // Show first and last pages
+                return renderPageButton(pageNumber);
+              } else if (
+                Math.abs(pageNumber - currentPage) <= 1 ||
+                pageNumber === totalPages - 1
+              ) {
+                // Show current page and neighboring pages
+                return renderPageButton(pageNumber);
+              } else if (pageNumber === totalPages - 2) {
+                // Show ellipsis before the last page
+                return (
+                  <span key={`ellipsis-end`} className="mx-1">
+                    ...
+                  </span>
+                );
+              }
+            } else {
+              // Show last 6 pages
+              if (pageNumber > totalPages - 3) {
+                return renderPageButton(pageNumber);
+              } else if (pageNumber === totalPages - 4) {
+                // Show ellipsis before the last 6 pages
+                return (
+                  <span key={`ellipsis-start`} className="mx-1">
+                    ...
+                  </span>
+                );
+              }
+            }
+
+            return null;
           })}
         </div>
       )}
     </>
   );
+
+  function renderPageButton(pageNumber: number) {
+    return (
+      <button
+        type="button"
+        key={`pagination-${pageNumber}`}
+        className={`flex h-8 w-8 items-center justify-center rounded-sm bg-primary text-brand-white hover:bg-primary-dark ${
+          currentPage === pageNumber && "bg-primary-dark"
+        }`}
+        onClick={() => {
+          searchParams.set("pageNumber", pageNumber.toString());
+          submit(searchParams, { method: "GET" });
+          setCurrentPage(pageNumber);
+        }}
+      >
+        {pageNumber}
+      </button>
+    );
+  }
 };
 
 export default Pagination;

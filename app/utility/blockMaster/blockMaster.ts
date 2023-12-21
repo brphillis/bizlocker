@@ -7,6 +7,7 @@ import HeroBlock from "~/components/Blocks/HeroBlock";
 import ProductBlock from "~/components/Blocks/ProductBlock";
 import ArticleBlock from "~/components/Blocks/ArticleBlock";
 import MapBlock from "~/components/Blocks/MapBlock";
+import CarouselBlock from "~/components/Blocks/CarouselBlock";
 
 export type BlockMasterOptions = TransformToOptionalBooleans<BlockOptions>;
 
@@ -18,7 +19,6 @@ export interface BlockMaster {
   content: Object;
   addOns?: string[];
   contentRequired?: boolean;
-  hasMultipleContent?: boolean;
   maxContentItems?: number;
 }
 
@@ -27,6 +27,7 @@ export const blockMaster: BlockMaster[] = [
     name: "banner",
     component: BannerBlock,
     icon: "IoTabletLandscape",
+    maxContentItems: 1,
     options: {
       backgroundColor: true,
       backgroundColorSecondary: true,
@@ -63,10 +64,73 @@ export const blockMaster: BlockMaster[] = [
     },
   },
   {
+    name: "carousel",
+    component: CarouselBlock,
+    icon: "IoLaptopSharp",
+    maxContentItems: 10,
+    options: {
+      backgroundBrightness: true,
+      backgroundColor: true,
+      backgroundDisplay: true,
+      backgroundPatternColor: true,
+      backgroundPatternName: true,
+      backgroundPatternOpacity: true,
+      backgroundPatternSize: true,
+      backgroundWidth: true,
+      columns: true,
+      columnsMobile: true,
+      itemAlign: true,
+      itemAlignMobile: true,
+      itemBackgroundColors: true,
+      itemBorderColors: true,
+      itemBorderDisplays: true,
+      itemBorderRadius: true,
+      itemBorderSizes: true,
+      itemButtonAlign: true,
+      itemImagePositions: true,
+      itemImagePositionsMobile: true,
+      itemJustify: true,
+      itemJustifyMobile: true,
+      itemButtonBorderColorsPrimary: true,
+      itemButtonColorsPrimary: true,
+      itemButtonLabelColorsPrimary: true,
+      itemButtonLabelsPrimary: true,
+      itemButtonLinksPrimary: true,
+      itemButtonsPrimary: true,
+      itemButtonLinksSecondary: true,
+      itemButtonsSecondary: true,
+      itemColorsSecondary: true,
+      itemBackgroundColorsSecondary: true,
+      itemButtonBorderColorsSecondary: true,
+      itemButtonColorsSecondary: true,
+      itemButtonLabelColorsSecondary: true,
+      itemButtonLabelsSecondary: true,
+      itemShortText: true,
+      itemShortTextColors: true,
+      itemShortTextSizes: true,
+      itemShortTextSizesMobile: true,
+      itemTitleColors: true,
+      itemTitles: true,
+      itemTitleSizes: true,
+      itemTitleSizesMobile: true,
+      margin: true,
+      padding: true,
+      height: true,
+      heightMobile: true,
+      width: true,
+      speed: true,
+      autoplay: true,
+    },
+    content: {
+      include: {
+        image: true,
+      },
+    },
+  },
+  {
     name: "tile",
     component: TileBlock,
     icon: "IoGrid",
-    hasMultipleContent: true,
     maxContentItems: 6,
     options: {
       backgroundBrightness: true,
@@ -88,6 +152,10 @@ export const blockMaster: BlockMaster[] = [
       itemTitles: true,
       itemTitleColors: true,
       itemBackgroundColors: true,
+      itemBorderDisplays: true,
+      itemBorderColors: true,
+      itemBorderSizes: true,
+      itemBorderRadius: true,
     },
     addOns: ["icon"],
     content: {
@@ -138,6 +206,8 @@ export const blockMaster: BlockMaster[] = [
       style: true,
       title: true,
       titleColor: true,
+      titleSize: true,
+      titleSizeMobile: true,
     },
     content: {
       include: {
@@ -159,7 +229,6 @@ export const blockMaster: BlockMaster[] = [
     name: "map",
     component: MapBlock,
     icon: "IoMap",
-    hasMultipleContent: true,
     maxContentItems: 100,
     options: {
       borderColor: true,
@@ -170,7 +239,7 @@ export const blockMaster: BlockMaster[] = [
       itemBorderDisplays: true,
       itemBorderRadius: true,
       itemBorderSizes: true,
-      primaryColor: true,
+      colorPrimary: true,
       margin: true,
       size: true,
       style: true,
