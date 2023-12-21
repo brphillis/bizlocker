@@ -26,7 +26,7 @@ const BannerBlock = ({ content, options: ArrayOptions }: Props) => {
     borderSize,
     margin,
     padding,
-    primaryLink,
+    linkPrimary,
     size,
     title,
     titleColor,
@@ -48,7 +48,7 @@ const BannerBlock = ({ content, options: ArrayOptions }: Props) => {
       contentType!,
       content,
       "bannerImage",
-      primaryLink as string
+      linkPrimary as string
     );
     name = imageProps.name;
     link = imageProps.link;

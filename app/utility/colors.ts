@@ -1,7 +1,6 @@
 import { searchObjectByKey } from "~/helpers/objectHelpers";
-
-const themeColors = require("../../theme");
-const colorPrefixList = require("../../themeColorPrefixList");
+import colorPrefixList from "../../theme/themeColorPrefixList";
+import themeColors from "../../theme/theme";
 
 export const getThemeColorNames = (): string[] => {
   return Object.keys(themeColors);
@@ -83,7 +82,7 @@ export const generateProductColor = (
 ): string | null => {
   const lowerCaseColorName = colorName?.toLowerCase();
 
-  if (themeColors[`brand-${lowerCaseColorName}`]) {
+  if (themeColors[`brand-${lowerCaseColorName}` as keyof typeof themeColors]) {
     return `brand-${lowerCaseColorName}`;
   } else {
     console.error(`Color not found for ${colorName}`);

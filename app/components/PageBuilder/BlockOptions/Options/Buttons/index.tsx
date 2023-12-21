@@ -4,6 +4,7 @@ import BlockSelectInput from "../../Components/Blocks/BlockSelectInput";
 import BlockInput from "../../Components/Blocks/BlockInput";
 import { buttonStyleSelectValues } from "../../Values/buttons";
 import BlockColorInput from "../../Components/Blocks/BlockColorInput";
+import { flexAlignSelectValues } from "../../Values/basic";
 
 type Props = {
   defaultValues?: BlockOptions;
@@ -16,95 +17,103 @@ const ButtonOptions = ({ defaultValues, selectedBlockOptions }: Props) => {
       <summary className="collapse-title text-xl font-medium">Buttons</summary>
       <div className="flex max-w-full flex-wrap justify-start !gap-3 px-3 pb-3 max-md:justify-center max-md:px-0">
         <BlockSelectInput
+          valueName="Button Align"
+          formName="buttonAlign"
+          blockMasterOption={selectedBlockOptions?.buttonAlign}
+          defaultValue={defaultValues?.buttonAlign}
+          selections={flexAlignSelectValues}
+        />
+
+        <BlockSelectInput
           valueName="Primary Button"
-          formName="primaryButton"
-          blockMasterOption={selectedBlockOptions?.primaryButton}
-          defaultValue={defaultValues?.primaryButton}
+          formName="buttonPrimary"
+          blockMasterOption={selectedBlockOptions?.buttonPrimary}
+          defaultValue={defaultValues?.buttonPrimary}
           selections={buttonStyleSelectValues}
         />
 
         <BlockColorInput
           valueName="Primary Button Color"
-          formName="primaryButtonColor"
-          blockMasterOption={selectedBlockOptions?.primaryButtonColor}
-          defaultValue={defaultValues?.primaryButtonColor}
+          formName="buttonColorPrimary"
+          blockMasterOption={selectedBlockOptions?.buttonColorPrimary}
+          defaultValue={defaultValues?.buttonColorPrimary}
           type="bg"
         />
 
         <BlockColorInput
           valueName="Primary Button Border Color"
-          formName="primaryButtonBorderColor"
-          blockMasterOption={selectedBlockOptions?.primaryButtonBorderColor}
-          defaultValue={defaultValues?.primaryButtonBorderColor}
+          formName="buttonBorderColorPrimary"
+          blockMasterOption={selectedBlockOptions?.buttonBorderColorPrimary}
+          defaultValue={defaultValues?.buttonBorderColorPrimary}
           type="border"
         />
 
         <BlockInput
           valueName="Primary Button Label"
-          formName="primaryButtonLabel"
-          blockMasterOption={selectedBlockOptions?.primaryButtonLabel}
-          defaultValue={defaultValues?.primaryButtonLabel}
+          formName="buttonLabelPrimary"
+          blockMasterOption={selectedBlockOptions?.buttonLabelPrimary}
+          defaultValue={defaultValues?.buttonLabelPrimary}
         />
 
         <BlockColorInput
           valueName="Primary Button Label Color"
-          formName="primaryButtonLabelColor"
-          blockMasterOption={selectedBlockOptions?.primaryButtonLabelColor}
-          defaultValue={defaultValues?.primaryButtonLabelColor}
+          formName="buttonLabelColorPrimary"
+          blockMasterOption={selectedBlockOptions?.buttonLabelColorPrimary}
+          defaultValue={defaultValues?.buttonLabelColorPrimary}
           type="text"
         />
 
         <BlockInput
           valueName="Primary Button Link"
-          formName="primaryButtonLink"
-          blockMasterOption={selectedBlockOptions?.primaryButtonLink}
-          defaultValue={defaultValues?.primaryButtonLink}
+          formName="buttonLinkPrimary"
+          blockMasterOption={selectedBlockOptions?.buttonLinkPrimary}
+          defaultValue={defaultValues?.buttonLinkPrimary}
         />
 
         <BlockSelectInput
           valueName="Secondary Button"
-          formName="secondaryButton"
-          blockMasterOption={selectedBlockOptions?.secondaryButton}
-          defaultValue={defaultValues?.secondaryButton}
+          formName="buttonSecondary"
+          blockMasterOption={selectedBlockOptions?.buttonSecondary}
+          defaultValue={defaultValues?.buttonSecondary}
           selections={buttonStyleSelectValues}
         />
 
         <BlockColorInput
           valueName="Secondary Button Color"
-          formName="secondaryButtonColor"
-          blockMasterOption={selectedBlockOptions?.secondaryButtonColor}
-          defaultValue={defaultValues?.secondaryButtonColor}
+          formName="buttonColorSecondary"
+          blockMasterOption={selectedBlockOptions?.buttonColorSecondary}
+          defaultValue={defaultValues?.buttonColorSecondary}
           type="bg"
         />
 
         <BlockColorInput
           valueName="Secondary Button Border Color"
-          formName="secondaryButtonBorderColor"
-          blockMasterOption={selectedBlockOptions?.secondaryButtonBorderColor}
-          defaultValue={defaultValues?.secondaryButtonBorderColor}
+          formName="buttonBorderColorSecondary"
+          blockMasterOption={selectedBlockOptions?.buttonBorderColorSecondary}
+          defaultValue={defaultValues?.buttonBorderColorSecondary}
           type="border"
         />
 
         <BlockInput
           valueName="Secondary Button Label"
-          formName="secondaryButtonLabel"
-          blockMasterOption={selectedBlockOptions?.secondaryButtonLabel}
-          defaultValue={defaultValues?.secondaryButtonLabel}
+          formName="buttonLabelSecondary"
+          blockMasterOption={selectedBlockOptions?.buttonLabelSecondary}
+          defaultValue={defaultValues?.buttonLabelSecondary}
         />
 
         <BlockColorInput
           valueName="Secondary Button Label Color"
-          formName="secondaryButtonLabelColor"
-          blockMasterOption={selectedBlockOptions?.secondaryButtonLabelColor}
-          defaultValue={defaultValues?.secondaryButtonLabelColor}
+          formName="buttonLabelColorSecondary"
+          blockMasterOption={selectedBlockOptions?.buttonLabelColorSecondary}
+          defaultValue={defaultValues?.buttonLabelColorSecondary}
           type="text"
         />
 
         <BlockInput
           valueName="Secondary Button Link"
-          formName="secondaryButtonLink"
-          blockMasterOption={selectedBlockOptions?.secondaryButtonLink}
-          defaultValue={defaultValues?.secondaryButtonLink}
+          formName="buttonLinkSecondary"
+          blockMasterOption={selectedBlockOptions?.buttonLinkSecondary}
+          defaultValue={defaultValues?.buttonLinkSecondary}
         />
       </div>
     </details>

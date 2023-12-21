@@ -2,8 +2,12 @@ import type { BlockOptions } from "@prisma/client";
 import type { BlockMasterOptions } from "~/utility/blockMaster/blockMaster";
 import type { BlockName } from "~/utility/blockMaster/types";
 import {
+  getHeightSelectValues,
+  getMobileHeightSelectValues,
   getMobileSizeSelectValues,
+  getMobileWidthSelectValues,
   getSizeSelectValues,
+  getWidthSelectValues,
 } from "../../Values/size";
 import BlockSelectInput from "../../Components/Blocks/BlockSelectInput";
 
@@ -36,6 +40,38 @@ const SizeOptions = ({
           blockMasterOption={selectedBlockOptions?.sizeMobile}
           defaultValue={defaultValues?.sizeMobile}
           selections={getMobileSizeSelectValues(selectedBlock)}
+        />
+
+        <BlockSelectInput
+          valueName="Height"
+          formName="height"
+          blockMasterOption={selectedBlockOptions?.height}
+          defaultValue={defaultValues?.height}
+          selections={getHeightSelectValues(selectedBlock)}
+        />
+
+        <BlockSelectInput
+          valueName="Height Mobile"
+          formName="heightMobile"
+          blockMasterOption={selectedBlockOptions?.heightMobile}
+          defaultValue={defaultValues?.heightMobile}
+          selections={getMobileHeightSelectValues(selectedBlock)}
+        />
+
+        <BlockSelectInput
+          valueName="Width"
+          formName="width"
+          blockMasterOption={selectedBlockOptions?.width}
+          defaultValue={defaultValues?.width}
+          selections={getWidthSelectValues(selectedBlock)}
+        />
+
+        <BlockSelectInput
+          valueName="Width Mobile"
+          formName="widthMobile"
+          blockMasterOption={selectedBlockOptions?.widthMobile}
+          defaultValue={defaultValues?.widthMobile}
+          selections={getMobileWidthSelectValues(selectedBlock)}
         />
       </div>
     </details>

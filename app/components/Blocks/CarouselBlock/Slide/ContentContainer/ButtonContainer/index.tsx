@@ -11,78 +11,79 @@ type Props = {
 const ButtonContainer = ({ index, blockOptions }: Props) => {
   const navigate = useNavigate();
   const {
-    itemPrimaryButtons,
-    itemPrimaryButtonBorderColors,
-    itemPrimaryButtonColors,
-    itemPrimaryButtonLabelColors,
-    itemPrimaryButtonLabels,
-    itemPrimaryButtonLinks,
-    itemSecondaryButtonBorderColors,
-    itemSecondaryButtonColors,
-    itemSecondaryButtonLabelColors,
-    itemSecondaryButtonLabels,
-    itemSecondaryButtonLinks,
-    itemSecondaryButtons,
+    itemButtonsPrimary,
+    itemButtonBorderColorsPrimary,
+    itemButtonColorsPrimary,
+    itemButtonLabelColorsPrimary,
+    itemButtonLabelsPrimary,
+    itemButtonLinksPrimary,
+    itemButtonBorderColorsSecondary,
+    itemButtonColorsSecondary,
+    itemButtonLabelColorsSecondary,
+    itemButtonLabelsSecondary,
+    itemButtonLinksSecondary,
+    itemButtonsSecondary,
+    itemButtonAlign,
   } = blockOptions;
 
   const hasButtons =
-    itemPrimaryButtons?.[index] || itemSecondaryButtons?.[index];
+    itemButtonsPrimary?.[index] || itemButtonsSecondary?.[index];
 
   return (
     <div
-      className={`flex flex-col items-center justify-center gap-3 ${
-        hasButtons ? "flex" : "hidden"
-      }`}
+      className={`flex flex-wrap items-center justify-center gap-3 
+      ${itemButtonAlign[index]}
+      ${hasButtons ? "flex" : "hidden"}`}
     >
-      {itemPrimaryButtons?.[index] && (
+      {itemButtonsPrimary?.[index] && (
         <>
-          {itemPrimaryButtons?.[index] === "basic" && (
+          {itemButtonsPrimary?.[index] === "basic" && (
             <BasicButton
-              label={itemPrimaryButtonLabels[index]}
+              label={itemButtonLabelsPrimary[index]}
               hoverEffect="color"
-              clickFunction={() => navigate(itemPrimaryButtonLinks[index])}
+              clickFunction={() => navigate(itemButtonLinksPrimary[index])}
               extendStyle={`w-[240px] min-w-max
-                ${itemPrimaryButtonBorderColors[index]}
-                ${itemPrimaryButtonLabelColors[index]}
-                ${itemPrimaryButtonColors[index]}`}
+                ${itemButtonBorderColorsPrimary[index]}
+                ${itemButtonLabelColorsPrimary[index]}
+                ${itemButtonColorsPrimary[index]}`}
             />
           )}
 
-          {itemPrimaryButtons?.[index] === "outline" && (
+          {itemButtonsPrimary?.[index] === "outline" && (
             <OutlineButton
-              label={itemPrimaryButtonLabels[index]}
+              label={itemButtonLabelsPrimary[index]}
               hoverEffect="grow"
-              clickFunction={() => navigate(itemPrimaryButtonLinks[index])}
+              clickFunction={() => navigate(itemButtonLinksPrimary[index])}
               extendStyle={`w-[240px] min-w-max
-                ${itemPrimaryButtonBorderColors[index]}
-                ${itemPrimaryButtonLabelColors[index]}`}
+                ${itemButtonBorderColorsPrimary[index]}
+                ${itemButtonLabelColorsPrimary[index]}`}
             />
           )}
         </>
       )}
 
-      {itemSecondaryButtons?.[index] && (
+      {itemButtonsSecondary?.[index] && (
         <>
-          {itemSecondaryButtons?.[index] === "basic" && (
+          {itemButtonsSecondary?.[index] === "basic" && (
             <BasicButton
-              label={itemSecondaryButtonLabels[index]}
+              label={itemButtonLabelsSecondary[index]}
               hoverEffect="color"
-              clickFunction={() => navigate(itemSecondaryButtonLinks[index])}
+              clickFunction={() => navigate(itemButtonLinksSecondary[index])}
               extendStyle={`w-[240px] min-w-max
-                ${itemSecondaryButtonBorderColors[index]}
-                ${itemSecondaryButtonLabelColors[index]}
-                ${itemSecondaryButtonColors[index]}`}
+                ${itemButtonBorderColorsSecondary[index]}
+                ${itemButtonLabelColorsSecondary[index]}
+                ${itemButtonColorsSecondary[index]}`}
             />
           )}
 
-          {itemSecondaryButtons?.[index] === "outline" && (
+          {itemButtonsSecondary?.[index] === "outline" && (
             <OutlineButton
-              label={itemSecondaryButtonLabels[index]}
+              label={itemButtonLabelsSecondary[index]}
               hoverEffect="grow"
-              clickFunction={() => navigate(itemSecondaryButtonLinks[index])}
+              clickFunction={() => navigate(itemButtonLinksSecondary[index])}
               extendStyle={`w-[240px] min-w-max
-                ${itemSecondaryButtonBorderColors[index]}
-                ${itemSecondaryButtonLabelColors[index]}`}
+                ${itemButtonBorderColorsSecondary[index]}
+                ${itemButtonLabelColorsSecondary[index]}`}
             />
           )}
         </>

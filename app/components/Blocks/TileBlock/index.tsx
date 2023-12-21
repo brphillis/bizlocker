@@ -47,7 +47,7 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
 
   return (
     <div
-      className={`relative grid h-max place-items-center gap-3 py-6 max-md:px-3 sm:gap-6 ${margin} ${padding} 
+      className={`relative grid h-max place-items-center gap-6 py-3 max-md:gap-3 max-md:px-3 ${margin} ${padding} 
       ${colsMobile || "max-md:!grid-cols-2"}`}
       style={{
         gridTemplateColumns: columns
@@ -61,7 +61,7 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
         patternColor={getThemeColorValueByName(backgroundPatternColor)}
         patternOpacity={backgroundPatternOpacity || 0.5}
         patternSize={backgroundPatternSize || 32}
-        screenWidth={backgroundWidth === "100vw" ? true : false}
+        screenWidth={backgroundWidth === "w-screen" ? true : false}
         brightness={backgroundBrightness || undefined}
       />
 
@@ -77,8 +77,6 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
             "tileImage",
             itemLinks[i]
           ) || {};
-
-        console.log("current", itemBorderRadius[i]);
 
         return (
           <div

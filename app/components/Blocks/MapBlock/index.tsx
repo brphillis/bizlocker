@@ -4,7 +4,7 @@ import { getThemeColorValueByName } from "~/utility/colors";
 import type { BlockOptions } from "@prisma/client";
 import type { BlockContent } from "~/models/blocks.server";
 import type { MapFunctions } from "~/components/Map/types";
-import { ClientOnly } from "~/components/Utility/ClientOnly";
+import { ClientOnly } from "~/components/Client/ClientOnly";
 import { getCountrFromISO3166 } from "~/utility/countryList";
 import type { StoreWithDetails } from "~/models/stores.server";
 import { IoCall, IoLocationSharp, IoPrint } from "react-icons/io5";
@@ -28,7 +28,7 @@ const MapBlock = ({ content, options: optionsArray }: Props) => {
     titleColor,
     margin,
     itemBorderDisplays,
-    primaryColor,
+    colorPrimary,
   } = options || {};
 
   const locations = content.store as StoreWithDetails[];
@@ -77,7 +77,7 @@ const MapBlock = ({ content, options: optionsArray }: Props) => {
             <Map
               ref={mapRef}
               locations={locations}
-              markerColor={getThemeColorValueByName(primaryColor || "BLUE")}
+              markerColor={getThemeColorValueByName(colorPrimary || "BLUE")}
             />
           )}
         </ClientOnly>
@@ -111,12 +111,12 @@ const MapBlock = ({ content, options: optionsArray }: Props) => {
               >
                 <div className="group relative bg-white px-6 pb-8 pt-6 shadow-xl ring-1 ring-gray-900/5 transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl sm:mx-auto sm:px-10">
                   <span
-                    className={`absolute top-6 z-0 h-14 w-14 rounded-full  transition-all duration-500 group-hover:scale-[18] ${primaryColor}`}
+                    className={`absolute top-6 z-0 h-14 w-14 rounded-full  transition-all duration-500 group-hover:scale-[18] ${colorPrimary}`}
                   ></span>
                   <div className="relative z-10 mx-auto">
                     <div className="flex flex-row items-center gap-3">
                       <div
-                        className={`grid h-14 w-14 place-items-center rounded-full transition-all duration-500 ${primaryColor}`}
+                        className={`grid h-14 w-14 place-items-center rounded-full transition-all duration-500 ${colorPrimary}`}
                       >
                         <IoLocationSharp size={24} color="white" />
                       </div>
@@ -139,7 +139,7 @@ const MapBlock = ({ content, options: optionsArray }: Props) => {
                       <div>
                         <div className="flex cursor-pointer items-center gap-3">
                           <div
-                            className={`rounded-full p-1 text-brand-white ${primaryColor}`}
+                            className={`rounded-full p-1 text-brand-white ${colorPrimary}`}
                           >
                             <IoCall size={14} />
                           </div>
@@ -152,7 +152,7 @@ const MapBlock = ({ content, options: optionsArray }: Props) => {
                         </div>
                         <div className="mt-1 flex cursor-pointer items-center gap-3">
                           <div
-                            className={`rounded-full p-1 text-brand-white ${primaryColor}`}
+                            className={`rounded-full p-1 text-brand-white ${colorPrimary}`}
                           >
                             <IoPrint size={14} />
                           </div>

@@ -38,7 +38,7 @@ import {
 } from "@remix-run/node";
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY, getUserDataFromSession } from "~/session.server";
-import { ClientOnly } from "~/components/Utility/ClientOnly";
+import { ClientOnly } from "~/components/Client/ClientOnly";
 import type { Image, Staff } from "@prisma/client";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {

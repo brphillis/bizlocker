@@ -31,13 +31,13 @@ const Backgrounds = ({
 
         <ItemColorInput
           title="Secondary Background Colors"
-          formName="itemSecondaryBackgroundColors"
+          formName="itemBackgroundColorsSecondary"
           selectedItems={selectedItems}
           valueName="Color"
           blockMasterOption={
-            selectedBlockOptions?.itemSecondaryBackgroundColors
+            selectedBlockOptions?.itemBackgroundColorsSecondary
           }
-          defaultValues={defaultValues?.itemSecondaryBackgroundColors}
+          defaultValues={defaultValues?.itemBackgroundColorsSecondary}
           type="bg"
         />
       </div>

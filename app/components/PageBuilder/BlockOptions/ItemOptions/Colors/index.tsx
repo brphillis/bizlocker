@@ -27,11 +27,11 @@ const Colors = ({
         />
         <ItemColorInput
           title="Secondary Colors"
-          formName="itemSecondaryColors"
+          formName="itemColorsSecondary"
           selectedItems={selectedItems}
           valueName="Secondary Color"
-          blockMasterOption={selectedBlockOptions?.itemSecondaryColors}
-          defaultValues={defaultValues?.itemSecondaryColors}
+          blockMasterOption={selectedBlockOptions?.itemColorsSecondary}
+          defaultValues={defaultValues?.itemColorsSecondary}
         />
       </div>
     </details>

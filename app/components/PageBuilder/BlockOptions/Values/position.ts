@@ -26,24 +26,24 @@ export const objectPositionMobileSelectValues = [
   { id: "max-md:object-center", name: "Center" },
 
   { id: "max-md:object-bottom", name: "Bottom" },
-  { id: "max-md:object-[0%_-25%]", name: "Half Bottom" },
+  { id: "max-md:object-[0%_75%]", name: "Half Bottom" },
   { id: "max-md:object-right-bottom", name: "Bottom Right" },
   { id: "max-md:object-left-bottom", name: "Bottom Left" },
 
   { id: "max-md:object-top", name: "Top" },
-  { id: "max-md:object-[0%_25%]", name: "Half Top" },
+  { id: "max-md:object-[50%_25%]", name: "Half Top" },
   { id: "max-md:object-right-top", name: "Top Right" },
   { id: "max-md:object-left-top", name: "Top Left" },
 
   { id: "max-md:object-left", name: "Left" },
-  { id: "max-md:object-[25%]", name: "Half Left" },
+  { id: "max-md:object-[25%_50%]", name: "Half Left" },
   { id: "max-md:object-[25%_25%]", name: "Half Top Left" },
-  { id: "max-md:object-[25%_-25%]", name: "Half Bottom Left" },
+  { id: "max-md:object-[25%_75%]", name: "Half Bottom Left" },
 
   { id: "max-md:object-right", name: "Right" },
-  { id: "max-md:object-[-25%]", name: "Half Right" },
-  { id: "max-md:object-[-25%_-25%]", name: "Half Top Right" },
-  { id: "max-md:object-[-25%_25%]", name: "Half Bottom Right" },
+  { id: "max-md:object-[75%_50%]", name: "Half Right" },
+  { id: "max-md:object-[75%_25%]", name: "Half Top Right" },
+  { id: "max-md:object-[75%_75%]", name: "Half Bottom Right" },
 ];
 
 export const justifySelectValues = [

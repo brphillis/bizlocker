@@ -4,6 +4,7 @@ import ItemSelectInput from "../../Components/Items/ItemSelectInput";
 import ItemColorInput from "../../Components/Items/ItemColorInput";
 import { buttonStyleSelectValues } from "../../Values/buttons";
 import ItemInput from "../../Components/Items/ItemInput";
+import { flexAlignSelectValues } from "../../Values/basic";
 
 type Props = {
   selectedItems: ContentSelection[];
@@ -21,125 +22,135 @@ const Buttons = ({
       <summary className="collapse-title text-xl font-medium">Buttons</summary>
       <div className="flex max-w-full flex-wrap justify-start !gap-3 px-3 pb-3 max-md:justify-center max-md:px-0">
         <ItemSelectInput
+          title="Align Buttons"
+          formName="itemButtonAlign"
+          selectedItems={selectedItems}
+          valueName="Align Buttons"
+          blockMasterOption={selectedBlockOptions?.itemButtonAlign}
+          defaultValues={defaultValues?.itemButtonAlign}
+          selections={flexAlignSelectValues}
+        />
+
+        <ItemSelectInput
           title="Primary Buttons"
-          formName="itemPrimaryButtons"
+          formName="itemButtonsPrimary"
           selectedItems={selectedItems}
           valueName="Primary Button"
-          blockMasterOption={selectedBlockOptions?.itemPrimaryButtons}
-          defaultValues={defaultValues?.itemPrimaryButtons}
+          blockMasterOption={selectedBlockOptions?.itemButtonsPrimary}
+          defaultValues={defaultValues?.itemButtonsPrimary}
           selections={buttonStyleSelectValues}
         />
 
         <ItemInput
           title="Primary Button Labels"
-          formName="itemPrimaryButtonLabels"
+          formName="itemButtonLabelsPrimary"
           selectedItems={selectedItems}
           valueName="Label"
-          blockMasterOption={selectedBlockOptions?.itemPrimaryButtonLabels}
-          defaultValues={defaultValues?.itemPrimaryButtonLabels}
+          blockMasterOption={selectedBlockOptions?.itemButtonLabelsPrimary}
+          defaultValues={defaultValues?.itemButtonLabelsPrimary}
         />
 
         <ItemColorInput
           title="Primary Button Label Colors"
-          formName="itemPrimaryButtonLabelColors"
+          formName="itemButtonLabelColorsPrimary"
           selectedItems={selectedItems}
           valueName="Label Color"
-          blockMasterOption={selectedBlockOptions?.itemPrimaryButtonLabelColors}
-          defaultValues={defaultValues?.itemPrimaryButtonLabelColors}
+          blockMasterOption={selectedBlockOptions?.itemButtonLabelColorsPrimary}
+          defaultValues={defaultValues?.itemButtonLabelColorsPrimary}
           type="text"
         />
 
         <ItemColorInput
           title="Primary Button BG Colors"
-          formName="itemPrimaryButtonColors"
+          formName="itemButtonColorsPrimary"
           selectedItems={selectedItems}
           valueName="BG Color"
-          blockMasterOption={selectedBlockOptions?.itemPrimaryButtonColors}
-          defaultValues={defaultValues?.itemPrimaryButtonColors}
+          blockMasterOption={selectedBlockOptions?.itemButtonColorsPrimary}
+          defaultValues={defaultValues?.itemButtonColorsPrimary}
           type="bg"
         />
 
         <ItemColorInput
           title="Primary Button Border Colors"
-          formName="itemPrimaryButtonBorderColors"
+          formName="itemButtonBorderColorsPrimary"
           selectedItems={selectedItems}
           valueName="Border Color"
           blockMasterOption={
-            selectedBlockOptions?.itemPrimaryButtonBorderColors
+            selectedBlockOptions?.itemButtonBorderColorsPrimary
           }
-          defaultValues={defaultValues?.itemPrimaryButtonBorderColors}
+          defaultValues={defaultValues?.itemButtonBorderColorsPrimary}
           type="border"
         />
 
         <ItemInput
           title="Primary Button Links"
-          formName="itemPrimaryButtonLinks"
+          formName="itemButtonLinksPrimary"
           selectedItems={selectedItems}
           valueName="Button Link"
-          blockMasterOption={selectedBlockOptions?.itemPrimaryButtonLinks}
-          defaultValues={defaultValues?.itemPrimaryButtonLinks}
+          blockMasterOption={selectedBlockOptions?.itemButtonLinksPrimary}
+          defaultValues={defaultValues?.itemButtonLinksPrimary}
         />
 
         <ItemSelectInput
           title="Secondary Buttons"
-          formName="itemSecondaryButtons"
+          formName="itemButtonsSecondary"
           selectedItems={selectedItems}
           valueName="Secondary Button"
-          blockMasterOption={selectedBlockOptions?.itemSecondaryButtons}
-          defaultValues={defaultValues?.itemSecondaryButtons}
+          blockMasterOption={selectedBlockOptions?.itemButtonsSecondary}
+          defaultValues={defaultValues?.itemButtonsSecondary}
           selections={buttonStyleSelectValues}
         />
 
         <ItemInput
           title="Secondary Button Labels"
-          formName="itemSecondaryButtonLabels"
+          formName="itemButtonLabelsSecondary"
           selectedItems={selectedItems}
           valueName="Label"
-          blockMasterOption={selectedBlockOptions?.itemSecondaryButtonLabels}
-          defaultValues={defaultValues?.itemSecondaryButtonLabels}
+          blockMasterOption={selectedBlockOptions?.itemButtonLabelsSecondary}
+          defaultValues={defaultValues?.itemButtonLabelsSecondary}
         />
 
         <ItemColorInput
           title="Secondary Button Label Colors"
-          formName="itemSecondaryButtonLabelColors"
+          formName="itemButtonLabelColorsSecondary"
           selectedItems={selectedItems}
           valueName="Label Color"
           blockMasterOption={
-            selectedBlockOptions?.itemSecondaryButtonLabelColors
+            selectedBlockOptions?.itemButtonLabelColorsSecondary
           }
-          defaultValues={defaultValues?.itemSecondaryButtonLabelColors}
+          defaultValues={defaultValues?.itemButtonLabelColorsSecondary}
           type="text"
         />
 
         <ItemColorInput
           title="Secondary Button BG Colors"
-          formName="itemSecondaryButtonColors"
+          formName="itemButtonColorsSecondary"
           selectedItems={selectedItems}
           valueName="BG Color"
-          blockMasterOption={selectedBlockOptions?.itemSecondaryButtonColors}
-          defaultValues={defaultValues?.itemSecondaryButtonColors}
+          blockMasterOption={selectedBlockOptions?.itemButtonColorsSecondary}
+          defaultValues={defaultValues?.itemButtonColorsSecondary}
           type="bg"
         />
 
         <ItemColorInput
           title="Secondary Button Border Colors"
-          formName="itemSecondaryButtonBorderColors"
+          formName="itemButtonBorderColorsSecondary"
           selectedItems={selectedItems}
           valueName="Border Color"
           blockMasterOption={
-            selectedBlockOptions?.itemSecondaryButtonBorderColors
+            selectedBlockOptions?.itemButtonBorderColorsSecondary
           }
-          defaultValues={defaultValues?.itemSecondaryButtonBorderColors}
+          defaultValues={defaultValues?.itemButtonBorderColorsSecondary}
           type="border"
         />
 
         <ItemInput
           title="Secondary Button Links"
-          formName="itemSecondaryButtonLinks"
+          formName="itemButtonLinksSecondary"
           selectedItems={selectedItems}
           valueName="Button Link"
-          blockMasterOption={selectedBlockOptions?.itemSecondaryButtonLinks}
-          defaultValues={defaultValues?.itemSecondaryButtonLinks}
+          blockMasterOption={selectedBlockOptions?.itemButtonLinksSecondary}
+          defaultValues={defaultValues?.itemButtonLinksSecondary}
         />
       </div>
     </details>

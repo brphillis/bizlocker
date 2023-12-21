@@ -24,7 +24,7 @@ const ContentTile = ({
   return (
     <div
       className={`h-full w-full ${itemBackgroundColor} ${borderRadius} ${
-        borderRadius ? "p-3" : "p-0"
+        borderRadius ? "p-6 max-md:p-3" : "p-0"
       }`}
     >
       <img

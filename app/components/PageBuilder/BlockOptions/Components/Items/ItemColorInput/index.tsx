@@ -53,9 +53,7 @@ const ItemColorInput = ({
                 {editingItem && (
                   <ColorPickerPopup
                     type={type}
-                    defaultValue={
-                      !valuesEdited ? defaultValues?.[index] : items[index]
-                    }
+                    defaultValue={items?.[editingItem - 1]}
                     closeFunction={() => setEditingItem(null)}
                     selectFunction={(selectedColor) => {
                       handleBlockOptionItemInputChange(

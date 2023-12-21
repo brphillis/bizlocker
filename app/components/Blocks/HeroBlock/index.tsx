@@ -37,8 +37,8 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
     borderSize,
     borderRadius,
     padding,
-    primaryLink,
-    secondaryLink,
+    linkPrimary,
+    linkSecondary,
   } = options || {};
 
   const product = content.product as ProductWithDetails;
@@ -122,7 +122,7 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
                 {shortText}
               </p>
               <div className={`mt-8 flex ${flipX}`}>
-                {(contentType === "product" || primaryLink) && (
+                {(contentType === "product" || linkPrimary) && (
                   <div
                     onClick={() =>
                       navigate(
@@ -130,7 +130,7 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
                           ? `/product/SlackSki%20Jacket?id=${
                               (content.product as Product).id
                             }`
-                          : (primaryLink as string)
+                          : (linkPrimary as string)
                       )
                     }
                     className="text-md mr-4 cursor-pointer rounded-sm border-2 border-transparent bg-primary px-4 py-2 uppercase text-white hover:bg-primary"
@@ -138,10 +138,10 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
                     Buy Now
                   </div>
                 )}
-                {secondaryLink && (
+                {linkSecondary && (
                   <div
                     className="text-md cursor-pointer rounded-sm border-2 border-primary bg-transparent px-4 py-2 uppercase text-primary hover:bg-primary hover:text-white dark:text-white"
-                    onClick={() => navigate(secondaryLink as string)}
+                    onClick={() => navigate(linkSecondary as string)}
                   >
                     Read more
                   </div>
