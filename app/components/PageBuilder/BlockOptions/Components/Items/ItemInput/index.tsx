@@ -3,7 +3,7 @@ import { handleBlockOptionItemInputChange } from "~/helpers/blockOptionHelpers";
 
 type Props = {
   blockMasterOption?: boolean;
-  defaultValues?: string[];
+  defaultValues?: string[] | number[];
   formName: string;
   max?: string;
   selectedItems: ContentSelection[];
@@ -24,7 +24,7 @@ const ItemInput = ({
   type = "string",
   valueName,
 }: Props) => {
-  const [items, setItems] = useState<(string | undefined)[]>(
+  const [items, setItems] = useState<(string | number | undefined)[]>(
     defaultValues || []
   );
 

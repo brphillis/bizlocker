@@ -1,3 +1,8 @@
+export const isValidDate = (dateString: string): boolean => {
+  const dateObject = new Date(dateString);
+  return !isNaN(dateObject.getTime()) && dateObject instanceof Date;
+};
+
 export const formatDate = (
   date?: Date,
   includeHoursSecondsMinutes?: boolean
@@ -9,10 +14,10 @@ export const formatDate = (
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
-      hour12: !includeHoursSecondsMinutes, // Toggle am/pm notation based on the parameter
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
+      hour12: !includeHoursSecondsMinutes,
+      hour: includeHoursSecondsMinutes ? "2-digit" : undefined,
+      minute: includeHoursSecondsMinutes ? "2-digit" : undefined,
+      second: includeHoursSecondsMinutes ? "2-digit" : undefined,
     };
 
     const formattedDate = dateToFormat.toLocaleString(undefined, options);

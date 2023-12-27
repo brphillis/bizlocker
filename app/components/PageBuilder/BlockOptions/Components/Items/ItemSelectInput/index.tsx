@@ -20,7 +20,7 @@ const ItemSelectInput = ({
   title,
   valueName,
 }: Props) => {
-  const [items, setItems] = useState<(string | undefined)[]>(
+  const [items, setItems] = useState<(string | number | undefined)[]>(
     defaultValues || []
   );
 

@@ -21,6 +21,8 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
     titleColor,
     titleSize,
     titleSizeMobile,
+    titleFontWeight,
+    titleFontWeightMobile,
     shortText,
     shortTextColor,
     backgroundColor,
@@ -30,7 +32,6 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
     backgroundBrightnessSecondary,
     backgroundPatternColorSecondary,
     backgroundPatternNameSecondary,
-    backgroundPatternOpacitySecondary,
     backgroundPatternSizeSecondary,
     borderColor,
     borderDisplay,
@@ -83,7 +84,6 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
             ? getThemeColorValueByName(backgroundPatternColorSecondary)
             : "unset"
         }
-        patternOpacity={backgroundPatternOpacitySecondary || 0.5}
         patternSize={backgroundPatternSizeSecondary || 32}
         brightness={backgroundBrightnessSecondary || undefined}
         screenWidth={true}
@@ -99,16 +99,16 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
           <div className="relative mr-16 flex w-[60%] flex-col gap-[20%] max-md:w-4/5 max-md:justify-between max-md:gap-16 max-sm:mr-0">
             <div>
               <h1
-                className={`flex max-w-[500px] select-none flex-col font-bold uppercase leading-none max-md:max-w-[200px] max-md:leading-10 
-                ${flipX} ${titleColor} ${titleSize} ${titleSizeMobile}`}
+                className={`flex max-w-[500px] select-none flex-col uppercase leading-none max-md:max-w-[200px] max-md:leading-10 
+                ${flipX} ${titleColor} ${titleSize} ${titleSizeMobile} ${titleFontWeight} ${titleFontWeightMobile}`}
               >
                 {title}
               </h1>
 
               {lowestPrice && (
                 <h2
-                  className={`mt-6 flex max-w-[500px] flex-col text-4xl font-bold uppercase leading-none max-md:mt-3 max-md:max-w-[250px] max-md:text-2xl 
-                  ${flipX} ${titleColor}`}
+                  className={`mt-6 flex max-w-[500px] flex-col text-4xl uppercase leading-none max-md:mt-3 max-md:max-w-[250px] max-md:text-2xl 
+                  ${flipX} ${titleColor} ${titleFontWeight} ${titleFontWeightMobile}`}
                 >
                   From ${parseFloat(lowestPrice).toFixed(2)}
                 </h2>

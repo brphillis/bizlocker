@@ -1,7 +1,7 @@
 import type { BlockOptions } from "@prisma/client";
 import type { BlockContent } from "~/models/blocks.server";
 import { Suspense } from "react";
-import { Pagination, Autoplay } from "swiper/modules";
+import { Pagination, Autoplay, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { isDecimal } from "~/helpers/numberHelpers";
 import { getThemeColorValueByName } from "~/utility/colors";
@@ -11,10 +11,11 @@ import {
   determineSingleContentType,
 } from "~/helpers/blockContentHelpers";
 import Slide from "../Slide";
+import { IoChevronBackOutline, IoChevronForward } from "react-icons/io5";
 
 type Props = {
   joinedContent: BlockContent[];
-  options: BlockOptions[];
+  options: BlockOptions;
 };
 
 const Carousel = ({ joinedContent, options }: Props) => {
@@ -24,7 +25,6 @@ const Carousel = ({ joinedContent, options }: Props) => {
     backgroundDisplay,
     backgroundPatternColor,
     backgroundPatternName,
-    backgroundPatternOpacity,
     backgroundPatternSize,
     backgroundWidth,
     columns,
@@ -36,7 +36,9 @@ const Carousel = ({ joinedContent, options }: Props) => {
     width,
     speed,
     autoplay,
-  } = options?.[0] || {};
+  } = options || {};
+
+  const trueSlideLength = joinedContent.length;
 
   // we generate enough slides for the loop functionality
   const generateSlidesForPartialViews = (arr: any[]): any[] => {
@@ -57,7 +59,7 @@ const Carousel = ({ joinedContent, options }: Props) => {
     } else return arr;
   };
 
-  let swiperModules = [Pagination];
+  let swiperModules = [Pagination, Navigation];
 
   if (autoplay) {
     swiperModules.push(Autoplay);
@@ -65,7 +67,7 @@ const Carousel = ({ joinedContent, options }: Props) => {
 
   // remove any extra pagination buttons created from generateSlidesForPartialViews and swiper
   const hideExtraPaginationButtons = () => {
-    if (columns && isDecimal(columns) && joinedContent.length < columns * 3) {
+    if (columns && isDecimal(columns) && trueSlideLength < columns * 3) {
       const paginationButtons = document.querySelectorAll(
         ".swiper-pagination-bullet"
       );
@@ -73,7 +75,7 @@ const Carousel = ({ joinedContent, options }: Props) => {
       paginationButtons.forEach((button, index: number) => {
         const relativeIndex = index + 1;
 
-        if (relativeIndex > joinedContent.length) {
+        if (relativeIndex > trueSlideLength) {
           button.remove();
         }
       });
@@ -82,7 +84,7 @@ const Carousel = ({ joinedContent, options }: Props) => {
 
   return (
     <div
-      className={`relative 
+      className={`relative shadow-md 
       ${backgroundColor ? "py-6" : "p-0"} 
       ${width ? width : "w-screen"}
       ${margin} ${padding}
@@ -94,7 +96,6 @@ const Carousel = ({ joinedContent, options }: Props) => {
         name={backgroundPatternName as BackgroundPatternName}
         backgroundColor={getThemeColorValueByName(backgroundColor)}
         patternColor={getThemeColorValueByName(backgroundPatternColor)}
-        patternOpacity={backgroundPatternOpacity || 0.5}
         patternSize={backgroundPatternSize || 32}
         screenWidth={backgroundWidth === "w-screen" ? true : false}
         brightness={backgroundBrightness || undefined}
@@ -110,13 +111,48 @@ const Carousel = ({ joinedContent, options }: Props) => {
         >
           <Swiper
             modules={swiperModules}
-            className="h-full w-full"
+            className="relative h-full w-full"
             slidesPerView={columns || 1}
             spaceBetween={20}
             centeredSlides={true}
             loop={true}
             pagination={true}
+            navigation={{
+              nextEl: ".carouselNavNextButton",
+              prevEl: ".carouselNavPrevButton",
+            }}
             onInit={hideExtraPaginationButtons}
+            onSlideChange={(e) => {
+              //handle pagination active class
+              const paginationButtons = document.querySelectorAll(
+                ".swiper-pagination-bullet"
+              );
+
+              if (
+                paginationButtons?.[e.realIndex - trueSlideLength] &&
+                e.realIndex + 1 > trueSlideLength
+              ) {
+                paginationButtons[e.realIndex - trueSlideLength].classList.add(
+                  "swiper-pagination-bullet-active"
+                );
+              }
+            }}
+            slideNextClass="blur-sm"
+            onSlideNextTransitionEnd={(e) => {
+              e.slides.forEach((e) => {
+                if (!e.className.includes("swiper-slide-active")) {
+                  e.classList.add("blur-sm");
+                }
+              });
+            }}
+            slidePrevClass="blur-sm"
+            onSlidePrevTransitionEnd={(e) => {
+              e.slides.forEach((e) => {
+                if (!e.className.includes("swiper-slide-active")) {
+                  e.classList.add("blur-sm");
+                }
+              });
+            }}
             autoplay={{
               delay: speed || 0,
               pauseOnMouseEnter: true,
@@ -144,10 +180,16 @@ const Carousel = ({ joinedContent, options }: Props) => {
               // --swiper-pagination-top: auto;
             }}
           >
+            <div className="carouselNavPrevButton absolute left-0 top-[50%] z-10 flex h-full translate-y-[-50%] cursor-pointer items-center justify-center bg-brand-black/50 p-6 text-brand-white max-md:hidden">
+              <IoChevronBackOutline size={30} />
+            </div>
+            <div className="carouselNavNextButton absolute right-0 top-[50%] z-10 flex h-full translate-y-[-50%] cursor-pointer items-center justify-center bg-brand-black/50 p-6 text-brand-white max-md:hidden">
+              <IoChevronForward size={30} />
+            </div>
+
             {generateSlidesForPartialViews(joinedContent)?.map(
               (contentData: any, i: number) => {
-                const index =
-                  i + 1 > joinedContent.length ? i - joinedContent.length : i;
+                const index = i + 1 > trueSlideLength ? i - trueSlideLength : i;
 
                 const contentType = determineSingleContentType(
                   contentData as BlockContent
@@ -160,7 +202,7 @@ const Carousel = ({ joinedContent, options }: Props) => {
                   <SwiperSlide key={i}>
                     <Slide
                       index={index}
-                      blockOptions={options?.[0]}
+                      blockOptions={options}
                       image={{ altText: name, src: imageSrc }}
                     />
                   </SwiperSlide>

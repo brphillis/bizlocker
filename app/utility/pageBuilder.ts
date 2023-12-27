@@ -106,7 +106,7 @@ export const getFormBlockOptions = (form: {
     itemLinks,
     itemColors,
     itemColorsSecondary,
-    itemBackgroundColors,
+    itemBackgroundColorsPrimary,
     itemBackgroundColorsSecondary,
     itemFilters,
     imagePosition,
@@ -134,7 +134,7 @@ export const getFormBlockOptions = (form: {
     titleColor,
     titleSize,
     titleSizeMobile,
-    titleWeight,
+    titleFontWeight,
     itemBorderDisplays,
     itemBorderSizes,
     itemBorderColors,
@@ -150,6 +150,8 @@ export const getFormBlockOptions = (form: {
     itemTitleSizes,
     itemTitleSizesMobile,
     itemTitles,
+    itemTitleFontWeights,
+    itemTitleFontWeightsMobile,
     itemTitleColors,
     itemShortTextSizes,
     itemShortTextSizesMobile,
@@ -181,8 +183,23 @@ export const getFormBlockOptions = (form: {
     itemButtonBorderColorsSecondary,
     itemButtonAlign,
     buttonAlign,
+    titleFontWeightMobile,
     speed,
     autoplay,
+    itemBackgroundPatternNamesSecondary,
+    itemBackgroundPatternColorsSecondary,
+    itemBackgroundWidthsSecondary,
+    itemBackgroundDisplaysSecondary,
+    itemBackgroundPatternSizesSecondary,
+    itemBackgroundBrightnessesSecondary,
+    itemBackgroundPatternOpacitiesSecondary,
+    itemBackgroundPatternNamesPrimary,
+    itemBackgroundPatternColorsPrimary,
+    itemBackgroundWidthsPrimary,
+    itemBackgroundDisplaysPrimary,
+    itemBackgroundPatternSizesPrimary,
+    itemBackgroundBrightnessesPrimary,
+    itemBackgroundPatternOpacitiesPrimary,
   } = form;
 
   const blockOptions = {
@@ -281,8 +298,8 @@ export const getFormBlockOptions = (form: {
       ? JSON.parse(itemColorsSecondary as string)
       : undefined,
     itemFilters: itemFilters ? JSON.parse(itemFilters as string) : undefined,
-    itemBackgroundColors: itemBackgroundColors
-      ? JSON.parse(itemBackgroundColors as string)
+    itemBackgroundColorsPrimary: itemBackgroundColorsPrimary
+      ? JSON.parse(itemBackgroundColorsPrimary as string)
       : undefined,
     itemBackgroundColorsSecondary: itemBackgroundColorsSecondary
       ? JSON.parse(itemBackgroundColorsSecondary as string)
@@ -292,6 +309,12 @@ export const getFormBlockOptions = (form: {
       : undefined,
     itemImagePositionsMobile: itemImagePositionsMobile
       ? JSON.parse(itemImagePositionsMobile as string)
+      : undefined,
+    itemTitleFontWeights: itemTitleFontWeights
+      ? JSON.parse(itemTitleFontWeights as string)
+      : undefined,
+    itemTitleFontWeightsMobile: itemTitleFontWeightsMobile
+      ? JSON.parse(itemTitleFontWeightsMobile as string)
       : undefined,
     imagePosition: imagePosition ? (imagePosition as string) : undefined,
     imagePositionMobile: imagePositionMobile
@@ -367,6 +390,52 @@ export const getFormBlockOptions = (form: {
     itemButtonLabelColorsSecondary: itemButtonLabelColorsSecondary
       ? JSON.parse(itemButtonLabelColorsSecondary as string)
       : undefined,
+
+    itemBackgroundPatternNamesSecondary: itemBackgroundPatternNamesSecondary
+      ? JSON.parse(itemBackgroundPatternNamesSecondary as string)
+      : undefined,
+    itemBackgroundPatternColorsSecondary: itemBackgroundPatternColorsSecondary
+      ? JSON.parse(itemBackgroundPatternColorsSecondary as string)
+      : undefined,
+    itemBackgroundWidthsSecondary: itemBackgroundWidthsSecondary
+      ? JSON.parse(itemBackgroundWidthsSecondary as string)
+      : undefined,
+    itemBackgroundDisplaysSecondary: itemBackgroundDisplaysSecondary
+      ? JSON.parse(itemBackgroundDisplaysSecondary as string)
+      : undefined,
+    itemBackgroundPatternSizesSecondary: itemBackgroundPatternSizesSecondary
+      ? JSON.parse(itemBackgroundPatternSizesSecondary as string)
+      : undefined,
+    itemBackgroundBrightnessesSecondary: itemBackgroundBrightnessesSecondary
+      ? JSON.parse(itemBackgroundBrightnessesSecondary as string)
+      : undefined,
+    itemBackgroundPatternOpacitiesSecondary:
+      itemBackgroundPatternOpacitiesSecondary
+        ? JSON.parse(itemBackgroundPatternOpacitiesSecondary as string)
+        : undefined,
+
+    itemBackgroundPatternNamesPrimary: itemBackgroundPatternNamesPrimary
+      ? JSON.parse(itemBackgroundPatternNamesPrimary as string)
+      : undefined,
+    itemBackgroundPatternColorsPrimary: itemBackgroundPatternColorsPrimary
+      ? JSON.parse(itemBackgroundPatternColorsPrimary as string)
+      : undefined,
+    itemBackgroundWidthsPrimary: itemBackgroundWidthsPrimary
+      ? JSON.parse(itemBackgroundWidthsPrimary as string)
+      : undefined,
+    itemBackgroundDisplaysPrimary: itemBackgroundDisplaysPrimary
+      ? JSON.parse(itemBackgroundDisplaysPrimary as string)
+      : undefined,
+    itemBackgroundPatternSizesPrimary: itemBackgroundPatternSizesPrimary
+      ? JSON.parse(itemBackgroundPatternSizesPrimary as string)
+      : undefined,
+    itemBackgroundBrightnessesPrimary: itemBackgroundBrightnessesPrimary
+      ? JSON.parse(itemBackgroundBrightnessesPrimary as string)
+      : undefined,
+    itemBackgroundPatternOpacitiesPrimary: itemBackgroundPatternOpacitiesPrimary
+      ? JSON.parse(itemBackgroundPatternOpacitiesPrimary as string)
+      : undefined,
+
     rows: rows ? parseInt(rows as string) : undefined,
     shortText: shortText ? (shortText as string) : undefined,
     shortTextColor: shortTextColor ? (shortTextColor as string) : undefined,
@@ -386,7 +455,10 @@ export const getFormBlockOptions = (form: {
     titleSize: titleSize ? (titleSize as string) : undefined,
     titleSizeMobile: titleSizeMobile ? (titleSizeMobile as string) : undefined,
     titleColor: titleColor ? (titleColor as string) : undefined,
-    titleWeight: titleWeight ? (titleWeight as string) : undefined,
+    titleFontWeight: titleFontWeight ? (titleFontWeight as string) : undefined,
+    titleFontWeightMobile: titleFontWeightMobile
+      ? (titleFontWeightMobile as string)
+      : undefined,
     itemBorderDisplays: itemBorderDisplays
       ? JSON.parse(itemBorderDisplays as string)
       : undefined,

@@ -18,6 +18,7 @@ import {
   useSearchParams,
 } from "@remix-run/react";
 import type { ArticleCategory } from "@prisma/client";
+import BasicTable from "~/components/Tables/BasicTable";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
@@ -80,66 +81,18 @@ const Articles = () => {
 
         <div className="divider w-full" />
 
-        <div className="w-full max-w-[80vw] overflow-x-auto">
-          <table className="table table-sm my-3">
-            <thead className="sticky top-0">
-              <tr>
-                {currentPage && <th>#</th>}
-                <th>Title</th>
-
-                <th>Category</th>
-                <th>Active</th>
-              </tr>
-            </thead>
-            <tbody>
-              {articles &&
-                articles.map(
-                  (
-                    {
-                      id,
-                      title,
-                      articleCategories,
-                      isActive,
-                    }: ArticleWithContent,
-                    i: number
-                  ) => {
-                    return (
-                      <tr
-                        className="cursor-pointer transition-colors duration-200 hover:bg-base-100"
-                        key={id}
-                        onClick={() =>
-                          navigate(`/admin/pagebuilder/article?id=${id}`)
-                        }
-                      >
-                        {currentPage && (
-                          <td>
-                            {i + 1 + (currentPage - 1) * articles?.length}
-                          </td>
-                        )}
-                        <td>{title}</td>
-
-                        <td>
-                          {articleCategories?.map(
-                            ({ id, name }: ArticleCategory) => (
-                              <p key={"listArticleCategory_" + id}>{name}</p>
-                            )
-                          )}
-                        </td>
-                        <td>
-                          {!isActive && (
-                            <div className="ml-4 h-3 w-3 rounded-full bg-red-500" />
-                          )}
-                          {isActive && (
-                            <div className="ml-4 h-3 w-3 self-center rounded-full bg-success" />
-                          )}
-                        </td>
-                      </tr>
-                    );
-                  }
-                )}
-            </tbody>
-          </table>
-        </div>
+        {articles && articles.length > 0 && (
+          <BasicTable
+            onRowClick={(e) => navigate(`/admin/pagebuilder/article?id=${e}`)}
+            currentPage={currentPage}
+            objectArray={articles?.map((e: ArticleWithContent) => ({
+              id: e.id,
+              title: e.title,
+              category: e.articleCategories?.[0]?.name || "",
+              active: e.isActive,
+            }))}
+          />
+        )}
 
         <Pagination totalPages={totalPages} />
       </Form>

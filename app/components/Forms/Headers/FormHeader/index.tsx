@@ -1,4 +1,5 @@
 import { useNavigate, useParams } from "@remix-run/react";
+import { useState } from "react";
 import { IoMdTrash } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
 import BasicToggle from "~/components/Forms/Toggle/BasicToggle";
@@ -47,6 +48,8 @@ const FormHeader = ({
     } else return false;
   };
 
+  const [active, setActive] = useState<boolean>(handleActiveStatus(mode));
+
   return (
     <>
       <div className="absolute left-[50%] top-0 flex w-full max-w-[100vw] translate-x-[-50%] flex-col items-center border-[1px] border-b-0 border-brand-white bg-primary text-brand-white sm:justify-between">
@@ -62,9 +65,12 @@ const FormHeader = ({
                   label="Active"
                   name="isActive"
                   size="sm"
-                  defaultValue={handleActiveStatus(mode)}
+                  value={active}
                   labelStyle="text-brand-white"
                   extendStyle="ml-3 max-xs:mt-0 mt-[5px] h-1"
+                  onChange={() => {
+                    setActive(!active);
+                  }}
                 />
               </div>
             )}

@@ -11,16 +11,10 @@ import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import { getProductSubCategories } from "~/models/productSubCategories.server";
-import {
-  Form,
-  Outlet,
-  useLoaderData,
-  useNavigate,
-  useSearchParams,
-} from "@remix-run/react";
+import { Form, Outlet, useLoaderData, useSearchParams } from "@remix-run/react";
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
-import type { ProductSubCategory } from "@prisma/client";
+import BasicTable from "~/components/Tables/BasicTable";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
@@ -44,7 +38,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 const ManageProducts = () => {
-  const navigate = useNavigate();
   const { products, totalPages, productSubCategories, brands } =
     useLoaderData<typeof loader>();
   const [searchParams] = useSearchParams();
@@ -93,72 +86,19 @@ const ManageProducts = () => {
 
         <ProductSort />
 
-        <div className="w-full max-w-[80vw] overflow-x-auto">
-          <table className="table table-sm my-3">
-            <thead className="sticky top-0">
-              <tr>
-                {currentPage && <th>#</th>}
-                <th>Title</th>
-                <th>Category</th>
-                <th>Brand</th>
-                <th>Sold</th>
-                <th>Active</th>
-              </tr>
-            </thead>
-            <tbody>
-              {products &&
-                products?.map(
-                  (
-                    {
-                      id,
-                      name,
-                      productSubCategories,
-                      brand,
-                      totalSold,
-                      isActive,
-                    }: ProductWithDetails,
-                    i: number
-                  ) => {
-                    return (
-                      <tr
-                        className="cursor-pointer transition-colors duration-200 hover:bg-base-100"
-                        key={"product" + id}
-                        onClick={() => {
-                          navigate(
-                            `${location.pathname + "/" + id}${location.search}`
-                          );
-                        }}
-                      >
-                        {currentPage && (
-                          <td>
-                            {i + 1 + (currentPage - 1) * products?.length}
-                          </td>
-                        )}
-                        <td>{name}</td>
-                        <td>
-                          {productSubCategories?.map(
-                            ({ id, name }: ProductSubCategory) => (
-                              <p key={"category" + id + name}>{name}</p>
-                            )
-                          )}
-                        </td>
-                        <td>{brand?.name}</td>
-                        <td>{totalSold}</td>
-                        <td>
-                          {!isActive && (
-                            <div className="ml-4 h-3 w-3 rounded-full bg-red-500" />
-                          )}
-                          {isActive && (
-                            <div className="ml-4 h-3 w-3 self-center rounded-full bg-success" />
-                          )}
-                        </td>
-                      </tr>
-                    );
-                  }
-                )}
-            </tbody>
-          </table>
-        </div>
+        {products && products.length > 0 && (
+          <BasicTable
+            currentPage={currentPage}
+            objectArray={products.map((e: ProductWithDetails) => ({
+              id: e.id,
+              name: e.name,
+              category: e?.productSubCategories?.[0].name,
+              brand: e.brand?.name,
+              sold: e.totalSold,
+              active: e.isActive,
+            }))}
+          />
+        )}
 
         <Pagination totalPages={totalPages} />
       </Form>

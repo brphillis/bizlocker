@@ -11,6 +11,7 @@ import BasicInput from "~/components/Forms/Input/BasicInput";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import Pagination from "~/components/Pagination";
+import BasicTable from "~/components/Tables/BasicTable";
 import { searchWebPages } from "~/models/webPages.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
 
@@ -66,45 +67,17 @@ const Pages = () => {
 
         <div className="divider w-full" />
 
-        <div className="w-full max-w-[80vw] overflow-x-auto">
-          <table className="table table-sm my-3">
-            <thead className="sticky top-0">
-              <tr>
-                {currentPage && <th>#</th>}
-                <th>Title</th>
-                <th>Active</th>
-              </tr>
-            </thead>
-            <tbody>
-              {webPages &&
-                webPages.map(({ id, title, isActive }: WebPage, i: number) => {
-                  return (
-                    <tr
-                      className="cursor-pointer transition-colors duration-200 hover:bg-base-100"
-                      key={id}
-                      onClick={() =>
-                        navigate(`/admin/pagebuilder/webpage?id=${id}`)
-                      }
-                    >
-                      {currentPage && (
-                        <td>{i + 1 + (currentPage - 1) * webPages?.length}</td>
-                      )}
-                      <td>{title}</td>
-
-                      <td>
-                        {!isActive && (
-                          <div className="ml-4 h-3 w-3 rounded-full bg-red-500" />
-                        )}
-                        {isActive && (
-                          <div className="ml-4 h-3 w-3 self-center rounded-full bg-success" />
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-            </tbody>
-          </table>
-        </div>
+        {webPages && webPages.length > 0 && (
+          <BasicTable
+            onRowClick={(e) => navigate(`/admin/pagebuilder/webpage?id=${e}`)}
+            currentPage={currentPage}
+            objectArray={webPages?.map((e: WebPage) => ({
+              id: e.id,
+              title: e.title,
+              active: e.isActive,
+            }))}
+          />
+        )}
 
         <Pagination totalPages={totalPages} />
       </Form>

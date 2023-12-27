@@ -42,6 +42,18 @@ export const fontWeightSelectValues = [
   { id: "font-black", name: "Boldest" },
 ];
 
+export const mobilefontWeightSelectValues = [
+  { id: "max-md:font-thin", name: "Thin" },
+  { id: "max-md:font-extralight", name: "X Light" },
+  { id: "max-md:font-normal", name: "Normal" },
+  { id: "max-md:font-medium", name: "Medium" },
+  { id: "max-md:font-semibold", name: "Semi Bold" },
+  { id: "max-md:font-bold", name: "Bold" },
+  { id: "max-md:font-extrabold", name: "Bold" },
+  { id: "max-md:font-bold", name: "X Bold" },
+  { id: "max-md:font-black", name: "Boldest" },
+];
+
 export const fontAlignSelectValues = [
   { id: "text-left", name: "Left" },
   { id: "text-center", name: "Center" },

@@ -1,3 +1,4 @@
+import { FC } from "react";
 type Props = {
   containerStyle: string;
   SEOWords: string[];

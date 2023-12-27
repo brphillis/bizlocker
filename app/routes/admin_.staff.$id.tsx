@@ -341,7 +341,7 @@ const ModifyStaff = () => {
 
                 <BasicButton
                   label="Cancel Password Change"
-                  extendStyle="mt-3"
+                  extendStyle="mt-3 bg-primary text-brand-white hover:bg-primary-dark"
                   clickFunction={() => setChangingPassword(false)}
                 />
               </>
@@ -350,7 +350,7 @@ const ModifyStaff = () => {
             {!changingPassword && (
               <BasicButton
                 label="Change Password"
-                extendStyle="mt-3"
+                extendStyle="mt-3 bg-primary text-brand-white hover:bg-primary-dark"
                 clickFunction={() => setChangingPassword(true)}
               />
             )}

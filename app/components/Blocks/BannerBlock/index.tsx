@@ -30,11 +30,12 @@ const BannerBlock = ({ content, options: ArrayOptions }: Props) => {
     size,
     title,
     titleColor,
+    titleFontWeight,
+    titleFontWeightMobile,
     shortText,
     shortTextColor,
     backgroundPatternColor,
     backgroundPatternName,
-    backgroundPatternOpacity,
     backgroundPatternSize,
   } = options || {};
 
@@ -97,12 +98,14 @@ const BannerBlock = ({ content, options: ArrayOptions }: Props) => {
                 ? getThemeColorValueByName(backgroundPatternColor)
                 : ""
             }
-            patternOpacity={backgroundPatternOpacity || 0.5}
             patternSize={backgroundPatternSize || 32}
             brightness={backgroundBrightness || undefined}
           />
           <div className="relative flex flex-col items-center">
-            <h1 className={`text-4xl max-md:text-2xl ${titleColor}`}>
+            <h1
+              className={`text-4xl max-md:text-2xl 
+              ${titleColor} ${titleFontWeight} ${titleFontWeightMobile}`}
+            >
               {title}
             </h1>
             <h2 className={`text-2xl max-md:text-lg ${shortTextColor}`}>
@@ -141,12 +144,14 @@ const BannerBlock = ({ content, options: ArrayOptions }: Props) => {
                 ? getThemeColorValueByName(backgroundPatternColor)
                 : ""
             }
-            patternOpacity={backgroundPatternOpacity || 0.5}
             patternSize={backgroundPatternSize || 32}
             brightness={backgroundBrightness || undefined}
           />
           <div className="relative flex flex-col items-center gap-2 max-md:gap-1">
-            <h1 className={`text-6xl max-md:text-4xl ${titleColor}`}>
+            <h1
+              className={`text-6xl max-md:text-4xl 
+              ${titleColor} ${titleFontWeight} ${titleFontWeightMobile}`}
+            >
               {title}
             </h1>
             <h2 className={`text-3xl max-md:text-lg ${shortTextColor}`}>
@@ -184,13 +189,15 @@ const BannerBlock = ({ content, options: ArrayOptions }: Props) => {
                 ? getThemeColorValueByName(backgroundPatternColor)
                 : ""
             }
-            patternOpacity={backgroundPatternOpacity || 0.5}
             patternSize={backgroundPatternSize || 32}
             brightness={backgroundBrightness || undefined}
           />
 
           <div className="relative flex flex-col items-center gap-3 max-md:gap-2">
-            <h1 className={`text-7xl max-md:text-4xl ${titleColor}`}>
+            <h1
+              className={`text-7xl max-md:text-4xl 
+            ${titleColor} ${titleFontWeight} ${titleFontWeightMobile}`}
+            >
               {title}
             </h1>
             <h2 className={`text-4xl max-md:text-lg ${shortTextColor}`}>

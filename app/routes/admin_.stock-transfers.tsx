@@ -9,17 +9,12 @@ import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import { json, redirect, type LoaderFunctionArgs } from "@remix-run/node";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
-import {
-  Form,
-  Outlet,
-  useLoaderData,
-  useNavigate,
-  useSearchParams,
-} from "@remix-run/react";
+import { Form, Outlet, useLoaderData, useSearchParams } from "@remix-run/react";
 import {
   searchStockTransfers,
   type StockTransferRequestWithDetails,
 } from "~/models/stock.server";
+import BasicTable from "~/components/Tables/BasicTable";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
@@ -46,7 +41,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 const ManageStockTransfers = () => {
-  const navigate = useNavigate();
   const { stockTransfers, totalPages, statusList, stores } =
     useLoaderData<typeof loader>();
   const [searchParams] = useSearchParams();
@@ -99,68 +93,21 @@ const ManageStockTransfers = () => {
 
         <div className="divider w-full" />
 
-        <div className="max-h-[520px] w-full max-w-[80vw] overflow-auto">
-          <table className="table table-sm my-3">
-            <thead className="sticky top-0">
-              <tr>
-                {currentPage && <th>#</th>}
-                <th>SKU</th>
-                <th>From Store</th>
-                <th>To Store</th>
-                <th>Status</th>
-                <th>Created</th>
-              </tr>
-            </thead>
-            <tbody>
-              {stockTransfers?.map(
-                (
-                  {
-                    id,
-                    productVariant,
-                    toStore,
-                    fromStore,
-                    status,
-                    createdAt,
-                  }: StockTransferRequestWithDetails,
-                  i: number
-                ) => {
-                  const { sku } = productVariant || {};
-                  const { name: toStoreName } = toStore || {};
-                  const { name: fromStoreName } = fromStore || {};
-
-                  return (
-                    <tr
-                      className="cursor-pointer transition-colors duration-200 hover:bg-base-100"
-                      key={"product" + id}
-                      onClick={() => {
-                        navigate(
-                          `${location.pathname + "/" + id}${location.search}`
-                        );
-                      }}
-                    >
-                      {currentPage && (
-                        <td>
-                          {i + 1 + (currentPage - 1) * stockTransfers?.length}
-                        </td>
-                      )}
-                      <td>{sku}</td>
-                      <td>{fromStoreName}</td>
-                      <td>{toStoreName}</td>
-                      <td>{capitalizeFirst(status)}</td>
-                      <td className="w-1/4">
-                        {new Date(createdAt).toLocaleDateString("en-US", {
-                          day: "numeric",
-                          month: "long",
-                          year: "numeric",
-                        })}
-                      </td>
-                    </tr>
-                  );
-                }
-              )}
-            </tbody>
-          </table>
-        </div>
+        {stockTransfers && stockTransfers.length > 0 && (
+          <BasicTable
+            currentPage={currentPage}
+            objectArray={stockTransfers?.map(
+              (e: StockTransferRequestWithDetails) => ({
+                id: e.id,
+                sku: e.productVariant?.sku,
+                fromStore: e.fromStore?.name,
+                toStore: e.toStore?.name,
+                status: e.status,
+                created: e.createdAt,
+              })
+            )}
+          />
+        )}
 
         <Pagination totalPages={totalPages} />
       </Form>

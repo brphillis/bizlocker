@@ -6,13 +6,8 @@ import BasicInput from "~/components/Forms/Input/BasicInput";
 import { json, redirect, type LoaderFunctionArgs } from "@remix-run/node";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
-import {
-  Form,
-  Outlet,
-  useLoaderData,
-  useNavigate,
-  useSearchParams,
-} from "@remix-run/react";
+import { Form, Outlet, useLoaderData, useSearchParams } from "@remix-run/react";
+import BasicTable from "~/components/Tables/BasicTable";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
@@ -39,7 +34,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 const ManageOrders = () => {
   const { orders, totalPages } = useLoaderData<typeof loader>();
 
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
   const currentPage = Number(searchParams.get("pageNumber")) || 1;
@@ -95,39 +89,16 @@ const ManageOrders = () => {
 
         <div className="divider w-full" />
 
-        <div className="w-full max-w-[80vw] overflow-x-auto">
-          <table className="table table-sm my-3">
-            <thead className="sticky top-0">
-              <tr>
-                {currentPage && <th>#</th>}
-                <th>Id</th>
-                <th>User</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {orders &&
-                orders.map(
-                  ({ orderId, status, user }: OrderWithDetails, i: number) => {
-                    return (
-                      <tr
-                        className="cursor-pointer transition-colors duration-200 hover:bg-base-100"
-                        key={orderId}
-                        onClick={() => navigate(`/admin/orders/${orderId}`)}
-                      >
-                        {currentPage && (
-                          <td>{i + 1 + (currentPage - 1) * orders?.length}</td>
-                        )}
-                        <td>{orderId}</td>
-                        <td>{user?.email}</td>
-                        <td>{status}</td>
-                      </tr>
-                    );
-                  }
-                )}
-            </tbody>
-          </table>
-        </div>
+        {orders && orders.length > 0 && (
+          <BasicTable
+            currentPage={currentPage}
+            objectArray={orders?.map((e: OrderWithDetails) => ({
+              id: e.orderId,
+              user: e.user?.email,
+              status: e.status,
+            }))}
+          />
+        )}
 
         <Pagination totalPages={totalPages} />
       </Form>

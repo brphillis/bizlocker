@@ -3,16 +3,11 @@ import { redirect, type LoaderFunctionArgs, json } from "@remix-run/node";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
-import {
-  Form,
-  Outlet,
-  useLoaderData,
-  useNavigate,
-  useSearchParams,
-} from "@remix-run/react";
+import { Form, Outlet, useLoaderData, useSearchParams } from "@remix-run/react";
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
 import { type StoreWithDetails, searchStores } from "~/models/stores.server";
+import BasicTable from "~/components/Tables/BasicTable";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
@@ -34,7 +29,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 const ManageStores = () => {
   const { stores, totalPages } = useLoaderData<typeof loader>();
 
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
   const currentPage: number = Number(searchParams.get("pageNumber")) || 1;
@@ -65,53 +59,17 @@ const ManageStores = () => {
 
         <div className="divider w-full" />
 
-        <div className="w-full max-w-[80vw] overflow-x-auto">
-          <table className="table table-sm my-3">
-            <thead className="sticky top-0">
-              <tr>
-                {currentPage && <th>#</th>}
-                <th>Name</th>
-                <th>State</th>
-                <th>Active</th>
-              </tr>
-            </thead>
-            <tbody>
-              {stores &&
-                stores?.map(
-                  (
-                    { id, name, address, isActive }: StoreWithDetails,
-                    i: number
-                  ) => {
-                    return (
-                      <tr
-                        className="cursor-pointer transition-colors duration-200 hover:bg-base-100"
-                        key={"product" + id}
-                        onClick={() => {
-                          navigate(
-                            `${location.pathname + "/" + id}${location.search}`
-                          );
-                        }}
-                      >
-                        {currentPage && (
-                          <td>{i + 1 + (currentPage - 1) * stores?.length}</td>
-                        )}
-                        <td>{name}</td>
-                        <td>{address?.state}</td>
-                        <td>
-                          {!isActive && (
-                            <div className="ml-4 h-3 w-3 rounded-full bg-red-500" />
-                          )}
-                          {isActive && (
-                            <div className="ml-4 h-3 w-3 self-center rounded-full bg-success" />
-                          )}
-                        </td>
-                      </tr>
-                    );
-                  }
-                )}
-            </tbody>
-          </table>
-        </div>
+        {stores && stores.length > 0 && (
+          <BasicTable
+            currentPage={currentPage}
+            objectArray={stores?.map((e: StoreWithDetails) => ({
+              id: e.id,
+              name: e.name,
+              state: e.address?.state,
+              active: e.isActive,
+            }))}
+          />
+        )}
 
         <Pagination totalPages={totalPages} />
       </Form>

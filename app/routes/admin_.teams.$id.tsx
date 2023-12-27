@@ -34,6 +34,7 @@ import {
   type TeamWithStaff,
   upsertTeam,
 } from "~/models/teams.server";
+import { isEmptyObject } from "~/helpers/objectHelpers";
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
   if (!authenticated.valid) {
@@ -118,7 +119,7 @@ const ModifyTeam = () => {
   const { validationErrors, success } =
     (useActionData() as ActionReturnTypes) || {};
 
-  const mode = team ? "edit" : "add";
+  const mode = !isEmptyObject(team) ? "edit" : "add";
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -159,6 +160,7 @@ const ModifyTeam = () => {
           hasIsActive={true}
           hasDelete={false}
         />
+
         <div className="flex flex-col gap-6">
           <BasicInput
             name="name"

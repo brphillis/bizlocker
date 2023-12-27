@@ -1,5 +1,7 @@
 import type { BlockOptions } from "@prisma/client";
 import ButtonContainer from "./ButtonContainer";
+import PatternBackground from "~/components/Layout/PatternBackground";
+import { getThemeColorValueByName } from "~/utility/colors";
 
 type Props = {
   index: number;
@@ -16,8 +18,11 @@ const ContentContainer = ({ index, blockOptions }: Props) => {
     itemTitleColors,
     itemTitles,
     itemTitleSizes,
+    itemTitleFontWeights,
+    itemTitleFontWeightsMobile,
     itemTitleSizesMobile,
     itemBackgroundColorsSecondary,
+    itemBackgroundDisplaysSecondary,
   } = blockOptions;
 
   const hasCardContent =
@@ -25,15 +30,22 @@ const ContentContainer = ({ index, blockOptions }: Props) => {
 
   return (
     <div
-      className={`relative z-10 m-12 h-max w-max max-w-full select-none flex-col items-center gap-6 p-6 font-semibold 
+      className={`relative z-10 m-12 h-max w-max max-w-full select-none flex-col items-center gap-6 overflow-hidden p-6 font-semibold 
         max-md:m-0 max-md:gap-3 
-        ${hasCardContent ? "flex" : "hidden"} 
-        ${itemBackgroundColorsSecondary[index]}`}
+        ${hasCardContent ? "flex" : "hidden"}`}
     >
+      <PatternBackground
+        backgroundColor={getThemeColorValueByName(
+          itemBackgroundColorsSecondary[index]
+        )}
+        displayStyle={itemBackgroundDisplaysSecondary[index]}
+      />
+
       {itemTitles[index] && (
         <div
-          className={`select-none text-center max-md:max-w-[90%] 
-          ${itemTitleColors[index]} ${itemTitleSizes[index]} ${itemTitleSizesMobile[index]}`}
+          className={`relative select-none text-center max-md:max-w-[90%] 
+          ${itemTitleColors[index]} ${itemTitleSizes[index]} ${itemTitleSizesMobile[index]} 
+          ${itemTitleFontWeights[index]} ${itemTitleFontWeightsMobile[index]}`}
         >
           {itemTitles[index]}
         </div>
@@ -41,7 +53,7 @@ const ContentContainer = ({ index, blockOptions }: Props) => {
 
       {itemShortText[index] && (
         <div
-          className={`select-none text-center max-md:max-w-[90%] max-md:pb-3
+          className={`relative select-none text-center max-md:max-w-[90%] max-md:pb-3
            ${itemShortTextColors[index]} ${itemShortTextSizes[index]} ${itemShortTextSizesMobile[index]}`}
         >
           {itemShortText[index]}

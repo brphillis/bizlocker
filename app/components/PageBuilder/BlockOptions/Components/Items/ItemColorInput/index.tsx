@@ -22,7 +22,7 @@ const ItemColorInput = ({
   selectedItems,
   type,
 }: Props) => {
-  const [items, setItems] = useState<(string | undefined)[]>(
+  const [items, setItems] = useState<(string | number | undefined)[]>(
     defaultValues || []
   );
   const [editingItem, setEditingItem] = useState<number | null>(null);
@@ -44,8 +44,9 @@ const ItemColorInput = ({
                   label={"Item " + relativeIndex.toString() + " " + valueName}
                   inputBackgroundColor={
                     !valuesEdited
-                      ? items[index] || defaultValues?.[index]
-                      : items[index]
+                      ? items[index]?.toString() ||
+                        defaultValues?.[index].toString()
+                      : items[index]?.toString()
                   }
                   inputOnClick={() => setEditingItem(relativeIndex)}
                 />
@@ -53,7 +54,7 @@ const ItemColorInput = ({
                 {editingItem && (
                   <ColorPickerPopup
                     type={type}
-                    defaultValue={items?.[editingItem - 1]}
+                    defaultValue={items?.[editingItem - 1]?.toString()}
                     closeFunction={() => setEditingItem(null)}
                     selectFunction={(selectedColor) => {
                       handleBlockOptionItemInputChange(

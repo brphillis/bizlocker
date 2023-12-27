@@ -15,6 +15,7 @@ import MotionOptions from "./Options/Motion";
 import ColumnsAndRowsOptions from "./Options/ColumnsAndRows";
 import ItemOptions from "./ItemOptions";
 import ButtonOptions from "./Options/Buttons";
+import ColorOptions from "./Options/Colors";
 
 type Props = {
   selectedItems: ContentSelection[];
@@ -54,6 +55,11 @@ const BlockOptionsModule = ({
             />
 
             <ButtonOptions
+              defaultValues={defaultValues}
+              selectedBlockOptions={selectedBlockOptions}
+            />
+
+            <ColorOptions
               defaultValues={defaultValues}
               selectedBlockOptions={selectedBlockOptions}
             />

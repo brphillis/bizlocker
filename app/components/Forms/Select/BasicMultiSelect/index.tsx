@@ -5,7 +5,7 @@ type Props = {
   label: string;
   selections: SelectValue[];
   defaultValues?: SelectValue[] | null;
-  styles?: string;
+  extendStyle?: string;
   customWidth?: string;
   labelColor?: string;
 };
@@ -15,7 +15,7 @@ const BasicMultiSelect = ({
   label,
   selections,
   defaultValues,
-  styles,
+  extendStyle,
   customWidth,
   labelColor,
 }: Props) => {
@@ -46,18 +46,26 @@ const BasicMultiSelect = ({
           {label}
         </span>
       </label>
+
       <select
-        className={`select text-brand-black/75 ${styles ? styles : ""}`}
+        className={`select text-brand-black/75 ${
+          extendStyle ? extendStyle : ""
+        }`}
         onChange={handleOptionChange}
         value={selectedValues || undefined}
         multiple
       >
         {selections?.map(({ id, name }: SelectValue) => (
-          <option key={id} value={id}>
+          <option
+            className="checked:rounded-sm checked:bg-primary/75 checked:px-1 checked:text-brand-white"
+            key={id}
+            value={id}
+          >
             {name}
           </option>
         ))}
       </select>
+
       <input
         hidden
         readOnly

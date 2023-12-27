@@ -1,4 +1,6 @@
 import { useNavigate } from "@remix-run/react";
+import PatternBackground from "~/components/Layout/PatternBackground";
+import { getThemeColorValueByName } from "~/utility/colors";
 
 type Props = {
   borderRadius: string | null | undefined;
@@ -23,10 +25,13 @@ const ContentTile = ({
 
   return (
     <div
-      className={`h-full w-full ${itemBackgroundColor} ${borderRadius} ${
+      className={`h-full w-full ${borderRadius} ${
         borderRadius ? "p-6 max-md:p-3" : "p-0"
       }`}
     >
+      <PatternBackground
+        backgroundColor={getThemeColorValueByName(itemBackgroundColor)}
+      />
       <img
         className={`object-fit h-full w-full ${filter}`}
         onClick={() => link && navigate(link)}

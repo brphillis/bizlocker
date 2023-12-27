@@ -1,18 +1,13 @@
 import type { Promotion } from "@prisma/client";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import {
-  Form,
-  Outlet,
-  useLoaderData,
-  useNavigate,
-  useSearchParams,
-} from "@remix-run/react";
+import { Form, Outlet, useLoaderData, useSearchParams } from "@remix-run/react";
 import { tokenAuth } from "~/auth.server";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import Pagination from "~/components/Pagination";
+import BasicTable from "~/components/Tables/BasicTable";
 import { searchPromotions } from "~/models/promotions.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
 
@@ -31,7 +26,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 const Promotions = () => {
-  const navigate = useNavigate();
   const { promotions, totalPages } = useLoaderData<typeof loader>();
 
   const [searchParams] = useSearchParams();
@@ -60,72 +54,17 @@ const Promotions = () => {
 
         <div className="divider w-full" />
 
-        <div className="w-full max-w-[80vw] overflow-x-auto">
-          <table className="table table-sm my-3">
-            <thead className="sticky top-0">
-              <tr>
-                {currentPage && <th>#</th>}
-                <th>Name</th>
-                <th>Discount</th>
-                <th>Updated</th>
-                <th>Created</th>
-                <th>Active</th>
-              </tr>
-            </thead>
-            <tbody>
-              {promotions?.map(
-                (
-                  {
-                    id,
-                    name,
-                    discountPercentage,
-                    updatedAt,
-                    createdAt,
-                    isActive,
-                  }: Promotion,
-                  i: number
-                ) => {
-                  return (
-                    <tr
-                      className="cursor-pointer transition-colors duration-200 hover:bg-base-100"
-                      key={id}
-                      onClick={() => {
-                        navigate(
-                          `${location.pathname + "/" + id}${location.search}`
-                        );
-                      }}
-                    >
-                      {currentPage && (
-                        <td>
-                          {i + 1 + (currentPage - 1) * promotions?.length}
-                        </td>
-                      )}
-                      <td>{name}</td>
-                      <td>{discountPercentage}%</td>
-                      <td>{updatedAt}</td>
-                      <td>
-                        {new Date(createdAt).toLocaleDateString("en-US", {
-                          day: "numeric",
-                          month: "long",
-                          year: "numeric",
-                        })}
-                      </td>
-
-                      <td>
-                        {!isActive && (
-                          <div className="ml-4 h-3 w-3 rounded-full bg-red-500" />
-                        )}
-                        {isActive && (
-                          <div className="ml-4 h-3 w-3 self-center rounded-full bg-success" />
-                        )}
-                      </td>
-                    </tr>
-                  );
-                }
-              )}
-            </tbody>
-          </table>
-        </div>
+        {promotions && promotions.length > 0 && (
+          <BasicTable
+            currentPage={currentPage}
+            objectArray={promotions?.map((e: Promotion) => ({
+              id: e.id,
+              name: e.name,
+              discount: e.discountPercentage,
+              active: e.isActive,
+            }))}
+          />
+        )}
 
         <Pagination totalPages={totalPages} />
       </Form>

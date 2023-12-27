@@ -362,7 +362,7 @@ const ProductVariantFormModule = ({
             <div className="mt-3">
               <BasicToggle
                 label="Active"
-                defaultValue={
+                value={
                   activeVariant.hasOwnProperty("isActive")
                     ? (activeVariant as ProductVariantWithDetails)?.isActive
                     : true
@@ -423,10 +423,7 @@ const ProductVariantFormModule = ({
             <div className="mt-3">
               <BasicToggle
                 label="On Sale"
-                defaultValue={
-                  (activeVariant as ProductVariantWithDetails)?.isOnSale ||
-                  false
-                }
+                value={(activeVariant as ProductVariantWithDetails)?.isOnSale}
                 onChange={(e) => {
                   const isChecked = e.target.checked;
                   if (isChecked) {
@@ -446,10 +443,7 @@ const ProductVariantFormModule = ({
 
               <BasicToggle
                 label="On Promo"
-                defaultValue={
-                  (activeVariant as ProductVariantWithDetails)?.isPromoted ||
-                  false
-                }
+                value={(activeVariant as ProductVariantWithDetails)?.isPromoted}
                 onChange={(e) => {
                   const isChecked = e.target.checked;
                   if (isChecked) {
@@ -549,7 +543,7 @@ const ProductVariantFormModule = ({
 
             <BasicToggle
               label="Is Fragile"
-              defaultValue={
+              value={
                 activeVariant.hasOwnProperty("isFragile")
                   ? (activeVariant as ProductVariantWithDetails)?.isFragile
                   : false

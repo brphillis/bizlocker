@@ -5,7 +5,9 @@ import ItemColorInput from "../../Components/Items/ItemColorInput";
 import ItemInput from "../../Components/Items/ItemInput";
 import {
   fontSizeSelectValues,
+  fontWeightSelectValues,
   mobileFontSizeSelectValues,
+  mobilefontWeightSelectValues,
 } from "../../Values/font";
 
 type Props = {
@@ -56,10 +58,30 @@ const Titles = ({
           title="Title Sizes Mobile"
           formName="itemTitleSizesMobile"
           selectedItems={selectedItems}
-          valueName="Title Size Mobile"
+          valueName="Title Size"
           blockMasterOption={selectedBlockOptions?.itemTitleSizesMobile}
           defaultValues={defaultValues?.itemTitleSizesMobile}
           selections={mobileFontSizeSelectValues}
+        />
+
+        <ItemSelectInput
+          title="Title Weights"
+          formName="itemTitleFontWeights"
+          selectedItems={selectedItems}
+          valueName="Title Weight"
+          blockMasterOption={selectedBlockOptions?.itemTitleFontWeights}
+          defaultValues={defaultValues?.itemTitleFontWeights}
+          selections={fontWeightSelectValues}
+        />
+
+        <ItemSelectInput
+          title="Title Weights Mobile"
+          formName="itemTitleFontWeightsMobile"
+          selectedItems={selectedItems}
+          valueName="Title Weight"
+          blockMasterOption={selectedBlockOptions?.itemTitleFontWeightsMobile}
+          defaultValues={defaultValues?.itemTitleFontWeightsMobile}
+          selections={mobilefontWeightSelectValues}
         />
       </div>
     </details>

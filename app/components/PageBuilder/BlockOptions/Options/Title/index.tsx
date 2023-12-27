@@ -8,6 +8,7 @@ import {
   fontSizeSelectValues,
   fontWeightSelectValues,
   mobileFontSizeSelectValues,
+  mobilefontWeightSelectValues,
 } from "../../Values/font";
 import BlockColorInput from "../../Components/Blocks/BlockColorInput";
 
@@ -61,10 +62,18 @@ const TitleOptions = ({
 
         <BlockSelectInput
           valueName="Title Weight"
-          formName="titleWeight"
-          blockMasterOption={selectedBlockOptions?.titleWeight}
-          defaultValue={defaultValues?.titleWeight}
+          formName="titleFontWeight"
+          blockMasterOption={selectedBlockOptions?.titleFontWeight}
+          defaultValue={defaultValues?.titleFontWeight}
           selections={fontWeightSelectValues}
+        />
+
+        <BlockSelectInput
+          valueName="Title Weight Mobile"
+          formName="titleFontWeightMobile"
+          blockMasterOption={selectedBlockOptions?.titleFontWeightMobile}
+          defaultValue={defaultValues?.titleFontWeightMobile}
+          selections={mobilefontWeightSelectValues}
         />
 
         <BlockSelectInput

@@ -251,6 +251,7 @@ const Product = () => {
                 name="productSubCategories"
                 label="Categories"
                 customWidth="w-full"
+                extendStyle="!h-[150px]"
                 selections={productSubCategories}
                 defaultValues={product?.productSubCategories}
               />

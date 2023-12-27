@@ -6,13 +6,8 @@ import { json, redirect, type LoaderFunctionArgs } from "@remix-run/node";
 import { searchTeams, type TeamWithStaff } from "~/models/teams.server";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
-import {
-  Form,
-  Outlet,
-  useLoaderData,
-  useNavigate,
-  useSearchParams,
-} from "@remix-run/react";
+import { Form, Outlet, useLoaderData, useSearchParams } from "@remix-run/react";
+import BasicTable from "~/components/Tables/BasicTable";
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
 
@@ -33,7 +28,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 const ManageTeams = () => {
   const { teams, totalPages } = useLoaderData<typeof loader>();
 
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
   const currentPage: number = Number(searchParams.get("pageNumber")) || 1;
@@ -64,52 +58,17 @@ const ManageTeams = () => {
 
         <div className="divider w-full" />
 
-        <div className="max-h-[520px] w-full max-w-[80vw] overflow-auto">
-          <table className="table table-sm my-3">
-            <thead className="sticky top-0">
-              <tr>
-                {currentPage && <th>#</th>}
-                <th>Name</th>
-                <th>Location</th>
-                <th>Active</th>
-              </tr>
-            </thead>
-            <tbody>
-              {teams &&
-                teams?.map(
-                  ({ id, name, store, isActive }: TeamWithStaff, i: number) => {
-                    const { name: storeName } = store || {};
-
-                    return (
-                      <tr
-                        className="cursor-pointer transition-colors duration-200 hover:bg-base-100"
-                        key={"product" + id}
-                        onClick={() => {
-                          navigate(
-                            `${location.pathname + "/" + id}${location.search}`
-                          );
-                        }}
-                      >
-                        {currentPage && (
-                          <td>{i + 1 + (currentPage - 1) * teams?.length}</td>
-                        )}
-                        <td>{name}</td>
-                        <td>{storeName}</td>
-                        <td>
-                          {!isActive && (
-                            <div className="ml-4 h-3 w-3 rounded-full bg-red-500" />
-                          )}
-                          {isActive && (
-                            <div className="ml-4 h-3 w-3 self-center rounded-full bg-success" />
-                          )}
-                        </td>
-                      </tr>
-                    );
-                  }
-                )}
-            </tbody>
-          </table>
-        </div>
+        {teams && teams.length > 0 && (
+          <BasicTable
+            currentPage={currentPage}
+            objectArray={teams?.map((e: TeamWithStaff) => ({
+              id: e.id,
+              name: e.name,
+              store: e.store?.name,
+              active: e.isActive,
+            }))}
+          />
+        )}
 
         <Pagination totalPages={totalPages} />
       </Form>

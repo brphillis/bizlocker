@@ -150,7 +150,7 @@ const ModifyTeam = () => {
                 type="submit"
                 className="btn btn-primary mt-6 w-max !rounded-sm"
               >
-                Search
+                Search Staff
               </button>
             </div>
           </div>

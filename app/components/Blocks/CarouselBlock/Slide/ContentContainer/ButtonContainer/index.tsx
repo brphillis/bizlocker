@@ -31,7 +31,7 @@ const ButtonContainer = ({ index, blockOptions }: Props) => {
 
   return (
     <div
-      className={`flex flex-wrap items-center justify-center gap-3 
+      className={`relative flex flex-wrap items-center justify-center gap-3 
       ${itemButtonAlign[index]}
       ${hasButtons ? "flex" : "hidden"}`}
     >

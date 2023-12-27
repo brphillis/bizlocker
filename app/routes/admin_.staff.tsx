@@ -1,20 +1,13 @@
 import { redirect, type LoaderFunctionArgs, json } from "@remix-run/node";
-import {
-  Form,
-  Outlet,
-  useLoaderData,
-  useNavigate,
-  useSearchParams,
-} from "@remix-run/react";
+import { Form, Outlet, useLoaderData, useSearchParams } from "@remix-run/react";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import Pagination from "~/components/Pagination";
-import { placeholderAvatar } from "~/utility/placeholderAvatar";
-import { capitalizeFirst } from "~/helpers/stringHelpers";
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
 import { type StaffWithDetails, searchStaff } from "~/models/auth/staff.server";
+import BasicTable from "~/components/Tables/BasicTable";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
@@ -38,7 +31,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 const Staff = () => {
-  const navigate = useNavigate();
   const { staff, totalPages } = useLoaderData<typeof loader>();
 
   const [searchParams] = useSearchParams();
@@ -85,69 +77,18 @@ const Staff = () => {
 
         <div className="divider w-full" />
 
-        <div className="w-full max-w-[80vw] overflow-x-auto">
-          <table className="table table-sm my-3">
-            <thead className="sticky top-0">
-              <tr>
-                {currentPage && <th>#</th>}
-                <th></th>
-                <th>Firstname</th>
-                <th>Lastname</th>
-                <th>Email</th>
-                <th>Active</th>
-              </tr>
-            </thead>
-            <tbody>
-              {staff?.map(
-                (
-                  {
-                    id,
-                    email,
-                    avatar,
-                    userDetails,
-                    isActive,
-                  }: StaffWithDetails,
-                  i: number
-                ) => {
-                  const { firstName, lastName } = userDetails || {};
-
-                  return (
-                    <tr
-                      className="cursor-pointer transition-colors duration-200 hover:bg-base-100"
-                      key={id}
-                      onClick={() => navigate(`/admin/staff/${id}`)}
-                    >
-                      {currentPage && (
-                        <td>{i + 1 + (currentPage - 1) * staff?.length}</td>
-                      )}
-                      <td className="flex items-center justify-center">
-                        <div className="avatar mx-[-10px]">
-                          <div className="w-8 rounded-full">
-                            <img
-                              src={avatar?.href || placeholderAvatar.href}
-                              alt="user_avatar"
-                            />
-                          </div>
-                        </div>
-                      </td>
-                      <td>{firstName && capitalizeFirst(firstName)}</td>
-                      <td>{lastName && capitalizeFirst(lastName)}</td>
-                      <td>{email}</td>
-                      <td>
-                        {!isActive && (
-                          <div className="ml-4 h-3 w-3 rounded-full bg-red-500" />
-                        )}
-                        {isActive && (
-                          <div className="ml-4 h-3 w-3 self-center rounded-full bg-success" />
-                        )}
-                      </td>
-                    </tr>
-                  );
-                }
-              )}
-            </tbody>
-          </table>
-        </div>
+        {staff && staff.length > 0 && (
+          <BasicTable
+            currentPage={currentPage}
+            objectArray={staff?.map((e: StaffWithDetails) => ({
+              id: e.id,
+              firstName: e.userDetails?.firstName,
+              lastName: e.userDetails?.lastName,
+              email: e.email,
+              active: e.isActive,
+            }))}
+          />
+        )}
 
         <Pagination totalPages={totalPages} />
       </Form>
