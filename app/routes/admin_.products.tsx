@@ -6,8 +6,6 @@ import {
 } from "~/models/products.server";
 import ProductSort from "~/components/Sorting/ProductSort";
 import { redirect, type LoaderFunctionArgs, json } from "@remix-run/node";
-import BasicInput from "~/components/Forms/Input/BasicInput";
-import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import { getProductSubCategories } from "~/models/productSubCategories.server";
@@ -15,6 +13,7 @@ import { Form, Outlet, useLoaderData, useSearchParams } from "@remix-run/react";
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
 import BasicTable from "~/components/Tables/BasicTable";
+import AdminContentSearch from "~/components/Search/AdminContentSearch";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
@@ -40,7 +39,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 const ManageProducts = () => {
   const { products, totalPages, productSubCategories, brands } =
     useLoaderData<typeof loader>();
+
   const [searchParams] = useSearchParams();
+
   const currentPage = Number(searchParams.get("pageNumber")) || 1;
 
   return (
@@ -48,39 +49,11 @@ const ManageProducts = () => {
       <Form method="GET" className="relative h-full w-full bg-base-200 p-6">
         <AdminPageHeader title="Manage Products" addButtonText="Add Products" />
 
-        <div className="mt-3 flex flex-col">
-          <div className="flex flex-row flex-wrap gap-6">
-            <BasicInput
-              name="name"
-              label="Name"
-              placeholder="Name"
-              type="text"
-            />
-
-            <BasicSelect
-              label="Category"
-              name="productSubCategory"
-              placeholder="Select a Category"
-              selections={productSubCategories}
-            />
-
-            <BasicSelect
-              label="Brand"
-              name="brand"
-              placeholder="Brand"
-              selections={brands}
-            />
-          </div>
-
-          <div className="flex flex-row justify-end sm:justify-start">
-            <button
-              type="submit"
-              className="btn btn-primary mt-6 w-max !rounded-sm"
-            >
-              Search
-            </button>
-          </div>
-        </div>
+        <AdminContentSearch
+          name={true}
+          brands={brands}
+          productSubCategories={productSubCategories}
+        />
 
         <div className="divider w-full" />
 

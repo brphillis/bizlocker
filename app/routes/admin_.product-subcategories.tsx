@@ -6,8 +6,6 @@ import {
   redirect,
 } from "@remix-run/server-runtime";
 import CategorySort from "~/components/Sorting/CategorySort";
-import BasicInput from "~/components/Forms/Input/BasicInput";
-import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import { getProductCategories } from "~/models/productCategories.server";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
@@ -16,6 +14,7 @@ import { Form, Outlet, useLoaderData, useSearchParams } from "@remix-run/react";
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
 import BasicTable from "~/components/Tables/BasicTable";
+import AdminContentSearch from "~/components/Search/AdminContentSearch";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
@@ -51,30 +50,7 @@ const ProductSubCategories = () => {
           addButtonText="Add Product Sub Category"
         />
 
-        <div className="mt-3 flex w-full flex-wrap items-end gap-6">
-          <BasicInput
-            label="Sub Category Name"
-            type="text"
-            name="name"
-            placeholder="Name"
-          />
-
-          <BasicSelect
-            name="productCategory"
-            label="Category"
-            selections={productCategories}
-            placeholder="Category"
-          />
-        </div>
-
-        <div className="flex flex-row justify-end sm:justify-start">
-          <button
-            type="submit"
-            className="btn btn-primary mt-6 w-max !rounded-sm"
-          >
-            Search
-          </button>
-        </div>
+        <AdminContentSearch name={true} productCategories={productCategories} />
 
         <div className="divider w-full" />
 

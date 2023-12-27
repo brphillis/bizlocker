@@ -2,7 +2,6 @@ import { tokenAuth } from "~/auth.server";
 import Pagination from "~/components/Pagination";
 import type { Department } from "@prisma/client";
 import { STAFF_SESSION_KEY } from "~/session.server";
-import BasicInput from "~/components/Forms/Input/BasicInput";
 import CategorySort from "~/components/Sorting/CategorySort";
 import { searchDepartments } from "~/models/departments.server";
 import { json, redirect, type LoaderFunctionArgs } from "@remix-run/node";
@@ -10,6 +9,7 @@ import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import { Form, Outlet, useLoaderData, useSearchParams } from "@remix-run/react";
 import BasicTable from "~/components/Tables/BasicTable";
+import AdminContentSearch from "~/components/Search/AdminContentSearch";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
@@ -54,23 +54,7 @@ const ManageDepartments = () => {
           addButtonText="Add Department"
         />
 
-        <div className="mt-3 flex w-full flex-wrap items-end gap-6">
-          <BasicInput
-            label="Department Name"
-            type="text"
-            name="name"
-            placeholder="Name"
-          />
-        </div>
-
-        <div className="flex flex-row justify-end sm:justify-start">
-          <button
-            type="submit"
-            className="btn btn-primary mt-6 w-max !rounded-sm"
-          >
-            Search
-          </button>
-        </div>
+        <AdminContentSearch name={true} />
 
         <div className="divider w-full" />
 

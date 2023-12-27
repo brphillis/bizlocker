@@ -7,10 +7,10 @@ import {
   useSearchParams,
 } from "@remix-run/react";
 import { tokenAuth } from "~/auth.server";
-import BasicInput from "~/components/Forms/Input/BasicInput";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import Pagination from "~/components/Pagination";
+import AdminContentSearch from "~/components/Search/AdminContentSearch";
 import BasicTable from "~/components/Tables/BasicTable";
 import { searchWebPages } from "~/models/webPages.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
@@ -45,25 +45,7 @@ const Pages = () => {
           createLink="/admin/pagebuilder/new?req=webpage"
         />
 
-        <div className="mt-3 flex flex-col">
-          <div className="flex flex-row flex-wrap gap-6">
-            <BasicInput
-              label="Page Title"
-              name="title"
-              placeholder="Title"
-              type="text"
-            />
-          </div>
-
-          <div className="flex flex-row justify-end sm:justify-start">
-            <button
-              type="submit"
-              className="btn btn-primary mt-6 w-max !rounded-sm"
-            >
-              Search
-            </button>
-          </div>
-        </div>
+        <AdminContentSearch title={true} />
 
         <div className="divider w-full" />
 
