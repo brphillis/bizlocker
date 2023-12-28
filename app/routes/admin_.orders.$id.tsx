@@ -1,3 +1,4 @@
+import type { ActionReturnTypes } from "~/utility/actionTypes";
 import { IoClose } from "react-icons/io5";
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
@@ -8,6 +9,7 @@ import SelectCountry from "~/components/Forms/Select/SelectCountry";
 import OrderStatusSteps from "~/components/Indicators/OrderStatusSteps";
 import {
   Form,
+  useActionData,
   useLoaderData,
   useLocation,
   useNavigate,
@@ -24,6 +26,9 @@ import {
   updateOrderShippingDetails,
   updateOrderStatus,
 } from "~/models/orders.server";
+import useNotification, {
+  type PageNotification,
+} from "~/hooks/PageNotification";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
@@ -57,10 +62,19 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const form = Object.fromEntries(await request.formData());
   const { orderId } = form;
 
+  let notification: PageNotification;
+
   switch (form._action) {
     case "updateStatus":
       const { status } = form;
-      return await updateOrderStatus(orderId as string, status as OrderStatus);
+      await updateOrderStatus(orderId as string, status as OrderStatus);
+
+      notification = {
+        type: "success",
+        message: "Order Status Updated",
+      };
+
+      return { notification };
 
     case "updateShipping":
       const {
@@ -75,7 +89,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         trackingNumber,
       } = form;
 
-      return await updateOrderShippingDetails(
+      await updateOrderShippingDetails(
         orderId as string,
         firstName as string,
         lastName as string,
@@ -87,14 +101,23 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         country as string,
         trackingNumber as string
       );
+
+      notification = {
+        type: "success",
+        message: "Shipping Details Updated",
+      };
+
+      return { notification };
   }
 };
 
 const ModifyOrder = () => {
   const { order } = useLoaderData<typeof loader>();
+  const { notification } = (useActionData() as ActionReturnTypes) || {};
 
   const { pathname } = useLocation();
   const navigate = useNavigate();
+  useNotification(notification);
 
   const { items, address, status, orderId } = order;
 

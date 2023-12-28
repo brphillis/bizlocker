@@ -123,7 +123,7 @@ const AdminLogin = () => {
         </>
 
         <div className="form-control gap-3">
-          <BasicButton label="Login" />
+          <BasicButton label="Login" type="submit" />
 
           <div className="my-2 w-full border-b-2 border-brand-white/10" />
           <p className="select-none text-center text-xs">

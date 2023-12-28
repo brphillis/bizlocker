@@ -30,6 +30,9 @@ import {
   useNavigate,
   useSubmit,
 } from "@remix-run/react";
+import useNotification, {
+  type PageNotification,
+} from "~/hooks/PageNotification";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
@@ -71,6 +74,8 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
   const { image, altText } = form;
 
+  let notification: PageNotification;
+
   switch (form._action) {
     case "upsert":
       const validate = {
@@ -89,21 +94,33 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
       parsedImage && (await upsertImage(altText as string, parsedImage, id));
 
-      return json({ success: true });
+      notification = {
+        type: "success",
+        message: `Image ${id === "add" ? "Added" : "Updated"}.`,
+      };
+
+      return json({ success: true, notification });
 
     case "delete":
       await deleteImage(id as string);
-      return json({ success: true });
+
+      notification = {
+        type: "warning",
+        message: "Image Deleted",
+      };
+
+      return json({ success: true, notification });
   }
 };
 
 const ModifyImage = () => {
   const { image } = useLoaderData<typeof loader>();
-  const { validationErrors, success } =
+  const { validationErrors, success, notification } =
     (useActionData() as ActionReturnTypes) || {};
 
   const navigate = useNavigate();
   let submit = useSubmit();
+  useNotification(notification);
 
   const {
     altText,

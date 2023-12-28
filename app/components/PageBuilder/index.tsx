@@ -1,9 +1,7 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Form, useSubmit } from "@remix-run/react";
 import { blockMaster } from "~/utility/blockMaster/blockMaster";
 import type { BlockContentType, BlockName } from "~/utility/blockMaster/types";
-import BlockIcon from "~/components/Blocks/BlockIcon";
-import { capitalizeFirst } from "~/helpers/stringHelpers";
 import { getBlockDefaultValues } from "~/helpers/blockHelpers";
 import type {
   ArticleCategory,
@@ -21,14 +19,14 @@ import ResultsTable from "./Content/ResultsTable";
 import ContentSearch from "./Content/ContentSearch";
 import ResultsImages from "./Content/ResultsImages";
 import SelectedContent from "./Content/SelectedContent";
-import SquareIconButton from "../Buttons/SquareIconButton";
 import ProductBlockOptions from "./Specific/ProductBlockOptions";
 import ArticleBlockOptions from "./Specific/ArticleBlockOptions";
 import BackSubmitButtons from "../Forms/Buttons/BackSubmitButtons";
-import BlockOptionsModule from "./BlockOptions";
+import BlockOptionsModule from "./Options";
 import TextBlockContentModule from "./Content/TextBlockContent";
 import BoxedTabs from "../Tabs/BoxedTabs";
 import { blockHasMaxContentItems } from "~/helpers/blockContentHelpers";
+import BlockCard from "./BlockCard";
 
 type Props = {
   previewPage: Page;
@@ -163,86 +161,33 @@ const PageBuilder = ({
     <Form className="relative w-full" method="POST">
       <input name="previewPageId" value={previewPage?.id} hidden readOnly />
       <input name="itemIndex" value={editingIndex.toString()} hidden readOnly />
+
       {!editingContent && (
-        <div className="flex w-full max-w-full flex-col items-center gap-3 overflow-x-hidden">
-          <div className="scrollbar-hide">
-            {blocks?.map(({ id, name }: PageBlock, i) => {
-              return (
-                <div
-                  key={"block_" + i}
-                  className="max-w-screen my-3 flex w-[400px] cursor-pointer justify-between rounded-sm border border-brand-white/50 px-3 py-3 transition duration-300 ease-in-out hover:scale-[1.01] max-md:w-[360px]"
-                >
-                  <div
-                    className="flex items-center gap-3"
-                    onClick={() => {
-                      editBlock(i);
-                    }}
-                  >
-                    {/* NUMBER */}
-                    <div className="text-xs"># {i + 1}</div>
-                    {/* ICON */}
-                    <div className="flex gap-3">
-                      <BlockIcon
-                        blockName={blocks[i].name}
-                        size={18}
-                        styles={"mt-[3px]"}
-                      />
-                      <p className="font-bold">
-                        {capitalizeFirst(blocks[i]?.name)}
-                      </p>
-                    </div>
-                  </div>
+        <div className="scrollbar-hide mx-auto mt-3 flex w-[520px] max-w-full flex-col items-center gap-3 overflow-x-hidden px-3">
+          {blocks?.map(({ id, name }: PageBlock, i) => {
+            return (
+              <React.Fragment key={"BlockCard_" + i}>
+                <BlockCard
+                  blockCount={blocks.length}
+                  index={i}
+                  name={name}
+                  onChangeOrder={(dir) => changeBlockOrder(i, dir)}
+                  onClick={() => editBlock(i)}
+                  onDelete={() => disconnectBlock(id, name)}
+                />
+              </React.Fragment>
+            );
+          })}
 
-                  {/* BUTTONS */}
-                  <div className="flex h-full flex-row items-center justify-start gap-3">
-                    {i < blocks.length - 1 && (
-                      <SquareIconButton
-                        iconName="IoArrowDown"
-                        size="small"
-                        color="primary"
-                        onClickFunction={() => changeBlockOrder(i, "down")}
-                      />
-                    )}
-
-                    {i > 0 && (
-                      <SquareIconButton
-                        iconName="IoArrowUp"
-                        size="small"
-                        color="primary"
-                        onClickFunction={() => changeBlockOrder(i, "up")}
-                      />
-                    )}
-
-                    <SquareIconButton
-                      iconName="IoPencilSharp"
-                      size="small"
-                      color="primary"
-                      onClickFunction={() => editBlock(i)}
-                    />
-
-                    {i > 0 && (
-                      <SquareIconButton
-                        iconName="IoTrashBin"
-                        size="small"
-                        color="error"
-                        onClickFunction={() => disconnectBlock(id, name)}
-                      />
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-
-            <div
-              className="max-w-screen my-3 flex w-[400px] cursor-pointer justify-center rounded-sm border border-brand-white/50 px-3 py-3 transition duration-300 ease-in-out hover:scale-[1.01] max-md:w-[360px]"
-              onClick={() => {
-                blocks && setEditingIndex(blocks.length);
-                setEditingContent(true);
-              }}
-            >
-              <div className="flex items-center justify-center gap-3">
-                Add Block +
-              </div>
+          <div
+            className="max-w-screen my-3 flex w-[400px] cursor-pointer justify-center rounded-sm border border-brand-white/50 px-3 py-3 transition duration-300 ease-in-out hover:scale-[1.01] max-md:w-[360px]"
+            onClick={() => {
+              blocks && setEditingIndex(blocks.length);
+              setEditingContent(true);
+            }}
+          >
+            <div className="flex items-center justify-center gap-3">
+              Add Block +
             </div>
           </div>
         </div>

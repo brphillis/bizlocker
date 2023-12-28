@@ -26,6 +26,14 @@ export const formatDate = (
   }
 };
 
+export const formatDateForFormField = (
+  dateString?: string | null
+): string | undefined => {
+  return dateString
+    ? new Date(dateString).toISOString().split("T")[0]
+    : undefined;
+};
+
 export const createISODate = (): string => {
   const now = new Date();
   const isoDate = now.toISOString();

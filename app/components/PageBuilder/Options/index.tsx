@@ -1,21 +1,21 @@
 import type { BlockOptions } from "@prisma/client";
 import type { BlockName } from "~/utility/blockMaster/types";
 import { blockMaster } from "~/utility/blockMaster/blockMaster";
-import TitleOptions from "./Options/Title";
-import StyleOptions from "./Options/Style";
-import ShortTextOptions from "./Options/ShortText";
-import BackgroundOptions from "./Options/Background";
-import BorderOptions from "./Options/Border";
-import SortAndOrderOptions from "./Options/SortAndOrder";
-import SizeOptions from "./Options/Size";
-import FlipAndRotateOptions from "./Options/FlipAndRotate";
-import CountOptions from "./Options/Count";
-import MarginAndPaddingOptions from "./Options/MarginAndPadding";
-import MotionOptions from "./Options/Motion";
-import ColumnsAndRowsOptions from "./Options/ColumnsAndRows";
+import TitleOptions from "./BlockOptions/Title";
+import StyleOptions from "./BlockOptions/Style";
+import ShortTextOptions from "./BlockOptions/ShortText";
+import BackgroundOptions from "./BlockOptions/Background";
+import BorderOptions from "./BlockOptions/Border";
+import SortAndOrderOptions from "./BlockOptions/SortAndOrder";
+import SizeOptions from "./BlockOptions/Size";
+import FlipAndRotateOptions from "./BlockOptions/FlipAndRotate";
+import CountOptions from "./BlockOptions/Count";
+import MarginAndPaddingOptions from "./BlockOptions/MarginAndPadding";
+import MotionOptions from "./BlockOptions/Motion";
+import ColumnsAndRowsOptions from "./BlockOptions/ColumnsAndRows";
 import ItemOptions from "./ItemOptions";
-import ButtonOptions from "./Options/Buttons";
-import ColorOptions from "./Options/Colors";
+import ButtonOptions from "./BlockOptions/Buttons";
+import ColorOptions from "./BlockOptions/Colors";
 
 type Props = {
   selectedItems: ContentSelection[];
@@ -25,7 +25,7 @@ type Props = {
   activeTab: string;
 };
 
-const BlockOptionsModule = ({
+const OptionsModule = ({
   selectedBlock,
   defaultValues,
   selectedItems,
@@ -137,4 +137,4 @@ const BlockOptionsModule = ({
   );
 };
 
-export default BlockOptionsModule;
+export default OptionsModule;

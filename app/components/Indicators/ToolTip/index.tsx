@@ -8,7 +8,7 @@ type Props = {
 const ToolTip = ({ tip, iconColor }: Props) => {
   return (
     <div
-      className={`z-100 tooltip tooltip-left tooltip-primary absolute right-1 top-[12px] ${iconColor}`}
+      className={`z-100 tooltip tooltip-top tooltip-primary absolute right-1 top-[12px] max-md:tooltip-left ${iconColor}`}
       data-tip={tip}
     >
       <IoInformationCircle />

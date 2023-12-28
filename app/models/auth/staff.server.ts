@@ -83,7 +83,7 @@ export const upsertStaff = async (
             firstName,
             lastName,
             phoneNumber,
-            dateOfBirth,
+            dateOfBirth: dateOfBirth.toString(),
           },
         },
         address: {
@@ -136,13 +136,13 @@ export const upsertStaff = async (
               firstName,
               lastName,
               phoneNumber,
-              dateOfBirth,
+              dateOfBirth: dateOfBirth.toString(),
             },
             update: {
               firstName,
               lastName,
               phoneNumber,
-              dateOfBirth,
+              dateOfBirth: dateOfBirth.toString(),
             },
           },
         },
@@ -202,7 +202,7 @@ export const upsertStaff = async (
             firstName,
             lastName,
             phoneNumber,
-            dateOfBirth,
+            dateOfBirth: dateOfBirth.toString(),
           },
         },
         address: {

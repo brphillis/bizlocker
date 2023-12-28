@@ -39,6 +39,9 @@ import {
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
 import BasicMultiSelect from "~/components/Forms/Select/BasicMultiSelect";
+import useNotification, {
+  type PageNotification,
+} from "~/hooks/PageNotification";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
@@ -98,6 +101,8 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
     productSubCategories,
   } = form;
 
+  let notification: PageNotification;
+
   switch (form._action) {
     case "upsert":
       const validate = {
@@ -128,7 +133,12 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
       await upsertProductCategory(categoryData);
 
-      return json({ success: true });
+      notification = {
+        type: "success",
+        message: `Category ${id === "add" ? "Added" : "Updated"}.`,
+      };
+
+      return json({ success: true, notification });
   }
 };
 
@@ -137,8 +147,10 @@ const ModifyProductCategory = () => {
   const { productCategory, departments, productSubCategories } =
     useLoaderData<typeof loader>();
 
-  const { success, validationErrors } =
+  const { success, validationErrors, notification } =
     (useActionData() as ActionReturnTypes) || {};
+
+  useNotification(notification);
 
   const [loading, setLoading] = useState<boolean>(false);
 

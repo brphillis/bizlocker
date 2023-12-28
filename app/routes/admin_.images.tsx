@@ -40,7 +40,7 @@ const Images = () => {
 
         <div className="divider w-full" />
 
-        <div className="flex w-full flex-wrap justify-center gap-6 overflow-x-auto pb-3 max-lg:gap-3">
+        <div className="flex w-full flex-wrap justify-center gap-6 overflow-x-auto py-3 max-lg:gap-3">
           {images?.map(({ id, href, altText }: Image) => {
             return (
               <img

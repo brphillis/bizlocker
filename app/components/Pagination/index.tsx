@@ -10,6 +10,25 @@ const Pagination = ({ totalPages }: Props) => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const submit = useSubmit();
 
+  const renderPageButton = (pageNumber: number) => {
+    return (
+      <button
+        type="button"
+        key={`pagination-${pageNumber}`}
+        className={`flex h-8 w-8 items-center justify-center rounded-sm bg-primary text-brand-white hover:bg-primary-dark ${
+          currentPage === pageNumber && "bg-primary-dark"
+        }`}
+        onClick={() => {
+          searchParams.set("pageNumber", pageNumber.toString());
+          submit(searchParams, { method: "GET" });
+          setCurrentPage(pageNumber);
+        }}
+      >
+        {pageNumber}
+      </button>
+    );
+  };
+
   return (
     <>
       {totalPages > 0 && (
@@ -58,25 +77,6 @@ const Pagination = ({ totalPages }: Props) => {
       )}
     </>
   );
-
-  function renderPageButton(pageNumber: number) {
-    return (
-      <button
-        type="button"
-        key={`pagination-${pageNumber}`}
-        className={`flex h-8 w-8 items-center justify-center rounded-sm bg-primary text-brand-white hover:bg-primary-dark ${
-          currentPage === pageNumber && "bg-primary-dark"
-        }`}
-        onClick={() => {
-          searchParams.set("pageNumber", pageNumber.toString());
-          submit(searchParams, { method: "GET" });
-          setCurrentPage(pageNumber);
-        }}
-      >
-        {pageNumber}
-      </button>
-    );
-  }
 };
 
 export default Pagination;

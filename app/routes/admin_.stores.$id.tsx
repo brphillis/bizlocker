@@ -27,6 +27,9 @@ import {
 } from "~/models/stores.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
 import { validateForm } from "~/utility/validate";
+import useNotification, {
+  type PageNotification,
+} from "~/hooks/PageNotification";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
@@ -82,6 +85,8 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
     isActive,
   } = form;
 
+  let notification: PageNotification;
+
   const validate = {
     name: true,
     phoneNumber: true,
@@ -120,15 +125,21 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
   await upsertStore(updateData);
 
-  return json({ success: true });
+  notification = {
+    type: "success",
+    message: `Store ${id === "add" ? "Added" : "Updated"}.`,
+  };
+
+  return json({ success: true, notification });
 };
 
 const ModifyStore = () => {
   const { store } = useLoaderData<typeof loader>();
-  const { validationErrors, success } =
+  const { validationErrors, success, notification } =
     (useActionData() as ActionReturnTypes) || {};
 
   const navigate = useNavigate();
+  useNotification(notification);
 
   const [loading, setLoading] = useState<boolean>(false);
 

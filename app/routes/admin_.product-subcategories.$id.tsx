@@ -30,6 +30,9 @@ import { STAFF_SESSION_KEY } from "~/session.server";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import { getProductCategories } from "~/models/productCategories.server";
 import type { Image } from "@prisma/client";
+import useNotification, {
+  type PageNotification,
+} from "~/hooks/PageNotification";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
@@ -75,6 +78,8 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   const { name, productCategory, index, displayInNavigation, isActive, image } =
     form;
 
+  let notification: PageNotification;
+
   switch (form._action) {
     case "upsert":
       const validate = {
@@ -103,11 +108,22 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
       await upsertProductSubCategory(categoryData);
 
-      return json({ success: true });
+      notification = {
+        type: "success",
+        message: `Category ${id === "add" ? "Added" : "Updated"}.`,
+      };
+
+      return json({ success: true, notification });
 
     case "delete":
       await deleteProductSubCategory(id as string);
-      return json({ success: true });
+
+      notification = {
+        type: "warning",
+        message: "Category Deleted",
+      };
+
+      return json({ success: true, notification });
   }
 };
 
@@ -115,8 +131,10 @@ const ModifyProductSubCategory = () => {
   const navigate = useNavigate();
   const { productSubCategory, productCategories } =
     useLoaderData<typeof loader>();
-  const { validationErrors, success } =
+  const { validationErrors, success, notification } =
     (useActionData() as ActionReturnTypes) || {};
+
+  useNotification(notification);
 
   const [loading, setLoading] = useState<boolean>(false);
 

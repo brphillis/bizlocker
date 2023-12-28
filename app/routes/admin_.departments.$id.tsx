@@ -29,6 +29,9 @@ import {
 import "~/models/productSubCategories.server";
 import BasicMultiSelect from "~/components/Forms/Select/BasicMultiSelect";
 import { getProductCategories } from "~/models/productCategories.server";
+import useNotification, {
+  type PageNotification,
+} from "~/hooks/PageNotification";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
@@ -74,6 +77,8 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   const { name, isActive, index, displayInNavigation, productCategories } =
     form;
 
+  let notification: PageNotification;
+
   switch (form._action) {
     case "upsert":
       const validate = {
@@ -98,17 +103,23 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
       await upsertDepartment(departmentData);
 
-      return json({ success: true });
+      notification = {
+        type: "success",
+        message: `Department ${id === "add" ? "Added" : "Updated"}.`,
+      };
+
+      return json({ success: true, notification });
   }
 };
 
 const ModifyDepartment = () => {
   const { department, productCategories } = useLoaderData<typeof loader>();
 
-  const { validationErrors, success } =
+  const { validationErrors, success, notification } =
     (useActionData() as ActionReturnTypes) || {};
 
   const navigate = useNavigate();
+  useNotification(notification);
 
   const [loading, setLoading] = useState<boolean>(false);
 

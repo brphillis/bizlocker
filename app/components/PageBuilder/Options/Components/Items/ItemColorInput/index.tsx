@@ -45,7 +45,7 @@ const ItemColorInput = ({
                   inputBackgroundColor={
                     !valuesEdited
                       ? items[index]?.toString() ||
-                        defaultValues?.[index].toString()
+                        defaultValues?.[index]?.toString()
                       : items[index]?.toString()
                   }
                   inputOnClick={() => setEditingItem(relativeIndex)}

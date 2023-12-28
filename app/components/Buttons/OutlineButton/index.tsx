@@ -1,6 +1,6 @@
 type Props = {
   label: string;
-  clickFunction: () => void;
+  onClick: () => void;
   extendStyle?: string;
   type?: "button" | "reset" | "submit";
   hoverEffect?: "grow";
@@ -8,7 +8,7 @@ type Props = {
 
 const OutlineButton = ({
   label,
-  clickFunction,
+  onClick,
   extendStyle,
   type,
   hoverEffect,
@@ -26,7 +26,7 @@ const OutlineButton = ({
       className={`
       inline-flex h-[3rem] min-h-[3rem] cursor-pointer items-center justify-center border-[2px] !bg-transparent pl-[1rem] pr-[1rem] text-center font-semibold shadow-sm
        ${currentEffect} ${extendStyle}`}
-      onClick={() => clickFunction()}
+      onClick={() => onClick()}
     >
       {label}
     </button>

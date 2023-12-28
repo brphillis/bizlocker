@@ -28,6 +28,10 @@ import {
 } from "~/models/auth/users.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
 import { validateForm } from "~/utility/validate";
+import useNotification, {
+  type PageNotification,
+} from "~/hooks/PageNotification";
+import { formatDateForFormField } from "~/helpers/dateHelpers";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
@@ -83,6 +87,8 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
     isActive,
   } = form;
 
+  let notification: PageNotification;
+
   const validate = {
     email: true,
     firstName: true,
@@ -121,15 +127,21 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
   await upsertUser(updateData);
 
-  return json({ success: true });
+  notification = {
+    type: "success",
+    message: `User ${id === "add" ? "Added" : "Updated"}.`,
+  };
+
+  return json({ success: true, notification });
 };
 
 const ModifyUser = () => {
   const { user } = useLoaderData<typeof loader>();
-  const { validationErrors, success } =
+  const { validationErrors, success, notification } =
     (useActionData() as ActionReturnTypes) || {};
 
   const navigate = useNavigate();
+  useNotification(notification);
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -205,13 +217,9 @@ const ModifyUser = () => {
               placeholder="Date of Birth"
               type="date"
               customWidth="w-full"
-              defaultValue={
+              defaultValue={formatDateForFormField(
                 user?.userDetails?.dateOfBirth
-                  ? new Date(user?.userDetails?.dateOfBirth)
-                      .toISOString()
-                      .split("T")[0]
-                  : undefined
-              }
+              )}
               validationErrors={validationErrors}
             />
 

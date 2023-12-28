@@ -13,6 +13,12 @@ export const includesWords = (
   return bool;
 };
 
+export const capitalizeAndSpace = (inputString: string): string => {
+  return inputString
+    .replace(/([a-z])([A-Z])/g, "$1 $2")
+    .replace(/^./, (match) => match.toUpperCase());
+};
+
 export const capitalizeFirst = (str: string): string => {
   if (str.length === 0) {
     return str;

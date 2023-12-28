@@ -40,6 +40,9 @@ import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY, getUserDataFromSession } from "~/session.server";
 import { ClientOnly } from "~/components/Client/ClientOnly";
 import type { Image, Staff } from "@prisma/client";
+import useNotification, {
+  type PageNotification,
+} from "~/hooks/PageNotification";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
@@ -107,6 +110,8 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
     promotion,
   } = form;
 
+  let notification: PageNotification;
+
   //if single variant we set its name to base
   let variantData = variants && JSON.parse(variants?.toString());
   if (!Array.isArray(variantData)) {
@@ -153,10 +158,21 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
       await upsertProduct(request, updateData);
 
-      return { success: true };
+      notification = {
+        type: "success",
+        message: `Product ${id === "add" ? "Added" : "Updated"}.`,
+      };
+
+      return { success: true, notification };
 
     case "delete":
       await deleteProduct(id as string);
+
+      notification = {
+        type: "warning",
+        message: "Product Deleted",
+      };
+
       return { success: true };
   }
 };
@@ -170,10 +186,11 @@ const Product = () => {
     promotions,
     availableColors,
   } = useLoaderData<typeof loader>();
-  const { validationErrors, success } =
+  const { validationErrors, success, notification } =
     (useActionData() as ActionReturnTypes) || {};
 
   const navigate = useNavigate();
+  useNotification(notification);
 
   const [richText, setRichText] = useState<string>(product?.description);
   const [loading, setLoading] = useState<boolean>(false);
