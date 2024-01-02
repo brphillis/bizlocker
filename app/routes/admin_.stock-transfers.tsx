@@ -44,10 +44,7 @@ const ManageStockTransfers = () => {
   return (
     <AdminPageWrapper>
       <Form method="GET" className="relative h-full w-full bg-base-200 p-6">
-        <AdminPageHeader
-          title="Manage Stock Transfers"
-          addButtonText="Add Transfer"
-        />
+        <AdminPageHeader title="Manage Stock Transfers" />
 
         <AdminContentSearch
           status="approval"

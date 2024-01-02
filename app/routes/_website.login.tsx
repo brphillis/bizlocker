@@ -12,6 +12,7 @@ import {
   type MetaFunction,
 } from "@remix-run/node";
 import BasicButton from "~/components/Buttons/BasicButton";
+import ValidationErrorsDisplay from "~/components/Forms/Validation/ValidationErrorsDisplay";
 
 export const meta: MetaFunction = ({ data }) => {
   return [
@@ -112,15 +113,7 @@ export default function LoginPage() {
         </div>
 
         <>
-          {validationErrors &&
-            Object.values(validationErrors)?.map((error: string, i) => (
-              <p
-                key={error + i}
-                className="my-2 text-center text-xs text-red-500"
-              >
-                {error}
-              </p>
-            ))}
+          <ValidationErrorsDisplay validationErrors={validationErrors} />
 
           {validationErrors &&
             Object.values(validationErrors)?.includes("Email not Verified") && (

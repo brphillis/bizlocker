@@ -1,5 +1,5 @@
 import React from "react";
-import BlockIcon from "~/components/Blocks/BlockIcon";
+import BlockIcon from "~/components/PageBuilder/BlockSelect/BlockIcon";
 import { ActionAlert } from "~/components/Notifications/Alerts";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
 import {

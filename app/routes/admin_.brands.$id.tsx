@@ -129,12 +129,7 @@ const ModifyBrand = () => {
         method="POST"
         className="scrollbar-hide relative w-[500px] max-w-[100vw] overflow-y-auto bg-base-200 px-3 py-6 sm:px-6"
       >
-        <FormHeader
-          valueToChange={brand}
-          type="Brand"
-          hasIsActive={true}
-          hasDelete={true}
-        />
+        <FormHeader valueToChange={brand} type="Brand" hasDelete={true} />
         <div className="flex flex-col gap-6">
           <BasicInput
             name="name"

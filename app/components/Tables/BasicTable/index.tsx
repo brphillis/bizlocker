@@ -35,25 +35,25 @@ const BasicTable = ({
       break;
   }
 
-  let mobileTableSize;
+  let tableSizeMobile;
   switch (mobileSize) {
     case "xs":
-      tableSize = "max-md:table-xs";
+      tableSizeMobile = "max-md:table-xs";
       break;
     case "sm":
-      tableSize = "max-md:table-sm";
+      tableSizeMobile = "max-md:table-sm";
       break;
     case "md":
-      tableSize = "max-md:table-md";
+      tableSizeMobile = "max-md:table-md";
       break;
     case "lg":
-      tableSize = "max-md:table-lg";
+      tableSizeMobile = "max-md:table-lg";
       break;
   }
 
   return (
     <div className="w-full overflow-x-auto">
-      <table className={`table my-3 ${tableSize} ${mobileTableSize}`}>
+      <table className={`table my-3 ${tableSize} ${tableSizeMobile}`}>
         <thead className="sticky top-0 bg-base-300/25">
           <tr className="text-center">
             {currentPage && <th>#</th>}

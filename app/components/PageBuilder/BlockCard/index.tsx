@@ -1,4 +1,4 @@
-import BlockIcon from "~/components/Blocks/BlockIcon";
+import BlockIcon from "~/components/PageBuilder/BlockSelect/BlockIcon";
 import SquareIconButton from "~/components/Buttons/SquareIconButton";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
 

@@ -25,7 +25,7 @@ const ArticleBlock = ({ content, options: optionsArray }: Props) => {
   return (
     <>
       {options?.sortBy && articleCategory?.name && (
-        <p className="self-start pl-3 text-xl font-bold md:pl-1">
+        <p className="select-none self-start pl-3 text-xl font-bold md:pl-1">
           {options.sortBy ? determineSortPhrase(options?.sortBy) : null}
           <span className="text-2xl">{articleCategory?.name}</span>
         </p>

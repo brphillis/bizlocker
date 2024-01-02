@@ -180,10 +180,10 @@ const Carousel = ({ joinedContent, options }: Props) => {
               // --swiper-pagination-top: auto;
             }}
           >
-            <div className="carouselNavPrevButton absolute left-0 top-[50%] z-10 flex h-full translate-y-[-50%] cursor-pointer items-center justify-center bg-brand-black/50 p-6 text-brand-white max-md:hidden">
+            <div className="carouselNavPrevButton absolute left-0 top-[50%] z-10 flex h-full translate-y-[-50%] cursor-pointer items-center justify-center bg-brand-black/50 p-6 text-brand-white transition-colors duration-300 hover:bg-brand-black/40 max-md:hidden">
               <IoChevronBackOutline size={30} />
             </div>
-            <div className="carouselNavNextButton absolute right-0 top-[50%] z-10 flex h-full translate-y-[-50%] cursor-pointer items-center justify-center bg-brand-black/50 p-6 text-brand-white max-md:hidden">
+            <div className="carouselNavNextButton absolute right-0 top-[50%] z-10 flex h-full translate-y-[-50%] cursor-pointer items-center justify-center bg-brand-black/50 p-6 text-brand-white transition-colors duration-300 hover:bg-brand-black/40 max-md:hidden">
               <IoChevronForward size={30} />
             </div>
 

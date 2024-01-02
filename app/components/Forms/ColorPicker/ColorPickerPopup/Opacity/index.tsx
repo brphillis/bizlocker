@@ -39,7 +39,7 @@ const Opacity = ({ currentOpacity, setCurrentOpacity }: Props) => {
         iconName="IoRemove"
         size="medium"
         color="primary"
-        onClickFunction={() => {
+        onClick={() => {
           handleChangeOpacity("subtract", currentOpacity);
         }}
       />
@@ -59,7 +59,7 @@ const Opacity = ({ currentOpacity, setCurrentOpacity }: Props) => {
         iconName="IoAdd"
         size="medium"
         color="primary"
-        onClickFunction={() => {
+        onClick={() => {
           handleChangeOpacity("add", currentOpacity);
         }}
       />

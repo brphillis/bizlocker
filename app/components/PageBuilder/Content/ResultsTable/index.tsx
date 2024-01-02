@@ -91,7 +91,7 @@ const ResultsTable = ({
                           iconName="IoSearch"
                           size="small"
                           color="primary"
-                          onClickFunction={() =>
+                          onClick={() =>
                             setSelectedItems(
                               selectedItems.filter((_, i) => i !== index)
                             )
@@ -102,7 +102,7 @@ const ResultsTable = ({
                           iconName="IoAdd"
                           size="small"
                           color="primary"
-                          onClickFunction={() => {
+                          onClick={() => {
                             selectItems(
                               contentType,
                               searchResults[index].id,
