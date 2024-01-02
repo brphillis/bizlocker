@@ -50,6 +50,9 @@ import Header from "~/components/PageBuilder/Header";
 import SquareIconButton from "~/components/Buttons/SquareIconButton";
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
+import useNotification, {
+  type PageNotification,
+} from "~/hooks/PageNotification";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
@@ -132,6 +135,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   } = form;
 
   let actionPreview, actionBlocks;
+  let notification: PageNotification;
 
   const blockOptions: BlockOptions = getFormBlockOptions(form);
 
@@ -177,9 +181,14 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
         articleCategories ? JSON.parse(articleCategories as string) : undefined
       );
 
+      notification = {
+        type: "success",
+        message: "Meta Added.",
+      };
+
       if (!previewPageId) {
         return redirect(`/admin/pagebuilder/${req}?id=${newId}`);
-      } else return json({ metaUpdateSuccess: newId });
+      } else return json({ metaUpdateSuccess: newId, notification });
 
     case "addpreview":
       const addPreviewSuccess = await addPreviewPage(
@@ -187,14 +196,24 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
         pageId as string
       );
 
-      return { addPreviewSuccess };
+      notification = {
+        type: "warning",
+        message: "Version Added.",
+      };
+
+      return { addPreviewSuccess, notification };
 
     case "deletepreview":
       const deletePreviewSuccess = await deletePreviewPage(
         previewPageId as string
       );
 
-      return json({ deletePreviewSuccess });
+      notification = {
+        type: "warning",
+        message: "Version Deleted.",
+      };
+
+      return json({ deletePreviewSuccess, notification });
 
     case "deletepage":
       await deletePage(pageId as string, pageType as PageType);
@@ -207,7 +226,12 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
       actionBlocks = await getBlocks(actionPreview as any);
 
       if (actionPreview && actionBlocks) {
-        return json({ actionPreview, actionBlocks });
+        notification = {
+          type: "info",
+          message: "Version Changed.",
+        };
+
+        return json({ actionPreview, actionBlocks, notification });
       } else {
         return json({ previewChangeError: true });
       }
@@ -224,7 +248,12 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
       actionPreview = await getPreviewPage(previewPageId as string);
       actionBlocks = await getBlocks(actionPreview as any);
 
-      return json({ updateSuccess, actionPreview, actionBlocks });
+      notification = {
+        type: "success",
+        message: "Block Updated.",
+      };
+
+      return json({ updateSuccess, actionPreview, actionBlocks, notification });
 
     case "publish":
       const publishSuccess = await publishPage(
@@ -237,7 +266,17 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
       actionPreview = await getPreviewPage(previewPageId as string);
       actionBlocks = await getBlocks(actionPreview as any);
 
-      return json({ actionPreview, actionBlocks, publishSuccess });
+      notification = {
+        type: "success",
+        message: "Page Published.",
+      };
+
+      return json({
+        actionPreview,
+        actionBlocks,
+        publishSuccess,
+        notification,
+      });
 
     case "revert":
       const revertSuccess = await revertPreviewChanges(
@@ -249,7 +288,12 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
       actionPreview = await getPreviewPage(previewPageId as string);
       actionBlocks = await getBlocks(actionPreview as any);
 
-      return json({ actionPreview, actionBlocks, revertSuccess });
+      notification = {
+        type: "warning",
+        message: "Reverted To Published.",
+      };
+
+      return json({ actionPreview, actionBlocks, revertSuccess, notification });
 
     case "rearrange":
       const { direction } = form;
@@ -275,7 +319,12 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
       actionPreview = await getPreviewPage(previewPageId as string);
       actionBlocks = await getBlocks(actionPreview as any);
 
-      return json({ actionPreview, actionBlocks });
+      notification = {
+        type: "success",
+        message: "Block Removed.",
+      };
+
+      return json({ actionPreview, actionBlocks, notification });
 
     default:
       return null;
@@ -304,7 +353,10 @@ const ManageHomePage = () => {
     searchResults,
     updateSuccess,
     publishSuccess,
+    notification,
   } = (useActionData() as ActionReturnTypes) || {};
+
+  useNotification(notification);
 
   const [currentVersion, setCurrentVersion] = useState<Page | null>(
     currentPreviewPage
@@ -388,7 +440,7 @@ const ManageHomePage = () => {
 
             {page && currentVersion && (
               <LargeCollapse
-                title="Content"
+                title="Blocks"
                 forceOpen={true}
                 content={
                   <PageBuilder

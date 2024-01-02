@@ -1,7 +1,7 @@
+import React from "react";
 import type { BlockName } from "~/utility/blockMaster/types";
 import { blockMaster } from "~/utility/blockMaster/blockMaster";
-import { capitalizeFirst } from "~/helpers/stringHelpers";
-import SquareIconButton from "~/components/Buttons/SquareIconButton";
+import ContentCard from "./ContentCard";
 
 type Props = {
   selectedItems: ContentSelection[];
@@ -35,42 +35,27 @@ const SelectedContent = ({
             {selectedItems &&
               selectedItems.length > 0 &&
               selectedItems?.map((data: ContentSelection, index) => {
-                const { name, type } = data || {};
+                const { name, type, contentId } = data || {};
 
                 return (
-                  <div
-                    key={"selectedContent_" + name + index}
-                    className="flex cursor-pointer items-center justify-between rounded-sm bg-brand-white/20 p-3 hover:scale-[1.005]"
-                  >
-                    <div>
-                      {type && capitalizeFirst(type)}
-                      {" / "}
-                      {name && capitalizeFirst(name)}
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <SquareIconButton
-                        iconName="IoSearch"
-                        size="small"
-                        color="primary"
-                        onClickFunction={() =>
-                          setSelectedItems(
-                            selectedItems.filter((_, i) => i !== index)
-                          )
-                        }
-                      />
-
-                      <SquareIconButton
-                        iconName="IoTrashBin"
-                        size="small"
-                        color="error"
-                        onClickFunction={() =>
-                          setSelectedItems(
-                            selectedItems.filter((_, i) => i !== index)
-                          )
-                        }
-                      />
-                    </div>
-                  </div>
+                  <React.Fragment key={"SelectedContent_" + name + index}>
+                    <ContentCard
+                      type={type}
+                      name={name}
+                      onNavigate={() =>
+                        window.open(
+                          `/admin/${type + "s"}/${contentId}`,
+                          "_blank",
+                          "rel=noopener noreferrer"
+                        )
+                      }
+                      onDelete={() =>
+                        setSelectedItems(
+                          selectedItems.filter((_, i) => i !== index)
+                        )
+                      }
+                    />
+                  </React.Fragment>
                 );
               })}
           </div>

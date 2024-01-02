@@ -1,5 +1,6 @@
 import { useNavigate } from "@remix-run/react";
 import Icon from "~/components/Icon";
+import PatternBackground from "~/components/Layout/PatternBackground";
 import { getThemeColorValueByName } from "~/utility/colors";
 
 type Props = {
@@ -31,9 +32,8 @@ const IconTile = ({
 
   return (
     <div
-      className={`flex h-full w-full flex-col items-center justify-center
+      className={`relative flex h-full w-full flex-col items-center justify-center
       ${filter} 
-      ${itemBackgroundColor}
       ${borderRadius ? "p-3" : " "}
       ${
         borderRadius === "rounded-full" || borderRadius?.includes("mask")
@@ -42,15 +42,19 @@ const IconTile = ({
       }`}
       onClick={() => (link ? navigate(link) : null)}
     >
+      <PatternBackground
+        backgroundColor={getThemeColorValueByName(itemBackgroundColor)}
+      />
+
       <Icon
         iconName={joinedContent[index].icon as any}
         size={1000}
-        styles="h-[80%] w-[80%] p-[20%] -mb-2 -mt-[20%] max-md:-mt-3"
+        styles="relative h-[80%] w-[80%] p-[20%] -mb-2 -mt-[20%] max-md:-mt-3"
         color={itemColor ? getThemeColorValueByName(itemColor) : undefined}
       />
       {title && title !== "undefined" && (
         <p
-          className={`-mt-[15%] font-bold max-md:-mt-1 max-md:!text-xs ${itemTitleColor}`}
+          className={`relative -mt-[15%] font-bold max-md:-mt-1 max-md:!text-xs ${itemTitleColor}`}
           style={{
             fontSize: "150%",
           }}

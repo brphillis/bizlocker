@@ -28,6 +28,10 @@ import {
   useNavigate,
   useSubmit,
 } from "@remix-run/react";
+import useNotification, {
+  type PageNotification,
+} from "~/hooks/PageNotification";
+
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
 
@@ -61,26 +65,39 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   }
 
   const form = Object.fromEntries(await request.formData());
+  let notification: PageNotification;
 
   switch (form._action) {
     case "addUser":
       const { staffId, teamId } = form;
 
-      const res = await addTeamMemberToTeam(
-        staffId as string,
-        teamId as string
-      );
+      try {
+        await addTeamMemberToTeam(staffId as string, teamId as string);
 
-      return json({ success: res ? true : false });
+        notification = {
+          type: "success",
+          message: "User Added",
+        };
+        return json({ success: true, notification });
+      } catch (err) {
+        notification = {
+          type: "error",
+          message: "Error Adding User",
+        };
+        return json({ success: false, notification });
+      }
   }
 };
 
 const ModifyTeam = () => {
   const { staff, totalPages, stores, teamId } = useLoaderData<typeof loader>();
 
-  const { success } = (useActionData() as ActionReturnTypes) || {};
+  const { success, notification } =
+    (useActionData() as ActionReturnTypes) || {};
+
   const navigate = useNavigate();
   const submit = useSubmit();
+  useNotification(notification);
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -150,7 +167,7 @@ const ModifyTeam = () => {
                 type="submit"
                 className="btn btn-primary mt-6 w-max !rounded-sm"
               >
-                Search
+                Search Staff
               </button>
             </div>
           </div>

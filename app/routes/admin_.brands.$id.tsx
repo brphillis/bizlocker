@@ -27,6 +27,9 @@ import BasicInput from "~/components/Forms/Input/BasicInput";
 import { validateForm } from "~/utility/validate";
 import { STAFF_SESSION_KEY } from "~/session.server";
 import type { ImageWithDetails } from "~/models/images.server";
+import useNotification, {
+  type PageNotification,
+} from "~/hooks/PageNotification";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
@@ -65,6 +68,8 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   const form = Object.fromEntries(await request.formData());
   const { name, image } = form;
 
+  let notification: PageNotification;
+
   switch (form._action) {
     case "upsert":
       const validate = {
@@ -83,19 +88,32 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
       await upsertBrand(name as string, parsedImage, id);
 
-      return { success: true };
+      notification = {
+        type: "success",
+        message: `Brand ${id === "add" ? "Added" : "Updated"}.`,
+      };
+
+      return { success: true, notification };
 
     case "delete":
       await deleteBrand(id as string);
-      return { success: true };
+
+      notification = {
+        type: "warning",
+        message: "Brand Deleted",
+      };
+
+      return { success: true, notification };
   }
 };
 
 const ModifyBrand = () => {
-  const navigate = useNavigate();
   const { brand } = useLoaderData<typeof loader>();
-  const { validationErrors, success } =
+  const { validationErrors, success, notification } =
     (useActionData() as ActionReturnTypes) || {};
+
+  const navigate = useNavigate();
+  useNotification(notification);
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -111,12 +129,7 @@ const ModifyBrand = () => {
         method="POST"
         className="scrollbar-hide relative w-[500px] max-w-[100vw] overflow-y-auto bg-base-200 px-3 py-6 sm:px-6"
       >
-        <FormHeader
-          valueToChange={brand}
-          type="Brand"
-          hasIsActive={true}
-          hasDelete={true}
-        />
+        <FormHeader valueToChange={brand} type="Brand" hasDelete={true} />
         <div className="flex flex-col gap-6">
           <BasicInput
             name="name"

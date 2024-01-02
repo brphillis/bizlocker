@@ -34,6 +34,11 @@ import {
   type TeamWithStaff,
   upsertTeam,
 } from "~/models/teams.server";
+import { isEmptyObject } from "~/helpers/objectHelpers";
+import useNotification, {
+  type PageNotification,
+} from "~/hooks/PageNotification";
+
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
   if (!authenticated.valid) {
@@ -78,6 +83,8 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   const id = params.id === "add" ? undefined : params.id;
   const form = Object.fromEntries(await request.formData());
 
+  let notification: PageNotification;
+
   switch (form._action) {
     case "upsert":
       const { name, location, isActive } = form;
@@ -99,26 +106,45 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
       await upsertTeam(teamData);
 
-      return { success: true };
+      notification = {
+        type: "success",
+        message: `Team ${id === "add" ? "Added" : "Updated"}.`,
+      };
+
+      return { success: true, notification };
 
     case "removeUser":
       const { staffId, teamId } = form;
+      try {
+        await removeTeamMemberFromTeam(staffId as string, teamId as string);
 
-      return await removeTeamMemberFromTeam(
-        staffId as string,
-        teamId as string
-      );
+        notification = {
+          type: "warning",
+          message: "User Removed",
+        };
+
+        return { success: true, notification };
+      } catch (err) {
+        notification = {
+          type: "error",
+          message: "Error Removing User",
+        };
+
+        return { success: false, notification };
+      }
   }
 };
 
 const ModifyTeam = () => {
-  const navigate = useNavigate();
-  const submit = useSubmit();
   const { team, stores } = useLoaderData<typeof loader>();
-  const { validationErrors, success } =
+  const { validationErrors, success, notification } =
     (useActionData() as ActionReturnTypes) || {};
 
-  const mode = team ? "edit" : "add";
+  const navigate = useNavigate();
+  const submit = useSubmit();
+  useNotification(notification);
+
+  const mode = !isEmptyObject(team) ? "edit" : "add";
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -159,6 +185,7 @@ const ModifyTeam = () => {
           hasIsActive={true}
           hasDelete={false}
         />
+
         <div className="flex flex-col gap-6">
           <BasicInput
             name="name"

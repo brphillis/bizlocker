@@ -90,7 +90,7 @@ const ProductBlock = ({ content, options: optionsArray }: Props) => {
 
   return (
     <>
-      <p className="self-start pl-3 text-xl font-bold md:pl-1">
+      <p className="select-none self-start pl-3 text-xl font-bold md:pl-1">
         {options?.sortBy ? determineSortPhrase(options?.sortBy) : null}
         <span className="text-2xl">{determineDisplayedFilter()}</span>
       </p>

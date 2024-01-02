@@ -16,6 +16,14 @@ export interface StockTransferRequestWithDetails extends StockTransferRequest {
   productVariant?: ProductVariantWithDetails | null;
 }
 
+export interface NewStockTransferRequest {
+  variantId: string;
+  fromStoreId: string;
+  toStoreId: string;
+  quantity: string;
+  createdBy: string;
+}
+
 export const getProductVariantStock = async (
   id: string
 ): Promise<StockLevelWithDetails[]> => {
@@ -40,6 +48,23 @@ export const getStockTransfer = async (
       fromStore: true,
       toStore: true,
       productVariant: true,
+    },
+  });
+};
+
+export const createStockTransferRequest = async (
+  newStockTransferRequest: NewStockTransferRequest
+): Promise<StockTransferRequest> => {
+  const { variantId, fromStoreId, toStoreId, quantity, createdBy } =
+    newStockTransferRequest;
+
+  return await prisma.stockTransferRequest.create({
+    data: {
+      productVariant: { connect: { id: Number(variantId) } },
+      quantity: Number(quantity),
+      toStore: { connect: { id: Number(toStoreId) } },
+      fromStore: { connect: { id: Number(fromStoreId) } },
+      createdBy,
     },
   });
 };

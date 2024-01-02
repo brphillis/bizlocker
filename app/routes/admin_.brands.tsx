@@ -1,19 +1,17 @@
 import Pagination from "~/components/Pagination";
-import { type LoaderFunctionArgs, json, redirect } from "@remix-run/server-runtime";
-import { type Brand, searchBrands } from "~/models/brands.server";
-import { capitalizeFirst } from "~/helpers/stringHelpers";
-import BasicInput from "~/components/Forms/Input/BasicInput";
+import {
+  type LoaderFunctionArgs,
+  json,
+  redirect,
+} from "@remix-run/server-runtime";
+import { searchBrands, type BrandWithContent } from "~/models/brands.server";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
-import {
-  Form,
-  Outlet,
-  useLoaderData,
-  useNavigate,
-  useSearchParams,
-} from "@remix-run/react";
+import { Form, Outlet, useLoaderData, useSearchParams } from "@remix-run/react";
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
+import BasicTable from "~/components/Tables/BasicTable";
+import AdminContentSearch from "~/components/Search/AdminContentSearch";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
@@ -32,7 +30,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 const Brands = () => {
   const { brands, totalPages } = useLoaderData<typeof loader>();
 
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
   const currentPage = Number(searchParams.get("pageNumber")) || 1;
@@ -42,59 +39,19 @@ const Brands = () => {
       <Form method="GET" className="relative h-full w-full bg-base-200 p-6">
         <AdminPageHeader title="Manage Brands" addButtonText="Add Brands" />
 
-        <div className="mt-3 flex flex-col">
-          <div className="flex flex-row">
-            <BasicInput
-              label="Brand Name"
-              name="name"
-              placeholder="Name"
-              type="text"
-            />
-          </div>
-
-          <div className="flex flex-row justify-end sm:justify-start">
-            <button
-              type="submit"
-              className="btn btn-primary mt-6 w-max !rounded-sm"
-            >
-              Search
-            </button>
-          </div>
-        </div>
+        <AdminContentSearch name={true} />
 
         <div className="divider w-full" />
 
-        <div className="w-full max-w-[80vw] overflow-x-auto">
-          <table className="table table-sm my-3">
-            <thead className="sticky top-0">
-              <tr>
-                {currentPage && <th>#</th>}
-                <th>Name</th>
-              </tr>
-            </thead>
-            <tbody>
-              {brands &&
-                brands.map(({ id, name }: Brand, i: number) => {
-                  return (
-                    <tr
-                      className="cursor-pointer transition-colors duration-200 hover:bg-base-100"
-                      onClick={() => {
-                        navigate(
-                          `${location.pathname + "/" + id}${location.search}`
-                        );
-                      }}
-                      key={id}
-                    >
-                      {currentPage && (
-                        <td>{i + 1 + (currentPage - 1) * brands?.length}</td>
-                      )}
-                      <td>{capitalizeFirst(name)}</td>
-                    </tr>
-                  );
-                })}
-            </tbody>
-          </table>
-        </div>
+        {brands && brands.length > 0 && (
+          <BasicTable
+            currentPage={currentPage}
+            objectArray={brands.map((e: BrandWithContent) => ({
+              id: e.id,
+              name: e.name,
+            }))}
+          />
+        )}
 
         <Pagination totalPages={totalPages} />
       </Form>

@@ -22,7 +22,7 @@ const CarouselBlock = ({ content, options: ArrayOptions }: Props) => {
     backgroundColor,
     backgroundDisplay,
     itemTitles,
-  } = ArrayOptions[0];
+  } = ArrayOptions?.[0] || {};
 
   return (
     <ClientOnly
@@ -37,7 +37,9 @@ const CarouselBlock = ({ content, options: ArrayOptions }: Props) => {
         />
       }
     >
-      {() => <Carousel options={ArrayOptions} joinedContent={joinedContent} />}
+      {() => (
+        <Carousel options={ArrayOptions?.[0]} joinedContent={joinedContent} />
+      )}
     </ClientOnly>
   );
 };

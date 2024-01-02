@@ -31,7 +31,7 @@ const ButtonContainer = ({ index, blockOptions }: Props) => {
 
   return (
     <div
-      className={`flex flex-wrap items-center justify-center gap-3 
+      className={`relative flex flex-wrap items-center justify-center gap-3 
       ${itemButtonAlign[index]}
       ${hasButtons ? "flex" : "hidden"}`}
     >
@@ -41,7 +41,7 @@ const ButtonContainer = ({ index, blockOptions }: Props) => {
             <BasicButton
               label={itemButtonLabelsPrimary[index]}
               hoverEffect="color"
-              clickFunction={() => navigate(itemButtonLinksPrimary[index])}
+              onClick={() => navigate(itemButtonLinksPrimary[index])}
               extendStyle={`w-[240px] min-w-max
                 ${itemButtonBorderColorsPrimary[index]}
                 ${itemButtonLabelColorsPrimary[index]}
@@ -53,7 +53,7 @@ const ButtonContainer = ({ index, blockOptions }: Props) => {
             <OutlineButton
               label={itemButtonLabelsPrimary[index]}
               hoverEffect="grow"
-              clickFunction={() => navigate(itemButtonLinksPrimary[index])}
+              onClick={() => navigate(itemButtonLinksPrimary[index])}
               extendStyle={`w-[240px] min-w-max
                 ${itemButtonBorderColorsPrimary[index]}
                 ${itemButtonLabelColorsPrimary[index]}`}
@@ -68,7 +68,7 @@ const ButtonContainer = ({ index, blockOptions }: Props) => {
             <BasicButton
               label={itemButtonLabelsSecondary[index]}
               hoverEffect="color"
-              clickFunction={() => navigate(itemButtonLinksSecondary[index])}
+              onClick={() => navigate(itemButtonLinksSecondary[index])}
               extendStyle={`w-[240px] min-w-max
                 ${itemButtonBorderColorsSecondary[index]}
                 ${itemButtonLabelColorsSecondary[index]}
@@ -80,7 +80,7 @@ const ButtonContainer = ({ index, blockOptions }: Props) => {
             <OutlineButton
               label={itemButtonLabelsSecondary[index]}
               hoverEffect="grow"
-              clickFunction={() => navigate(itemButtonLinksSecondary[index])}
+              onClick={() => navigate(itemButtonLinksSecondary[index])}
               extendStyle={`w-[240px] min-w-max
                 ${itemButtonBorderColorsSecondary[index]}
                 ${itemButtonLabelColorsSecondary[index]}`}

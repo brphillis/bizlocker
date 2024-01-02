@@ -1,6 +1,9 @@
 import { useRef } from "react";
 import Map from "~/components/Map/index.client";
-import { getThemeColorValueByName } from "~/utility/colors";
+import {
+  getThemeColorValueByName,
+  returnOtherColorPrefix,
+} from "~/utility/colors";
 import type { BlockOptions } from "@prisma/client";
 import type { BlockContent } from "~/models/blocks.server";
 import type { MapFunctions } from "~/components/Map/types";
@@ -23,7 +26,7 @@ const MapBlock = ({ content, options: optionsArray }: Props) => {
     size,
     title,
     titleSize,
-    titleWeight,
+    titleFontWeight,
     titleAlign,
     titleColor,
     margin,
@@ -63,7 +66,7 @@ const MapBlock = ({ content, options: optionsArray }: Props) => {
     >
       {title && (
         <h1
-          className={`relative w-full pb-0 max-md:py-3 ${titleSize} ${titleAlign} ${titleWeight} ${titleColor}`}
+          className={`relative w-full pb-0 max-md:py-3 ${titleSize} ${titleAlign} ${titleFontWeight} ${titleColor}`}
         >
           {title}
         </h1>
@@ -101,8 +104,8 @@ const MapBlock = ({ content, options: optionsArray }: Props) => {
             } = address || {};
             return (
               <div
-                key={"card_" + index}
-                className={`relative z-0 flex flex-col justify-center overflow-hidden bg-gray-50 ${itemBorderDisplays[index]} ${borderRadius}`}
+                key={"mapBlock_card_" + index}
+                className={`relative z-0 flex cursor-pointer flex-col justify-center overflow-hidden bg-gray-50 ${itemBorderDisplays[index]} ${borderRadius}`}
                 onClick={() =>
                   latitude &&
                   longitude &&
@@ -110,21 +113,23 @@ const MapBlock = ({ content, options: optionsArray }: Props) => {
                 }
               >
                 <div className="group relative bg-white px-6 pb-8 pt-6 shadow-xl ring-1 ring-gray-900/5 transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl sm:mx-auto sm:px-10">
-                  <span
-                    className={`absolute top-6 z-0 h-14 w-14 rounded-full  transition-all duration-500 group-hover:scale-[18] ${colorPrimary}`}
-                  ></span>
+                  <span className="absolute top-6 z-0 h-14 w-14 rounded-full  transition-all duration-500 group-hover:scale-[18]"></span>
                   <div className="relative z-10 mx-auto">
                     <div className="flex flex-row items-center gap-3">
                       <div
-                        className={`grid h-14 w-14 place-items-center rounded-full transition-all duration-500 ${colorPrimary}`}
+                        className={`grid h-14 w-14 place-items-center rounded-full transition-all duration-500 ${
+                          colorPrimary
+                            ? returnOtherColorPrefix(colorPrimary, "text-")
+                            : "text-brand-black"
+                        }`}
                       >
-                        <IoLocationSharp size={24} color="white" />
+                        <IoLocationSharp size={28} />
                       </div>
-                      <div className="font-bold text-brand-black transition-all duration-500 group-hover:text-brand-white">
+                      <div className="font-bold text-brand-black transition-all duration-500">
                         {name}
                       </div>
                     </div>
-                    <div className="duration-600 min-w-[400px] space-y-6 pt-5 text-base text-brand-black transition-all group-hover:text-brand-white">
+                    <div className="duration-600 min-w-[400px] space-y-6 pt-5 text-base text-brand-black">
                       <p>
                         {addressLine1}{" "}
                         {addressLine2 ? " / " + addressLine2 : ""}
@@ -135,11 +140,15 @@ const MapBlock = ({ content, options: optionsArray }: Props) => {
                           getCountrFromISO3166(country)?.toUpperCase()}
                       </p>
                     </div>
-                    <div className="pt-5 font-semibold leading-7 group-hover:text-brand-white">
+                    <div className="pt-5 font-semibold leading-7">
                       <div>
                         <div className="flex cursor-pointer items-center gap-3">
                           <div
-                            className={`rounded-full p-1 text-brand-white ${colorPrimary}`}
+                            className={`rounded-full p-1 ${
+                              colorPrimary
+                                ? returnOtherColorPrefix(colorPrimary, "text-")
+                                : "text-brand-black"
+                            }`}
                           >
                             <IoCall size={14} />
                           </div>
@@ -152,7 +161,11 @@ const MapBlock = ({ content, options: optionsArray }: Props) => {
                         </div>
                         <div className="mt-1 flex cursor-pointer items-center gap-3">
                           <div
-                            className={`rounded-full p-1 text-brand-white ${colorPrimary}`}
+                            className={`rounded-full p-1 ${
+                              colorPrimary
+                                ? returnOtherColorPrefix(colorPrimary, "text-")
+                                : "text-brand-black"
+                            }`}
                           >
                             <IoPrint size={14} />
                           </div>

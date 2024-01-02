@@ -13,6 +13,8 @@ import {
   useNavigate,
 } from "@remix-run/react";
 import { verifyStaffLogin } from "~/models/auth/staffLogin";
+import BasicButton from "~/components/Buttons/BasicButton";
+import ValidationErrorsDisplay from "~/components/Forms/Validation/ValidationErrorsDisplay";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
@@ -106,25 +108,11 @@ const AdminLogin = () => {
           </Link>
         </div>
 
-        <>
-          {validationErrors && (
-            <div>
-              {Object.values(validationErrors).map((error: string, i) => (
-                <p
-                  key={error + i}
-                  className="mb-4 text-center text-xs text-red-500"
-                >
-                  {error}
-                </p>
-              ))}
-            </div>
-          )}
-        </>
+        <ValidationErrorsDisplay validationErrors={validationErrors} />
 
         <div className="form-control gap-3">
-          <button type="submit" className="btn btn-primary">
-            Login
-          </button>
+          <BasicButton label="Login" type="submit" />
+
           <div className="my-2 w-full border-b-2 border-brand-white/10" />
           <p className="select-none text-center text-xs">
             Powered by BizLocker v0.1

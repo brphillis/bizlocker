@@ -47,8 +47,8 @@ const BasicSelect = ({
         id={id}
         disabled={disabled}
         name={name}
-        className={`select w-full text-brand-black/75
-        disabled:!border-base-100/50 disabled:!bg-base-100/50 disabled:!text-brand-black/50
+        className={`select w-full
+        text-brand-black/75 disabled:!border-base-100/50 disabled:!bg-base-100/50 disabled:!text-brand-black/50
         ${
           validationErrors?.hasOwnProperty(name)
             ? "select-error border !outline-none"

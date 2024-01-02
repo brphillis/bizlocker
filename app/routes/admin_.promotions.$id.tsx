@@ -32,6 +32,10 @@ import {
   upsertPromotion,
 } from "~/models/promotions.server";
 import BasicTextArea from "~/components/Forms/TextArea/BasicInput";
+import useNotification, {
+  type PageNotification,
+} from "~/hooks/PageNotification";
+
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
 
@@ -84,6 +88,8 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
     isActive,
   } = form;
 
+  let notification: PageNotification;
+
   switch (form._action) {
     case "upsert":
       const validate = {
@@ -118,22 +124,34 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
       await upsertPromotion(updateData);
 
-      return json({ success: true });
+      notification = {
+        type: "success",
+        message: `Promotion ${id === "add" ? "Added" : "Updated"}.`,
+      };
+
+      return json({ success: true, notification });
 
     case "delete":
-      return json({ success: true });
+      notification = {
+        type: "warning",
+        message: "Promotion Deleted",
+      };
+
+      return json({ success: true, notification });
   }
 };
 
 const ModifyPromotion = () => {
   const { promotion, departments } = useLoaderData<typeof loader>();
-  const { validationErrors, success } =
+  const { validationErrors, success, notification } =
     (useActionData() as ActionReturnTypes) || {};
 
   const { products } = (promotion as { products: ProductWithDetails[] }) || {};
 
-  const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
+  useNotification(notification);
+
+  const [loading, setLoading] = useState<boolean>(false);
 
   const tabNames = ["general", "images", "meta", "products"];
   const [activeTab, setActiveTab] = useState<string | undefined>(tabNames?.[0]);

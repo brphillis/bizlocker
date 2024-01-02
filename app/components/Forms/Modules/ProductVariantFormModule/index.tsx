@@ -12,6 +12,7 @@ import BasicInput from "../../Input/BasicInput";
 import BasicSelect from "../../Select/BasicSelect";
 import BoxedTabs from "~/components/Tabs/BoxedTabs";
 import BasicToggle from "~/components/Forms/Toggle/BasicToggle";
+import BasicTable from "~/components/Tables/BasicTable";
 
 type Props = {
   storeId: number | null;
@@ -362,7 +363,7 @@ const ProductVariantFormModule = ({
             <div className="mt-3">
               <BasicToggle
                 label="Active"
-                defaultValue={
+                value={
                   activeVariant.hasOwnProperty("isActive")
                     ? (activeVariant as ProductVariantWithDetails)?.isActive
                     : true
@@ -423,10 +424,7 @@ const ProductVariantFormModule = ({
             <div className="mt-3">
               <BasicToggle
                 label="On Sale"
-                defaultValue={
-                  (activeVariant as ProductVariantWithDetails)?.isOnSale ||
-                  false
-                }
+                value={(activeVariant as ProductVariantWithDetails)?.isOnSale}
                 onChange={(e) => {
                   const isChecked = e.target.checked;
                   if (isChecked) {
@@ -446,10 +444,7 @@ const ProductVariantFormModule = ({
 
               <BasicToggle
                 label="On Promo"
-                defaultValue={
-                  (activeVariant as ProductVariantWithDetails)?.isPromoted ||
-                  false
-                }
+                value={(activeVariant as ProductVariantWithDetails)?.isPromoted}
                 onChange={(e) => {
                   const isChecked = e.target.checked;
                   if (isChecked) {
@@ -549,7 +544,7 @@ const ProductVariantFormModule = ({
 
             <BasicToggle
               label="Is Fragile"
-              defaultValue={
+              value={
                 activeVariant.hasOwnProperty("isFragile")
                   ? (activeVariant as ProductVariantWithDetails)?.isFragile
                   : false
@@ -605,76 +600,23 @@ const ProductVariantFormModule = ({
 
         {variants && !activeVariant && (
           <div className="max-w-full overflow-x-auto sm:max-w-none">
-            <table className="table table-md">
-              <thead>
-                <tr>
-                  <th></th>
-                  <th>Name</th>
-                  <th>Color</th>
-                  <th>Size</th>
-                  <th>Sale Discount</th>
-                  <th>On Sale</th>
-                  <th>Promo</th>
-                  <th>Active</th>
-                </tr>
-              </thead>
-              <tbody>
-                {variants.map((variant: ProductVariantWithDetails, i) => {
-                  const {
-                    name,
-                    color,
-                    size,
-                    isActive,
-                    isOnSale,
-                    isPromoted,
-                    price,
-                    salePrice,
-                  } = variant || {};
-
-                  const discountPercentage =
-                    ((price - salePrice!) / price) * 100;
-
-                  return (
-                    <tr
-                      key={"variant_" + (name || i)}
-                      onClick={() => handleEditVariant(name, i)}
-                      className="hover cursor-pointer"
-                    >
-                      <th>{i + 1}</th>
-                      <td>{name}</td>
-                      <td>{color}</td>
-                      <td>{size}</td>
-                      <td>{discountPercentage.toFixed()}%</td>
-                      <td>
-                        {!isOnSale && (
-                          <div className="ml-4 h-3 w-3 rounded-full bg-red-500" />
-                        )}
-                        {isOnSale && (
-                          <div className="ml-4 h-3 w-3 self-center rounded-full bg-success" />
-                        )}
-                      </td>
-                      <td>
-                        {!isPromoted && (
-                          <div className="ml-4 h-3 w-3 rounded-full bg-red-500" />
-                        )}
-                        {isPromoted && (
-                          <div className="ml-4 h-3 w-3 self-center rounded-full bg-success" />
-                        )}
-                      </td>
-                      <td>
-                        {!isActive && (
-                          <div className="ml-4 h-3 w-3 rounded-full bg-red-500" />
-                        )}
-                        {isActive && (
-                          <div className="ml-4 h-3 w-3 self-center rounded-full bg-success" />
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-
+            <BasicTable
+              onRowClick={(_, index, name) => handleEditVariant(name, index)}
+              size="md"
+              mobileSize="xs"
+              objectArray={variants?.map((e: ProductVariantWithDetails) => ({
+                name: e.name,
+                color: e.color,
+                size: e.size,
+                discount: (
+                  ((e.price - e.salePrice!) / e.price) *
+                  100
+                ).toFixed(),
+                sale: e.isOnSale,
+                promo: e.isPromoted,
+                active: e.isActive,
+              }))}
+            />
             <button
               className="btn-primary btn-md mx-auto mt-6 block !rounded-sm bg-primary hover:bg-primary-dark"
               onClick={() => handleNewVariant()}

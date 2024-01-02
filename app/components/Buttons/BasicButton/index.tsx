@@ -1,6 +1,8 @@
 type Props = {
   label: string;
-  clickFunction: () => void;
+  name?: string;
+  value?: string;
+  onClick?: () => void;
   extendStyle?: string;
   type?: "button" | "reset" | "submit";
   hoverEffect?: "grow" | "color";
@@ -8,7 +10,9 @@ type Props = {
 
 const BasicButton = ({
   label,
-  clickFunction,
+  name,
+  value,
+  onClick,
   extendStyle,
   type,
   hoverEffect,
@@ -27,10 +31,16 @@ const BasicButton = ({
   return (
     <button
       type={type ? type : "button"}
+      name={name ? name : undefined}
+      value={value ? value : undefined}
       className={`
-      inline-flex h-[3rem] min-h-[3rem] cursor-pointer items-center justify-center border-[1px] pl-[1rem] pr-[1rem] text-center font-semibold shadow-sm
-       ${currentEffect} ${extendStyle}`}
-      onClick={() => clickFunction()}
+      inline-flex h-[3rem] min-h-[3rem] cursor-pointer items-center justify-center rounded-sm border-[1px] pl-[1rem] pr-[1rem] text-center font-semibold shadow-sm
+       ${currentEffect} ${
+        extendStyle
+          ? extendStyle
+          : "border-primary bg-primary text-brand-white transition-colors duration-300 hover:bg-primary-dark"
+      } `}
+      onClick={() => onClick && onClick()}
     >
       {label}
     </button>

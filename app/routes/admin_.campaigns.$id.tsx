@@ -33,6 +33,9 @@ import { getDepartments } from "~/models/departments.server";
 import { getProductSubCategories } from "~/models/productSubCategories.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
 import { validateForm } from "~/utility/validate";
+import useNotification, {
+  type PageNotification,
+} from "~/hooks/PageNotification";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
@@ -97,6 +100,8 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
     isActive,
   } = form;
 
+  let notification: PageNotification;
+
   switch (form._action) {
     case "upsert":
       const validate = {
@@ -141,20 +146,31 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
       await upsertCampaign(updateData);
 
-      return json({ success: true });
+      notification = {
+        type: "success",
+        message: `Campaign ${id === "add" ? "Added" : "Updated"}.`,
+      };
+
+      return json({ success: true, notification });
 
     case "delete":
-      return json({ success: true });
+      notification = {
+        type: "warning",
+        message: "Campaign Deleted",
+      };
+
+      return json({ success: true, notification });
   }
 };
 
 const ModifyCampaign = () => {
   const { campaign, departments, productSubCategories, brands } =
     useLoaderData<typeof loader>();
-  const { validationErrors, success } =
+  const { validationErrors, success, notification } =
     (useActionData() as ActionReturnTypes) || {};
 
   const navigate = useNavigate();
+  useNotification(notification);
 
   const [loading, setLoading] = useState<boolean>(false);
 

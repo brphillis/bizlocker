@@ -2,21 +2,21 @@ import type * as IconsIO5 from "react-icons/io5";
 import Icon from "~/components/Icon";
 
 type Props = {
-  iconName: keyof typeof IconsIO5;
-  size: "small" | "medium" | "large";
   color: "primary" | "error";
-  onClickFunction?: () => void;
+  extendStyle?: string;
+  iconName: keyof typeof IconsIO5;
   name?: string;
+  onClick?: () => void;
+  size: "small" | "medium" | "large";
   type?: "button" | "submit" | "reset";
   value?: string;
-  extendStyle?: string;
 };
 
 const SquareIconButton = ({
   iconName,
   size,
   color,
-  onClickFunction,
+  onClick,
   name,
   type,
   value,
@@ -62,7 +62,7 @@ const SquareIconButton = ({
     <button
       className={`flex items-center justify-center !rounded-sm bg-error ${coloring} ${sizing?.style} ${extendStyle}`}
       onClick={() => {
-        onClickFunction && onClickFunction();
+        onClick && onClick();
       }}
       name={name || ""}
       type={type || "button"}

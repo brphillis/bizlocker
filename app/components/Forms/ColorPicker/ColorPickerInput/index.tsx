@@ -1,3 +1,4 @@
+import { IoWaterOutline } from "react-icons/io5";
 import ToolTip from "~/components/Indicators/ToolTip";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
 import { returnOtherColorPrefix } from "~/utility/colors";
@@ -21,7 +22,7 @@ const ColorPickerInput = ({
 }: Props) => {
   return (
     <div
-      className={`form-control relative max-md:w-full max-md:items-center max-md:px-3
+      className={`group form-control relative max-md:w-full max-md:items-center max-md:px-3
       ${extendStyle} ${customWidth ? customWidth : "w-[215px]"}`}
     >
       {tooltip && <ToolTip tip={tooltip} />}
@@ -32,7 +33,7 @@ const ColorPickerInput = ({
       </label>
 
       <div
-        className={`h-[42px] w-full cursor-pointer border-[1px] border-brand-white/25 ${
+        className={`relative h-[42px] w-full cursor-pointer border-[1px] border-brand-white/25 ${
           inputBackgroundColor
             ? returnOtherColorPrefix(inputBackgroundColor, "bg-")
             : "bg-transparent"
@@ -40,7 +41,11 @@ const ColorPickerInput = ({
         onClick={() => {
           inputOnClick();
         }}
-      ></div>
+      >
+        <div className="absolute right-3 top-[50%] translate-y-[-50%] opacity-50 group-hover:scale-[1.15]">
+          <IoWaterOutline />
+        </div>
+      </div>
     </div>
   );
 };

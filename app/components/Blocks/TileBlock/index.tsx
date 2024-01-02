@@ -23,12 +23,11 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
     backgroundColor,
     backgroundPatternColor,
     backgroundPatternName,
-    backgroundPatternOpacity,
     backgroundPatternSize,
     backgroundWidth,
     columns,
     columnsMobile,
-    itemBackgroundColors,
+    itemBackgroundColorsPrimary,
     itemColors,
     itemFilters,
     itemLinks,
@@ -59,7 +58,6 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
         name={backgroundPatternName as BackgroundPatternName}
         backgroundColor={getThemeColorValueByName(backgroundColor)}
         patternColor={getThemeColorValueByName(backgroundPatternColor)}
-        patternOpacity={backgroundPatternOpacity || 0.5}
         patternSize={backgroundPatternSize || 32}
         screenWidth={backgroundWidth === "w-screen" ? true : false}
         brightness={backgroundBrightness || undefined}
@@ -100,7 +98,7 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
                 name={name}
                 itemColor={itemColors[i]}
                 itemTitleColor={itemTitleColors[i]}
-                itemBackgroundColor={itemBackgroundColors[i]}
+                itemBackgroundColor={itemBackgroundColorsPrimary[i]}
               />
             )}
 
@@ -109,7 +107,7 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
                 borderRadius={itemBorderRadius[i]}
                 filter={itemFilters[i]}
                 imageSrc={imageSrc}
-                itemBackgroundColor={itemBackgroundColors[i]}
+                itemBackgroundColor={itemBackgroundColorsPrimary[i]}
                 joinedContent={joinedContent}
                 link={link}
                 name={name}

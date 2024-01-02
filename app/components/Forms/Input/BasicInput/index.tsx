@@ -58,7 +58,7 @@ const BasicInput = ({
         placeholder={placeholder}
         disabled={disabled}
         step={step || undefined}
-        value={value || undefined}
+        value={value?.toString() || undefined}
         className={`input w-full text-brand-black/75
         disabled:!border-base-100/25 disabled:!bg-base-100/25 disabled:!text-brand-black/50
         ${

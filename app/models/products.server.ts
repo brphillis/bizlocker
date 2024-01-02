@@ -113,6 +113,20 @@ export const getProduct = async (
   });
 };
 
+export const getProductVariant = async (
+  id: string
+): Promise<ProductVariantWithDetails | null> => {
+  return await prisma.productVariant.findUnique({
+    where: {
+      id: parseInt(id),
+    },
+    include: {
+      product: true,
+      stock: true,
+    },
+  });
+};
+
 export const upsertProduct = async (
   request: Request,
   productData: NewProduct

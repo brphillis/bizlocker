@@ -1,7 +1,7 @@
 import { createUserSession } from "~/session.server";
 import type { ActionReturnTypes } from "~/utility/actionTypes";
-import { Link, useActionData } from "@remix-run/react";
-import LoginGoogle from "~/components/auth/LoginGoogle";
+import { Link, useActionData, useNavigate } from "@remix-run/react";
+import LoginGoogle from "~/components/Auth/LoginGoogle";
 import AuthContainer from "~/components/Layout/AuthContainer";
 import AuthPageWrapper from "~/components/Layout/AuthPageWrapper";
 import { isValidEmail, isValidPassword } from "~/utility/validate";
@@ -11,6 +11,8 @@ import {
   type ActionFunctionArgs,
   type MetaFunction,
 } from "@remix-run/node";
+import BasicButton from "~/components/Buttons/BasicButton";
+import ValidationErrorsDisplay from "~/components/Forms/Validation/ValidationErrorsDisplay";
 
 export const meta: MetaFunction = ({ data }) => {
   return [
@@ -75,6 +77,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 export default function LoginPage() {
   const { validationErrors } = (useActionData() as ActionReturnTypes) || {};
 
+  const navigate = useNavigate();
+
   return (
     <AuthPageWrapper>
       <AuthContainer>
@@ -109,15 +113,7 @@ export default function LoginPage() {
         </div>
 
         <>
-          {validationErrors &&
-            Object.values(validationErrors)?.map((error: string, i) => (
-              <p
-                key={error + i}
-                className="my-2 text-center text-xs text-red-500"
-              >
-                {error}
-              </p>
-            ))}
+          <ValidationErrorsDisplay validationErrors={validationErrors} />
 
           {validationErrors &&
             Object.values(validationErrors)?.includes("Email not Verified") && (
@@ -131,21 +127,18 @@ export default function LoginPage() {
         </>
 
         <div className="form-control mt-3 gap-3">
-          <button
+          <BasicButton
             type="submit"
             name="_action"
             value="login"
-            className="btn btn-primary !rounded-sm"
-          >
-            Login
-          </button>
-          <Link
-            to="/register"
-            type="button"
-            className="btn btn-primary !rounded-sm"
-          >
-            Create Account
-          </Link>
+            label="Login"
+          />
+
+          <BasicButton
+            label="Create Account"
+            onClick={() => navigate("/register")}
+          />
+
           <div className="my-2 w-full border-b-2 border-brand-white/10" />
           <LoginGoogle />
         </div>
