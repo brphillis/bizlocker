@@ -12,6 +12,10 @@ import { type StaffWithDetails } from "~/models/auth/staff.server";
 import "../../node_modules/swiper/swiper.min.css";
 import "../../node_modules/swiper/modules/navigation.min.css";
 import "sweetalert2/dist/sweetalert2.css";
+import {
+  getStaffNotifications,
+  getStoreNotifications,
+} from "~/models/notifications";
 
 export const meta: MetaFunction = ({ data }) => {
   return [
@@ -24,12 +28,24 @@ export const meta: MetaFunction = ({ data }) => {
 };
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const staffMember = await getUserDataFromSession(request, STAFF_SESSION_KEY);
-  return json({ staffMember });
+  const staffMember = (await getUserDataFromSession(
+    request,
+    STAFF_SESSION_KEY
+  )) as StaffWithDetails;
+  let userNotifications = [];
+  const storeNotifications = await getStoreNotifications(staffMember?.storeId);
+  if (storeNotifications) {
+    userNotifications.push(...storeNotifications);
+  }
+  const staffNotifications = await getStaffNotifications(staffMember?.id);
+  if (staffNotifications) {
+    userNotifications.push(...staffNotifications);
+  }
+  return json({ staffMember, userNotifications });
 };
 
 const Admin = () => {
-  const { staffMember } = useLoaderData<typeof loader>();
+  const { staffMember, userNotifications } = useLoaderData<typeof loader>();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -41,7 +57,12 @@ const Admin = () => {
     }
   }, [isLoginPage, staffMember, navigate]);
 
-  return <AdminSideBar {...(staffMember as StaffWithDetails)} />;
+  return (
+    <AdminSideBar
+      staffMember={staffMember as StaffWithDetails}
+      userNotifications={userNotifications}
+    />
+  );
 };
 
 export default Admin;

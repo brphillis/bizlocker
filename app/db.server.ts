@@ -14,10 +14,10 @@ declare global {
 // create a new connection to the DB with every change either.
 // in production we'll have a single connection to the DB.
 if (process.env.NODE_ENV === "production") {
-  prisma = getClient();
+  prisma = getClient() as unknown as PrismaClient;
 } else {
   if (!global.__db__) {
-    global.__db__ = getClient();
+    global.__db__ = getClient() as unknown as PrismaClient;
   }
   prisma = global.__db__;
 }
@@ -51,35 +51,34 @@ function getClient() {
   // that this only runs once per server restart and won't automatically be
   // re-run per request like everything else is. So if you need to change
   // something in this file, you'll need to manually restart the server.
-  const client = new PrismaClient({
+  let client = new PrismaClient({
     datasources: {
       db: {
         url: databaseUrl.toString(),
       },
     },
     log: ["error"],
-  });
-
-  client.$extends({
+  }).$extends({
     query: {
       $allModels: {
-        async update({ args, query }) {
-          args.data.updatedAt = createISO8601DateNow();
+        create({ args, query }) {
+          args.data = { ...args.data, createdAt: createISO8601DateNow() };
           return query(args);
         },
 
-        async updateMany({ args, query }) {
-          args.data.updatedAt = createISO8601DateNow();
+        createMany({ args, query }) {
+          args.data = { ...args.data, createdAt: createISO8601DateNow() };
           return query(args);
         },
 
-        async create({ args, query }) {
-          if (args.data) {
-            args.data.createdAt = createISO8601DateNow();
-            return query(args);
-          } else if (!args.data) {
-            throw new Error("No Data For Create");
-          }
+        update({ args, query }) {
+          args.data = { ...args.data, updatedAt: createISO8601DateNow() };
+          return query(args);
+        },
+
+        updateMany({ args, query }) {
+          args.data = { ...args.data, updatedAt: createISO8601DateNow() };
+          return query(args);
         },
       },
     },

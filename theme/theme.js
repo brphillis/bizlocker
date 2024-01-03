@@ -13,7 +13,7 @@ const themeColors ={
     "base-content": "#232227",
     "brand-black": "#232227",
     "brand-white": "#F0F0F0",
-    "brand-red": "#FF3A20",
+    "brand-red": "#FF6B6B",
     "brand-blue": "#3B82F6",
     "brand-green": "#44AF69",
     "brand-yellow": "#F7C548",
