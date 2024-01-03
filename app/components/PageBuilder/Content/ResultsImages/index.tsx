@@ -1,5 +1,6 @@
 import type { Image } from "@prisma/client";
 import { IoAdd, IoEllipsisVertical } from "react-icons/io5";
+import BasicImage from "~/components/Client/BasicImage";
 import type { BlockContentType, BlockName } from "~/utility/blockMaster/types";
 
 type Props = {
@@ -66,6 +67,14 @@ const ResultsImages = ({
                       key={id}
                       className="relative h-32 w-32 overflow-hidden transition-all duration-300 hover:scale-105"
                     >
+                      {href && (
+                        <BasicImage
+                          src={href}
+                          alt={altText || "image description placeholder"}
+                          extendStyle="h-full w-full object-cover max-lg:h-44 max-lg:w-44"
+                        />
+                      )}
+
                       <div
                         className="absolute bottom-3 right-3 flex h-6 w-6 cursor-pointer select-none items-center justify-center rounded-full bg-primary text-brand-white transition hover:bg-primary-dark"
                         onClick={() => {
@@ -81,13 +90,6 @@ const ResultsImages = ({
                       <button className="absolute bottom-3 left-3 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-primary text-brand-white transition hover:bg-primary-dark">
                         <IoEllipsisVertical size={12} />
                       </button>
-                      {href && (
-                        <img
-                          src={href}
-                          alt={altText || "image description placeholder"}
-                          className="h-full w-full object-cover max-lg:h-44 max-lg:w-44"
-                        />
-                      )}
                     </div>
                   );
                 }

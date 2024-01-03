@@ -10,9 +10,9 @@ type Props = {
   placeholder: string;
   defaultValue?: any;
   validationErrors?: ValidationErrors;
-  styles?: string;
+  extendStyle?: string;
   customWidth?: string;
-  labelColor?: string;
+  labelStyle?: string;
   onChange?: (value: string | React.ChangeEvent<HTMLSelectElement>) => void;
 };
 
@@ -28,9 +28,9 @@ const BasicInput = ({
   placeholder,
   defaultValue,
   validationErrors,
-  styles,
+  extendStyle,
   customWidth,
-  labelColor,
+  labelStyle,
 }: Props) => {
   const [phoneNumber, setPhoneNumber] = useState<PhoneNumber>({
     areacode: defaultValue ? defaultValue.split(" ")[0] + " " : "61 ",
@@ -66,7 +66,7 @@ const BasicInput = ({
       <label className="label">
         <span
           className={`label-text  ${
-            labelColor ? labelColor : "text-brand-black"
+            labelStyle ? labelStyle : "text-brand-black"
           }`}
         >
           {label}
@@ -100,7 +100,7 @@ const BasicInput = ({
             validationErrors?.hasOwnProperty(name)
               ? "input-error border !outline-none"
               : ""
-          } ${styles}`}
+          } ${extendStyle}`}
           defaultValue={phoneNumber.dialnumber}
           onChange={(e) => updateDialNumber(e.target.value)}
         />

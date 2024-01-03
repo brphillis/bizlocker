@@ -42,7 +42,7 @@ const ArticleBlockOptions = ({
               <BasicSelect
                 name="articleCategory"
                 label="Category"
-                labelColor="text-brand-white"
+                labelStyle="text-brand-white"
                 placeholder="Select a Category"
                 selections={articleCategories as unknown as SelectValue[]}
                 defaultValue={defaultValues?.articleCategoryId?.toString()}

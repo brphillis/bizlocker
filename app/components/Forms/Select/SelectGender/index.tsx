@@ -5,14 +5,14 @@ type Props = {
   defaultValue?: Gender | string | null;
   onChange?: (value: string | React.ChangeEvent<HTMLSelectElement>) => void;
   customWidth?: string;
-  labelColor?: string;
+  labelStyle?: string;
 };
 
 const SelectGender = ({
   defaultValue,
   label,
   customWidth,
-  labelColor,
+  labelStyle,
   onChange,
 }: Props) => {
   return (
@@ -24,7 +24,7 @@ const SelectGender = ({
       <label className="label">
         <span
           className={`label-text  ${
-            labelColor ? labelColor : "text-brand-black"
+            labelStyle ? labelStyle : "text-brand-black"
           }`}
         >
           {label}

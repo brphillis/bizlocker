@@ -107,7 +107,7 @@ const Address = () => {
           label="Address Line 1"
           placeholder="Address Line 1"
           customWidth="w-full"
-          styles="input-bordered"
+          extendStyle="input-bordered"
           type="text"
           defaultValue={userAddress?.addressLine1 || undefined}
           validationErrors={validationErrors}
@@ -118,7 +118,7 @@ const Address = () => {
           label="Address Line 2"
           placeholder="Address Line 2"
           customWidth="w-full"
-          styles="input-bordered"
+          extendStyle="input-bordered"
           type="text"
           defaultValue={userAddress?.addressLine2 || undefined}
           validationErrors={validationErrors}
@@ -129,7 +129,7 @@ const Address = () => {
           label="Suburb"
           placeholder="Suburb"
           customWidth="w-full"
-          styles="input-bordered"
+          extendStyle="input-bordered"
           type="text"
           defaultValue={userAddress?.suburb || undefined}
           validationErrors={validationErrors}
@@ -140,7 +140,7 @@ const Address = () => {
           label="PostCode"
           placeholder="PostCode"
           customWidth="w-full"
-          styles="input-bordered"
+          extendStyle="input-bordered"
           type="text"
           defaultValue={userAddress?.postcode || undefined}
           validationErrors={validationErrors}
@@ -151,7 +151,7 @@ const Address = () => {
           label="State"
           placeholder="State"
           customWidth="w-full"
-          styles="input-bordered"
+          extendStyle="input-bordered"
           type="text"
           defaultValue={userAddress?.state || undefined}
           validationErrors={validationErrors}
@@ -160,7 +160,7 @@ const Address = () => {
         <SelectCountry
           defaultValue={userAddress?.country}
           validationErrors={validationErrors}
-          styles="!w-full"
+          extendStyle="!w-full"
         />
 
         <div className="divider m-0 w-full p-0 pt-3" />

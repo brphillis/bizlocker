@@ -31,6 +31,7 @@ import {
 } from "~/helpers/productHelpers";
 import type { Image } from "~/models/images.server";
 import { generateProductColor } from "~/utility/colors";
+import BasicImage from "~/components/Client/BasicImage";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   return [
@@ -221,10 +222,10 @@ const Product = () => {
               {images?.map(({ href }: Image, i: number) => {
                 if (href) {
                   return (
-                    <img
+                    <BasicImage
                       key={"productImage_" + i}
                       alt="ecommerce"
-                      className="m-0 h-[calc(100%/3)] w-auto cursor-pointer object-cover shadow-sm max-xl:h-[200px] max-sm:shadow-md"
+                      extendStyle="m-0 h-[calc(100%/3)] w-auto cursor-pointer object-cover shadow-sm max-xl:h-[200px] max-sm:shadow-md"
                       onClick={() => setSelectedImage(images[i])}
                       src={href}
                     />
@@ -234,17 +235,17 @@ const Product = () => {
             </div>
             <div className="relative mx-auto block h-full w-max max-w-[100vw] max-xl:order-1 max-xl:h-2/3">
               {selectedImage?.href && (
-                <img
+                <BasicImage
                   alt={name + "_focusedImage"}
-                  className="h-full w-auto object-cover object-center shadow-md max-xl:px-3 max-xl:shadow-none"
+                  extendStyle="h-full w-auto object-cover object-center shadow-md max-xl:px-3 max-xl:shadow-none"
                   src={selectedImage?.href}
                 />
               )}
 
               {brandImage?.href && (
-                <img
+                <BasicImage
                   alt={brandName + "_image"}
-                  className="max-md:h-30 absolute bottom-2 right-4 h-16 w-auto max-md:bottom-2"
+                  extendStyle="max-md:h-30 absolute bottom-2 right-4 h-16 w-auto max-md:bottom-2"
                   src={brandImage?.href}
                 />
               )}

@@ -5,14 +5,16 @@ import { blockMaster } from "~/utility/blockMaster/blockMaster";
 type BlockIconProps = {
   blockName: string;
   size: number;
-  styles?: string;
+  extendStyle?: string;
 };
 
-const BlockIcon = ({ blockName, size, styles }: BlockIconProps) => {
+const BlockIcon = ({ blockName, size, extendStyle }: BlockIconProps) => {
   const iconName = (blockMaster.find((e) => e.name === blockName)?.icon ||
     "IoSquare") as keyof typeof IconsIO5;
 
-  return <Icon iconName={iconName} size={size} styles={styles || ""} />;
+  return (
+    <Icon iconName={iconName} size={size} extendStyle={extendStyle || ""} />
+  );
 };
 
 export default BlockIcon;

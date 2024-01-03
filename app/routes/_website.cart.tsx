@@ -40,6 +40,7 @@ import googlePayLogo from "../assets/logos/googlePay-logo.svg";
 import mastercardLogo from "../assets/logos/mastercard-logo.svg";
 import type { Address } from "@prisma/client";
 import type { NewAddress } from "~/helpers/addressHelpers";
+import BasicImage from "~/components/Client/BasicImage";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   return [
@@ -197,8 +198,8 @@ const Cart = () => {
                   key={"cartItem-" + name}
                 >
                   {images?.[0].href && (
-                    <img
-                      className="h-20 w-20 border border-base-300 object-cover md:h-[8.8rem] md:w-[8.8rem]"
+                    <BasicImage
+                      extendStyle="h-20 w-20 border border-base-300 object-cover md:h-[8.8rem] md:w-[8.8rem]"
                       src={images[0].href}
                       alt={name + "_cartImage"}
                     />
@@ -252,7 +253,7 @@ const Cart = () => {
             label="First Name"
             placeholder="First Name"
             customWidth="w-full"
-            styles="input-bordered"
+            extendStyle="input-bordered"
             type="text"
             defaultValue={userDetails?.firstName || undefined}
             validationErrors={validationErrors}
@@ -263,7 +264,7 @@ const Cart = () => {
             label="Last Name"
             placeholder="Last Name"
             customWidth="w-full"
-            styles="input-bordered"
+            extendStyle="input-bordered"
             type="text"
             defaultValue={userDetails?.lastName || undefined}
             validationErrors={validationErrors}
@@ -274,7 +275,7 @@ const Cart = () => {
             label="Email Address"
             placeholder="Email Address"
             customWidth="w-full"
-            styles="input-bordered"
+            extendStyle="input-bordered"
             type="text"
             defaultValue={user?.email || undefined}
             validationErrors={validationErrors}
@@ -285,7 +286,7 @@ const Cart = () => {
             label="Address Line 1"
             placeholder="Address Line 1"
             customWidth="w-full"
-            styles="input-bordered"
+            extendStyle="input-bordered"
             type="text"
             defaultValue={userAddress?.addressLine1 || undefined}
             validationErrors={validationErrors}
@@ -296,7 +297,7 @@ const Cart = () => {
             label="Address Line 2"
             placeholder="Address Line 2"
             customWidth="w-full"
-            styles="input-bordered"
+            extendStyle="input-bordered"
             type="text"
             defaultValue={userAddress?.addressLine2 || undefined}
             validationErrors={validationErrors}
@@ -307,7 +308,7 @@ const Cart = () => {
             label="Suburb"
             placeholder="Suburb"
             customWidth="w-full"
-            styles="input-bordered"
+            extendStyle="input-bordered"
             type="text"
             defaultValue={userAddress?.suburb || undefined}
             validationErrors={validationErrors}
@@ -318,7 +319,7 @@ const Cart = () => {
             label="PostCode"
             placeholder="PostCode"
             customWidth="w-full"
-            styles="input-bordered"
+            extendStyle="input-bordered"
             type="text"
             defaultValue={userAddress?.postcode || undefined}
             validationErrors={validationErrors}
@@ -334,7 +335,7 @@ const Cart = () => {
             label="State"
             placeholder="State"
             customWidth="w-full"
-            styles="input-bordered"
+            extendStyle="input-bordered"
             type="text"
             defaultValue={userAddress?.state || undefined}
             validationErrors={validationErrors}
@@ -345,7 +346,7 @@ const Cart = () => {
             label="Phone Number"
             placeholder="Phone Number"
             customWidth="w-full"
-            styles="input-bordered"
+            extendStyle="input-bordered"
             type="text"
             defaultValue={userDetails?.phoneNumber || undefined}
             validationErrors={validationErrors}
@@ -354,7 +355,7 @@ const Cart = () => {
           <SelectCountry
             defaultValue={userAddress?.country}
             validationErrors={validationErrors}
-            styles="!w-full"
+            extendStyle="!w-full"
           />
 
           <div className="mt-3 flex w-full flex-col py-3 text-center max-md:pt-0">

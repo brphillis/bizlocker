@@ -2,13 +2,13 @@ type Props = {
   label: string;
   onChange?: (value: string | React.ChangeEvent<HTMLSelectElement>) => void;
   customWidth?: string;
-  labelColor?: string;
+  labelStyle?: string;
 };
 
 const SelectImageConnection = ({
   label,
   customWidth,
-  labelColor,
+  labelStyle,
   onChange,
 }: Props) => {
   return (
@@ -20,7 +20,7 @@ const SelectImageConnection = ({
       <label className="label">
         <span
           className={`label-text  ${
-            labelColor ? labelColor : "text-brand-black"
+            labelStyle ? labelStyle : "text-brand-black"
           }`}
         >
           {label}

@@ -8,12 +8,7 @@ const LoginGoogle = () => {
   return (
     <Suspense>
       <GoogleOAuthProvider clientId="686666134022-iaevmi83pshusrk7nhjs3ctoqq8g9usl.apps.googleusercontent.com">
-        <div
-          className="flex w-full justify-center 
-        [&>*:first-child]:overflow-hidden
-
-      "
-        >
+        <div className="flex w-full justify-center [&>*:first-child]:overflow-hidden">
           <GoogleLogin
             useOneTap={true}
             size="large"

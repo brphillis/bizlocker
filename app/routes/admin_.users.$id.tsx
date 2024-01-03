@@ -276,7 +276,7 @@ const ModifyUser = () => {
             <SelectCountry
               defaultValue={user?.address?.country}
               validationErrors={validationErrors}
-              styles="!w-full"
+              extendStyle="!w-full"
             />
           </div>
         </div>

@@ -42,7 +42,7 @@ const BannerBlock = ({ content, options: ArrayOptions }: Props) => {
 
   return (
     <div
-      className={`relative max-w-[100vw] overflow-visible sm:w-max ${margin} ${padding} ${borderDisplay} ${borderRadius}`}
+      className={`relative w-full max-w-[100vw] overflow-visible sm:w-max ${margin} ${padding} ${borderDisplay} ${borderRadius}`}
     >
       <div
         className={`absolute left-[50%] top-0 z-0 h-full w-screen translate-x-[-50%] ${backgroundColorSecondary}`}

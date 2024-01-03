@@ -7,7 +7,7 @@ type Props = {
   disabled?: boolean;
   id?: string;
   label: string;
-  labelColor?: string;
+  labelStyle?: string;
   name: string;
   onChange?: (value: string | React.ChangeEvent<HTMLSelectElement>) => void;
   placeholder: string;
@@ -21,7 +21,7 @@ const BasicSelect = ({
   disabled,
   id,
   label,
-  labelColor,
+  labelStyle,
   name,
   onChange,
   placeholder,
@@ -37,7 +37,7 @@ const BasicSelect = ({
       <label className="label">
         <span
           className={`label-text  ${
-            labelColor ? labelColor : "text-brand-black"
+            labelStyle ? labelStyle : "text-brand-black"
           }`}
         >
           {label}

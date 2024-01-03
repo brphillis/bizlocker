@@ -1,35 +1,38 @@
+import { type FormEvent, useEffect, useState } from "react";
 import { tokenAuth } from "~/auth.server";
-import type { ActionReturnTypes } from "~/utility/actionTypes";
+import { getStores } from "~/models/stores.server";
+import { getFormData } from "~/helpers/formHelpers";
+import { STAFF_SESSION_KEY } from "~/session.server";
+import useNotification from "~/hooks/PageNotification";
 import DarkOverlay from "~/components/Layout/DarkOverlay";
+import { capitalizeFirst } from "~/helpers/stringHelpers";
+import BasicInput from "~/components/Forms/Input/BasicInput";
+import { getApprovalStatusList } from "~/models/enums.server";
 import FormHeader from "~/components/Forms/Headers/FormHeader";
+import type { ActionReturnTypes } from "~/utility/actionTypes";
+import BasicSelect from "~/components/Forms/Select/BasicSelect";
+import { ActionAlert } from "~/components/Notifications/Alerts";
+import OrderStatusSteps from "~/components/Indicators/OrderStatusSteps";
+import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
 import {
   Form,
   useActionData,
   useLoaderData,
   useNavigate,
+  useSubmit,
 } from "@remix-run/react";
-import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
 import {
+  json,
   redirect,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
-  json,
 } from "@remix-run/node";
-import { useEffect, useState } from "react";
-import BasicInput from "~/components/Forms/Input/BasicInput";
-import { STAFF_SESSION_KEY } from "~/session.server";
 import {
-  type StockTransferRequestWithDetails,
   approveStockTransfer,
   getStockTransfer,
+  type StockTransferRequestWithDetails,
   updateStockTransfer,
 } from "~/models/stock.server";
-import OrderStatusSteps from "~/components/Indicators/OrderStatusSteps";
-import BasicSelect from "~/components/Forms/Select/BasicSelect";
-import { getStores } from "~/models/stores.server";
-import { getApprovalStatusList } from "~/models/enums.server";
-import { capitalizeFirst } from "~/helpers/stringHelpers";
-import useNotification from "~/hooks/PageNotification";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
@@ -125,8 +128,21 @@ const ModifyStockTransfer = () => {
     (useActionData() as ActionReturnTypes) || {};
 
   useNotification(notification);
+  const submit = useSubmit();
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false);
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    const form = getFormData(event);
+    event.preventDefault();
+    ActionAlert(
+      "Are you sure?",
+      "Do you want to progress this Stock Transfer?",
+      () => submit(form),
+      () => setLoading(false),
+      "warning"
+    );
+  };
 
   useEffect(() => {
     if (success) {
@@ -142,18 +158,21 @@ const ModifyStockTransfer = () => {
       <Form
         method="POST"
         className="scrollbar-hide relative w-[500px] max-w-[100vw] overflow-y-auto bg-base-200 px-3 py-6 sm:px-6"
+        onSubmit={handleSubmit}
       >
         <FormHeader
           type="Stock Transfer"
           hasIsActive={false}
           hasDelete={false}
         />
+
         <input
           hidden
           readOnly
           name="toStoreId"
           value={stockTransferRequest.toStoreId}
         />
+
         <input
           hidden
           readOnly

@@ -87,7 +87,7 @@ const ContentSearch = ({
             </div>
 
             <BasicInput
-              labelColor="text-brand-white"
+              labelStyle="text-brand-white"
               label="Search Content"
               name="name"
               placeholder="Search Name"

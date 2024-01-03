@@ -10,7 +10,8 @@ export type ActionAlertType =
 export const ActionAlert = async (
   title: string,
   text: string,
-  action: () => void,
+  confirmAction: () => void,
+  cancelAction?: () => void,
   type?: ActionAlertType
 ) => {
   Swal.fire({
@@ -31,7 +32,10 @@ export const ActionAlert = async (
     },
   }).then(async (result) => {
     if (result.isConfirmed) {
-      action();
+      confirmAction();
+    }
+    if (result.isDismissed && cancelAction) {
+      cancelAction();
     }
   });
 };

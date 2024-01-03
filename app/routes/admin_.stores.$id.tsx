@@ -249,7 +249,7 @@ const ModifyStore = () => {
           <SelectCountry
             defaultValue={store?.address?.country}
             validationErrors={validationErrors}
-            styles="!w-full"
+            extendStyle="!w-full"
           />
 
           <BasicInput

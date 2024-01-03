@@ -21,7 +21,7 @@ const PatternBackground = ({
   brightness,
   displayStyle,
 }: Props) => {
-  const styles: Record<string, CSSProperties> = {
+  const extendStyle: Record<string, CSSProperties> = {
     wavy: {
       opacity: patternOpacity || "0.5",
       backgroundColor: backgroundColor,
@@ -79,7 +79,7 @@ const PatternBackground = ({
     filter: brightness ? `brightness(${brightness})` : "unset",
   };
 
-  const selectedStyle = name ? styles[name] : noPatternStyle;
+  const selectedStyle = name ? extendStyle[name] : noPatternStyle;
 
   return (
     <div

@@ -1,12 +1,11 @@
 import type { Campaign, Image, Promotion } from "@prisma/client";
 import type { ActionReturnTypes } from "~/utility/actionTypes";
-import { useEffect, useState } from "react";
+import { type FormEvent, useEffect, useState } from "react";
 import { tokenAuth } from "~/auth.server";
 import { validateForm } from "~/utility/validate";
 import { STAFF_SESSION_KEY } from "~/session.server";
 import DarkOverlay from "~/components/Layout/DarkOverlay";
 import { IoCaretForwardCircleSharp } from "react-icons/io5";
-import { handleResourceSubmit } from "~/helpers/formHelpers";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import FormHeader from "~/components/Forms/Headers/FormHeader";
 import UploadImage from "~/components/Forms/Upload/UploadImage";
@@ -33,6 +32,9 @@ import {
 import useNotification, {
   type PageNotification,
 } from "~/hooks/PageNotification";
+import { getFormData } from "~/helpers/formHelpers";
+import { ActionAlert } from "~/components/Notifications/Alerts";
+import { hasNonEmptyArrayObjectOrIdKey } from "~/helpers/contentHelpers";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
@@ -135,23 +137,29 @@ const ModifyImage = () => {
   } = image;
 
   const determineIfConnected = (): boolean => {
-    if (
-      promotionBanner ||
-      promotionTile ||
-      campaignBanner ||
-      campaignTile ||
-      brandId ||
-      productSubCategoryId ||
-      articleId ||
-      productId
-    ) {
-      return true;
+    if (image) {
+      return hasNonEmptyArrayObjectOrIdKey(image);
     } else return false;
   };
 
-  const isConnected = determineIfConnected();
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    const form = getFormData(event);
+    event.preventDefault();
+    if (hasConnection) {
+      ActionAlert(
+        "Resource Has Connections",
+        "Update this resource?",
+        () => submit(form),
+        () => setLoading(false),
+        "warning"
+      );
+    } else {
+      submit(form);
+    }
+  };
 
   const [loading, setLoading] = useState<boolean>(false);
+  const [hasConnection] = useState<boolean>(determineIfConnected());
 
   useEffect(() => {
     if (success) {
@@ -164,7 +172,7 @@ const ModifyImage = () => {
       <Form
         method="POST"
         className="scrollbar-hide relative w-[500px] max-w-[100vw] overflow-y-auto bg-base-200 px-3 py-6 sm:px-6"
-        onSubmit={(e) => handleResourceSubmit(e, submit, isConnected)}
+        onSubmit={handleSubmit}
       >
         <FormHeader
           valueToChange={image}

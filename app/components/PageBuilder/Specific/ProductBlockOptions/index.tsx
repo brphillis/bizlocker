@@ -51,7 +51,7 @@ const ProductBlockOptions = ({
                 <BasicSelect
                   name="productCategory"
                   label="Product Category"
-                  labelColor="text-brand-white"
+                  labelStyle="text-brand-white"
                   placeholder="Product Category"
                   selections={productCategories as unknown as SelectValue[]}
                   defaultValue={defaultValues?.productCategoryId?.toString()}
@@ -66,7 +66,7 @@ const ProductBlockOptions = ({
                 <BasicSelect
                   name="productSubCategory"
                   label="Product SubCategory"
-                  labelColor="text-brand-white"
+                  labelStyle="text-brand-white"
                   placeholder="Product SubCategory"
                   selections={productSubCategories as unknown as SelectValue[]}
                   defaultValue={defaultValues?.productSubCategoryId?.toString()}
@@ -81,7 +81,7 @@ const ProductBlockOptions = ({
                 <BasicSelect
                   name="brand"
                   label="Brand"
-                  labelColor="text-brand-white"
+                  labelStyle="text-brand-white"
                   placeholder="Brand"
                   selections={brands as unknown as SelectValue[]}
                   defaultValue={defaultValues?.brandId?.toString()}
@@ -92,7 +92,7 @@ const ProductBlockOptions = ({
 
                 <SelectGender
                   label="Gender"
-                  labelColor="text-brand-white"
+                  labelStyle="text-brand-white"
                   defaultValue={defaultValues?.gender?.toString()}
                   onChange={(selectedValue) =>
                     selectItem("gender", selectedValue as string)

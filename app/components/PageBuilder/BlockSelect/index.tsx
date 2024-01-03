@@ -30,6 +30,7 @@ const BlockSelect = ({
           setSelectedItems([]);
           setSelectedBlock(name as BlockName);
         },
+        undefined,
         "warning"
       );
     } else {

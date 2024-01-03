@@ -60,7 +60,11 @@ const BasicTable = ({
 
             {Object.keys(objectArray[0]).map((obj: string | any, i) => {
               if (obj.toString().toLowerCase() !== "id") {
-                return <th key={obj}>{capitalizeAndSpace(obj)}</th>;
+                return (
+                  <th key={"TableHead_" + obj + i}>
+                    {capitalizeAndSpace(obj)}
+                  </th>
+                );
               } else return null;
             })}
           </tr>
@@ -69,7 +73,7 @@ const BasicTable = ({
           {objectArray?.map((obj: string | any, i) => {
             return (
               <tr
-                key={"TableRow_" + obj}
+                key={"TableRow_" + obj + i}
                 className="cursor-pointer text-center transition-colors duration-200 hover:bg-base-100"
                 onClick={() => {
                   !onRowClick && obj.id

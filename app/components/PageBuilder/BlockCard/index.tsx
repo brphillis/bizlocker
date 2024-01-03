@@ -31,7 +31,7 @@ const BlockCard = ({
         <div className="text-xs"># {index + 1}</div>
         {/* ICON */}
         <div className="flex gap-3">
-          <BlockIcon blockName={name} size={18} styles={"mt-[3px]"} />
+          <BlockIcon blockName={name} size={18} extendStyle={"mt-[3px]"} />
           <p className="font-bold">{capitalizeFirst(name)}</p>
         </div>
       </div>

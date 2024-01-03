@@ -103,7 +103,7 @@ const Account = () => {
           label="First Name"
           placeholder="First Name"
           customWidth="w-full"
-          styles="input-bordered"
+          extendStyle="input-bordered"
           type="text"
           defaultValue={userDetails?.firstName || undefined}
           validationErrors={validationErrors}
@@ -114,7 +114,7 @@ const Account = () => {
           label="Last Name"
           placeholder="Last Name"
           customWidth="w-full"
-          styles="input-bordered"
+          extendStyle="input-bordered"
           type="text"
           defaultValue={userDetails?.lastName || undefined}
           validationErrors={validationErrors}
@@ -125,7 +125,7 @@ const Account = () => {
           label="Phone Number"
           placeholder="Phone Number"
           customWidth="w-full"
-          styles="input-bordered"
+          extendStyle="input-bordered"
           type="text"
           defaultValue={userDetails?.phoneNumber || undefined}
           validationErrors={validationErrors}
@@ -150,7 +150,7 @@ const Account = () => {
           label="Date of Birth"
           placeholder="Date of Birth"
           customWidth="w-full"
-          styles="input-bordered"
+          extendStyle="input-bordered"
           type="date"
           defaultValue={
             userDetails?.dateOfBirth

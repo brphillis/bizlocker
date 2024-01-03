@@ -333,7 +333,7 @@ const ModifyStaff = () => {
             <SelectCountry
               defaultValue={staffMember?.address?.country}
               validationErrors={validationErrors}
-              styles="!w-full"
+              extendStyle="!w-full"
             />
 
             {changingPassword && (role === "DEVELOPER" || role === "ADMIN") && (

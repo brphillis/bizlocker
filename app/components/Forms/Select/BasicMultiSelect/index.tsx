@@ -7,7 +7,7 @@ type Props = {
   defaultValues?: SelectValue[] | null;
   extendStyle?: string;
   customWidth?: string;
-  labelColor?: string;
+  labelStyle?: string;
 };
 
 const BasicMultiSelect = ({
@@ -17,7 +17,7 @@ const BasicMultiSelect = ({
   defaultValues,
   extendStyle,
   customWidth,
-  labelColor,
+  labelStyle,
 }: Props) => {
   const [selectedValues, setSelectedValues] = useState<string[] | undefined>(
     defaultValues ? defaultValues?.map((e) => e?.id.toString()) : undefined
@@ -40,7 +40,7 @@ const BasicMultiSelect = ({
       <label className="label">
         <span
           className={`label-text  ${
-            labelColor ? labelColor : "text-brand-black"
+            labelStyle ? labelStyle : "text-brand-black"
           }`}
         >
           {label}

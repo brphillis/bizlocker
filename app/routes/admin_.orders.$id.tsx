@@ -303,14 +303,17 @@ const ModifyOrder = () => {
               defaultValue={address?.postcode}
             />
 
-            <SelectCountry defaultValue={address?.country} styles="!w-full" />
+            <SelectCountry
+              defaultValue={address?.country}
+              extendStyle="!w-full"
+            />
 
             <PhoneInput
               name="phoneNumber"
               label="Phone Number"
               placeholder="Phone Number"
               customWidth="w-full"
-              styles="input-bordered"
+              extendStyle="input-bordered"
               type="text"
               defaultValue={order?.phoneNumber || undefined}
             />
