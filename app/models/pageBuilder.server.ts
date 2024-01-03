@@ -1,3 +1,12 @@
+import { prisma } from "~/db.server";
+import { createISODate } from "~/helpers/dateHelpers";
+import type { BlockName } from "~/utility/blockMaster/types";
+import { findUniqueStringsInArrays } from "~/helpers/arrayHelpers";
+import { getUserDataFromSession, STAFF_SESSION_KEY } from "~/session.server";
+import {
+  activeContentTypes,
+  blockMaster,
+} from "~/utility/blockMaster/blockMaster";
 import type {
   Block,
   BlockOptions,
@@ -5,40 +14,30 @@ import type {
   PreviewPage,
   Staff,
 } from "@prisma/client";
-import { prisma } from "~/db.server";
-import { findUniqueStringsInArrays } from "~/helpers/arrayHelpers";
-import { getContentBlockCredentialsFromPageBlock } from "~/helpers/blockHelpers";
-import { createISODate } from "~/helpers/dateHelpers";
 import {
   updateImage_Integration,
   uploadImage_Integration,
 } from "~/integrations/_master/storage";
-import { STAFF_SESSION_KEY, getUserDataFromSession } from "~/session.server";
 import {
-  includeAllBlockTypes,
-  includeBlocksData,
-} from "~/utility/blockMaster/blockMaster";
-import {
-  type PageType,
   includeAllPageTypes,
   pageBlockHasPageConnection,
   type NewBlockData,
+  type PageType,
 } from "~/utility/pageBuilder";
-import type { BlockContent, BlockWithBlockOptions } from "./blocks.server";
-import type { BlockName } from "~/utility/blockMaster/types";
+import type { BlockContentWithDetails } from "./blocks.server";
 
 export interface Page extends PreviewPage {
   previewPage?: PreviewPage[] | null;
-  blocks: BlockWithBlockOptions[];
+  blocks: BlockWithContent[];
   thumbnail?: Image | null;
 }
 
-export interface PageBlock {
+export interface BlockWithContent {
   id: string;
   pageBlockId: string;
   name: BlockName;
   page: Page;
-  content: BlockContent;
+  content: BlockContentWithDetails;
   blockOptions: BlockOptions[];
 }
 
@@ -58,12 +57,27 @@ export const getPageType = async (
         id: id ? parseInt(id) : id,
       },
       include: {
-        blocks: includeBlocksData,
+        blocks: {
+          include: {
+            blockOptions: true,
+            content: {
+              include: activeContentTypes,
+            },
+          },
+        },
         previewPage: {
           select: {
             id: true,
             publisher: true,
             publishedAt: true,
+            blocks: {
+              include: {
+                blockOptions: true,
+                content: {
+                  include: activeContentTypes,
+                },
+              },
+            },
           },
         },
       },
@@ -85,7 +99,14 @@ export const getPageType = async (
         id: id ? parseInt(id) : id,
       },
       include: {
-        blocks: includeBlocksData,
+        blocks: {
+          include: {
+            blockOptions: true,
+            content: {
+              include: activeContentTypes,
+            },
+          },
+        },
       },
     });
 
@@ -292,7 +313,7 @@ export const updatePageBlock = async (
   const previewPage = await prisma.previewPage.findUnique({
     where: { id: parseInt(pageId) },
     include: {
-      ...includeAllBlockTypes(),
+      blocks: true,
       ...includeAllPageTypes(["previewPage"], true),
     },
   });
@@ -338,32 +359,25 @@ export const updatePageBlock = async (
   if (
     previewContainsBlock &&
     existingBlock &&
-    existingBlock[`${blockName}BlockId`] &&
+    existingBlock.id &&
     !publishedContainsBlock
   ) {
-    await removeBlock(
-      existingBlock[`${blockName}BlockId`]!,
-      blockName,
-      previewPage.id.toString()
-    );
+    await removeBlock(existingBlock.name, blockName, previewPage.id.toString());
   } else if (
     existingBlock &&
-    existingBlock[`${blockName}BlockId`] &&
+    existingBlock.id &&
     previewContainsBlock &&
     publishedContainsBlock
   ) {
-    await disconnectBlock(
-      existingBlock[`${blockName}BlockId`]!,
-      blockName,
-      previewPage.id.toString()
-    );
+    await disconnectBlock(existingBlock.id, previewPage.id.toString());
   }
 
   // Create New Block
-
   const newBlock = await prisma.block.create({
     data: {
       previewPage: { connect: { id: previewPage.id } },
+      name: blockName,
+      icon: blockMaster.find((e) => e.name === blockName)?.icon || "",
     },
   });
 
@@ -379,7 +393,7 @@ export const updatePageBlock = async (
     // Populate the updates object based on the provided values
     for (const field in contentData) {
       if (contentData.hasOwnProperty(field)) {
-        const value = contentData[field as keyof BlockContent];
+        const value = contentData[field as keyof BlockContentWithDetails];
 
         if (
           (Array.isArray(value) &&
@@ -391,17 +405,17 @@ export const updatePageBlock = async (
         ) {
           // the value is an Enum or array of Enums
 
-          updates[field as keyof BlockContent] = value;
+          updates[field as keyof BlockContentWithDetails] = value;
         } else if (value) {
           // If the value is truthy (not null or undefined)
           if (Array.isArray(value) && value.length > 0) {
             // If it's an array, use 'connect' to connect multiple records
-            updates[field as keyof BlockContent] = {
+            updates[field as keyof BlockContentWithDetails] = {
               connect: value.map((item) => ({ id: parseInt(item as any) })),
             };
           } else if (value && !isNaN(parseInt(value))) {
             // If it's not an array, use 'connect' to connect a single record
-            updates[field as keyof BlockContent] = {
+            updates[field as keyof BlockContentWithDetails] = {
               connect: { id: parseInt(value as any) },
             };
           }
@@ -410,32 +424,21 @@ export const updatePageBlock = async (
     }
 
     // create the BlockContent
-    const createBlockContent = prisma[`${blockName}BlockContent`].create as (
-      args: any
-    ) => any;
-
-    const createdBlockContent = await createBlockContent({
+    const createdBlockContent = await prisma.blockContent.create({
       data: updates,
     });
 
-    // create the Block
-    const createContentBlock = prisma[`${blockName}Block`].create as (
-      args: any
-    ) => any;
-
-    const createdContentBlock = await createContentBlock({
+    // update the block with the content
+    await prisma.block.update({
+      where: {
+        id: newBlock.id,
+      },
       data: {
-        name: blockName,
         content: {
           connect: { id: createdBlockContent.id },
         },
-      },
-    });
-
-    await prisma.block.update({
-      where: { id: newBlock.id },
-      data: {
-        [`${blockName}Block`]: { connect: { id: createdContentBlock.id } },
+        name: blockName,
+        icon: blockMaster.find((e) => e.name === blockName)?.icon || "",
       },
     });
 
@@ -626,17 +629,39 @@ export const publishPage = async (
         blocksToValidate.map(async (id: string) => {
           const blockToCheck = await prisma.block.findUnique({
             where: { id },
-            include: includeAllPageTypes(undefined, true),
+            include: {
+              content: true,
+              blockOptions: true,
+              ...includeAllPageTypes(undefined, true),
+            },
           });
 
           if (blockToCheck && !pageBlockHasPageConnection(blockToCheck)) {
-            const blockCredentials =
-              getContentBlockCredentialsFromPageBlock(blockToCheck);
-
-            if (blockCredentials) {
-              const { blockId, blockName } = blockCredentials;
-              await removeBlock(blockId, blockName as BlockName);
+            if (blockToCheck?.content?.id) {
+              await prisma.blockContent.delete({
+                where: {
+                  id: blockToCheck.content.id,
+                },
+              });
             }
+
+            const options = await prisma.blockOptions.findFirst({
+              where: { blockId: blockToCheck.id },
+            });
+
+            if (options) {
+              await prisma.blockOptions.delete({
+                where: {
+                  id: options.id,
+                },
+              });
+            }
+
+            await prisma.block.delete({
+              where: {
+                id: blockToCheck.id,
+              },
+            });
           }
         })
       );
@@ -709,12 +734,11 @@ export const revertPreviewChanges = async (
 
 export const disconnectBlock = async (
   contentBlockId: string,
-  blockName: BlockName,
   previewPageId: string
 ): Promise<{ success: boolean }> => {
   try {
     const pageBlock = await prisma.block.findFirst({
-      where: { [`${blockName}BlockId`]: contentBlockId },
+      where: { id: contentBlockId },
     });
 
     if (pageBlock) {
@@ -725,7 +749,10 @@ export const disconnectBlock = async (
             disconnect: { id: parseInt(previewPageId) },
           },
         },
-        include: includeAllPageTypes(undefined, true),
+        include: {
+          content: true,
+          ...includeAllPageTypes(undefined, true),
+        },
       });
 
       const previewPage = await prisma.previewPage.findUnique({
@@ -745,12 +772,19 @@ export const disconnectBlock = async (
 
       // Delete block if it has no remaining page connections
       if (!pageBlockHasPageConnection(disconnectedBlock)) {
-        const blockCredentials =
-          getContentBlockCredentialsFromPageBlock(disconnectedBlock);
-        if (blockCredentials) {
-          const { blockId, blockName } = blockCredentials;
-          await removeBlock(blockId, blockName as BlockName);
+        if (disconnectedBlock?.content?.id) {
+          await prisma.blockContent.delete({
+            where: {
+              id: disconnectedBlock.content.id,
+            },
+          });
         }
+
+        await prisma.block.delete({
+          where: {
+            id: disconnectedBlock.id,
+          },
+        });
       }
     } else {
       throw new Error("PageBlock Not Found");
@@ -767,29 +801,23 @@ export const removeBlock = async (
   blockName: BlockName,
   previewPageId?: string
 ): Promise<{ success: true }> => {
-  // We search for the content block to find the page block
-  const findBlock = prisma[`${blockName}Block`].findUnique as (
-    args: any
-  ) => any;
-
-  const foundBlockType = await findBlock({
-    where: { id: contentBlockId },
+  // We search for the block to find the page block
+  const foundBlock = await prisma.block.findUnique({
+    where: {
+      id: contentBlockId,
+    },
     include: {
-      block: {
-        include: {
-          blockOptions: true,
-        },
-      },
+      blockOptions: true,
       content: true,
     },
   });
 
-  const blockContentId = foundBlockType?.content?.id; // block content id eg:bannerBlockContent
-  const blockTypeId = foundBlockType?.id; // block type id eg:bannerBlock
-  const blockOptionsIds = foundBlockType?.block.blockOptions?.map(
+  const blockContentId = foundBlock?.content?.id;
+  const blockTypeId = foundBlock?.id;
+  const blockOptionsIds = foundBlock?.blockOptions?.map(
     (e: BlockOptions) => e.id
   );
-  const pageBlockId = foundBlockType.block.id; // page block id
+  const pageBlockId = foundBlock?.id; // page block id
 
   // Delete the BlockOptions
   if (blockOptionsIds) {
@@ -802,34 +830,20 @@ export const removeBlock = async (
     });
   }
 
-  // Delete the blockContent eg: BannerBlockContent
-  if (blockContentId) {
-    const deleteBlockContent = prisma[`${blockName}BlockContent`].delete as (
-      args: any
-    ) => any;
+  // Delete the BlockContent
+  await prisma.blockContent.delete({
+    where: {
+      id: blockContentId,
+    },
+  });
 
-    await deleteBlockContent({
-      where: { id: blockContentId },
-    });
-  }
-
-  // Delete the blockType eg: BannerBlock
-  if (blockTypeId) {
-    const deleteBlockType = prisma[`${blockName}Block`].delete as (
-      args: any
-    ) => any;
-
-    await deleteBlockType({
-      where: { id: blockTypeId },
-    });
-  }
-
-  // Delete the PageBlock
-  if (pageBlockId) {
-    await prisma.block.delete({
-      where: { id: pageBlockId },
-    });
-  }
+  // Delete the Block
+  await prisma.block.delete({
+    where: {
+      id: blockTypeId,
+      name: blockName,
+    },
+  });
 
   //if we are deleting from the page we correct the order
   if (previewPageId) {

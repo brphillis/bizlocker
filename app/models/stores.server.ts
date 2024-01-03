@@ -1,4 +1,4 @@
-import type { MapBlockContent, Store } from "@prisma/client";
+import type { BlockContent, Store } from "@prisma/client";
 import { prisma } from "~/db.server";
 import type { OrderItemWithDetails } from "./orders.server";
 import type { StaffWithDetails } from "./auth/staff.server";
@@ -13,7 +13,7 @@ export interface StoreWithDetails extends Store {
   stock?: StockLevelWithDetails[] | null;
   orderItem?: OrderItemWithDetails[] | null;
   staff?: StaffWithDetails[] | null;
-  mapBlockContent?: MapBlockContent[] | null;
+  blockContent?: BlockContent[] | null;
   team?: TeamWithStaff[] | null;
   address?: AddressWithDetails | null;
   fromStoreStockRequest?: StockTransferRequestWithDetails[] | null;

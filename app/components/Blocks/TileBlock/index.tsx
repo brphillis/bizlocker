@@ -1,4 +1,4 @@
-import type { BlockContent } from "~/models/blocks.server";
+import type { BlockContentWithDetails } from "~/models/blocks.server";
 import type { BlockOptions } from "@prisma/client";
 import PatternBackground from "~/components/Layout/PatternBackground";
 import {
@@ -11,7 +11,7 @@ import IconTile from "./IconTile";
 import { getThemeColorValueByName } from "~/utility/colors";
 
 type Props = {
-  content: BlockContent;
+  content: BlockContentWithDetails;
   options: BlockOptions[];
 };
 
@@ -65,7 +65,7 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
 
       {joinedContent?.map((contentData: any, i: number) => {
         const contentType = determineSingleContentType(
-          contentData as BlockContent
+          contentData as BlockContentWithDetails
         );
 
         const { name, link, imageSrc } =

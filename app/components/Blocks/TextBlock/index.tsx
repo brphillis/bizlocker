@@ -1,11 +1,11 @@
-import type { BlockContent } from "~/models/blocks.server";
+import type { BlockContentWithDetails } from "~/models/blocks.server";
 import type { BlockOptions } from "@prisma/client";
 import { parseOptions } from "~/utility/parseOptions";
 import parse from "html-react-parser";
 import { getThemeColorValueByName } from "~/utility/colors";
 
 type Props = {
-  content: BlockContent;
+  content: BlockContentWithDetails;
   options: BlockOptions[];
 };
 

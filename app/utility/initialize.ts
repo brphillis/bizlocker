@@ -6,20 +6,29 @@ export const createInitialDeveloper = async () => {
   const hashedPassword = await bcrypt.hash("Erhjadc7!", salt);
 
   try {
-    await prisma.staff.create({
-      data: {
+    const existingDev = await prisma.staff.findFirst({
+      where: {
         email: "brock@brockdev.com.au",
-        password: hashedPassword,
-        role: "DEVELOPER",
-        userDetails: {
-          create: {},
-        },
-        address: {
-          create: {},
-        },
       },
     });
-    console.log("Initial admin created");
+
+    if (!existingDev) {
+      await prisma.staff.create({
+        data: {
+          email: "brock@brockdev.com.au",
+          password: hashedPassword,
+          role: "DEVELOPER",
+          userDetails: {
+            create: {},
+          },
+          address: {
+            create: {},
+          },
+        },
+      });
+
+      console.log("Initial admin created");
+    }
   } catch (error: any) {
     if (error.code === "P2002") {
       console.log("Initial developer already created, skipping creation.");
@@ -32,10 +41,12 @@ export const createInitialDeveloper = async () => {
 };
 
 export const createSeedData = async () => {
+  console.log("RUNNING SEED CREATION");
   try {
     await createHomePage();
     await createBrand();
     await createRandomProductSubCategories();
+    await createInitialDeveloper();
   } catch (error) {
     console.error("Error creating products and categories:", error);
   } finally {

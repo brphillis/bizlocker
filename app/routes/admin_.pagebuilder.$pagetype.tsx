@@ -6,13 +6,12 @@ import {
 } from "@remix-run/node";
 import type { ActionReturnTypes } from "~/utility/actionTypes";
 import type { BlockOptions, PreviewPage } from "@prisma/client";
-import type { BlockContentType, BlockName } from "~/utility/blockMaster/types";
+import type { BlockContentType } from "~/utility/blockMaster/types";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import PageBuilder from "~/components/PageBuilder";
 import {
   type Page,
-  type PageBlock,
   changeBlockOrder,
   disconnectBlock,
   getPageType,
@@ -20,6 +19,7 @@ import {
   revertPreviewChanges,
   updatePageBlock,
   upsertPageMeta,
+  type BlockWithContent,
 } from "~/models/pageBuilder.server";
 import LargeCollapse from "~/components/Collapse/LargeCollapse";
 import { getBrands } from "~/models/brands.server";
@@ -75,7 +75,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const page = await getPageType(pageType as PageType, true, id);
 
   let previewPages: PreviewPage[] | null | undefined = null;
-  let blocks: PageBlock[] | null = null;
+  let blocks: BlockWithContent[] | null = null;
   let currentPreviewPage: Page | null = null;
 
   if (page) {
@@ -121,7 +121,6 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
     articleCategories,
     backgroundColor,
     blockId,
-    blockName,
     contentType,
     description,
     index,
@@ -311,11 +310,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
       return json({ actionPreview, actionBlocks });
 
     case "delete":
-      await disconnectBlock(
-        blockId as string,
-        blockName as BlockName,
-        previewPageId as string
-      );
+      await disconnectBlock(blockId as string, previewPageId as string);
       actionPreview = await getPreviewPage(previewPageId as string);
       actionBlocks = await getBlocks(actionPreview as any);
 
@@ -362,7 +357,7 @@ const ManageHomePage = () => {
     currentPreviewPage
   );
 
-  const [currentBlocks, setCurrentBlocks] = useState<PageBlock[] | null>(
+  const [currentBlocks, setCurrentBlocks] = useState<BlockWithContent[] | null>(
     blocks || null
   );
 

@@ -1,10 +1,9 @@
 import type {
-  BannerBlockContent,
+  BlockContent,
   Campaign,
   Gender,
   Image,
   Promotion,
-  TileBlockContent,
 } from "@prisma/client";
 import { prisma } from "~/db.server";
 import { getRandomOneOrTwo } from "~/helpers/numberHelpers";
@@ -18,13 +17,12 @@ import type { ProductSubCategoryWithDetails } from "./productSubCategories.serve
 import type { DepartmentWithDetails } from "./departments.server";
 
 export interface CampaignWithContent extends Campaign {
-  bannerBlockContent?: BannerBlockContent[] | null;
   bannerImage?: Image | null;
   brands?: BrandWithContent[] | null;
   department?: DepartmentWithDetails | null;
   excludedProducts?: ProductWithDetails[] | null;
   productSubCategories?: ProductSubCategoryWithDetails[] | null;
-  tileBlockContent?: TileBlockContent[] | null;
+  blockContent?: BlockContent[] | null;
   tileImage?: Image | null;
 }
 

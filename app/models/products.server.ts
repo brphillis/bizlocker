@@ -3,7 +3,7 @@ import { getOrderBy } from "~/helpers/sortHelpers";
 import { calculateDiscountPercentage } from "~/helpers/numberHelpers";
 import { uploadImage_Integration } from "~/integrations/_master/storage";
 import type {
-  HeroBlockContent,
+  BlockContent,
   Image,
   Product,
   ProductVariant,
@@ -26,7 +26,7 @@ export interface ProductWithDetails extends Product {
   productVariant?: ProductVariantWithDetails | null;
   brand?: BrandWithContent | null;
   campaigns?: CampaignWithContent[] | null;
-  heroBlockContent?: HeroBlockContent[] | null;
+  blockContent?: BlockContent[] | null;
   heroImage?: Image | null;
   images?: Image[] | null;
   productSubCategories?: ProductSubCategoryWithDetails[] | null;

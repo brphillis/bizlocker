@@ -3,49 +3,49 @@ import type {
   ArticleCategory,
   Block,
   BlockOptions,
-  Brand,
   Gender,
   Product,
   ProductCategory,
   ProductSubCategory,
 } from "@prisma/client";
-import { searchArticles } from "./articles.server";
-import { searchProducts } from "./products.server";
+import { searchArticles, type ArticleWithContent } from "./articles.server";
+import { searchProducts, type ProductWithDetails } from "./products.server";
 import type { ImageWithDetails } from "./images.server";
 import type { StoreWithDetails } from "./stores.server";
-import type { PageBlock } from "./pageBuilder.server";
+import type { BlockWithContent } from "./pageBuilder.server";
 import type { PromotionWithContent } from "./promotions.server";
 import type { CampaignWithContent } from "./campaigns.server";
+import type { BrandWithContent } from "./brands.server";
 
 export interface BlockWithBlockOptions extends Block {
   blockOptions: BlockOptions;
 }
 
-export interface BlockContent {
-  richText?: string;
-  productCategory?: ProductCategory[] | ProductCategory;
-  productSubCategory?: ProductSubCategory[] | ProductSubCategory;
-  articleCategory?: ArticleCategory[] | ArticleCategory;
+export interface BlockContentWithDetails {
+  articleCategory?: ArticleCategory[] | null;
   gender?: Gender[] | Gender;
-  brand?: Brand[] | Brand;
-  promotion?: PromotionWithContent[] | PromotionWithContent;
-  campaign?: CampaignWithContent[] | CampaignWithContent;
-  image?: ImageWithDetails[] | ImageWithDetails;
-  product: Product[] | Product | null;
-  article?: Article[] | Article;
-  store?: StoreWithDetails[] | StoreWithDetails;
+  productSubCategory?: ProductSubCategory[] | null;
+  block?: BlockWithContent | null;
+  brand?: BrandWithContent[] | null;
+  campaign?: CampaignWithContent[] | null;
+  product: ProductWithDetails[] | null;
+  productCategory?: ProductCategory[] | null;
+  richText?: string;
+  emptyItem?: string[];
+  promotion?: PromotionWithContent[] | null;
+  image?: ImageWithDetails[] | null;
+  article?: ArticleWithContent[] | null;
+  store?: StoreWithDetails[] | null;
   icon?: string[];
-  brandId: number;
-  productCategoryId: number;
-  productSubCategoryId: number;
-  articleCategoryId: number;
 }
 
 export const fetchBlockProducts = async (
-  block: PageBlock
+  block: BlockWithContent
 ): Promise<Product[] | null> => {
-  const { brandId, gender, productCategoryId, productSubCategoryId } =
-    block.content || {};
+  const brandId = block.content.brand?.[0].id;
+  const productCategoryId = block.content.productCategory?.[0].id;
+  const productSubCategoryId = block.content.productSubCategory?.[0].id;
+  const gender = block.content.gender?.[0];
 
   const { count, sortBy, sortOrder } = block.blockOptions[0] || {};
 
@@ -69,9 +69,10 @@ export const fetchBlockProducts = async (
 };
 
 export const fetchBlockArticles = async (
-  block: PageBlock
+  block: BlockWithContent
 ): Promise<Article[]> => {
-  const { articleCategoryId } = block.content || {};
+  const articleCategoryId = block.content.articleCategory?.[0].id;
+
   const { count, sortBy, sortOrder } = block.blockOptions[0] || {};
 
   const formDataObject: { [key: string]: string } = {};

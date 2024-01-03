@@ -1,4 +1,4 @@
-import type { BlockContent } from "~/models/blocks.server";
+import type { BlockContentWithDetails } from "~/models/blocks.server";
 import type { BrandWithContent } from "~/models/brands.server";
 import type { CampaignWithContent } from "~/models/campaigns.server";
 import type { PromotionWithContent } from "~/models/promotions.server";
@@ -26,20 +26,19 @@ export const getItemOption = (
 };
 
 export const determineSingleContentType = (
-  content: BlockContent
+  content: BlockContentWithDetails
 ): BlockContentType | undefined => {
   if (content) {
     for (const key in content) {
       if (
         content.hasOwnProperty(key) &&
-        typeof content[key as keyof BlockContent] === "object" &&
-        content[key as keyof BlockContent] !== null // Check for null or undefined
+        typeof content[key as keyof BlockContentWithDetails] === "object" &&
+        content[key as keyof BlockContentWithDetails] !== null // Check for null or undefined
       ) {
         // Ensure that the value is an object before calling Object.keys
-        const nestedObject = content[key as keyof BlockContent] as Record<
-          string,
-          any
-        >;
+        const nestedObject = content[
+          key as keyof BlockContentWithDetails
+        ] as Record<string, any>;
 
         if (Object.keys(nestedObject).length > 0) {
           return key as BlockContentType;
@@ -50,7 +49,9 @@ export const determineSingleContentType = (
   return undefined;
 };
 
-export const concatBlockContent = (content: BlockContent): BlockContent[] => {
+export const concatBlockContent = (
+  content: BlockContentWithDetails
+): BlockContentWithDetails[] => {
   const joinedContent: any = [];
 
   if ((content?.image as Image[])?.length > 0) {
@@ -84,7 +85,7 @@ export const concatBlockContent = (content: BlockContent): BlockContent[] => {
 
 export const buildContentImageFromContent = (
   contentType: BlockContentType,
-  contentData: BlockContent,
+  contentData: any,
   tileOrBanner?: "tileImage" | "bannerImage",
   itemLink?: string
 ) => {
@@ -107,15 +108,13 @@ export const buildContentImageFromContent = (
     link = `/products?brand=${name}`;
     imageSrc = brand?.image?.href || imageSrc;
   } else if (contentType === "image") {
-    imageSrc =
-      ((contentData as BlockContent)?.image as Image)?.href || imageSrc;
-    name = ((contentData as BlockContent)?.image as Image)?.altText || "";
+    imageSrc = (contentData?.image as Image)?.href || imageSrc;
+    name = (contentData?.image as Image)?.altText || "";
 
     if (itemLink) {
       link = itemLink;
     }
   }
-
   //if a custom links is set in the editor we over ride with it
   return { name, link, imageSrc };
 };

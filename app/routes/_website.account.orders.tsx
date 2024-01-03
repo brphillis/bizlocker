@@ -97,13 +97,15 @@ const Orders = () => {
                     }
                   >
                     <th className="!rounded-none">{i + 1}</th>
-                    <td>
-                      {new Date(createdAt).toLocaleDateString("en-US", {
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric",
-                      })}
-                    </td>
+                    {createdAt && (
+                      <td>
+                        {new Date(createdAt).toLocaleDateString("en-US", {
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                        })}
+                      </td>
+                    )}
                     <td>{itemNames.join(", ").substring(0, 32)}</td>
                     <td>${totalPrice.toFixed(2).toString()}</td>
                     <td className="!rounded-none">

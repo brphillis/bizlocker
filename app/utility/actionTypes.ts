@@ -1,7 +1,7 @@
 import type { AusPostDeliveryOption } from "~/integrations/auspost/types";
 import type { ValidationErrors } from "./validate";
 import type { User } from "@prisma/client";
-import type { Page, PageBlock } from "~/models/pageBuilder.server";
+import type { Page, BlockWithContent } from "~/models/pageBuilder.server";
 import type { PageNotification } from "~/hooks/PageNotification";
 
 export interface ActionReturnTypes {
@@ -16,6 +16,6 @@ export interface ActionReturnTypes {
   searchResults: any;
   metaValidationError: string[];
   actionPreview: Page;
-  actionBlocks: PageBlock[];
+  actionBlocks: BlockWithContent[];
   user: User;
 }

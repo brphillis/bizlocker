@@ -29,11 +29,12 @@ const ArticleCard = ({ article, hasDescription }: Props) => {
           <div>
             <p className="font-bold">{article.title}</p>
             <div>
-              {new Date(article.createdAt).toLocaleDateString("en-US", {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-              })}
+              {article?.createdAt &&
+                new Date(article?.createdAt).toLocaleDateString("en-US", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                })}
             </div>
           </div>
 

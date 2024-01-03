@@ -1,10 +1,5 @@
 import { prisma } from "~/db.server";
-import type {
-  Brand,
-  Image,
-  ProductBlockContent,
-  TileBlockContent,
-} from "@prisma/client";
+import type { BlockContent, Brand, Image } from "@prisma/client";
 import {
   updateImage_Integration,
   uploadImage_Integration,
@@ -16,9 +11,8 @@ export type { Brand } from "@prisma/client";
 export interface BrandWithContent extends Brand {
   campaigns?: CampaignWithContent[] | null;
   image?: Image | null;
-  productBlockContent?: ProductBlockContent[] | null;
+  blockContent?: BlockContent[] | null;
   products?: ProductWithDetails[] | null;
-  tileBlockContent?: TileBlockContent[] | null;
 }
 
 export const getBrands = async (): Promise<Brand[] | null> => {

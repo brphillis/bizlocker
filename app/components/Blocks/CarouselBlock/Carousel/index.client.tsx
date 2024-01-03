@@ -1,5 +1,5 @@
 import type { BlockOptions } from "@prisma/client";
-import type { BlockContent } from "~/models/blocks.server";
+import type { BlockContentWithDetails } from "~/models/blocks.server";
 import { Suspense } from "react";
 import { Pagination, Autoplay, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -14,7 +14,7 @@ import Slide from "../Slide";
 import { IoChevronBackOutline, IoChevronForward } from "react-icons/io5";
 
 type Props = {
-  joinedContent: BlockContent[];
+  joinedContent: BlockContentWithDetails[];
   options: BlockOptions;
 };
 
@@ -192,7 +192,7 @@ const Carousel = ({ joinedContent, options }: Props) => {
                 const index = i + 1 > trueSlideLength ? i - trueSlideLength : i;
 
                 const contentType = determineSingleContentType(
-                  contentData as BlockContent
+                  contentData as BlockContentWithDetails
                 );
 
                 const { name, imageSrc } =

@@ -12,8 +12,9 @@ import type {
   ProductSubCategory,
   Promotion,
 } from "@prisma/client";
-import type { BlockContent } from "~/models/blocks.server";
-import type { Page, PageBlock } from "~/models/pageBuilder.server";
+
+import type { BlockWithContent, Page } from "~/models/pageBuilder.server";
+import type { BlockContentWithDetails } from "~/models/blocks.server";
 import BlockSelect from "./BlockSelect";
 import ResultsTable from "./Content/ResultsTable";
 import ContentSearch from "./Content/ContentSearch";
@@ -30,7 +31,7 @@ import BlockCard from "./BlockCard";
 
 type Props = {
   previewPage: Page;
-  blocks: PageBlock[] | null;
+  blocks: BlockWithContent[] | null;
   searchResults: Campaign[] | Promotion[] | Image[] | undefined;
   updateSuccess: boolean;
   productCategories: ProductCategory[];
@@ -164,7 +165,7 @@ const PageBuilder = ({
 
       {!editingContent && (
         <div className="scrollbar-hide mx-auto mt-3 flex w-[520px] max-w-full flex-col items-center gap-3 overflow-x-hidden px-3">
-          {blocks?.map(({ id, name }: PageBlock, i) => {
+          {blocks?.map(({ id, name }: BlockWithContent, i) => {
             return (
               <React.Fragment key={"BlockCard_" + i}>
                 <BlockCard
@@ -264,7 +265,9 @@ const PageBuilder = ({
               productCategories={productCategories}
               productSubCategories={productSubCategories}
               brands={brands}
-              defaultValues={blocks?.[editingIndex]?.content as BlockContent}
+              defaultValues={
+                blocks?.[editingIndex]?.content as BlockContentWithDetails
+              }
             />
 
             <ArticleBlockOptions
@@ -272,14 +275,18 @@ const PageBuilder = ({
               selectedItems={selectedItems}
               setSelectedItems={setSelectedItems}
               articleCategories={articleCategories}
-              defaultValues={blocks?.[editingIndex]?.content as BlockContent}
+              defaultValues={
+                blocks?.[editingIndex]?.content as BlockContentWithDetails
+              }
             />
 
             <TextBlockContentModule
               selectedBlock={selectedBlock}
               selectedItems={selectedItems}
               setSelectedItems={setSelectedItems}
-              defaultValue={blocks?.[editingIndex]?.content as BlockContent}
+              defaultValue={
+                blocks?.[editingIndex]?.content as BlockContentWithDetails
+              }
             />
           </div>
 

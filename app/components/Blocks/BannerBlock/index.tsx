@@ -1,5 +1,5 @@
 import type { BlockOptions } from "@prisma/client";
-import type { BlockContent } from "~/models/blocks.server";
+import type { BlockContentWithDetails } from "~/models/blocks.server";
 import {
   buildContentImageFromContent,
   determineSingleContentType,
@@ -8,7 +8,7 @@ import ImageBanner from "./ImageBanner";
 import TextBanner from "./TextBanner";
 
 type Props = {
-  content: BlockContent;
+  content: BlockContentWithDetails;
   options?: BlockOptions[];
 };
 
@@ -23,7 +23,9 @@ const BannerBlock = ({ content, options: ArrayOptions }: Props) => {
     linkPrimary,
   } = options || {};
 
-  const contentType = determineSingleContentType(content as BlockContent);
+  const contentType = determineSingleContentType(
+    content as BlockContentWithDetails
+  );
   let imageName: string | null = null,
     imageLink: string | null = null,
     imageSrc: string | null = null;

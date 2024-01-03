@@ -1,6 +1,6 @@
 import { useNavigate } from "@remix-run/react";
 import { getThemeColorValueByName } from "~/utility/colors";
-import type { BlockContent } from "~/models/blocks.server";
+import type { BlockContentWithDetails } from "~/models/blocks.server";
 import type { BlockOptions, Product } from "@prisma/client";
 import PatternBackground from "~/components/Layout/PatternBackground";
 import { determineSingleContentType } from "~/helpers/blockContentHelpers";
@@ -9,7 +9,7 @@ import type {
   ProductWithDetails,
 } from "~/models/products.server";
 type Props = {
-  content: BlockContent;
+  content: BlockContentWithDetails;
   options: BlockOptions[];
 };
 
@@ -42,7 +42,7 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
     linkSecondary,
   } = options || {};
 
-  const product = content.product as ProductWithDetails;
+  const product = content.product?.[0] as ProductWithDetails;
   const productImage = product.heroImage?.href;
 
   const contentType = determineSingleContentType(content);
@@ -128,7 +128,7 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
                       navigate(
                         contentType === "product"
                           ? `/product/SlackSki%20Jacket?id=${
-                              (content.product as Product).id
+                              (content.product?.[0] as Product).id
                             }`
                           : (linkPrimary as string)
                       )

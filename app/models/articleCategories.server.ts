@@ -1,6 +1,6 @@
 import type {
-  ArticleBlockContent,
   ArticleCategory,
+  BlockContent,
   PreviewPage,
 } from "@prisma/client";
 import type { ArticleWithContent } from "./articles.server";
@@ -8,7 +8,7 @@ import type { ProductCategoryWithDetails } from "./productCategories.server";
 import { prisma } from "~/db.server";
 
 export interface ArticleCategoryWithDetails extends ArticleCategory {
-  articleBlockContent?: ArticleBlockContent[] | null;
+  blockContent?: BlockContent[] | null;
   articles?: ArticleWithContent[] | null;
   previewPages?: PreviewPage[] | null;
   productCategory?: ProductCategoryWithDetails | null;

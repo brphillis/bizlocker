@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { BlockContent } from "~/models/blocks.server";
+import type { BlockContentWithDetails } from "~/models/blocks.server";
 import RichTextInput from "~/components/Forms/Input/RichTextInput/index.client";
 import type { BlockName, BlockContentType } from "~/utility/blockMaster/types";
 
@@ -7,7 +7,7 @@ type Props = {
   selectedBlock: BlockName | undefined;
   selectedItems: ContentSelection[];
   setSelectedItems: Function;
-  defaultValue: BlockContent;
+  defaultValue: BlockContentWithDetails;
 };
 
 const TextBlockContentModule = ({

@@ -7,7 +7,6 @@ import { searchPromotions } from "~/models/promotions.server";
 import {
   type BlockMaster,
   blockMaster,
-  blockTypes,
   getBlockContentTypes,
 } from "./blockMaster/blockMaster";
 import { searchBrands } from "~/models/brands.server";
@@ -43,20 +42,20 @@ export const includeAllPageTypes = (
     pageTypesObject[type as PageType] = {
       include: {
         blocks: {
-          include: {},
+          include: { content: true },
         },
       },
     };
 
-    blockTypes.forEach((blockType) => {
-      if (withBlocks) {
-        pageTypesObject[type as PageType].include.blocks.include[blockType] =
-          true;
-      } else {
-        pageTypesObject[type as PageType].include.blocks.include[blockType] =
-          false;
-      }
-    });
+    // blockTypes.forEach((blockType) => {
+    //   if (withBlocks) {
+    //     pageTypesObject[type as PageType].include.blocks.include[blockType] =
+    //       true;
+    //   } else {
+    //     pageTypesObject[type as PageType].include.blocks.include[blockType] =
+    //       false;
+    //   }
+    // });
   });
 
   if (excludedPages) {

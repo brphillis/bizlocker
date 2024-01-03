@@ -3,7 +3,7 @@ import type {
   ProductCategory,
   ProductSubCategory,
 } from "@prisma/client";
-import type { BlockContent } from "~/models/blocks.server";
+import type { BlockContentWithDetails } from "~/models/blocks.server";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import SelectGender from "~/components/Forms/Select/SelectGender";
 import type { BlockContentType, BlockName } from "~/utility/blockMaster/types";
@@ -15,7 +15,7 @@ type Props = {
   productCategories: ProductCategory[];
   productSubCategories: ProductSubCategory[];
   brands: Brand[] | null;
-  defaultValues: BlockContent;
+  defaultValues: BlockContentWithDetails;
 };
 
 const ProductBlockOptions = ({
@@ -54,7 +54,7 @@ const ProductBlockOptions = ({
                   labelStyle="text-brand-white"
                   placeholder="Product Category"
                   selections={productCategories as unknown as SelectValue[]}
-                  defaultValue={defaultValues?.productCategoryId?.toString()}
+                  defaultValue={defaultValues?.productCategory?.[0].id?.toString()}
                   onChange={(selectedValue) => {
                     selectItem(
                       "productCategory",
@@ -69,7 +69,7 @@ const ProductBlockOptions = ({
                   labelStyle="text-brand-white"
                   placeholder="Product SubCategory"
                   selections={productSubCategories as unknown as SelectValue[]}
-                  defaultValue={defaultValues?.productSubCategoryId?.toString()}
+                  defaultValue={defaultValues?.productSubCategory?.[0]?.id.toString()}
                   onChange={(selectedValue) =>
                     selectItem(
                       "productSubCategory",
@@ -84,7 +84,7 @@ const ProductBlockOptions = ({
                   labelStyle="text-brand-white"
                   placeholder="Brand"
                   selections={brands as unknown as SelectValue[]}
-                  defaultValue={defaultValues?.brandId?.toString()}
+                  defaultValue={defaultValues?.brand?.[0].id.toString()}
                   onChange={(selectedValue) =>
                     selectItem("brand", parseInt(selectedValue as string))
                   }
@@ -93,7 +93,7 @@ const ProductBlockOptions = ({
                 <SelectGender
                   label="Gender"
                   labelStyle="text-brand-white"
-                  defaultValue={defaultValues?.gender?.toString()}
+                  defaultValue={defaultValues?.gender?.[0].toString()}
                   onChange={(selectedValue) =>
                     selectItem("gender", selectedValue as string)
                   }

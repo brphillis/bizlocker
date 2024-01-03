@@ -1,8 +1,8 @@
 import type { WebPage } from "@prisma/client";
-import { type PageBlock, removeBlock } from "./pageBuilder.server";
+import { type BlockWithContent, removeBlock } from "./pageBuilder.server";
 import { type TypedResponse, redirect } from "@remix-run/server-runtime";
 import { prisma } from "~/db.server";
-import { includeBlocksData } from "~/utility/blockMaster/blockMaster";
+import { activeContentTypes } from "~/utility/blockMaster/blockMaster";
 import { getOrderBy } from "~/helpers/sortHelpers";
 import { getBlocks } from "~/helpers/blockHelpers";
 
@@ -23,7 +23,14 @@ export const getWebPage = async (
   return await prisma.webPage.findUnique({
     where: whereClause,
     include: {
-      blocks: includeBlocksData,
+      blocks: {
+        include: {
+          blockOptions: true,
+          content: {
+            include: activeContentTypes,
+          },
+        },
+      },
       thumbnail: true,
     },
   });
@@ -39,12 +46,8 @@ export const deleteWebPage = async (
     include: {
       blocks: {
         include: {
-          bannerBlock: true,
-          tileBlock: true,
-          textBlock: true,
-          productBlock: true,
-          articleBlock: true,
           blockOptions: true,
+          content: { include: activeContentTypes },
         },
       },
     },
@@ -58,7 +61,9 @@ export const deleteWebPage = async (
   const webPageBlocks = await getBlocks(webPage as any);
 
   await Promise.all(
-    webPageBlocks.map(async (e: PageBlock) => await removeBlock(e.id, e.name))
+    webPageBlocks.map(
+      async (e: BlockWithContent) => await removeBlock(e.id, e.name)
+    )
   );
 
   // Delete the webPage

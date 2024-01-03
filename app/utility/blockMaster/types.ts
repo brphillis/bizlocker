@@ -13,6 +13,7 @@ export type BlockName =
 export type BlockContentType =
   | "campaign"
   | "promotion"
+  | "emptyItem"
   | "image"
   | "product"
   | "productCategory"

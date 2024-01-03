@@ -2,18 +2,25 @@ import type { PreviewPage } from "@prisma/client";
 import { prisma } from "~/db.server";
 import {
   type Page,
-  type PageBlock,
+  type BlockWithContent,
   disconnectBlock,
 } from "./pageBuilder.server";
 import { getBlocks } from "~/helpers/blockHelpers";
-import { includeBlocksData } from "~/utility/blockMaster/blockMaster";
 import type { PageType } from "~/utility/pageBuilder";
+import { activeContentTypes } from "~/utility/blockMaster/blockMaster";
 
 export const getPreviewPage = async (id: string): Promise<Page | null> => {
   return (await prisma.previewPage.findUnique({
     where: { id: parseInt(id) },
     include: {
-      blocks: includeBlocksData,
+      blocks: {
+        include: {
+          blockOptions: true,
+          content: {
+            include: activeContentTypes,
+          },
+        },
+      },
       articleCategories: true,
       thumbnail: true,
     },
@@ -37,7 +44,9 @@ export const deletePreviewPage = async (
   const previewPage = await prisma.previewPage.findUnique({
     where: { id: parseInt(previewPageId) },
     include: {
-      blocks: includeBlocksData,
+      blocks: {
+        include: { content: true },
+      },
     },
   });
 
@@ -46,8 +55,8 @@ export const deletePreviewPage = async (
 
     // Use `Promise.all` to wait for all `disconnectBlock` promises to resolve.
     await Promise.all(
-      blocks.map(async ({ id, name }: PageBlock) => {
-        await disconnectBlock(id, name, previewPageId);
+      blocks.map(async ({ id }: BlockWithContent) => {
+        await disconnectBlock(id, previewPageId);
       })
     );
   }

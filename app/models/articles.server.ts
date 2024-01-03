@@ -7,9 +7,9 @@ import type {
 } from "@prisma/client";
 import type { BlockWithBlockOptions } from "./blocks.server";
 import { prisma } from "~/db.server";
-import { includeBlocksData } from "~/utility/blockMaster/blockMaster";
+import { activeContentTypes } from "~/utility/blockMaster/blockMaster";
 import { getOrderBy } from "~/helpers/sortHelpers";
-import { type PageBlock, removeBlock } from "./pageBuilder.server";
+import { type BlockWithContent, removeBlock } from "./pageBuilder.server";
 import { getBlocks } from "~/helpers/blockHelpers";
 
 export interface ArticleWithContent extends Article {
@@ -36,7 +36,14 @@ export const getArticle = async (
   return await prisma.article.findUnique({
     where: whereClause,
     include: {
-      blocks: includeBlocksData,
+      blocks: {
+        include: {
+          blockOptions: true,
+          content: {
+            include: activeContentTypes,
+          },
+        },
+      },
       articleCategories: {
         select: {
           id: true,
@@ -56,7 +63,14 @@ export const deleteArticle = async (
       id,
     },
     include: {
-      blocks: includeBlocksData,
+      blocks: {
+        include: {
+          blockOptions: true,
+          content: {
+            include: activeContentTypes,
+          },
+        },
+      },
     },
   });
 
@@ -68,7 +82,9 @@ export const deleteArticle = async (
   const articleBlocks = await getBlocks(article as any);
 
   await Promise.all(
-    articleBlocks.map(async (e: PageBlock) => await removeBlock(e.id, e.name))
+    articleBlocks.map(
+      async (e: BlockWithContent) => await removeBlock(e.id, e.name)
+    )
   );
 
   // Delete the article

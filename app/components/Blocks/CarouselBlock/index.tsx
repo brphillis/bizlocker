@@ -1,4 +1,4 @@
-import type { BlockContent } from "~/models/blocks.server";
+import type { BlockContentWithDetails } from "~/models/blocks.server";
 import type { BlockOptions } from "@prisma/client";
 import { ClientOnly } from "~/components/Client/ClientOnly";
 import { concatBlockContent } from "~/helpers/blockContentHelpers";
@@ -6,7 +6,7 @@ import Carousel from "./Carousel/index.client";
 import SEOCardSkeleton from "~/components/Client/Skeletons/SEOCardSkeleton";
 
 type Props = {
-  content: BlockContent;
+  content: BlockContentWithDetails;
   options: BlockOptions[];
 };
 

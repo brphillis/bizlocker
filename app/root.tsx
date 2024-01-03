@@ -45,7 +45,7 @@ export default function Root() {
 export function ErrorBoundary() {
   const response = useRouteError();
   const navigate = useNavigate();
-  console.log("RESPONSE", response);
+
   const errorCode = (response as any).status;
   const message = (response as any).statusText;
 
