@@ -18,7 +18,8 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
     return redirect("/admin/login");
   }
 
-  const id = params?.variantId;
+  let { searchParams } = new URL(request.url);
+  let id = searchParams.get("contentId");
 
   if (!id) {
     throw new Response(null, {
@@ -104,7 +105,9 @@ const ManageStock = () => {
                             label="Transfer"
                             type="button"
                             onClick={() =>
-                              navigate(`create-stock-transfer/${id}`)
+                              navigate(
+                                `create-stock-transfer?contentId=${id}&fromStore=${store?.id}`
+                              )
                             }
                           />
                         </td>

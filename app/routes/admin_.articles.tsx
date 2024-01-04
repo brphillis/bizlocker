@@ -48,8 +48,8 @@ const Articles = () => {
       <Form method="GET" className="relative h-full w-full bg-base-200 p-6">
         <AdminPageHeader
           title="Manage Articles"
-          addButtonText="Add Article"
-          createLink="/admin/pagebuilder/new?req=article"
+          buttonLabel="Add Article"
+          buttonLink="/admin/pagebuilder/new?req=article"
         />
 
         <div className="mt-3 flex flex-col">

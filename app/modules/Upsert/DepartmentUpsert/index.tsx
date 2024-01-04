@@ -1,46 +1,49 @@
-import { useEffect, useState } from "react";
-import type { ActionReturnTypes } from "~/utility/actionTypes";
-import { tokenAuth } from "~/auth.server";
-import { validateForm } from "~/utility/validate";
-import { STAFF_SESSION_KEY } from "~/session.server";
+import { type FormEvent, useEffect, useState } from "react";
+import { json } from "@remix-run/node";
+import { getFormData } from "~/helpers/formHelpers";
 import DarkOverlay from "~/components/Layout/DarkOverlay";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import FormHeader from "~/components/Forms/Headers/FormHeader";
-import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
-import {
-  type NewDepartment,
-  getDepartment,
-  upsertDepartment,
-  type DepartmentWithDetails,
-} from "~/models/departments.server";
-import {
-  Form,
-  useActionData,
-  useLoaderData,
-  useNavigate,
-} from "@remix-run/react";
-import {
-  json,
-  redirect,
-  type ActionFunctionArgs,
-  type LoaderFunctionArgs,
-} from "@remix-run/node";
-
-import "~/models/productSubCategories.server";
-import BasicMultiSelect from "~/components/Forms/Select/BasicMultiSelect";
+import type { ActionReturnTypes } from "~/utility/actionTypes";
+import { type ValidationErrors, validateForm } from "~/utility/validate";
 import { getProductCategories } from "~/models/productCategories.server";
+import BasicMultiSelect from "~/components/Forms/Select/BasicMultiSelect";
+import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
 import useNotification, {
   type PageNotification,
 } from "~/hooks/PageNotification";
+import {
+  Form,
+  type Params,
+  useActionData,
+  useLoaderData,
+  useNavigate,
+  useSubmit,
+  useSearchParams,
+} from "@remix-run/react";
+import {
+  getDepartment,
+  type DepartmentWithDetails,
+  type NewDepartment,
+  upsertDepartment,
+} from "~/models/departments.server";
 
-export const loader = async ({ request, params }: LoaderFunctionArgs) => {
-  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+import "~/models/productSubCategories.server";
 
-  if (!authenticated.valid) {
-    return redirect("/admin/login");
-  }
+const validateOptions = {
+  name: true,
+  department: true,
+  discountPercentage: true,
+  bannerImage: true,
+  tileImage: true,
+};
 
-  const id = params?.id;
+export const departmentUpsertLoader = async (
+  request: Request,
+  params: Params<string>
+) => {
+  let { searchParams } = new URL(request.url);
+  let id = searchParams.get("contentId");
 
   if (!id) {
     throw new Response(null, {
@@ -64,33 +67,29 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   return json({ department, productCategories });
 };
 
-export const action = async ({ request, params }: ActionFunctionArgs) => {
-  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
-
-  if (!authenticated.valid) {
-    return redirect("/admin/login");
-  }
-
-  const id = params.id === "add" ? undefined : params.id;
-  const form = Object.fromEntries(await request.formData());
-
-  const { name, isActive, index, displayInNavigation, productCategories } =
-    form;
-
+export const departmentUpsertAction = async (
+  request: Request,
+  params: Params<string>
+) => {
   let notification: PageNotification;
 
-  switch (form._action) {
+  let { searchParams } = new URL(request.url);
+  const contentId = searchParams.get("contentId");
+  let id = contentId === "add" || !contentId ? undefined : contentId;
+
+  const { formEntries, formErrors } = validateForm(
+    await request.formData(),
+    validateOptions
+  );
+
+  const { name, isActive, index, displayInNavigation, productCategories } =
+    formEntries;
+
+  switch (formEntries._action) {
     case "upsert":
-      const validate = {
-        name: true,
-        index: true,
-      };
-
-      const validationErrors = validateForm(form, validate);
-      if (validationErrors) {
-        return json({ validationErrors });
+      if (formErrors) {
+        return { serverValidationErrors: formErrors };
       }
-
       const departmentData: NewDepartment = {
         name: name as string,
         index: parseInt(index as string),
@@ -112,16 +111,52 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   }
 };
 
-const ModifyDepartment = () => {
-  const { department, productCategories } = useLoaderData<typeof loader>();
+type Props = {
+  asModule?: boolean;
+};
 
-  const { validationErrors, success, notification } =
+const DepartmentUpsert = ({ asModule }: Props) => {
+  const { department, productCategories } =
+    useLoaderData<typeof departmentUpsertLoader>();
+
+  const { serverValidationErrors, success, notification } =
     (useActionData() as ActionReturnTypes) || {};
 
   const navigate = useNavigate();
+  let submit = useSubmit();
+  const [searchParams] = useSearchParams();
+  const contentId = searchParams.get("contentId");
   useNotification(notification);
 
+  const [clientValidationErrors, setClientValidationErrors] =
+    useState<ValidationErrors>();
   const [loading, setLoading] = useState<boolean>(false);
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    const form = getFormData(event);
+    event.preventDefault();
+
+    const { formErrors } = validateForm(new FormData(form), validateOptions);
+    if (formErrors) {
+      setClientValidationErrors(formErrors);
+      setLoading(false);
+      return;
+    }
+
+    const submitFunction = () => {
+      submit(form, {
+        method: "POST",
+        action: `/admin/upsert/department?contentId=${contentId}`,
+        navigate: asModule ? false : true,
+      });
+    };
+
+    submitFunction();
+
+    if (asModule) {
+      navigate(-1);
+    }
+  };
 
   useEffect(() => {
     if (success) {
@@ -133,6 +168,7 @@ const ModifyDepartment = () => {
     <DarkOverlay>
       <Form
         method="POST"
+        onSubmit={handleSubmit}
         className="scrollbar-hide relative w-[500px] max-w-[100vw] overflow-y-auto bg-base-200 px-3 py-6 sm:px-6"
       >
         <FormHeader
@@ -149,7 +185,7 @@ const ModifyDepartment = () => {
           placeholder="Name"
           customWidth="w-full"
           defaultValue={department?.name || ""}
-          validationErrors={validationErrors}
+          validationErrors={serverValidationErrors || clientValidationErrors}
         />
 
         <BasicInput
@@ -159,7 +195,7 @@ const ModifyDepartment = () => {
           placeholder="Index"
           customWidth="w-full"
           defaultValue={department?.index || 0}
-          validationErrors={validationErrors}
+          validationErrors={serverValidationErrors || clientValidationErrors}
         />
 
         <div className="form-control w-full">
@@ -189,11 +225,11 @@ const ModifyDepartment = () => {
         <BackSubmitButtons
           loading={loading}
           setLoading={setLoading}
-          validationErrors={validationErrors}
+          validationErrors={serverValidationErrors || clientValidationErrors}
         />
       </Form>
     </DarkOverlay>
   );
 };
 
-export default ModifyDepartment;
+export default DepartmentUpsert;

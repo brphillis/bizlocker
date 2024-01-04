@@ -32,7 +32,11 @@ const Images = () => {
   return (
     <AdminPageWrapper>
       <div className="relative h-full w-full bg-base-200 p-6">
-        <AdminPageHeader title="Manage Images" addButtonText="Add Image" />
+        <AdminPageHeader
+          title="Manage Images"
+          buttonLabel="Add Image"
+          buttonLink="/admin/upsert/image?contentId=add"
+        />
 
         <Form method="GET">
           <AdminContentSearch title={true} imageConnection={true} />
@@ -48,9 +52,7 @@ const Images = () => {
                 src={href ?? ""}
                 alt={altText ?? "placeholder"}
                 className=" h-52 w-52 cursor-pointer object-cover transition-all duration-300 hover:scale-105 max-lg:h-44 max-lg:w-44"
-                onClick={() => {
-                  navigate(`${location.pathname + "/" + id}${location.search}`);
-                }}
+                onClick={() => navigate(`/admin/upsert/image?contentId=${id}`)}
               />
             );
           })}

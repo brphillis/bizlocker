@@ -1,5 +1,5 @@
 import type { WebPage } from "@prisma/client";
-import { type BlockWithContent, removeBlock } from "./pageBuilder.server";
+import { type BlockWithContent, disconnectBlock } from "./pageBuilder.server";
 import { type TypedResponse, redirect } from "@remix-run/server-runtime";
 import { prisma } from "~/db.server";
 import { activeContentTypes } from "~/utility/blockMaster/blockMaster";
@@ -62,7 +62,7 @@ export const deleteWebPage = async (
 
   await Promise.all(
     webPageBlocks.map(
-      async (e: BlockWithContent) => await removeBlock(e.id, e.name)
+      async (e: BlockWithContent) => await disconnectBlock(e.id, e.name)
     )
   );
 

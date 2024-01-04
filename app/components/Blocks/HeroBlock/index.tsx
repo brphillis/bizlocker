@@ -3,7 +3,7 @@ import { getThemeColorValueByName } from "~/utility/colors";
 import type { BlockContentWithDetails } from "~/models/blocks.server";
 import type { BlockOptions, Product } from "@prisma/client";
 import PatternBackground from "~/components/Layout/PatternBackground";
-import { determineSingleContentType } from "~/helpers/blockContentHelpers";
+import { determineContentType } from "~/helpers/contentHelpers";
 import type {
   ProductVariantWithDetails,
   ProductWithDetails,
@@ -45,7 +45,7 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
   const product = content.product?.[0] as ProductWithDetails;
   const productImage = product.heroImage?.href;
 
-  const contentType = determineSingleContentType(content);
+  const contentType = determineContentType(content);
 
   const getProductLowestPrice = (
     product: ProductWithDetails,

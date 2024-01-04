@@ -20,7 +20,7 @@ import {
 } from "~/integrations/_master/storage";
 import {
   includeAllPageTypes,
-  pageBlockHasPageConnection,
+  blockHasPageConnection,
   type NewBlockData,
   type PageType,
 } from "~/utility/pageBuilder";
@@ -34,7 +34,7 @@ export interface Page extends PreviewPage {
 
 export interface BlockWithContent {
   id: string;
-  pageBlockId: string;
+  blockId: string;
   name: BlockName;
   page: Page;
   content: BlockContentWithDetails;
@@ -302,7 +302,7 @@ const updateOrCreateBlockOptions = async (
   }
 };
 
-export const updatePageBlock = async (
+export const updateBlock = async (
   pageType: PageType,
   pageId: string,
   blockData: NewBlockData,
@@ -314,7 +314,7 @@ export const updatePageBlock = async (
     where: { id: parseInt(pageId) },
     include: {
       blocks: true,
-      ...includeAllPageTypes(["previewPage"], true),
+      ...includeAllPageTypes(["previewPage"]),
     },
   });
 
@@ -324,12 +324,6 @@ export const updatePageBlock = async (
 
   if (!previewPage[pageType]) {
     throw new Error(`Page has no Blocks: ${pageId}`);
-  }
-
-  let publishedPage;
-
-  if (previewPage[pageType]) {
-    publishedPage = previewPage[pageType];
   }
 
   const blocks = previewPage.blocks;
@@ -345,30 +339,7 @@ export const updatePageBlock = async (
     (e: any) => e.id === previewPage.blockOrder[itemIndex]
   );
 
-  //check if the published page contains the block already
-  const publishedContainsBlock = publishedPage?.blocks.some(
-    (e: any) => e.id === existingBlock?.id
-  );
-
-  // check if the preview page contains the block already
-  const previewContainsBlock = previewPage?.blocks.some(
-    (e: any) => e.id === existingBlock?.id
-  );
-
-  // if the preview page is creating a new version, we remove the old from the preview page
-  if (
-    previewContainsBlock &&
-    existingBlock &&
-    existingBlock.id &&
-    !publishedContainsBlock
-  ) {
-    await removeBlock(existingBlock.name, blockName, previewPage.id.toString());
-  } else if (
-    existingBlock &&
-    existingBlock.id &&
-    previewContainsBlock &&
-    publishedContainsBlock
-  ) {
+  if (existingBlock?.id) {
     await disconnectBlock(existingBlock.id, previewPage.id.toString());
   }
 
@@ -381,12 +352,12 @@ export const updatePageBlock = async (
     },
   });
 
-  // create block options for new block
+  // Create block options for new block
   if (blockOptions) {
     await updateOrCreateBlockOptions(newBlock.id, blockOptions);
   }
 
-  //Create Block
+  // Create Block
   if (blockName && contentData) {
     const updates: Record<string, any> = {};
 
@@ -468,40 +439,40 @@ export const updatePageBlock = async (
 
 export const changeBlockOrder = async (
   previewPageId: string,
-  pageBlocks: string,
+  blocks: string,
   index: number,
   direction: "up" | "down"
 ) => {
-  let pageBlockIds: string[] = [];
-  if (pageBlocks) {
-    pageBlockIds = JSON.parse(pageBlocks);
+  let blockIds: string[] = [];
+  if (blocks) {
+    blockIds = JSON.parse(blocks);
   }
 
-  if (index < 0 || index >= pageBlockIds.length) {
+  if (index < 0 || index >= blockIds.length) {
     throw new Error("Invalid index");
   }
 
   // Check if the direction is "up" and index is not 0
   if (direction === "up" && index > 0) {
     // Swap the current index with the one above it
-    const temp = pageBlockIds[index];
-    pageBlockIds[index] = pageBlockIds[index - 1];
-    pageBlockIds[index - 1] = temp;
+    const temp = blockIds[index];
+    blockIds[index] = blockIds[index - 1];
+    blockIds[index - 1] = temp;
   }
 
   // Check if the direction is "down" and index is not the last index
-  if (direction === "down" && index < pageBlockIds.length - 1) {
+  if (direction === "down" && index < blockIds.length - 1) {
     // Swap the current index with the one below it
-    const temp = pageBlockIds[index];
-    pageBlockIds[index] = pageBlockIds[index + 1];
-    pageBlockIds[index + 1] = temp;
+    const temp = blockIds[index];
+    blockIds[index] = blockIds[index + 1];
+    blockIds[index + 1] = temp;
   }
 
   // Update the block order in the database
   await prisma.previewPage.update({
     where: { id: parseInt(previewPageId) },
     data: {
-      blockOrder: pageBlockIds,
+      blockOrder: blockIds,
     },
   });
 
@@ -632,11 +603,11 @@ export const publishPage = async (
             include: {
               content: true,
               blockOptions: true,
-              ...includeAllPageTypes(undefined, true),
+              ...includeAllPageTypes(undefined),
             },
           });
 
-          if (blockToCheck && !pageBlockHasPageConnection(blockToCheck)) {
+          if (blockToCheck && !blockHasPageConnection(blockToCheck)) {
             if (blockToCheck?.content?.id) {
               await prisma.blockContent.delete({
                 where: {
@@ -701,7 +672,7 @@ export const revertPreviewChanges = async (
       },
     });
 
-    // find the published page
+    // Find the published page
     const findPage = prisma[`${pageType}`].findUnique as (args: any) => any;
 
     const currentPage = await findPage({
@@ -720,7 +691,6 @@ export const revertPreviewChanges = async (
     };
 
     // Begin update to the preview page
-
     await prisma.previewPage.update({
       where: { id: previewPage.id },
       data: updateData,
@@ -732,18 +702,55 @@ export const revertPreviewChanges = async (
   }
 };
 
+// Deletes Block from DB
+const deleteBlock = async (block: BlockWithContent) => {
+  // Delete the BlockOptions
+  const options = await prisma.blockOptions.findFirst({
+    where: {
+      blockId: block.id,
+    },
+  });
+
+  if (options) {
+    await prisma.blockOptions.delete({
+      where: {
+        id: options.id,
+      },
+    });
+  }
+
+  // Delete the BlockContent
+  if (block.content) {
+    await prisma.blockContent.delete({
+      where: {
+        id: block.content.id,
+      },
+    });
+  }
+
+  // Delete the Block
+  if (block) {
+    await prisma.block.delete({
+      where: {
+        id: block.id,
+      },
+    });
+  }
+};
+
+// Disconnects block from Page and removes if no connections exist
 export const disconnectBlock = async (
-  contentBlockId: string,
+  blockId: string,
   previewPageId: string
 ): Promise<{ success: boolean }> => {
   try {
-    const pageBlock = await prisma.block.findFirst({
-      where: { id: contentBlockId },
+    const block = await prisma.block.findFirst({
+      where: { id: blockId },
     });
 
-    if (pageBlock) {
-      const disconnectedBlock = await prisma.block.update({
-        where: { id: pageBlock.id },
+    if (block) {
+      const disconnectedBlock = (await prisma.block.update({
+        where: { id: block.id },
         data: {
           previewPage: {
             disconnect: { id: parseInt(previewPageId) },
@@ -751,16 +758,17 @@ export const disconnectBlock = async (
         },
         include: {
           content: true,
-          ...includeAllPageTypes(undefined, true),
+          blockOptions: true,
+          ...includeAllPageTypes(undefined),
         },
-      });
+      })) as unknown as BlockWithContent;
 
       const previewPage = await prisma.previewPage.findUnique({
         where: { id: parseInt(previewPageId) },
       });
 
       const newBlockOrder = previewPage?.blockOrder.filter(
-        (e) => e !== pageBlock.id
+        (e) => e !== block.id
       );
 
       await prisma.previewPage.update({
@@ -771,97 +779,15 @@ export const disconnectBlock = async (
       });
 
       // Delete block if it has no remaining page connections
-      if (!pageBlockHasPageConnection(disconnectedBlock)) {
-        if (disconnectedBlock?.content?.id) {
-          await prisma.blockContent.delete({
-            where: {
-              id: disconnectedBlock.content.id,
-            },
-          });
-        }
-
-        await prisma.block.delete({
-          where: {
-            id: disconnectedBlock.id,
-          },
-        });
+      if (!blockHasPageConnection(disconnectedBlock)) {
+        await deleteBlock(disconnectedBlock);
       }
     } else {
-      throw new Error("PageBlock Not Found");
+      throw new Error("Block Not Found");
     }
 
     return { success: true };
   } catch (error) {
     throw new Error("Error Removing Block");
   }
-};
-
-export const removeBlock = async (
-  contentBlockId: string,
-  blockName: BlockName,
-  previewPageId?: string
-): Promise<{ success: true }> => {
-  // We search for the block to find the page block
-  const foundBlock = await prisma.block.findUnique({
-    where: {
-      id: contentBlockId,
-    },
-    include: {
-      blockOptions: true,
-      content: true,
-    },
-  });
-
-  const blockContentId = foundBlock?.content?.id;
-  const blockTypeId = foundBlock?.id;
-  const blockOptionsIds = foundBlock?.blockOptions?.map(
-    (e: BlockOptions) => e.id
-  );
-  const pageBlockId = foundBlock?.id; // page block id
-
-  // Delete the BlockOptions
-  if (blockOptionsIds) {
-    await prisma.blockOptions.deleteMany({
-      where: {
-        id: {
-          in: blockOptionsIds,
-        },
-      },
-    });
-  }
-
-  // Delete the BlockContent
-  await prisma.blockContent.delete({
-    where: {
-      id: blockContentId,
-    },
-  });
-
-  // Delete the Block
-  await prisma.block.delete({
-    where: {
-      id: blockTypeId,
-      name: blockName,
-    },
-  });
-
-  //if we are deleting from the page we correct the order
-  if (previewPageId) {
-    const previewPage = await prisma.previewPage.findUnique({
-      where: { id: parseInt(previewPageId) },
-    });
-
-    const newBlockOrder = previewPage?.blockOrder.filter(
-      (e) => e !== pageBlockId
-    );
-
-    await prisma.previewPage.update({
-      where: { id: parseInt(previewPageId) },
-      data: {
-        blockOrder: newBlockOrder,
-      },
-    });
-  }
-
-  return { success: true };
 };

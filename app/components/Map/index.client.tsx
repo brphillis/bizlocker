@@ -2,7 +2,7 @@ import type { LatLngTuple, Map as LeafletMap } from "leaflet";
 import type { StoreWithDetails } from "~/models/stores.server";
 import { IoCall, IoPrint } from "react-icons/io5";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import { getCountrFromISO3166 } from "~/utility/countryList";
+import { getCountryFromISO3166 } from "~/utility/countryList";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { forwardRef, useImperativeHandle, useRef } from "react";
@@ -103,7 +103,7 @@ const Map = forwardRef<MapFunctions, Props>(
                           <div>{suburb + " " + state + " " + postcode}</div>
                           <div>
                             {country &&
-                              getCountrFromISO3166(country)?.toUpperCase()}
+                              getCountryFromISO3166(country)?.toUpperCase()}
                           </div>
                         </div>
 

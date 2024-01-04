@@ -67,16 +67,11 @@ const ProductVariantFormModule = ({
 
   const handleAddVariant = () => {
     const form = new FormData();
-    const formDataObject: Record<string, FormDataEntryValue> = {};
 
     for (const key in activeVariant) {
       if (activeVariant.hasOwnProperty(key)) {
         form.append(key, (activeVariant as any)[key]);
       }
-    }
-
-    for (const [key, value] of form.entries()) {
-      formDataObject[key] = value;
     }
 
     const validate = {
@@ -85,9 +80,10 @@ const ProductVariantFormModule = ({
       sku: true,
     };
 
-    const validationErrors = validateForm(formDataObject, validate);
-    if (validationErrors) {
-      setValidationErrors(validationErrors);
+    const { formErrors } = validateForm(form, validate);
+
+    if (formErrors) {
+      setValidationErrors(formErrors);
       return;
     }
 
@@ -351,7 +347,9 @@ const ProductVariantFormModule = ({
                 className="btn btn-primary flex !h-[41px] !min-h-[41px] w-[103px] items-center justify-center !rounded-sm sm:!ml-0"
                 onClick={() =>
                   navigate(
-                    `stock/${(activeVariant as ProductVariantWithDetails)?.id}`,
+                    `stock?contentId=${
+                      (activeVariant as ProductVariantWithDetails)?.id
+                    }`,
                     { replace: true }
                   )
                 }

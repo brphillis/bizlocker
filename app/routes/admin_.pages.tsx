@@ -41,8 +41,8 @@ const Pages = () => {
       <Form method="GET" className="relative h-full w-full bg-base-200 p-6">
         <AdminPageHeader
           title="Manage Pages"
-          addButtonText="Add Page"
-          createLink="/admin/pagebuilder/new?req=webpage"
+          buttonLabel="Add Page"
+          buttonLink="/admin/pagebuilder/new?req=webpage"
         />
 
         <AdminContentSearch title={true} />

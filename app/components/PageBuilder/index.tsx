@@ -26,7 +26,7 @@ import BackSubmitButtons from "../Forms/Buttons/BackSubmitButtons";
 import BlockOptionsModule from "./Options";
 import TextBlockContentModule from "./Content/TextBlockContent";
 import BoxedTabs from "../Tabs/BoxedTabs";
-import { blockHasMaxContentItems } from "~/helpers/blockContentHelpers";
+import { blockHasMaxContentItems } from "~/helpers/contentHelpers";
 import BlockCard from "./BlockCard";
 
 type Props = {
@@ -116,12 +116,12 @@ const PageBuilder = ({
   };
 
   const changeBlockOrder = (index: number, direction: "up" | "down") => {
-    const pageBlockIds = JSON.stringify(previewPage.blocks.map((e) => e.id));
+    const blockIds = JSON.stringify(previewPage.blocks.map((e) => e.id));
     const formData = new FormData();
 
     formData.set("_action", "rearrange");
     formData.set("previewPageId", previewPage.id.toString() || "");
-    formData.set("pageBlocks", pageBlockIds || "");
+    formData.set("blocks", blockIds || "");
     formData.set("index", index.toString() || "");
     formData.set("direction", direction.toString() || "");
 

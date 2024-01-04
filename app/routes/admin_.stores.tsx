@@ -2,7 +2,13 @@ import Pagination from "~/components/Pagination";
 import { redirect, type LoaderFunctionArgs, json } from "@remix-run/node";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
-import { Form, Outlet, useLoaderData, useSearchParams } from "@remix-run/react";
+import {
+  Form,
+  Outlet,
+  useLoaderData,
+  useNavigate,
+  useSearchParams,
+} from "@remix-run/react";
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
 import { type StoreWithDetails, searchStores } from "~/models/stores.server";
@@ -29,6 +35,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 const ManageStores = () => {
   const { stores, totalPages } = useLoaderData<typeof loader>();
 
+  const navigate = useNavigate();
+
   const [searchParams] = useSearchParams();
 
   const currentPage: number = Number(searchParams.get("pageNumber")) || 1;
@@ -36,7 +44,11 @@ const ManageStores = () => {
   return (
     <AdminPageWrapper>
       <Form method="GET" className="relative h-full w-full bg-base-200 p-6">
-        <AdminPageHeader title="Manage Stores" addButtonText="Add Store" />
+        <AdminPageHeader
+          title="Manage Stores"
+          buttonLabel="Add Store"
+          buttonLink="/admin/upsert/store?contentId=add"
+        />
 
         <AdminContentSearch name={true} />
 
@@ -44,6 +56,7 @@ const ManageStores = () => {
 
         {stores && stores.length > 0 && (
           <BasicTable
+            onRowClick={(id) => navigate(`/admin/upsert/store?contentId=${id}`)}
             currentPage={currentPage}
             objectArray={stores?.map((e: StoreWithDetails) => ({
               id: e.id,

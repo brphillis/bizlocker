@@ -6,6 +6,7 @@ import type { PageNotification } from "~/hooks/PageNotification";
 
 export interface ActionReturnTypes {
   validationErrors: ValidationErrors;
+  serverValidationErrors: ValidationErrors;
   validationError: string;
   permissionError: string;
   notification: PageNotification;

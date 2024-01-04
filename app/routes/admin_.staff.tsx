@@ -1,5 +1,11 @@
 import { redirect, type LoaderFunctionArgs, json } from "@remix-run/node";
-import { Form, Outlet, useLoaderData, useSearchParams } from "@remix-run/react";
+import {
+  Form,
+  Outlet,
+  useLoaderData,
+  useNavigate,
+  useSearchParams,
+} from "@remix-run/react";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import Pagination from "~/components/Pagination";
@@ -33,13 +39,19 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 const Staff = () => {
   const { staff, totalPages } = useLoaderData<typeof loader>();
 
+  const navigate = useNavigate();
+
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("pageNumber")) || 1;
 
   return (
     <AdminPageWrapper>
       <Form method="GET" className="relative h-full w-full bg-base-200 p-6">
-        <AdminPageHeader title="Manage Staff" addButtonText="Add Staff" />
+        <AdminPageHeader
+          title="Manage Staff"
+          buttonLabel="Add Staff"
+          buttonLink="/admin/upsert/staff?contentId=add"
+        />
 
         <AdminContentSearch firstName={true} lastName={true} email={true} />
 
@@ -47,6 +59,7 @@ const Staff = () => {
 
         {staff && staff.length > 0 && (
           <BasicTable
+            onRowClick={(id) => navigate(`/admin/upsert/staff?contentId=${id}`)}
             currentPage={currentPage}
             objectArray={staff?.map((e: StaffWithDetails) => ({
               id: e.id,

@@ -5,7 +5,13 @@ import { json, redirect, type LoaderFunctionArgs } from "@remix-run/node";
 import { searchTeams, type TeamWithStaff } from "~/models/teams.server";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
-import { Form, Outlet, useLoaderData, useSearchParams } from "@remix-run/react";
+import {
+  Form,
+  Outlet,
+  useLoaderData,
+  useNavigate,
+  useSearchParams,
+} from "@remix-run/react";
 import BasicTable from "~/components/Tables/BasicTable";
 import AdminContentSearch from "~/components/Search/AdminContentSearch";
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -28,6 +34,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 const ManageTeams = () => {
   const { teams, totalPages } = useLoaderData<typeof loader>();
 
+  const navigate = useNavigate();
+
   const [searchParams] = useSearchParams();
 
   const currentPage: number = Number(searchParams.get("pageNumber")) || 1;
@@ -35,7 +43,11 @@ const ManageTeams = () => {
   return (
     <AdminPageWrapper>
       <Form method="GET" className="relative h-full w-full bg-base-200 p-6">
-        <AdminPageHeader title="Manage Teams" addButtonText="Add Team" />
+        <AdminPageHeader
+          title="Manage Teams"
+          buttonLabel="Add Team"
+          buttonLink="/admin/upsert/team?contentId=add"
+        />
 
         <AdminContentSearch name={true} />
 
@@ -43,6 +55,12 @@ const ManageTeams = () => {
 
         {teams && teams.length > 0 && (
           <BasicTable
+            onRowClick={(id) =>
+              navigate({
+                pathname: "/admin/upsert/team",
+                search: `?contentId=${id}`,
+              })
+            }
             currentPage={currentPage}
             objectArray={teams?.map((e: TeamWithStaff) => ({
               id: e.id,

@@ -1,6 +1,5 @@
 import type { Image, Product } from "@prisma/client";
 import type { BlockWithContent, Page } from "~/models/pageBuilder.server";
-import type { BlockName } from "~/utility/blockMaster/types";
 import {
   fetchBlockProducts,
   type BlockContentWithDetails,
@@ -14,7 +13,7 @@ export const getBlocks = async (
   fetchNestedContent?: boolean
 ): Promise<BlockWithContent[]> => {
   // Populate the page with the active block types
-  let sortedBlocks = sortPageBlocks(page);
+  let sortedBlocks = sortBlocks(page);
 
   // Populate content in blocks that requires a search query
   if (fetchNestedContent) {
@@ -92,28 +91,8 @@ export const getBlockDefaultValues = (
   return defaultValues.filter((notNull) => notNull) as ContentSelection[];
 };
 
-// Returns the id and name of the content block belonging to a pageblock
-export const getContentBlockCredentialsFromPageBlock = (
-  obj: Record<string, any>
-): { blockId: any; blockName: BlockName } | null => {
-  for (const key in obj) {
-    if (
-      key.endsWith("BlockId") &&
-      obj[key] !== null &&
-      obj[key] !== undefined
-    ) {
-      const slicedName = key.slice(0, -7);
-      return {
-        blockId: obj[key],
-        blockName: slicedName as BlockName,
-      };
-    }
-  }
-  return null;
-};
-
 // sorts page blocks by the pages blockOrder array
-export const sortPageBlocks = ({
+export const sortBlocks = ({
   blocks,
   blockOrder,
 }: Page): BlockWithContent[] => {

@@ -1,43 +1,46 @@
-import type { ActionReturnTypes } from "~/utility/actionTypes";
+import { type FormEvent } from "react";
 import { IoClose } from "react-icons/io5";
 import { tokenAuth } from "~/auth.server";
+import { json, redirect } from "@remix-run/node";
+import { getFormData } from "~/helpers/formHelpers";
 import { STAFF_SESSION_KEY } from "~/session.server";
 import DarkOverlay from "~/components/Layout/DarkOverlay";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import PhoneInput from "~/components/Forms/Input/PhoneInput";
+import type { ActionReturnTypes } from "~/utility/actionTypes";
 import SelectCountry from "~/components/Forms/Select/SelectCountry";
 import OrderStatusSteps from "~/components/Indicators/OrderStatusSteps";
-import {
-  Form,
-  useActionData,
-  useLoaderData,
-  useLocation,
-  useNavigate,
-} from "@remix-run/react";
-import {
-  json,
-  redirect,
-  type ActionFunctionArgs,
-  type LoaderFunctionArgs,
-} from "@remix-run/node";
-import {
-  type OrderItemWithDetails,
-  getOrder,
-  updateOrderShippingDetails,
-  updateOrderStatus,
-} from "~/models/orders.server";
 import useNotification, {
   type PageNotification,
 } from "~/hooks/PageNotification";
+import {
+  Form,
+  type Params,
+  useActionData,
+  useLoaderData,
+  useNavigate,
+  useParams,
+  useSubmit,
+} from "@remix-run/react";
+import {
+  getOrder,
+  type OrderItemWithDetails,
+  updateOrderShippingDetails,
+  updateOrderStatus,
+} from "~/models/orders.server";
 
-export const loader = async ({ request, params }: LoaderFunctionArgs) => {
+export const orderUpsertLoader = async (
+  request: Request,
+  params: Params<string>
+) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
 
   if (!authenticated.valid) {
     return redirect("/admin/login");
   }
 
-  const id = params.id;
+  let { searchParams } = new URL(request.url);
+  let id = searchParams.get("contentId") || undefined;
 
   if (!id) {
     throw new Response(null, {
@@ -58,11 +61,14 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   return json({ order });
 };
 
-export const action = async ({ request }: ActionFunctionArgs) => {
+export const orderUpsertAction = async (
+  request: Request,
+  params: Params<string>
+) => {
+  let notification: PageNotification;
+
   const form = Object.fromEntries(await request.formData());
   const { orderId } = form;
-
-  let notification: PageNotification;
 
   switch (form._action) {
     case "updateStatus":
@@ -111,15 +117,30 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   }
 };
 
-const ModifyOrder = () => {
-  const { order } = useLoaderData<typeof loader>();
+const OrderUpsert = () => {
+  const { order } = useLoaderData<typeof orderUpsertLoader>();
   const { notification } = (useActionData() as ActionReturnTypes) || {};
 
-  const { pathname } = useLocation();
   const navigate = useNavigate();
+  let submit = useSubmit();
+  const { id } = useParams() || {};
   useNotification(notification);
 
   const { items, address, status, orderId } = order;
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    const form = getFormData(event);
+    event.preventDefault();
+
+    const submitFunction = () => {
+      submit(form, {
+        method: "POST",
+        action: `/admin/upsert/order?contentId=${id}`,
+      });
+    };
+
+    submitFunction();
+  };
 
   return (
     <DarkOverlay>
@@ -165,7 +186,8 @@ const ModifyOrder = () => {
           {order?.status !== "created" && (
             <Form
               method="POST"
-              action={pathname}
+              action={`/admin/order/upsert/${id}`}
+              onSubmit={handleSubmit}
               className="mt-6 flex flex-col items-center justify-center gap-3"
             >
               <select name="status" className=" select w-full max-w-xs">
@@ -235,7 +257,8 @@ const ModifyOrder = () => {
 
           <Form
             method="POST"
-            action={pathname}
+            action={`/admin/order/upsert/${id}`}
+            onSubmit={handleSubmit}
             className="flex flex-col items-center gap-3"
           >
             <div className="pb-3 text-center">Shipping Details</div>
@@ -370,7 +393,7 @@ const ModifyOrder = () => {
             <button
               type="button"
               className="btn btn-primary w-max !rounded-sm"
-              onClick={() => navigate("..")}
+              onClick={() => navigate(-1)}
             >
               Back
             </button>
@@ -381,4 +404,4 @@ const ModifyOrder = () => {
   );
 };
 
-export default ModifyOrder;
+export default OrderUpsert;

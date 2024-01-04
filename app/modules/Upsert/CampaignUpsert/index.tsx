@@ -1,50 +1,66 @@
-import type { Image } from "@prisma/client";
-import type { ActionReturnTypes } from "~/utility/actionTypes";
-import {
-  type LoaderFunctionArgs,
-  type ActionFunctionArgs,
-  redirect,
-  json,
-} from "@remix-run/node";
-import {
-  Form,
-  useActionData,
-  useLoaderData,
-  useNavigate,
-} from "@remix-run/react";
-import { useEffect, useState } from "react";
+import { type FormEvent, useEffect, useState } from "react";
 import { tokenAuth } from "~/auth.server";
-import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
-import FormHeader from "~/components/Forms/Headers/FormHeader";
+import type { Image } from "@prisma/client";
+import { getBrands } from "~/models/brands.server";
+import { getFormData } from "~/helpers/formHelpers";
+import { STAFF_SESSION_KEY } from "~/session.server";
+import DarkOverlay from "~/components/Layout/DarkOverlay";
 import BasicInput from "~/components/Forms/Input/BasicInput";
-import BasicMultiSelect from "~/components/Forms/Select/BasicMultiSelect";
+import { getDepartments } from "~/models/departments.server";
+import FormHeader from "~/components/Forms/Headers/FormHeader";
+import type { ActionReturnTypes } from "~/utility/actionTypes";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import SelectGender from "~/components/Forms/Select/SelectGender";
-import UploadImageCollapse from "~/components/Forms/Upload/UploadImageCollapse";
-import DarkOverlay from "~/components/Layout/DarkOverlay";
-import { getBrands } from "~/models/brands.server";
-import {
-  type CampaignWithContent,
-  getCampaign,
-  upsertCampaign,
-  type NewCampaign,
-} from "~/models/campaigns.server";
-import { getDepartments } from "~/models/departments.server";
+import { validateForm, type ValidationErrors } from "~/utility/validate";
+import BasicMultiSelect from "~/components/Forms/Select/BasicMultiSelect";
+import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
 import { getProductSubCategories } from "~/models/productSubCategories.server";
-import { STAFF_SESSION_KEY } from "~/session.server";
-import { validateForm } from "~/utility/validate";
+import UploadImageCollapse from "~/components/Forms/Upload/UploadImageCollapse";
 import useNotification, {
   type PageNotification,
 } from "~/hooks/PageNotification";
+import { json, redirect } from "@remix-run/node";
+import {
+  Form,
+  type Params,
+  useActionData,
+  useLoaderData,
+  useNavigate,
+  useSubmit,
+  useSearchParams,
+} from "@remix-run/react";
+import {
+  getCampaign,
+  type CampaignWithContent,
+  type NewCampaign,
+  upsertCampaign,
+} from "~/models/campaigns.server";
 
-export const loader = async ({ request, params }: LoaderFunctionArgs) => {
+const validateOptions = {
+  name: true,
+  department: true,
+  productSubCategories: true,
+  brands: true,
+  minSaleRange: true,
+  maxSaleRange: true,
+  gender: true,
+  bannerImage: true,
+  tileImage: true,
+};
+
+export const campaignUpsertLoader = async (
+  request: Request,
+  params: Params<string>
+) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
 
   if (!authenticated.valid) {
     return redirect("/login");
   }
 
-  const id = params?.id;
+  let { searchParams } = new URL(request.url);
+  const contentId = searchParams.get("contentId");
+  let id = contentId === "add" || !contentId ? undefined : contentId;
 
   if (!id) {
     throw new Response(null, {
@@ -77,7 +93,10 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   return json({ campaign, departments, productSubCategories, brands });
 };
 
-export const action = async ({ request, params }: ActionFunctionArgs) => {
+export const campaignUpsertAction = async (
+  request: Request,
+  params: Params<string>
+) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
 
   if (!authenticated.valid) {
@@ -85,7 +104,11 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   }
 
   const id = params.id === "add" ? undefined : params.id;
-  const form = Object.fromEntries(await request.formData());
+
+  const { formEntries, formErrors } = validateForm(
+    await request.formData(),
+    validateOptions
+  );
 
   const {
     name,
@@ -98,27 +121,14 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
     bannerImage,
     tileImage,
     isActive,
-  } = form;
+  } = formEntries;
 
   let notification: PageNotification;
 
-  switch (form._action) {
+  switch (formEntries._action) {
     case "upsert":
-      const validate = {
-        name: true,
-        department: true,
-        productSubCategories: true,
-        brands: true,
-        minSaleRange: true,
-        maxSaleRange: true,
-        gender: true,
-        bannerImage: true,
-        tileImage: true,
-      };
-
-      const validationErrors = validateForm(form, validate);
-      if (validationErrors) {
-        return json({ validationErrors });
+      if (formErrors) {
+        return json({ serverValidationErrors: formErrors });
       }
 
       const parsedBanner = bannerImage
@@ -163,16 +173,51 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   }
 };
 
-const ModifyCampaign = () => {
+type Props = {
+  asModule?: boolean;
+};
+
+const CampaignUpsert = ({ asModule }: Props) => {
   const { campaign, departments, productSubCategories, brands } =
-    useLoaderData<typeof loader>();
-  const { validationErrors, success, notification } =
+    useLoaderData<typeof campaignUpsertLoader>() || {};
+  const { serverValidationErrors, success, notification } =
     (useActionData() as ActionReturnTypes) || {};
 
   const navigate = useNavigate();
+  let submit = useSubmit();
+  const [searchParams] = useSearchParams();
+  const contentId = searchParams.get("contentId");
   useNotification(notification);
 
+  const [clientValidationErrors, setClientValidationErrors] =
+    useState<ValidationErrors>();
   const [loading, setLoading] = useState<boolean>(false);
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    const form = getFormData(event);
+    event.preventDefault();
+
+    const { formErrors } = validateForm(new FormData(form), validateOptions);
+    if (formErrors) {
+      setClientValidationErrors(formErrors);
+      setLoading(false);
+      return;
+    }
+
+    const submitFunction = () => {
+      submit(form, {
+        method: "POST",
+        action: `/admin/upsert/campaign?contentId=${contentId}`,
+        navigate: asModule ? false : true,
+      });
+    };
+
+    submitFunction();
+
+    if (asModule) {
+      navigate(-1);
+    }
+  };
 
   useEffect(() => {
     if (success) {
@@ -184,6 +229,7 @@ const ModifyCampaign = () => {
     <DarkOverlay>
       <Form
         method="POST"
+        onSubmit={handleSubmit}
         className="scrollbar-hide relative w-[600px] max-w-full overflow-y-auto bg-base-200 px-3 py-6 sm:px-6"
       >
         <FormHeader
@@ -202,7 +248,9 @@ const ModifyCampaign = () => {
                 name="name"
                 placeholder="Name"
                 defaultValue={campaign?.name || ""}
-                validationErrors={validationErrors}
+                validationErrors={
+                  serverValidationErrors || clientValidationErrors
+                }
               />
 
               <BasicSelect
@@ -241,7 +289,9 @@ const ModifyCampaign = () => {
                 name="minSaleRange"
                 placeholder="Discount %"
                 defaultValue={campaign?.minSaleRange || ""}
-                validationErrors={validationErrors}
+                validationErrors={
+                  serverValidationErrors || clientValidationErrors
+                }
               />
 
               <BasicInput
@@ -250,7 +300,9 @@ const ModifyCampaign = () => {
                 name="maxSaleRange"
                 placeholder="Discount %"
                 defaultValue={campaign?.maxSaleRange || ""}
-                validationErrors={validationErrors}
+                validationErrors={
+                  serverValidationErrors || clientValidationErrors
+                }
               />
             </div>
 
@@ -286,11 +338,11 @@ const ModifyCampaign = () => {
         <BackSubmitButtons
           loading={loading}
           setLoading={setLoading}
-          validationErrors={validationErrors}
+          validationErrors={serverValidationErrors || clientValidationErrors}
         />
       </Form>
     </DarkOverlay>
   );
 };
 
-export default ModifyCampaign;
+export default CampaignUpsert;

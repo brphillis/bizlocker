@@ -71,7 +71,7 @@ export const createStockTransferRequest = async (
 
   await createStoreNotification(
     toStoreId,
-    `<a href='/admin/stock-transfers/${stockTransfer.id}'>A New Stock Transfer Request Has Been Recieved!</a>`
+    `<a href='/admin/upsert/stockTransfer?contentId=${stockTransfer.id}'>A New Stock Transfer Request Has Been Recieved!</a>`
   );
 
   return stockTransfer;

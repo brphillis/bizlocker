@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
-import { tokenAuth } from "~/auth.server";
-import { validateForm } from "~/utility/validate";
-import { STAFF_SESSION_KEY } from "~/session.server";
+import { type FormEvent, useEffect, useState } from "react";
+import { json } from "@remix-run/node";
+import { getFormData } from "~/helpers/formHelpers";
 import type { Image, Product } from "@prisma/client";
 import DarkOverlay from "~/components/Layout/DarkOverlay";
 import BasicInput from "~/components/Forms/Input/BasicInput";
@@ -10,42 +9,46 @@ import FormHeader from "~/components/Forms/Headers/FormHeader";
 import type { ActionReturnTypes } from "~/utility/actionTypes";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import SelectGender from "~/components/Forms/Select/SelectGender";
+import BasicTextArea from "~/components/Forms/TextArea/BasicInput";
 import type { ProductWithDetails } from "~/models/products.server";
+import { type ValidationErrors, validateForm } from "~/utility/validate";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
 import UploadImageCollapse from "~/components/Forms/Upload/UploadImageCollapse";
+import useNotification, {
+  type PageNotification,
+} from "~/hooks/PageNotification";
 import {
   Form,
+  type Params,
   useActionData,
   useLoaderData,
   useNavigate,
+  useSubmit,
+  useSearchParams,
 } from "@remix-run/react";
-import {
-  json,
-  redirect,
-  type ActionFunctionArgs,
-  type LoaderFunctionArgs,
-} from "@remix-run/node";
 import {
   getPromotion,
   type NewPromotion,
   type PromotionWithContent,
   upsertPromotion,
 } from "~/models/promotions.server";
-import BasicTextArea from "~/components/Forms/TextArea/BasicInput";
-import useNotification, {
-  type PageNotification,
-} from "~/hooks/PageNotification";
 
-export const loader = async ({ request, params }: LoaderFunctionArgs) => {
-  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+const validateOptions = {
+  name: true,
+  department: true,
+  discountPercentage: true,
+  bannerImage: true,
+  tileImage: true,
+};
 
-  if (!authenticated.valid) {
-    return redirect("/admin/login");
-  }
-
+export const promotionUpsertLoader = async (
+  request: Request,
+  params: Params<string>
+) => {
   const departments = await getDepartments();
 
-  const id = params?.id;
+  let { searchParams } = new URL(request.url);
+  let id = searchParams.get("contentId");
 
   if (!id) {
     throw new Response(null, {
@@ -67,15 +70,19 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   return json({ promotion, departments });
 };
 
-export const action = async ({ request, params }: ActionFunctionArgs) => {
-  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+export const promotionUpsertAction = async (
+  request: Request,
+  params: Params<string>
+) => {
+  let { searchParams } = new URL(request.url);
+  const contentId = searchParams.get("contentId");
+  let id = contentId === "add" || !contentId ? undefined : contentId;
 
-  if (!authenticated.valid) {
-    return redirect("/admin/login");
-  }
+  const { formEntries, formErrors } = validateForm(
+    await request.formData(),
+    validateOptions
+  );
 
-  const id = params.id === "add" ? undefined : params.id;
-  const form = Object.fromEntries(await request.formData());
   const {
     name,
     metaDescription,
@@ -86,23 +93,14 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
     bannerImage,
     tileImage,
     isActive,
-  } = form;
+  } = formEntries;
 
   let notification: PageNotification;
 
-  switch (form._action) {
+  switch (formEntries._action) {
     case "upsert":
-      const validate = {
-        name: true,
-        department: true,
-        discountPercentage: true,
-        bannerImage: true,
-        tileImage: true,
-      };
-
-      const validationErrors = validateForm(form, validate);
-      if (validationErrors) {
-        return json({ validationErrors });
+      if (formErrors) {
+        return json({ serverValidationErrors: formErrors });
       }
 
       const parsedBanner = JSON.parse(bannerImage?.toString()) as Image;
@@ -141,16 +139,26 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   }
 };
 
-const ModifyPromotion = () => {
-  const { promotion, departments } = useLoaderData<typeof loader>();
-  const { validationErrors, success, notification } =
+type Props = {
+  asModule?: boolean;
+};
+
+const PromotionUpsert = ({ asModule }: Props) => {
+  const { promotion, departments } =
+    useLoaderData<typeof promotionUpsertLoader>() || {};
+  const { serverValidationErrors, success, notification } =
     (useActionData() as ActionReturnTypes) || {};
 
   const { products } = (promotion as { products: ProductWithDetails[] }) || {};
 
   const navigate = useNavigate();
+  let submit = useSubmit();
+  const [searchParams] = useSearchParams();
+  const contentId = searchParams.get("contentId");
   useNotification(notification);
 
+  const [clientValidationErrors, setClientValidationErrors] =
+    useState<ValidationErrors>();
   const [loading, setLoading] = useState<boolean>(false);
 
   const tabNames = ["general", "images", "meta", "products"];
@@ -158,6 +166,32 @@ const ModifyPromotion = () => {
 
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
+  };
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    const form = getFormData(event);
+    event.preventDefault();
+
+    const { formErrors } = validateForm(new FormData(form), validateOptions);
+    if (formErrors) {
+      setClientValidationErrors(formErrors);
+      setLoading(false);
+      return;
+    }
+
+    const submitFunction = () => {
+      submit(form, {
+        method: "POST",
+        action: `/admin/upsert/promotion/${contentId}`,
+        navigate: asModule ? false : true,
+      });
+    };
+
+    submitFunction();
+
+    if (asModule) {
+      navigate(-1);
+    }
   };
 
   useEffect(() => {
@@ -170,6 +204,7 @@ const ModifyPromotion = () => {
     <DarkOverlay>
       <Form
         method="POST"
+        onSubmit={handleSubmit}
         className="scrollbar-hide relative w-[600px] max-w-full overflow-y-auto bg-base-200 px-3 py-6 sm:px-6"
       >
         <FormHeader
@@ -191,7 +226,9 @@ const ModifyPromotion = () => {
               placeholder="Name"
               customWidth="w-full"
               defaultValue={promotion?.name || undefined}
-              validationErrors={validationErrors}
+              validationErrors={
+                serverValidationErrors || clientValidationErrors
+              }
             />
 
             <BasicSelect
@@ -210,7 +247,9 @@ const ModifyPromotion = () => {
               type="number"
               customWidth="w-full"
               defaultValue={promotion?.discountPercentage || ""}
-              validationErrors={validationErrors}
+              validationErrors={
+                serverValidationErrors || clientValidationErrors
+              }
             />
 
             <SelectGender
@@ -246,7 +285,7 @@ const ModifyPromotion = () => {
             placeholder="Meta Description"
             customWidth="w-full"
             defaultValue={promotion?.metaDescription || ""}
-            validationErrors={validationErrors}
+            validationErrors={serverValidationErrors || clientValidationErrors}
           />
         </div>
 
@@ -299,11 +338,11 @@ const ModifyPromotion = () => {
         <BackSubmitButtons
           loading={loading}
           setLoading={setLoading}
-          validationErrors={validationErrors}
+          validationErrors={serverValidationErrors || clientValidationErrors}
         />
       </Form>
     </DarkOverlay>
   );
 };
 
-export default ModifyPromotion;
+export default PromotionUpsert;

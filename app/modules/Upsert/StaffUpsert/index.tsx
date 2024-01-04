@@ -1,56 +1,66 @@
+import { type FormEvent, useEffect, useState } from "react";
+import { json } from "@remix-run/node";
+import { getStores } from "~/models/stores.server";
 import type { Image, Staff } from "@prisma/client";
-import type { ActionReturnTypes } from "~/utility/actionTypes";
-import {
-  redirect,
-  type ActionFunctionArgs,
-  type LoaderFunctionArgs,
-  json,
-} from "@remix-run/node";
-import {
-  Form,
-  useActionData,
-  useLoaderData,
-  useNavigate,
-} from "@remix-run/react";
-import { useEffect, useState } from "react";
-import { tokenAuth } from "~/auth.server";
+import { getFormData } from "~/helpers/formHelpers";
+import DarkOverlay from "~/components/Layout/DarkOverlay";
+import { getAvailableRoles } from "~/models/enums.server";
 import BasicButton from "~/components/Buttons/BasicButton";
-import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
-import FormHeader from "~/components/Forms/Headers/FormHeader";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import PhoneInput from "~/components/Forms/Input/PhoneInput";
+import FormHeader from "~/components/Forms/Headers/FormHeader";
+import { formatDateForFormField } from "~/helpers/dateHelpers";
+import type { ActionReturnTypes } from "~/utility/actionTypes";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
-import SelectCountry from "~/components/Forms/Select/SelectCountry";
 import UploadAvatar from "~/components/Forms/Upload/UploadAvatar";
-import DarkOverlay from "~/components/Layout/DarkOverlay";
-import {
-  type StaffWithDetails,
-  getStaff,
-  upsertStaff,
-} from "~/models/auth/staff.server";
-import { getAvailableRoles } from "~/models/enums.server";
-import { getStores } from "~/models/stores.server";
-import { STAFF_SESSION_KEY, getUserDataFromSession } from "~/session.server";
-import { validateForm } from "~/utility/validate";
+import SelectCountry from "~/components/Forms/Select/SelectCountry";
+import { type ValidationErrors, validateForm } from "~/utility/validate";
+import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
+import { getUserDataFromSession, STAFF_SESSION_KEY } from "~/session.server";
 import useNotification, {
   type PageNotification,
 } from "~/hooks/PageNotification";
-import { formatDateForFormField } from "~/helpers/dateHelpers";
+import {
+  getStaff,
+  type StaffWithDetails,
+  upsertStaff,
+} from "~/models/auth/staff.server";
+import {
+  Form,
+  type Params,
+  useActionData,
+  useLoaderData,
+  useNavigate,
+  useSubmit,
+  useSearchParams,
+} from "@remix-run/react";
 
-export const loader = async ({ request, params }: LoaderFunctionArgs) => {
-  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+const validateOptions = {
+  email: true,
+  firstName: true,
+  lastName: true,
+  dateofbirth: true,
+  phoneNumber: true,
+  addressLine1: true,
+  postcode: true,
+  suburb: true,
+  state: true,
+  country: true,
+  password: false,
+};
 
-  if (!authenticated.valid) {
-    return redirect("/admin/login");
-  }
-
+export const staffUpsertLoader = async (
+  request: Request,
+  params: Params<string>
+) => {
   const { role } =
     ((await getUserDataFromSession(request, STAFF_SESSION_KEY)) as Staff) || {};
 
   const roles = await getAvailableRoles();
   const stores = await getStores();
 
-  const id = params?.id;
+  let { searchParams } = new URL(request.url);
+  let id = searchParams.get("contentId");
 
   if (!id) {
     throw new Response(null, {
@@ -72,15 +82,21 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   return json({ staffMember, roles, stores, role });
 };
 
-export const action = async ({ request, params }: ActionFunctionArgs) => {
-  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+export const staffUpsertAction = async (
+  request: Request,
+  params: Params<string>
+) => {
+  let notification: PageNotification;
 
-  if (!authenticated.valid) {
-    return redirect("/admin/login");
-  }
+  let { searchParams } = new URL(request.url);
+  const contentId = searchParams.get("contentId");
+  let id = contentId === "add" || !contentId ? undefined : contentId;
 
-  const id = params.id === "add" ? undefined : params.id;
-  const form = Object.fromEntries(await request.formData());
+  const { formEntries, formErrors } = validateForm(
+    await request.formData(),
+    validateOptions
+  );
+
   const {
     email,
     firstName,
@@ -99,28 +115,10 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
     store,
     password,
     isActive,
-  } = form;
+  } = formEntries;
 
-  let notification: PageNotification;
-
-  const validate = {
-    email: true,
-    firstName: true,
-    lastName: true,
-    dateofbirth: true,
-    phoneNumber: true,
-    addressLine1: true,
-    postcode: true,
-    suburb: true,
-    state: true,
-    country: true,
-    password: false,
-    ...(password && { password: true }),
-  };
-
-  const validationErrors = validateForm(form, validate);
-  if (validationErrors) {
-    return json({ validationErrors });
+  if (formErrors) {
+    return { serverValidationErrors: formErrors };
   }
 
   const updateData = {
@@ -161,30 +159,67 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   return json({ success, permissionError, notification });
 };
 
-const ModifyStaff = () => {
-  const { staffMember, roles, stores, role } = useLoaderData<typeof loader>();
-  const { validationErrors, permissionError, success, notification } =
+type Props = {
+  asModule?: boolean;
+};
+
+const StaffUpsert = ({ asModule }: Props) => {
+  const { staffMember, roles, stores, role } =
+    useLoaderData<typeof staffUpsertLoader>();
+  const { serverValidationErrors, permissionError, success, notification } =
     (useActionData() as ActionReturnTypes) || {};
 
   const navigate = useNavigate();
+  let submit = useSubmit();
+  const [searchParams] = useSearchParams();
+  const contentId = searchParams.get("contentId");
   useNotification(notification);
 
+  const [clientValidationErrors, setClientValidationErrors] =
+    useState<ValidationErrors>();
   const [loading, setLoading] = useState<boolean>(false);
   const [changingPassword, setChangingPassword] = useState<boolean>(false);
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    const form = getFormData(event);
+    event.preventDefault();
+
+    const { formErrors } = validateForm(new FormData(form), validateOptions);
+    if (formErrors) {
+      setClientValidationErrors(formErrors);
+      setLoading(false);
+      return;
+    }
+
+    const submitFunction = () => {
+      submit(form, {
+        method: "POST",
+        action: `/admin/upsert/staff?contentId=${contentId}`,
+        navigate: asModule ? false : true,
+      });
+    };
+
+    submitFunction();
+
+    if (asModule) {
+      navigate(-1);
+    }
+  };
 
   useEffect(() => {
     if (success) {
       navigate(-1);
     }
-    if (validationErrors) {
+    if (serverValidationErrors) {
       setLoading(false);
     }
-  }, [success, navigate, validationErrors]);
+  }, [success, navigate, serverValidationErrors]);
 
   return (
     <DarkOverlay>
       <Form
         method="POST"
+        onSubmit={handleSubmit}
         className="scrollbar-hide relative w-[600px] max-w-[100vw] overflow-y-auto bg-base-200 px-3 py-6 sm:px-6"
       >
         <FormHeader
@@ -216,7 +251,9 @@ const ModifyStaff = () => {
               type="text"
               customWidth="w-full"
               defaultValue={staffMember?.jobTitle || undefined}
-              validationErrors={validationErrors}
+              validationErrors={
+                serverValidationErrors || clientValidationErrors
+              }
             />
 
             <BasicSelect
@@ -235,7 +272,9 @@ const ModifyStaff = () => {
               type="text"
               customWidth="w-full"
               defaultValue={staffMember?.email || undefined}
-              validationErrors={validationErrors}
+              validationErrors={
+                serverValidationErrors || clientValidationErrors
+              }
             />
 
             <BasicInput
@@ -245,7 +284,9 @@ const ModifyStaff = () => {
               type="text"
               customWidth="w-full"
               defaultValue={staffMember?.userDetails?.firstName || undefined}
-              validationErrors={validationErrors}
+              validationErrors={
+                serverValidationErrors || clientValidationErrors
+              }
             />
 
             <BasicInput
@@ -255,7 +296,9 @@ const ModifyStaff = () => {
               type="text"
               customWidth="w-full"
               defaultValue={staffMember?.userDetails?.lastName || undefined}
-              validationErrors={validationErrors}
+              validationErrors={
+                serverValidationErrors || clientValidationErrors
+              }
             />
 
             <PhoneInput
@@ -265,7 +308,9 @@ const ModifyStaff = () => {
               type="text"
               customWidth="w-full"
               defaultValue={staffMember?.userDetails?.phoneNumber || undefined}
-              validationErrors={validationErrors}
+              validationErrors={
+                serverValidationErrors || clientValidationErrors
+              }
             />
 
             <BasicInput
@@ -277,7 +322,9 @@ const ModifyStaff = () => {
               defaultValue={formatDateForFormField(
                 staffMember?.userDetails?.dateOfBirth
               )}
-              validationErrors={validationErrors}
+              validationErrors={
+                serverValidationErrors || clientValidationErrors
+              }
             />
 
             <BasicInput
@@ -287,7 +334,9 @@ const ModifyStaff = () => {
               type="text"
               customWidth="w-full"
               defaultValue={staffMember?.address?.addressLine1 || undefined}
-              validationErrors={validationErrors}
+              validationErrors={
+                serverValidationErrors || clientValidationErrors
+              }
             />
 
             <BasicInput
@@ -297,7 +346,9 @@ const ModifyStaff = () => {
               type="text"
               customWidth="w-full"
               defaultValue={staffMember?.address?.addressLine2 || undefined}
-              validationErrors={validationErrors}
+              validationErrors={
+                serverValidationErrors || clientValidationErrors
+              }
             />
 
             <BasicInput
@@ -307,7 +358,9 @@ const ModifyStaff = () => {
               type="text"
               customWidth="w-full"
               defaultValue={staffMember?.address?.suburb || undefined}
-              validationErrors={validationErrors}
+              validationErrors={
+                serverValidationErrors || clientValidationErrors
+              }
             />
 
             <BasicInput
@@ -317,7 +370,9 @@ const ModifyStaff = () => {
               type="text"
               customWidth="w-full"
               defaultValue={staffMember?.address?.postcode || undefined}
-              validationErrors={validationErrors}
+              validationErrors={
+                serverValidationErrors || clientValidationErrors
+              }
             />
 
             <BasicInput
@@ -327,12 +382,16 @@ const ModifyStaff = () => {
               type="text"
               customWidth="w-full"
               defaultValue={staffMember?.address?.state || undefined}
-              validationErrors={validationErrors}
+              validationErrors={
+                serverValidationErrors || clientValidationErrors
+              }
             />
 
             <SelectCountry
               defaultValue={staffMember?.address?.country}
-              validationErrors={validationErrors}
+              validationErrors={
+                serverValidationErrors || clientValidationErrors
+              }
               extendStyle="!w-full"
             />
 
@@ -345,7 +404,9 @@ const ModifyStaff = () => {
                   type="password"
                   customWidth="w-full"
                   defaultValue={undefined}
-                  validationErrors={validationErrors}
+                  validationErrors={
+                    serverValidationErrors || clientValidationErrors
+                  }
                 />
 
                 <BasicButton
@@ -375,11 +436,11 @@ const ModifyStaff = () => {
         <BackSubmitButtons
           loading={loading}
           setLoading={setLoading}
-          validationErrors={validationErrors}
+          validationErrors={serverValidationErrors || clientValidationErrors}
         />
       </Form>
     </DarkOverlay>
   );
 };
 
-export default ModifyStaff;
+export default StaffUpsert;

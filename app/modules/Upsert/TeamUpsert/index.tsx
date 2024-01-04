@@ -1,51 +1,50 @@
-import { useEffect, useState } from "react";
-import type { ActionReturnTypes } from "~/utility/actionTypes";
-import { tokenAuth } from "~/auth.server";
+import { type FormEvent, useEffect, useState } from "react";
+import { json } from "@remix-run/node";
 import { HiTrash } from "react-icons/hi2";
-import { validateForm } from "~/utility/validate";
 import { getStores } from "~/models/stores.server";
-import { STAFF_SESSION_KEY } from "~/session.server";
+import { getFormData } from "~/helpers/formHelpers";
 import { IoArrowForwardCircle } from "react-icons/io5";
+import { isEmptyObject } from "~/helpers/objectHelpers";
 import DarkOverlay from "~/components/Layout/DarkOverlay";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import FormHeader from "~/components/Forms/Headers/FormHeader";
+import type { ActionReturnTypes } from "~/utility/actionTypes";
 import { placeholderAvatar } from "~/utility/placeholderAvatar";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import { ActionAlert } from "~/components/Notifications/Alerts";
 import type { StaffWithDetails } from "~/models/auth/staff.server";
+import { type ValidationErrors, validateForm } from "~/utility/validate";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
-import {
-  json,
-  redirect,
-  type ActionFunctionArgs,
-  type LoaderFunctionArgs,
-} from "@remix-run/node";
-import {
-  Form,
-  Outlet,
-  useActionData,
-  useLoaderData,
-  useNavigate,
-  useSubmit,
-} from "@remix-run/react";
+import useNotification, {
+  type PageNotification,
+} from "~/hooks/PageNotification";
 import {
   getTeam,
   removeTeamMemberFromTeam,
   type TeamWithStaff,
   upsertTeam,
 } from "~/models/teams.server";
-import { isEmptyObject } from "~/helpers/objectHelpers";
-import useNotification, {
-  type PageNotification,
-} from "~/hooks/PageNotification";
+import {
+  Form,
+  Outlet,
+  type Params,
+  useActionData,
+  useLoaderData,
+  useNavigate,
+  useSubmit,
+  useSearchParams,
+} from "@remix-run/react";
 
-export const loader = async ({ request, params }: LoaderFunctionArgs) => {
-  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
-  if (!authenticated.valid) {
-    return redirect("/login");
-  }
+const validateOptions = {
+  name: true,
+};
 
-  const id = params?.id;
+export const teamUpsertLoader = async (
+  request: Request,
+  params: Params<string>
+) => {
+  let { searchParams } = new URL(request.url);
+  let id = searchParams.get("contentId");
 
   if (!id) {
     throw new Response(null, {
@@ -75,26 +74,27 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   return json({ team, stores });
 };
 
-export const action = async ({ request, params }: ActionFunctionArgs) => {
-  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
-  if (!authenticated.valid) {
-    return redirect("/login");
-  }
-  const id = params.id === "add" ? undefined : params.id;
-  const form = Object.fromEntries(await request.formData());
-
+export const teamUpsertAction = async (
+  request: Request,
+  params: Params<string>
+) => {
   let notification: PageNotification;
 
-  switch (form._action) {
-    case "upsert":
-      const { name, location, isActive } = form;
-      const validate = {
-        name: true,
-      };
+  let { searchParams } = new URL(request.url);
+  const contentId = searchParams.get("contentId");
+  let id = contentId === "add" || !contentId ? undefined : contentId;
 
-      const validationErrors = validateForm(form, validate);
-      if (validationErrors) {
-        return { validationErrors };
+  const { formEntries, formErrors } = validateForm(
+    await request.formData(),
+    validateOptions
+  );
+
+  const { name, location, isActive } = formEntries;
+
+  switch (formEntries._action) {
+    case "upsert":
+      if (formErrors) {
+        return { serverValidationErrors: formErrors };
       }
 
       const teamData = {
@@ -114,7 +114,8 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
       return { success: true, notification };
 
     case "removeUser":
-      const { staffId, teamId } = form;
+      const { staffId, teamId } = formEntries;
+
       try {
         await removeTeamMemberFromTeam(staffId as string, teamId as string);
 
@@ -135,17 +136,25 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   }
 };
 
-const ModifyTeam = () => {
-  const { team, stores } = useLoaderData<typeof loader>();
-  const { validationErrors, success, notification } =
+type Props = {
+  asModule?: boolean;
+};
+
+const TeamUpsert = ({ asModule }: Props) => {
+  const { team, stores } = useLoaderData<typeof teamUpsertLoader>();
+  const { serverValidationErrors, success, notification } =
     (useActionData() as ActionReturnTypes) || {};
 
   const navigate = useNavigate();
-  const submit = useSubmit();
+  let submit = useSubmit();
+  const [searchParams] = useSearchParams();
+  const contentId = searchParams.get("contentId");
   useNotification(notification);
 
   const mode = !isEmptyObject(team) ? "edit" : "add";
 
+  const [clientValidationErrors, setClientValidationErrors] =
+    useState<ValidationErrors>();
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleRemoveUserFromTeam = (
@@ -167,6 +176,32 @@ const ModifyTeam = () => {
     );
   };
 
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    const form = getFormData(event);
+    event.preventDefault();
+
+    const { formErrors } = validateForm(new FormData(form), validateOptions);
+    if (formErrors) {
+      setClientValidationErrors(formErrors);
+      setLoading(false);
+      return;
+    }
+
+    const submitFunction = () => {
+      submit(form, {
+        method: "POST",
+        action: `/admin/upsert/team?contentId=${contentId}`,
+        navigate: asModule ? false : true,
+      });
+    };
+
+    submitFunction();
+
+    if (asModule) {
+      navigate(-1);
+    }
+  };
+
   useEffect(() => {
     if (success) {
       navigate(-1);
@@ -177,6 +212,7 @@ const ModifyTeam = () => {
     <DarkOverlay>
       <Form
         method="POST"
+        onSubmit={handleSubmit}
         className="scrollbar-hide relative w-[500px] max-w-[100vw] overflow-y-auto bg-base-200 px-3 py-6 sm:px-6"
       >
         <FormHeader
@@ -194,7 +230,7 @@ const ModifyTeam = () => {
             type="text"
             customWidth="w-full"
             defaultValue={team?.name || undefined}
-            validationErrors={validationErrors}
+            validationErrors={serverValidationErrors || clientValidationErrors}
           />
 
           <BasicSelect
@@ -280,7 +316,7 @@ const ModifyTeam = () => {
               <div className="mt-3 flex w-full items-center justify-center">
                 <div
                   className="btn btn-primary btn-md w-max !rounded-sm"
-                  onClick={() => navigate("add-staff")}
+                  onClick={() => navigate(`add-staff?contentId=${contentId}`)}
                 >
                   Add +
                 </div>
@@ -292,7 +328,7 @@ const ModifyTeam = () => {
         <BackSubmitButtons
           loading={loading}
           setLoading={setLoading}
-          validationErrors={validationErrors}
+          validationErrors={serverValidationErrors || clientValidationErrors}
         />
       </Form>
       <Outlet />
@@ -300,4 +336,4 @@ const ModifyTeam = () => {
   );
 };
 
-export default ModifyTeam;
+export default TeamUpsert;

@@ -39,13 +39,24 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
     return redirect("/admin/login");
   }
 
-  const variantId = params?.variantId;
-  const fromStoreId = params?.fromStore;
+  const { storeId: userStoreId } =
+    ((await getUserDataFromSession(request, STAFF_SESSION_KEY)) as Staff) || {};
+
+  let { searchParams } = new URL(request.url);
+  let variantId = searchParams.get("contentId");
+  let fromStoreId = searchParams.get("fromStore");
 
   if (!variantId) {
     throw new Response(null, {
       status: 404,
       statusText: "Stock Not Found",
+    });
+  }
+
+  if (!fromStoreId) {
+    throw new Response(null, {
+      status: 404,
+      statusText: "No From Store Selected",
     });
   }
 
@@ -59,9 +70,6 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   }
 
   const stores = await getStores();
-
-  const { storeId: userStoreId } =
-    ((await getUserDataFromSession(request, STAFF_SESSION_KEY)) as Staff) || {};
 
   return json({
     stores,

@@ -5,7 +5,13 @@ import { type OrderWithDetails, searchOrders } from "~/models/orders.server";
 import { json, redirect, type LoaderFunctionArgs } from "@remix-run/node";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
-import { Form, Outlet, useLoaderData, useSearchParams } from "@remix-run/react";
+import {
+  Form,
+  Outlet,
+  useLoaderData,
+  useNavigate,
+  useSearchParams,
+} from "@remix-run/react";
 import BasicTable from "~/components/Tables/BasicTable";
 import AdminContentSearch from "~/components/Search/AdminContentSearch";
 
@@ -34,6 +40,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 const ManageOrders = () => {
   const { orders, totalPages } = useLoaderData<typeof loader>();
 
+  const navigate = useNavigate();
+
   const [searchParams] = useSearchParams();
 
   const currentPage = Number(searchParams.get("pageNumber")) || 1;
@@ -49,6 +57,7 @@ const ManageOrders = () => {
 
         {orders && orders.length > 0 && (
           <BasicTable
+            onRowClick={(id) => navigate(`/admin/upsert/order?contentId=${id}`)}
             currentPage={currentPage}
             objectArray={orders?.map((e: OrderWithDetails) => ({
               id: e.orderId,

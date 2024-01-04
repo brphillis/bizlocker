@@ -1,49 +1,49 @@
-import DarkOverlay from "~/components/Layout/DarkOverlay";
-import type { ActionReturnTypes } from "~/utility/actionTypes";
-import FormHeader from "~/components/Forms/Headers/FormHeader";
-import UploadImage from "~/components/Forms/Upload/UploadImage";
-import {
-  Form,
-  useActionData,
-  useLoaderData,
-  useNavigate,
-} from "@remix-run/react";
-import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
-import {
-  redirect,
-  type ActionFunctionArgs,
-  type LoaderFunctionArgs,
-  json,
-} from "@remix-run/node";
-import {
-  type ProductSubCategoryWithDetails,
-  deleteProductSubCategory,
-  getProductSubCategory,
-  upsertProductSubCategory,
-  type NewProductSubCategory,
-} from "~/models/productSubCategories.server";
-import { useEffect, useState } from "react";
-import BasicInput from "~/components/Forms/Input/BasicInput";
-import { validateForm } from "~/utility/validate";
-import { tokenAuth } from "~/auth.server";
-import { STAFF_SESSION_KEY } from "~/session.server";
-import BasicSelect from "~/components/Forms/Select/BasicSelect";
-import { getProductCategories } from "~/models/productCategories.server";
+import { type FormEvent, useEffect, useState } from "react";
+import { json } from "@remix-run/node";
 import type { Image } from "@prisma/client";
+import { getFormData } from "~/helpers/formHelpers";
+import DarkOverlay from "~/components/Layout/DarkOverlay";
+import BasicInput from "~/components/Forms/Input/BasicInput";
+import FormHeader from "~/components/Forms/Headers/FormHeader";
+import type { ActionReturnTypes } from "~/utility/actionTypes";
+import UploadImage from "~/components/Forms/Upload/UploadImage";
+import BasicSelect from "~/components/Forms/Select/BasicSelect";
+import { type ValidationErrors, validateForm } from "~/utility/validate";
+import { getProductCategories } from "~/models/productCategories.server";
+import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
 import useNotification, {
   type PageNotification,
 } from "~/hooks/PageNotification";
+import {
+  Form,
+  type Params,
+  useActionData,
+  useLoaderData,
+  useNavigate,
+  useSubmit,
+  useSearchParams,
+} from "@remix-run/react";
+import {
+  deleteProductSubCategory,
+  getProductSubCategory,
+  type NewProductSubCategory,
+  type ProductSubCategoryWithDetails,
+  upsertProductSubCategory,
+} from "~/models/productSubCategories.server";
 
-export const loader = async ({ request, params }: LoaderFunctionArgs) => {
-  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+const validateOptions = {
+  name: true,
+  index: true,
+};
 
-  if (!authenticated.valid) {
-    return redirect("/admin/login");
-  }
-
+export const productSubCategoryUpsertLoader = async (
+  request: Request,
+  params: Params<string>
+) => {
   const productCategories = await getProductCategories();
 
-  const id = params?.id;
+  let { searchParams } = new URL(request.url);
+  let id = searchParams.get("contentId");
 
   if (!id) {
     throw new Response(null, {
@@ -67,29 +67,28 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   return json({ productSubCategory, productCategories });
 };
 
-export const action = async ({ request, params }: ActionFunctionArgs) => {
-  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
-  if (!authenticated.valid) {
-    return redirect("/admin/login");
-  }
-
-  const id = params.id === "add" ? undefined : params.id;
-  const form = Object.fromEntries(await request.formData());
-  const { name, productCategory, index, displayInNavigation, isActive, image } =
-    form;
-
+export const productSubCategoryUpsertAction = async (
+  request: Request,
+  params: Params<string>
+) => {
   let notification: PageNotification;
 
-  switch (form._action) {
-    case "upsert":
-      const validate = {
-        name: true,
-        index: true,
-      };
+  let { searchParams } = new URL(request.url);
+  const contentId = searchParams.get("contentId");
+  let id = contentId === "add" || !contentId ? undefined : contentId;
 
-      const validationErrors = validateForm(form, validate);
-      if (validationErrors) {
-        return json({ validationErrors });
+  const { formEntries, formErrors } = validateForm(
+    await request.formData(),
+    validateOptions
+  );
+
+  const { name, productCategory, index, displayInNavigation, isActive, image } =
+    formEntries;
+
+  switch (formEntries._action) {
+    case "upsert":
+      if (formErrors) {
+        return { serverValidationErrors: formErrors };
       }
 
       const parsedImage = image
@@ -127,16 +126,51 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   }
 };
 
-const ModifyProductSubCategory = () => {
-  const navigate = useNavigate();
+type Props = {
+  asModule?: boolean;
+};
+
+const ProductSubCategoryUpsert = ({ asModule }: Props) => {
   const { productSubCategory, productCategories } =
-    useLoaderData<typeof loader>();
-  const { validationErrors, success, notification } =
+    useLoaderData<typeof productSubCategoryUpsertLoader>();
+  const { serverValidationErrors, success, notification } =
     (useActionData() as ActionReturnTypes) || {};
 
+  const navigate = useNavigate();
+  let submit = useSubmit();
+  const [searchParams] = useSearchParams();
+  const contentId = searchParams.get("contentId");
   useNotification(notification);
 
+  const [clientValidationErrors, setClientValidationErrors] =
+    useState<ValidationErrors>();
   const [loading, setLoading] = useState<boolean>(false);
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    const form = getFormData(event);
+    event.preventDefault();
+
+    const { formErrors } = validateForm(new FormData(form), validateOptions);
+    if (formErrors) {
+      setClientValidationErrors(formErrors);
+      setLoading(false);
+      return;
+    }
+
+    const submitFunction = () => {
+      submit(form, {
+        method: "POST",
+        action: `/admin/upsert/productSubCategory?contentId=${contentId}`,
+        navigate: asModule ? false : true,
+      });
+    };
+
+    submitFunction();
+
+    if (asModule) {
+      navigate(-1);
+    }
+  };
 
   useEffect(() => {
     if (success) {
@@ -148,6 +182,7 @@ const ModifyProductSubCategory = () => {
     <DarkOverlay>
       <Form
         method="POST"
+        onSubmit={handleSubmit}
         className="scrollbar-hide relative w-[500px] max-w-[100vw] overflow-y-auto bg-base-200 px-3 py-6 sm:px-6"
       >
         <FormHeader
@@ -165,7 +200,7 @@ const ModifyProductSubCategory = () => {
             placeholder="Name"
             customWidth="w-full"
             defaultValue={productSubCategory?.name || ""}
-            validationErrors={validationErrors}
+            validationErrors={serverValidationErrors || clientValidationErrors}
           />
 
           <BasicInput
@@ -175,7 +210,7 @@ const ModifyProductSubCategory = () => {
             placeholder="Index"
             customWidth="w-full"
             defaultValue={productSubCategory?.index || 0}
-            validationErrors={validationErrors}
+            validationErrors={serverValidationErrors || clientValidationErrors}
           />
 
           <BasicSelect
@@ -210,11 +245,11 @@ const ModifyProductSubCategory = () => {
         <BackSubmitButtons
           loading={loading}
           setLoading={setLoading}
-          validationErrors={validationErrors}
+          validationErrors={serverValidationErrors || clientValidationErrors}
         />
       </Form>
     </DarkOverlay>
   );
 };
 
-export default ModifyProductSubCategory;
+export default ProductSubCategoryUpsert;

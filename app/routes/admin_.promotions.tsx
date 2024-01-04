@@ -1,7 +1,13 @@
 import type { Promotion } from "@prisma/client";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { Form, Outlet, useLoaderData, useSearchParams } from "@remix-run/react";
+import {
+  Form,
+  Outlet,
+  useLoaderData,
+  useNavigate,
+  useSearchParams,
+} from "@remix-run/react";
 import { tokenAuth } from "~/auth.server";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
@@ -28,6 +34,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 const Promotions = () => {
   const { promotions, totalPages } = useLoaderData<typeof loader>();
 
+  const navigate = useNavigate();
+
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("pageNumber")) || 1;
 
@@ -36,7 +44,8 @@ const Promotions = () => {
       <Form method="GET" className="relative h-full w-full bg-base-200 p-6">
         <AdminPageHeader
           title="Manage Promotions"
-          addButtonText="Add Promotion"
+          buttonLabel="Add Promotion"
+          buttonLink="/admin/upsert/promotion?contentId=add"
         />
 
         <AdminContentSearch name={true} />
@@ -45,6 +54,9 @@ const Promotions = () => {
 
         {promotions && promotions.length > 0 && (
           <BasicTable
+            onRowClick={(id) =>
+              navigate(`/admin/upsert/promotion?contentId=${id}`)
+            }
             currentPage={currentPage}
             objectArray={promotions?.map((e: Promotion) => ({
               id: e.id,

@@ -9,7 +9,13 @@ import { redirect, type LoaderFunctionArgs, json } from "@remix-run/node";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import { getProductSubCategories } from "~/models/productSubCategories.server";
-import { Form, Outlet, useLoaderData, useSearchParams } from "@remix-run/react";
+import {
+  Form,
+  Outlet,
+  useLoaderData,
+  useNavigate,
+  useSearchParams,
+} from "@remix-run/react";
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
 import BasicTable from "~/components/Tables/BasicTable";
@@ -40,6 +46,8 @@ const ManageProducts = () => {
   const { products, totalPages, productSubCategories, brands } =
     useLoaderData<typeof loader>();
 
+  const navigate = useNavigate();
+
   const [searchParams] = useSearchParams();
 
   const currentPage = Number(searchParams.get("pageNumber")) || 1;
@@ -47,7 +55,11 @@ const ManageProducts = () => {
   return (
     <AdminPageWrapper>
       <Form method="GET" className="relative h-full w-full bg-base-200 p-6">
-        <AdminPageHeader title="Manage Products" addButtonText="Add Products" />
+        <AdminPageHeader
+          title="Manage Products"
+          buttonLabel="Add Product"
+          buttonLink="/admin/upsert/product?contentId=add"
+        />
 
         <AdminContentSearch
           name={true}
@@ -61,6 +73,9 @@ const ManageProducts = () => {
 
         {products && products.length > 0 && (
           <BasicTable
+            onRowClick={(id) =>
+              navigate(`/admin/upsert/product?contentId=${id}`)
+            }
             currentPage={currentPage}
             objectArray={products.map((e: ProductWithDetails) => ({
               id: e.id,

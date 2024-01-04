@@ -52,7 +52,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const { staff, totalPages } = await searchStaff(searchQuery, true);
 
   const stores = await getStores();
-  const teamId = params?.id;
+  const teamId = url.searchParams.get("contentId");
 
   return json({ staff, totalPages, stores, teamId });
 };
@@ -100,7 +100,7 @@ const ModifyTeam = () => {
   useNotification(notification);
 
   const [loading, setLoading] = useState<boolean>(false);
-
+  console.log("TEAMID", teamId);
   const handleAddUserToTeam = (
     staffId: string,
     firstName?: string | null,
@@ -233,7 +233,11 @@ const ModifyTeam = () => {
           </div>
         </div>
 
-        <BackSubmitButtons loading={loading} setLoading={setLoading} />
+        <BackSubmitButtons
+          loading={loading}
+          setLoading={setLoading}
+          hideSubmit={true}
+        />
       </Form>
       <Outlet />
     </DarkOverlay>

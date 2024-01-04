@@ -10,7 +10,13 @@ import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import { getProductCategories } from "~/models/productCategories.server";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import { searchProductSubCategories } from "~/models/productSubCategories.server";
-import { Form, Outlet, useLoaderData, useSearchParams } from "@remix-run/react";
+import {
+  Form,
+  Outlet,
+  useLoaderData,
+  useNavigate,
+  useSearchParams,
+} from "@remix-run/react";
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
 import BasicTable from "~/components/Tables/BasicTable";
@@ -39,6 +45,8 @@ const ProductSubCategories = () => {
   const { productSubCategories, productCategories, totalPages } =
     useLoaderData<typeof loader>();
 
+  const navigate = useNavigate();
+
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("pageNumber")) || 1;
 
@@ -46,8 +54,9 @@ const ProductSubCategories = () => {
     <AdminPageWrapper>
       <Form method="GET" className="relative h-full w-full bg-base-200 p-6">
         <AdminPageHeader
-          title="Manage Product Sub Categories"
-          addButtonText="Add Product Sub Category"
+          title="Manage Sub Categories"
+          buttonLabel="Add Sub Category"
+          buttonLink="/admin/upsert/productSubCategory?contentId=add"
         />
 
         <AdminContentSearch name={true} productCategories={productCategories} />
@@ -58,6 +67,9 @@ const ProductSubCategories = () => {
 
         {productSubCategories && productSubCategories.length > 0 && (
           <BasicTable
+            onRowClick={(id) =>
+              navigate(`/admin/upsert/productSubCategory?contentId=${id}`)
+            }
             currentPage={currentPage}
             objectArray={productSubCategories?.map((e: ProductSubCategory) => ({
               id: e.id,

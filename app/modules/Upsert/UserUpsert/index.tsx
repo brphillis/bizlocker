@@ -1,46 +1,54 @@
+import { type FormEvent, useEffect, useState } from "react";
+import { json } from "@remix-run/node";
 import type { Image } from "@prisma/client";
-import type { ActionReturnTypes } from "~/utility/actionTypes";
-import {
-  type ActionFunctionArgs,
-  type LoaderFunctionArgs,
-  json,
-  redirect,
-} from "@remix-run/node";
-import {
-  Form,
-  useActionData,
-  useLoaderData,
-  useNavigate,
-} from "@remix-run/react";
-import { useEffect, useState } from "react";
-import { tokenAuth } from "~/auth.server";
-import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
-import FormHeader from "~/components/Forms/Headers/FormHeader";
+import { getFormData } from "~/helpers/formHelpers";
+import DarkOverlay from "~/components/Layout/DarkOverlay";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import PhoneInput from "~/components/Forms/Input/PhoneInput";
-import SelectCountry from "~/components/Forms/Select/SelectCountry";
+import FormHeader from "~/components/Forms/Headers/FormHeader";
+import { formatDateForFormField } from "~/helpers/dateHelpers";
+import type { ActionReturnTypes } from "~/utility/actionTypes";
 import UploadAvatar from "~/components/Forms/Upload/UploadAvatar";
-import DarkOverlay from "~/components/Layout/DarkOverlay";
-import {
-  type UserWithDetails,
-  getUser,
-  upsertUser,
-} from "~/models/auth/users.server";
-import { STAFF_SESSION_KEY } from "~/session.server";
-import { validateForm } from "~/utility/validate";
+import SelectCountry from "~/components/Forms/Select/SelectCountry";
+import { type ValidationErrors, validateForm } from "~/utility/validate";
+import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
 import useNotification, {
   type PageNotification,
 } from "~/hooks/PageNotification";
-import { formatDateForFormField } from "~/helpers/dateHelpers";
+import {
+  getUser,
+  type UserWithDetails,
+  upsertUser,
+} from "~/models/auth/users.server";
+import {
+  Form,
+  type Params,
+  useActionData,
+  useLoaderData,
+  useNavigate,
+  useSubmit,
+  useSearchParams,
+} from "@remix-run/react";
 
-export const loader = async ({ request, params }: LoaderFunctionArgs) => {
-  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+const validateOptions = {
+  email: true,
+  firstName: true,
+  lastName: true,
+  dateofbirth: true,
+  phoneNumber: true,
+  addressLine1: true,
+  postcode: true,
+  suburb: true,
+  state: true,
+  country: true,
+};
 
-  if (!authenticated.valid) {
-    return redirect("/admin/login");
-  }
-
-  const id = params?.id;
+export const userUpsertLoader = async (
+  request: Request,
+  params: Params<string>
+) => {
+  let { searchParams } = new URL(request.url);
+  let id = searchParams.get("contentId");
 
   if (!id) {
     throw new Response(null, {
@@ -61,15 +69,20 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   return json({ user });
 };
 
-export const action = async ({ request, params }: ActionFunctionArgs) => {
-  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+export const userUpsertAction = async (
+  request: Request,
+  params: Params<string>
+) => {
+  let notification: PageNotification;
 
-  if (!authenticated.valid) {
-    return redirect("/admin/login");
-  }
+  let { searchParams } = new URL(request.url);
+  const contentId = searchParams.get("contentId");
+  let id = contentId === "add" || !contentId ? undefined : contentId;
 
-  const id = params.id === "add" ? undefined : params.id;
-  const form = Object.fromEntries(await request.formData());
+  const { formEntries, formErrors } = validateForm(
+    await request.formData(),
+    validateOptions
+  );
 
   const {
     email,
@@ -85,27 +98,10 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
     country,
     avatar,
     isActive,
-  } = form;
+  } = formEntries;
 
-  let notification: PageNotification;
-
-  const validate = {
-    email: true,
-    firstName: true,
-    lastName: true,
-    dateofbirth: true,
-    phoneNumber: true,
-    addressLine1: true,
-    postcode: true,
-    suburb: true,
-    state: true,
-    country: true,
-  };
-
-  const validationErrors = validateForm(form, validate);
-
-  if (validationErrors) {
-    return json({ validationErrors });
+  if (formErrors) {
+    return { serverValidationErrors: formErrors };
   }
 
   const updateData = {
@@ -135,29 +131,65 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   return json({ success: true, notification });
 };
 
-const ModifyUser = () => {
-  const { user } = useLoaderData<typeof loader>();
-  const { validationErrors, success, notification } =
+type Props = {
+  asModule?: boolean;
+};
+
+const ModifyUser = ({ asModule }: Props) => {
+  const { user } = useLoaderData<typeof userUpsertLoader>();
+  const { serverValidationErrors, success, notification } =
     (useActionData() as ActionReturnTypes) || {};
 
   const navigate = useNavigate();
+  let submit = useSubmit();
+  const [searchParams] = useSearchParams();
+  const contentId = searchParams.get("contentId");
   useNotification(notification);
 
+  const [clientValidationErrors, setClientValidationErrors] =
+    useState<ValidationErrors>();
   const [loading, setLoading] = useState<boolean>(false);
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    const form = getFormData(event);
+    event.preventDefault();
+
+    const { formErrors } = validateForm(new FormData(form), validateOptions);
+    if (formErrors) {
+      setClientValidationErrors(formErrors);
+      setLoading(false);
+      return;
+    }
+
+    const submitFunction = () => {
+      submit(form, {
+        method: "POST",
+        action: `/admin/upsert/user?contentId=${contentId}`,
+        navigate: asModule ? false : true,
+      });
+    };
+
+    submitFunction();
+
+    if (asModule) {
+      navigate(-1);
+    }
+  };
 
   useEffect(() => {
     if (success) {
       navigate(-1);
     }
-    if (validationErrors) {
+    if (serverValidationErrors) {
       setLoading(false);
     }
-  }, [success, navigate, validationErrors]);
+  }, [success, navigate, serverValidationErrors]);
 
   return (
     <DarkOverlay>
       <Form
         method="POST"
+        onSubmit={handleSubmit}
         className="scrollbar-hide relative w-[600px] max-w-[100vw] overflow-y-auto bg-base-200 px-3 py-6 sm:px-6"
       >
         <FormHeader
@@ -178,7 +210,9 @@ const ModifyUser = () => {
               type="text"
               customWidth="w-full"
               defaultValue={user?.email || undefined}
-              validationErrors={validationErrors}
+              validationErrors={
+                serverValidationErrors || clientValidationErrors
+              }
             />
 
             <BasicInput
@@ -188,7 +222,9 @@ const ModifyUser = () => {
               type="text"
               customWidth="w-full"
               defaultValue={user?.userDetails?.firstName || undefined}
-              validationErrors={validationErrors}
+              validationErrors={
+                serverValidationErrors || clientValidationErrors
+              }
             />
 
             <BasicInput
@@ -198,7 +234,9 @@ const ModifyUser = () => {
               type="text"
               customWidth="w-full"
               defaultValue={user?.userDetails?.lastName || undefined}
-              validationErrors={validationErrors}
+              validationErrors={
+                serverValidationErrors || clientValidationErrors
+              }
             />
 
             <PhoneInput
@@ -208,7 +246,9 @@ const ModifyUser = () => {
               type="text"
               customWidth="w-full"
               defaultValue={user?.userDetails?.phoneNumber || undefined}
-              validationErrors={validationErrors}
+              validationErrors={
+                serverValidationErrors || clientValidationErrors
+              }
             />
 
             <BasicInput
@@ -220,7 +260,9 @@ const ModifyUser = () => {
               defaultValue={formatDateForFormField(
                 user?.userDetails?.dateOfBirth
               )}
-              validationErrors={validationErrors}
+              validationErrors={
+                serverValidationErrors || clientValidationErrors
+              }
             />
 
             <BasicInput
@@ -230,7 +272,9 @@ const ModifyUser = () => {
               type="text"
               customWidth="w-full"
               defaultValue={user?.address?.addressLine1 || undefined}
-              validationErrors={validationErrors}
+              validationErrors={
+                serverValidationErrors || clientValidationErrors
+              }
             />
 
             <BasicInput
@@ -240,7 +284,9 @@ const ModifyUser = () => {
               type="text"
               customWidth="w-full"
               defaultValue={user?.address?.addressLine2 || undefined}
-              validationErrors={validationErrors}
+              validationErrors={
+                serverValidationErrors || clientValidationErrors
+              }
             />
 
             <BasicInput
@@ -250,7 +296,9 @@ const ModifyUser = () => {
               type="text"
               customWidth="w-full"
               defaultValue={user?.address?.suburb || undefined}
-              validationErrors={validationErrors}
+              validationErrors={
+                serverValidationErrors || clientValidationErrors
+              }
             />
 
             <BasicInput
@@ -260,7 +308,9 @@ const ModifyUser = () => {
               type="text"
               customWidth="w-full"
               defaultValue={user?.address?.postcode || undefined}
-              validationErrors={validationErrors}
+              validationErrors={
+                serverValidationErrors || clientValidationErrors
+              }
             />
 
             <BasicInput
@@ -270,12 +320,16 @@ const ModifyUser = () => {
               type="text"
               customWidth="w-full"
               defaultValue={user?.address?.state || undefined}
-              validationErrors={validationErrors}
+              validationErrors={
+                serverValidationErrors || clientValidationErrors
+              }
             />
 
             <SelectCountry
               defaultValue={user?.address?.country}
-              validationErrors={validationErrors}
+              validationErrors={
+                serverValidationErrors || clientValidationErrors
+              }
               extendStyle="!w-full"
             />
           </div>
@@ -283,7 +337,7 @@ const ModifyUser = () => {
         <BackSubmitButtons
           loading={loading}
           setLoading={setLoading}
-          validationErrors={validationErrors}
+          validationErrors={serverValidationErrors || clientValidationErrors}
         />
       </Form>
     </DarkOverlay>

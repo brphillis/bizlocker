@@ -1,56 +1,60 @@
-import { useEffect, useState } from "react";
-import type { ActionReturnTypes } from "~/utility/actionTypes";
-import { validateForm } from "~/utility/validate";
+import { type FormEvent, useEffect, useState } from "react";
+import { json } from "@remix-run/node";
 import { getBrands } from "~/models/brands.server";
+import type { Image, Staff } from "@prisma/client";
+import { getFormData } from "~/helpers/formHelpers";
 import DarkOverlay from "~/components/Layout/DarkOverlay";
 import { getPromotions } from "~/models/promotions.server";
+import { getAvailableColors } from "~/models/enums.server";
+import { ClientOnly } from "~/components/Client/ClientOnly";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import FormHeader from "~/components/Forms/Headers/FormHeader";
+import type { ActionReturnTypes } from "~/utility/actionTypes";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import SelectGender from "~/components/Forms/Select/SelectGender";
 import UploadHeroImage from "~/components/Forms/Upload/UploadHeroImage";
+import { type ValidationErrors, validateForm } from "~/utility/validate";
 import BasicMultiSelect from "~/components/Forms/Select/BasicMultiSelect";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
-import { getAvailableColors } from "~/models/enums.server";
+import { getUserDataFromSession, STAFF_SESSION_KEY } from "~/session.server";
 import { getProductSubCategories } from "~/models/productSubCategories.server";
 import RichTextInput from "~/components/Forms/Input/RichTextInput/index.client";
-import {
-  Form,
-  Outlet,
-  useActionData,
-  useLoaderData,
-  useNavigate,
-} from "@remix-run/react";
-import {
-  type ProductWithDetails,
-  deleteProduct,
-  getProduct,
-  upsertProduct,
-  type NewProduct,
-} from "~/models/products.server";
-import ProductVariantFormModule from "~/components/Forms/Modules/ProductVariantFormModule";
-import UploadMultipleImages from "~/components/Forms/Upload/UploadMultipleImages/index.client";
-import {
-  redirect,
-  type ActionFunctionArgs,
-  type LoaderFunctionArgs,
-  json,
-} from "@remix-run/node";
-import { tokenAuth } from "~/auth.server";
-import { STAFF_SESSION_KEY, getUserDataFromSession } from "~/session.server";
-import { ClientOnly } from "~/components/Client/ClientOnly";
-import type { Image, Staff } from "@prisma/client";
 import useNotification, {
   type PageNotification,
 } from "~/hooks/PageNotification";
+import ProductVariantFormModule from "~/components/Forms/Modules/ProductVariantFormModule";
+import UploadMultipleImages from "~/components/Forms/Upload/UploadMultipleImages/index.client";
+import {
+  Form,
+  Outlet,
+  type Params,
+  useActionData,
+  useLoaderData,
+  useNavigate,
+  useSubmit,
+  useSearchParams,
+} from "@remix-run/react";
+import {
+  deleteProduct,
+  getProduct,
+  type NewProduct,
+  type ProductWithDetails,
+  upsertProduct,
+} from "~/models/products.server";
 
-export const loader = async ({ request, params }: LoaderFunctionArgs) => {
-  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+const validateOptions = {
+  name: true,
+  productSubCategories: true,
+  description: true,
+  variants: true,
+  images: true,
+  brand: true,
+};
 
-  if (!authenticated.valid) {
-    return redirect("/admin/login");
-  }
-
+export const productUpsertLoader = async (
+  request: Request,
+  params: Params<string>
+) => {
   const { storeId } =
     ((await getUserDataFromSession(request, STAFF_SESSION_KEY)) as Staff) || {};
 
@@ -59,7 +63,8 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const promotions = await getPromotions();
   const availableColors = await getAvailableColors();
 
-  const id = params?.id;
+  let { searchParams } = new URL(request.url);
+  let id = searchParams.get("contentId");
 
   if (!id) {
     throw new Response(null, {
@@ -88,14 +93,21 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   });
 };
 
-export const action = async ({ request, params }: ActionFunctionArgs) => {
-  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
-  if (!authenticated.valid) {
-    return redirect("/admin/login");
-  }
+export const productUpsertAction = async (
+  request: Request,
+  params: Params<string>
+) => {
+  let notification: PageNotification;
 
-  const id = params.id === "add" ? undefined : params.id;
-  const form = Object.fromEntries(await request.formData());
+  let { searchParams } = new URL(request.url);
+  const contentId = searchParams.get("contentId");
+  let id = contentId === "add" || !contentId ? undefined : contentId;
+
+  const { formEntries, formErrors } = validateForm(
+    await request.formData(),
+    validateOptions
+  );
+
   const {
     name,
     productSubCategories,
@@ -108,9 +120,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
     heroImage,
     brand,
     promotion,
-  } = form;
-
-  let notification: PageNotification;
+  } = formEntries;
 
   //if single variant we set its name to base
   let variantData = variants && JSON.parse(variants?.toString());
@@ -119,20 +129,10 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
     variantData[0] = { ...variantData[0], name: "BASE" };
   }
 
-  switch (form._action) {
+  switch (formEntries._action) {
     case "upsert":
-      const validate = {
-        name: true,
-        productSubCategories: true,
-        description: true,
-        variants: true,
-        images: true,
-        brand: true,
-      };
-
-      const validationErrors = validateForm(form, validate);
-      if (validationErrors) {
-        return { validationErrors };
+      if (formErrors) {
+        return { serverValidationErrors: formErrors };
       }
 
       const parsedHeroImage = heroImage
@@ -177,7 +177,11 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   }
 };
 
-const Product = () => {
+type Props = {
+  asModule?: boolean;
+};
+
+const UpsertProduct = ({ asModule }: Props) => {
   const {
     storeId,
     product,
@@ -185,13 +189,18 @@ const Product = () => {
     brands,
     promotions,
     availableColors,
-  } = useLoaderData<typeof loader>();
-  const { validationErrors, success, notification } =
+  } = useLoaderData<typeof productUpsertLoader>();
+  const { serverValidationErrors, success, notification } =
     (useActionData() as ActionReturnTypes) || {};
 
   const navigate = useNavigate();
+  let submit = useSubmit();
+  const [searchParams] = useSearchParams();
+  const contentId = searchParams.get("contentId");
   useNotification(notification);
 
+  const [clientValidationErrors, setClientValidationErrors] =
+    useState<ValidationErrors>();
   const [richText, setRichText] = useState<string>(product?.description);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -200,6 +209,34 @@ const Product = () => {
 
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
+  };
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    const form = getFormData(event);
+    event.preventDefault();
+
+    const { formErrors } = validateForm(new FormData(form), validateOptions);
+    console.log("ERRORS", formErrors);
+
+    if (formErrors) {
+      setClientValidationErrors(formErrors);
+      setLoading(false);
+      return;
+    }
+
+    const submitFunction = () => {
+      submit(form, {
+        method: "POST",
+        action: `/admin/upsert/product?contentId=${contentId}`,
+        navigate: asModule ? false : true,
+      });
+    };
+
+    submitFunction();
+
+    if (asModule) {
+      navigate(-1);
+    }
   };
 
   useEffect(() => {
@@ -213,6 +250,7 @@ const Product = () => {
       <DarkOverlay>
         <Form
           method="POST"
+          onSubmit={handleSubmit}
           className="scrollbar-hide relative w-[640px] max-w-full overflow-y-auto bg-base-200 px-3 py-6 sm:px-6"
         >
           <FormHeader
@@ -237,7 +275,9 @@ const Product = () => {
                 placeholder="Name"
                 customWidth="w-full"
                 defaultValue={product?.name}
-                validationErrors={validationErrors}
+                validationErrors={
+                  serverValidationErrors || clientValidationErrors
+                }
               />
 
               <BasicSelect
@@ -326,14 +366,16 @@ const Product = () => {
               placeholder="Info URL"
               customWidth="w-full"
               defaultValue={product?.infoURL}
-              validationErrors={validationErrors}
+              validationErrors={
+                serverValidationErrors || clientValidationErrors
+              }
             />
           </div>
 
           <BackSubmitButtons
             loading={loading}
             setLoading={setLoading}
-            validationErrors={validationErrors}
+            validationErrors={serverValidationErrors || clientValidationErrors}
           />
         </Form>
       </DarkOverlay>
@@ -342,4 +384,4 @@ const Product = () => {
   );
 };
 
-export default Product;
+export default UpsertProduct;

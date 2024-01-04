@@ -5,7 +5,13 @@ import { STAFF_SESSION_KEY } from "~/session.server";
 import { json, redirect, type LoaderFunctionArgs } from "@remix-run/node";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
-import { Form, Outlet, useLoaderData, useSearchParams } from "@remix-run/react";
+import {
+  Form,
+  Outlet,
+  useLoaderData,
+  useNavigate,
+  useSearchParams,
+} from "@remix-run/react";
 import {
   searchStockTransfers,
   type StockTransferRequestWithDetails,
@@ -38,6 +44,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 const ManageStockTransfers = () => {
   const { stockTransfers, totalPages, stores } = useLoaderData<typeof loader>();
+
+  const navigate = useNavigate();
+
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("pageNumber")) || 1;
 
@@ -57,6 +66,9 @@ const ManageStockTransfers = () => {
 
         {stockTransfers && stockTransfers.length > 0 && (
           <BasicTable
+            onRowClick={(id) =>
+              navigate(`/admin/upsert/stockTransfer?contentId=${id}`)
+            }
             currentPage={currentPage}
             objectArray={stockTransfers?.map(
               (e: StockTransferRequestWithDetails) => ({

@@ -7,7 +7,13 @@ import {
 import { searchBrands, type BrandWithContent } from "~/models/brands.server";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
-import { Form, Outlet, useLoaderData, useSearchParams } from "@remix-run/react";
+import {
+  Form,
+  Outlet,
+  useLoaderData,
+  useNavigate,
+  useSearchParams,
+} from "@remix-run/react";
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
 import BasicTable from "~/components/Tables/BasicTable";
@@ -30,6 +36,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 const Brands = () => {
   const { brands, totalPages } = useLoaderData<typeof loader>();
 
+  const navigate = useNavigate();
+
   const [searchParams] = useSearchParams();
 
   const currentPage = Number(searchParams.get("pageNumber")) || 1;
@@ -37,7 +45,11 @@ const Brands = () => {
   return (
     <AdminPageWrapper>
       <Form method="GET" className="relative h-full w-full bg-base-200 p-6">
-        <AdminPageHeader title="Manage Brands" addButtonText="Add Brands" />
+        <AdminPageHeader
+          title="Manage Brands"
+          buttonLabel="Add Brand"
+          buttonLink="/admin/upsert/brand?contentId=add"
+        />
 
         <AdminContentSearch name={true} />
 
@@ -45,6 +57,7 @@ const Brands = () => {
 
         {brands && brands.length > 0 && (
           <BasicTable
+            onRowClick={(id) => navigate(`/admin/upsert/brand?contentId=${id}`)}
             currentPage={currentPage}
             objectArray={brands.map((e: BrandWithContent) => ({
               id: e.id,

@@ -8,7 +8,7 @@ import type { BlockOptions } from "@prisma/client";
 import type { BlockContentWithDetails } from "~/models/blocks.server";
 import type { MapFunctions } from "~/components/Map/types";
 import { ClientOnly } from "~/components/Client/ClientOnly";
-import { getCountrFromISO3166 } from "~/utility/countryList";
+import { getCountryFromISO3166 } from "~/utility/countryList";
 import type { StoreWithDetails } from "~/models/stores.server";
 import { IoCall, IoLocationSharp, IoPrint } from "react-icons/io5";
 type Props = {
@@ -137,7 +137,7 @@ const MapBlock = ({ content, options: optionsArray }: Props) => {
                         {suburb + " " + state + " " + postcode}
                         <br />
                         {country &&
-                          getCountrFromISO3166(country)?.toUpperCase()}
+                          getCountryFromISO3166(country)?.toUpperCase()}
                       </p>
                     </div>
                     <div className="pt-5 font-semibold leading-7">

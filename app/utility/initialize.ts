@@ -1,7 +1,20 @@
 import { prisma } from "~/db.server";
 import bcrypt from "bcryptjs";
 
-export const createInitialDeveloper = async () => {
+export const createSeedData = async () => {
+  console.log("Running Build Seed Functions");
+  try {
+    await createInitialDeveloper();
+    await createHomePage();
+    await createEcommerceSeedData();
+  } catch (error) {
+    console.error("Error creating products and categories:", error);
+  } finally {
+    await prisma.$disconnect();
+  }
+};
+
+const createInitialDeveloper = async () => {
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash("Erhjadc7!", salt);
 
@@ -35,20 +48,6 @@ export const createInitialDeveloper = async () => {
     } else {
       console.error("Failed to create initial developer:", error);
     }
-  } finally {
-    await prisma.$disconnect();
-  }
-};
-
-export const createSeedData = async () => {
-  console.log("RUNNING SEED CREATION");
-  try {
-    await createHomePage();
-    await createBrand();
-    await createRandomProductSubCategories();
-    await createInitialDeveloper();
-  } catch (error) {
-    console.error("Error creating products and categories:", error);
   } finally {
     await prisma.$disconnect();
   }
@@ -105,28 +104,18 @@ const createHomePage = async () => {
   }
 };
 
-const createBrand = async () => {
-  const existingDepartments = await prisma.department.findMany();
-  if (existingDepartments.length > 0) {
-    console.log("brands already exist. Skipping seed creation.");
-    return;
-  }
-
+const createEcommerceSeedData = async () => {
   try {
-    await prisma.brand.create({
-      data: {
-        name: "None",
-      },
-    });
+    const existingBrands = await prisma.brand.findMany();
 
-    console.log("Random brands created successfully.");
-  } catch (error) {
-    console.error("Error creating random brands:", error);
-  }
-};
+    if (!existingBrands) {
+      await prisma.brand.create({
+        data: {
+          name: "None",
+        },
+      });
+    }
 
-const createRandomProductSubCategories = async () => {
-  try {
     const existingDepartments = await prisma.department.findMany();
     if (existingDepartments.length > 0) {
       console.log("seed data already exist. Skipping seed creation.");

@@ -71,6 +71,7 @@ const BasicTable = ({
         </thead>
         <tbody>
           {objectArray?.map((obj: string | any, i) => {
+            console.log("OBJ", objectArray);
             return (
               <tr
                 key={"TableRow_" + obj + i}
@@ -98,7 +99,9 @@ const BasicTable = ({
                   if (
                     typeof val === "string" &&
                     isValidDate(val) &&
-                    !isIdValue
+                    !isIdValue &&
+                    !val.includes(" ") &&
+                    val.includes("-")
                   ) {
                     return (
                       <td
@@ -136,7 +139,19 @@ const BasicTable = ({
                         )}
                       </td>
                     );
-                  } else return null;
+                  }
+                  // IF ID VALUE WE RETURN NULL AS ID IS EXCLUDED
+                  if (isIdValue) {
+                    return null;
+                  }
+                  // OTHERWISE WE RETURN AN EMPTY SLOT IF NOT DEFINED
+                  else
+                    return (
+                      <td
+                        className="text-center"
+                        key={"TableValue_" + val + valIndex}
+                      ></td>
+                    );
                 })}
               </tr>
             );

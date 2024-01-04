@@ -1,9 +1,7 @@
 import type { Campaign, Image, Promotion } from "@prisma/client";
 import type { ActionReturnTypes } from "~/utility/actionTypes";
 import { type FormEvent, useEffect, useState } from "react";
-import { tokenAuth } from "~/auth.server";
-import { validateForm } from "~/utility/validate";
-import { STAFF_SESSION_KEY } from "~/session.server";
+import { type ValidationErrors, validateForm } from "~/utility/validate";
 import DarkOverlay from "~/components/Layout/DarkOverlay";
 import { IoCaretForwardCircleSharp } from "react-icons/io5";
 import BasicInput from "~/components/Forms/Input/BasicInput";
@@ -16,18 +14,15 @@ import {
   upsertImage,
 } from "~/models/images.server";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
-import {
-  json,
-  redirect,
-  type ActionFunctionArgs,
-  type LoaderFunctionArgs,
-} from "@remix-run/node";
+import { json } from "@remix-run/node";
 import {
   Form,
+  type Params,
   useActionData,
   useLoaderData,
   useNavigate,
   useSubmit,
+  useSearchParams,
 } from "@remix-run/react";
 import useNotification, {
   type PageNotification,
@@ -36,14 +31,17 @@ import { getFormData } from "~/helpers/formHelpers";
 import { ActionAlert } from "~/components/Notifications/Alerts";
 import { hasNonEmptyArrayObjectOrIdKey } from "~/helpers/contentHelpers";
 
-export const loader = async ({ request, params }: LoaderFunctionArgs) => {
-  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+const validateOptions = {
+  image: true,
+  altText: true,
+};
 
-  if (!authenticated.valid) {
-    return redirect("/login");
-  }
-
-  const id = params?.id;
+export const imageUpsertLoader = async (
+  request: Request,
+  params: Params<string>
+) => {
+  let { searchParams } = new URL(request.url);
+  let id = searchParams.get("contentId");
 
   if (!id) {
     throw new Response(null, {
@@ -64,30 +62,27 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   return json({ image });
 };
 
-export const action = async ({ request, params }: ActionFunctionArgs) => {
-  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
-
-  if (!authenticated.valid) {
-    return redirect("/login");
-  }
-
-  const id = params.id === "add" ? undefined : params.id;
-  const form = Object.fromEntries(await request.formData());
-
-  const { image, altText } = form;
-
+export const imageUpsertAction = async (
+  request: Request,
+  params: Params<string>
+) => {
   let notification: PageNotification;
 
-  switch (form._action) {
-    case "upsert":
-      const validate = {
-        image: true,
-        altText: true,
-      };
+  let { searchParams } = new URL(request.url);
+  const contentId = searchParams.get("contentId");
+  let id = contentId === "add" || !contentId ? undefined : contentId;
 
-      const validationErrors = validateForm(form, validate);
-      if (validationErrors) {
-        return json({ validationErrors });
+  const { formEntries, formErrors } = validateForm(
+    await request.formData(),
+    validateOptions
+  );
+
+  const { image, altText } = formEntries;
+
+  switch (formEntries._action) {
+    case "upsert":
+      if (formErrors) {
+        return json({ serverValidationErrors: formErrors });
       }
 
       const parsedImage = image
@@ -115,13 +110,19 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   }
 };
 
-const ModifyImage = () => {
-  const { image } = useLoaderData<typeof loader>();
-  const { validationErrors, success, notification } =
+type Props = {
+  asModule?: boolean;
+};
+
+const ImageUpsert = ({ asModule }: Props) => {
+  const { image } = useLoaderData<typeof imageUpsertLoader>() || {};
+  const { serverValidationErrors, success, notification } =
     (useActionData() as ActionReturnTypes) || {};
 
   const navigate = useNavigate();
   let submit = useSubmit();
+  const [searchParams] = useSearchParams();
+  const contentId = searchParams.get("contentId");
   useNotification(notification);
 
   const {
@@ -134,32 +135,50 @@ const ModifyImage = () => {
     productSubCategoryId,
     articleId,
     productId,
-  } = image;
+  } = image || {};
 
-  const determineIfConnected = (): boolean => {
-    if (image) {
-      return hasNonEmptyArrayObjectOrIdKey(image);
-    } else return false;
-  };
+  const [clientValidationErrors, setClientValidationErrors] =
+    useState<ValidationErrors>();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [hasConnection] = useState<boolean>(
+    hasNonEmptyArrayObjectOrIdKey(image)
+  );
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     const form = getFormData(event);
     event.preventDefault();
+
+    const { formErrors } = validateForm(new FormData(form), validateOptions);
+    if (formErrors) {
+      setClientValidationErrors(formErrors);
+      setLoading(false);
+      return;
+    }
+
+    const submitFunction = () => {
+      submit(form, {
+        method: "POST",
+        action: `/admin/upsert/image?contentId=${contentId}`,
+        navigate: asModule ? false : true,
+      });
+    };
+
     if (hasConnection) {
       ActionAlert(
         "Resource Has Connections",
         "Update this resource?",
-        () => submit(form),
+        () => submitFunction(),
         () => setLoading(false),
         "warning"
       );
     } else {
-      submit(form);
+      submitFunction();
+    }
+
+    if (asModule) {
+      navigate(-1);
     }
   };
-
-  const [loading, setLoading] = useState<boolean>(false);
-  const [hasConnection] = useState<boolean>(determineIfConnected());
 
   useEffect(() => {
     if (success) {
@@ -171,8 +190,8 @@ const ModifyImage = () => {
     <DarkOverlay>
       <Form
         method="POST"
-        className="scrollbar-hide relative w-[500px] max-w-[100vw] overflow-y-auto bg-base-200 px-3 py-6 sm:px-6"
         onSubmit={handleSubmit}
+        className="scrollbar-hide relative w-[500px] max-w-[100vw] overflow-y-auto bg-base-200 px-3 py-6 sm:px-6"
       >
         <FormHeader
           valueToChange={image}
@@ -191,7 +210,7 @@ const ModifyImage = () => {
             customWidth="w-full"
             defaultValue={altText || undefined}
             type="text"
-            validationErrors={validationErrors}
+            validationErrors={serverValidationErrors || clientValidationErrors}
           />
 
           <div className="mt-6 text-sm">Existing Connections</div>
@@ -355,11 +374,11 @@ const ModifyImage = () => {
         <BackSubmitButtons
           loading={loading}
           setLoading={setLoading}
-          validationErrors={validationErrors}
+          validationErrors={serverValidationErrors || clientValidationErrors}
         />
       </Form>
     </DarkOverlay>
   );
 };
 
-export default ModifyImage;
+export default ImageUpsert;

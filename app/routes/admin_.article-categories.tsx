@@ -5,7 +5,13 @@ import { json, redirect, type LoaderFunctionArgs } from "@remix-run/node";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import { searchArticleCategories } from "~/models/articleCategories.server";
-import { Form, Outlet, useLoaderData, useSearchParams } from "@remix-run/react";
+import {
+  Form,
+  Outlet,
+  useLoaderData,
+  useNavigate,
+  useSearchParams,
+} from "@remix-run/react";
 import BasicTable from "~/components/Tables/BasicTable";
 import AdminContentSearch from "~/components/Search/AdminContentSearch";
 
@@ -32,7 +38,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 const ArticleCategories = () => {
-  const { articleCategories, totalPages } = useLoaderData<typeof loader>();
+  const { articleCategories, totalPages } =
+    useLoaderData<typeof loader>() || {};
+
+  const navigate = useNavigate();
 
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("pageNumber")) || 1;
@@ -42,22 +51,28 @@ const ArticleCategories = () => {
       <Form method="GET" className="relative h-full w-full bg-base-200 p-6">
         <AdminPageHeader
           title="Manage Article Categories"
-          addButtonText="Add Category"
+          buttonLabel="Add Category"
+          buttonLink="/admin/upsert/articleCategory?contentId=add"
         />
 
         <AdminContentSearch name={true} />
 
         <div className="divider w-full" />
 
-        <BasicTable
-          currentPage={currentPage}
-          objectArray={articleCategories.map((e) => ({
-            id: e.id,
-            name: e.name,
-            created: e.createdAt,
-            active: e.isActive,
-          }))}
-        />
+        {articleCategories && articleCategories.length > 0 && (
+          <BasicTable
+            onRowClick={(id) =>
+              navigate(`/admin/upsert/articleCategory?contentId=${id}`)
+            }
+            currentPage={currentPage}
+            objectArray={articleCategories?.map((e) => ({
+              id: e.id,
+              name: e.name,
+              created: e.createdAt,
+              active: e.isActive,
+            }))}
+          />
+        )}
 
         <Pagination totalPages={totalPages} />
       </Form>

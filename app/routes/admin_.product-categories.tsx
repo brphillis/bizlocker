@@ -10,7 +10,13 @@ import {
 } from "~/models/productCategories.server";
 import { getProductSubCategories } from "~/models/productSubCategories.server";
 import { json } from "@remix-run/node";
-import { Form, Outlet, useLoaderData, useSearchParams } from "@remix-run/react";
+import {
+  Form,
+  Outlet,
+  useLoaderData,
+  useNavigate,
+  useSearchParams,
+} from "@remix-run/react";
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
 import BasicTable from "~/components/Tables/BasicTable";
@@ -44,6 +50,8 @@ const ManageProductCategories = () => {
   const { productCategories, totalPages, productSubCategories, departments } =
     useLoaderData<typeof loader>();
 
+  const navigate = useNavigate();
+
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("pageNumber")) || 1;
 
@@ -55,7 +63,8 @@ const ManageProductCategories = () => {
       >
         <AdminPageHeader
           title="Manage Categories"
-          addButtonText="Add Category"
+          buttonLabel="Add Categories"
+          buttonLink="/admin/upsert/productCategory?contentId=add"
         />
 
         <AdminContentSearch
@@ -70,6 +79,9 @@ const ManageProductCategories = () => {
 
         {productCategories && productCategories.length > 0 && (
           <BasicTable
+            onRowClick={(id) =>
+              navigate(`/admin/upsert/articleCategory?contentId=${id}`)
+            }
             currentPage={currentPage}
             objectArray={productCategories?.map((e: ProductCategory) => ({
               id: e.id,

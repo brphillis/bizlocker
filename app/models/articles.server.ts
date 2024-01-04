@@ -9,7 +9,7 @@ import type { BlockWithBlockOptions } from "./blocks.server";
 import { prisma } from "~/db.server";
 import { activeContentTypes } from "~/utility/blockMaster/blockMaster";
 import { getOrderBy } from "~/helpers/sortHelpers";
-import { type BlockWithContent, removeBlock } from "./pageBuilder.server";
+import { type BlockWithContent, disconnectBlock } from "./pageBuilder.server";
 import { getBlocks } from "~/helpers/blockHelpers";
 
 export interface ArticleWithContent extends Article {
@@ -83,7 +83,7 @@ export const deleteArticle = async (
 
   await Promise.all(
     articleBlocks.map(
-      async (e: BlockWithContent) => await removeBlock(e.id, e.name)
+      async (e: BlockWithContent) => await disconnectBlock(e.id, e.name)
     )
   );
 

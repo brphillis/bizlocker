@@ -7,7 +7,13 @@ import { searchDepartments } from "~/models/departments.server";
 import { json, redirect, type LoaderFunctionArgs } from "@remix-run/node";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
-import { Form, Outlet, useLoaderData, useSearchParams } from "@remix-run/react";
+import {
+  Form,
+  Outlet,
+  useLoaderData,
+  useNavigate,
+  useSearchParams,
+} from "@remix-run/react";
 import BasicTable from "~/components/Tables/BasicTable";
 import AdminContentSearch from "~/components/Search/AdminContentSearch";
 
@@ -39,6 +45,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 const ManageDepartments = () => {
   const { totalPages, departments } = useLoaderData<typeof loader>();
 
+  const navigate = useNavigate();
+
   const [searchParams] = useSearchParams();
 
   const currentPage = Number(searchParams.get("pageNumber")) || 1;
@@ -51,7 +59,8 @@ const ManageDepartments = () => {
       >
         <AdminPageHeader
           title="Manage Departments"
-          addButtonText="Add Department"
+          buttonLabel="Add Promotion"
+          buttonLink="/admin/upsert/department?contentId=add"
         />
 
         <AdminContentSearch name={true} />
@@ -62,6 +71,9 @@ const ManageDepartments = () => {
 
         {departments && departments.length > 0 && (
           <BasicTable
+            onRowClick={(id) =>
+              navigate(`/admin/upsert/department?contentId=${id}`)
+            }
             currentPage={currentPage}
             objectArray={departments?.map((e: Department) => ({
               id: e.id,

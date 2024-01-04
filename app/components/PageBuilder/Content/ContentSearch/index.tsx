@@ -1,6 +1,6 @@
 import type { PreviewPage } from "@prisma/client";
 import type { BlockContentType, BlockName } from "~/utility/blockMaster/types";
-import { useSubmit } from "@remix-run/react";
+import { useNavigate, useSubmit } from "@remix-run/react";
 import { useState } from "react";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
@@ -22,6 +22,7 @@ const ContentSearch = ({
   contentType,
   setContentType,
 }: Props) => {
+  const navigate = useNavigate();
   const submit = useSubmit();
   const [searchValue, setSearchValue] = useState<string>();
 
@@ -106,6 +107,21 @@ const ContentSearch = ({
             >
               Search
             </button>
+
+            {contentType && (
+              <button
+                type="button"
+                className="btn-primary btn-sm !h-[42px] rounded-sm bg-primary hover:bg-primary-dark max-md:mt-3"
+                onClick={() => {
+                  navigate({
+                    pathname: contentType,
+                    search: "?contentId=add",
+                  });
+                }}
+              >
+                Add
+              </button>
+            )}
           </div>
         </div>
       )}

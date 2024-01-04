@@ -74,10 +74,30 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  const form = Object.fromEntries(await request.formData());
+  const validate = {
+    firstName: true,
+    lastName: true,
+    email: true,
+    addressLine1: true,
+    suburb: true,
+    postcode: true,
+    state: true,
+    country: true,
+    phoneNumber: true,
+    shippingOptions: true,
+  };
 
-  switch (form._action) {
+  const { formEntries, formErrors } = validateForm(
+    await request.formData(),
+    validate
+  );
+
+  switch (formEntries._action) {
     case "placeOrder":
+      if (formErrors) {
+        return json({ validationErrors: formErrors });
+      }
+
       const {
         rememberInformation,
         firstName,
@@ -91,25 +111,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         state,
         country,
         shippingOptions,
-      } = form;
-
-      const validate = {
-        firstName: true,
-        lastName: true,
-        email: true,
-        addressLine1: true,
-        suburb: true,
-        postcode: true,
-        state: true,
-        country: true,
-        phoneNumber: true,
-        shippingOptions: true,
-      };
-
-      const validationErrors = validateForm(form, validate);
-      if (validationErrors) {
-        return json({ validationErrors });
-      }
+      } = formEntries;
 
       const address: NewAddress = {
         addressLine1: addressLine1 as string,
@@ -139,7 +141,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
     case "getShipping":
       const cart = await getCart(request);
-      const { postCode } = form;
+      const { postCode } = formEntries;
 
       if (cart && !isNaN(parseInt(postCode as string))) {
         const actionShippingOptions = await getCartDeliveryOptions(

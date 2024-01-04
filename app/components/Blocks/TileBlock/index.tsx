@@ -2,10 +2,10 @@ import type { BlockContentWithDetails } from "~/models/blocks.server";
 import type { BlockOptions } from "@prisma/client";
 import PatternBackground from "~/components/Layout/PatternBackground";
 import {
-  buildContentImageFromContent,
+  buildImageFromBlockContent,
   concatBlockContent,
-  determineSingleContentType,
-} from "~/helpers/blockContentHelpers";
+  determineContentType,
+} from "~/helpers/contentHelpers";
 import ContentTile from "./ContentTile";
 import IconTile from "./IconTile";
 import { getThemeColorValueByName } from "~/utility/colors";
@@ -64,17 +64,13 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
       />
 
       {joinedContent?.map((contentData: any, i: number) => {
-        const contentType = determineSingleContentType(
+        const contentType = determineContentType(
           contentData as BlockContentWithDetails
         );
 
         const { name, link, imageSrc } =
-          buildContentImageFromContent(
-            contentType!,
-            contentData,
-            "tileImage",
-            itemLinks[i]
-          ) || {};
+          buildImageFromBlockContent(contentData, "tileImage", itemLinks[i]) ||
+          {};
 
         return (
           <div

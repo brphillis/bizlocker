@@ -44,9 +44,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   }
 
   const { id } = ((await getUserDataFromSession(request)) as User) || {};
-  const form = Object.fromEntries(await request.formData());
-
-  const { firstName, lastName, dateofbirth, phoneNumber } = form;
 
   const validate = {
     firstName: true,
@@ -55,9 +52,15 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     phoneNumber: true,
   };
 
-  const validationErrors = validateForm(form, validate);
-  if (validationErrors) {
-    return json({ validationErrors });
+  const { formErrors, formEntries } = validateForm(
+    await request.formData(),
+    validate
+  );
+
+  const { firstName, lastName, dateofbirth, phoneNumber } = formEntries;
+
+  if (formErrors) {
+    return json({ validationErrors: formErrors });
   }
 
   const updateData = {

@@ -2,23 +2,23 @@ import { useNavigate } from "@remix-run/react";
 
 type Props = {
   title: string;
-  addButtonText?: string;
-  createLink?: string;
+  buttonLabel?: string;
+  buttonLink?: string;
 };
 
-const AdminPageHeader = ({ title, addButtonText, createLink }: Props) => {
+const AdminPageHeader = ({ title, buttonLabel, buttonLink }: Props) => {
   const navigate = useNavigate();
   return (
     <>
       <div className="flex w-full items-center justify-between">
         <h1>{title}</h1>
-        {addButtonText && (
+        {buttonLabel && buttonLink && (
           <button
             type="button"
             className="btn-primary btn-md w-max !rounded-sm bg-primary hover:bg-primary-dark"
-            onClick={() => navigate(createLink ? createLink : "add")}
+            onClick={() => buttonLink && navigate(buttonLink)}
           >
-            {addButtonText}
+            {buttonLabel}
           </button>
         )}
       </div>

@@ -7,7 +7,7 @@ import {
 import type { ActionReturnTypes } from "~/utility/actionTypes";
 import type { BlockOptions, PreviewPage } from "@prisma/client";
 import type { BlockContentType } from "~/utility/blockMaster/types";
-import { Form, useActionData, useLoaderData } from "@remix-run/react";
+import { Form, Outlet, useActionData, useLoaderData } from "@remix-run/react";
 import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
 import PageBuilder from "~/components/PageBuilder";
 import {
@@ -17,7 +17,7 @@ import {
   getPageType,
   publishPage,
   revertPreviewChanges,
-  updatePageBlock,
+  updateBlock,
   upsertPageMeta,
   type BlockWithContent,
 } from "~/models/pageBuilder.server";
@@ -126,7 +126,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
     index,
     isActive,
     name,
-    pageBlocks,
+    blocks,
     pageId,
     previewPageId,
     thumbnail,
@@ -238,7 +238,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
     case "update":
       const newBlockData = getBlockUpdateValues(form);
 
-      const updateSuccess = await updatePageBlock(
+      const updateSuccess = await updateBlock(
         pageType as PageType,
         previewPageId as string,
         newBlockData as NewBlockData,
@@ -299,7 +299,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
       await changeBlockOrder(
         previewPageId as string,
-        pageBlocks as string,
+        blocks as string,
         parseInt(index as string),
         direction as "up" | "down"
       );
@@ -381,90 +381,93 @@ const ManageHomePage = () => {
   }, [actionPreview, actionBlocks, blocks, currentPreviewPage]);
 
   return (
-    <AdminPageWrapper>
-      <div className="relative h-full p-6 max-sm:p-0 sm:w-full">
-        <div className="absolute left-0 top-0 h-full w-full bg-brand-white"></div>
-        <PatternBackground
-          backgroundColor={getThemeColorValueByName("brand-black")}
-          brightness={-1.5}
-          name="isometric"
-          patternColor={getThemeColorValueByName("brand-white")}
-          patternOpacity={0.2}
-          patternSize={140}
-        />
+    <>
+      <AdminPageWrapper>
+        <div className="relative h-full p-6 max-sm:p-0 sm:w-full">
+          <div className="absolute left-0 top-0 h-full w-full bg-brand-white"></div>
+          <PatternBackground
+            backgroundColor={getThemeColorValueByName("brand-black")}
+            brightness={-1.5}
+            name="isometric"
+            patternColor={getThemeColorValueByName("brand-white")}
+            patternOpacity={0.2}
+            patternSize={140}
+          />
 
-        <div className="flex w-full justify-center">
-          <div className="flex flex-col gap-3 rounded-none text-brand-white">
-            <div className="relative flex flex-col items-center justify-center gap-6 bg-brand-black py-6 text-center text-xl font-bold text-brand-white max-sm:gap-3">
-              <div className="w-full">
-                {page.title ? page.title : "Add Page"}
-              </div>
-              {pageType !== "homePage" && (
-                <Form method="POST" className="absolute right-3">
-                  {page?.id && (
-                    <input
-                      hidden
-                      readOnly
-                      name="pageId"
-                      value={page.id.toString()}
+          <div className="flex w-full justify-center">
+            <div className="flex flex-col gap-3 rounded-none text-brand-white">
+              <div className="relative flex flex-col items-center justify-center gap-6 bg-brand-black py-6 text-center text-xl font-bold text-brand-white max-sm:gap-3">
+                <div className="w-full">
+                  {page.title ? page.title : "Add Page"}
+                </div>
+                {pageType !== "homePage" && (
+                  <Form method="POST" className="absolute right-3">
+                    {page?.id && (
+                      <input
+                        hidden
+                        readOnly
+                        name="pageId"
+                        value={page.id.toString()}
+                      />
+                    )}
+                    <input hidden readOnly name="pageType" value={pageType} />
+                    <SquareIconButton
+                      color="error"
+                      iconName="IoTrashBin"
+                      name="_action"
+                      size="small"
+                      type="submit"
+                      value="deletepage"
                     />
-                  )}
-                  <input hidden readOnly name="pageType" value={pageType} />
-                  <SquareIconButton
-                    color="error"
-                    iconName="IoTrashBin"
-                    name="_action"
-                    size="small"
-                    type="submit"
-                    value="deletepage"
-                  />
-                </Form>
+                  </Form>
+                )}
+              </div>
+
+              <Header
+                articleCategories={articleCategories}
+                colors={colors}
+                currentVersion={currentVersion}
+                isActive={isActive}
+                metaValidationError={metaValidationError}
+                pageToCreate={pageToCreate as PageType}
+                pageType={pageType as PageType}
+                setIsActive={setIsActive}
+              />
+
+              {page && currentVersion && (
+                <LargeCollapse
+                  title="Blocks"
+                  forceOpen={true}
+                  content={
+                    <PageBuilder
+                      articleCategories={articleCategories}
+                      blocks={currentBlocks}
+                      brands={brands}
+                      colors={colors}
+                      previewPage={currentVersion}
+                      productCategories={productCategories}
+                      productSubCategories={productSubCategories}
+                      searchResults={searchResults}
+                      updateSuccess={updateSuccess}
+                    />
+                  }
+                />
+              )}
+
+              {page && (
+                <VersionControl
+                  currentVersion={currentVersion}
+                  page={page as Page}
+                  previewPages={previewPages}
+                  updateSuccess={publishSuccess}
+                />
               )}
             </div>
-
-            <Header
-              articleCategories={articleCategories}
-              colors={colors}
-              currentVersion={currentVersion}
-              isActive={isActive}
-              metaValidationError={metaValidationError}
-              pageToCreate={pageToCreate as PageType}
-              pageType={pageType as PageType}
-              setIsActive={setIsActive}
-            />
-
-            {page && currentVersion && (
-              <LargeCollapse
-                title="Blocks"
-                forceOpen={true}
-                content={
-                  <PageBuilder
-                    articleCategories={articleCategories}
-                    blocks={currentBlocks}
-                    brands={brands}
-                    colors={colors}
-                    previewPage={currentVersion}
-                    productCategories={productCategories}
-                    productSubCategories={productSubCategories}
-                    searchResults={searchResults}
-                    updateSuccess={updateSuccess}
-                  />
-                }
-              />
-            )}
-
-            {page && (
-              <VersionControl
-                currentVersion={currentVersion}
-                page={page as Page}
-                previewPages={previewPages}
-                updateSuccess={publishSuccess}
-              />
-            )}
           </div>
         </div>
-      </div>
-    </AdminPageWrapper>
+      </AdminPageWrapper>
+      <Outlet />
+    </>
   );
 };
 

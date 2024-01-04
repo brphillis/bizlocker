@@ -1,7 +1,7 @@
 import type { BlockContentWithDetails } from "~/models/blocks.server";
 import type { BlockOptions } from "@prisma/client";
 import { ClientOnly } from "~/components/Client/ClientOnly";
-import { concatBlockContent } from "~/helpers/blockContentHelpers";
+import { concatBlockContent } from "~/helpers/contentHelpers";
 import Carousel from "./Carousel/index.client";
 import SEOCardSkeleton from "~/components/Client/Skeletons/SEOCardSkeleton";
 

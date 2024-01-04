@@ -1,17 +1,15 @@
+import { Suspense } from "react";
 import type { BlockOptions } from "@prisma/client";
 import type { BlockContentWithDetails } from "~/models/blocks.server";
-import { Suspense } from "react";
-import { Pagination, Autoplay, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { isDecimal } from "~/helpers/numberHelpers";
 import { getThemeColorValueByName } from "~/utility/colors";
+import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import PatternBackground from "~/components/Layout/PatternBackground";
-import {
-  buildContentImageFromContent,
-  determineSingleContentType,
-} from "~/helpers/blockContentHelpers";
-import Slide from "../Slide";
+import { buildImageFromBlockContent } from "~/helpers/contentHelpers";
 import { IoChevronBackOutline, IoChevronForward } from "react-icons/io5";
+
+import Slide from "../Slide";
 
 type Props = {
   joinedContent: BlockContentWithDetails[];
@@ -191,12 +189,8 @@ const Carousel = ({ joinedContent, options }: Props) => {
               (contentData: any, i: number) => {
                 const index = i + 1 > trueSlideLength ? i - trueSlideLength : i;
 
-                const contentType = determineSingleContentType(
-                  contentData as BlockContentWithDetails
-                );
-
                 const { name, imageSrc } =
-                  buildContentImageFromContent(contentType!, contentData) || {};
+                  buildImageFromBlockContent(contentData) || {};
 
                 return (
                   <SwiperSlide key={i}>

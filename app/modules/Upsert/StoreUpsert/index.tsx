@@ -1,44 +1,51 @@
-import {
-  redirect,
-  type ActionFunctionArgs,
-  type LoaderFunctionArgs,
-  json,
-} from "@remix-run/node";
-import type { ActionReturnTypes } from "~/utility/actionTypes";
-import {
-  Form,
-  useActionData,
-  useLoaderData,
-  useNavigate,
-} from "@remix-run/react";
-import { useEffect, useState } from "react";
-import { tokenAuth } from "~/auth.server";
-import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
-import FormHeader from "~/components/Forms/Headers/FormHeader";
+import { type FormEvent, useEffect, useState } from "react";
+import { json } from "@remix-run/node";
+import { getFormData } from "~/helpers/formHelpers";
+import DarkOverlay from "~/components/Layout/DarkOverlay";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import PhoneInput from "~/components/Forms/Input/PhoneInput";
+import FormHeader from "~/components/Forms/Headers/FormHeader";
+import type { ActionReturnTypes } from "~/utility/actionTypes";
 import SelectCountry from "~/components/Forms/Select/SelectCountry";
-import DarkOverlay from "~/components/Layout/DarkOverlay";
-import {
-  type StoreWithDetails,
-  getStore,
-  upsertStore,
-  type NewStore,
-} from "~/models/stores.server";
-import { STAFF_SESSION_KEY } from "~/session.server";
-import { validateForm } from "~/utility/validate";
+import { type ValidationErrors, validateForm } from "~/utility/validate";
+import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
 import useNotification, {
   type PageNotification,
 } from "~/hooks/PageNotification";
+import {
+  getStore,
+  type NewStore,
+  type StoreWithDetails,
+  upsertStore,
+} from "~/models/stores.server";
+import {
+  Form,
+  type Params,
+  useActionData,
+  useLoaderData,
+  useNavigate,
+  useSubmit,
+  useSearchParams,
+} from "@remix-run/react";
 
-export const loader = async ({ request, params }: LoaderFunctionArgs) => {
-  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+const validateOptions = {
+  name: true,
+  phoneNumber: true,
+  addressLine1: true,
+  postcode: true,
+  suburb: true,
+  state: true,
+  country: true,
+  latitude: true,
+  longitude: true,
+};
 
-  if (!authenticated.valid) {
-    return redirect("/admin/login");
-  }
-
-  const id = params?.id;
+export const storeUpsertLoader = async (
+  request: Request,
+  params: Params<string>
+) => {
+  let { searchParams } = new URL(request.url);
+  let id = searchParams.get("contentId");
 
   if (!id) {
     throw new Response(null, {
@@ -59,15 +66,21 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   return json({ store });
 };
 
-export const action = async ({ request, params }: ActionFunctionArgs) => {
-  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+export const storeUpsertAction = async (
+  request: Request,
+  params: Params<string>
+) => {
+  let notification: PageNotification;
 
-  if (!authenticated.valid) {
-    return redirect("/admin/login");
-  }
+  let { searchParams } = new URL(request.url);
+  const contentId = searchParams.get("contentId");
+  let id = contentId === "add" || !contentId ? undefined : contentId;
 
-  const id = params.id === "add" ? undefined : params.id;
-  const form = Object.fromEntries(await request.formData());
+  const { formEntries, formErrors } = validateForm(
+    await request.formData(),
+    validateOptions
+  );
+
   const {
     name,
     dateofbirth,
@@ -83,26 +96,10 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
     latitude,
     paymentProviderId,
     isActive,
-  } = form;
+  } = formEntries;
 
-  let notification: PageNotification;
-
-  const validate = {
-    name: true,
-    phoneNumber: true,
-    addressLine1: true,
-    postcode: true,
-    suburb: true,
-    state: true,
-    country: true,
-    latitude: true,
-    longitude: true,
-  };
-
-  const validationErrors = validateForm(form, validate);
-
-  if (validationErrors) {
-    return json({ validationErrors });
+  if (formErrors) {
+    return { serverValidationErrors: formErrors };
   }
 
   const updateData: NewStore = {
@@ -133,29 +130,65 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   return json({ success: true, notification });
 };
 
-const ModifyStore = () => {
-  const { store } = useLoaderData<typeof loader>();
-  const { validationErrors, success, notification } =
+type Props = {
+  asModule?: boolean;
+};
+
+const StoreUpsert = ({ asModule }: Props) => {
+  const { store } = useLoaderData<typeof storeUpsertLoader>();
+  const { serverValidationErrors, success, notification } =
     (useActionData() as ActionReturnTypes) || {};
 
   const navigate = useNavigate();
+  let submit = useSubmit();
+  const [searchParams] = useSearchParams();
+  const contentId = searchParams.get("contentId");
   useNotification(notification);
 
+  const [clientValidationErrors, setClientValidationErrors] =
+    useState<ValidationErrors>();
   const [loading, setLoading] = useState<boolean>(false);
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    const form = getFormData(event);
+    event.preventDefault();
+
+    const { formErrors } = validateForm(new FormData(form), validateOptions);
+    if (formErrors) {
+      setClientValidationErrors(formErrors);
+      setLoading(false);
+      return;
+    }
+
+    const submitFunction = () => {
+      submit(form, {
+        method: "POST",
+        action: `/admin/upsert/store?contentId=${contentId}`,
+        navigate: asModule ? false : true,
+      });
+    };
+
+    submitFunction();
+
+    if (asModule) {
+      navigate(-1);
+    }
+  };
 
   useEffect(() => {
     if (success) {
       navigate(-1);
     }
-    if (validationErrors) {
+    if (serverValidationErrors) {
       setLoading(false);
     }
-  }, [success, navigate, validationErrors]);
+  }, [success, navigate, serverValidationErrors]);
 
   return (
     <DarkOverlay>
       <Form
         method="POST"
+        onSubmit={handleSubmit}
         className="scrollbar-hide relative w-[600px] max-w-[100vw] overflow-y-auto bg-base-200 px-3 py-6 sm:px-6"
       >
         <FormHeader
@@ -173,7 +206,7 @@ const ModifyStore = () => {
             type="text"
             customWidth="w-full"
             defaultValue={store?.name || undefined}
-            validationErrors={validationErrors}
+            validationErrors={serverValidationErrors || clientValidationErrors}
           />
 
           <PhoneInput
@@ -183,7 +216,7 @@ const ModifyStore = () => {
             type="text"
             customWidth="w-full"
             defaultValue={store?.phoneNumber || undefined}
-            validationErrors={validationErrors}
+            validationErrors={serverValidationErrors || clientValidationErrors}
           />
 
           <BasicInput
@@ -193,7 +226,7 @@ const ModifyStore = () => {
             type="number"
             customWidth="w-full"
             defaultValue={store?.faxNumber || undefined}
-            validationErrors={validationErrors}
+            validationErrors={serverValidationErrors || clientValidationErrors}
           />
 
           <BasicInput
@@ -203,7 +236,7 @@ const ModifyStore = () => {
             type="text"
             customWidth="w-full"
             defaultValue={store?.address?.addressLine1 || undefined}
-            validationErrors={validationErrors}
+            validationErrors={serverValidationErrors || clientValidationErrors}
           />
 
           <BasicInput
@@ -213,7 +246,7 @@ const ModifyStore = () => {
             type="text"
             customWidth="w-full"
             defaultValue={store?.address?.addressLine2 || undefined}
-            validationErrors={validationErrors}
+            validationErrors={serverValidationErrors || clientValidationErrors}
           />
 
           <BasicInput
@@ -223,7 +256,7 @@ const ModifyStore = () => {
             type="text"
             customWidth="w-full"
             defaultValue={store?.address?.suburb || undefined}
-            validationErrors={validationErrors}
+            validationErrors={serverValidationErrors || clientValidationErrors}
           />
 
           <BasicInput
@@ -233,7 +266,7 @@ const ModifyStore = () => {
             type="text"
             customWidth="w-full"
             defaultValue={store?.address?.postcode || undefined}
-            validationErrors={validationErrors}
+            validationErrors={serverValidationErrors || clientValidationErrors}
           />
 
           <BasicInput
@@ -243,12 +276,12 @@ const ModifyStore = () => {
             type="text"
             customWidth="w-full"
             defaultValue={store?.address?.state || undefined}
-            validationErrors={validationErrors}
+            validationErrors={serverValidationErrors || clientValidationErrors}
           />
 
           <SelectCountry
             defaultValue={store?.address?.country}
-            validationErrors={validationErrors}
+            validationErrors={serverValidationErrors || clientValidationErrors}
             extendStyle="!w-full"
           />
 
@@ -259,7 +292,7 @@ const ModifyStore = () => {
             type="text"
             customWidth="w-full"
             defaultValue={store?.address?.longitude || undefined}
-            validationErrors={validationErrors}
+            validationErrors={serverValidationErrors || clientValidationErrors}
           />
 
           <BasicInput
@@ -269,7 +302,7 @@ const ModifyStore = () => {
             type="text"
             customWidth="w-full"
             defaultValue={store?.address?.latitude || undefined}
-            validationErrors={validationErrors}
+            validationErrors={serverValidationErrors || clientValidationErrors}
           />
 
           <BasicInput
@@ -279,17 +312,17 @@ const ModifyStore = () => {
             type="text"
             customWidth="w-full"
             defaultValue={store?.paymentProviderId || undefined}
-            validationErrors={validationErrors}
+            validationErrors={serverValidationErrors || clientValidationErrors}
           />
         </div>
         <BackSubmitButtons
           loading={loading}
           setLoading={setLoading}
-          validationErrors={validationErrors}
+          validationErrors={serverValidationErrors || clientValidationErrors}
         />
       </Form>
     </DarkOverlay>
   );
 };
 
-export default ModifyStore;
+export default StoreUpsert;

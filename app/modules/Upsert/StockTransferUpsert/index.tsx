@@ -1,8 +1,8 @@
 import { type FormEvent, useEffect, useState } from "react";
-import { tokenAuth } from "~/auth.server";
+
+import { json } from "@remix-run/node";
 import { getStores } from "~/models/stores.server";
 import { getFormData } from "~/helpers/formHelpers";
-import { STAFF_SESSION_KEY } from "~/session.server";
 import useNotification from "~/hooks/PageNotification";
 import DarkOverlay from "~/components/Layout/DarkOverlay";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
@@ -13,20 +13,17 @@ import type { ActionReturnTypes } from "~/utility/actionTypes";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import { ActionAlert } from "~/components/Notifications/Alerts";
 import OrderStatusSteps from "~/components/Indicators/OrderStatusSteps";
+import { type ValidationErrors, validateForm } from "~/utility/validate";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
 import {
   Form,
+  type Params,
   useActionData,
   useLoaderData,
   useNavigate,
   useSubmit,
+  useSearchParams,
 } from "@remix-run/react";
-import {
-  json,
-  redirect,
-  type ActionFunctionArgs,
-  type LoaderFunctionArgs,
-} from "@remix-run/node";
 import {
   approveStockTransfer,
   getStockTransfer,
@@ -34,14 +31,14 @@ import {
   updateStockTransfer,
 } from "~/models/stock.server";
 
-export const loader = async ({ request, params }: LoaderFunctionArgs) => {
-  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
+const validateOptions = {};
 
-  if (!authenticated.valid) {
-    return redirect("/login");
-  }
-
-  const id = params?.id;
+export const stockTransferUpsertLoader = async (
+  request: Request,
+  params: Params<string>
+) => {
+  let { searchParams } = new URL(request.url);
+  let id = searchParams.get("contentId");
 
   if (!id) {
     throw new Response(null, {
@@ -68,16 +65,25 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   return json({ stockTransferRequest, stores, statusList });
 };
 
-export const action = async ({ request, params }: ActionFunctionArgs) => {
-  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
-  if (!authenticated.valid) {
-    return redirect("/login");
-  }
-  const id = params.id === "add" ? undefined : params.id;
-  const form = Object.fromEntries(await request.formData());
-  const { toStoreId, status, quantity } = form;
+export const stockTransferUpsertAction = async (
+  request: Request,
+  params: Params<string>
+) => {
+  let { searchParams } = new URL(request.url);
+  let id = searchParams.get("contentId");
 
-  switch (form._action) {
+  const { formEntries, formErrors } = validateForm(
+    await request.formData(),
+    validateOptions
+  );
+
+  if (formErrors) {
+    return { serverValidationErrors: formErrors };
+  }
+
+  const { toStoreId, status, quantity } = formEntries;
+
+  switch (formEntries._action) {
     case "approve":
       const { permissionError: approvePermissionError } =
         await approveStockTransfer(request, id as string, toStoreId as string);
@@ -121,24 +127,46 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   }
 };
 
-const ModifyStockTransfer = () => {
+type Props = {
+  asModule?: boolean;
+};
+
+const StockTransferUpsert = ({ asModule }: Props) => {
   const { stockTransferRequest, stores, statusList } =
-    useLoaderData<typeof loader>();
-  const { validationErrors, success, notification, permissionError } =
+    useLoaderData<typeof stockTransferUpsertLoader>();
+  const { serverValidationErrors, success, notification, permissionError } =
     (useActionData() as ActionReturnTypes) || {};
 
-  useNotification(notification);
-  const submit = useSubmit();
   const navigate = useNavigate();
+  let submit = useSubmit();
+  const [searchParams] = useSearchParams();
+  const contentId = searchParams.get("contentId");
+  useNotification(notification);
+
+  const [clientValidationErrors, setClientValidationErrors] =
+    useState<ValidationErrors>();
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     const form = getFormData(event);
     event.preventDefault();
+
+    const { formErrors } = validateForm(new FormData(form), validateOptions);
+    if (formErrors) {
+      setClientValidationErrors(formErrors);
+      setLoading(false);
+      return;
+    }
+
     ActionAlert(
       "Are you sure?",
       "Do you want to progress this Stock Transfer?",
-      () => submit(form),
+      () =>
+        submit(form, {
+          method: "POST",
+          action: `/admin/upsert/stockTransfer?contentId=${contentId}`,
+          navigate: asModule ? false : true,
+        }),
       () => setLoading(false),
       "warning"
     );
@@ -157,8 +185,8 @@ const ModifyStockTransfer = () => {
     <DarkOverlay>
       <Form
         method="POST"
-        className="scrollbar-hide relative w-[500px] max-w-[100vw] overflow-y-auto bg-base-200 px-3 py-6 sm:px-6"
         onSubmit={handleSubmit}
+        className="scrollbar-hide relative w-[500px] max-w-[100vw] overflow-y-auto bg-base-200 px-3 py-6 sm:px-6"
       >
         <FormHeader
           type="Stock Transfer"
@@ -225,7 +253,7 @@ const ModifyStockTransfer = () => {
             defaultValue={
               stockTransferRequest?.productVariant?.sku || undefined
             }
-            validationErrors={validationErrors}
+            validationErrors={serverValidationErrors || clientValidationErrors}
           />
 
           <BasicSelect
@@ -256,7 +284,7 @@ const ModifyStockTransfer = () => {
             customWidth="w-full"
             disabled={true}
             defaultValue={stockTransferRequest?.quantity || undefined}
-            validationErrors={validationErrors}
+            validationErrors={serverValidationErrors || clientValidationErrors}
           />
 
           <BasicInput
@@ -267,7 +295,7 @@ const ModifyStockTransfer = () => {
             customWidth="w-full"
             disabled={true}
             defaultValue={stockTransferRequest?.trackingNumber || undefined}
-            validationErrors={validationErrors}
+            validationErrors={serverValidationErrors || clientValidationErrors}
           />
 
           <BasicInput
@@ -278,7 +306,7 @@ const ModifyStockTransfer = () => {
             customWidth="w-full"
             disabled={true}
             defaultValue={stockTransferRequest?.createdBy || undefined}
-            validationErrors={validationErrors}
+            validationErrors={serverValidationErrors || clientValidationErrors}
           />
         </div>
 
@@ -301,4 +329,4 @@ const ModifyStockTransfer = () => {
   );
 };
 
-export default ModifyStockTransfer;
+export default StockTransferUpsert;
