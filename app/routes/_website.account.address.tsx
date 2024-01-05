@@ -7,7 +7,7 @@ import { getUserDataFromSession } from "~/session.server";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import SelectCountry from "~/components/Forms/Select/SelectCountry";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
-import { getUserAddress, upsertUserAddress } from "~/models/auth/userAddress";
+import { getUserAddress, upsertUserAddress } from "~/models/userAddress";
 import {
   json,
   redirect,
@@ -34,7 +34,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   }
 
   const { id } = ((await getUserDataFromSession(request)) as User) || {};
-  const userAddress = await getUserAddress(id);
+  const userAddress = await getUserAddress(id.toString());
 
   return json({ userAddress });
 };

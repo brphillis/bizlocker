@@ -6,7 +6,7 @@ import { getCart } from "~/models/cart.server";
 import { getBrands } from "~/models/brands.server";
 import { cssBundleHref } from "@remix-run/css-bundle";
 import Footer from "~/components/Layout/_Website/Footer";
-import DarkOverlay from "~/components/Layout/DarkOverlay";
+import DarkOverlay from "~/components/Layout/Overlays/DarkOverlay";
 import { getUserDataFromSession } from "~/session.server";
 import { getDepartments } from "~/models/departments.server";
 import { getProductCategories } from "~/models/productCategories.server";
@@ -128,7 +128,7 @@ const App = () => {
           location.pathname.includes("/forgot-password") ||
           location.pathname.includes("/account")
         ) && (
-          <div className="navbar relative z-10 flex !min-h-[50px] w-full select-none items-center justify-center gap-6 bg-brand-white !py-0 text-sm font-bold text-brand-black/80 shadow-md">
+          <div className="navbar relative z-0 flex !min-h-[50px] w-full select-none items-center justify-center gap-6 bg-brand-white !py-0 text-sm font-bold text-brand-black/80 shadow-md">
             <div className="max-md:text-xs">CHRISTMAS SALES END SOON!</div>
             <CountDown targetDate={new Date("2024-01-01T00:00:00")} />
           </div>

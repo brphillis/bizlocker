@@ -2,7 +2,7 @@ import { useLoaderData } from "@remix-run/react";
 import { getBlocks } from "~/helpers/blockHelpers";
 import { getPreviewPage } from "~/models/previewPage";
 import BlockRenderer from "~/components/BlockRenderer";
-import PageWrapper from "~/components/Layout/_Website/PageWrapper";
+import PageWrapper from "~/components/Layout/Wrappers/PageWrapper";
 import {
   json,
   redirect,

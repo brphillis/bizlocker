@@ -1,4 +1,4 @@
-import type { NotificationWithContent } from "~/models/notifications";
+import type { NotificationWithContent } from "~/models/notifications.server";
 import { IoNotificationsOff, IoNotificationsOutline } from "react-icons/io5";
 import React from "react";
 import NotificationCard from "./NotificationCard";

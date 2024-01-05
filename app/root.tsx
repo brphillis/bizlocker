@@ -15,8 +15,8 @@ import {
 import stylesheet from "~/tailwind.css";
 
 import BasicButton from "./components/Buttons/BasicButton";
-import AuthContainer from "~/components/Layout/AuthContainer";
-import AuthPageWrapper from "~/components/Layout/AuthPageWrapper";
+import AuthContainer from "~/components/Layout/Containers/AuthContainer";
+import AuthPageWrapper from "~/components/Layout/Wrappers/AuthPageWrapper";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },

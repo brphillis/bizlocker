@@ -11,7 +11,7 @@ import {
 import { Toast } from "~/components/Notifications/Toast";
 import ProductGrid from "~/components/Grids/ProductGrid";
 import { getVariantUnitPrice } from "~/helpers/numberHelpers";
-import PageWrapper from "~/components/Layout/_Website/PageWrapper";
+import PageWrapper from "~/components/Layout/Wrappers/PageWrapper";
 import {
   type ProductVariantWithDetails,
   type ProductWithDetails,

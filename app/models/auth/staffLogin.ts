@@ -2,7 +2,7 @@ import { prisma } from "~/db.server";
 import bcrypt from "bcryptjs";
 
 export interface StaffSession {
-  id: string | null;
+  id: number | null;
   storeId: number | null;
   role: Role;
   email: string;

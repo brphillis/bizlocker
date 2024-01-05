@@ -9,9 +9,9 @@ import {
   IoGlobeOutline,
   IoPersonOutline,
 } from "react-icons/io5";
-import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
+import AdminPageWrapper from "~/components/Layout/Wrappers/AdminPageWrapper";
 import { useNavigate } from "@remix-run/react";
-import PatternBackground from "~/components/Layout/PatternBackground";
+import PatternBackground from "~/components/Layout/Backgrounds/PatternBackground";
 import { getThemeColorValueByName } from "~/utility/colors";
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY } from "~/session.server";

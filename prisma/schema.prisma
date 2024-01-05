@@ -11,7 +11,7 @@ datasource db {
 model PreviewPage {
   id                Int               @id @default(autoincrement())
   blocks            Block[]           @relation("PreviewPageToBlocks")
-  blockOrder        String[]
+  blockOrder        Int[]
   title             String            @default("Page Title")
   description       String            @default("Page Description")
   backgroundColor   String?
@@ -34,7 +34,7 @@ model PreviewPage {
 model HomePage {
   id              Int           @id @default(autoincrement())
   blocks          Block[]       @relation("HomePageToBlocks")
-  blockOrder      String[]
+  blockOrder      Int[]
   title           String        @default("Homepage")
   description     String        @default("HomePage Description")
   backgroundColor String?
@@ -47,7 +47,7 @@ model HomePage {
 model WebPage {
   id              Int           @id @default(autoincrement())
   blocks          Block[]       @relation("WebPagesToBlocks")
-  blockOrder      String[]
+  blockOrder      Int[]
   description     String        @default("Page Description")
   isActive        Boolean       @default(true)
   thumbnail       Image?        @relation("WebPageImage")
@@ -63,7 +63,7 @@ model Article {
   id                Int               @id @default(autoincrement())
   articleCategories ArticleCategory[] @relation("ArticleCategoryToArticle")
   backgroundColor   String?
-  blockOrder        String[]
+  blockOrder        Int[]
   blocks            Block[]           @relation("ArticlesToBlocks")
   description       String            @default("Article Description")
   isActive          Boolean           @default(true)
@@ -76,11 +76,12 @@ model Article {
 }
 
 model Block {
-  id           String         @id @unique @default(cuid())
+  id           Int            @id @default(autoincrement())
   name         String
   blockOptions BlockOptions[] @relation("BlockToBlockOptions")
   content      BlockContent?  @relation("BlockContentToBlock")
   icon         String
+  label        String?
 
   previewPage PreviewPage[] @relation("PreviewPageToBlocks")
   article     Article[]     @relation("ArticlesToBlocks")
@@ -92,12 +93,12 @@ model Block {
 }
 
 model BlockContent {
-  id                 String               @id @unique @default(cuid())
+  id                 Int                  @id @default(autoincrement())
   articleCategory    ArticleCategory[]    @relation("BlockContentToArticleCategories")
   gender             Gender[]
   productSubCategory ProductSubCategory[] @relation("BlockContentToProductSubCategories")
   block              Block?               @relation("BlockContentToBlock", fields: [blockId], references: [id])
-  blockId            String?              @unique
+  blockId            Int?                 @unique
   brand              Brand[]              @relation("BlockContentToBrands")
   campaign           Campaign[]           @relation("BlockContentToCampaigns")
   emptyItem          String[]
@@ -114,7 +115,7 @@ model BlockContent {
 }
 
 model BlockOptions {
-  id                                      String     @id @unique @default(cuid())
+  id                                      Int        @id @default(autoincrement())
   align                                   String?
   alignMobile                             String?
   autoplay                                Boolean?
@@ -134,7 +135,7 @@ model BlockOptions {
   backgroundWidth                         String?
   backgroundWidthSecondary                String?
   block                                   Block      @relation("BlockToBlockOptions", fields: [blockId], references: [id])
-  blockId                                 String
+  blockId                                 Int
   borderColor                             String?
   borderDisplay                           String?
   borderRadius                            String?
@@ -280,7 +281,7 @@ model Team {
 }
 
 model Staff {
-  id                   String         @id @unique @default(cuid())
+  id                   Int            @id @default(autoincrement())
   address              Address?
   avatar               Image?         @relation("StaffAvatarImage")
   doubleAuthentication Boolean        @default(false)
@@ -302,13 +303,14 @@ model Staff {
 }
 
 model Notification {
-  id        Int     @id @default(autoincrement())
-  user      User?   @relation(fields: [userId], references: [id])
-  userId    String?
-  staff     Staff?  @relation(fields: [staffId], references: [id])
-  staffId   String?
-  store     Store?  @relation(fields: [storeId], references: [id])
-  storeId   Int?
+  id      Int    @id @default(autoincrement())
+  user    User?  @relation(fields: [userId], references: [id])
+  userId  Int?
+  staff   Staff? @relation(fields: [staffId], references: [id])
+  staffId Int?
+  store   Store? @relation(fields: [storeId], references: [id])
+  storeId Int?
+
   message   String
   dismissed Boolean @default(false)
 
@@ -317,7 +319,7 @@ model Notification {
 }
 
 model User {
-  id                   String         @id @unique @default(cuid())
+  id                   Int            @id @default(autoincrement())
   address              Address?
   avatar               Image?         @relation("AvatarImage")
   cart                 Cart?
@@ -352,23 +354,23 @@ model Verifier {
 }
 
 model UserDetails {
-  id          String  @id @unique @default(cuid())
+  id          Int     @id @default(autoincrement())
   dateOfBirth String?
   firstName   String?
   gender      Gender?
   lastName    String?
   phoneNumber String?
   staff       Staff?  @relation(fields: [staffId], references: [id])
-  staffId     String? @unique
+  staffId     Int?    @unique
   user        User?   @relation(fields: [userId], references: [id])
-  userId      String? @unique
+  userId      Int?    @unique
 
   createdAt String?
   updatedAt String?
 }
 
 model Address {
-  id           String  @id @unique @default(cuid())
+  id           Int     @id @default(autoincrement())
   addressLine1 String?
   addressLine2 String?
   country      String?
@@ -376,11 +378,11 @@ model Address {
   state        String?
   suburb       String?
   staff        Staff?  @relation(fields: [staffId], references: [id])
-  staffId      String? @unique
+  staffId      Int?    @unique
   user         User?   @relation(fields: [userId], references: [id])
-  userId       String? @unique
-  order        Order?  @relation(fields: [orderId], references: [orderId])
-  orderId      String? @unique
+  userId       Int?    @unique
+  order        Order?  @relation(fields: [orderId], references: [id])
+  orderId      Int?    @unique
   store        Store?  @relation(fields: [storeId], references: [id])
   storeId      Int?    @unique
   latitude     String?
@@ -394,7 +396,7 @@ model Cart {
   id        Int        @id @default(autoincrement())
   cartItems CartItem[]
   user      User?      @relation(fields: [userId], references: [id])
-  userId    String?    @unique
+  userId    Int?       @unique
 
   createdAt String?
   updatedAt String?
@@ -412,8 +414,9 @@ model CartItem {
   updatedAt String?
 }
 
+// orderId             String      @id @unique @default(cuid())
 model Order {
-  orderId             String      @id @unique @default(cuid())
+  id                  Int         @id @default(autoincrement())
   items               OrderItem[]
   rememberInformation Boolean     @default(false)
   paymentCode         String
@@ -422,7 +425,7 @@ model Order {
   status              OrderStatus
   totalPrice          Float
   user                User?       @relation(fields: [userId], references: [id])
-  userId              String?
+  userId              Int?
   address             Address?
   firstName           String?
   lastName            String?
@@ -438,8 +441,8 @@ model Order {
 
 model OrderItem {
   id        Int            @id @default(autoincrement())
-  order     Order          @relation(fields: [orderId], references: [orderId])
-  orderId   String
+  order     Order          @relation(fields: [orderId], references: [id])
+  orderId   Int
   quantity  Int
   unitPrice Int
   variant   ProductVariant @relation(fields: [variantId], references: [id])
@@ -470,9 +473,9 @@ model Image {
   promotionBanner      Promotion[]         @relation("BannerImageToPromotion")
   promotionTile        Promotion[]         @relation("TileImageToPromotion")
   user                 User?               @relation("AvatarImage", fields: [userId], references: [id])
-  userId               String?             @unique
+  userId               Int?                @unique
   staff                Staff?              @relation("StaffAvatarImage", fields: [staffId], references: [id])
-  staffId              String?             @unique
+  staffId              Int?                @unique
   webPage              WebPage?            @relation("WebPageImage", fields: [webPageId], references: [id])
   webPageId            Int?                @unique
 

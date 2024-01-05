@@ -5,7 +5,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { isDecimal } from "~/helpers/numberHelpers";
 import { getThemeColorValueByName } from "~/utility/colors";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
-import PatternBackground from "~/components/Layout/PatternBackground";
+import PatternBackground from "~/components/Layout/Backgrounds/PatternBackground";
 import { buildImageFromBlockContent } from "~/helpers/contentHelpers";
 import { IoChevronBackOutline, IoChevronForward } from "react-icons/io5";
 

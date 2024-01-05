@@ -5,13 +5,13 @@ import {
   uploadImage_Integration,
 } from "~/integrations/_master/storage";
 import type { ProductWithDetails } from "./products.server";
-import type { UserWithDetails } from "./auth/users.server";
+import type { UserWithDetails } from "./users.server";
 import type { ArticleWithContent } from "./articles.server";
 import type { BrandWithContent } from "./brands.server";
 import type { CampaignWithContent } from "./campaigns.server";
 import type { ProductSubCategoryWithDetails } from "./productSubCategories.server";
 import type { PromotionWithContent } from "./promotions.server";
-import type { StaffWithDetails } from "./auth/staff.server";
+import type { StaffWithDetails } from "./staff.server";
 export type { Image } from "@prisma/client";
 
 export interface ImageWithDetails extends Image {

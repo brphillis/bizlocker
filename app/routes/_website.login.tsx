@@ -2,8 +2,8 @@ import { createUserSession } from "~/session.server";
 import type { ActionReturnTypes } from "~/utility/actionTypes";
 import { Link, useActionData, useNavigate } from "@remix-run/react";
 import LoginGoogle from "~/components/Auth/LoginGoogle";
-import AuthContainer from "~/components/Layout/AuthContainer";
-import AuthPageWrapper from "~/components/Layout/AuthPageWrapper";
+import AuthContainer from "~/components/Layout/Containers/AuthContainer";
+import AuthPageWrapper from "~/components/Layout/Wrappers/AuthPageWrapper";
 import { isValidEmail, isValidPassword } from "~/utility/validate";
 import { googleLogin, verifyLogin } from "~/models/auth/login.server";
 import {
@@ -12,7 +12,8 @@ import {
   type MetaFunction,
 } from "@remix-run/node";
 import BasicButton from "~/components/Buttons/BasicButton";
-import ValidationErrorsDisplay from "~/components/Forms/Validation/ValidationErrorsDisplay";
+import BasicInput from "~/components/Forms/Input/BasicInput";
+import ValidationErrorsList from "~/components/Forms/Validation/ValidationErrorsList";
 
 export const meta: MetaFunction = ({ data }) => {
   return [
@@ -82,38 +83,35 @@ export default function LoginPage() {
   return (
     <AuthPageWrapper>
       <AuthContainer>
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text text-brand-white">Email</span>
-          </label>
-          <input
-            name="email"
-            type="text"
-            placeholder="email"
-            className="input input-bordered bg-base-100 text-brand-black/50 focus:text-brand-black"
-          />
-        </div>
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text text-brand-white">Password</span>
-          </label>
-          <input
-            name="password"
-            type="password"
-            placeholder="password"
-            className="input input-bordered bg-base-100 text-brand-black/50 focus:text-brand-black"
-          />
+        <BasicInput
+          name="email"
+          type="text"
+          label="Email"
+          customWidth="w-full"
+          extendStyle="input input-bordered bg-base-100 text-brand-black/50 focus:text-brand-black"
+          labelStyle="text-brand-white"
+          placeholder="Email"
+        />
 
-          <Link
-            to="/forgot-password"
-            className="link-hover link mb-3 ml-1 mt-2 cursor-pointer text-xs text-brand-white/75"
-          >
-            Forgot password?
-          </Link>
-        </div>
+        <BasicInput
+          name="password"
+          type="password"
+          label="Password"
+          customWidth="w-full"
+          extendStyle="input input-bordered bg-base-100 text-brand-black/50 focus:text-brand-black"
+          labelStyle="text-brand-white"
+          placeholder="Password"
+        />
+
+        <Link
+          to="/forgot-password"
+          className="link-hover link mb-3 ml-1 mt-2 cursor-pointer text-xs text-brand-white/75"
+        >
+          Forgot password?
+        </Link>
 
         <>
-          <ValidationErrorsDisplay validationErrors={validationErrors} />
+          <ValidationErrorsList validationErrors={validationErrors} />
 
           {validationErrors &&
             Object.values(validationErrors)?.includes("Email not Verified") && (

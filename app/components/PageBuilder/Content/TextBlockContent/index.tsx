@@ -43,7 +43,7 @@ const TextBlockContentModule = ({
             onChange={(selectedValue) => {
               selectItem("richText", selectedValue);
             }}
-            className="mb-12 mt-3 h-[320px]"
+            extendStyle="mb-12 mt-3 h-[320px]"
           />
         </div>
       )}

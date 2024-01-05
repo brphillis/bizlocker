@@ -1,12 +1,12 @@
 import React from "react";
-import type { StaffWithDetails } from "~/models/auth/staff.server";
-import type { NotificationWithContent } from "~/models/notifications";
+import type { StaffWithDetails } from "~/models/staff.server";
+import type { NotificationWithContent } from "~/models/notifications.server";
 import { Outlet, useNavigate } from "@remix-run/react";
 import { IoMenu } from "react-icons/io5";
 import { adminNavBarRoutes } from "./routes";
 import SidebarDropdown from "./SidebarDropdown";
 import SidebarItem from "./SidebarItem";
-import LoadingOverlay from "~/components/Layout/LoadingOverlay";
+import LoadingOverlay from "~/components/Layout/Overlays/LoadingOverlay";
 import SidebarFooter from "./SidebarFooter";
 import { isEmptyObject } from "~/helpers/objectHelpers";
 

@@ -6,7 +6,7 @@ import { prisma } from "~/db.server";
 import { createUserSession } from "~/session.server";
 
 export interface UserLoginResponse {
-  id: string;
+  id: number;
   email: string;
 }
 

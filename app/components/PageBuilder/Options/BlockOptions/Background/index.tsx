@@ -24,7 +24,7 @@ const BackgroundOptions = ({ defaultValues, selectedBlockOptions }: Props) => {
           Background
         </summary>
         <div className="collapse-content relative sm:!px-3">
-          <div className="flex max-w-full flex-wrap justify-start !gap-3 pb-3 max-md:justify-center">
+          <div className="flex max-w-full flex-wrap justify-start !gap-3 max-md:justify-center">
             <BlockSelectInput
               valueName="Display Background"
               formName="backgroundDisplay"

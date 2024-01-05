@@ -1,21 +1,24 @@
 import { prisma } from "~/db.server";
-import { createISODate, getYesterdayDate } from "~/helpers/dateHelpers";
+import {
+  createNowISODate,
+  createYesterdayISODate,
+} from "~/helpers/dateHelpers";
 
 export const getSalesToday = async (): Promise<{
-  totalSalesToday: number | null;
-  totalSalesYesterday: number | null;
-  productCountToday: number | null;
-  topProductSubCategoriesToday: {
-    productSubCategory: string;
-    totalSales: number;
+  totalSalesToday?: number | null;
+  totalSalesYesterday?: number | null;
+  productCountToday?: number | null;
+  topProductSubCategoriesToday?: {
+    productSubCategory?: string | null;
+    totalSales?: number | null;
   }[];
-  topBrandsToday: {
-    brand: string;
-    totalSales: number;
+  topBrandsToday?: {
+    brand?: string | null;
+    totalSales?: number | null;
   }[];
 }> => {
-  const today = createISODate();
-  const yesterday = getYesterdayDate();
+  const today = createNowISODate();
+  const yesterday = createYesterdayISODate();
 
   const totalSalesToday = await prisma.order.aggregate({
     _sum: {

@@ -3,63 +3,63 @@ import { redirect, type ActionFunctionArgs } from "@remix-run/server-runtime";
 import ArticleCategoryUpsert, {
   articleCategoryUpsertAction,
   articleCategoryUpsertLoader,
-} from "~/modules/Upsert/ArticleCategoryUpsert";
+} from "~/modules/Admin/Upsert/ArticleCategoryUpsert";
 import BrandUpsert, {
   brandUpsertAction,
   brandUpsertLoader,
-} from "~/modules/Upsert/BrandUpsert";
+} from "~/modules/Admin/Upsert/BrandUpsert";
 import CampaignUpsert, {
   campaignUpsertAction,
   campaignUpsertLoader,
-} from "~/modules/Upsert/CampaignUpsert";
+} from "~/modules/Admin/Upsert/CampaignUpsert";
 import DepartmentUpsert, {
   departmentUpsertAction,
   departmentUpsertLoader,
-} from "~/modules/Upsert/DepartmentUpsert";
+} from "~/modules/Admin/Upsert/DepartmentUpsert";
 import ImageUpsert, {
   imageUpsertAction,
   imageUpsertLoader,
-} from "~/modules/Upsert/ImageUpsert";
+} from "~/modules/Admin/Upsert/ImageUpsert";
 import OrderUpsert, {
   orderUpsertAction,
   orderUpsertLoader,
-} from "~/modules/Upsert/OrderUpsert";
+} from "~/modules/Admin/Upsert/OrderUpsert";
 import ProductCategoryUpsert, {
   productCategoryUpsertAction,
   productCategoryUpsertLoader,
-} from "~/modules/Upsert/ProductCategoryUpsert";
+} from "~/modules/Admin/Upsert/ProductCategoryUpsert";
 import ProductSubCategoryUpsert, {
   productSubCategoryUpsertAction,
   productSubCategoryUpsertLoader,
-} from "~/modules/Upsert/ProductSubCategoryUpsert";
+} from "~/modules/Admin/Upsert/ProductSubCategoryUpsert";
 import ProductUpsert, {
   productUpsertAction,
   productUpsertLoader,
-} from "~/modules/Upsert/ProductUpsert";
+} from "~/modules/Admin/Upsert/ProductUpsert";
 import PromotionUpsert, {
   promotionUpsertAction,
   promotionUpsertLoader,
-} from "~/modules/Upsert/PromotionUpsert";
+} from "~/modules/Admin/Upsert/PromotionUpsert";
 import StaffUpsert, {
   staffUpsertAction,
   staffUpsertLoader,
-} from "~/modules/Upsert/StaffUpsert";
+} from "~/modules/Admin/Upsert/StaffUpsert";
 import StockTransferUpsert, {
   stockTransferUpsertAction,
   stockTransferUpsertLoader,
-} from "~/modules/Upsert/StockTransferUpsert";
+} from "~/modules/Admin/Upsert/StockTransferUpsert";
 import StoreUpsert, {
   storeUpsertAction,
   storeUpsertLoader,
-} from "~/modules/Upsert/StoreUpsert";
+} from "~/modules/Admin/Upsert/StoreUpsert";
 import TeamUpsert, {
   teamUpsertAction,
   teamUpsertLoader,
-} from "~/modules/Upsert/TeamUpsert";
+} from "~/modules/Admin/Upsert/TeamUpsert";
 import UserUpsert, {
   userUpsertAction,
   userUpsertLoader,
-} from "~/modules/Upsert/UserUpsert";
+} from "~/modules/Admin/Upsert/UserUpsert";
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
 
@@ -158,36 +158,48 @@ const UpsertContent = ({ offRouteModules = true }: Props) => {
   return (
     <>
       {contentType === "articleCategory" && (
-        <ArticleCategoryUpsert asModule={offRouteModules} />
+        <ArticleCategoryUpsert offRouteModule={offRouteModules} />
       )}
-      {contentType === "brand" && <BrandUpsert asModule={offRouteModules} />}
+      {contentType === "brand" && (
+        <BrandUpsert offRouteModule={offRouteModules} />
+      )}
       {contentType === "campaign" && (
-        <CampaignUpsert asModule={offRouteModules} />
+        <CampaignUpsert offRouteModule={offRouteModules} />
       )}
       {contentType === "department" && (
-        <DepartmentUpsert asModule={offRouteModules} />
+        <DepartmentUpsert offRouteModule={offRouteModules} />
       )}
-      {contentType === "image" && <ImageUpsert asModule={offRouteModules} />}
+      {contentType === "image" && (
+        <ImageUpsert offRouteModule={offRouteModules} />
+      )}
       {contentType === "order" && <OrderUpsert />}
       {contentType === "product" && (
-        <ProductUpsert asModule={offRouteModules} />
+        <ProductUpsert offRouteModule={offRouteModules} />
       )}
       {contentType === "productCategory" && (
-        <ProductCategoryUpsert asModule={offRouteModules} />
+        <ProductCategoryUpsert offRouteModule={offRouteModules} />
       )}
       {contentType === "productSubCategory" && (
-        <ProductSubCategoryUpsert asModule={offRouteModules} />
+        <ProductSubCategoryUpsert offRouteModule={offRouteModules} />
       )}
       {contentType === "promotion" && (
-        <PromotionUpsert asModule={offRouteModules} />
+        <PromotionUpsert offRouteModule={offRouteModules} />
       )}
-      {contentType === "staff" && <StaffUpsert asModule={offRouteModules} />}
+      {contentType === "staff" && (
+        <StaffUpsert offRouteModule={offRouteModules} />
+      )}
       {contentType === "stockTransfer" && (
-        <StockTransferUpsert asModule={offRouteModules} />
+        <StockTransferUpsert offRouteModule={offRouteModules} />
       )}
-      {contentType === "store" && <StoreUpsert asModule={offRouteModules} />}
-      {contentType === "team" && <TeamUpsert asModule={offRouteModules} />}
-      {contentType === "user" && <UserUpsert asModule={offRouteModules} />}
+      {contentType === "store" && (
+        <StoreUpsert offRouteModule={offRouteModules} />
+      )}
+      {contentType === "team" && (
+        <TeamUpsert offRouteModule={offRouteModules} />
+      )}
+      {contentType === "user" && (
+        <UserUpsert offRouteModule={offRouteModules} />
+      )}
     </>
   );
 };

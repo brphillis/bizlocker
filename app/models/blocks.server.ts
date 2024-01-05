@@ -22,7 +22,7 @@ export interface BlockWithBlockOptions extends Block {
 }
 
 export interface BlockContentWithDetails {
-  id: string;
+  id: number;
   articleCategory?: ArticleCategory[] | null;
   gender?: Gender[] | Gender;
   productSubCategory?: ProductSubCategory[] | null;

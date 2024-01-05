@@ -1,6 +1,6 @@
 import type { BlockContentWithDetails } from "~/models/blocks.server";
 import type { BlockOptions } from "@prisma/client";
-import PatternBackground from "~/components/Layout/PatternBackground";
+import PatternBackground from "~/components/Layout/Backgrounds/PatternBackground";
 import {
   buildImageFromBlockContent,
   concatBlockContent,

@@ -1,4 +1,4 @@
-import type { NotificationWithContent } from "~/models/notifications";
+import type { NotificationWithContent } from "~/models/notifications.server";
 import { formatDate } from "~/helpers/dateHelpers";
 import parse from "html-react-parser";
 import { parseOptions } from "~/utility/parseOptions";

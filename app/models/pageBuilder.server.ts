@@ -1,5 +1,5 @@
 import { prisma } from "~/db.server";
-import { createISODate } from "~/helpers/dateHelpers";
+import { createNowISODate } from "~/helpers/dateHelpers";
 import type { BlockName } from "~/utility/blockMaster/types";
 import { findUniqueStringsInArrays } from "~/helpers/arrayHelpers";
 import { getUserDataFromSession, STAFF_SESSION_KEY } from "~/session.server";
@@ -33,10 +33,11 @@ export interface Page extends PreviewPage {
 }
 
 export interface BlockWithContent {
-  id: string;
+  id: number;
   blockId: string;
   name: BlockName;
   page: Page;
+  label?: string;
   content: BlockContentWithDetails;
   blockOptions: BlockOptions[];
 }
@@ -280,7 +281,7 @@ const updateOrCreateBlockOptions = async (
   let existingBlockOptions;
 
   existingBlockOptions = await prisma.blockOptions.findFirst({
-    where: { block: { id: blockId } },
+    where: { block: { id: parseInt(blockId) } },
   });
 
   if (existingBlockOptions) {
@@ -291,7 +292,7 @@ const updateOrCreateBlockOptions = async (
   } else {
     const newBlockOptions = await prisma.blockOptions.create({
       data: {
-        block: { connect: { id: blockId } },
+        block: { connect: { id: parseInt(blockId) } },
       },
     });
 
@@ -306,7 +307,8 @@ export const updateBlock = async (
   pageType: PageType,
   pageId: string,
   blockData: NewBlockData,
-  blockOptions?: BlockOptions
+  blockOptions?: BlockOptions,
+  blockLabel?: string
 ): Promise<number | Page> => {
   const { blockName, itemIndex, contentData } = blockData;
 
@@ -340,7 +342,10 @@ export const updateBlock = async (
   );
 
   if (existingBlock?.id) {
-    await disconnectBlock(existingBlock.id, previewPage.id.toString());
+    await disconnectBlock(
+      existingBlock.id.toString(),
+      previewPage.id.toString()
+    );
   }
 
   // Create New Block
@@ -349,12 +354,13 @@ export const updateBlock = async (
       previewPage: { connect: { id: previewPage.id } },
       name: blockName,
       icon: blockMaster.find((e) => e.name === blockName)?.icon || "",
+      label: blockLabel,
     },
   });
 
   // Create block options for new block
   if (blockOptions) {
-    await updateOrCreateBlockOptions(newBlock.id, blockOptions);
+    await updateOrCreateBlockOptions(newBlock.id.toString(), blockOptions);
   }
 
   // Create Block
@@ -403,6 +409,7 @@ export const updateBlock = async (
     await prisma.block.update({
       where: {
         id: newBlock.id,
+        label: blockLabel,
       },
       data: {
         content: {
@@ -472,7 +479,7 @@ export const changeBlockOrder = async (
   await prisma.previewPage.update({
     where: { id: parseInt(previewPageId) },
     data: {
-      blockOrder: blockIds,
+      blockOrder: blockIds.map((e) => parseInt(e)),
     },
   });
 
@@ -572,7 +579,7 @@ export const publishPage = async (
 
     await prisma.previewPage.update({
       where: { id: previewPage.id },
-      data: { publishedAt: createISODate(), publisher: userEmail },
+      data: { publishedAt: createNowISODate(), publisher: userEmail },
     });
 
     // Cleanup blocks that arent connected to anything
@@ -599,7 +606,7 @@ export const publishPage = async (
       await Promise.all(
         blocksToValidate.map(async (id: string) => {
           const blockToCheck = await prisma.block.findUnique({
-            where: { id },
+            where: { id: parseInt(id) },
             include: {
               content: true,
               blockOptions: true,
@@ -745,7 +752,7 @@ export const disconnectBlock = async (
 ): Promise<{ success: boolean }> => {
   try {
     const block = await prisma.block.findFirst({
-      where: { id: blockId },
+      where: { id: parseInt(blockId) },
     });
 
     if (block) {

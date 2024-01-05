@@ -1,23 +1,27 @@
 import { useState } from "react";
+import ToolTip from "~/components/Indicators/ToolTip";
+import type { ValidationErrors } from "~/utility/validate";
 
 type Props = {
-  name: string;
-  label: string;
-  selections: SelectValue[];
+  customWidth?: string;
   defaultValues?: SelectValue[] | null;
   extendStyle?: string;
-  customWidth?: string;
+  label: string;
   labelStyle?: string;
+  name: string;
+  selections: SelectValue[];
+  validationErrors?: ValidationErrors;
 };
 
 const BasicMultiSelect = ({
-  name,
-  label,
-  selections,
+  customWidth,
   defaultValues,
   extendStyle,
-  customWidth,
+  label,
   labelStyle,
+  name,
+  selections,
+  validationErrors,
 }: Props) => {
   const [selectedValues, setSelectedValues] = useState<string[] | undefined>(
     defaultValues ? defaultValues?.map((e) => e?.id.toString()) : undefined
@@ -33,7 +37,7 @@ const BasicMultiSelect = ({
 
   return (
     <div
-      className={`form-control max-md:w-full ${
+      className={`form-control relative max-md:w-full ${
         customWidth ? customWidth : "w-[215px]"
       }`}
     >
@@ -48,9 +52,13 @@ const BasicMultiSelect = ({
       </label>
 
       <select
-        className={`select text-brand-black/75 ${
-          extendStyle ? extendStyle : ""
-        }`}
+        className={`select text-brand-black/75 ${extendStyle}
+        ${
+          validationErrors?.hasOwnProperty(name)
+            ? "select-error border !outline-none"
+            : ""
+        }
+        `}
         onChange={handleOptionChange}
         value={selectedValues || undefined}
         multiple
@@ -65,6 +73,10 @@ const BasicMultiSelect = ({
           </option>
         ))}
       </select>
+
+      {validationErrors?.hasOwnProperty(name) && (
+        <ToolTip tip={validationErrors[name]} iconColor="text-error" />
+      )}
 
       <input
         hidden

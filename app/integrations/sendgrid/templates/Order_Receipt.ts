@@ -351,7 +351,7 @@ export const Order_Receipt = (
                                                                 <span
                                                                     data-metadata="&lt;!--(figmeta)eyJmaWxlS2V5IjoiWndhNUFhYWxsSU1hVEhMTXZZNFJKVCIsInBhc3RlSUQiOjIxMTY1MjA5NjYsImRhdGFUeXBlIjoic2NlbmUifQo=(/figmeta)--&gt;"></span><span>Order
                                                                     # : ${
-                                                                      order.orderId
+                                                                      order.id
                                                                     }</span>
                                                             </h1>
 

@@ -62,7 +62,8 @@ export const deleteWebPage = async (
 
   await Promise.all(
     webPageBlocks.map(
-      async (e: BlockWithContent) => await disconnectBlock(e.id, e.name)
+      async (e: BlockWithContent) =>
+        await disconnectBlock(e.id.toString(), e.name)
     )
   );
 

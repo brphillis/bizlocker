@@ -83,7 +83,8 @@ export const deleteArticle = async (
 
   await Promise.all(
     articleBlocks.map(
-      async (e: BlockWithContent) => await disconnectBlock(e.id, e.name)
+      async (e: BlockWithContent) =>
+        await disconnectBlock(e.id.toString(), e.name)
     )
   );
 

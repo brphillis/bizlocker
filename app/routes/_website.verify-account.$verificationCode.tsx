@@ -6,7 +6,7 @@ import {
   type MetaFunction,
 } from "@remix-run/node";
 import { useLoaderData, useNavigate } from "@remix-run/react";
-import PageWrapper from "~/components/Layout/_Website/PageWrapper";
+import PageWrapper from "~/components/Layout/Wrappers/PageWrapper";
 import { verifyUserAccount } from "~/models/auth/verification.server";
 
 export const meta: MetaFunction = ({ data }) => {

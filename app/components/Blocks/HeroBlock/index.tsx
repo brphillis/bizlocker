@@ -2,7 +2,7 @@ import { useNavigate } from "@remix-run/react";
 import { getThemeColorValueByName } from "~/utility/colors";
 import type { BlockContentWithDetails } from "~/models/blocks.server";
 import type { BlockOptions, Product } from "@prisma/client";
-import PatternBackground from "~/components/Layout/PatternBackground";
+import PatternBackground from "~/components/Layout/Backgrounds/PatternBackground";
 import { determineContentType } from "~/helpers/contentHelpers";
 import type {
   ProductVariantWithDetails,

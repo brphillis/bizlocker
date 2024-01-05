@@ -56,7 +56,7 @@ export const deletePreviewPage = async (
     // Use `Promise.all` to wait for all `disconnectBlock` promises to resolve.
     await Promise.all(
       blocks.map(async ({ id }: BlockWithContent) => {
-        await disconnectBlock(id, previewPageId);
+        await disconnectBlock(id.toString(), previewPageId);
       })
     );
   }

@@ -12,6 +12,7 @@ import {
   type MetaFunction,
 } from "@remix-run/node";
 import { Form, useLoaderData, useNavigate } from "@remix-run/react";
+import { formatDate } from "~/helpers/dateHelpers";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   return [
@@ -68,7 +69,13 @@ const Orders = () => {
 
             <tbody>
               {orders?.map((order: OrderWithDetails, i: number) => {
-                const { createdAt, items, totalPrice, status, orderId } = order;
+                const {
+                  createdAt,
+                  items,
+                  totalPrice,
+                  status,
+                  id: orderId,
+                } = order;
                 const itemNames: string[] = [];
 
                 items?.forEach(
@@ -85,7 +92,7 @@ const Orders = () => {
                     onClick={() =>
                       navigate(
                         {
-                          pathname: `/account/order/${order.orderId}`,
+                          pathname: `/account/order/${order.id}`,
                           search: `?status=${order.status}`,
                         },
                         {
@@ -97,15 +104,7 @@ const Orders = () => {
                     }
                   >
                     <th className="!rounded-none">{i + 1}</th>
-                    {createdAt && (
-                      <td>
-                        {new Date(createdAt).toLocaleDateString("en-US", {
-                          day: "numeric",
-                          month: "long",
-                          year: "numeric",
-                        })}
-                      </td>
-                    )}
+                    {createdAt && <td>{formatDate(createdAt)}</td>}
                     <td>{itemNames.join(", ").substring(0, 32)}</td>
                     <td>${totalPrice.toFixed(2).toString()}</td>
                     <td className="!rounded-none">

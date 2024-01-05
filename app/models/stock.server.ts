@@ -4,7 +4,7 @@ import { STAFF_SESSION_KEY, getUserDataFromSession } from "~/session.server";
 import type { ProductVariantWithDetails } from "./products.server";
 import type { StoreWithDetails } from "./stores.server";
 import type { PageNotification } from "~/hooks/PageNotification";
-import { createStoreNotification } from "./notifications";
+import { createStoreNotification } from "./notifications.server";
 
 export interface StockLevelWithDetails extends StockLevel {
   productVariant?: ProductVariantWithDetails | null;

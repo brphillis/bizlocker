@@ -28,6 +28,7 @@ import TextBlockContentModule from "./Content/TextBlockContent";
 import BoxedTabs from "../Tabs/BoxedTabs";
 import { blockHasMaxContentItems } from "~/helpers/contentHelpers";
 import BlockCard from "./BlockCard";
+import BasicInput from "../Forms/Input/BasicInput";
 
 type Props = {
   previewPage: Page;
@@ -165,16 +166,17 @@ const PageBuilder = ({
 
       {!editingContent && (
         <div className="scrollbar-hide mx-auto mt-3 flex w-[520px] max-w-full flex-col items-center gap-3 overflow-x-hidden px-3">
-          {blocks?.map(({ id, name }: BlockWithContent, i) => {
+          {blocks?.map(({ id, name, label }: BlockWithContent, i) => {
             return (
               <React.Fragment key={"BlockCard_" + i}>
                 <BlockCard
                   blockCount={blocks.length}
                   index={i}
                   name={name}
+                  label={label}
                   onChangeOrder={(dir) => changeBlockOrder(i, dir)}
                   onClick={() => editBlock(i)}
-                  onDelete={() => disconnectBlock(id, name)}
+                  onDelete={() => disconnectBlock(id.toString(), name)}
                 />
               </React.Fragment>
             );
@@ -203,6 +205,7 @@ const PageBuilder = ({
             setSelectedItems={setSelectedItems}
           />
 
+          {/* START */}
           <div
             className={`${
               !selectedBlock || tabNames.length === 1 ? "hidden" : ""
@@ -248,6 +251,23 @@ const PageBuilder = ({
               setSelectedItems={setSelectedItems}
             />
           </div>
+
+          <details className="collapse collapse-plus grid !max-w-full !rounded-sm bg-brand-white/20">
+            <summary className="collapse-title text-xl font-medium">
+              Block Label
+            </summary>
+            <div className="flex max-w-full flex-wrap justify-start !gap-3 px-3 pb-3 max-md:justify-center max-md:px-0">
+              <BasicInput
+                name="blockLabel"
+                type="text"
+                label="Block Label"
+                placeholder="Label"
+                labelStyle="text-brand-white"
+                customWidth="pl-3 w-[215px] pb-3"
+                defaultValue={blocks?.[editingIndex]?.label}
+              />
+            </div>
+          </details>
 
           <BlockOptionsModule
             selectedBlock={selectedBlock}
@@ -302,6 +322,8 @@ const PageBuilder = ({
           {selectedBlock && (
             <input name="blockName" value={selectedBlock} hidden readOnly />
           )}
+
+          {/* END */}
 
           <BackSubmitButtons
             value="update"

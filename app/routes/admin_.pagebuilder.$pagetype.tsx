@@ -8,7 +8,7 @@ import type { ActionReturnTypes } from "~/utility/actionTypes";
 import type { BlockOptions, PreviewPage } from "@prisma/client";
 import type { BlockContentType } from "~/utility/blockMaster/types";
 import { Form, Outlet, useActionData, useLoaderData } from "@remix-run/react";
-import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
+import AdminPageWrapper from "~/components/Layout/Wrappers/AdminPageWrapper";
 import PageBuilder from "~/components/PageBuilder";
 import {
   type Page,
@@ -35,7 +35,7 @@ import {
 import { getArticleCategories } from "~/models/articleCategories.server";
 import { getAvailableColors } from "~/models/enums.server";
 import { getBlocks } from "~/helpers/blockHelpers";
-import PatternBackground from "~/components/Layout/PatternBackground";
+import PatternBackground from "~/components/Layout/Backgrounds/PatternBackground";
 import { getThemeColorValueByName } from "~/utility/colors";
 import { sortPreviewPages } from "~/helpers/sortHelpers";
 import {
@@ -131,6 +131,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
     previewPageId,
     thumbnail,
     title,
+    blockLabel,
   } = form;
 
   let actionPreview, actionBlocks;
@@ -242,7 +243,8 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
         pageType as PageType,
         previewPageId as string,
         newBlockData as NewBlockData,
-        blockOptions
+        blockOptions,
+        blockLabel as string
       );
       actionPreview = await getPreviewPage(previewPageId as string);
       actionBlocks = await getBlocks(actionPreview as any);

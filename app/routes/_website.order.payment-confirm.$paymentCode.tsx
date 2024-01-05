@@ -5,7 +5,7 @@ import {
   confirmPayment,
 } from "~/models/orders.server";
 import { type ActionFunctionArgs } from "@remix-run/server-runtime";
-import PageWrapper from "~/components/Layout/_Website/PageWrapper";
+import PageWrapper from "~/components/Layout/Wrappers/PageWrapper";
 import type { MetaFunction } from "@remix-run/node";
 
 export const meta: MetaFunction = ({ data }) => {
@@ -42,7 +42,7 @@ const PaymentConfirm = () => {
 
           <IoCheckmarkCircle size={42} className="text-success" />
 
-          <p className="text-xs opacity-50"># - {order?.orderId}</p>
+          <p className="text-xs opacity-50"># - {order?.id}</p>
         </div>
 
         <div className="divider w-full" />

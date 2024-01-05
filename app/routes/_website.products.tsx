@@ -6,7 +6,7 @@ import { searchProducts } from "~/models/products.server";
 import ProductSort from "~/components/Sorting/ProductSort";
 import { getAvailableColors } from "~/models/enums.server";
 import { getDepartments } from "~/models/departments.server";
-import PageWrapper from "~/components/Layout/_Website/PageWrapper";
+import PageWrapper from "~/components/Layout/Wrappers/PageWrapper";
 import {
   type CampaignWithContent,
   getRandomCampaignOrPromotion,

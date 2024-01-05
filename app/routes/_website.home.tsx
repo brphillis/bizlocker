@@ -3,7 +3,7 @@ import { getBlocks } from "~/helpers/blockHelpers";
 import { json, type MetaFunction } from "@remix-run/node";
 import BlockRenderer from "~/components/BlockRenderer";
 import { getHomePage } from "~/models/homePage.server";
-import PageWrapper from "~/components/Layout/_Website/PageWrapper";
+import PageWrapper from "~/components/Layout/Wrappers/PageWrapper";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   return [

@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import type { ActionReturnTypes } from "~/utility/actionTypes";
 import { verifyLogin } from "~/models/auth/login.server";
-import AuthContainer from "~/components/Layout/AuthContainer";
+import AuthContainer from "~/components/Layout/Containers/AuthContainer";
 import { ActionAlert } from "~/components/Notifications/Alerts";
-import AuthPageWrapper from "~/components/Layout/AuthPageWrapper";
+import AuthPageWrapper from "~/components/Layout/Wrappers/AuthPageWrapper";
 import { isValidEmail, isValidPassword } from "~/utility/validate";
 import { NavLink, useActionData, useNavigate } from "@remix-run/react";
 import { requestNewVerifyEmail } from "~/models/auth/verification.server";

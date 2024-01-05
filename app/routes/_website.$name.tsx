@@ -3,7 +3,7 @@ import { getWebPage } from "~/models/webPages.server";
 import BlockRenderer from "~/components/BlockRenderer";
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { capitalizeWords } from "~/helpers/stringHelpers";
-import PageWrapper from "~/components/Layout/_Website/PageWrapper";
+import PageWrapper from "~/components/Layout/Wrappers/PageWrapper";
 import { type MetaFunction, useLoaderData } from "@remix-run/react";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {

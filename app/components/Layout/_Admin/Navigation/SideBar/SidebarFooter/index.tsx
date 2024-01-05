@@ -1,5 +1,5 @@
-import { type StaffWithDetails } from "~/models/auth/staff.server";
-import { type NotificationWithContent } from "~/models/notifications";
+import { type StaffWithDetails } from "~/models/staff.server";
+import { type NotificationWithContent } from "~/models/notifications.server";
 import { IoPersonOutline, IoSettingsOutline } from "react-icons/io5";
 import LogoutButton from "~/components/Buttons/LogoutButton";
 import UserNotifications from "~/components/Notifications/UserNotifications";

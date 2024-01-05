@@ -2,7 +2,7 @@ import { useLoaderData } from "@remix-run/react";
 import { getBlocks } from "~/helpers/blockHelpers";
 import { getArticle } from "~/models/articles.server";
 import BlockRenderer from "~/components/BlockRenderer";
-import PageWrapper from "~/components/Layout/_Website/PageWrapper";
+import PageWrapper from "~/components/Layout/Wrappers/PageWrapper";
 import {
   json,
   type LoaderFunctionArgs,

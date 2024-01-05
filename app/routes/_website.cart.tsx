@@ -8,13 +8,13 @@ import {
 import { validateForm } from "~/utility/validate";
 import { createOrder } from "~/models/orders.server";
 import { getUserDataFromSession } from "~/session.server";
-import { getUserAddress } from "~/models/auth/userAddress";
-import { getUserDetails } from "~/models/auth/userDetails";
+import { getUserAddress } from "~/models/userAddress";
+import { getUserDetails } from "~/models/userDetails";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import PhoneInput from "~/components/Forms/Input/PhoneInput";
 import { getCartDeliveryOptions } from "~/helpers/cartHelpers";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
-import PageWrapper from "~/components/Layout/_Website/PageWrapper";
+import PageWrapper from "~/components/Layout/Wrappers/PageWrapper";
 import SelectCountry from "~/components/Forms/Select/SelectCountry";
 import {
   json,
@@ -59,8 +59,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   user = await getUserDataFromSession(request);
 
   if (user) {
-    userAddress = await getUserAddress(user.id);
-    userDetails = await getUserDetails(user.id);
+    userAddress = await getUserAddress(user.id.toString());
+    userDetails = await getUserDetails(user.id.toString());
   }
 
   if (userAddress && cart) {

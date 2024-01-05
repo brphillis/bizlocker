@@ -7,7 +7,11 @@ import { getUserDataFromSession } from "~/session.server";
 import PhoneInput from "~/components/Forms/Input/PhoneInput";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
-import { getUserDetails, upsertUserDetails } from "~/models/auth/userDetails";
+import {
+  type NewUserDetails,
+  getUserDetails,
+  upsertUserDetails,
+} from "~/models/userDetails";
 import {
   json,
   redirect,
@@ -33,7 +37,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   }
 
   const { id, email } = ((await getUserDataFromSession(request)) as User) || {};
-  const userDetails = await getUserDetails(id);
+  const userDetails = await getUserDetails(id.toString());
   return json({ userDetails, email });
 };
 
@@ -63,13 +67,14 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     return json({ validationErrors: formErrors });
   }
 
-  const updateData = {
-    id,
+  const updateData: NewUserDetails = {
+    id: id.toString(),
     firstName: firstName as string,
     lastName: lastName as string,
-    dateOfBirth: new Date(dateofbirth as string),
+    dateOfBirth: dateofbirth as string,
     phoneNumber: phoneNumber as string,
   };
+
   await upsertUserDetails(updateData);
 
   return json({ success: "Profile Updated" });

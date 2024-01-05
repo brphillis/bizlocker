@@ -7,7 +7,7 @@ import { useEffect } from "react";
 import { STAFF_SESSION_KEY, getUserDataFromSession } from "~/session.server";
 import { useLoaderData, useLocation, useNavigate } from "@remix-run/react";
 import AdminSideBar from "~/components/Layout/_Admin/Navigation/SideBar";
-import { type StaffWithDetails } from "~/models/auth/staff.server";
+import { type StaffWithDetails } from "~/models/staff.server";
 
 import "../../node_modules/swiper/swiper.min.css";
 import "../../node_modules/swiper/modules/navigation.min.css";
@@ -15,7 +15,7 @@ import "sweetalert2/dist/sweetalert2.css";
 import {
   getStaffNotifications,
   getStoreNotifications,
-} from "~/models/notifications";
+} from "~/models/notifications.server";
 
 export const meta: MetaFunction = ({ data }) => {
   return [
@@ -32,15 +32,25 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     request,
     STAFF_SESSION_KEY
   )) as StaffWithDetails;
+
   let userNotifications = [];
-  const storeNotifications = await getStoreNotifications(staffMember?.storeId);
+
+  const storeNotifications =
+    staffMember?.storeId &&
+    (await getStoreNotifications(staffMember?.storeId?.toString()));
+
   if (storeNotifications) {
     userNotifications.push(...storeNotifications);
   }
-  const staffNotifications = await getStaffNotifications(staffMember?.id);
+
+  const staffNotifications = await getStaffNotifications(
+    staffMember?.id.toString()
+  );
+
   if (staffNotifications) {
     userNotifications.push(...staffNotifications);
   }
+
   return json({ staffMember, userNotifications });
 };
 
