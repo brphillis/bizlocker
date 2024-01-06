@@ -7,7 +7,6 @@ import { STAFF_SESSION_KEY } from "~/session.server";
 import DarkOverlay from "~/components/Layout/Overlays/DarkOverlay";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import { getDepartments } from "~/models/departments.server";
-import WindowTitleBar from "~/components/Layout/TitleBars/WindowTitleBar";
 import type { ActionReturnTypes } from "~/utility/actionTypes";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import SelectGender from "~/components/Forms/Select/SelectGender";
@@ -35,6 +34,7 @@ import {
   type NewCampaign,
   upsertCampaign,
 } from "~/models/campaigns.server";
+import WindowContainer from "~/components/Layout/Containers/WindowContainer";
 
 const validateOptions = {
   name: true,
@@ -52,15 +52,8 @@ export const campaignUpsertLoader = async (
   request: Request,
   params: Params<string>
 ) => {
-  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
-
-  if (!authenticated.valid) {
-    return redirect("/login");
-  }
-
   let { searchParams } = new URL(request.url);
-  const contentId = searchParams.get("contentId");
-  let id = contentId === "add" || !contentId ? undefined : contentId;
+  let id = searchParams.get("contentId");
 
   if (!id) {
     throw new Response(null, {
@@ -227,120 +220,124 @@ const CampaignUpsert = ({ offRouteModule }: Props) => {
 
   return (
     <DarkOverlay>
-      <Form
-        method="POST"
-        onSubmit={handleSubmit}
-        className="scrollbar-hide relative w-[600px] max-w-full overflow-y-auto bg-base-200 px-3 py-6 sm:px-6"
-      >
-        <WindowTitleBar
-          valueToChange={campaign}
-          type="Campaign"
-          hasIsActive={true}
-          hasDelete={true}
-        />
+      <WindowContainer
+        isActive={campaign?.isActive}
+        title="Campaign"
+        hasIsActive={true}
+        hasDelete={true}
+        hasMode={true}
+        children={
+          <Form
+            method="POST"
+            onSubmit={handleSubmit}
+            className="scrollbar-hide relative w-[600px] max-w-full overflow-y-auto"
+          >
+            <div className="form-control">
+              <div className="form-control gap-3">
+                <div className="flex flex-wrap justify-evenly gap-3">
+                  <BasicInput
+                    label="Name"
+                    type="text"
+                    name="name"
+                    placeholder="Name"
+                    defaultValue={campaign?.name || ""}
+                    validationErrors={
+                      serverValidationErrors || clientValidationErrors
+                    }
+                  />
 
-        <div className="form-control">
-          <div className="form-control gap-3">
-            <div className="flex flex-wrap justify-evenly gap-3">
-              <BasicInput
-                label="Name"
-                type="text"
-                name="name"
-                placeholder="Name"
-                defaultValue={campaign?.name || ""}
-                validationErrors={
-                  serverValidationErrors || clientValidationErrors
-                }
+                  <BasicSelect
+                    name="department"
+                    label="Department"
+                    selections={departments}
+                    placeholder="Department"
+                    defaultValue={campaign?.department?.id.toString()}
+                  />
+                </div>
+
+                <div className="divider w-full pt-4" />
+
+                <div className="text-center">Campaign Filters</div>
+
+                <div className="flex flex-wrap justify-evenly gap-3">
+                  <BasicMultiSelect
+                    name="productSubCategories"
+                    label="Categories"
+                    selections={productSubCategories}
+                    defaultValues={campaign?.productSubCategories}
+                  />
+
+                  <BasicMultiSelect
+                    name="brands"
+                    label="Targets Brands?"
+                    selections={brands}
+                    defaultValues={campaign?.brands}
+                  />
+                </div>
+
+                <div className="flex flex-wrap justify-evenly gap-3">
+                  <BasicInput
+                    label="Min Discount Range %"
+                    type="number"
+                    name="minSaleRange"
+                    placeholder="Discount %"
+                    defaultValue={campaign?.minSaleRange || ""}
+                    validationErrors={
+                      serverValidationErrors || clientValidationErrors
+                    }
+                  />
+
+                  <BasicInput
+                    label="Max Discount Range %"
+                    type="number"
+                    name="maxSaleRange"
+                    placeholder="Discount %"
+                    defaultValue={campaign?.maxSaleRange || ""}
+                    validationErrors={
+                      serverValidationErrors || clientValidationErrors
+                    }
+                  />
+                </div>
+
+                <div className="flex flex-wrap justify-evenly gap-3">
+                  <SelectGender
+                    defaultValue={campaign?.targetGender}
+                    label="Has Target Gender?"
+                  />
+
+                  <div className="w-[95vw] sm:w-[215px]" />
+                </div>
+              </div>
+
+              <div className="divider w-full pt-8" />
+
+              <UploadImageCollapse
+                name="bannerImage"
+                label="Banner Image"
+                tooltip="Optimal 8.09:1 Aspect Ratio"
+                defaultValue={campaign?.bannerImage}
               />
 
-              <BasicSelect
-                name="department"
-                label="Department"
-                selections={departments}
-                placeholder="Department"
-                defaultValue={campaign?.department?.id.toString()}
+              <div className="divider w-full pt-4" />
+
+              <UploadImageCollapse
+                name="tileImage"
+                label="Tile Image"
+                tooltip="Optimal Square Image"
+                defaultValue={campaign?.tileImage}
               />
             </div>
 
-            <div className="divider w-full pt-4" />
-
-            <div className="text-center">Campaign Filters</div>
-
-            <div className="flex flex-wrap justify-evenly gap-3">
-              <BasicMultiSelect
-                name="productSubCategories"
-                label="Categories"
-                selections={productSubCategories}
-                defaultValues={campaign?.productSubCategories}
-              />
-
-              <BasicMultiSelect
-                name="brands"
-                label="Targets Brands?"
-                selections={brands}
-                defaultValues={campaign?.brands}
-              />
-            </div>
-
-            <div className="flex flex-wrap justify-evenly gap-3">
-              <BasicInput
-                label="Min Discount Range %"
-                type="number"
-                name="minSaleRange"
-                placeholder="Discount %"
-                defaultValue={campaign?.minSaleRange || ""}
-                validationErrors={
-                  serverValidationErrors || clientValidationErrors
-                }
-              />
-
-              <BasicInput
-                label="Max Discount Range %"
-                type="number"
-                name="maxSaleRange"
-                placeholder="Discount %"
-                defaultValue={campaign?.maxSaleRange || ""}
-                validationErrors={
-                  serverValidationErrors || clientValidationErrors
-                }
-              />
-            </div>
-
-            <div className="flex flex-wrap justify-evenly gap-3">
-              <SelectGender
-                defaultValue={campaign?.targetGender}
-                label="Has Target Gender?"
-              />
-
-              <div className="w-[95vw] sm:w-[215px]" />
-            </div>
-          </div>
-
-          <div className="divider w-full pt-8" />
-
-          <UploadImageCollapse
-            name="bannerImage"
-            label="Banner Image"
-            tooltip="Optimal 8.09:1 Aspect Ratio"
-            defaultValue={campaign?.bannerImage}
-          />
-
-          <div className="divider w-full pt-4" />
-
-          <UploadImageCollapse
-            name="tileImage"
-            label="Tile Image"
-            tooltip="Optimal Square Image"
-            defaultValue={campaign?.tileImage}
-          />
-        </div>
-
-        <BackSubmitButtons
-          loading={loading}
-          setLoading={setLoading}
-          validationErrors={serverValidationErrors || clientValidationErrors}
-        />
-      </Form>
+            <BackSubmitButtons
+              loading={loading}
+              setLoading={setLoading}
+              validationErrors={
+                serverValidationErrors || clientValidationErrors
+              }
+            />
+          </Form>
+        }
+      />
     </DarkOverlay>
   );
 };

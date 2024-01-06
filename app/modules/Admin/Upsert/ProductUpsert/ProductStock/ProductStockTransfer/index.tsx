@@ -164,7 +164,7 @@ const ProductStockTransfer = () => {
           method="POST"
           className="scrollbar-hide relative w-[600px] max-w-full overflow-y-auto bg-base-200 px-3 py-6 sm:px-6"
         >
-          <WindowTitleBar type="Stock" hasIsActive={false} hasDelete={false} />
+          <WindowTitleBar title="Stock" hasIsActive={false} hasDelete={false} />
 
           <div className="flex flex-col gap-3">
             <BasicInput

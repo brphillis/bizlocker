@@ -4,7 +4,6 @@ import type { Image } from "@prisma/client";
 import { getFormData } from "~/helpers/formHelpers";
 import DarkOverlay from "~/components/Layout/Overlays/DarkOverlay";
 import BasicInput from "~/components/Forms/Input/BasicInput";
-import WindowTitleBar from "~/components/Layout/TitleBars/WindowTitleBar";
 import type { ActionReturnTypes } from "~/utility/actionTypes";
 import UploadImage from "~/components/Forms/Upload/UploadImage";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
@@ -30,6 +29,7 @@ import {
   type ProductSubCategoryWithDetails,
   upsertProductSubCategory,
 } from "~/models/productSubCategories.server";
+import WindowContainer from "~/components/Layout/Containers/WindowContainer";
 
 const validateOptions = {
   name: true,
@@ -180,74 +180,81 @@ const ProductSubCategoryUpsert = ({ offRouteModule }: Props) => {
 
   return (
     <DarkOverlay>
-      <Form
-        method="POST"
-        onSubmit={handleSubmit}
-        className="scrollbar-hide relative w-[500px] max-w-[100vw] overflow-y-auto bg-base-200 px-3 py-6 sm:px-6"
-      >
-        <WindowTitleBar
-          valueToChange={productSubCategory}
-          type="Category"
-          hasIsActive={true}
-          hasDelete={true}
-        />
+      <WindowContainer
+        hasDelete={true}
+        hasIsActive={true}
+        isActive={productSubCategory?.isActive}
+        title="Category"
+        children={
+          <Form
+            method="POST"
+            onSubmit={handleSubmit}
+            className="scrollbar-hide relative w-[500px] max-w-full overflow-y-auto"
+          >
+            <div className="form-control  gap-3">
+              <BasicInput
+                label="Name"
+                type="text"
+                name="name"
+                placeholder="Name"
+                customWidth="w-full"
+                defaultValue={productSubCategory?.name || ""}
+                validationErrors={
+                  serverValidationErrors || clientValidationErrors
+                }
+              />
 
-        <div className="form-control  gap-3">
-          <BasicInput
-            label="Name"
-            type="text"
-            name="name"
-            placeholder="Name"
-            customWidth="w-full"
-            defaultValue={productSubCategory?.name || ""}
-            validationErrors={serverValidationErrors || clientValidationErrors}
-          />
+              <BasicInput
+                label="Index"
+                type="number"
+                name="index"
+                placeholder="Index"
+                customWidth="w-full"
+                defaultValue={productSubCategory?.index || 0}
+                validationErrors={
+                  serverValidationErrors || clientValidationErrors
+                }
+              />
 
-          <BasicInput
-            label="Index"
-            type="number"
-            name="index"
-            placeholder="Index"
-            customWidth="w-full"
-            defaultValue={productSubCategory?.index || 0}
-            validationErrors={serverValidationErrors || clientValidationErrors}
-          />
+              <BasicSelect
+                name="displayInNavigation"
+                label="Display In Navigation"
+                selections={[
+                  { id: "yes", name: "Yes" },
+                  { id: "no", name: "No" },
+                ]}
+                placeholder="Display In Navigation"
+                customWidth="w-full"
+                defaultValue={
+                  productSubCategory?.displayInNavigation ? "yes" : "no"
+                }
+              />
 
-          <BasicSelect
-            name="displayInNavigation"
-            label="Display In Navigation"
-            selections={[
-              { id: "yes", name: "Yes" },
-              { id: "no", name: "No" },
-            ]}
-            placeholder="Display In Navigation"
-            customWidth="w-full"
-            defaultValue={
-              productSubCategory?.displayInNavigation ? "yes" : "no"
-            }
-          />
+              <BasicSelect
+                name="productCategory"
+                label="Category"
+                selections={productCategories}
+                placeholder="Parent Category"
+                customWidth="w-full"
+                defaultValue={productSubCategory.productCategoryId?.toString()}
+              />
 
-          <BasicSelect
-            name="productCategory"
-            label="Category"
-            selections={productCategories}
-            placeholder="Parent Category"
-            customWidth="w-full"
-            defaultValue={productSubCategory.productCategoryId?.toString()}
-          />
+              <UploadImage
+                defaultValue={productSubCategory?.image}
+                label={"Image"}
+              />
+            </div>
 
-          <UploadImage
-            defaultValue={productSubCategory?.image}
-            label={"Image"}
-          />
-        </div>
-
-        <BackSubmitButtons
-          loading={loading}
-          setLoading={setLoading}
-          validationErrors={serverValidationErrors || clientValidationErrors}
-        />
-      </Form>
+            <BackSubmitButtons
+              loading={loading}
+              setLoading={setLoading}
+              validationErrors={
+                serverValidationErrors || clientValidationErrors
+              }
+            />
+          </Form>
+        }
+      />
     </DarkOverlay>
   );
 };

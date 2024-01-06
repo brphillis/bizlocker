@@ -3,7 +3,6 @@ import { json } from "@remix-run/node";
 import { getFormData } from "~/helpers/formHelpers";
 import DarkOverlay from "~/components/Layout/Overlays/DarkOverlay";
 import BasicInput from "~/components/Forms/Input/BasicInput";
-import WindowTitleBar from "~/components/Layout/TitleBars/WindowTitleBar";
 import type { ActionReturnTypes } from "~/utility/actionTypes";
 import { type ValidationErrors, validateForm } from "~/utility/validate";
 import { getProductCategories } from "~/models/productCategories.server";
@@ -29,6 +28,7 @@ import {
 } from "~/models/departments.server";
 
 import "~/models/productSubCategories.server";
+import WindowContainer from "~/components/Layout/Containers/WindowContainer";
 
 const validateOptions = {
   name: true,
@@ -166,68 +166,76 @@ const DepartmentUpsert = ({ offRouteModule }: Props) => {
 
   return (
     <DarkOverlay>
-      <Form
-        method="POST"
-        onSubmit={handleSubmit}
-        className="scrollbar-hide relative w-[500px] max-w-[100vw] overflow-y-auto bg-base-200 px-3 py-6 sm:px-6"
-      >
-        <WindowTitleBar
-          valueToChange={department}
-          type="Department"
-          hasIsActive={true}
-          hasDelete={false}
-        />
-
-        <BasicInput
-          label="Name"
-          type="text"
-          name="name"
-          placeholder="Name"
-          customWidth="w-full"
-          defaultValue={department?.name || ""}
-          validationErrors={serverValidationErrors || clientValidationErrors}
-        />
-
-        <BasicInput
-          label="Index"
-          type="number"
-          name="index"
-          placeholder="Index"
-          customWidth="w-full"
-          defaultValue={department?.index || 0}
-          validationErrors={serverValidationErrors || clientValidationErrors}
-        />
-
-        <div className="form-control w-full">
-          <label className="label text-sm">In Navigation</label>
-          <select
-            name="displayInNavigation"
-            className="select w-full text-brand-black/75"
-            defaultValue={department?.displayInNavigation ? "true" : ""}
+      <WindowContainer
+        isActive={department?.isActive}
+        title="Department"
+        hasIsActive={true}
+        hasDelete={false}
+        hasMode={true}
+        children={
+          <Form
+            method="POST"
+            onSubmit={handleSubmit}
+            className="scrollbar-hide relative w-[500px] max-w-full overflow-y-auto"
           >
-            <option value="true">Yes</option>
-            <option value="">No</option>
-          </select>
-        </div>
+            <BasicInput
+              label="Name"
+              type="text"
+              name="name"
+              placeholder="Name"
+              customWidth="w-full"
+              defaultValue={department?.name || ""}
+              validationErrors={
+                serverValidationErrors || clientValidationErrors
+              }
+            />
 
-        {productCategories && (
-          <BasicMultiSelect
-            name="productCategories"
-            label="Categories"
-            customWidth="w-full"
-            selections={productCategories.filter(
-              (e) => !e.departmentId || e.departmentId === department.id
+            <BasicInput
+              label="Index"
+              type="number"
+              name="index"
+              placeholder="Index"
+              customWidth="w-full"
+              defaultValue={department?.index || 0}
+              validationErrors={
+                serverValidationErrors || clientValidationErrors
+              }
+            />
+
+            <div className="form-control w-full">
+              <label className="label text-sm">In Navigation</label>
+              <select
+                name="displayInNavigation"
+                className="select w-full text-brand-black/75"
+                defaultValue={department?.displayInNavigation ? "true" : ""}
+              >
+                <option value="true">Yes</option>
+                <option value="">No</option>
+              </select>
+            </div>
+
+            {productCategories && (
+              <BasicMultiSelect
+                name="productCategories"
+                label="Categories"
+                customWidth="w-full"
+                selections={productCategories.filter(
+                  (e) => !e.departmentId || e.departmentId === department.id
+                )}
+                defaultValues={department?.productCategories}
+              />
             )}
-            defaultValues={department?.productCategories}
-          />
-        )}
 
-        <BackSubmitButtons
-          loading={loading}
-          setLoading={setLoading}
-          validationErrors={serverValidationErrors || clientValidationErrors}
-        />
-      </Form>
+            <BackSubmitButtons
+              loading={loading}
+              setLoading={setLoading}
+              validationErrors={
+                serverValidationErrors || clientValidationErrors
+              }
+            />
+          </Form>
+        }
+      />
     </DarkOverlay>
   );
 };

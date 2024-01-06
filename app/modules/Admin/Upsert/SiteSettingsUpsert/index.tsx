@@ -24,9 +24,9 @@ const SiteSettingsUpsert = () => {
 
         <div className="flex flex-col gap-3">
           <WindowContainer
-            label="Navigation"
-            direction="col"
+            title="Navigation"
             extendStyle="bg-base-200"
+            extendTitleBarStyle="!bg-base-500"
             children={
               <div className="relative flex flex-row items-end gap-6 max-md:gap-3">
                 <BasicSelect
@@ -47,9 +47,9 @@ const SiteSettingsUpsert = () => {
           />
 
           <WindowContainer
-            label="Announcement"
-            direction="col"
+            title="Announcement"
             extendStyle="bg-base-200"
+            extendTitleBarStyle="!bg-base-500"
             children={
               <>
                 <div className="relative flex flex-row items-end gap-6 max-md:gap-3">

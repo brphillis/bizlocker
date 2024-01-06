@@ -3,7 +3,6 @@ import { json } from "@remix-run/node";
 import { getFormData } from "~/helpers/formHelpers";
 import DarkOverlay from "~/components/Layout/Overlays/DarkOverlay";
 import BasicInput from "~/components/Forms/Input/BasicInput";
-import WindowTitleBar from "~/components/Layout/TitleBars/WindowTitleBar";
 import type { ActionReturnTypes } from "~/utility/actionTypes";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import { type ValidationErrors, validateForm } from "~/utility/validate";
@@ -39,6 +38,7 @@ import {
   type ProductCategoryWithDetails,
   upsertProductCategory,
 } from "~/models/productCategories.server";
+import WindowContainer from "~/components/Layout/Containers/WindowContainer";
 
 const validateOptions = {
   name: true,
@@ -196,81 +196,89 @@ const ProductCategoryUpsert = ({ offRouteModule }: Props) => {
 
   return (
     <DarkOverlay>
-      <Form
-        method="POST"
-        onSubmit={handleSubmit}
-        className="scrollbar-hide relative w-[500px] max-w-[100vw] overflow-y-auto bg-base-200 px-3 py-6 sm:px-6"
-      >
-        <WindowTitleBar
-          hasDelete={false}
-          hasIsActive={true}
-          type="Category"
-          valueToChange={productCategory}
-        />
+      <WindowContainer
+        hasIsActive={true}
+        title="Category"
+        hasMode={true}
+        children={
+          <Form
+            method="POST"
+            onSubmit={handleSubmit}
+            className="scrollbar-hide relative w-[500px] max-w-full overflow-y-auto"
+          >
+            <div className="form-control gap-3">
+              <BasicInput
+                name="name"
+                label="Name"
+                placeholder="Name"
+                customWidth="w-full"
+                type="text"
+                defaultValue={productCategory?.name || ""}
+                validationErrors={
+                  serverValidationErrors || clientValidationErrors
+                }
+              />
 
-        <div className="form-control gap-3">
-          <BasicInput
-            name="name"
-            label="Name"
-            placeholder="Name"
-            customWidth="w-full"
-            type="text"
-            defaultValue={productCategory?.name || ""}
-            validationErrors={serverValidationErrors || clientValidationErrors}
-          />
+              <BasicSelect
+                name="department"
+                label="Department"
+                selections={departments}
+                placeholder="Department"
+                customWidth="w-full"
+                defaultValue={productCategory?.department?.id.toString()}
+              />
 
-          <BasicSelect
-            name="department"
-            label="Department"
-            selections={departments}
-            placeholder="Department"
-            customWidth="w-full"
-            defaultValue={productCategory?.department?.id.toString()}
-          />
+              <BasicInput
+                label="Index"
+                type="number"
+                name="index"
+                placeholder="Index"
+                customWidth="w-full"
+                defaultValue={productCategory?.index || 0}
+                validationErrors={
+                  serverValidationErrors || clientValidationErrors
+                }
+              />
 
-          <BasicInput
-            label="Index"
-            type="number"
-            name="index"
-            placeholder="Index"
-            customWidth="w-full"
-            defaultValue={productCategory?.index || 0}
-            validationErrors={serverValidationErrors || clientValidationErrors}
-          />
+              <BasicSelect
+                name="displayInNavigation"
+                label="Display In Navigation"
+                selections={[
+                  { id: "yes", name: "Yes" },
+                  { id: "no", name: "No" },
+                ]}
+                placeholder="Display In Navigation"
+                customWidth="w-full"
+                defaultValue={
+                  productCategory?.displayInNavigation ? "yes" : "no"
+                }
+              />
 
-          <BasicSelect
-            name="displayInNavigation"
-            label="Display In Navigation"
-            selections={[
-              { id: "yes", name: "Yes" },
-              { id: "no", name: "No" },
-            ]}
-            placeholder="Display In Navigation"
-            customWidth="w-full"
-            defaultValue={productCategory?.displayInNavigation ? "yes" : "no"}
-          />
-
-          {productSubCategories && (
-            <BasicMultiSelect
-              name="productSubCategories"
-              label="Sub Categories"
-              customWidth="w-full"
-              selections={productSubCategories.filter(
-                (e) =>
-                  !e.productCategoryId ||
-                  e.productCategoryId === productCategory?.id
+              {productSubCategories && (
+                <BasicMultiSelect
+                  name="productSubCategories"
+                  label="Sub Categories"
+                  customWidth="w-full"
+                  selections={productSubCategories.filter(
+                    (e) =>
+                      !e.productCategoryId ||
+                      e.productCategoryId === productCategory?.id
+                  )}
+                  defaultValues={productCategory?.productSubCategories}
+                />
               )}
-              defaultValues={productCategory?.productSubCategories}
-            />
-          )}
-        </div>
+            </div>
 
-        <BackSubmitButtons
-          loading={loading}
-          setLoading={setLoading}
-          validationErrors={serverValidationErrors || clientValidationErrors}
-        />
-      </Form>
+            <BackSubmitButtons
+              loading={loading}
+              setLoading={setLoading}
+              validationErrors={
+                serverValidationErrors || clientValidationErrors
+              }
+            />
+          </Form>
+        }
+      />
     </DarkOverlay>
   );
 };

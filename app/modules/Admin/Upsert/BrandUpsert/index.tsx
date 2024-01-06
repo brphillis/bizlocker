@@ -3,7 +3,6 @@ import { json } from "@remix-run/node";
 import { getFormData } from "~/helpers/formHelpers";
 import DarkOverlay from "~/components/Layout/Overlays/DarkOverlay";
 import BasicInput from "~/components/Forms/Input/BasicInput";
-import WindowTitleBar from "~/components/Layout/TitleBars/WindowTitleBar";
 import type { ActionReturnTypes } from "~/utility/actionTypes";
 import UploadImage from "~/components/Forms/Upload/UploadImage";
 import type { ImageWithDetails } from "~/models/images.server";
@@ -27,6 +26,7 @@ import {
   useSubmit,
   useSearchParams,
 } from "@remix-run/react";
+import WindowContainer from "~/components/Layout/Containers/WindowContainer";
 
 const validateOptions = {
   name: true,
@@ -159,31 +159,41 @@ const BrandUpsert = ({ offRouteModule }: Props) => {
 
   return (
     <DarkOverlay>
-      <Form
-        method="POST"
-        onSubmit={handleSubmit}
-        className="scrollbar-hide relative w-[500px] max-w-[100vw] overflow-y-auto bg-base-200 px-3 py-6 sm:px-6"
-      >
-        <WindowTitleBar valueToChange={brand} type="Brand" hasDelete={true} />
-        <div className="flex flex-col gap-6">
-          <BasicInput
-            name="name"
-            label="Name"
-            placeholder="Name"
-            type="text"
-            customWidth="w-full"
-            defaultValue={brand?.name || undefined}
-            validationErrors={serverValidationErrors || clientValidationErrors}
-          />
+      <WindowContainer
+        title="Brand"
+        hasDelete={true}
+        hasMode={true}
+        children={
+          <Form
+            method="POST"
+            onSubmit={handleSubmit}
+            className="scrollbar-hide relative w-[500px] max-w-full overflow-y-auto"
+          >
+            <div className="flex flex-col gap-6">
+              <BasicInput
+                name="name"
+                label="Name"
+                placeholder="Name"
+                type="text"
+                customWidth="w-full"
+                defaultValue={brand?.name || undefined}
+                validationErrors={
+                  serverValidationErrors || clientValidationErrors
+                }
+              />
 
-          <UploadImage defaultValue={brand?.image} />
-        </div>
-        <BackSubmitButtons
-          loading={loading}
-          setLoading={setLoading}
-          validationErrors={serverValidationErrors || clientValidationErrors}
-        />
-      </Form>
+              <UploadImage defaultValue={brand?.image} />
+            </div>
+            <BackSubmitButtons
+              loading={loading}
+              setLoading={setLoading}
+              validationErrors={
+                serverValidationErrors || clientValidationErrors
+              }
+            />
+          </Form>
+        }
+      />
     </DarkOverlay>
   );
 };

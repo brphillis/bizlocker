@@ -8,7 +8,6 @@ import { getAvailableRoles } from "~/models/enums.server";
 import BasicButton from "~/components/Buttons/BasicButton";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import PhoneInput from "~/components/Forms/Input/PhoneInput";
-import WindowTitleBar from "~/components/Layout/TitleBars/WindowTitleBar";
 import { formatDateForFormField } from "~/helpers/dateHelpers";
 import type { ActionReturnTypes } from "~/utility/actionTypes";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
@@ -34,6 +33,7 @@ import {
   useSubmit,
   useSearchParams,
 } from "@remix-run/react";
+import WindowContainer from "~/components/Layout/Containers/WindowContainer";
 
 const validateOptions = {
   email: true,
@@ -217,228 +217,236 @@ const StaffUpsert = ({ offRouteModule }: Props) => {
 
   return (
     <DarkOverlay>
-      <Form
-        method="POST"
-        onSubmit={handleSubmit}
-        className="scrollbar-hide relative w-[600px] max-w-[100vw] overflow-y-auto bg-base-200 px-3 py-6 sm:px-6"
-      >
-        <WindowTitleBar
-          hasDelete={false}
-          hasIsActive={true}
-          type="Staff"
-          valueToChange={staffMember}
-        />
+      <WindowContainer
+        hasIsActive={true}
+        isActive={staffMember?.isActive}
+        hasMode={true}
+        title="Staff"
+        children={
+          <Form
+            method="POST"
+            onSubmit={handleSubmit}
+            className="scrollbar-hide relative w-[600px] max-w-[100vw] overflow-y-auto bg-base-200 px-3 py-6 sm:px-6"
+          >
+            <div className="form-control gap-3">
+              <UploadAvatar avatar={staffMember?.avatar} />
 
-        <div className="form-control gap-3">
-          <UploadAvatar avatar={staffMember?.avatar} />
-
-          <div className="flex flex-row flex-wrap justify-center gap-3">
-            <BasicSelect
-              name="role"
-              label="Role"
-              customWidth="w-full"
-              placeholder="Role"
-              selections={roles?.map((e: string) => {
-                return { id: e, name: e };
-              })}
-              defaultValue={staffMember?.role || ""}
-            />
-
-            <BasicInput
-              name="jobTitle"
-              label="Job Title"
-              placeholder="Job Title"
-              type="text"
-              customWidth="w-full"
-              defaultValue={staffMember?.jobTitle || undefined}
-              validationErrors={
-                serverValidationErrors || clientValidationErrors
-              }
-            />
-
-            <BasicSelect
-              label="Store"
-              name="store"
-              customWidth="w-full"
-              placeholder="Select a Store"
-              selections={stores}
-              defaultValue={staffMember?.storeId || ""}
-            />
-
-            <BasicInput
-              name="email"
-              label="Email Address"
-              placeholder="Email Address"
-              type="text"
-              customWidth="w-full"
-              defaultValue={staffMember?.email || undefined}
-              validationErrors={
-                serverValidationErrors || clientValidationErrors
-              }
-            />
-
-            <BasicInput
-              name="firstName"
-              label="First Name"
-              placeholder="First Name"
-              type="text"
-              customWidth="w-full"
-              defaultValue={staffMember?.userDetails?.firstName || undefined}
-              validationErrors={
-                serverValidationErrors || clientValidationErrors
-              }
-            />
-
-            <BasicInput
-              name="lastName"
-              label="Last Name"
-              placeholder="Last Name"
-              type="text"
-              customWidth="w-full"
-              defaultValue={staffMember?.userDetails?.lastName || undefined}
-              validationErrors={
-                serverValidationErrors || clientValidationErrors
-              }
-            />
-
-            <PhoneInput
-              name="phoneNumber"
-              label="Phone Number"
-              placeholder="Phone Number"
-              type="text"
-              customWidth="w-full"
-              defaultValue={staffMember?.userDetails?.phoneNumber || undefined}
-              validationErrors={
-                serverValidationErrors || clientValidationErrors
-              }
-            />
-
-            <BasicInput
-              name="dateofbirth"
-              label="Date of Birth"
-              placeholder="Date of Birth"
-              type="date"
-              customWidth="w-full"
-              defaultValue={formatDateForFormField(
-                staffMember?.userDetails?.dateOfBirth
-              )}
-              validationErrors={
-                serverValidationErrors || clientValidationErrors
-              }
-            />
-
-            <BasicInput
-              name="addressLine1"
-              label="Address Line 1"
-              placeholder="Address Line 1"
-              type="text"
-              customWidth="w-full"
-              defaultValue={staffMember?.address?.addressLine1 || undefined}
-              validationErrors={
-                serverValidationErrors || clientValidationErrors
-              }
-            />
-
-            <BasicInput
-              name="addressLine2"
-              label="Address Line 2"
-              placeholder="Address Line 2"
-              type="text"
-              customWidth="w-full"
-              defaultValue={staffMember?.address?.addressLine2 || undefined}
-              validationErrors={
-                serverValidationErrors || clientValidationErrors
-              }
-            />
-
-            <BasicInput
-              name="suburb"
-              label="Suburb"
-              placeholder="Suburb"
-              type="text"
-              customWidth="w-full"
-              defaultValue={staffMember?.address?.suburb || undefined}
-              validationErrors={
-                serverValidationErrors || clientValidationErrors
-              }
-            />
-
-            <BasicInput
-              name="postcode"
-              label="PostCode"
-              placeholder="PostCode"
-              type="text"
-              customWidth="w-full"
-              defaultValue={staffMember?.address?.postcode || undefined}
-              validationErrors={
-                serverValidationErrors || clientValidationErrors
-              }
-            />
-
-            <BasicInput
-              name="state"
-              label="State"
-              placeholder="State"
-              type="text"
-              customWidth="w-full"
-              defaultValue={staffMember?.address?.state || undefined}
-              validationErrors={
-                serverValidationErrors || clientValidationErrors
-              }
-            />
-
-            <SelectCountry
-              defaultValue={staffMember?.address?.country}
-              validationErrors={
-                serverValidationErrors || clientValidationErrors
-              }
-              extendStyle="!w-full"
-            />
-
-            {changingPassword && (role === "DEVELOPER" || role === "ADMIN") && (
-              <>
-                <BasicInput
-                  name="password"
-                  label="Password"
-                  placeholder="Password"
-                  type="password"
+              <div className="flex flex-row flex-wrap justify-center gap-3">
+                <BasicSelect
+                  name="role"
+                  label="Role"
                   customWidth="w-full"
-                  defaultValue={undefined}
+                  placeholder="Role"
+                  selections={roles?.map((e: string) => {
+                    return { id: e, name: e };
+                  })}
+                  defaultValue={staffMember?.role || ""}
+                />
+
+                <BasicInput
+                  name="jobTitle"
+                  label="Job Title"
+                  placeholder="Job Title"
+                  type="text"
+                  customWidth="w-full"
+                  defaultValue={staffMember?.jobTitle || undefined}
                   validationErrors={
                     serverValidationErrors || clientValidationErrors
                   }
                 />
 
-                <BasicButton
-                  label="Cancel Password Change"
-                  extendStyle="mt-3 bg-primary text-brand-white hover:bg-primary-dark"
-                  onClick={() => setChangingPassword(false)}
+                <BasicSelect
+                  label="Store"
+                  name="store"
+                  customWidth="w-full"
+                  placeholder="Select a Store"
+                  selections={stores}
+                  defaultValue={staffMember?.storeId || ""}
                 />
-              </>
+
+                <BasicInput
+                  name="email"
+                  label="Email Address"
+                  placeholder="Email Address"
+                  type="text"
+                  customWidth="w-full"
+                  defaultValue={staffMember?.email || undefined}
+                  validationErrors={
+                    serverValidationErrors || clientValidationErrors
+                  }
+                />
+
+                <BasicInput
+                  name="firstName"
+                  label="First Name"
+                  placeholder="First Name"
+                  type="text"
+                  customWidth="w-full"
+                  defaultValue={
+                    staffMember?.userDetails?.firstName || undefined
+                  }
+                  validationErrors={
+                    serverValidationErrors || clientValidationErrors
+                  }
+                />
+
+                <BasicInput
+                  name="lastName"
+                  label="Last Name"
+                  placeholder="Last Name"
+                  type="text"
+                  customWidth="w-full"
+                  defaultValue={staffMember?.userDetails?.lastName || undefined}
+                  validationErrors={
+                    serverValidationErrors || clientValidationErrors
+                  }
+                />
+
+                <PhoneInput
+                  name="phoneNumber"
+                  label="Phone Number"
+                  placeholder="Phone Number"
+                  type="text"
+                  customWidth="w-full"
+                  defaultValue={
+                    staffMember?.userDetails?.phoneNumber || undefined
+                  }
+                  validationErrors={
+                    serverValidationErrors || clientValidationErrors
+                  }
+                />
+
+                <BasicInput
+                  name="dateofbirth"
+                  label="Date of Birth"
+                  placeholder="Date of Birth"
+                  type="date"
+                  customWidth="w-full"
+                  defaultValue={formatDateForFormField(
+                    staffMember?.userDetails?.dateOfBirth
+                  )}
+                  validationErrors={
+                    serverValidationErrors || clientValidationErrors
+                  }
+                />
+
+                <BasicInput
+                  name="addressLine1"
+                  label="Address Line 1"
+                  placeholder="Address Line 1"
+                  type="text"
+                  customWidth="w-full"
+                  defaultValue={staffMember?.address?.addressLine1 || undefined}
+                  validationErrors={
+                    serverValidationErrors || clientValidationErrors
+                  }
+                />
+
+                <BasicInput
+                  name="addressLine2"
+                  label="Address Line 2"
+                  placeholder="Address Line 2"
+                  type="text"
+                  customWidth="w-full"
+                  defaultValue={staffMember?.address?.addressLine2 || undefined}
+                  validationErrors={
+                    serverValidationErrors || clientValidationErrors
+                  }
+                />
+
+                <BasicInput
+                  name="suburb"
+                  label="Suburb"
+                  placeholder="Suburb"
+                  type="text"
+                  customWidth="w-full"
+                  defaultValue={staffMember?.address?.suburb || undefined}
+                  validationErrors={
+                    serverValidationErrors || clientValidationErrors
+                  }
+                />
+
+                <BasicInput
+                  name="postcode"
+                  label="PostCode"
+                  placeholder="PostCode"
+                  type="text"
+                  customWidth="w-full"
+                  defaultValue={staffMember?.address?.postcode || undefined}
+                  validationErrors={
+                    serverValidationErrors || clientValidationErrors
+                  }
+                />
+
+                <BasicInput
+                  name="state"
+                  label="State"
+                  placeholder="State"
+                  type="text"
+                  customWidth="w-full"
+                  defaultValue={staffMember?.address?.state || undefined}
+                  validationErrors={
+                    serverValidationErrors || clientValidationErrors
+                  }
+                />
+
+                <SelectCountry
+                  defaultValue={staffMember?.address?.country}
+                  validationErrors={
+                    serverValidationErrors || clientValidationErrors
+                  }
+                  extendStyle="!w-full"
+                />
+
+                {changingPassword &&
+                  (role === "DEVELOPER" || role === "ADMIN") && (
+                    <>
+                      <BasicInput
+                        name="password"
+                        label="Password"
+                        placeholder="Password"
+                        type="password"
+                        customWidth="w-full"
+                        defaultValue={undefined}
+                        validationErrors={
+                          serverValidationErrors || clientValidationErrors
+                        }
+                      />
+
+                      <BasicButton
+                        label="Cancel Password Change"
+                        extendStyle="mt-3 bg-primary text-brand-white hover:bg-primary-dark"
+                        onClick={() => setChangingPassword(false)}
+                      />
+                    </>
+                  )}
+
+                {!changingPassword && (
+                  <BasicButton
+                    label="Change Password"
+                    extendStyle="mt-3 bg-primary text-brand-white hover:bg-primary-dark"
+                    onClick={() => setChangingPassword(true)}
+                  />
+                )}
+              </div>
+            </div>
+
+            {permissionError && (
+              <div className="mt-3 w-full pt-3 text-center text-sm text-error">
+                {permissionError}
+              </div>
             )}
 
-            {!changingPassword && (
-              <BasicButton
-                label="Change Password"
-                extendStyle="mt-3 bg-primary text-brand-white hover:bg-primary-dark"
-                onClick={() => setChangingPassword(true)}
-              />
-            )}
-          </div>
-        </div>
-
-        {permissionError && (
-          <div className="mt-3 w-full pt-3 text-center text-sm text-error">
-            {permissionError}
-          </div>
-        )}
-
-        <BackSubmitButtons
-          loading={loading}
-          setLoading={setLoading}
-          validationErrors={serverValidationErrors || clientValidationErrors}
-        />
-      </Form>
+            <BackSubmitButtons
+              loading={loading}
+              setLoading={setLoading}
+              validationErrors={
+                serverValidationErrors || clientValidationErrors
+              }
+            />
+          </Form>
+        }
+      />
     </DarkOverlay>
   );
 };

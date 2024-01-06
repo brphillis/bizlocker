@@ -564,7 +564,7 @@ const ProductVariantUpsert = ({ storeId, product, availableColors }: Props) => {
 
             <button
               type="button"
-              className="btn rounded-sm !border-base-300 bg-error text-white hover:bg-red-500"
+              className="btn !rounded-sm bg-error text-white hover:bg-red-500"
               onClick={handleCancelEditVariant}
             >
               Cancel
@@ -572,7 +572,7 @@ const ProductVariantUpsert = ({ storeId, product, availableColors }: Props) => {
 
             <button
               type="button"
-              className="btn rounded-sm !border-base-300 bg-primary text-white hover:bg-primary-dark"
+              className="btn !rounded-sm  bg-primary text-white hover:bg-primary-dark"
               onClick={handleAddVariant}
             >
               Confirm Variant

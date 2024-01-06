@@ -6,35 +6,30 @@ import BasicToggle from "~/components/Forms/Toggle/BasicToggle";
 import BoxedTabs from "~/components/Tabs/BoxedTabs";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
 
-type ValueToChange<T extends { isActive: boolean }> = T;
-
 type Props = {
   activeTab?: string;
-  customMode?: string;
   extendStyle?: string;
-  hasConnections?: boolean;
   hasDelete?: boolean;
   hasIsActive?: boolean;
+  hasMode?: boolean;
   hideClose?: boolean;
-  hideMode?: boolean;
+  isActive?: boolean;
   onTabChange?: (tab: string) => void;
   tabNames?: string[];
-  type: string;
-  valueToChange?: ValueToChange<any>;
+  title: string;
 };
 
 const WindowTitleBar = ({
   activeTab,
-  customMode,
   extendStyle,
   hasDelete,
   hasIsActive,
+  hasMode,
   hideClose,
-  hideMode,
+  isActive,
   onTabChange,
   tabNames,
-  type,
-  valueToChange,
+  title,
 }: Props) => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -42,15 +37,11 @@ const WindowTitleBar = ({
 
   let mode = contentId === "add" ? "add" : "edit";
 
-  if (customMode) {
-    mode = customMode;
-  }
-
   const handleActiveStatus = (mode: string): boolean => {
     if (mode === "add") {
       return true;
     }
-    if (valueToChange && (valueToChange as any)?.isActive) {
+    if (isActive) {
       return true;
     } else return false;
   };
@@ -63,8 +54,8 @@ const WindowTitleBar = ({
         className={`absolute left-[50%] top-0 flex w-full max-w-[100vw] translate-x-[-50%] flex-col items-center border-[1px] border-b-0 border-brand-white bg-primary text-brand-white sm:justify-between ${extendStyle}`}
       >
         <div className="flex w-full items-center justify-between px-6 py-4 max-md:px-3">
-          <h1 className="sm:relative sm:left-0 sm:top-0">
-            {mode && !hideMode && capitalizeFirst(mode)} {type}
+          <h1 className="font-semibold tracking-wide sm:relative sm:left-0 sm:top-0">
+            {mode && hasMode && capitalizeFirst(mode)} {capitalizeFirst(title)}
           </h1>
 
           <div className="flex items-center gap-6">

@@ -2,7 +2,6 @@ import { type FormEvent, useEffect, useState } from "react";
 import { getFormData } from "~/helpers/formHelpers";
 import DarkOverlay from "~/components/Layout/Overlays/DarkOverlay";
 import BasicInput from "~/components/Forms/Input/BasicInput";
-import WindowTitleBar from "~/components/Layout/TitleBars/WindowTitleBar";
 import type { ActionReturnTypes } from "~/utility/actionTypes";
 import { type ValidationErrors, validateForm } from "~/utility/validate";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
@@ -25,6 +24,7 @@ import {
   type ArticleCategoryWithDetails,
   upsertArticleCategory,
 } from "~/models/articleCategories.server";
+import WindowContainer from "~/components/Layout/Containers/WindowContainer";
 
 const validateOptions = {
   name: true,
@@ -157,34 +157,40 @@ const ArticleCategoryUpsert = ({ offRouteModule }: Props) => {
 
   return (
     <DarkOverlay>
-      <Form
-        method="POST"
-        onSubmit={handleSubmit}
-        className="scrollbar-hide relative w-[500px] max-w-[100vw] overflow-y-auto bg-base-200 px-3 py-6 sm:px-6"
-      >
-        <WindowTitleBar
-          valueToChange={articleCategory}
-          type="Category"
-          hasIsActive={true}
-          hasDelete={true}
-        />
+      <WindowContainer
+        hasDelete={true}
+        hasIsActive={true}
+        hasMode={true}
+        isActive={articleCategory?.isActive}
+        title="Category"
+        children={
+          <Form
+            method="POST"
+            onSubmit={handleSubmit}
+            className="scrollbar-hide relative w-[500px] max-w-full overflow-y-auto"
+          >
+            <BasicInput
+              label="Name"
+              name="name"
+              type="text"
+              placeholder="Name"
+              customWidth="w-full"
+              defaultValue={articleCategory?.name || undefined}
+              validationErrors={
+                serverValidationErrors || clientValidationErrors
+              }
+            />
 
-        <BasicInput
-          label="Name"
-          name="name"
-          type="text"
-          placeholder="Name"
-          customWidth="w-full"
-          defaultValue={articleCategory?.name || undefined}
-          validationErrors={serverValidationErrors || clientValidationErrors}
-        />
-
-        <BackSubmitButtons
-          loading={loading}
-          setLoading={setLoading}
-          validationErrors={serverValidationErrors || clientValidationErrors}
-        />
-      </Form>
+            <BackSubmitButtons
+              loading={loading}
+              setLoading={setLoading}
+              validationErrors={
+                serverValidationErrors || clientValidationErrors
+              }
+            />
+          </Form>
+        }
+      />
     </DarkOverlay>
   );
 };

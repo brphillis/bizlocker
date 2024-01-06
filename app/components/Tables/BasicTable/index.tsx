@@ -54,7 +54,7 @@ const BasicTable = ({
   return (
     <div className="w-full overflow-x-auto">
       <table className={`table my-3 ${tableSize} ${tableSizeMobile}`}>
-        <thead className="sticky top-0 bg-base-300/25">
+        <thead className="sticky top-0 bg-base-300/50">
           <tr className="text-center">
             {currentPage && <th>#</th>}
 

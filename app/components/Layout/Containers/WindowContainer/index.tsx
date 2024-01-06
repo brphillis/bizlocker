@@ -1,38 +1,49 @@
 import WindowTitleBar from "~/components/Layout/TitleBars/WindowTitleBar";
 
 type Props = {
-  label: string;
-  direction: "row" | "col";
+  activeTab?: string;
   children: JSX.Element | JSX.Element[];
   extendStyle?: string;
+  extendTitleBarStyle?: string;
+  hasDelete?: boolean;
+  hasIsActive?: boolean;
+  hasMode?: boolean;
+  hideClose?: boolean;
+  isActive?: boolean;
+  onTabChange?: (tab: string) => void;
+  tabNames?: string[];
+  title: string;
 };
 
 const WindowContainer = ({
+  activeTab,
   children,
-  label,
-  direction,
   extendStyle,
+  extendTitleBarStyle,
+  hasDelete,
+  hasIsActive,
+  hasMode,
+  hideClose,
+  isActive,
+  onTabChange,
+  tabNames,
+  title,
 }: Props) => {
-  let currentDirection = "flex-row";
-
-  switch (direction) {
-    case "row":
-      currentDirection = "flex-row";
-      break;
-    case "col":
-      currentDirection = "flex-col";
-      break;
-  }
-
   return (
     <div
-      className={`relative flex gap-3 rounded-sm p-3 ${currentDirection} ${extendStyle}`}
+      className={`relative flex max-w-full flex-col gap-3 rounded-sm bg-base-200 p-6 max-md:p-3 ${extendStyle}`}
     >
       <WindowTitleBar
-        type={label}
-        hideMode={true}
-        hideClose={true}
-        extendStyle="!bg-brand-black !border-none"
+        activeTab={activeTab}
+        hasDelete={hasDelete}
+        hasIsActive={hasIsActive}
+        hideClose={hideClose}
+        isActive={isActive}
+        onTabChange={onTabChange}
+        tabNames={tabNames}
+        title={title}
+        hasMode={hasMode}
+        extendStyle={`${extendTitleBarStyle}`}
       />
       {children}
     </div>
