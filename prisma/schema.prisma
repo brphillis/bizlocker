@@ -682,6 +682,7 @@ model Brand {
   campaigns    Campaign[]     @relation("BrandToCampaign")
   image        Image?         @relation("BrandImage")
   imageId      Int?
+  isActive     Boolean        @default(true)
   name         String         @unique
   blockContent BlockContent[] @relation("BlockContentToBrands")
   products     Product[]      @relation("BrandToProduct")

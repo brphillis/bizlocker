@@ -19,6 +19,7 @@ import {
   useNavigate,
   useSubmit,
   useSearchParams,
+  useParams,
 } from "@remix-run/react";
 import {
   getDepartment,
@@ -28,14 +29,14 @@ import {
 } from "~/models/departments.server";
 
 import "~/models/productSubCategories.server";
-import WindowContainer from "~/components/Layout/Containers/WindowContainer";
+import WindowContainer, {
+  handleWindowedFormData,
+} from "~/components/Layout/Containers/WindowContainer";
 
 const validateOptions = {
   name: true,
   department: true,
-  discountPercentage: true,
-  bannerImage: true,
-  tileImage: true,
+  index: true,
 };
 
 export const departmentUpsertLoader = async (
@@ -126,6 +127,7 @@ const DepartmentUpsert = ({ offRouteModule }: Props) => {
   let submit = useSubmit();
   const [searchParams] = useSearchParams();
   const contentId = searchParams.get("contentId");
+  const { contentType } = useParams();
   useNotification(notification);
 
   const [clientValidationErrors, setClientValidationErrors] =
@@ -133,8 +135,10 @@ const DepartmentUpsert = ({ offRouteModule }: Props) => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    const form = getFormData(event);
+    let form = getFormData(event);
     event.preventDefault();
+
+    form = handleWindowedFormData(form);
 
     const { formErrors } = validateForm(new FormData(form), validateOptions);
     if (formErrors) {
@@ -143,15 +147,11 @@ const DepartmentUpsert = ({ offRouteModule }: Props) => {
       return;
     }
 
-    const submitFunction = () => {
-      submit(form, {
-        method: "POST",
-        action: `/admin/upsert/department?contentId=${contentId}`,
-        navigate: offRouteModule ? false : true,
-      });
-    };
-
-    submitFunction();
+    submit(form, {
+      method: "POST",
+      action: `/admin/upsert/${contentType}?contentId=${contentId}`,
+      navigate: offRouteModule ? false : true,
+    });
 
     if (offRouteModule) {
       navigate(-1);
@@ -167,11 +167,10 @@ const DepartmentUpsert = ({ offRouteModule }: Props) => {
   return (
     <DarkOverlay>
       <WindowContainer
+        hasIsActive={true}
+        hasMode={true}
         isActive={department?.isActive}
         title="Department"
-        hasIsActive={true}
-        hasDelete={false}
-        hasMode={true}
         children={
           <Form
             method="POST"

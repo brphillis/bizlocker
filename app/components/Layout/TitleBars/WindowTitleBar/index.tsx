@@ -1,6 +1,5 @@
 import { useNavigate, useSearchParams } from "@remix-run/react";
 import { useState } from "react";
-import { IoMdTrash } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
 import BasicToggle from "~/components/Forms/Toggle/BasicToggle";
 import BoxedTabs from "~/components/Tabs/BoxedTabs";
@@ -9,12 +8,11 @@ import { capitalizeFirst } from "~/helpers/stringHelpers";
 type Props = {
   activeTab?: string;
   extendStyle?: string;
-  hasDelete?: boolean;
   hasIsActive?: boolean;
   hasMode?: boolean;
   hideClose?: boolean;
   isActive?: boolean;
-  onTabChange?: (tab: string) => void;
+  setActiveTab?: (tab: string) => void;
   tabNames?: string[];
   title: string;
 };
@@ -22,12 +20,11 @@ type Props = {
 const WindowTitleBar = ({
   activeTab,
   extendStyle,
-  hasDelete,
   hasIsActive,
   hasMode,
   hideClose,
   isActive,
-  onTabChange,
+  setActiveTab,
   tabNames,
   title,
 }: Props) => {
@@ -62,6 +59,7 @@ const WindowTitleBar = ({
             {hasIsActive && mode && (
               <div className="-mt-1">
                 <BasicToggle
+                  id="TitlebarActiveToggle"
                   label="Active"
                   name="isActive"
                   size="sm"
@@ -74,11 +72,6 @@ const WindowTitleBar = ({
                 />
               </div>
             )}
-            {hasDelete && (
-              <button type="submit" name="_action" value="delete">
-                <IoMdTrash />
-              </button>
-            )}
             {!hideClose && (
               <button type="button" className="cursor-pointer">
                 <IoClose onClick={() => navigate(-1)} />
@@ -87,11 +80,11 @@ const WindowTitleBar = ({
           </div>
         </div>
 
-        {activeTab && tabNames && onTabChange && (
+        {activeTab && tabNames && setActiveTab && (
           <BoxedTabs
             tabNames={tabNames}
             activeTab={activeTab}
-            onTabChange={onTabChange}
+            setActiveTab={setActiveTab}
           />
         )}
       </div>

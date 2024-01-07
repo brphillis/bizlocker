@@ -20,6 +20,7 @@ import {
   useNavigate,
   useSubmit,
   useSearchParams,
+  useParams,
 } from "@remix-run/react";
 import {
   getOrder,
@@ -125,6 +126,7 @@ const OrderUpsert = () => {
   let submit = useSubmit();
   const [searchParams] = useSearchParams();
   const contentId = searchParams.get("contentId");
+  const { contentType } = useParams();
   useNotification(notification);
 
   const { items, address, status, id: orderId } = order;
@@ -133,14 +135,10 @@ const OrderUpsert = () => {
     const form = getFormData(event);
     event.preventDefault();
 
-    const submitFunction = () => {
-      submit(form, {
-        method: "POST",
-        action: `/admin/upsert/order?contentId=${contentId}`,
-      });
-    };
-
-    submitFunction();
+    submit(form, {
+      method: "POST",
+      action: `/admin/upsert/${contentType}?contentId=${contentId}`,
+    });
   };
 
   return (

@@ -27,19 +27,26 @@ const SiteSettingsUpsert = () => {
             title="Navigation"
             extendStyle="bg-base-200"
             extendTitleBarStyle="!bg-base-500"
+            hideClose={true}
             children={
               <div className="relative flex flex-row items-end gap-6 max-md:gap-3">
                 <BasicSelect
                   name="navigationStyle"
                   label="Navigation Style"
-                  selections={[{ id: "default", name: "Default" }]}
+                  selections={[
+                    { id: "productBasic", name: "Product Basic" },
+                    { id: "productMegaMenu", name: "Product MegaMenu" },
+                  ]}
                   placeholder="Navigation Style"
                 />
 
                 <BasicSelect
                   name="spinnerStyle"
                   label="Loading Spinner Style"
-                  selections={[{ id: "default", name: "Default" }]}
+                  selections={[
+                    { id: "circle", name: "Circle" },
+                    { id: "shirt", name: "Shirt" },
+                  ]}
                   placeholder="Spinner Style"
                 />
               </div>
@@ -50,6 +57,7 @@ const SiteSettingsUpsert = () => {
             title="Announcement"
             extendStyle="bg-base-200"
             extendTitleBarStyle="!bg-base-500"
+            hideClose={true}
             children={
               <>
                 <div className="relative flex flex-row items-end gap-6 max-md:gap-3">

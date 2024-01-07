@@ -1,4 +1,5 @@
 type Props = {
+  id?: string;
   value: boolean;
   label?: string;
   labelStyle?: string;
@@ -11,6 +12,7 @@ type Props = {
 };
 
 const BasicToggle = ({
+  id,
   name,
   size,
   style,
@@ -79,7 +81,7 @@ const BasicToggle = ({
           <span className={`label-text ml-3 ${labelStyle}`}>{label}</span>
         )}
       </label>
-      <input name={name} value={value ? "true" : ""} readOnly hidden />
+      <input id={id} name={name} value={value ? "true" : ""} readOnly hidden />
     </>
   );
 };

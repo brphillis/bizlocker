@@ -5,7 +5,7 @@ import DarkOverlay from "~/components/Layout/Overlays/DarkOverlay";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import type { ActionReturnTypes } from "~/utility/actionTypes";
 import UploadImage from "~/components/Forms/Upload/UploadImage";
-import type { ImageWithDetails } from "~/models/images.server";
+import type { Image } from "~/models/images.server";
 import { type ValidationErrors, validateForm } from "~/utility/validate";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
 import useNotification, {
@@ -16,6 +16,7 @@ import {
   getBrand,
   type BrandWithContent,
   upsertBrand,
+  type NewBrand,
 } from "~/models/brands.server";
 import {
   Form,
@@ -25,8 +26,11 @@ import {
   useNavigate,
   useSubmit,
   useSearchParams,
+  useParams,
 } from "@remix-run/react";
-import WindowContainer from "~/components/Layout/Containers/WindowContainer";
+import WindowContainer, {
+  handleWindowedFormData,
+} from "~/components/Layout/Containers/WindowContainer";
 
 const validateOptions = {
   name: true,
@@ -73,7 +77,7 @@ export const brandUpsertAction = async (
     validateOptions
   );
 
-  const { name, image } = formEntries;
+  const { name, image, isActive } = formEntries;
 
   switch (formEntries._action) {
     case "upsert":
@@ -81,11 +85,14 @@ export const brandUpsertAction = async (
         return { serverValidationErrors: formErrors };
       }
 
-      const parsedImage = image
-        ? (JSON.parse(image?.toString()) as ImageWithDetails)
-        : undefined;
+      const updateData: NewBrand = {
+        id: (id as string) || undefined,
+        name: name as string,
+        image: image ? (JSON.parse(image?.toString()) as Image) : undefined,
+        isActive: id ? (isActive ? true : false) : false,
+      };
 
-      await upsertBrand(name as string, parsedImage, id);
+      await upsertBrand(updateData);
 
       notification = {
         type: "success",
@@ -119,6 +126,7 @@ const BrandUpsert = ({ offRouteModule }: Props) => {
   let submit = useSubmit();
   const [searchParams] = useSearchParams();
   const contentId = searchParams.get("contentId");
+  const { contentType } = useParams();
   useNotification(notification);
 
   const [clientValidationErrors, setClientValidationErrors] =
@@ -126,8 +134,10 @@ const BrandUpsert = ({ offRouteModule }: Props) => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    const form = getFormData(event);
+    let form = getFormData(event);
     event.preventDefault();
+
+    form = handleWindowedFormData(form);
 
     const { formErrors } = validateForm(new FormData(form), validateOptions);
     if (formErrors) {
@@ -136,15 +146,11 @@ const BrandUpsert = ({ offRouteModule }: Props) => {
       return;
     }
 
-    const submitFunction = () => {
-      submit(form, {
-        method: "POST",
-        action: `/admin/upsert/brand?contentId=${contentId}`,
-        navigate: offRouteModule ? false : true,
-      });
-    };
-
-    submitFunction();
+    submit(form, {
+      method: "POST",
+      action: `/admin/upsert/${contentType}?contentId=${contentId}`,
+      navigate: offRouteModule ? false : true,
+    });
 
     if (offRouteModule) {
       navigate(-1);
@@ -160,9 +166,10 @@ const BrandUpsert = ({ offRouteModule }: Props) => {
   return (
     <DarkOverlay>
       <WindowContainer
-        title="Brand"
-        hasDelete={true}
+        hasIsActive={true}
         hasMode={true}
+        isActive={brand?.isActive}
+        title="Brand"
         children={
           <Form
             method="POST"

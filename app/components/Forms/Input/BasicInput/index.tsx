@@ -82,7 +82,11 @@ const BasicInput = ({
         }}
       />
       {validationErrors?.hasOwnProperty(name) && (
-        <ToolTip tip={validationErrors[name]} iconColor="text-error" />
+        <ToolTip
+          tip={validationErrors[name]}
+          iconColor="text-error"
+          direction="left"
+        />
       )}
     </div>
   );

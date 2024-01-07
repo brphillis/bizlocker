@@ -32,8 +32,11 @@ import {
   useNavigate,
   useSubmit,
   useSearchParams,
+  useParams,
 } from "@remix-run/react";
-import WindowContainer from "~/components/Layout/Containers/WindowContainer";
+import WindowContainer, {
+  handleWindowedFormData,
+} from "~/components/Layout/Containers/WindowContainer";
 
 const validateOptions = {
   name: true,
@@ -149,6 +152,7 @@ const TeamUpsert = ({ offRouteModule }: Props) => {
   let submit = useSubmit();
   const [searchParams] = useSearchParams();
   const teamId = searchParams.get("teamId");
+  const { contentType } = useParams();
   useNotification(notification);
 
   const mode = !isEmptyObject(team) ? "edit" : "add";
@@ -177,8 +181,10 @@ const TeamUpsert = ({ offRouteModule }: Props) => {
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    const form = getFormData(event);
+    let form = getFormData(event);
     event.preventDefault();
+
+    form = handleWindowedFormData(form);
 
     const { formErrors } = validateForm(new FormData(form), validateOptions);
     if (formErrors) {
@@ -187,15 +193,11 @@ const TeamUpsert = ({ offRouteModule }: Props) => {
       return;
     }
 
-    const submitFunction = () => {
-      submit(form, {
-        method: "POST",
-        action: `/admin/upsert/team?teamId=${teamId}`,
-        navigate: offRouteModule ? false : true,
-      });
-    };
-
-    submitFunction();
+    submit(form, {
+      method: "POST",
+      action: `/admin/upsert/${contentType}?contentId=${teamId}`,
+      navigate: offRouteModule ? false : true,
+    });
 
     if (offRouteModule) {
       navigate(-1);

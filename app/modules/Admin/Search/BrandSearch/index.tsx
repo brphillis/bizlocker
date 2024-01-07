@@ -54,6 +54,7 @@ const BrandSearch = () => {
             objectArray={brands.map((e: BrandWithContent) => ({
               id: e.id,
               name: e.name,
+              isActive: e.isActive,
             }))}
           />
         )}

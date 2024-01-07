@@ -5,14 +5,28 @@ type Props = {
   children: JSX.Element | JSX.Element[];
   extendStyle?: string;
   extendTitleBarStyle?: string;
-  hasDelete?: boolean;
   hasIsActive?: boolean;
   hasMode?: boolean;
   hideClose?: boolean;
   isActive?: boolean;
-  onTabChange?: (tab: string) => void;
+  setActiveTab?: (tab: string) => void;
   tabNames?: string[];
   title: string;
+};
+
+export const handleWindowedFormData = (
+  form: HTMLFormElement
+): HTMLFormElement => {
+  const openWindow = document.querySelectorAll("#OpenWindowContainer");
+  const activeToggle = openWindow[openWindow.length - 1]?.querySelector(
+    "#TitlebarActiveToggle"
+  );
+
+  if (activeToggle) {
+    form.appendChild(activeToggle);
+  }
+
+  return form;
 };
 
 const WindowContainer = ({
@@ -20,30 +34,29 @@ const WindowContainer = ({
   children,
   extendStyle,
   extendTitleBarStyle,
-  hasDelete,
   hasIsActive,
   hasMode,
   hideClose,
   isActive,
-  onTabChange,
+  setActiveTab,
   tabNames,
   title,
 }: Props) => {
   return (
     <div
+      id="OpenWindowContainer"
       className={`relative flex max-w-full flex-col gap-3 rounded-sm bg-base-200 p-6 max-md:p-3 ${extendStyle}`}
     >
       <WindowTitleBar
         activeTab={activeTab}
-        hasDelete={hasDelete}
+        extendStyle={`${extendTitleBarStyle}`}
         hasIsActive={hasIsActive}
+        hasMode={hasMode}
         hideClose={hideClose}
         isActive={isActive}
-        onTabChange={onTabChange}
+        setActiveTab={setActiveTab}
         tabNames={tabNames}
         title={title}
-        hasMode={hasMode}
-        extendStyle={`${extendTitleBarStyle}`}
       />
       {children}
     </div>

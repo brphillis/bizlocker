@@ -21,6 +21,7 @@ import {
   useNavigate,
   useSubmit,
   useSearchParams,
+  useParams,
 } from "@remix-run/react";
 import {
   approveStockTransfer,
@@ -140,6 +141,7 @@ const StockTransferUpsert = ({ offRouteModule }: Props) => {
   let submit = useSubmit();
   const [searchParams] = useSearchParams();
   const contentId = searchParams.get("contentId");
+  const { contentType } = useParams();
   useNotification(notification);
 
   const [clientValidationErrors, setClientValidationErrors] =
@@ -163,7 +165,7 @@ const StockTransferUpsert = ({ offRouteModule }: Props) => {
       () =>
         submit(form, {
           method: "POST",
-          action: `/admin/upsert/stockTransfer?contentId=${contentId}`,
+          action: `/admin/upsert/${contentType}?contentId=${contentId}`,
           navigate: offRouteModule ? false : true,
         }),
       () => setLoading(false),

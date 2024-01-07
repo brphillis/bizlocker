@@ -215,7 +215,7 @@ const PageBuilder = ({
               tabNames={tabNames}
               dynamicTabNames={true}
               activeTab={activeTab}
-              onTabChange={handleTabChange}
+              setActiveTab={handleTabChange}
             />
           </div>
 

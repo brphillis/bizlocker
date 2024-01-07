@@ -780,7 +780,7 @@ export const searchProducts = async (
       },
       skip,
       take,
-      orderBy: getOrderBy(sortBy as SortBy, sortOrder as SortOrder),
+      orderBy: getOrderBy(sortBy as SortBy, sortOrder as SortOrder, "product"),
     }),
     prisma.product.count({
       where: filter,

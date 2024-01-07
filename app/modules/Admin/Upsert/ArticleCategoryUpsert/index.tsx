@@ -17,6 +17,7 @@ import {
   useNavigate,
   useSubmit,
   useSearchParams,
+  useParams,
 } from "@remix-run/react";
 import {
   deleteArticleCategory,
@@ -24,7 +25,9 @@ import {
   type ArticleCategoryWithDetails,
   upsertArticleCategory,
 } from "~/models/articleCategories.server";
-import WindowContainer from "~/components/Layout/Containers/WindowContainer";
+import WindowContainer, {
+  handleWindowedFormData,
+} from "~/components/Layout/Containers/WindowContainer";
 
 const validateOptions = {
   name: true,
@@ -117,6 +120,7 @@ const ArticleCategoryUpsert = ({ offRouteModule }: Props) => {
   let submit = useSubmit();
   const [searchParams] = useSearchParams();
   const contentId = searchParams.get("contentId");
+  const { contentType } = useParams();
   useNotification(notification);
 
   const [clientValidationErrors, setClientValidationErrors] =
@@ -124,8 +128,10 @@ const ArticleCategoryUpsert = ({ offRouteModule }: Props) => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    const form = getFormData(event);
+    let form = getFormData(event);
     event.preventDefault();
+
+    form = handleWindowedFormData(form);
 
     const { formErrors } = validateForm(new FormData(form), validateOptions);
     if (formErrors) {
@@ -134,15 +140,11 @@ const ArticleCategoryUpsert = ({ offRouteModule }: Props) => {
       return;
     }
 
-    const submitFunction = () => {
-      submit(form, {
-        method: "POST",
-        action: `/admin/upsert/articleCategory?contentId=${contentId}`,
-        navigate: offRouteModule ? false : true,
-      });
-    };
-
-    submitFunction();
+    submit(form, {
+      method: "POST",
+      action: `/admin/upsert/${contentType}?contentId=${contentId}`,
+      navigate: offRouteModule ? false : true,
+    });
 
     if (offRouteModule) {
       navigate(-1);
@@ -158,7 +160,6 @@ const ArticleCategoryUpsert = ({ offRouteModule }: Props) => {
   return (
     <DarkOverlay>
       <WindowContainer
-        hasDelete={true}
         hasIsActive={true}
         hasMode={true}
         isActive={articleCategory?.isActive}

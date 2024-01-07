@@ -31,6 +31,7 @@ import {
   useNavigate,
   useSubmit,
   useSearchParams,
+  useParams,
 } from "@remix-run/react";
 import {
   getProductCategory,
@@ -38,14 +39,14 @@ import {
   type ProductCategoryWithDetails,
   upsertProductCategory,
 } from "~/models/productCategories.server";
-import WindowContainer from "~/components/Layout/Containers/WindowContainer";
+import WindowContainer, {
+  handleWindowedFormData,
+} from "~/components/Layout/Containers/WindowContainer";
 
 const validateOptions = {
   name: true,
   department: true,
-  discountPercentage: true,
-  bannerImage: true,
-  tileImage: true,
+  index: true,
 };
 
 export const productCategoryUpsertLoader = async (
@@ -156,6 +157,7 @@ const ProductCategoryUpsert = ({ offRouteModule }: Props) => {
   let submit = useSubmit();
   const [searchParams] = useSearchParams();
   const contentId = searchParams.get("contentId");
+  const { contentType } = useParams();
   useNotification(notification);
 
   const [clientValidationErrors, setClientValidationErrors] =
@@ -163,8 +165,10 @@ const ProductCategoryUpsert = ({ offRouteModule }: Props) => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    const form = getFormData(event);
+    let form = getFormData(event);
     event.preventDefault();
+
+    form = handleWindowedFormData(form);
 
     const { formErrors } = validateForm(new FormData(form), validateOptions);
     if (formErrors) {
@@ -173,15 +177,11 @@ const ProductCategoryUpsert = ({ offRouteModule }: Props) => {
       return;
     }
 
-    const submitFunction = () => {
-      submit(form, {
-        method: "POST",
-        action: `/admin/upsert/productCategory?contentId=${contentId}`,
-        navigate: offRouteModule ? false : true,
-      });
-    };
-
-    submitFunction();
+    submit(form, {
+      method: "POST",
+      action: `/admin/upsert/${contentType}?contentId=${contentId}`,
+      navigate: offRouteModule ? false : true,
+    });
 
     if (offRouteModule) {
       navigate(-1);
@@ -198,8 +198,9 @@ const ProductCategoryUpsert = ({ offRouteModule }: Props) => {
     <DarkOverlay>
       <WindowContainer
         hasIsActive={true}
-        title="Category"
         hasMode={true}
+        isActive={productCategory?.isActive}
+        title="Category"
         children={
           <Form
             method="POST"
@@ -226,6 +227,9 @@ const ProductCategoryUpsert = ({ offRouteModule }: Props) => {
                 placeholder="Department"
                 customWidth="w-full"
                 defaultValue={productCategory?.department?.id.toString()}
+                validationErrors={
+                  clientValidationErrors || serverValidationErrors
+                }
               />
 
               <BasicInput
@@ -234,7 +238,7 @@ const ProductCategoryUpsert = ({ offRouteModule }: Props) => {
                 name="index"
                 placeholder="Index"
                 customWidth="w-full"
-                defaultValue={productCategory?.index || 0}
+                defaultValue={productCategory?.index || 100}
                 validationErrors={
                   serverValidationErrors || clientValidationErrors
                 }

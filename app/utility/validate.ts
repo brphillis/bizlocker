@@ -1,3 +1,5 @@
+import { isEmptyObject } from "~/helpers/objectHelpers";
+
 export interface ValidationErrors {
   [key: string]: string;
 }
@@ -238,6 +240,9 @@ export const validationMaster: FormConfig = {
       if (!value) {
         return "Index Required";
       }
+      if (value && Number(value) <= 0) {
+        return "Must Be Over 0";
+      }
       return null;
     },
   },
@@ -255,6 +260,19 @@ export const validationMaster: FormConfig = {
     validator: (value: string) => {
       if (!value) {
         return "Variants are Required";
+      }
+      if (value) {
+        let parsedVal = JSON.parse(value);
+
+        if (isEmptyObject(parsedVal)) {
+          return "Variants are Required";
+        }
+
+        if (Array.isArray(parsedVal)) {
+          if (isEmptyObject(parsedVal?.[0])) {
+            return "Variants are Required";
+          }
+        }
       }
       return null;
     },

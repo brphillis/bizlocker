@@ -15,6 +15,13 @@ export interface BrandWithContent extends Brand {
   products?: ProductWithDetails[] | null;
 }
 
+export interface NewBrand {
+  id?: string;
+  name: string;
+  image?: Image;
+  isActive: boolean;
+}
+
 export const getBrands = async (): Promise<Brand[] | null> => {
   return await prisma.brand.findMany();
 };
@@ -33,10 +40,10 @@ export const getBrand = async (
 };
 
 export const upsertBrand = async (
-  name: string,
-  image?: Image,
-  id?: string
+  brandData: NewBrand
 ): Promise<Brand | null> => {
+  const { id, name, image, isActive } = brandData;
+
   let updatedBrand = null;
 
   if (!id && image) {
@@ -44,6 +51,7 @@ export const upsertBrand = async (
     updatedBrand = await prisma.brand.create({
       data: {
         name: name,
+        isActive,
         image: {
           create: {
             href: repoLink,
@@ -57,6 +65,7 @@ export const upsertBrand = async (
     updatedBrand = await prisma.brand.create({
       data: {
         name: name,
+        isActive,
       },
     });
   } else if (id) {
@@ -112,6 +121,7 @@ export const upsertBrand = async (
       },
       data: {
         name: name,
+        isActive,
         image: imageData,
       },
       include: {

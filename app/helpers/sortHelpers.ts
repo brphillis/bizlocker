@@ -2,10 +2,17 @@ import type { PreviewPage } from "@prisma/client";
 
 export const getOrderBy = (
   sortBy?: string,
-  sortOrder?: SortOrder
+  sortOrder?: SortOrder,
+  type?: "product"
 ): { [key: string]: SortOrder } => {
-  if (sortBy && sortOrder) {
-    return { [sortBy]: sortOrder };
+  let sortedBy = sortBy;
+
+  if (sortBy === "popular" && type === "product") {
+    sortedBy = "totalSold";
+  }
+
+  if (sortedBy && sortOrder) {
+    return { [sortedBy]: sortOrder };
   }
   return { createdAt: "asc" };
 };

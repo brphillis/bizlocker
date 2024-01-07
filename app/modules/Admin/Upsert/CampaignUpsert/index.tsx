@@ -27,6 +27,7 @@ import {
   useNavigate,
   useSubmit,
   useSearchParams,
+  useParams,
 } from "@remix-run/react";
 import {
   getCampaign,
@@ -34,7 +35,9 @@ import {
   type NewCampaign,
   upsertCampaign,
 } from "~/models/campaigns.server";
-import WindowContainer from "~/components/Layout/Containers/WindowContainer";
+import WindowContainer, {
+  handleWindowedFormData,
+} from "~/components/Layout/Containers/WindowContainer";
 
 const validateOptions = {
   name: true,
@@ -43,7 +46,6 @@ const validateOptions = {
   brands: true,
   minSaleRange: true,
   maxSaleRange: true,
-  gender: true,
   bannerImage: true,
   tileImage: true,
 };
@@ -180,6 +182,7 @@ const CampaignUpsert = ({ offRouteModule }: Props) => {
   let submit = useSubmit();
   const [searchParams] = useSearchParams();
   const contentId = searchParams.get("contentId");
+  const { contentType } = useParams();
   useNotification(notification);
 
   const [clientValidationErrors, setClientValidationErrors] =
@@ -187,8 +190,10 @@ const CampaignUpsert = ({ offRouteModule }: Props) => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    const form = getFormData(event);
+    let form = getFormData(event);
     event.preventDefault();
+
+    form = handleWindowedFormData(form);
 
     const { formErrors } = validateForm(new FormData(form), validateOptions);
     if (formErrors) {
@@ -197,15 +202,11 @@ const CampaignUpsert = ({ offRouteModule }: Props) => {
       return;
     }
 
-    const submitFunction = () => {
-      submit(form, {
-        method: "POST",
-        action: `/admin/upsert/campaign?contentId=${contentId}`,
-        navigate: offRouteModule ? false : true,
-      });
-    };
-
-    submitFunction();
+    submit(form, {
+      method: "POST",
+      action: `/admin/upsert/${contentType}?contentId=${contentId}`,
+      navigate: offRouteModule ? false : true,
+    });
 
     if (offRouteModule) {
       navigate(-1);
@@ -221,11 +222,10 @@ const CampaignUpsert = ({ offRouteModule }: Props) => {
   return (
     <DarkOverlay>
       <WindowContainer
+        hasIsActive={true}
+        hasMode={true}
         isActive={campaign?.isActive}
         title="Campaign"
-        hasIsActive={true}
-        hasDelete={true}
-        hasMode={true}
         children={
           <Form
             method="POST"
@@ -252,6 +252,9 @@ const CampaignUpsert = ({ offRouteModule }: Props) => {
                     selections={departments}
                     placeholder="Department"
                     defaultValue={campaign?.department?.id.toString()}
+                    validationErrors={
+                      serverValidationErrors || clientValidationErrors
+                    }
                   />
                 </div>
 
@@ -265,6 +268,9 @@ const CampaignUpsert = ({ offRouteModule }: Props) => {
                     label="Categories"
                     selections={productSubCategories}
                     defaultValues={campaign?.productSubCategories}
+                    validationErrors={
+                      serverValidationErrors || clientValidationErrors
+                    }
                   />
 
                   <BasicMultiSelect
@@ -272,6 +278,9 @@ const CampaignUpsert = ({ offRouteModule }: Props) => {
                     label="Targets Brands?"
                     selections={brands}
                     defaultValues={campaign?.brands}
+                    validationErrors={
+                      serverValidationErrors || clientValidationErrors
+                    }
                   />
                 </div>
 

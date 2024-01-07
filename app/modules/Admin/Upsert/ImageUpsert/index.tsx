@@ -189,9 +189,8 @@ const ImageUpsert = ({ offRouteModule }: Props) => {
   return (
     <DarkOverlay>
       <WindowContainer
-        title="Image"
         hasMode={true}
-        hasDelete={true}
+        title="Image"
         children={
           <Form
             method="POST"

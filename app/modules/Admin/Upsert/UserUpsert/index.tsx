@@ -27,8 +27,11 @@ import {
   useNavigate,
   useSubmit,
   useSearchParams,
+  useParams,
 } from "@remix-run/react";
-import WindowContainer from "~/components/Layout/Containers/WindowContainer";
+import WindowContainer, {
+  handleWindowedFormData,
+} from "~/components/Layout/Containers/WindowContainer";
 
 const validateOptions = {
   email: true,
@@ -144,6 +147,7 @@ const UserUpsert = ({ offRouteModule }: Props) => {
   let submit = useSubmit();
   const [searchParams] = useSearchParams();
   const contentId = searchParams.get("contentId");
+  const { contentType } = useParams();
   useNotification(notification);
 
   const [clientValidationErrors, setClientValidationErrors] =
@@ -151,8 +155,10 @@ const UserUpsert = ({ offRouteModule }: Props) => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    const form = getFormData(event);
+    let form = getFormData(event);
     event.preventDefault();
+
+    form = handleWindowedFormData(form);
 
     const { formErrors } = validateForm(new FormData(form), validateOptions);
     if (formErrors) {
@@ -164,7 +170,7 @@ const UserUpsert = ({ offRouteModule }: Props) => {
     const submitFunction = () => {
       submit(form, {
         method: "POST",
-        action: `/admin/upsert/user?contentId=${contentId}`,
+        action: `/admin/upsert/${contentType}?contentId=${contentId}`,
         navigate: offRouteModule ? false : true,
       });
     };

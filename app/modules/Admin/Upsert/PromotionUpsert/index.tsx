@@ -24,6 +24,7 @@ import {
   useNavigate,
   useSubmit,
   useSearchParams,
+  useParams,
 } from "@remix-run/react";
 import {
   getPromotion,
@@ -31,7 +32,11 @@ import {
   type PromotionWithContent,
   upsertPromotion,
 } from "~/models/promotions.server";
-import WindowContainer from "~/components/Layout/Containers/WindowContainer";
+import WindowContainer, {
+  handleWindowedFormData,
+} from "~/components/Layout/Containers/WindowContainer";
+import TabValidationErrors from "~/components/Forms/Validation/TabValidationErrors";
+import TabContent from "~/components/Tabs/TabContent";
 
 const validateOptions = {
   name: true,
@@ -155,6 +160,7 @@ const PromotionUpsert = ({ offRouteModule }: Props) => {
   let submit = useSubmit();
   const [searchParams] = useSearchParams();
   const contentId = searchParams.get("contentId");
+  const { contentType } = useParams();
   useNotification(notification);
 
   const [clientValidationErrors, setClientValidationErrors] =
@@ -169,8 +175,10 @@ const PromotionUpsert = ({ offRouteModule }: Props) => {
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    const form = getFormData(event);
+    let form = getFormData(event);
     event.preventDefault();
+
+    form = handleWindowedFormData(form);
 
     const { formErrors } = validateForm(new FormData(form), validateOptions);
     if (formErrors) {
@@ -179,15 +187,11 @@ const PromotionUpsert = ({ offRouteModule }: Props) => {
       return;
     }
 
-    const submitFunction = () => {
-      submit(form, {
-        method: "POST",
-        action: `/admin/upsert/promotion/${contentId}`,
-        navigate: offRouteModule ? false : true,
-      });
-    };
-
-    submitFunction();
+    submit(form, {
+      method: "POST",
+      action: `/admin/upsert/${contentType}?contentId=${contentId}`,
+      navigate: offRouteModule ? false : true,
+    });
 
     if (offRouteModule) {
       navigate(-1);
@@ -204,11 +208,10 @@ const PromotionUpsert = ({ offRouteModule }: Props) => {
     <DarkOverlay>
       <WindowContainer
         activeTab={activeTab}
-        hasDelete={true}
         hasIsActive={true}
         hasMode={true}
         isActive={promotion?.isActive}
-        onTabChange={handleTabChange}
+        setActiveTab={handleTabChange}
         tabNames={tabNames}
         title="Promotion"
         children={
@@ -217,131 +220,159 @@ const PromotionUpsert = ({ offRouteModule }: Props) => {
             onSubmit={handleSubmit}
             className="scrollbar-hide relative w-[600px] max-w-full overflow-y-auto"
           >
-            <div
-              className={`form-control ${activeTab !== "general" && "hidden"}`}
-            >
-              <div className="form-control gap-3">
-                <BasicInput
-                  label="Name"
-                  name="name"
-                  type="text"
-                  placeholder="Name"
+            <TabContent
+              tab="general"
+              activeTab={activeTab}
+              extendStyle="gap-3"
+              children={
+                <>
+                  <BasicInput
+                    label="Name"
+                    name="name"
+                    type="text"
+                    placeholder="Name"
+                    customWidth="w-full"
+                    defaultValue={promotion?.name || undefined}
+                    validationErrors={
+                      serverValidationErrors || clientValidationErrors
+                    }
+                  />
+
+                  <BasicSelect
+                    name="department"
+                    label="Department"
+                    selections={departments}
+                    placeholder="Department"
+                    customWidth="w-full"
+                    defaultValue={promotion?.department?.id.toString()}
+                    validationErrors={
+                      serverValidationErrors || clientValidationErrors
+                    }
+                  />
+
+                  <BasicInput
+                    name="discountPercentage"
+                    label="Discount %"
+                    placeholder="Discount %"
+                    type="number"
+                    customWidth="w-full"
+                    defaultValue={promotion?.discountPercentage || ""}
+                    validationErrors={
+                      serverValidationErrors || clientValidationErrors
+                    }
+                  />
+
+                  <SelectGender
+                    defaultValue={promotion?.targetGender}
+                    label="Has Target Gender?"
+                    customWidth="w-full"
+                  />
+                </>
+              }
+            />
+
+            <TabContent
+              tab="images"
+              activeTab={activeTab}
+              children={
+                <>
+                  <TabValidationErrors
+                    formName="bannerImage"
+                    clientValidationErrors={clientValidationErrors}
+                    serverValidationErrors={serverValidationErrors}
+                  />
+
+                  <UploadImageCollapse
+                    name="bannerImage"
+                    label="Banner Image"
+                    tooltip="Optimal 8.09:1 Aspect Ratio"
+                    defaultValue={promotion?.bannerImage}
+                  />
+
+                  <div className="divider w-full pt-4" />
+
+                  <TabValidationErrors
+                    formName="tileImage"
+                    clientValidationErrors={clientValidationErrors}
+                    serverValidationErrors={serverValidationErrors}
+                  />
+
+                  <UploadImageCollapse
+                    name="tileImage"
+                    label="Tile Image"
+                    tooltip="Optimal Square Image"
+                    defaultValue={promotion?.tileImage}
+                  />
+                </>
+              }
+            />
+
+            <TabContent
+              tab="meta"
+              activeTab={activeTab}
+              children={
+                <BasicTextArea
+                  name="metaDescription"
+                  label="Meta Description"
+                  placeholder="Meta Description"
                   customWidth="w-full"
-                  defaultValue={promotion?.name || undefined}
+                  defaultValue={promotion?.metaDescription || ""}
                   validationErrors={
                     serverValidationErrors || clientValidationErrors
                   }
                 />
+              }
+            />
 
-                <BasicSelect
-                  name="department"
-                  label="Department"
-                  selections={departments}
-                  placeholder="Department"
-                  customWidth="w-full"
-                  defaultValue={promotion?.department?.id.toString()}
-                />
+            <TabContent
+              tab="products"
+              activeTab={activeTab}
+              children={
+                <div className="max-w-full overflow-x-auto sm:max-w-none">
+                  <table className="table table-md">
+                    <thead>
+                      <tr>
+                        <th></th>
+                        <th>Name</th>
+                        <th>Gender</th>
+                        <th>Active</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {products?.map((product: Product, i) => {
+                        const { id, name, gender, isActive } = product || {};
 
-                <BasicInput
-                  name="discountPercentage"
-                  label="Discount %"
-                  placeholder="Discount %"
-                  type="number"
-                  customWidth="w-full"
-                  defaultValue={promotion?.discountPercentage || ""}
-                  validationErrors={
-                    serverValidationErrors || clientValidationErrors
-                  }
-                />
+                        return (
+                          <tr
+                            key={"product_" + (name || i)}
+                            className="hover cursor-pointer"
+                            onClick={() => navigate(`/admin/products/${id}`)}
+                          >
+                            <th>{i + 1}</th>
+                            <td>{name}</td>
+                            <td>{gender}</td>
 
-                <SelectGender
-                  defaultValue={promotion?.targetGender}
-                  label="Has Target Gender?"
-                  customWidth="w-full"
-                />
-              </div>
-            </div>
-
-            <div
-              className={`form-control ${activeTab !== "images" && "hidden"}`}
-            >
-              <UploadImageCollapse
-                name="bannerImage"
-                label="Banner Image"
-                tooltip="Optimal 8.09:1 Aspect Ratio"
-                defaultValue={promotion?.bannerImage}
-              />
-
-              <div className="divider w-full pt-4" />
-
-              <UploadImageCollapse
-                name="tileImage"
-                label="Tile Image"
-                tooltip="Optimal Square Image"
-                defaultValue={promotion?.tileImage}
-              />
-            </div>
-
-            <div className={`form-control ${activeTab !== "meta" && "hidden"}`}>
-              <BasicTextArea
-                name="metaDescription"
-                label="Meta Description"
-                placeholder="Meta Description"
-                customWidth="w-full"
-                defaultValue={promotion?.metaDescription || ""}
-                validationErrors={
-                  serverValidationErrors || clientValidationErrors
-                }
-              />
-            </div>
-
-            <div
-              className={`form-control ${activeTab !== "products" && "hidden"}`}
-            >
-              <div className="max-w-full overflow-x-auto sm:max-w-none">
-                <table className="table table-md">
-                  <thead>
-                    <tr>
-                      <th></th>
-                      <th>Name</th>
-                      <th>Gender</th>
-                      <th>Active</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {products?.map((product: Product, i) => {
-                      const { id, name, gender, isActive } = product || {};
-
-                      return (
-                        <tr
-                          key={"product_" + (name || i)}
-                          className="hover cursor-pointer"
-                          onClick={() => navigate(`/admin/products/${id}`)}
-                        >
-                          <th>{i + 1}</th>
-                          <td>{name}</td>
-                          <td>{gender}</td>
-
-                          <td>
-                            {!isActive && (
-                              <div className="ml-4 h-3 w-3 rounded-full bg-red-500" />
-                            )}
-                            {isActive && (
-                              <div className="ml-4 h-3 w-3 self-center rounded-full bg-success" />
-                            )}
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-                <input
-                  type="hidden"
-                  name="products"
-                  value={JSON.stringify(products) || ""}
-                />
-              </div>
-            </div>
+                            <td>
+                              {!isActive && (
+                                <div className="ml-4 h-3 w-3 rounded-full bg-red-500" />
+                              )}
+                              {isActive && (
+                                <div className="ml-4 h-3 w-3 self-center rounded-full bg-success" />
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                  <input
+                    type="hidden"
+                    name="products"
+                    value={JSON.stringify(products) || ""}
+                  />
+                </div>
+              }
+            />
 
             <BackSubmitButtons
               loading={loading}
