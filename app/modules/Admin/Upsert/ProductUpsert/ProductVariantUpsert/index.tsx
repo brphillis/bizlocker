@@ -358,7 +358,7 @@ const ProductVariantUpsert = ({ storeId, product, availableColors }: Props) => {
                 <div className="mt-3">
                   <BasicToggle
                     label="Active"
-                    value={
+                    defaultValue={
                       activeVariant.hasOwnProperty("isActive")
                         ? (activeVariant as ProductVariantWithDetails)?.isActive
                         : true
@@ -422,7 +422,7 @@ const ProductVariantUpsert = ({ storeId, product, availableColors }: Props) => {
                 <div className="mt-3">
                   <BasicToggle
                     label="On Sale"
-                    value={
+                    defaultValue={
                       (activeVariant as ProductVariantWithDetails)?.isOnSale
                     }
                     onChange={(e) => {
@@ -444,7 +444,7 @@ const ProductVariantUpsert = ({ storeId, product, availableColors }: Props) => {
 
                   <BasicToggle
                     label="On Promo"
-                    value={
+                    defaultValue={
                       (activeVariant as ProductVariantWithDetails)?.isPromoted
                     }
                     onChange={(e) => {
@@ -549,7 +549,7 @@ const ProductVariantUpsert = ({ storeId, product, availableColors }: Props) => {
 
                 <BasicToggle
                   label="Is Fragile"
-                  value={
+                  defaultValue={
                     activeVariant.hasOwnProperty("isFragile")
                       ? (activeVariant as ProductVariantWithDetails)?.isFragile
                       : false

@@ -1,4 +1,4 @@
-import WindowTitleBar from "~/components/Layout/TitleBars/WindowTitleBar";
+import BasicTitleBar from "~/components/Layout/TitleBars/BasicTitleBar";
 
 type Props = {
   activeTab?: string;
@@ -47,7 +47,7 @@ const WindowContainer = ({
       id="OpenWindowContainer"
       className={`relative flex max-w-full flex-col gap-3 rounded-sm bg-base-200 p-6 max-md:p-3 ${extendStyle}`}
     >
-      <WindowTitleBar
+      <BasicTitleBar
         activeTab={activeTab}
         extendStyle={`${extendTitleBarStyle}`}
         hasIsActive={hasIsActive}

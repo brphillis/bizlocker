@@ -9,7 +9,7 @@ import {
   useNavigate,
 } from "@remix-run/react";
 import DarkOverlay from "~/components/Layout/Overlays/DarkOverlay";
-import WindowTitleBar from "~/components/Layout/TitleBars/WindowTitleBar";
+import BasicTitleBar from "~/components/Layout/TitleBars/BasicTitleBar";
 import { getUserDataFromSession, STAFF_SESSION_KEY } from "~/session.server";
 import { json, redirect } from "@remix-run/node";
 import { getProductVariant } from "~/models/products.server";
@@ -164,7 +164,7 @@ const ProductStockTransfer = () => {
           method="POST"
           className="scrollbar-hide relative w-[600px] max-w-full overflow-y-auto bg-base-200 px-3 py-6 sm:px-6"
         >
-          <WindowTitleBar title="Stock" />
+          <BasicTitleBar title="Stock" />
 
           <div className="flex flex-col gap-3">
             <BasicInput

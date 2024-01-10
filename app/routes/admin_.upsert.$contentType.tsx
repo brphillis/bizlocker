@@ -63,6 +63,7 @@ import UserUpsert, {
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
 import SiteSettingsUpsert, {
+  siteSettingsUpsertAction,
   siteSettingsUpsertLoader,
 } from "~/modules/Admin/Upsert/SiteSettingsUpsert";
 
@@ -141,6 +142,8 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
       return await productSubCategoryUpsertAction(request, params);
     case "promotion":
       return await promotionUpsertAction(request, params);
+    case "siteSettings":
+      return await siteSettingsUpsertAction(request, params);
     case "staff":
       return await staffUpsertAction(request, params);
     case "stockTransfer":

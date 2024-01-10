@@ -1,5 +1,4 @@
 import { useNavigate, useSearchParams } from "@remix-run/react";
-import { useState } from "react";
 import { IoClose } from "react-icons/io5";
 import BasicToggle from "~/components/Forms/Toggle/BasicToggle";
 import BoxedTabs from "~/components/Tabs/BoxedTabs";
@@ -17,7 +16,7 @@ type Props = {
   title: string;
 };
 
-const WindowTitleBar = ({
+const BasicTitleBar = ({
   activeTab,
   extendStyle,
   hasIsActive,
@@ -43,8 +42,6 @@ const WindowTitleBar = ({
     } else return false;
   };
 
-  const [active, setActive] = useState<boolean>(handleActiveStatus(mode));
-
   return (
     <>
       <div
@@ -63,12 +60,9 @@ const WindowTitleBar = ({
                   label="Active"
                   name="isActive"
                   size="sm"
-                  value={active}
+                  defaultValue={handleActiveStatus(mode)}
                   labelStyle="text-brand-white"
                   extendStyle="ml-3 max-xs:mt-0 mt-[5px] h-1"
-                  onChange={() => {
-                    setActive(!active);
-                  }}
                 />
               </div>
             )}
@@ -94,4 +88,4 @@ const WindowTitleBar = ({
   );
 };
 
-export default WindowTitleBar;
+export default BasicTitleBar;

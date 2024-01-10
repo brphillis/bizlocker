@@ -1,4 +1,3 @@
-import { useState } from "react";
 import BasicToggle from "../BasicToggle";
 import { useSearchParams } from "@remix-run/react";
 
@@ -31,20 +30,15 @@ const IsActiveToggle = ({
     } else return false;
   };
 
-  const [active, setActive] = useState<boolean>(handleActiveStatus(mode));
-
   return (
     <BasicToggle
       label="Active"
       name="isActive"
       size={size || "md"}
-      value={active}
+      defaultValue={handleActiveStatus(mode)}
       labelStyle={labelStyle}
       extendStyle={extendStyle}
       style={style}
-      onChange={() => {
-        setActive(!active);
-      }}
     />
   );
 };

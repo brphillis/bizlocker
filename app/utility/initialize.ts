@@ -5,6 +5,7 @@ export const createSeedData = async () => {
   console.log("Running Build Seed Functions");
   try {
     await createInitialDeveloper();
+    await createSiteSettings();
     await createHomePage();
     await createEcommerceSeedData();
   } catch (error) {
@@ -101,6 +102,16 @@ const createHomePage = async () => {
     console.log(
       "Created a new homepage and connected it to a new preview page."
     );
+  }
+};
+
+const createSiteSettings = async () => {
+  const existingSiteSettings = await prisma.siteSettings.findFirst();
+
+  if (!existingSiteSettings) {
+    await prisma.siteSettings.create({});
+  } else {
+    console.log("Initial SiteSettings already created, skipping creation.");
   }
 };
 

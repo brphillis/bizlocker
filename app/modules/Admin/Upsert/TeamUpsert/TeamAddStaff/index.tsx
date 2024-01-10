@@ -6,7 +6,7 @@ import { getStores } from "~/models/stores.server";
 import DarkOverlay from "~/components/Layout/Overlays/DarkOverlay";
 import { addTeamMemberToTeam } from "~/models/teams.server";
 import BasicInput from "~/components/Forms/Input/BasicInput";
-import WindowTitleBar from "~/components/Layout/TitleBars/WindowTitleBar";
+import BasicTitleBar from "~/components/Layout/TitleBars/BasicTitleBar";
 import type { ActionReturnTypes } from "~/utility/actionTypes";
 import { placeholderAvatar } from "~/utility/placeholderAvatar";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
@@ -131,7 +131,7 @@ const TeamAddStaff = () => {
         method="GET"
         className="scrollbar-hide relative w-[500px] max-w-[100vw] overflow-y-auto bg-base-200 px-3 py-6 sm:px-6"
       >
-        <WindowTitleBar title="Team" />
+        <BasicTitleBar title="Team" />
         <div className="flex flex-col gap-6">
           <div className="flex flex-col">
             <div className="flex justify-between gap-3">

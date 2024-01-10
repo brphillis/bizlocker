@@ -8,6 +8,21 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model SiteSettings {
+  id                   Int      @id @default(autoincrement())
+  navigationStyle      String   @default("productBasic")
+  spinnerStyle         String   @default("shirt")
+  announcementMessage  String?
+  announcementIsActive Boolean  @default(false)
+  announcementEndsAt   String?
+  countdownIsActive    Boolean? @default(false)
+  maintenanceMessage   String?
+  isUnderMaintenance   Boolean? @default(false)
+
+  createdAt String?
+  updatedAt String?
+}
+
 model PreviewPage {
   id                Int               @id @default(autoincrement())
   blocks            Block[]           @relation("PreviewPageToBlocks")
