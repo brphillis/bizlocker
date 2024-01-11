@@ -1,11 +1,7 @@
 import type { CampaignWithContent } from "./campaigns.server";
 import type { ProductCategoryWithDetails } from "./productCategories.server";
 import type { ProductWithDetails } from "./products.server";
-import type {
-  ProductSubCategory,
-  Image,
-  ProductBlockContent,
-} from "@prisma/client";
+import type { ProductSubCategory, Image, BlockContent } from "@prisma/client";
 import { prisma } from "~/db.server";
 import { getOrderBy } from "~/helpers/sortHelpers";
 import {
@@ -16,7 +12,7 @@ import {
 export interface ProductSubCategoryWithDetails extends ProductSubCategory {
   campaigns?: CampaignWithContent[] | null;
   image?: Image | null;
-  productBlockContent?: ProductBlockContent | null;
+  blockContent?: BlockContent | null;
   productCategory?: ProductCategoryWithDetails | null;
   products?: ProductWithDetails[] | null;
 }

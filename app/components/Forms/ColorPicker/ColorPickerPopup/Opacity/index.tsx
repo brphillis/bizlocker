@@ -49,11 +49,11 @@ const Opacity = ({ currentOpacity, setCurrentOpacity }: Props) => {
         placeholder="Opacity"
         type="number"
         customWidth="w-full"
-        labelColor="text-brand-white"
+        labelStyle="text-brand-white"
         value={currentOpacity}
         step={5}
         disabled={true}
-        styles="disabled:!bg-brand-white"
+        extendStyle="disabled:!bg-brand-white"
       />
       <SquareIconButton
         iconName="IoAdd"

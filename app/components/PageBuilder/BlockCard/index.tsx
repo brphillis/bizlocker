@@ -9,6 +9,7 @@ type Props = {
   onChangeOrder: (dir: "up" | "down") => void;
   onDelete: () => void;
   name: string;
+  label?: string;
 };
 
 const BlockCard = ({
@@ -18,6 +19,7 @@ const BlockCard = ({
   onDelete,
   name,
   blockCount,
+  label,
 }: Props) => {
   return (
     <div className="flex w-full cursor-pointer items-center justify-between rounded-sm border border-brand-white/25 bg-brand-white/20 p-3 hover:scale-[1.005]">
@@ -31,8 +33,8 @@ const BlockCard = ({
         <div className="text-xs"># {index + 1}</div>
         {/* ICON */}
         <div className="flex gap-3">
-          <BlockIcon blockName={name} size={18} styles={"mt-[3px]"} />
-          <p className="font-bold">{capitalizeFirst(name)}</p>
+          <BlockIcon blockName={name} size={18} extendStyle={"mt-[3px]"} />
+          <p className="font-bold">{capitalizeFirst(label || name)}</p>
         </div>
       </div>
 

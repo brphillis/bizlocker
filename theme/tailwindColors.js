@@ -1,5 +1,5 @@
 //prettier-ignore
-const tailwindColors ={
+export const tailwindColors ={
     'rose-50': '#fff1f2',
     'rose-100': '#ffe4e6',
     'rose-200': '#fecdd3',
@@ -221,5 +221,3 @@ const tailwindColors ={
     'blueGray-800': '#1e293b',
     'blueGray-900': '#0f172a'
   }
-
-module.exports = tailwindColors;

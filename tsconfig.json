@@ -1,35 +1,29 @@
 {
   "include": [
-    "remix.env.d.ts",
+    "env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "app/routes/admin_/._brands.tsx",
     "app/routes/._index.tsx",
     "node_modules/@prisma/client/index.d.ts",
-    "tailwindTypeBuild.js",
-    "themebuilder.jslder.jslder.js"
+    "server.mjs"
   ],
   "compilerOptions": {
-    "lib": ["DOM", "DOM.Iterable", "ES2019"],
-    "types": ["vitest/globals"],
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "isolatedModules": true,
     "esModuleInterop": true,
     "jsx": "react-jsx",
-    "module": "CommonJS",
-    "moduleResolution": "node",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "resolveJsonModule": true,
-    "target": "ES2019",
+    "target": "ES2022",
     "strict": true,
     "allowJs": true,
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
-    "allowSyntheticDefaultImports": true,
     "paths": {
       "~/*": ["./app/*"]
     },
     "skipLibCheck": true,
-
-    // Remix takes care of building everything in `remix build`.
     "noEmit": true
   }
 }

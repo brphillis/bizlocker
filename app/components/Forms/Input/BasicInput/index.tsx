@@ -8,12 +8,12 @@ type Props = {
   disabled?: boolean;
   id?: string;
   label: string;
-  labelColor?: string;
+  labelStyle?: string;
   name: string;
   onChange?: (value: string | React.ChangeEvent<HTMLSelectElement>) => void;
   placeholder: string;
   step?: number;
-  styles?: string;
+  extendStyle?: string;
   type: "text" | "number" | "date" | "password";
   validationErrors?: ValidationErrors;
   value?: number | string;
@@ -26,12 +26,12 @@ const BasicInput = ({
   disabled,
   id,
   label,
-  labelColor,
+  labelStyle,
   name,
   onChange,
   placeholder,
   step,
-  styles,
+  extendStyle,
   type,
   validationErrors,
   value,
@@ -45,7 +45,7 @@ const BasicInput = ({
       <label className="label">
         <span
           className={`label-text  ${
-            labelColor ? labelColor : "text-brand-black"
+            labelStyle ? labelStyle : "text-brand-black"
           }`}
         >
           {label}
@@ -65,7 +65,7 @@ const BasicInput = ({
           validationErrors?.hasOwnProperty(name)
             ? "input-error border !outline-none"
             : ""
-        } ${styles}`}
+        } ${extendStyle}`}
         defaultValue={
           decimals
             ? parseFloat(defaultValue).toFixed(decimals)
@@ -82,7 +82,11 @@ const BasicInput = ({
         }}
       />
       {validationErrors?.hasOwnProperty(name) && (
-        <ToolTip tip={validationErrors[name]} iconColor="text-error" />
+        <ToolTip
+          tip={validationErrors[name]}
+          iconColor="text-error"
+          direction="left"
+        />
       )}
     </div>
   );

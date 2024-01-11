@@ -18,13 +18,13 @@ import { type CartItemWithDetails, getCart } from "./cart.server";
 import { getVariantUnitPrice } from "~/helpers/numberHelpers";
 import { sendOrderReceiptEmail } from "~/integrations/sendgrid/emails/orderReceipt";
 import { createPaymentLink_Integration } from "~/integrations/_master/payments";
-import { getLatLongForPostcode } from "./location.server";
+import { fetchLatLong } from "./location.server";
 import { findClosestPostcode } from "~/helpers/locationHelpers";
 import { isArrayofNumbers } from "~/helpers/arrayHelpers";
 import type { ProductVariantWithDetails } from "./products.server";
 import type { StoreWithDetails } from "./stores.server";
-import type { AddressWithDetails } from "./auth/userDetails";
-import type { UserWithDetails } from "./auth/users.server";
+import type { AddressWithDetails } from "./userDetails";
+import type { UserWithDetails } from "./users.server";
 import type { SquareShippingDetails } from "~/integrations/square/types";
 
 export interface OrderWithDetails extends Order {
@@ -44,7 +44,7 @@ export const getOrder = async (
 ): Promise<OrderWithDetails | null> => {
   return await prisma.order.findUnique({
     where: {
-      orderId: orderId,
+      id: Number(orderId),
     },
     include: {
       items: {
@@ -149,9 +149,12 @@ export const createOrder = async (
 
         let shippingCoords;
         let closestStoreId;
-        if (address.postcode) {
+        if (address.postcode && address.country) {
           // Get the long and lat of the shipping postcode
-          shippingCoords = await getLatLongForPostcode(address.postcode);
+          shippingCoords = await fetchLatLong(
+            address.postcode,
+            address.country
+          );
 
           if (!shippingCoords) {
             throw new Error("Unable to get shipping Coords.");
@@ -174,6 +177,8 @@ export const createOrder = async (
               },
             },
           });
+
+          console.log("stores with Stock", stockedStores);
 
           // Find the closest store with stock
           const closestPostCode = findClosestPostcode(
@@ -203,7 +208,6 @@ export const createOrder = async (
 
     await prisma.order.create({
       data: {
-        orderId: paymentLink.orderId,
         status: "created",
         rememberInformation: rememberInformation,
         paymentCode: confirmCode,
@@ -318,7 +322,7 @@ export const confirmPayment = async (
   // Update the order status to "paid"
   const updatedOrder = await prisma.order.update({
     where: {
-      orderId: order.orderId,
+      id: order.id,
     },
     data: {
       status: "paid",
@@ -435,7 +439,7 @@ export const updateOrderStatus = async (
 ): Promise<Order> => {
   return await prisma.order.update({
     where: {
-      orderId: orderId,
+      id: Number(orderId),
     },
     data: {
       status: updatedStatus,
@@ -456,7 +460,7 @@ export const updateOrderShippingDetails = async (
   trackingNumber: string
 ): Promise<Order> => {
   const updatedOrder = await prisma.order.update({
-    where: { orderId: orderId },
+    where: { id: Number(orderId) },
     data: {
       firstName,
       lastName,

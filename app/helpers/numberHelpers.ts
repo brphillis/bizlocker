@@ -2,20 +2,6 @@ import type { ProductVariant, Promotion } from "@prisma/client";
 import type { CartItemWithDetails } from "~/models/cart.server";
 import type { ProductWithDetails } from "~/models/products.server";
 
-export const extractNumbersFromString = (inputString: string): number => {
-  const matches: RegExpMatchArray | null = inputString.match(/\d+/g);
-
-  if (!matches) {
-    return 0;
-  }
-
-  const numericString: string = matches.join("");
-
-  const numericValue: number = parseInt(numericString, 10);
-
-  return numericValue;
-};
-
 export const isDecimal = (number: number): boolean => {
   return number % 1 !== 0;
 };

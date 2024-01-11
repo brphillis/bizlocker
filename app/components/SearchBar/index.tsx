@@ -82,7 +82,7 @@ const SearchBar = ({ departments, productCategories, brands }: Props) => {
             placeholder="Search"
             auto={true}
             action="/products"
-            styles="!rounded-sm"
+            extendStyle="!rounded-sm"
           />
         </div>
 

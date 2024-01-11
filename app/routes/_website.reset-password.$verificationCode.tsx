@@ -6,9 +6,9 @@ import {
   type ActionFunctionArgs,
   type MetaFunction,
 } from "@remix-run/node";
-import AuthContainer from "~/components/Layout/AuthContainer";
+import AuthContainer from "~/components/Layout/Containers/AuthContainer";
 import { ActionAlert } from "~/components/Notifications/Alerts";
-import AuthPageWrapper from "~/components/Layout/AuthPageWrapper";
+import AuthPageWrapper from "~/components/Layout/Wrappers/AuthPageWrapper";
 import { resetUserPassword } from "~/models/auth/register.server";
 import { verifyPasswordReset } from "~/models/auth/verification.server";
 import {

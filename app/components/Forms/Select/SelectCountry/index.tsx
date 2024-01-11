@@ -5,13 +5,17 @@ import ToolTip from "~/components/Indicators/ToolTip";
 type Props = {
   defaultValue?: string | null;
   validationErrors?: ValidationErrors;
-  styles?: string;
+  extendStyle?: string;
 };
 
-const SelectCountry = ({ defaultValue, validationErrors, styles }: Props) => {
+const SelectCountry = ({
+  defaultValue,
+  validationErrors,
+  extendStyle,
+}: Props) => {
   return (
     <div
-      className={`form-control relative max-sm:w-[95vw] sm:w-[215px] ${styles}`}
+      className={`form-control relative max-sm:w-[95vw] sm:w-[215px] ${extendStyle}`}
     >
       <label className="label text-sm">Country</label>
       <select

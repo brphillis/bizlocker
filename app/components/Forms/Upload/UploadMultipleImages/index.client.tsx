@@ -143,7 +143,7 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
           <Icon
             iconName="IoAdd"
             size={36}
-            styles="text-primary group-hover:text-brand-white"
+            extendStyle="text-primary group-hover:text-brand-white"
           />
         </label>
       </div>

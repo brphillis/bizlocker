@@ -8,13 +8,13 @@ import {
 import { validateForm } from "~/utility/validate";
 import { createOrder } from "~/models/orders.server";
 import { getUserDataFromSession } from "~/session.server";
-import { getUserAddress } from "~/models/auth/userAddress";
-import { getUserDetails } from "~/models/auth/userDetails";
+import { getUserAddress } from "~/models/userAddress";
+import { getUserDetails } from "~/models/userDetails";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import PhoneInput from "~/components/Forms/Input/PhoneInput";
 import { getCartDeliveryOptions } from "~/helpers/cartHelpers";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
-import PageWrapper from "~/components/Layout/_Website/PageWrapper";
+import PageWrapper from "~/components/Layout/Wrappers/PageWrapper";
 import SelectCountry from "~/components/Forms/Select/SelectCountry";
 import {
   json,
@@ -40,6 +40,7 @@ import googlePayLogo from "../assets/logos/googlePay-logo.svg";
 import mastercardLogo from "../assets/logos/mastercard-logo.svg";
 import type { Address } from "@prisma/client";
 import type { NewAddress } from "~/helpers/addressHelpers";
+import BasicImage from "~/components/Client/BasicImage";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   return [
@@ -58,8 +59,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   user = await getUserDataFromSession(request);
 
   if (user) {
-    userAddress = await getUserAddress(user.id);
-    userDetails = await getUserDetails(user.id);
+    userAddress = await getUserAddress(user.id.toString());
+    userDetails = await getUserDetails(user.id.toString());
   }
 
   if (userAddress && cart) {
@@ -73,10 +74,30 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  const form = Object.fromEntries(await request.formData());
+  const validate = {
+    firstName: true,
+    lastName: true,
+    email: true,
+    addressLine1: true,
+    suburb: true,
+    postcode: true,
+    state: true,
+    country: true,
+    phoneNumber: true,
+    shippingOptions: true,
+  };
 
-  switch (form._action) {
+  const { formEntries, formErrors } = validateForm(
+    await request.formData(),
+    validate
+  );
+
+  switch (formEntries._action) {
     case "placeOrder":
+      if (formErrors) {
+        return json({ validationErrors: formErrors });
+      }
+
       const {
         rememberInformation,
         firstName,
@@ -90,25 +111,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         state,
         country,
         shippingOptions,
-      } = form;
-
-      const validate = {
-        firstName: true,
-        lastName: true,
-        email: true,
-        addressLine1: true,
-        suburb: true,
-        postcode: true,
-        state: true,
-        country: true,
-        phoneNumber: true,
-        shippingOptions: true,
-      };
-
-      const validationErrors = validateForm(form, validate);
-      if (validationErrors) {
-        return json({ validationErrors });
-      }
+      } = formEntries;
 
       const address: NewAddress = {
         addressLine1: addressLine1 as string,
@@ -138,7 +141,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
     case "getShipping":
       const cart = await getCart(request);
-      const { postCode } = form;
+      const { postCode } = formEntries;
 
       if (cart && !isNaN(parseInt(postCode as string))) {
         const actionShippingOptions = await getCartDeliveryOptions(
@@ -197,8 +200,8 @@ const Cart = () => {
                   key={"cartItem-" + name}
                 >
                   {images?.[0].href && (
-                    <img
-                      className="h-20 w-20 border border-base-300 object-cover md:h-[8.8rem] md:w-[8.8rem]"
+                    <BasicImage
+                      extendStyle="h-20 w-20 border border-base-300 object-cover md:h-[8.8rem] md:w-[8.8rem]"
                       src={images[0].href}
                       alt={name + "_cartImage"}
                     />
@@ -252,7 +255,7 @@ const Cart = () => {
             label="First Name"
             placeholder="First Name"
             customWidth="w-full"
-            styles="input-bordered"
+            extendStyle="input-bordered"
             type="text"
             defaultValue={userDetails?.firstName || undefined}
             validationErrors={validationErrors}
@@ -263,7 +266,7 @@ const Cart = () => {
             label="Last Name"
             placeholder="Last Name"
             customWidth="w-full"
-            styles="input-bordered"
+            extendStyle="input-bordered"
             type="text"
             defaultValue={userDetails?.lastName || undefined}
             validationErrors={validationErrors}
@@ -274,7 +277,7 @@ const Cart = () => {
             label="Email Address"
             placeholder="Email Address"
             customWidth="w-full"
-            styles="input-bordered"
+            extendStyle="input-bordered"
             type="text"
             defaultValue={user?.email || undefined}
             validationErrors={validationErrors}
@@ -285,7 +288,7 @@ const Cart = () => {
             label="Address Line 1"
             placeholder="Address Line 1"
             customWidth="w-full"
-            styles="input-bordered"
+            extendStyle="input-bordered"
             type="text"
             defaultValue={userAddress?.addressLine1 || undefined}
             validationErrors={validationErrors}
@@ -296,7 +299,7 @@ const Cart = () => {
             label="Address Line 2"
             placeholder="Address Line 2"
             customWidth="w-full"
-            styles="input-bordered"
+            extendStyle="input-bordered"
             type="text"
             defaultValue={userAddress?.addressLine2 || undefined}
             validationErrors={validationErrors}
@@ -307,7 +310,7 @@ const Cart = () => {
             label="Suburb"
             placeholder="Suburb"
             customWidth="w-full"
-            styles="input-bordered"
+            extendStyle="input-bordered"
             type="text"
             defaultValue={userAddress?.suburb || undefined}
             validationErrors={validationErrors}
@@ -318,7 +321,7 @@ const Cart = () => {
             label="PostCode"
             placeholder="PostCode"
             customWidth="w-full"
-            styles="input-bordered"
+            extendStyle="input-bordered"
             type="text"
             defaultValue={userAddress?.postcode || undefined}
             validationErrors={validationErrors}
@@ -334,7 +337,7 @@ const Cart = () => {
             label="State"
             placeholder="State"
             customWidth="w-full"
-            styles="input-bordered"
+            extendStyle="input-bordered"
             type="text"
             defaultValue={userAddress?.state || undefined}
             validationErrors={validationErrors}
@@ -345,7 +348,7 @@ const Cart = () => {
             label="Phone Number"
             placeholder="Phone Number"
             customWidth="w-full"
-            styles="input-bordered"
+            extendStyle="input-bordered"
             type="text"
             defaultValue={userDetails?.phoneNumber || undefined}
             validationErrors={validationErrors}
@@ -354,7 +357,7 @@ const Cart = () => {
           <SelectCountry
             defaultValue={userAddress?.country}
             validationErrors={validationErrors}
-            styles="!w-full"
+            extendStyle="!w-full"
           />
 
           <div className="mt-3 flex w-full flex-col py-3 text-center max-md:pt-0">

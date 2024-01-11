@@ -1,4 +1,4 @@
-import type { ProductBlockContent, ProductCategory } from "@prisma/client";
+import type { BlockContent, ProductCategory } from "@prisma/client";
 import { prisma } from "~/db.server";
 import { getOrderBy } from "~/helpers/sortHelpers";
 import type { ArticleCategoryWithDetails } from "./articleCategories.server";
@@ -9,7 +9,7 @@ export type { ProductCategory } from "@prisma/client";
 export interface ProductCategoryWithDetails extends ProductCategory {
   articleCategories?: ArticleCategoryWithDetails[] | null;
   department?: DepartmentWithDetails | null;
-  productBlockContent?: ProductBlockContent[] | null;
+  blockContent?: BlockContent[] | null;
   productSubCategories?: ProductSubCategoryWithDetails[] | null;
 }
 

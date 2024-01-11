@@ -1,43 +1,54 @@
 import { prisma } from "~/db.server";
 import bcrypt from "bcryptjs";
 
-export const createInitialDeveloper = async () => {
+export const createSeedData = async () => {
+  console.log("Running Build Seed Functions");
+  try {
+    await createInitialDeveloper();
+    await createSiteSettings();
+    await createHomePage();
+    await createEcommerceSeedData();
+  } catch (error) {
+    console.error("Error creating products and categories:", error);
+  } finally {
+    await prisma.$disconnect();
+  }
+};
+
+const createInitialDeveloper = async () => {
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash("Erhjadc7!", salt);
 
   try {
-    await prisma.staff.create({
-      data: {
+    const existingDev = await prisma.staff.findFirst({
+      where: {
         email: "brock@brockdev.com.au",
-        password: hashedPassword,
-        role: "DEVELOPER",
-        userDetails: {
-          create: {},
-        },
-        address: {
-          create: {},
-        },
       },
     });
-    console.log("Initial admin created");
+
+    if (!existingDev) {
+      await prisma.staff.create({
+        data: {
+          email: "brock@brockdev.com.au",
+          password: hashedPassword,
+          role: "DEVELOPER",
+          userDetails: {
+            create: {},
+          },
+          address: {
+            create: {},
+          },
+        },
+      });
+
+      console.log("Initial admin created");
+    }
   } catch (error: any) {
     if (error.code === "P2002") {
       console.log("Initial developer already created, skipping creation.");
     } else {
       console.error("Failed to create initial developer:", error);
     }
-  } finally {
-    await prisma.$disconnect();
-  }
-};
-
-export const createSeedData = async () => {
-  try {
-    await createHomePage();
-    await createBrand();
-    await createRandomProductSubCategories();
-  } catch (error) {
-    console.error("Error creating products and categories:", error);
   } finally {
     await prisma.$disconnect();
   }
@@ -94,28 +105,28 @@ const createHomePage = async () => {
   }
 };
 
-const createBrand = async () => {
-  const existingDepartments = await prisma.department.findMany();
-  if (existingDepartments.length > 0) {
-    console.log("brands already exist. Skipping seed creation.");
-    return;
-  }
+const createSiteSettings = async () => {
+  const existingSiteSettings = await prisma.siteSettings.findFirst();
 
-  try {
-    await prisma.brand.create({
-      data: {
-        name: "None",
-      },
-    });
-
-    console.log("Random brands created successfully.");
-  } catch (error) {
-    console.error("Error creating random brands:", error);
+  if (!existingSiteSettings) {
+    await prisma.siteSettings.create({});
+  } else {
+    console.log("Initial SiteSettings already created, skipping creation.");
   }
 };
 
-const createRandomProductSubCategories = async () => {
+const createEcommerceSeedData = async () => {
   try {
+    const existingBrands = await prisma.brand.findMany();
+
+    if (!existingBrands) {
+      await prisma.brand.create({
+        data: {
+          name: "None",
+        },
+      });
+    }
+
     const existingDepartments = await prisma.department.findMany();
     if (existingDepartments.length > 0) {
       console.log("seed data already exist. Skipping seed creation.");

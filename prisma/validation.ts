@@ -12,9 +12,15 @@ export const createISO8601DateNow = (): string => {
   return isoString;
 };
 
-export const convertToISO8601Date = (date: Date): string => {
+export const convertToISO8601Date = (date: Date | string): string => {
   if (!(date instanceof Date)) {
-    throw new Error("Invalid date object");
+    const convertedDate = new Date(date).toISOString();
+
+    if (!validateISO8601(convertedDate)) {
+      throw new Error("Invalid date object");
+    }
+
+    return convertedDate;
   }
 
   return date.toISOString();

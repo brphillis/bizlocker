@@ -11,15 +11,15 @@ export const adminNavBarRoutes: NavigationRouteItem[] = [
     children: [
       {
         name: "Staff",
-        link: "/admin/staff",
+        link: "/admin/search/staff",
       },
       {
         name: "Teams",
-        link: "/admin/teams",
+        link: "/admin/search/team",
       },
       {
         name: "Orders",
-        link: "/admin/orders",
+        link: "/admin/search/order",
       },
     ],
   },
@@ -34,15 +34,19 @@ export const adminNavBarRoutes: NavigationRouteItem[] = [
       },
       {
         name: "Pages",
-        link: "/admin/pages",
+        link: "/admin/search/page",
       },
       {
         name: "Articles",
-        link: "/admin/articles",
+        link: "/admin/search/article",
       },
       {
         name: "Article Categories",
-        link: "/admin/article-categories",
+        link: "/admin/search/articleCategory",
+      },
+      {
+        name: "Site Settings",
+        link: "/admin/upsert/siteSettings",
       },
     ],
   },
@@ -53,7 +57,7 @@ export const adminNavBarRoutes: NavigationRouteItem[] = [
     children: [
       {
         name: "Users",
-        link: "/admin/users",
+        link: "/admin/search/user",
       },
     ],
   },
@@ -64,7 +68,7 @@ export const adminNavBarRoutes: NavigationRouteItem[] = [
     children: [
       {
         name: "Stores",
-        link: "/admin/stores",
+        link: "/admin/search/store",
       },
     ],
   },
@@ -75,27 +79,27 @@ export const adminNavBarRoutes: NavigationRouteItem[] = [
     children: [
       {
         name: "Products",
-        link: "/admin/products",
+        link: "/admin/search/product",
       },
       {
         name: "Departments",
-        link: "/admin/departments",
+        link: "/admin/search/department",
       },
       {
         name: "Categories",
-        link: "/admin/product-categories",
+        link: "/admin/search/productCategory",
       },
       {
         name: "SubCategories",
-        link: "/admin/product-subcategories",
+        link: "/admin/search/productSubCategory",
       },
       {
         name: "Brands",
-        link: "/admin/brands",
+        link: "/admin/search/brand",
       },
       {
         name: "Stock Transfers",
-        link: "/admin/stock-transfers",
+        link: "/admin/search/stockTransfer",
       },
     ],
   },
@@ -106,7 +110,7 @@ export const adminNavBarRoutes: NavigationRouteItem[] = [
     children: [
       {
         name: "Images",
-        link: "/admin/images",
+        link: "/admin/search/image",
       },
     ],
   },
@@ -117,7 +121,7 @@ export const adminNavBarRoutes: NavigationRouteItem[] = [
     children: [
       {
         name: "Sales",
-        link: "/admin/report-sales",
+        link: "/admin/report/sales",
       },
     ],
   },
@@ -128,12 +132,12 @@ export const adminNavBarRoutes: NavigationRouteItem[] = [
     children: [
       {
         name: "Promotions",
-        link: "/admin/promotions",
+        link: "/admin/search/promotion",
       },
 
       {
         name: "Campaigns",
-        link: "/admin/campaigns",
+        link: "/admin/search/campaign",
       },
     ],
   },

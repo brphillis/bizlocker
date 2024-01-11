@@ -5,12 +5,11 @@ import type {
   Image,
   PreviewPage,
 } from "@prisma/client";
-import type { BlockWithBlockOptions } from "./blocks.server";
+import { getBlocks, type BlockWithBlockOptions } from "./blocks.server";
 import { prisma } from "~/db.server";
-import { includeBlocksData } from "~/utility/blockMaster/blockMaster";
+import { activeContentTypes } from "~/utility/blockMaster/blockMaster";
 import { getOrderBy } from "~/helpers/sortHelpers";
-import { type PageBlock, removeBlock } from "./pageBuilder.server";
-import { getBlocks } from "~/helpers/blockHelpers";
+import { type BlockWithContent, disconnectBlock } from "./pageBuilder.server";
 
 export interface ArticleWithContent extends Article {
   articleCategories?: ArticleCategory[] | null;
@@ -21,7 +20,7 @@ export interface ArticleWithContent extends Article {
 
 export const getArticle = async (
   id?: string,
-  title?: string
+  title?: string,
 ): Promise<Article | null> => {
   let whereClause;
 
@@ -36,7 +35,14 @@ export const getArticle = async (
   return await prisma.article.findUnique({
     where: whereClause,
     include: {
-      blocks: includeBlocksData,
+      blocks: {
+        include: {
+          blockOptions: true,
+          content: {
+            include: activeContentTypes,
+          },
+        },
+      },
       articleCategories: {
         select: {
           id: true,
@@ -49,14 +55,21 @@ export const getArticle = async (
 };
 
 export const deleteArticle = async (
-  id: number
+  id: number,
 ): Promise<TypedResponse<never>> => {
   const article = await prisma.article.findUnique({
     where: {
       id,
     },
     include: {
-      blocks: includeBlocksData,
+      blocks: {
+        include: {
+          blockOptions: true,
+          content: {
+            include: activeContentTypes,
+          },
+        },
+      },
     },
   });
 
@@ -68,7 +81,10 @@ export const deleteArticle = async (
   const articleBlocks = await getBlocks(article as any);
 
   await Promise.all(
-    articleBlocks.map(async (e: PageBlock) => await removeBlock(e.id, e.name))
+    articleBlocks.map(
+      async (e: BlockWithContent) =>
+        await disconnectBlock(e.id.toString(), e.name),
+    ),
   );
 
   // Delete the article
@@ -83,7 +99,7 @@ export const deleteArticle = async (
 
 export const searchArticles = async (
   formData?: { [k: string]: FormDataEntryValue },
-  url?: URL
+  url?: URL,
 ): Promise<{ articles: ArticleWithContent[]; totalPages: number }> => {
   const title =
     formData?.title || (url && url.searchParams.get("title")?.toString()) || "";

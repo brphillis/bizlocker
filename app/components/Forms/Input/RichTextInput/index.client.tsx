@@ -1,14 +1,26 @@
 import { Suspense, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import ToolTip from "~/components/Indicators/ToolTip";
+import type { ValidationErrors } from "~/utility/validate";
 
 interface RichTextEditorProps {
-  value?: string;
+  extendStyle?: string;
+  label?: string;
+  name?: string;
   onChange?: (value: string) => void;
-  className?: string;
+  validationErrors?: ValidationErrors;
+  value?: string;
 }
 
-const RichTextInput = ({ value, onChange, className }: RichTextEditorProps) => {
+const RichTextInput = ({
+  extendStyle,
+  label,
+  name,
+  onChange,
+  validationErrors,
+  value,
+}: RichTextEditorProps) => {
   const [richText, setRichText] = useState(value || "");
 
   const handleEditorChange = (content: string) => {
@@ -68,14 +80,31 @@ const RichTextInput = ({ value, onChange, className }: RichTextEditorProps) => {
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <ReactQuill
-        theme="snow"
-        modules={{ toolbar: tools }}
-        value={richText.toString()}
-        defaultValue={richText.toString() || ""}
-        onChange={handleEditorChange}
-        className={className}
-      />
+      <div className="form-control relative my-3 w-full self-center">
+        {label && (
+          <label className="label">
+            <span className="label-text">{label}</span>
+          </label>
+        )}
+        <ReactQuill
+          theme="snow"
+          modules={{ toolbar: tools }}
+          value={richText.toString()}
+          defaultValue={richText.toString() || ""}
+          onChange={handleEditorChange}
+          className={`${extendStyle} ${
+            name && validationErrors?.hasOwnProperty(name)
+              ? "border border-[oklch(var(--er))]"
+              : ""
+          }`}
+        />
+
+        {name && validationErrors?.hasOwnProperty(name) && (
+          <ToolTip tip={validationErrors[name]} iconColor="text-error" />
+        )}
+
+        <input hidden readOnly name="description" value={value} />
+      </div>
     </Suspense>
   );
 };

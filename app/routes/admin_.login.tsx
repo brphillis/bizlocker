@@ -3,8 +3,8 @@ import type { ActionReturnTypes } from "~/utility/actionTypes";
 import { useEffect } from "react";
 import { createStaffSession } from "~/session.server";
 import { safeRedirect } from "~/helpers/navigateHelpers";
-import AuthContainer from "~/components/Layout/AuthContainer";
-import AuthPageWrapper from "~/components/Layout/AuthPageWrapper";
+import AuthContainer from "~/components/Layout/Containers/AuthContainer";
+import AuthPageWrapper from "~/components/Layout/Wrappers/AuthPageWrapper";
 import { isValidEmail, isValidPassword } from "~/utility/validate";
 import {
   Link,
@@ -14,7 +14,8 @@ import {
 } from "@remix-run/react";
 import { verifyStaffLogin } from "~/models/auth/staffLogin";
 import BasicButton from "~/components/Buttons/BasicButton";
-import ValidationErrorsDisplay from "~/components/Forms/Validation/ValidationErrorsDisplay";
+import ValidationErrorsList from "~/components/Forms/Validation/ValidationErrorsList";
+import BasicInput from "~/components/Forms/Input/BasicInput";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
@@ -78,39 +79,36 @@ const AdminLogin = () => {
   return (
     <AuthPageWrapper>
       <AuthContainer sloganText="Admin Portal">
-        <div className="form-control relative">
-          <label className="label">
-            <span className="label-text text-brand-white">Email</span>
-          </label>
-          <input
-            name="email"
-            type="text"
-            placeholder="email"
-            className="input input-bordered text-brand-black/50 focus:text-brand-black"
-          />
-        </div>
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text text-brand-white">Password</span>
-          </label>
-          <input
-            name="password"
-            type="password"
-            placeholder="password"
-            className="input input-bordered bg-base-100 text-brand-black/50 focus:text-brand-black"
-          />
+        <BasicInput
+          name="email"
+          type="text"
+          label="Email"
+          customWidth="w-full"
+          extendStyle="input input-bordered bg-base-100 text-brand-black/50 focus:text-brand-black"
+          labelStyle="text-brand-white"
+          placeholder="Email"
+        />
 
-          <Link
-            to="/forgot-password"
-            className="link-hover link mb-3 ml-1 mt-2 cursor-pointer text-xs text-brand-white/75"
-          >
-            Forgot password?
-          </Link>
-        </div>
+        <BasicInput
+          name="password"
+          type="password"
+          label="Password"
+          customWidth="w-full"
+          extendStyle="input input-bordered bg-base-100 text-brand-black/50 focus:text-brand-black"
+          labelStyle="text-brand-white"
+          placeholder="Password"
+        />
 
-        <ValidationErrorsDisplay validationErrors={validationErrors} />
+        <Link
+          to="/forgot-password"
+          className="link-hover link mb-3 ml-1 mt-2 cursor-pointer text-xs text-brand-white/75"
+        >
+          Forgot password?
+        </Link>
 
-        <div className="form-control gap-3">
+        <ValidationErrorsList validationErrors={validationErrors} />
+
+        <div className="form-control gap-3 pt-3">
           <BasicButton label="Login" type="submit" />
 
           <div className="my-2 w-full border-b-2 border-brand-white/10" />

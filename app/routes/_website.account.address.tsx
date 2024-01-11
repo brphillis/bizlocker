@@ -7,7 +7,7 @@ import { getUserDataFromSession } from "~/session.server";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import SelectCountry from "~/components/Forms/Select/SelectCountry";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
-import { getUserAddress, upsertUserAddress } from "~/models/auth/userAddress";
+import { getUserAddress, upsertUserAddress } from "~/models/userAddress";
 import {
   json,
   redirect,
@@ -34,7 +34,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   }
 
   const { id } = ((await getUserDataFromSession(request)) as User) || {};
-  const userAddress = await getUserAddress(id);
+  const userAddress = await getUserAddress(id.toString());
 
   return json({ userAddress });
 };
@@ -47,8 +47,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   }
 
   const { id } = ((await getUserDataFromSession(request)) as User) || {};
-  const form = Object.fromEntries(await request.formData());
-  const { addressLine1, addressLine2, suburb, postcode, state, country } = form;
 
   const validate = {
     addressLine1: true,
@@ -58,10 +56,17 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     country: true,
   };
 
-  const validationErrors = validateForm(form, validate);
-  if (validationErrors) {
-    return json({ validationErrors });
+  const { formEntries, formErrors } = validateForm(
+    await request.formData(),
+    validate
+  );
+
+  if (formErrors) {
+    return json({ validationErrors: formErrors });
   }
+
+  const { addressLine1, addressLine2, suburb, postcode, state, country } =
+    formEntries;
 
   const updateData = {
     id,
@@ -107,7 +112,7 @@ const Address = () => {
           label="Address Line 1"
           placeholder="Address Line 1"
           customWidth="w-full"
-          styles="input-bordered"
+          extendStyle="input-bordered"
           type="text"
           defaultValue={userAddress?.addressLine1 || undefined}
           validationErrors={validationErrors}
@@ -118,7 +123,7 @@ const Address = () => {
           label="Address Line 2"
           placeholder="Address Line 2"
           customWidth="w-full"
-          styles="input-bordered"
+          extendStyle="input-bordered"
           type="text"
           defaultValue={userAddress?.addressLine2 || undefined}
           validationErrors={validationErrors}
@@ -129,7 +134,7 @@ const Address = () => {
           label="Suburb"
           placeholder="Suburb"
           customWidth="w-full"
-          styles="input-bordered"
+          extendStyle="input-bordered"
           type="text"
           defaultValue={userAddress?.suburb || undefined}
           validationErrors={validationErrors}
@@ -140,7 +145,7 @@ const Address = () => {
           label="PostCode"
           placeholder="PostCode"
           customWidth="w-full"
-          styles="input-bordered"
+          extendStyle="input-bordered"
           type="text"
           defaultValue={userAddress?.postcode || undefined}
           validationErrors={validationErrors}
@@ -151,7 +156,7 @@ const Address = () => {
           label="State"
           placeholder="State"
           customWidth="w-full"
-          styles="input-bordered"
+          extendStyle="input-bordered"
           type="text"
           defaultValue={userAddress?.state || undefined}
           validationErrors={validationErrors}
@@ -160,7 +165,7 @@ const Address = () => {
         <SelectCountry
           defaultValue={userAddress?.country}
           validationErrors={validationErrors}
-          styles="!w-full"
+          extendStyle="!w-full"
         />
 
         <div className="divider m-0 w-full p-0 pt-3" />

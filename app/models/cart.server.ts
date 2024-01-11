@@ -4,7 +4,7 @@ import { prisma } from "~/db.server";
 import { getUserDataFromSession } from "~/session.server";
 import { getCookies } from "~/helpers/cookieHelpers";
 import type { ProductVariantWithDetails } from "./products.server";
-import type { UserWithDetails } from "./auth/users.server";
+import type { UserWithDetails } from "./users.server";
 
 export interface CartWithDetails extends Cart {
   cartItems?: CartItemWithDetails[] | null;

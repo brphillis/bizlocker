@@ -8,7 +8,7 @@ import ProductSort from "~/components/Sorting/ProductSort";
 import { getAvailableColors } from "~/models/enums.server";
 import { getDepartments } from "~/models/departments.server";
 import PromotionBanner from "~/components/Banners/PromotionBanner";
-import PageWrapper from "~/components/Layout/_Website/PageWrapper";
+import PageWrapper from "~/components/Layout/Wrappers/PageWrapper";
 import { getProductCategories } from "~/models/productCategories.server";
 import ProductFilterSideBar from "~/components/Filter/ProductFilterSideBar";
 import { getProductSubCategories } from "~/models/productSubCategories.server";

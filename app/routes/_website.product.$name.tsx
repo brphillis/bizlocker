@@ -11,7 +11,7 @@ import {
 import { Toast } from "~/components/Notifications/Toast";
 import ProductGrid from "~/components/Grids/ProductGrid";
 import { getVariantUnitPrice } from "~/helpers/numberHelpers";
-import PageWrapper from "~/components/Layout/_Website/PageWrapper";
+import PageWrapper from "~/components/Layout/Wrappers/PageWrapper";
 import {
   type ProductVariantWithDetails,
   type ProductWithDetails,
@@ -31,6 +31,7 @@ import {
 } from "~/helpers/productHelpers";
 import type { Image } from "~/models/images.server";
 import { generateProductColor } from "~/utility/colors";
+import BasicImage from "~/components/Client/BasicImage";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   return [
@@ -89,7 +90,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { products: similarProducts } = await searchProducts(
     Object.fromEntries(formData),
     undefined,
-    true
+    true,
   );
 
   return json({ product, brand, similarProducts });
@@ -104,20 +105,20 @@ const Product = () => {
   const { name: brandName, image: brandImage } = brand || {};
 
   const [selectedSize, setSelectedSize] = useState<string | undefined>(
-    variants?.[0]?.size || undefined
+    variants?.[0]?.size || undefined,
   );
   const [selectedColor, setSelectedColor] = useState<string | null | undefined>(
-    variants?.[0]?.color
+    variants?.[0]?.color,
   );
   const [selectedImage, setSelectedImage] = useState<Image | undefined>(
-    images?.[0]
+    images?.[0],
   );
 
   const availableSizes = product && getAvailableSizes(product);
 
   const updateColors = (
     size?: string,
-    initializing?: boolean
+    initializing?: boolean,
   ): (string | null | undefined)[] | undefined => {
     if (size && product) {
       const colors = getAvailableColors(product, size);
@@ -137,7 +138,7 @@ const Product = () => {
   >(
     variants?.[0]?.size
       ? (updateColors(variants[0]?.size, true) as string[])
-      : undefined
+      : undefined,
   );
 
   const [selectedVariant, setSelectedVariant] = useState<
@@ -168,13 +169,13 @@ const Product = () => {
     | ProductVariantWithDetails
     | undefined => {
     return variants?.filter(
-      (e) => e.size === selectedSize && e.color === selectedColor
+      (e) => e.size === selectedSize && e.color === selectedColor,
     )[0];
   };
 
   useEffect(() => {
     const selection = variants?.filter(
-      (e) => e.size === selectedSize && e.color === selectedColor
+      (e) => e.size === selectedSize && e.color === selectedColor,
     )[0];
 
     if (selection) {
@@ -221,10 +222,10 @@ const Product = () => {
               {images?.map(({ href }: Image, i: number) => {
                 if (href) {
                   return (
-                    <img
+                    <BasicImage
                       key={"productImage_" + i}
                       alt="ecommerce"
-                      className="m-0 h-[calc(100%/3)] w-auto cursor-pointer object-cover shadow-sm max-xl:h-[200px] max-sm:shadow-md"
+                      extendStyle="m-0 h-[calc(100%/3)] w-auto cursor-pointer object-cover shadow-sm max-xl:h-[200px] max-sm:shadow-md"
                       onClick={() => setSelectedImage(images[i])}
                       src={href}
                     />
@@ -234,17 +235,17 @@ const Product = () => {
             </div>
             <div className="relative mx-auto block h-full w-max max-w-[100vw] max-xl:order-1 max-xl:h-2/3">
               {selectedImage?.href && (
-                <img
+                <BasicImage
                   alt={name + "_focusedImage"}
-                  className="h-full w-auto object-cover object-center shadow-md max-xl:px-3 max-xl:shadow-none"
+                  extendStyle="h-full w-auto object-cover object-center shadow-md max-xl:px-3 max-xl:shadow-none"
                   src={selectedImage?.href}
                 />
               )}
 
               {brandImage?.href && (
-                <img
+                <BasicImage
                   alt={brandName + "_image"}
-                  className="max-md:h-30 absolute bottom-2 right-4 h-16 w-auto max-md:bottom-2"
+                  extendStyle="max-md:h-30 absolute bottom-2 right-4 h-16 w-auto max-md:bottom-2"
                   src={brandImage?.href}
                 />
               )}

@@ -19,7 +19,7 @@ export const getCountryISO3166 = (
   } else return undefined;
 };
 
-export const getCountrFromISO3166 = (
+export const getCountryFromISO3166 = (
   countryCode: string | undefined
 ): string | undefined => {
   const foundCountry = ISO3166Countries.find(

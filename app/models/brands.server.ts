@@ -1,10 +1,5 @@
 import { prisma } from "~/db.server";
-import type {
-  Brand,
-  Image,
-  ProductBlockContent,
-  TileBlockContent,
-} from "@prisma/client";
+import type { BlockContent, Brand, Image } from "@prisma/client";
 import {
   updateImage_Integration,
   uploadImage_Integration,
@@ -16,9 +11,15 @@ export type { Brand } from "@prisma/client";
 export interface BrandWithContent extends Brand {
   campaigns?: CampaignWithContent[] | null;
   image?: Image | null;
-  productBlockContent?: ProductBlockContent[] | null;
+  blockContent?: BlockContent[] | null;
   products?: ProductWithDetails[] | null;
-  tileBlockContent?: TileBlockContent[] | null;
+}
+
+export interface NewBrand {
+  id?: string;
+  name: string;
+  image?: Image;
+  isActive: boolean;
 }
 
 export const getBrands = async (): Promise<Brand[] | null> => {
@@ -39,10 +40,10 @@ export const getBrand = async (
 };
 
 export const upsertBrand = async (
-  name: string,
-  image?: Image,
-  id?: string
+  brandData: NewBrand
 ): Promise<Brand | null> => {
+  const { id, name, image, isActive } = brandData;
+
   let updatedBrand = null;
 
   if (!id && image) {
@@ -50,6 +51,7 @@ export const upsertBrand = async (
     updatedBrand = await prisma.brand.create({
       data: {
         name: name,
+        isActive,
         image: {
           create: {
             href: repoLink,
@@ -63,6 +65,7 @@ export const upsertBrand = async (
     updatedBrand = await prisma.brand.create({
       data: {
         name: name,
+        isActive,
       },
     });
   } else if (id) {
@@ -118,6 +121,7 @@ export const upsertBrand = async (
       },
       data: {
         name: name,
+        isActive,
         image: imageData,
       },
       include: {

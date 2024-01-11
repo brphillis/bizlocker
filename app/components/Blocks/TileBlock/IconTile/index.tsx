@@ -1,6 +1,6 @@
 import { useNavigate } from "@remix-run/react";
 import Icon from "~/components/Icon";
-import PatternBackground from "~/components/Layout/PatternBackground";
+import PatternBackground from "~/components/Layout/Backgrounds/PatternBackground";
 import { getThemeColorValueByName } from "~/utility/colors";
 
 type Props = {
@@ -49,7 +49,7 @@ const IconTile = ({
       <Icon
         iconName={joinedContent[index].icon as any}
         size={1000}
-        styles="relative h-[80%] w-[80%] p-[20%] -mb-2 -mt-[20%] max-md:-mt-3"
+        extendStyle="relative h-[80%] w-[80%] p-[20%] -mb-2 -mt-[20%] max-md:-mt-3"
         color={itemColor ? getThemeColorValueByName(itemColor) : undefined}
       />
       {title && title !== "undefined" && (

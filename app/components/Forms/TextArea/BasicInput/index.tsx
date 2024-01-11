@@ -7,11 +7,11 @@ type Props = {
   disabled?: boolean;
   id?: string;
   label: string;
-  labelColor?: string;
+  labelStyle?: string;
   name: string;
   onChange?: (value: string | React.ChangeEvent<HTMLSelectElement>) => void;
   placeholder: string;
-  styles?: string;
+  extendStyle?: string;
   validationErrors?: ValidationErrors;
 };
 
@@ -21,11 +21,11 @@ const BasicTextArea = ({
   disabled,
   id,
   label,
-  labelColor,
+  labelStyle,
   name,
   onChange,
   placeholder,
-  styles,
+  extendStyle,
   validationErrors,
 }: Props) => {
   return (
@@ -37,7 +37,7 @@ const BasicTextArea = ({
       <label className="label">
         <span
           className={`label-text  ${
-            labelColor ? labelColor : "text-brand-black"
+            labelStyle ? labelStyle : "text-brand-black"
           }`}
         >
           {label}
@@ -55,7 +55,7 @@ const BasicTextArea = ({
           validationErrors?.hasOwnProperty(name)
             ? "textarea-error border !outline-none"
             : ""
-        } ${styles}`}
+        } ${extendStyle}`}
         defaultValue={defaultValue}
         onChange={(e) => {
           if (onChange) {

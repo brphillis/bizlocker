@@ -24,11 +24,11 @@ const ColorPickerPopup = ({
 }: Props) => {
   const colors = getThemeColorNames();
   const [hoverColor, setHoverColor] = useState<string | undefined>(
-    defaultValue
+    defaultValue,
   );
 
   const [currentOpacity, setCurrentOpacity] = useState<number | undefined>(
-    defaultValue?.includes("/") ? Number(defaultValue.split("/")[1]) : 100
+    defaultValue?.includes("/") ? Number(defaultValue.split("/")[1]) : 100,
   );
 
   const handleColorSelect = (val?: string) => {
@@ -62,7 +62,7 @@ const ColorPickerPopup = ({
             ></div>
             <div>
               {capitalizeWords(
-                removeColorPrefix(hoverColor)?.replace(/-/g, " ")
+                removeColorPrefix(hoverColor)?.replace(/-/g, " "),
               )}
             </div>
           </div>

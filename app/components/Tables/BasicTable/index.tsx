@@ -54,22 +54,27 @@ const BasicTable = ({
   return (
     <div className="w-full overflow-x-auto">
       <table className={`table my-3 ${tableSize} ${tableSizeMobile}`}>
-        <thead className="sticky top-0 bg-base-300/25">
+        <thead className="sticky top-0 bg-base-300/50">
           <tr className="text-center">
             {currentPage && <th>#</th>}
 
             {Object.keys(objectArray[0]).map((obj: string | any, i) => {
               if (obj.toString().toLowerCase() !== "id") {
-                return <th key={obj}>{capitalizeAndSpace(obj)}</th>;
+                return (
+                  <th key={"TableHead_" + obj + i}>
+                    {capitalizeAndSpace(obj)}
+                  </th>
+                );
               } else return null;
             })}
           </tr>
         </thead>
         <tbody>
           {objectArray?.map((obj: string | any, i) => {
+            console.log("OBJ", objectArray);
             return (
               <tr
-                key={"TableRow_" + obj}
+                key={"TableRow_" + obj + i}
                 className="cursor-pointer text-center transition-colors duration-200 hover:bg-base-100"
                 onClick={() => {
                   !onRowClick && obj.id
@@ -94,7 +99,9 @@ const BasicTable = ({
                   if (
                     typeof val === "string" &&
                     isValidDate(val) &&
-                    !isIdValue
+                    !isIdValue &&
+                    !val.includes(" ") &&
+                    val.includes("-")
                   ) {
                     return (
                       <td
@@ -132,7 +139,19 @@ const BasicTable = ({
                         )}
                       </td>
                     );
-                  } else return null;
+                  }
+                  // IF ID VALUE WE RETURN NULL AS ID IS EXCLUDED
+                  if (isIdValue) {
+                    return null;
+                  }
+                  // OTHERWISE WE RETURN AN EMPTY SLOT IF NOT DEFINED
+                  else
+                    return (
+                      <td
+                        className="text-center"
+                        key={"TableValue_" + val + valIndex}
+                      ></td>
+                    );
                 })}
               </tr>
             );

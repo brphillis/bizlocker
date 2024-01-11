@@ -5,6 +5,7 @@ import { IoCart } from "react-icons/io5";
 import { Toast } from "~/components/Notifications/Toast";
 import Spinner from "~/components/Spinner";
 import { getVariantUnitPrice } from "~/helpers/numberHelpers";
+import BasicImage from "~/components/Client/BasicImage";
 
 const ProductCard = (product: ProductWithDetails) => {
   const submit = useSubmit();
@@ -54,13 +55,15 @@ const ProductCard = (product: ProductWithDetails) => {
       <div className="group flex w-full flex-col overflow-hidden bg-brand-white">
         <div className="relative flex h-60 w-full max-w-full cursor-pointer overflow-hidden shadow-sm sm:h-72">
           {displayImage && (
-            <img
-              className="absolute right-0 top-0 h-full w-full transform object-cover hover:scale-[1.025]"
+            <BasicImage
+              extendStyle="absolute right-0 top-0 h-full w-full transform object-cover"
               src={displayImage}
               alt={name.toLowerCase() + " product card"}
               onClick={() => navigate(`/product/${name}?id=${id}`)}
+              hoverEffect="grow"
             />
           )}
+
           {isOnSale && (
             <span className="absolute left-2 top-2 mr-2 bg-red-500 px-2 py-1 text-xs text-brand-white opacity-75">
               SALE

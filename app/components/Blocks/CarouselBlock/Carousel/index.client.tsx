@@ -1,20 +1,18 @@
-import type { BlockOptions } from "@prisma/client";
-import type { BlockContent } from "~/models/blocks.server";
 import { Suspense } from "react";
-import { Pagination, Autoplay, Navigation } from "swiper/modules";
+import type { BlockOptions } from "@prisma/client";
+import type { BlockContentWithDetails } from "~/models/blocks.server";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { isDecimal } from "~/helpers/numberHelpers";
 import { getThemeColorValueByName } from "~/utility/colors";
-import PatternBackground from "~/components/Layout/PatternBackground";
-import {
-  buildContentImageFromContent,
-  determineSingleContentType,
-} from "~/helpers/blockContentHelpers";
-import Slide from "../Slide";
+import { Autoplay, Navigation, Pagination } from "swiper/modules";
+import PatternBackground from "~/components/Layout/Backgrounds/PatternBackground";
+import { buildImageFromBlockContent } from "~/helpers/contentHelpers";
 import { IoChevronBackOutline, IoChevronForward } from "react-icons/io5";
 
+import Slide from "../Slide";
+
 type Props = {
-  joinedContent: BlockContent[];
+  joinedContent: BlockContentWithDetails[];
   options: BlockOptions;
 };
 
@@ -69,7 +67,7 @@ const Carousel = ({ joinedContent, options }: Props) => {
   const hideExtraPaginationButtons = () => {
     if (columns && isDecimal(columns) && trueSlideLength < columns * 3) {
       const paginationButtons = document.querySelectorAll(
-        ".swiper-pagination-bullet"
+        ".swiper-pagination-bullet",
       );
 
       paginationButtons.forEach((button, index: number) => {
@@ -125,7 +123,7 @@ const Carousel = ({ joinedContent, options }: Props) => {
             onSlideChange={(e) => {
               //handle pagination active class
               const paginationButtons = document.querySelectorAll(
-                ".swiper-pagination-bullet"
+                ".swiper-pagination-bullet",
               );
 
               if (
@@ -133,7 +131,7 @@ const Carousel = ({ joinedContent, options }: Props) => {
                 e.realIndex + 1 > trueSlideLength
               ) {
                 paginationButtons[e.realIndex - trueSlideLength].classList.add(
-                  "swiper-pagination-bullet-active"
+                  "swiper-pagination-bullet-active",
                 );
               }
             }}
@@ -191,12 +189,8 @@ const Carousel = ({ joinedContent, options }: Props) => {
               (contentData: any, i: number) => {
                 const index = i + 1 > trueSlideLength ? i - trueSlideLength : i;
 
-                const contentType = determineSingleContentType(
-                  contentData as BlockContent
-                );
-
                 const { name, imageSrc } =
-                  buildContentImageFromContent(contentType!, contentData) || {};
+                  buildImageFromBlockContent(contentData) || {};
 
                 return (
                   <SwiperSlide key={i}>
@@ -207,7 +201,7 @@ const Carousel = ({ joinedContent, options }: Props) => {
                     />
                   </SwiperSlide>
                 );
-              }
+              },
             )}
           </Swiper>
         </div>

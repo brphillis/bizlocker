@@ -1,39 +1,30 @@
-import type {
-  BannerBlockContent,
-  HeroBlockContent,
-  Image,
-  PreviewPage,
-  TileBlockContent,
-  WebPage,
-} from "@prisma/client";
+import type { BlockContent, Image, PreviewPage, WebPage } from "@prisma/client";
 import { prisma } from "~/db.server";
 import {
   deleteImage_Integration,
   uploadImage_Integration,
 } from "~/integrations/_master/storage";
 import type { ProductWithDetails } from "./products.server";
-import type { UserWithDetails } from "./auth/users.server";
+import type { UserWithDetails } from "./users.server";
 import type { ArticleWithContent } from "./articles.server";
 import type { BrandWithContent } from "./brands.server";
 import type { CampaignWithContent } from "./campaigns.server";
 import type { ProductSubCategoryWithDetails } from "./productSubCategories.server";
 import type { PromotionWithContent } from "./promotions.server";
-import type { StaffWithDetails } from "./auth/staff.server";
+import type { StaffWithDetails } from "./staff.server";
 export type { Image } from "@prisma/client";
 
 export interface ImageWithDetails extends Image {
   article?: ArticleWithContent | null;
-  bannerBlockContent?: BannerBlockContent[] | null;
+  blockContent?: BlockContent[] | null;
   brand?: BrandWithContent | null;
   campaignBanner?: CampaignWithContent[] | null;
   campaignTile?: CampaignWithContent[] | null;
-  HeroBlockContent?: HeroBlockContent[] | null;
   product?: ProductWithDetails | null;
   productHero?: ProductWithDetails[] | null;
   productSubCategory?: ProductSubCategoryWithDetails | null;
   promotionBanner?: PromotionWithContent[] | null;
   promotionTile?: PromotionWithContent[] | null;
-  tileBlockContent?: TileBlockContent[] | null;
   user?: UserWithDetails | null;
   staff?: StaffWithDetails | null;
   webPage?: WebPage | null;

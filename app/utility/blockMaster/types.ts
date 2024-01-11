@@ -13,6 +13,7 @@ export type BlockName =
 export type BlockContentType =
   | "campaign"
   | "promotion"
+  | "emptyItem"
   | "image"
   | "product"
   | "productCategory"
@@ -26,15 +27,3 @@ export type BlockContentType =
   | "store";
 
 export type BlockMasterOptions = TransformToOptionalBooleans<BlockOptions>;
-
-export interface BlockMaster {
-  name: string;
-  component: React.ComponentType<any>;
-  icon: string;
-  options: BlockMasterOptions;
-  content: Object;
-  addOns?: string[];
-  contentRequired?: boolean;
-  hasMultipleContent?: boolean;
-  maxContentItems?: number;
-}

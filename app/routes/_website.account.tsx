@@ -5,7 +5,7 @@ import {
   type LoaderFunctionArgs,
   type MetaFunction,
 } from "@remix-run/node";
-import PageWrapper from "~/components/Layout/_Website/PageWrapper";
+import PageWrapper from "~/components/Layout/Wrappers/PageWrapper";
 import AccountMenuMobile from "~/components/Menus/AccountMenuMobile";
 import AccountMenuDesktop from "~/components/Menus/AccountMenuDesktop";
 

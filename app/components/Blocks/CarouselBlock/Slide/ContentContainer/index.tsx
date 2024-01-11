@@ -1,6 +1,6 @@
 import type { BlockOptions } from "@prisma/client";
 import ButtonContainer from "./ButtonContainer";
-import PatternBackground from "~/components/Layout/PatternBackground";
+import PatternBackground from "~/components/Layout/Backgrounds/PatternBackground";
 import { getThemeColorValueByName } from "~/utility/colors";
 
 type Props = {
@@ -36,14 +36,14 @@ const ContentContainer = ({ index, blockOptions }: Props) => {
     >
       <PatternBackground
         backgroundColor={getThemeColorValueByName(
-          itemBackgroundColorsSecondary[index]
+          itemBackgroundColorsSecondary[index],
         )}
         displayStyle={itemBackgroundDisplaysSecondary[index]}
       />
 
       {itemTitles[index] && (
         <div
-          className={`relative select-none text-center max-md:max-w-[90%] 
+          className={`relative select-none text-center !leading-[55px] max-md:max-w-[90%]
           ${itemTitleColors[index]} ${itemTitleSizes[index]} ${itemTitleSizesMobile[index]} 
           ${itemTitleFontWeights[index]} ${itemTitleFontWeightsMobile[index]}`}
         >
@@ -58,6 +58,10 @@ const ContentContainer = ({ index, blockOptions }: Props) => {
         >
           {itemShortText[index]}
         </div>
+      )}
+
+      {!itemShortText[index] && (
+        <div className="my-1 hidden max-md:block"></div>
       )}
 
       <ButtonContainer index={index} blockOptions={blockOptions} />

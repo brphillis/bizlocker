@@ -11,6 +11,7 @@ type Props = {
   requiredValueToSubmit?: boolean;
   validationMessage?: string;
   hideSubmit?: boolean;
+  hideBack?: boolean;
   validationErrors?: ValidationErrors;
 };
 
@@ -23,6 +24,7 @@ const BackSubmitButtons = ({
   validationMessage,
   backFunction,
   hideSubmit,
+  hideBack,
   validationErrors,
 }: Props) => {
   const navigate = useNavigate();
@@ -54,13 +56,16 @@ const BackSubmitButtons = ({
       )}
 
       <div className="flex flex-row items-center justify-center gap-3">
-        <button
-          type="button"
-          className="btn btn-primary w-max !rounded-sm"
-          onClick={() => (backFunction ? backFunction() : navigate(-1))}
-        >
-          Back
-        </button>
+        {!hideBack && (
+          <button
+            type="button"
+            className="btn btn-primary w-max !rounded-sm"
+            onClick={() => (backFunction ? backFunction() : navigate(-1))}
+          >
+            Back
+          </button>
+        )}
+
         {!hideSubmit && (
           <button
             type={requiredValueToSubmit ? "submit" : "button"}

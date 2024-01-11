@@ -1,3 +1,12 @@
+import { prisma } from "~/db.server";
+import { createNowISODate } from "~/helpers/dateHelpers";
+import type { BlockName } from "~/utility/blockMaster/types";
+import { findUniqueStringsInArrays } from "~/helpers/arrayHelpers";
+import { getUserDataFromSession, STAFF_SESSION_KEY } from "~/session.server";
+import {
+  activeContentTypes,
+  blockMaster,
+} from "~/utility/blockMaster/blockMaster";
 import type {
   Block,
   BlockOptions,
@@ -5,40 +14,31 @@ import type {
   PreviewPage,
   Staff,
 } from "@prisma/client";
-import { prisma } from "~/db.server";
-import { findUniqueStringsInArrays } from "~/helpers/arrayHelpers";
-import { getContentBlockCredentialsFromPageBlock } from "~/helpers/blockHelpers";
-import { createISODate } from "~/helpers/dateHelpers";
 import {
   updateImage_Integration,
   uploadImage_Integration,
 } from "~/integrations/_master/storage";
-import { STAFF_SESSION_KEY, getUserDataFromSession } from "~/session.server";
 import {
-  includeAllBlockTypes,
-  includeBlocksData,
-} from "~/utility/blockMaster/blockMaster";
-import {
-  type PageType,
   includeAllPageTypes,
-  pageBlockHasPageConnection,
+  blockHasPageConnection,
   type NewBlockData,
+  type PageType,
 } from "~/utility/pageBuilder";
-import type { BlockContent, BlockWithBlockOptions } from "./blocks.server";
-import type { BlockName } from "~/utility/blockMaster/types";
+import type { BlockContentWithDetails } from "./blocks.server";
 
 export interface Page extends PreviewPage {
   previewPage?: PreviewPage[] | null;
-  blocks: BlockWithBlockOptions[];
+  blocks: BlockWithContent[];
   thumbnail?: Image | null;
 }
 
-export interface PageBlock {
-  id: string;
-  pageBlockId: string;
+export interface BlockWithContent {
+  id: number;
+  blockId: string;
   name: BlockName;
   page: Page;
-  content: BlockContent;
+  label?: string;
+  content: BlockContentWithDetails;
   blockOptions: BlockOptions[];
 }
 
@@ -58,12 +58,27 @@ export const getPageType = async (
         id: id ? parseInt(id) : id,
       },
       include: {
-        blocks: includeBlocksData,
+        blocks: {
+          include: {
+            blockOptions: true,
+            content: {
+              include: activeContentTypes,
+            },
+          },
+        },
         previewPage: {
           select: {
             id: true,
             publisher: true,
             publishedAt: true,
+            blocks: {
+              include: {
+                blockOptions: true,
+                content: {
+                  include: activeContentTypes,
+                },
+              },
+            },
           },
         },
       },
@@ -85,7 +100,14 @@ export const getPageType = async (
         id: id ? parseInt(id) : id,
       },
       include: {
-        blocks: includeBlocksData,
+        blocks: {
+          include: {
+            blockOptions: true,
+            content: {
+              include: activeContentTypes,
+            },
+          },
+        },
       },
     });
 
@@ -259,7 +281,7 @@ const updateOrCreateBlockOptions = async (
   let existingBlockOptions;
 
   existingBlockOptions = await prisma.blockOptions.findFirst({
-    where: { block: { id: blockId } },
+    where: { block: { id: parseInt(blockId) } },
   });
 
   if (existingBlockOptions) {
@@ -270,7 +292,7 @@ const updateOrCreateBlockOptions = async (
   } else {
     const newBlockOptions = await prisma.blockOptions.create({
       data: {
-        block: { connect: { id: blockId } },
+        block: { connect: { id: parseInt(blockId) } },
       },
     });
 
@@ -281,19 +303,20 @@ const updateOrCreateBlockOptions = async (
   }
 };
 
-export const updatePageBlock = async (
+export const updateBlock = async (
   pageType: PageType,
   pageId: string,
   blockData: NewBlockData,
-  blockOptions?: BlockOptions
+  blockOptions?: BlockOptions,
+  blockLabel?: string
 ): Promise<number | Page> => {
   const { blockName, itemIndex, contentData } = blockData;
 
   const previewPage = await prisma.previewPage.findUnique({
     where: { id: parseInt(pageId) },
     include: {
-      ...includeAllBlockTypes(),
-      ...includeAllPageTypes(["previewPage"], true),
+      blocks: true,
+      ...includeAllPageTypes(["previewPage"]),
     },
   });
 
@@ -303,12 +326,6 @@ export const updatePageBlock = async (
 
   if (!previewPage[pageType]) {
     throw new Error(`Page has no Blocks: ${pageId}`);
-  }
-
-  let publishedPage;
-
-  if (previewPage[pageType]) {
-    publishedPage = previewPage[pageType];
   }
 
   const blocks = previewPage.blocks;
@@ -324,62 +341,36 @@ export const updatePageBlock = async (
     (e: any) => e.id === previewPage.blockOrder[itemIndex]
   );
 
-  //check if the published page contains the block already
-  const publishedContainsBlock = publishedPage?.blocks.some(
-    (e: any) => e.id === existingBlock?.id
-  );
-
-  // check if the preview page contains the block already
-  const previewContainsBlock = previewPage?.blocks.some(
-    (e: any) => e.id === existingBlock?.id
-  );
-
-  // if the preview page is creating a new version, we remove the old from the preview page
-  if (
-    previewContainsBlock &&
-    existingBlock &&
-    existingBlock[`${blockName}BlockId`] &&
-    !publishedContainsBlock
-  ) {
-    await removeBlock(
-      existingBlock[`${blockName}BlockId`]!,
-      blockName,
-      previewPage.id.toString()
-    );
-  } else if (
-    existingBlock &&
-    existingBlock[`${blockName}BlockId`] &&
-    previewContainsBlock &&
-    publishedContainsBlock
-  ) {
+  if (existingBlock?.id) {
     await disconnectBlock(
-      existingBlock[`${blockName}BlockId`]!,
-      blockName,
+      existingBlock.id.toString(),
       previewPage.id.toString()
     );
   }
 
   // Create New Block
-
   const newBlock = await prisma.block.create({
     data: {
       previewPage: { connect: { id: previewPage.id } },
+      name: blockName,
+      icon: blockMaster.find((e) => e.name === blockName)?.icon || "",
+      label: blockLabel,
     },
   });
 
-  // create block options for new block
+  // Create block options for new block
   if (blockOptions) {
-    await updateOrCreateBlockOptions(newBlock.id, blockOptions);
+    await updateOrCreateBlockOptions(newBlock.id.toString(), blockOptions);
   }
 
-  //Create Block
+  // Create Block
   if (blockName && contentData) {
     const updates: Record<string, any> = {};
 
     // Populate the updates object based on the provided values
     for (const field in contentData) {
       if (contentData.hasOwnProperty(field)) {
-        const value = contentData[field as keyof BlockContent];
+        const value = contentData[field as keyof BlockContentWithDetails];
 
         if (
           (Array.isArray(value) &&
@@ -391,17 +382,17 @@ export const updatePageBlock = async (
         ) {
           // the value is an Enum or array of Enums
 
-          updates[field as keyof BlockContent] = value;
+          updates[field as keyof BlockContentWithDetails] = value;
         } else if (value) {
           // If the value is truthy (not null or undefined)
           if (Array.isArray(value) && value.length > 0) {
             // If it's an array, use 'connect' to connect multiple records
-            updates[field as keyof BlockContent] = {
+            updates[field as keyof BlockContentWithDetails] = {
               connect: value.map((item) => ({ id: parseInt(item as any) })),
             };
           } else if (value && !isNaN(parseInt(value))) {
             // If it's not an array, use 'connect' to connect a single record
-            updates[field as keyof BlockContent] = {
+            updates[field as keyof BlockContentWithDetails] = {
               connect: { id: parseInt(value as any) },
             };
           }
@@ -410,32 +401,22 @@ export const updatePageBlock = async (
     }
 
     // create the BlockContent
-    const createBlockContent = prisma[`${blockName}BlockContent`].create as (
-      args: any
-    ) => any;
-
-    const createdBlockContent = await createBlockContent({
+    const createdBlockContent = await prisma.blockContent.create({
       data: updates,
     });
 
-    // create the Block
-    const createContentBlock = prisma[`${blockName}Block`].create as (
-      args: any
-    ) => any;
-
-    const createdContentBlock = await createContentBlock({
+    // update the block with the content
+    await prisma.block.update({
+      where: {
+        id: newBlock.id,
+        label: blockLabel,
+      },
       data: {
-        name: blockName,
         content: {
           connect: { id: createdBlockContent.id },
         },
-      },
-    });
-
-    await prisma.block.update({
-      where: { id: newBlock.id },
-      data: {
-        [`${blockName}Block`]: { connect: { id: createdContentBlock.id } },
+        name: blockName,
+        icon: blockMaster.find((e) => e.name === blockName)?.icon || "",
       },
     });
 
@@ -465,40 +446,40 @@ export const updatePageBlock = async (
 
 export const changeBlockOrder = async (
   previewPageId: string,
-  pageBlocks: string,
+  blocks: string,
   index: number,
   direction: "up" | "down"
 ) => {
-  let pageBlockIds: string[] = [];
-  if (pageBlocks) {
-    pageBlockIds = JSON.parse(pageBlocks);
+  let blockIds: string[] = [];
+  if (blocks) {
+    blockIds = JSON.parse(blocks);
   }
 
-  if (index < 0 || index >= pageBlockIds.length) {
+  if (index < 0 || index >= blockIds.length) {
     throw new Error("Invalid index");
   }
 
   // Check if the direction is "up" and index is not 0
   if (direction === "up" && index > 0) {
     // Swap the current index with the one above it
-    const temp = pageBlockIds[index];
-    pageBlockIds[index] = pageBlockIds[index - 1];
-    pageBlockIds[index - 1] = temp;
+    const temp = blockIds[index];
+    blockIds[index] = blockIds[index - 1];
+    blockIds[index - 1] = temp;
   }
 
   // Check if the direction is "down" and index is not the last index
-  if (direction === "down" && index < pageBlockIds.length - 1) {
+  if (direction === "down" && index < blockIds.length - 1) {
     // Swap the current index with the one below it
-    const temp = pageBlockIds[index];
-    pageBlockIds[index] = pageBlockIds[index + 1];
-    pageBlockIds[index + 1] = temp;
+    const temp = blockIds[index];
+    blockIds[index] = blockIds[index + 1];
+    blockIds[index + 1] = temp;
   }
 
   // Update the block order in the database
   await prisma.previewPage.update({
     where: { id: parseInt(previewPageId) },
     data: {
-      blockOrder: pageBlockIds,
+      blockOrder: blockIds.map((e) => parseInt(e)),
     },
   });
 
@@ -598,7 +579,7 @@ export const publishPage = async (
 
     await prisma.previewPage.update({
       where: { id: previewPage.id },
-      data: { publishedAt: createISODate(), publisher: userEmail },
+      data: { publishedAt: createNowISODate(), publisher: userEmail },
     });
 
     // Cleanup blocks that arent connected to anything
@@ -625,18 +606,40 @@ export const publishPage = async (
       await Promise.all(
         blocksToValidate.map(async (id: string) => {
           const blockToCheck = await prisma.block.findUnique({
-            where: { id },
-            include: includeAllPageTypes(undefined, true),
+            where: { id: parseInt(id) },
+            include: {
+              content: true,
+              blockOptions: true,
+              ...includeAllPageTypes(undefined),
+            },
           });
 
-          if (blockToCheck && !pageBlockHasPageConnection(blockToCheck)) {
-            const blockCredentials =
-              getContentBlockCredentialsFromPageBlock(blockToCheck);
-
-            if (blockCredentials) {
-              const { blockId, blockName } = blockCredentials;
-              await removeBlock(blockId, blockName as BlockName);
+          if (blockToCheck && !blockHasPageConnection(blockToCheck)) {
+            if (blockToCheck?.content?.id) {
+              await prisma.blockContent.delete({
+                where: {
+                  id: blockToCheck.content.id,
+                },
+              });
             }
+
+            const options = await prisma.blockOptions.findFirst({
+              where: { blockId: blockToCheck.id },
+            });
+
+            if (options) {
+              await prisma.blockOptions.delete({
+                where: {
+                  id: options.id,
+                },
+              });
+            }
+
+            await prisma.block.delete({
+              where: {
+                id: blockToCheck.id,
+              },
+            });
           }
         })
       );
@@ -676,7 +679,7 @@ export const revertPreviewChanges = async (
       },
     });
 
-    // find the published page
+    // Find the published page
     const findPage = prisma[`${pageType}`].findUnique as (args: any) => any;
 
     const currentPage = await findPage({
@@ -695,7 +698,6 @@ export const revertPreviewChanges = async (
     };
 
     // Begin update to the preview page
-
     await prisma.previewPage.update({
       where: { id: previewPage.id },
       data: updateData,
@@ -707,33 +709,73 @@ export const revertPreviewChanges = async (
   }
 };
 
+// Deletes Block from DB
+const deleteBlock = async (block: BlockWithContent) => {
+  // Delete the BlockOptions
+  const options = await prisma.blockOptions.findFirst({
+    where: {
+      blockId: block.id,
+    },
+  });
+
+  if (options) {
+    await prisma.blockOptions.delete({
+      where: {
+        id: options.id,
+      },
+    });
+  }
+
+  // Delete the BlockContent
+  if (block.content) {
+    await prisma.blockContent.delete({
+      where: {
+        id: block.content.id,
+      },
+    });
+  }
+
+  // Delete the Block
+  if (block) {
+    await prisma.block.delete({
+      where: {
+        id: block.id,
+      },
+    });
+  }
+};
+
+// Disconnects block from Page and removes if no connections exist
 export const disconnectBlock = async (
-  contentBlockId: string,
-  blockName: BlockName,
+  blockId: string,
   previewPageId: string
 ): Promise<{ success: boolean }> => {
   try {
-    const pageBlock = await prisma.block.findFirst({
-      where: { [`${blockName}BlockId`]: contentBlockId },
+    const block = await prisma.block.findFirst({
+      where: { id: parseInt(blockId) },
     });
 
-    if (pageBlock) {
-      const disconnectedBlock = await prisma.block.update({
-        where: { id: pageBlock.id },
+    if (block) {
+      const disconnectedBlock = (await prisma.block.update({
+        where: { id: block.id },
         data: {
           previewPage: {
             disconnect: { id: parseInt(previewPageId) },
           },
         },
-        include: includeAllPageTypes(undefined, true),
-      });
+        include: {
+          content: true,
+          blockOptions: true,
+          ...includeAllPageTypes(undefined),
+        },
+      })) as unknown as BlockWithContent;
 
       const previewPage = await prisma.previewPage.findUnique({
         where: { id: parseInt(previewPageId) },
       });
 
       const newBlockOrder = previewPage?.blockOrder.filter(
-        (e) => e !== pageBlock.id
+        (e) => e !== block.id
       );
 
       await prisma.previewPage.update({
@@ -744,110 +786,15 @@ export const disconnectBlock = async (
       });
 
       // Delete block if it has no remaining page connections
-      if (!pageBlockHasPageConnection(disconnectedBlock)) {
-        const blockCredentials =
-          getContentBlockCredentialsFromPageBlock(disconnectedBlock);
-        if (blockCredentials) {
-          const { blockId, blockName } = blockCredentials;
-          await removeBlock(blockId, blockName as BlockName);
-        }
+      if (!blockHasPageConnection(disconnectedBlock)) {
+        await deleteBlock(disconnectedBlock);
       }
     } else {
-      throw new Error("PageBlock Not Found");
+      throw new Error("Block Not Found");
     }
 
     return { success: true };
   } catch (error) {
     throw new Error("Error Removing Block");
   }
-};
-
-export const removeBlock = async (
-  contentBlockId: string,
-  blockName: BlockName,
-  previewPageId?: string
-): Promise<{ success: true }> => {
-  // We search for the content block to find the page block
-  const findBlock = prisma[`${blockName}Block`].findUnique as (
-    args: any
-  ) => any;
-
-  const foundBlockType = await findBlock({
-    where: { id: contentBlockId },
-    include: {
-      block: {
-        include: {
-          blockOptions: true,
-        },
-      },
-      content: true,
-    },
-  });
-
-  const blockContentId = foundBlockType?.content?.id; // block content id eg:bannerBlockContent
-  const blockTypeId = foundBlockType?.id; // block type id eg:bannerBlock
-  const blockOptionsIds = foundBlockType?.block.blockOptions?.map(
-    (e: BlockOptions) => e.id
-  );
-  const pageBlockId = foundBlockType.block.id; // page block id
-
-  // Delete the BlockOptions
-  if (blockOptionsIds) {
-    await prisma.blockOptions.deleteMany({
-      where: {
-        id: {
-          in: blockOptionsIds,
-        },
-      },
-    });
-  }
-
-  // Delete the blockContent eg: BannerBlockContent
-  if (blockContentId) {
-    const deleteBlockContent = prisma[`${blockName}BlockContent`].delete as (
-      args: any
-    ) => any;
-
-    await deleteBlockContent({
-      where: { id: blockContentId },
-    });
-  }
-
-  // Delete the blockType eg: BannerBlock
-  if (blockTypeId) {
-    const deleteBlockType = prisma[`${blockName}Block`].delete as (
-      args: any
-    ) => any;
-
-    await deleteBlockType({
-      where: { id: blockTypeId },
-    });
-  }
-
-  // Delete the PageBlock
-  if (pageBlockId) {
-    await prisma.block.delete({
-      where: { id: pageBlockId },
-    });
-  }
-
-  //if we are deleting from the page we correct the order
-  if (previewPageId) {
-    const previewPage = await prisma.previewPage.findUnique({
-      where: { id: parseInt(previewPageId) },
-    });
-
-    const newBlockOrder = previewPage?.blockOrder.filter(
-      (e) => e !== pageBlockId
-    );
-
-    await prisma.previewPage.update({
-      where: { id: parseInt(previewPageId) },
-      data: {
-        blockOrder: newBlockOrder,
-      },
-    });
-  }
-
-  return { success: true };
 };

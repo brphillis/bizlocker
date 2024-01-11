@@ -4,10 +4,11 @@ import ToolTip from "~/components/Indicators/ToolTip";
 type Props = {
   customWidth?: string;
   defaultValue?: string | number | null;
+  extendStyle?: string;
   disabled?: boolean;
   id?: string;
   label: string;
-  labelColor?: string;
+  labelStyle?: string;
   name: string;
   onChange?: (value: string | React.ChangeEvent<HTMLSelectElement>) => void;
   placeholder: string;
@@ -19,9 +20,10 @@ const BasicSelect = ({
   customWidth,
   defaultValue,
   disabled,
+  extendStyle,
   id,
   label,
-  labelColor,
+  labelStyle,
   name,
   onChange,
   placeholder,
@@ -37,7 +39,7 @@ const BasicSelect = ({
       <label className="label">
         <span
           className={`label-text  ${
-            labelColor ? labelColor : "text-brand-black"
+            labelStyle ? labelStyle : "text-brand-black"
           }`}
         >
           {label}
@@ -49,6 +51,7 @@ const BasicSelect = ({
         name={name}
         className={`select w-full
         text-brand-black/75 disabled:!border-base-100/50 disabled:!bg-base-100/50 disabled:!text-brand-black/50
+        ${extendStyle}
         ${
           validationErrors?.hasOwnProperty(name)
             ? "select-error border !outline-none"

@@ -1,15 +1,15 @@
 import { useNavigate } from "@remix-run/react";
 import { getThemeColorValueByName } from "~/utility/colors";
-import type { BlockContent } from "~/models/blocks.server";
+import type { BlockContentWithDetails } from "~/models/blocks.server";
 import type { BlockOptions, Product } from "@prisma/client";
-import PatternBackground from "~/components/Layout/PatternBackground";
-import { determineSingleContentType } from "~/helpers/blockContentHelpers";
+import PatternBackground from "~/components/Layout/Backgrounds/PatternBackground";
+import { determineContentType } from "~/helpers/contentHelpers";
 import type {
   ProductVariantWithDetails,
   ProductWithDetails,
 } from "~/models/products.server";
 type Props = {
-  content: BlockContent;
+  content: BlockContentWithDetails;
   options: BlockOptions[];
 };
 
@@ -42,17 +42,17 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
     linkSecondary,
   } = options || {};
 
-  const product = content.product as ProductWithDetails;
+  const product = content.product?.[0] as ProductWithDetails;
   const productImage = product.heroImage?.href;
 
-  const contentType = determineSingleContentType(content);
+  const contentType = determineContentType(content);
 
   const getProductLowestPrice = (
     product: ProductWithDetails,
-    decimals?: boolean
+    decimals?: boolean,
   ) => {
     const prices = product?.variants?.map(
-      ({ price }: ProductVariantWithDetails) => price
+      ({ price }: ProductVariantWithDetails) => price,
     );
     if (prices) {
       const lowestPrice = Math.min(...prices);
@@ -128,9 +128,9 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
                       navigate(
                         contentType === "product"
                           ? `/product/SlackSki%20Jacket?id=${
-                              (content.product as Product).id
+                              (content.product?.[0] as Product).id
                             }`
-                          : (linkPrimary as string)
+                          : (linkPrimary as string),
                       )
                     }
                     className="text-md mr-4 cursor-pointer rounded-sm border-2 border-transparent bg-primary px-4 py-2 uppercase text-white hover:bg-primary"

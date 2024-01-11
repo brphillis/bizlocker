@@ -4,6 +4,7 @@ import { STAFF_SESSION_KEY, getUserDataFromSession } from "~/session.server";
 import type { ProductVariantWithDetails } from "./products.server";
 import type { StoreWithDetails } from "./stores.server";
 import type { PageNotification } from "~/hooks/PageNotification";
+import { createStoreNotification } from "./notifications.server";
 
 export interface StockLevelWithDetails extends StockLevel {
   productVariant?: ProductVariantWithDetails | null;
@@ -58,7 +59,7 @@ export const createStockTransferRequest = async (
   const { variantId, fromStoreId, toStoreId, quantity, createdBy } =
     newStockTransferRequest;
 
-  return await prisma.stockTransferRequest.create({
+  const stockTransfer = await prisma.stockTransferRequest.create({
     data: {
       productVariant: { connect: { id: Number(variantId) } },
       quantity: Number(quantity),
@@ -67,6 +68,13 @@ export const createStockTransferRequest = async (
       createdBy,
     },
   });
+
+  await createStoreNotification(
+    toStoreId,
+    `<a href='/admin/upsert/stockTransfer?contentId=${stockTransfer.id}'>A New Stock Transfer Request Has Been Recieved!</a>`
+  );
+
+  return stockTransfer;
 };
 
 export const searchStockTransfers = async (

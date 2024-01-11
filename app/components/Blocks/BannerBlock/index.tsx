@@ -1,14 +1,11 @@
 import type { BlockOptions } from "@prisma/client";
-import type { BlockContent } from "~/models/blocks.server";
-import {
-  buildContentImageFromContent,
-  determineSingleContentType,
-} from "~/helpers/blockContentHelpers";
+import type { BlockContentWithDetails } from "~/models/blocks.server";
+import { buildImageFromBlockContent } from "~/helpers/contentHelpers";
 import ImageBanner from "./ImageBanner";
 import TextBanner from "./TextBanner";
 
 type Props = {
-  content: BlockContent;
+  content: BlockContentWithDetails;
   options?: BlockOptions[];
 };
 
@@ -23,26 +20,19 @@ const BannerBlock = ({ content, options: ArrayOptions }: Props) => {
     linkPrimary,
   } = options || {};
 
-  const contentType = determineSingleContentType(content as BlockContent);
-  let imageName: string | null = null,
-    imageLink: string | null = null,
-    imageSrc: string | null = null;
+  const imageProps = buildImageFromBlockContent(
+    content,
+    "bannerImage",
+    linkPrimary as string
+  );
 
-  if (contentType) {
-    const imageProps = buildContentImageFromContent(
-      contentType!,
-      content,
-      "bannerImage",
-      linkPrimary as string
-    );
-    imageName = imageProps.name;
-    imageLink = imageProps.link;
-    imageSrc = imageProps.imageSrc;
-  }
+  const imageName = imageProps?.name;
+  const imageLink = imageProps?.link;
+  const imageSrc = imageProps?.imageSrc;
 
   return (
     <div
-      className={`relative max-w-[100vw] overflow-visible sm:w-max ${margin} ${padding} ${borderDisplay} ${borderRadius}`}
+      className={`relative w-full max-w-[100vw] overflow-visible sm:w-max ${margin} ${padding} ${borderDisplay} ${borderRadius}`}
     >
       <div
         className={`absolute left-[50%] top-0 z-0 h-full w-screen translate-x-[-50%] ${backgroundColorSecondary}`}

@@ -3,14 +3,14 @@ type Props = {
   type: "order" | "approval";
   onChange?: (value: string | React.ChangeEvent<HTMLSelectElement>) => void;
   customWidth?: string;
-  labelColor?: string;
+  labelStyle?: string;
 };
 
 const SelectStatus = ({
   label,
   type,
   customWidth,
-  labelColor,
+  labelStyle,
   onChange,
 }: Props) => {
   return (
@@ -22,7 +22,7 @@ const SelectStatus = ({
       <label className="label">
         <span
           className={`label-text  ${
-            labelColor ? labelColor : "text-brand-black"
+            labelStyle ? labelStyle : "text-brand-black"
           }`}
         >
           {label}

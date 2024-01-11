@@ -19,14 +19,14 @@ const Slide = ({ index, blockOptions, image }: Props) => {
     itemImagePositionsMobile,
     itemJustify,
     itemJustifyMobile,
-  } = blockOptions;
+  } = blockOptions || {};
 
   return (
     <div
       className={`relative flex h-full w-full overflow-hidden 
       max-md:rounded-none
      ${itemBorderDisplays[index]} ${itemBorderColors[index]} ${itemBorderRadius[index]} ${itemBorderSizes[index]} 
-     ${itemAlign[index]} ${itemAlignMobile[index]} ${itemJustify[index]} ${itemJustifyMobile[index]}
+     ${itemAlign?.[index]} ${itemAlignMobile[index]} ${itemJustify[index]} ${itemJustifyMobile[index]}
    `}
     >
       <img

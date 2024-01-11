@@ -1,6 +1,6 @@
 import type { BlockOptions } from "@prisma/client";
 import { useNavigate } from "@remix-run/react";
-import PatternBackground from "~/components/Layout/PatternBackground";
+import PatternBackground from "~/components/Layout/Backgrounds/PatternBackground";
 import { getThemeColorValueByName } from "~/utility/colors";
 
 type Props = {

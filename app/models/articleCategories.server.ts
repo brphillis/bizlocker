@@ -1,6 +1,6 @@
 import type {
-  ArticleBlockContent,
   ArticleCategory,
+  BlockContent,
   PreviewPage,
 } from "@prisma/client";
 import type { ArticleWithContent } from "./articles.server";
@@ -8,7 +8,7 @@ import type { ProductCategoryWithDetails } from "./productCategories.server";
 import { prisma } from "~/db.server";
 
 export interface ArticleCategoryWithDetails extends ArticleCategory {
-  articleBlockContent?: ArticleBlockContent[] | null;
+  blockContent?: BlockContent[] | null;
   articles?: ArticleWithContent[] | null;
   previewPages?: PreviewPage[] | null;
   productCategory?: ProductCategoryWithDetails | null;
@@ -30,7 +30,7 @@ export const getArticleCategories = async (): Promise<
 };
 
 export const getArticleCategory = async (
-  articleId: string
+  articleId: string,
 ): Promise<ArticleCategory | null> => {
   return await prisma.articleCategory.findUnique({
     where: {
@@ -41,7 +41,7 @@ export const getArticleCategory = async (
 
 export const upsertArticleCategory = async (
   name: string,
-  id?: string
+  id?: string,
 ): Promise<ArticleCategory> => {
   if (!id) {
     return await prisma.articleCategory.create({
@@ -62,7 +62,7 @@ export const upsertArticleCategory = async (
 };
 
 export const deleteArticleCategory = async (
-  id: string
+  id: string,
 ): Promise<ArticleCategory | null> => {
   return await prisma.articleCategory.findUnique({
     where: {
@@ -72,7 +72,7 @@ export const deleteArticleCategory = async (
 };
 
 export const searchArticleCategories = async (
-  searchArgs: BasicSearchArgs
+  searchArgs: BasicSearchArgs,
 ): Promise<{ articleCategories: ArticleCategory[]; totalPages: number }> => {
   const { name, page, perPage } = searchArgs;
 
@@ -131,7 +131,7 @@ export const searchArticleCategories = async (
   }
 
   const totalPages = Math.ceil(
-    totalArticleCategories / (Number(perPage) || 10)
+    totalArticleCategories / (Number(perPage) || 10),
   );
 
   return { articleCategories, totalPages };

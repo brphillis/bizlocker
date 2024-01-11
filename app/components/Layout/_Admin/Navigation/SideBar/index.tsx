@@ -1,15 +1,21 @@
 import React from "react";
-import type { StaffWithDetails } from "~/models/auth/staff.server";
+import type { StaffWithDetails } from "~/models/staff.server";
+import type { NotificationWithContent } from "~/models/notifications.server";
 import { Outlet, useNavigate } from "@remix-run/react";
 import { IoMenu } from "react-icons/io5";
 import { adminNavBarRoutes } from "./routes";
 import SidebarDropdown from "./SidebarDropdown";
 import SidebarItem from "./SidebarItem";
-import LoadingOverlay from "~/components/Layout/LoadingOverlay";
+import LoadingOverlay from "~/components/Layout/Overlays/LoadingOverlay";
 import SidebarFooter from "./SidebarFooter";
 import { isEmptyObject } from "~/helpers/objectHelpers";
 
-const AdminSideBar = (staffMember: StaffWithDetails | null) => {
+type Props = {
+  staffMember: StaffWithDetails | null;
+  userNotifications: NotificationWithContent[] | null;
+};
+
+const AdminSideBar = ({ staffMember, userNotifications }: Props) => {
   const navigate = useNavigate();
 
   return (
@@ -58,7 +64,7 @@ const AdminSideBar = (staffMember: StaffWithDetails | null) => {
               {adminNavBarRoutes.map(
                 (
                   { name, icon, link, children }: NavigationRouteItem,
-                  i: number
+                  i: number,
                 ) => {
                   const isFirstDropdown =
                     children &&
@@ -85,11 +91,14 @@ const AdminSideBar = (staffMember: StaffWithDetails | null) => {
                       </React.Fragment>
                     );
                   }
-                }
+                },
               )}
             </div>
 
-            <SidebarFooter {...(staffMember as StaffWithDetails)} />
+            <SidebarFooter
+              staffMember={staffMember as StaffWithDetails}
+              userNotifications={userNotifications}
+            />
           </ul>
         </div>
       )}

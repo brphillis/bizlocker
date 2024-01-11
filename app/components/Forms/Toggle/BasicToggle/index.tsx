@@ -1,5 +1,8 @@
+import { useState } from "react";
+
 type Props = {
-  value: boolean;
+  id?: string;
+  defaultValue: boolean;
   label?: string;
   labelStyle?: string;
   name?: string;
@@ -11,16 +14,19 @@ type Props = {
 };
 
 const BasicToggle = ({
+  id,
   name,
   size,
   style,
   extendStyle,
-  value,
+  defaultValue,
   label,
   labelStyle,
   onChange,
   onClick,
 }: Props) => {
+  const [isActive, setIsActive] = useState<boolean>(defaultValue);
+
   let toggleSize;
 
   switch (size) {
@@ -67,8 +73,9 @@ const BasicToggle = ({
         <input
           type="checkbox"
           className={`toggle ${toggleSize} ${toggleStyle}`}
-          checked={value ? true : false}
+          checked={isActive ? true : false}
           onClick={(e) => {
+            setIsActive(!isActive);
             onClick && onClick(e);
           }}
           onChange={(e) => {
@@ -79,7 +86,13 @@ const BasicToggle = ({
           <span className={`label-text ml-3 ${labelStyle}`}>{label}</span>
         )}
       </label>
-      <input name={name} value={value ? "true" : ""} readOnly hidden />
+      <input
+        id={id}
+        name={name}
+        value={isActive ? "true" : ""}
+        readOnly
+        hidden
+      />
     </>
   );
 };

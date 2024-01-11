@@ -68,7 +68,7 @@ const SquareIconButton = ({
       type={type || "button"}
       value={value || ""}
     >
-      <Icon iconName={iconName} size={14} styles="text-brand-white" />
+      <Icon iconName={iconName} size={14} extendStyle="text-brand-white" />
     </button>
   );
 };

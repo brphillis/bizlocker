@@ -1,6 +1,6 @@
 import type { Staff, Team } from "@prisma/client";
 import { prisma } from "~/db.server";
-import type { StaffWithDetails } from "./auth/staff.server";
+import type { StaffWithDetails } from "./staff.server";
 import type { StoreWithDetails } from "./stores.server";
 
 export interface TeamWithStaff extends Team {
@@ -29,7 +29,7 @@ export const addTeamMemberToTeam = async (
   teamId: string
 ): Promise<Staff | null> => {
   return await prisma.staff.update({
-    where: { id: staffId },
+    where: { id: parseInt(staffId) },
     data: {
       team: {
         connect: { id: parseInt(teamId) },
@@ -43,7 +43,7 @@ export const removeTeamMemberFromTeam = async (
   teamId: string
 ): Promise<Staff> => {
   return await prisma.staff.update({
-    where: { id: staffId },
+    where: { id: parseInt(staffId) },
     data: {
       team: {
         disconnect: { id: parseInt(teamId) },

@@ -1,5 +1,5 @@
 import type { ArticleCategory } from "@prisma/client";
-import type { BlockContent } from "~/models/blocks.server";
+import type { BlockContentWithDetails } from "~/models/blocks.server";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import type { BlockContentType, BlockName } from "~/utility/blockMaster/types";
 
@@ -8,7 +8,7 @@ type Props = {
   selectedItems: ContentSelection[];
   setSelectedItems: Function;
   articleCategories: ArticleCategory[];
-  defaultValues: BlockContent;
+  defaultValues: BlockContentWithDetails;
 };
 
 const ArticleBlockOptions = ({
@@ -42,10 +42,10 @@ const ArticleBlockOptions = ({
               <BasicSelect
                 name="articleCategory"
                 label="Category"
-                labelColor="text-brand-white"
+                labelStyle="text-brand-white"
                 placeholder="Select a Category"
                 selections={articleCategories as unknown as SelectValue[]}
-                defaultValue={defaultValues?.articleCategoryId?.toString()}
+                defaultValue={defaultValues?.articleCategory?.[0].id?.toString()}
                 onChange={(selectedValue) => {
                   selectItem(
                     "articleCategory",

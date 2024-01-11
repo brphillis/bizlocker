@@ -12,8 +12,9 @@ import type {
   ProductSubCategory,
   Promotion,
 } from "@prisma/client";
-import type { BlockContent } from "~/models/blocks.server";
-import type { Page, PageBlock } from "~/models/pageBuilder.server";
+
+import type { BlockWithContent, Page } from "~/models/pageBuilder.server";
+import type { BlockContentWithDetails } from "~/models/blocks.server";
 import BlockSelect from "./BlockSelect";
 import ResultsTable from "./Content/ResultsTable";
 import ContentSearch from "./Content/ContentSearch";
@@ -25,12 +26,13 @@ import BackSubmitButtons from "../Forms/Buttons/BackSubmitButtons";
 import BlockOptionsModule from "./Options";
 import TextBlockContentModule from "./Content/TextBlockContent";
 import BoxedTabs from "../Tabs/BoxedTabs";
-import { blockHasMaxContentItems } from "~/helpers/blockContentHelpers";
+import { blockHasMaxContentItems } from "~/helpers/contentHelpers";
 import BlockCard from "./BlockCard";
+import BasicInput from "../Forms/Input/BasicInput";
 
 type Props = {
   previewPage: Page;
-  blocks: PageBlock[] | null;
+  blocks: BlockWithContent[] | null;
   searchResults: Campaign[] | Promotion[] | Image[] | undefined;
   updateSuccess: boolean;
   productCategories: ProductCategory[];
@@ -115,12 +117,12 @@ const PageBuilder = ({
   };
 
   const changeBlockOrder = (index: number, direction: "up" | "down") => {
-    const pageBlockIds = JSON.stringify(previewPage.blocks.map((e) => e.id));
+    const blockIds = JSON.stringify(previewPage.blocks.map((e) => e.id));
     const formData = new FormData();
 
     formData.set("_action", "rearrange");
     formData.set("previewPageId", previewPage.id.toString() || "");
-    formData.set("pageBlocks", pageBlockIds || "");
+    formData.set("blocks", blockIds || "");
     formData.set("index", index.toString() || "");
     formData.set("direction", direction.toString() || "");
 
@@ -164,16 +166,17 @@ const PageBuilder = ({
 
       {!editingContent && (
         <div className="scrollbar-hide mx-auto mt-3 flex w-[520px] max-w-full flex-col items-center gap-3 overflow-x-hidden px-3">
-          {blocks?.map(({ id, name }: PageBlock, i) => {
+          {blocks?.map(({ id, name, label }: BlockWithContent, i) => {
             return (
               <React.Fragment key={"BlockCard_" + i}>
                 <BlockCard
                   blockCount={blocks.length}
                   index={i}
                   name={name}
+                  label={label}
                   onChangeOrder={(dir) => changeBlockOrder(i, dir)}
                   onClick={() => editBlock(i)}
-                  onDelete={() => disconnectBlock(id, name)}
+                  onDelete={() => disconnectBlock(id.toString(), name)}
                 />
               </React.Fragment>
             );
@@ -202,6 +205,7 @@ const PageBuilder = ({
             setSelectedItems={setSelectedItems}
           />
 
+          {/* START */}
           <div
             className={`${
               !selectedBlock || tabNames.length === 1 ? "hidden" : ""
@@ -211,7 +215,7 @@ const PageBuilder = ({
               tabNames={tabNames}
               dynamicTabNames={true}
               activeTab={activeTab}
-              onTabChange={handleTabChange}
+              setActiveTab={handleTabChange}
             />
           </div>
 
@@ -248,6 +252,23 @@ const PageBuilder = ({
             />
           </div>
 
+          <details className="collapse collapse-plus grid !max-w-full !rounded-sm bg-brand-white/20">
+            <summary className="collapse-title text-xl font-medium">
+              Block Label
+            </summary>
+            <div className="flex max-w-full flex-wrap justify-start !gap-3 px-3 pb-3 max-md:justify-center max-md:px-0">
+              <BasicInput
+                name="blockLabel"
+                type="text"
+                label="Block Label"
+                placeholder="Label"
+                labelStyle="text-brand-white"
+                customWidth="pl-3 w-[215px] pb-3"
+                defaultValue={blocks?.[editingIndex]?.label}
+              />
+            </div>
+          </details>
+
           <BlockOptionsModule
             selectedBlock={selectedBlock}
             defaultValues={blocks?.[editingIndex]?.blockOptions[0]}
@@ -264,7 +285,9 @@ const PageBuilder = ({
               productCategories={productCategories}
               productSubCategories={productSubCategories}
               brands={brands}
-              defaultValues={blocks?.[editingIndex]?.content as BlockContent}
+              defaultValues={
+                blocks?.[editingIndex]?.content as BlockContentWithDetails
+              }
             />
 
             <ArticleBlockOptions
@@ -272,14 +295,18 @@ const PageBuilder = ({
               selectedItems={selectedItems}
               setSelectedItems={setSelectedItems}
               articleCategories={articleCategories}
-              defaultValues={blocks?.[editingIndex]?.content as BlockContent}
+              defaultValues={
+                blocks?.[editingIndex]?.content as BlockContentWithDetails
+              }
             />
 
             <TextBlockContentModule
               selectedBlock={selectedBlock}
               selectedItems={selectedItems}
               setSelectedItems={setSelectedItems}
-              defaultValue={blocks?.[editingIndex]?.content as BlockContent}
+              defaultValue={
+                blocks?.[editingIndex]?.content as BlockContentWithDetails
+              }
             />
           </div>
 
@@ -295,6 +322,8 @@ const PageBuilder = ({
           {selectedBlock && (
             <input name="blockName" value={selectedBlock} hidden readOnly />
           )}
+
+          {/* END */}
 
           <BackSubmitButtons
             value="update"

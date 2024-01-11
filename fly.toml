@@ -1,4 +1,5 @@
 app = "clutch-clothing-prod"
+primary_region = "syd"
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = []

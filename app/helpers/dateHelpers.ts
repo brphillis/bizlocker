@@ -4,10 +4,10 @@ export const isValidDate = (dateString: string): boolean => {
 };
 
 export const formatDate = (
-  date?: Date,
+  date?: Date | string,
   includeHoursSecondsMinutes?: boolean
 ) => {
-  if (date && date !== null) {
+  if (date) {
     const dateToFormat = new Date(date);
 
     const options: Intl.DateTimeFormatOptions = {
@@ -34,18 +34,17 @@ export const formatDateForFormField = (
     : undefined;
 };
 
-export const createISODate = (): string => {
+export const createNowISODate = (): string => {
   const now = new Date();
   const isoDate = now.toISOString();
   return isoDate;
 };
 
-export const getYesterdayDate = (): string => {
+export const createYesterdayISODate = (): string => {
   const today = new Date();
   const yesterday = new Date(today);
   yesterday.setDate(today.getDate() - 1);
 
-  const isoDate = yesterday.toISOString().split("T")[0]; // Extract only the date part
-
+  const isoDate = yesterday.toISOString().split("T")[0];
   return isoDate;
 };

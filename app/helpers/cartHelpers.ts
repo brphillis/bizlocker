@@ -2,7 +2,7 @@ import type { CartWithDetails } from "~/models/cart.server";
 import type { Address } from "@prisma/client";
 import type { AusPostDeliveryOption } from "~/integrations/auspost/types";
 import { getShippingServices_Integration } from "~/integrations/_master/shipping";
-import { getLatLongForPostcode } from "~/models/location.server";
+import { fetchLatLong } from "~/models/location.server";
 import { prisma } from "~/db.server";
 import { findClosestPostcode } from "./locationHelpers";
 
@@ -20,7 +20,7 @@ export const getCartDeliveryOptions = async (
 ): Promise<AusPostDeliveryOption[]> => {
   const cartDimensions = getCartDimensions(cart);
 
-  const shippingCoords = await getLatLongForPostcode(postCode.toString());
+  const shippingCoords = await fetchLatLong(postCode.toString());
 
   const variantStoreIds: any = [];
 

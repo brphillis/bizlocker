@@ -27,7 +27,7 @@ const Order = () => {
     <div className="flex min-w-[720px] flex-col items-center gap-3 py-6 max-xl:min-w-[600px] max-lg:min-w-[480px] max-md:min-w-[600px]">
       <div className="mt-3 flex flex-col items-center gap-3">
         <h1 className="text-center text-3xl">Order</h1>
-        <p className="text-xs opacity-50"># - {order?.orderId}</p>
+        <p className="text-xs opacity-50"># - {order?.id}</p>
       </div>
       <div className="divider w-full" />
 

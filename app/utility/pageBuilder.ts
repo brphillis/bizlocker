@@ -7,7 +7,6 @@ import { searchPromotions } from "~/models/promotions.server";
 import {
   type BlockMaster,
   blockMaster,
-  blockTypes,
   getBlockContentTypes,
 } from "./blockMaster/blockMaster";
 import { searchBrands } from "~/models/brands.server";
@@ -22,17 +21,13 @@ export interface NewBlockData {
   previewPageId: number;
   blockName: BlockName;
   itemIndex: number;
-  contentBlockId: string;
   contentType: BlockContentType;
   contentData: any;
 }
 
 // Prisma include to include all pagetypes with all blocks
 // eg = include: includeAllPageTypesWithBlocks()
-export const includeAllPageTypes = (
-  excludedPages?: PageType[],
-  withBlocks?: boolean
-) => {
+export const includeAllPageTypes = (excludedPages?: PageType[]) => {
   // @ts-ignore
   const pageTypesObject: Record<
     PageType,
@@ -43,20 +38,10 @@ export const includeAllPageTypes = (
     pageTypesObject[type as PageType] = {
       include: {
         blocks: {
-          include: {},
+          include: { content: true },
         },
       },
     };
-
-    blockTypes.forEach((blockType) => {
-      if (withBlocks) {
-        pageTypesObject[type as PageType].include.blocks.include[blockType] =
-          true;
-      } else {
-        pageTypesObject[type as PageType].include.blocks.include[blockType] =
-          false;
-      }
-    });
   });
 
   if (excludedPages) {
@@ -68,8 +53,8 @@ export const includeAllPageTypes = (
   return pageTypesObject;
 };
 
-// Checks if pageblock has connection to a page
-export const pageBlockHasPageConnection = (blockToCheck: any): boolean => {
+// Checks if block has connection to a page
+export const blockHasPageConnection = (blockToCheck: any): boolean => {
   return pageTypes.some(
     (type) => !blockToCheck?.[type] || blockToCheck[type].length > 0
   );

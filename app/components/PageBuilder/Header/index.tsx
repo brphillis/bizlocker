@@ -57,7 +57,7 @@ const Header = ({
             customWidth="w-[320px]"
             defaultValue={currentVersion?.title}
             label="Title"
-            labelColor="text-brand-white"
+            labelStyle="text-brand-white"
             name="title"
             placeholder="Title"
             type="text"
@@ -80,7 +80,7 @@ const Header = ({
               customWidth="w-[320px]"
               defaultValues={(currentVersion as any)?.articleCategories}
               label="Categories"
-              labelColor="text-brand-white"
+              labelStyle="text-brand-white"
               name="articleCategories"
               selections={articleCategories}
             />

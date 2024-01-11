@@ -7,19 +7,20 @@ import type {
 } from "@prisma/client";
 import ProductGrid from "~/components/Grids/ProductGrid";
 import Spinner from "~/components/Spinner";
-import type { BlockContent } from "~/models/blocks.server";
+import type { BlockContentWithDetails } from "~/models/blocks.server";
 
 type Props = {
-  content: BlockContent;
+  content: BlockContentWithDetails;
   options: BlockOptions[];
 };
 
 const ProductBlock = ({ content, options: optionsArray }: Props) => {
   const options = optionsArray[0];
   const products = content?.product as Product[];
-  const productSubCategory = content?.productSubCategory as ProductSubCategory;
-  const productCategory = content?.productCategory as ProductCategory;
-  const brand = content?.brand as Brand;
+  const productSubCategory = content
+    ?.productSubCategory?.[0] as ProductSubCategory;
+  const productCategory = content?.productCategory?.[0] as ProductCategory;
+  const brand = content?.brand?.[0] as Brand;
   const gender = content.gender;
 
   const determineSortPhrase = (sortBy: SortBy) => {

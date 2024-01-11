@@ -1,3 +1,5 @@
+import { isEmptyObject } from "~/helpers/objectHelpers";
+
 export interface ValidationErrors {
   [key: string]: string;
 }
@@ -10,7 +12,6 @@ export interface FormConfig {
 }
 
 //the master object, validation helpers below
-
 export const validationMaster: FormConfig = {
   addressLine1: {
     required: true,
@@ -239,6 +240,9 @@ export const validationMaster: FormConfig = {
       if (!value) {
         return "Index Required";
       }
+      if (value && Number(value) <= 0) {
+        return "Must Be Over 0";
+      }
       return null;
     },
   },
@@ -256,6 +260,19 @@ export const validationMaster: FormConfig = {
     validator: (value: string) => {
       if (!value) {
         return "Variants are Required";
+      }
+      if (value) {
+        let parsedVal = JSON.parse(value);
+
+        if (isEmptyObject(parsedVal)) {
+          return "Variants are Required";
+        }
+
+        if (Array.isArray(parsedVal)) {
+          if (isEmptyObject(parsedVal?.[0])) {
+            return "Variants are Required";
+          }
+        }
       }
       return null;
     },
@@ -371,9 +388,14 @@ export const validationMaster: FormConfig = {
 };
 
 export const validateForm = (
-  formEntries: Record<string, FormDataEntryValue>,
+  formData: FormData,
   validate: Record<string, boolean>
-): ValidationErrors | null => {
+): {
+  formEntries: Record<string, FormDataEntryValue>;
+  formErrors: ValidationErrors | null;
+} => {
+  const formEntries = Object.fromEntries(formData);
+
   const formConfig: FormConfig = {};
 
   // loop through the validate object and match keys in the validationMaster
@@ -405,7 +427,11 @@ export const validateForm = (
     }
   }
 
-  return Object.keys(validationErrors).length > 0 ? validationErrors : null;
+  return {
+    formEntries,
+    formErrors:
+      Object.keys(validationErrors).length > 0 ? validationErrors : null,
+  };
 };
 
 export const isValidEmail = (email: string): boolean => {

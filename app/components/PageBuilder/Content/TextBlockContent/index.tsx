@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { BlockContent } from "~/models/blocks.server";
+import type { BlockContentWithDetails } from "~/models/blocks.server";
 import RichTextInput from "~/components/Forms/Input/RichTextInput/index.client";
 import type { BlockName, BlockContentType } from "~/utility/blockMaster/types";
 
@@ -7,7 +7,7 @@ type Props = {
   selectedBlock: BlockName | undefined;
   selectedItems: ContentSelection[];
   setSelectedItems: Function;
-  defaultValue: BlockContent;
+  defaultValue: BlockContentWithDetails;
 };
 
 const TextBlockContentModule = ({
@@ -43,7 +43,7 @@ const TextBlockContentModule = ({
             onChange={(selectedValue) => {
               selectItem("richText", selectedValue);
             }}
-            className="mb-12 mt-3 h-[320px]"
+            extendStyle="mb-12 mt-3 h-[320px]"
           />
         </div>
       )}

@@ -6,20 +6,20 @@ import {
 } from "@remix-run/node";
 import type { ActionReturnTypes } from "~/utility/actionTypes";
 import type { BlockOptions, PreviewPage } from "@prisma/client";
-import type { BlockContentType, BlockName } from "~/utility/blockMaster/types";
-import { Form, useActionData, useLoaderData } from "@remix-run/react";
-import AdminPageWrapper from "~/components/Layout/_Admin/AdminPageWrapper";
+import type { BlockContentType } from "~/utility/blockMaster/types";
+import { Form, Outlet, useActionData, useLoaderData } from "@remix-run/react";
+import AdminPageWrapper from "~/components/Layout/Wrappers/AdminPageWrapper";
 import PageBuilder from "~/components/PageBuilder";
 import {
   type Page,
-  type PageBlock,
   changeBlockOrder,
   disconnectBlock,
   getPageType,
   publishPage,
   revertPreviewChanges,
-  updatePageBlock,
+  updateBlock,
   upsertPageMeta,
+  type BlockWithContent,
 } from "~/models/pageBuilder.server";
 import LargeCollapse from "~/components/Collapse/LargeCollapse";
 import { getBrands } from "~/models/brands.server";
@@ -34,8 +34,7 @@ import {
 } from "~/utility/pageBuilder";
 import { getArticleCategories } from "~/models/articleCategories.server";
 import { getAvailableColors } from "~/models/enums.server";
-import { getBlocks } from "~/helpers/blockHelpers";
-import PatternBackground from "~/components/Layout/PatternBackground";
+import PatternBackground from "~/components/Layout/Backgrounds/PatternBackground";
 import { getThemeColorValueByName } from "~/utility/colors";
 import { sortPreviewPages } from "~/helpers/sortHelpers";
 import {
@@ -53,6 +52,7 @@ import { STAFF_SESSION_KEY } from "~/session.server";
 import useNotification, {
   type PageNotification,
 } from "~/hooks/PageNotification";
+import { getBlocks } from "~/models/blocks.server";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
@@ -75,7 +75,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const page = await getPageType(pageType as PageType, true, id);
 
   let previewPages: PreviewPage[] | null | undefined = null;
-  let blocks: PageBlock[] | null = null;
+  let blocks: BlockWithContent[] | null = null;
   let currentPreviewPage: Page | null = null;
 
   if (page) {
@@ -121,17 +121,17 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
     articleCategories,
     backgroundColor,
     blockId,
-    blockName,
     contentType,
     description,
     index,
     isActive,
     name,
-    pageBlocks,
+    blocks,
     pageId,
     previewPageId,
     thumbnail,
     title,
+    blockLabel,
   } = form;
 
   let actionPreview, actionBlocks;
@@ -143,7 +143,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
     case "search":
       const searchResults = await searchContentData(
         contentType as BlockContentType,
-        (name as string) || undefined
+        (name as string) || undefined,
       );
 
       actionPreview = await getPreviewPage(previewPageId as string);
@@ -178,7 +178,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
         isActive as string,
         thumbnail ? JSON.parse(thumbnail as string) : undefined,
         previewPageId ? (previewPageId as string) : undefined,
-        articleCategories ? JSON.parse(articleCategories as string) : undefined
+        articleCategories ? JSON.parse(articleCategories as string) : undefined,
       );
 
       notification = {
@@ -193,7 +193,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
     case "addpreview":
       const addPreviewSuccess = await addPreviewPage(
         pageType as PageType,
-        pageId as string
+        pageId as string,
       );
 
       notification = {
@@ -205,7 +205,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
     case "deletepreview":
       const deletePreviewSuccess = await deletePreviewPage(
-        previewPageId as string
+        previewPageId as string,
       );
 
       notification = {
@@ -239,11 +239,12 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
     case "update":
       const newBlockData = getBlockUpdateValues(form);
 
-      const updateSuccess = await updatePageBlock(
+      const updateSuccess = await updateBlock(
         pageType as PageType,
         previewPageId as string,
         newBlockData as NewBlockData,
-        blockOptions
+        blockOptions,
+        blockLabel as string,
       );
       actionPreview = await getPreviewPage(previewPageId as string);
       actionBlocks = await getBlocks(actionPreview as any);
@@ -260,7 +261,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
         pageType as PageType,
         previewPageId as string,
         pageId as string,
-        request
+        request,
       );
 
       actionPreview = await getPreviewPage(previewPageId as string);
@@ -282,7 +283,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
       const revertSuccess = await revertPreviewChanges(
         pageType as PageType,
         previewPageId as string,
-        pageId as string
+        pageId as string,
       );
 
       actionPreview = await getPreviewPage(previewPageId as string);
@@ -300,9 +301,9 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
       await changeBlockOrder(
         previewPageId as string,
-        pageBlocks as string,
+        blocks as string,
         parseInt(index as string),
-        direction as "up" | "down"
+        direction as "up" | "down",
       );
 
       actionPreview = await getPreviewPage(previewPageId as string);
@@ -311,11 +312,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
       return json({ actionPreview, actionBlocks });
 
     case "delete":
-      await disconnectBlock(
-        blockId as string,
-        blockName as BlockName,
-        previewPageId as string
-      );
+      await disconnectBlock(blockId as string, previewPageId as string);
       actionPreview = await getPreviewPage(previewPageId as string);
       actionBlocks = await getBlocks(actionPreview as any);
 
@@ -359,15 +356,15 @@ const ManageHomePage = () => {
   useNotification(notification);
 
   const [currentVersion, setCurrentVersion] = useState<Page | null>(
-    currentPreviewPage
+    currentPreviewPage,
   );
 
-  const [currentBlocks, setCurrentBlocks] = useState<PageBlock[] | null>(
-    blocks || null
+  const [currentBlocks, setCurrentBlocks] = useState<BlockWithContent[] | null>(
+    blocks || null,
   );
 
   const [isActive, setIsActive] = useState<string | undefined>(
-    page?.isActive ? " " : ""
+    page?.isActive ? " " : "",
   );
 
   useEffect(() => {
@@ -386,90 +383,93 @@ const ManageHomePage = () => {
   }, [actionPreview, actionBlocks, blocks, currentPreviewPage]);
 
   return (
-    <AdminPageWrapper>
-      <div className="relative h-full p-6 max-sm:p-0 sm:w-full">
-        <div className="absolute left-0 top-0 h-full w-full bg-brand-white"></div>
-        <PatternBackground
-          backgroundColor={getThemeColorValueByName("brand-black")}
-          brightness={-1.5}
-          name="isometric"
-          patternColor={getThemeColorValueByName("brand-white")}
-          patternOpacity={0.2}
-          patternSize={140}
-        />
+    <>
+      <AdminPageWrapper>
+        <div className="relative h-full p-6 max-sm:p-0 sm:w-full">
+          <div className="absolute left-0 top-0 h-full w-full bg-brand-white"></div>
+          <PatternBackground
+            backgroundColor={getThemeColorValueByName("brand-black")}
+            brightness={-1.5}
+            name="isometric"
+            patternColor={getThemeColorValueByName("brand-white")}
+            patternOpacity={0.2}
+            patternSize={140}
+          />
 
-        <div className="flex w-full justify-center">
-          <div className="flex flex-col gap-3 rounded-none text-brand-white">
-            <div className="relative flex flex-col items-center justify-center gap-6 bg-brand-black py-6 text-center text-xl font-bold text-brand-white max-sm:gap-3">
-              <div className="w-full">
-                {page.title ? page.title : "Add Page"}
-              </div>
-              {pageType !== "homePage" && (
-                <Form method="POST" className="absolute right-3">
-                  {page?.id && (
-                    <input
-                      hidden
-                      readOnly
-                      name="pageId"
-                      value={page.id.toString()}
+          <div className="flex w-full justify-center">
+            <div className="flex flex-col gap-3 rounded-none text-brand-white">
+              <div className="relative flex flex-col items-center justify-center gap-6 bg-brand-black py-6 text-center text-xl font-bold text-brand-white max-sm:gap-3">
+                <div className="w-full">
+                  {page.title ? page.title : "Add Page"}
+                </div>
+                {pageType !== "homePage" && (
+                  <Form method="POST" className="absolute right-3">
+                    {page?.id && (
+                      <input
+                        hidden
+                        readOnly
+                        name="pageId"
+                        value={page.id.toString()}
+                      />
+                    )}
+                    <input hidden readOnly name="pageType" value={pageType} />
+                    <SquareIconButton
+                      color="error"
+                      iconName="IoTrashBin"
+                      name="_action"
+                      size="small"
+                      type="submit"
+                      value="deletepage"
                     />
-                  )}
-                  <input hidden readOnly name="pageType" value={pageType} />
-                  <SquareIconButton
-                    color="error"
-                    iconName="IoTrashBin"
-                    name="_action"
-                    size="small"
-                    type="submit"
-                    value="deletepage"
-                  />
-                </Form>
+                  </Form>
+                )}
+              </div>
+
+              <Header
+                articleCategories={articleCategories}
+                colors={colors}
+                currentVersion={currentVersion}
+                isActive={isActive}
+                metaValidationError={metaValidationError}
+                pageToCreate={pageToCreate as PageType}
+                pageType={pageType as PageType}
+                setIsActive={setIsActive}
+              />
+
+              {page && currentVersion && (
+                <LargeCollapse
+                  title="Blocks"
+                  forceOpen={true}
+                  content={
+                    <PageBuilder
+                      articleCategories={articleCategories}
+                      blocks={currentBlocks}
+                      brands={brands}
+                      colors={colors}
+                      previewPage={currentVersion}
+                      productCategories={productCategories}
+                      productSubCategories={productSubCategories}
+                      searchResults={searchResults}
+                      updateSuccess={updateSuccess}
+                    />
+                  }
+                />
+              )}
+
+              {page && (
+                <VersionControl
+                  currentVersion={currentVersion}
+                  page={page as Page}
+                  previewPages={previewPages}
+                  updateSuccess={publishSuccess}
+                />
               )}
             </div>
-
-            <Header
-              articleCategories={articleCategories}
-              colors={colors}
-              currentVersion={currentVersion}
-              isActive={isActive}
-              metaValidationError={metaValidationError}
-              pageToCreate={pageToCreate as PageType}
-              pageType={pageType as PageType}
-              setIsActive={setIsActive}
-            />
-
-            {page && currentVersion && (
-              <LargeCollapse
-                title="Blocks"
-                forceOpen={true}
-                content={
-                  <PageBuilder
-                    articleCategories={articleCategories}
-                    blocks={currentBlocks}
-                    brands={brands}
-                    colors={colors}
-                    previewPage={currentVersion}
-                    productCategories={productCategories}
-                    productSubCategories={productSubCategories}
-                    searchResults={searchResults}
-                    updateSuccess={updateSuccess}
-                  />
-                }
-              />
-            )}
-
-            {page && (
-              <VersionControl
-                currentVersion={currentVersion}
-                page={page as Page}
-                previewPages={previewPages}
-                updateSuccess={publishSuccess}
-              />
-            )}
           </div>
         </div>
-      </div>
-    </AdminPageWrapper>
+      </AdminPageWrapper>
+      <Outlet />
+    </>
   );
 };
 
