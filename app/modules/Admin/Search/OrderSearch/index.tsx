@@ -1,37 +1,17 @@
 import Pagination from "~/components/Pagination";
-import { type OrderWithDetails, searchOrders } from "~/models/orders.server";
-import { json } from "@remix-run/node";
+import { type OrderWithDetails } from "~/models/orders.server";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/Wrappers/AdminPageWrapper";
 import {
   Form,
   Outlet,
-  type Params,
   useLoaderData,
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
 import BasicTable from "~/components/Tables/BasicTable";
 import AdminContentSearch from "~/components/Search/AdminContentSearch";
-
-export const orderSearchLoader = async (
-  request: Request,
-  params: Params<string>
-) => {
-  const url = new URL(request.url);
-
-  const searchQuery = {
-    id: url.searchParams.get("id")?.toString() || undefined,
-    status: url.searchParams.get("status")?.toString() || undefined,
-    email: url.searchParams.get("email")?.toString() || undefined,
-    page: Number(url.searchParams.get("pageNumber")) || 1,
-    perPage: Number(url.searchParams.get("perPage")) || 10,
-  };
-
-  const { orders, totalPages } = await searchOrders(searchQuery);
-
-  return json({ orders, totalPages });
-};
+import type { orderSearchLoader } from "./index.server";
 
 const OrderSearch = () => {
   const { orders, totalPages } = useLoaderData<typeof orderSearchLoader>();

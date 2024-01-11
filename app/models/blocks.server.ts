@@ -12,10 +12,11 @@ import { searchArticles, type ArticleWithContent } from "./articles.server";
 import { searchProducts, type ProductWithDetails } from "./products.server";
 import type { ImageWithDetails } from "./images.server";
 import type { StoreWithDetails } from "./stores.server";
-import type { BlockWithContent } from "./pageBuilder.server";
+import type { BlockWithContent, Page } from "./pageBuilder.server";
 import type { PromotionWithContent } from "./promotions.server";
 import type { CampaignWithContent } from "./campaigns.server";
 import type { BrandWithContent } from "./brands.server";
+import { sortBlocks } from "~/helpers/blockHelpers";
 
 export interface BlockWithBlockOptions extends Block {
   blockOptions: BlockOptions;
@@ -40,8 +41,31 @@ export interface BlockContentWithDetails {
   icon?: string[];
 }
 
+export const getBlocks = async (
+  page: Page,
+  fetchNestedContent?: boolean,
+): Promise<BlockWithContent[]> => {
+  // Populate the page with the active block types
+  let sortedBlocks = sortBlocks(page);
+
+  // Populate content in blocks that requires a search query
+  if (fetchNestedContent) {
+    for (let i = 0; i < sortedBlocks.length; i++) {
+      const block = sortedBlocks[i];
+      if (block.name === "product" && block.content) {
+        block.content.product = await fetchBlockProducts(block);
+      }
+      if (block.name === "article" && block.content) {
+        block.content.article = await fetchBlockArticles(block);
+      }
+    }
+  }
+
+  return sortedBlocks;
+};
+
 export const fetchBlockProducts = async (
-  block: BlockWithContent
+  block: BlockWithContent,
 ): Promise<Product[] | null> => {
   const brandId = block.content.brand?.[0].id;
   const productCategoryId = block.content.productCategory?.[0].id;
@@ -70,7 +94,7 @@ export const fetchBlockProducts = async (
 };
 
 export const fetchBlockArticles = async (
-  block: BlockWithContent
+  block: BlockWithContent,
 ): Promise<Article[]> => {
   const articleCategoryId = block.content.articleCategory?.[0].id;
 

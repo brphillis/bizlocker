@@ -1,19 +1,15 @@
 import { type FormEvent, useState } from "react";
 import { validateForm } from "~/utility/validate";
-import type { SiteSettings } from "@prisma/client";
 import { getFormData } from "~/helpers/formHelpers";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import BasicToggle from "~/components/Forms/Toggle/BasicToggle";
-import type { PageNotification } from "~/hooks/PageNotification";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
-import { getSiteSettings, updateSiteSettings } from "~/models/siteSettings";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
 import AdminPageWrapper from "~/components/Layout/Wrappers/AdminPageWrapper";
 import {
   Form,
   Outlet,
-  type Params,
   useLoaderData,
   useParams,
   useSubmit,
@@ -24,74 +20,9 @@ import WindowContainer, {
 } from "~/components/Layout/Containers/WindowContainer";
 import useNotification from "~/hooks/PageNotification";
 import type { ActionReturnTypes } from "~/utility/actionTypes";
+import type { siteSettingsUpsertLoader } from "./index.server";
 
 const validateOptions = {};
-
-export const siteSettingsUpsertLoader = async (
-  request: Request,
-  params: Params<string>
-) => {
-  const siteSettings = await getSiteSettings();
-
-  if (!siteSettings) {
-    throw new Response(null, {
-      status: 404,
-      statusText: "Settings Not Found",
-    });
-  }
-
-  return { siteSettings };
-};
-
-export const siteSettingsUpsertAction = async (
-  request: Request,
-  params: Params<string>
-) => {
-  let notification: PageNotification;
-
-  const { formEntries, formErrors } = validateForm(
-    await request.formData(),
-    validateOptions
-  );
-
-  const {
-    navigationStyle,
-    spinnerStyle,
-    announcementMessage,
-    announcementIsActive,
-    announcementEndsAt,
-    countdownIsActive,
-    maintenanceMessage,
-    isUnderMaintenance,
-  } = formEntries;
-
-  switch (formEntries._action) {
-    case "upsert":
-      if (formErrors) {
-        return { serverValidationErrors: formErrors };
-      }
-
-      const updateData: Partial<SiteSettings> = {
-        navigationStyle: navigationStyle as string,
-        spinnerStyle: spinnerStyle as string,
-        announcementMessage: announcementMessage as string,
-        announcementIsActive: announcementIsActive ? true : false,
-        announcementEndsAt: announcementEndsAt as string,
-        countdownIsActive: countdownIsActive ? true : false,
-        maintenanceMessage: maintenanceMessage as string,
-        isUnderMaintenance: isUnderMaintenance ? true : false,
-      };
-
-      await updateSiteSettings(updateData);
-
-      notification = {
-        type: "success",
-        message: "Site Settings Updated",
-      };
-
-      return { notification };
-  }
-};
 
 const SiteSettingsUpsert = () => {
   const { siteSettings } = useLoaderData<typeof siteSettingsUpsertLoader>();

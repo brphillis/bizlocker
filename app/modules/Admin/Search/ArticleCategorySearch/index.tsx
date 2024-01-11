@@ -1,37 +1,16 @@
-import { json } from "@remix-run/node";
 import Pagination from "~/components/Pagination";
 import BasicTable from "~/components/Tables/BasicTable";
 import AdminContentSearch from "~/components/Search/AdminContentSearch";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/Wrappers/AdminPageWrapper";
-import { searchArticleCategories } from "~/models/articleCategories.server";
 import {
   Form,
   Outlet,
-  type Params,
   useLoaderData,
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
-
-export const articleCategorySearchLoader = async (
-  request: Request,
-  params: Params<string>
-) => {
-  const url = new URL(request.url);
-
-  const searchQuery = {
-    name: url.searchParams.get("name")?.toString() || undefined,
-    page: Number(url.searchParams.get("pageNumber")) || 1,
-    perPage: Number(url.searchParams.get("perPage")) || 10,
-  };
-
-  const { articleCategories, totalPages } = await searchArticleCategories(
-    searchQuery
-  );
-
-  return json({ articleCategories, totalPages });
-};
+import type { articleCategorySearchLoader } from "./index.server";
 
 const ArticleCategorySearch = () => {
   const { articleCategories, totalPages } =

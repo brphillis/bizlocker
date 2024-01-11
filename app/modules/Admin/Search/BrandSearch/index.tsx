@@ -1,29 +1,17 @@
 import Pagination from "~/components/Pagination";
-import { json } from "@remix-run/server-runtime";
 import BasicTable from "~/components/Tables/BasicTable";
 import AdminContentSearch from "~/components/Search/AdminContentSearch";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/Wrappers/AdminPageWrapper";
-import { searchBrands, type BrandWithContent } from "~/models/brands.server";
+import { type BrandWithContent } from "~/models/brands.server";
 import {
   Form,
   Outlet,
-  type Params,
   useLoaderData,
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
-
-export const brandSearchLoader = async (
-  request: Request,
-  params: Params<string>
-) => {
-  const url = new URL(request.url);
-
-  const { brands, totalPages } = await searchBrands(undefined, url);
-
-  return json({ brands, totalPages });
-};
+import type { brandSearchLoader } from "./index.server";
 
 const BrandSearch = () => {
   const { brands, totalPages } = useLoaderData<typeof brandSearchLoader>();

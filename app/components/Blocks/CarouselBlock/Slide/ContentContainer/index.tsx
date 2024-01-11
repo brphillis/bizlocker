@@ -36,7 +36,7 @@ const ContentContainer = ({ index, blockOptions }: Props) => {
     >
       <PatternBackground
         backgroundColor={getThemeColorValueByName(
-          itemBackgroundColorsSecondary[index]
+          itemBackgroundColorsSecondary[index],
         )}
         displayStyle={itemBackgroundDisplaysSecondary[index]}
       />

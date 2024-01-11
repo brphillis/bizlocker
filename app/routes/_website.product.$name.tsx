@@ -90,7 +90,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { products: similarProducts } = await searchProducts(
     Object.fromEntries(formData),
     undefined,
-    true
+    true,
   );
 
   return json({ product, brand, similarProducts });
@@ -105,20 +105,20 @@ const Product = () => {
   const { name: brandName, image: brandImage } = brand || {};
 
   const [selectedSize, setSelectedSize] = useState<string | undefined>(
-    variants?.[0]?.size || undefined
+    variants?.[0]?.size || undefined,
   );
   const [selectedColor, setSelectedColor] = useState<string | null | undefined>(
-    variants?.[0]?.color
+    variants?.[0]?.color,
   );
   const [selectedImage, setSelectedImage] = useState<Image | undefined>(
-    images?.[0]
+    images?.[0],
   );
 
   const availableSizes = product && getAvailableSizes(product);
 
   const updateColors = (
     size?: string,
-    initializing?: boolean
+    initializing?: boolean,
   ): (string | null | undefined)[] | undefined => {
     if (size && product) {
       const colors = getAvailableColors(product, size);
@@ -138,7 +138,7 @@ const Product = () => {
   >(
     variants?.[0]?.size
       ? (updateColors(variants[0]?.size, true) as string[])
-      : undefined
+      : undefined,
   );
 
   const [selectedVariant, setSelectedVariant] = useState<
@@ -169,13 +169,13 @@ const Product = () => {
     | ProductVariantWithDetails
     | undefined => {
     return variants?.filter(
-      (e) => e.size === selectedSize && e.color === selectedColor
+      (e) => e.size === selectedSize && e.color === selectedColor,
     )[0];
   };
 
   useEffect(() => {
     const selection = variants?.filter(
-      (e) => e.size === selectedSize && e.color === selectedColor
+      (e) => e.size === selectedSize && e.color === selectedColor,
     )[0];
 
     if (selection) {

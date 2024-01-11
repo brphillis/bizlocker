@@ -1,6 +1,6 @@
+import { colorPrefixList } from "../../theme/themeColorPrefixList.js";
+import { themeColors } from "../../theme/theme.js";
 import { searchObjectByKey } from "~/helpers/objectHelpers";
-import colorPrefixList from "../../theme/themeColorPrefixList";
-import themeColors from "../../theme/theme";
 
 export const getThemeColorNames = (): string[] => {
   return Object.keys(themeColors);
@@ -41,7 +41,7 @@ export const getThemeColorValueByName = (colorName?: string | null): string => {
 
 export const returnOtherColorPrefix = (
   initialString: string,
-  newPrefix: "bg-" | "text-" | "border-" | "outline-" | "decoration-"
+  newPrefix: "bg-" | "text-" | "border-" | "outline-" | "decoration-",
 ): string => {
   let formattedString = initialString;
 
@@ -85,7 +85,7 @@ export const removeColorPrefix = (initialString: string) => {
 };
 
 export const generateProductColor = (
-  colorName?: string | null
+  colorName?: string | null,
 ): string | null => {
   const lowerCaseColorName = colorName?.toLowerCase();
 

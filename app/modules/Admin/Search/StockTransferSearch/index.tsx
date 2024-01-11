@@ -1,42 +1,17 @@
 import Pagination from "~/components/Pagination";
-import { getStores } from "~/models/stores.server";
-import { json } from "@remix-run/node";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/Wrappers/AdminPageWrapper";
 import {
   Form,
   Outlet,
-  type Params,
   useLoaderData,
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
-import {
-  searchStockTransfers,
-  type StockTransferRequestWithDetails,
-} from "~/models/stock.server";
+import { type StockTransferRequestWithDetails } from "~/models/stock.server";
 import BasicTable from "~/components/Tables/BasicTable";
 import AdminContentSearch from "~/components/Search/AdminContentSearch";
-
-export const stockTransferSearchLoader = async (
-  request: Request,
-  params: Params<string>
-) => {
-  const url = new URL(request.url);
-
-  const { stockTransfers, totalPages } = await searchStockTransfers(
-    undefined,
-    url
-  );
-
-  const stores = await getStores();
-
-  return json({
-    stockTransfers,
-    totalPages,
-    stores,
-  });
-};
+import type { stockTransferSearchLoader } from "./index.server";
 
 const StockTransferSearch = () => {
   const { stockTransfers, totalPages, stores } =
@@ -75,7 +50,7 @@ const StockTransferSearch = () => {
                 toStore: e.toStore?.name,
                 status: e.status,
                 created: e.createdAt,
-              })
+              }),
             )}
           />
         )}

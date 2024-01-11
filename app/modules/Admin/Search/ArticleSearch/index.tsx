@@ -1,35 +1,18 @@
-import { json } from "@remix-run/node";
 import Pagination from "~/components/Pagination";
 import type { ArticleCategory } from "@prisma/client";
 import BasicTable from "~/components/Tables/BasicTable";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
-import { getArticleCategories } from "~/models/articleCategories.server";
 import AdminPageWrapper from "~/components/Layout/Wrappers/AdminPageWrapper";
-import {
-  searchArticles,
-  type ArticleWithContent,
-} from "~/models/articles.server";
+import { type ArticleWithContent } from "~/models/articles.server";
 import {
   Form,
-  type Params,
   useLoaderData,
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
-
-export const articleSearchLoader = async (
-  request: Request,
-  params: Params<string>
-) => {
-  const url = new URL(request.url);
-
-  const { articles, totalPages } = await searchArticles(undefined, url);
-  const articleCategories = await getArticleCategories();
-
-  return json({ articles, totalPages, articleCategories });
-};
+import type { articleSearchLoader } from "./index.server";
 
 const ArticleSearch = () => {
   const navigate = useNavigate();

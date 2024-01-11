@@ -1,7 +1,7 @@
-const fs = require("fs");
-const path = require("path");
-const themeColors = require("./theme");
-const colorPrefixList = require("./themeColorPrefixList");
+import colorPrefixList from "./themeColorPrefixList.js";
+import themeColors from "./theme";
+import * as fs from "fs";
+import * as path from "path";
 
 let combinedContent = "";
 

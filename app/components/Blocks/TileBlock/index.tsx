@@ -65,7 +65,7 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
 
       {joinedContent?.map((contentData: any, i: number) => {
         const contentType = determineContentType(
-          contentData as BlockContentWithDetails
+          contentData as BlockContentWithDetails,
         );
 
         const { name, link, imageSrc } =

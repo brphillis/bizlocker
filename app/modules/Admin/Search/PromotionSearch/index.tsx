@@ -1,8 +1,6 @@
-import { json } from "@remix-run/node";
 import type { Promotion } from "@prisma/client";
 import Pagination from "~/components/Pagination";
 import BasicTable from "~/components/Tables/BasicTable";
-import { searchPromotions } from "~/models/promotions.server";
 import AdminContentSearch from "~/components/Search/AdminContentSearch";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/Wrappers/AdminPageWrapper";
@@ -10,22 +8,11 @@ import AdminPageWrapper from "~/components/Layout/Wrappers/AdminPageWrapper";
 import {
   Form,
   Outlet,
-  type Params,
   useLoaderData,
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
-
-export const promotionSearchLoader = async (
-  request: Request,
-  params: Params<string>
-) => {
-  const url = new URL(request.url);
-
-  const { promotions, totalPages } = await searchPromotions(undefined, url);
-
-  return json({ promotions, totalPages });
-};
+import type { promotionSearchLoader } from "./index.server";
 
 const PromotionSearch = () => {
   const { promotions, totalPages } =

@@ -1,7 +1,5 @@
 import { type FormEvent, useEffect, useState } from "react";
-import { json } from "@remix-run/node";
 import { HiTrash } from "react-icons/hi2";
-import { getStores } from "~/models/stores.server";
 import { getFormData } from "~/helpers/formHelpers";
 import { IoArrowForwardCircle } from "react-icons/io5";
 import { isEmptyObject } from "~/helpers/objectHelpers";
@@ -14,19 +12,10 @@ import { ActionAlert } from "~/components/Notifications/Alerts";
 import type { StaffWithDetails } from "~/models/staff.server";
 import { type ValidationErrors, validateForm } from "~/utility/validate";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
-import useNotification, {
-  type PageNotification,
-} from "~/hooks/PageNotification";
-import {
-  getTeam,
-  removeTeamMemberFromTeam,
-  type TeamWithStaff,
-  upsertTeam,
-} from "~/models/teams.server";
+import useNotification from "~/hooks/PageNotification";
 import {
   Form,
   Outlet,
-  type Params,
   useActionData,
   useLoaderData,
   useNavigate,
@@ -37,106 +26,10 @@ import {
 import WindowContainer, {
   handleWindowedFormData,
 } from "~/components/Layout/Containers/WindowContainer";
+import type { teamUpsertLoader } from "./index.server";
 
 const validateOptions = {
   name: true,
-};
-
-export const teamUpsertLoader = async (
-  request: Request,
-  params: Params<string>
-) => {
-  let { searchParams } = new URL(request.url);
-  let id = searchParams.get("teamId");
-
-  if (!id) {
-    throw new Response(null, {
-      status: 404,
-      statusText: "Campaign Not Found",
-    });
-  }
-
-  const team = id === "add" ? ({} as TeamWithStaff) : await getTeam(id);
-
-  if (!team) {
-    throw new Response(null, {
-      status: 404,
-      statusText: "Team Not Found",
-    });
-  }
-
-  const stores = await getStores();
-
-  if (!stores) {
-    throw new Response(null, {
-      status: 404,
-      statusText: "Stores Not Found",
-    });
-  }
-
-  return json({ team, stores });
-};
-
-export const teamUpsertAction = async (
-  request: Request,
-  params: Params<string>
-) => {
-  let notification: PageNotification;
-
-  let { searchParams } = new URL(request.url);
-  const teamId = searchParams.get("teamId");
-  let id = teamId === "add" || !teamId ? undefined : teamId;
-
-  const { formEntries, formErrors } = validateForm(
-    await request.formData(),
-    validateOptions
-  );
-
-  const { name, location, isActive } = formEntries;
-
-  switch (formEntries._action) {
-    case "upsert":
-      if (formErrors) {
-        return { serverValidationErrors: formErrors };
-      }
-
-      const teamData = {
-        id: id as string,
-        name: name as string,
-        store: location as string,
-        isActive: isActive ? true : false,
-      };
-
-      await upsertTeam(teamData);
-
-      notification = {
-        type: "success",
-        message: `Team ${id === "add" ? "Added" : "Updated"}.`,
-      };
-
-      return { success: true, notification };
-
-    case "removeUser":
-      const { staffId, teamId } = formEntries;
-
-      try {
-        await removeTeamMemberFromTeam(staffId as string, teamId as string);
-
-        notification = {
-          type: "warning",
-          message: "User Removed",
-        };
-
-        return { success: true, notification };
-      } catch (err) {
-        notification = {
-          type: "error",
-          message: "Error Removing User",
-        };
-
-        return { success: false, notification };
-      }
-  }
 };
 
 type Props = {
@@ -164,7 +57,7 @@ const TeamUpsert = ({ offRouteModule }: Props) => {
   const handleRemoveUserFromTeam = (
     staffId: number,
     firstName?: string | null,
-    lastName?: string | null
+    lastName?: string | null,
   ) => {
     const hasFullName = firstName && lastName;
     ActionAlert(
@@ -176,7 +69,7 @@ const TeamUpsert = ({ offRouteModule }: Props) => {
         formData.set("staffId", staffId.toString());
         formData.set("teamId", team?.id.toString());
         submit(formData, { method: "POST" });
-      }
+      },
     );
   };
 
@@ -262,7 +155,7 @@ const TeamUpsert = ({ offRouteModule }: Props) => {
                             avatar,
                             jobTitle,
                           }: StaffWithDetails,
-                          index: number
+                          index: number,
                         ) => {
                           const { firstName, lastName } = userDetails!;
                           return (
@@ -313,14 +206,14 @@ const TeamUpsert = ({ offRouteModule }: Props) => {
                                     handleRemoveUserFromTeam(
                                       id,
                                       firstName,
-                                      lastName
+                                      lastName,
                                     )
                                   }
                                 />
                               </td>
                             </tr>
                           );
-                        }
+                        },
                       )}
                     </tbody>
                   </table>

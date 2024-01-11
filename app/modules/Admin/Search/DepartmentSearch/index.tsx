@@ -1,42 +1,18 @@
-import { json } from "@remix-run/node";
 import Pagination from "~/components/Pagination";
 import type { Department } from "@prisma/client";
 import BasicTable from "~/components/Tables/BasicTable";
 import CategorySort from "~/components/Sorting/CategorySort";
-import { searchDepartments } from "~/models/departments.server";
 import AdminContentSearch from "~/components/Search/AdminContentSearch";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/Wrappers/AdminPageWrapper";
 import {
   Form,
   Outlet,
-  type Params,
   useLoaderData,
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
-
-export const departmentSearchLoader = async (
-  request: Request,
-  params: Params<string>
-) => {
-  const url = new URL(request.url);
-
-  const searchQuery = {
-    name: url.searchParams.get("name")?.toString() || undefined,
-    sortBy: url.searchParams.get("sortBy")?.toString() || undefined,
-    sortOrder: url.searchParams.get("sortOrder")?.toString() || undefined,
-    page: Number(url.searchParams.get("pageNumber")) || 1,
-    perPage: Number(url.searchParams.get("perPage")) || 10,
-  };
-
-  const { departments, totalPages } = await searchDepartments(searchQuery);
-
-  return json({
-    totalPages,
-    departments,
-  });
-};
+import type { departmentSearchLoader } from "./index.server";
 
 const DepartmentSearch = () => {
   const { totalPages, departments } =

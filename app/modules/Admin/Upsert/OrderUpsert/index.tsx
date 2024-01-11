@@ -1,20 +1,14 @@
 import { type FormEvent } from "react";
-import { tokenAuth } from "~/auth.server";
-import { json, redirect } from "@remix-run/node";
 import { getFormData } from "~/helpers/formHelpers";
-import { STAFF_SESSION_KEY } from "~/session.server";
 import DarkOverlay from "~/components/Layout/Overlays/DarkOverlay";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import PhoneInput from "~/components/Forms/Input/PhoneInput";
 import type { ActionReturnTypes } from "~/utility/actionTypes";
 import SelectCountry from "~/components/Forms/Select/SelectCountry";
 import OrderStatusSteps from "~/components/Indicators/OrderStatusSteps";
-import useNotification, {
-  type PageNotification,
-} from "~/hooks/PageNotification";
+import useNotification from "~/hooks/PageNotification";
 import {
   Form,
-  type Params,
   useActionData,
   useLoaderData,
   useNavigate,
@@ -22,101 +16,9 @@ import {
   useSearchParams,
   useParams,
 } from "@remix-run/react";
-import {
-  getOrder,
-  type OrderItemWithDetails,
-  updateOrderShippingDetails,
-  updateOrderStatus,
-} from "~/models/orders.server";
+import { type OrderItemWithDetails } from "~/models/orders.server";
 import WindowContainer from "~/components/Layout/Containers/WindowContainer";
-
-export const orderUpsertLoader = async (
-  request: Request,
-  params: Params<string>
-) => {
-  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
-
-  if (!authenticated.valid) {
-    return redirect("/admin/login");
-  }
-
-  let { searchParams } = new URL(request.url);
-  let id = searchParams.get("contentId") || undefined;
-
-  if (!id) {
-    throw new Response(null, {
-      status: 404,
-      statusText: "Order Not Found",
-    });
-  }
-
-  let order = await getOrder(id);
-
-  if (!order) {
-    throw new Response(null, {
-      status: 404,
-      statusText: "Order Not Found",
-    });
-  }
-
-  return json({ order });
-};
-
-export const orderUpsertAction = async (
-  request: Request,
-  params: Params<string>
-) => {
-  let notification: PageNotification;
-
-  const form = Object.fromEntries(await request.formData());
-  const { orderId } = form;
-
-  switch (form._action) {
-    case "updateStatus":
-      const { status } = form;
-      await updateOrderStatus(orderId as string, status as OrderStatus);
-
-      notification = {
-        type: "success",
-        message: "Order Status Updated",
-      };
-
-      return { notification };
-
-    case "updateShipping":
-      const {
-        firstName,
-        lastName,
-        addressLine1,
-        addressLine2,
-        suburb,
-        state,
-        postcode,
-        country,
-        trackingNumber,
-      } = form;
-
-      await updateOrderShippingDetails(
-        orderId as string,
-        firstName as string,
-        lastName as string,
-        addressLine1 as string,
-        addressLine2 as string,
-        suburb as string,
-        state as string,
-        postcode as string,
-        country as string,
-        trackingNumber as string
-      );
-
-      notification = {
-        type: "success",
-        message: "Shipping Details Updated",
-      };
-
-      return { notification };
-  }
-};
+import type { orderUpsertLoader } from "./index.server";
 
 const OrderUpsert = () => {
   const { order } = useLoaderData<typeof orderUpsertLoader>();

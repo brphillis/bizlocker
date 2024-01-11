@@ -90,7 +90,7 @@ const MapBlock = ({ content, options: optionsArray }: Props) => {
         {locations.map(
           (
             { name, address, phoneNumber, faxNumber }: StoreWithDetails,
-            index: number
+            index: number,
           ) => {
             const {
               addressLine1,
@@ -183,7 +183,7 @@ const MapBlock = ({ content, options: optionsArray }: Props) => {
                 </div>
               </div>
             );
-          }
+          },
         )}
       </div>
     </div>

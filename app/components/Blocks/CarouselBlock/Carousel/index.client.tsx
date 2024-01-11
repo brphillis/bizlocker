@@ -67,7 +67,7 @@ const Carousel = ({ joinedContent, options }: Props) => {
   const hideExtraPaginationButtons = () => {
     if (columns && isDecimal(columns) && trueSlideLength < columns * 3) {
       const paginationButtons = document.querySelectorAll(
-        ".swiper-pagination-bullet"
+        ".swiper-pagination-bullet",
       );
 
       paginationButtons.forEach((button, index: number) => {
@@ -123,7 +123,7 @@ const Carousel = ({ joinedContent, options }: Props) => {
             onSlideChange={(e) => {
               //handle pagination active class
               const paginationButtons = document.querySelectorAll(
-                ".swiper-pagination-bullet"
+                ".swiper-pagination-bullet",
               );
 
               if (
@@ -131,7 +131,7 @@ const Carousel = ({ joinedContent, options }: Props) => {
                 e.realIndex + 1 > trueSlideLength
               ) {
                 paginationButtons[e.realIndex - trueSlideLength].classList.add(
-                  "swiper-pagination-bullet-active"
+                  "swiper-pagination-bullet-active",
                 );
               }
             }}
@@ -201,7 +201,7 @@ const Carousel = ({ joinedContent, options }: Props) => {
                     />
                   </SwiperSlide>
                 );
-              }
+              },
             )}
           </Swiper>
         </div>

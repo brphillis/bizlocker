@@ -1,30 +1,17 @@
-import { json } from "@remix-run/node";
 import type { Campaign } from "@prisma/client";
 import Pagination from "~/components/Pagination";
 import BasicTable from "~/components/Tables/BasicTable";
-import { searchCampaigns } from "~/models/campaigns.server";
 import AdminContentSearch from "~/components/Search/AdminContentSearch";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/Wrappers/AdminPageWrapper";
 import {
   Form,
   Outlet,
-  type Params,
   useLoaderData,
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
-
-export const campaignSearchLoader = async (
-  request: Request,
-  params: Params<string>
-) => {
-  const url = new URL(request.url);
-
-  const { campaigns, totalPages } = await searchCampaigns(undefined, url);
-
-  return json({ campaigns, totalPages });
-};
+import type { campaignSearchLoader } from "./index.server";
 
 const CampaignSearch = () => {
   const { campaigns, totalPages } =

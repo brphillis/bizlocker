@@ -1,5 +1,4 @@
 import { type FormEvent, useEffect, useState } from "react";
-import { json } from "@remix-run/node";
 import { getFormData } from "~/helpers/formHelpers";
 import DarkOverlay from "~/components/Layout/Overlays/DarkOverlay";
 import BasicInput from "~/components/Forms/Input/BasicInput";
@@ -8,24 +7,9 @@ import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import { type ValidationErrors, validateForm } from "~/utility/validate";
 import BasicMultiSelect from "~/components/Forms/Select/BasicMultiSelect";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
-import useNotification, {
-  type PageNotification,
-} from "~/hooks/PageNotification";
-import {
-  getDepartments,
-  type DepartmentWithDetails,
-} from "~/models/departments.server";
-import {
-  getArticleCategories,
-  type ArticleCategoryWithDetails,
-} from "~/models/articleCategories.server";
-import {
-  getProductSubCategories,
-  type ProductSubCategoryWithDetails,
-} from "~/models/productSubCategories.server";
+import useNotification from "~/hooks/PageNotification";
 import {
   Form,
-  type Params,
   useActionData,
   useLoaderData,
   useNavigate,
@@ -33,113 +17,15 @@ import {
   useSearchParams,
   useParams,
 } from "@remix-run/react";
-import {
-  getProductCategory,
-  type NewProductCategory,
-  type ProductCategoryWithDetails,
-  upsertProductCategory,
-} from "~/models/productCategories.server";
 import WindowContainer, {
   handleWindowedFormData,
 } from "~/components/Layout/Containers/WindowContainer";
+import type { productCategoryUpsertLoader } from "./index.server";
 
 const validateOptions = {
   name: true,
   department: true,
   index: true,
-};
-
-export const productCategoryUpsertLoader = async (
-  request: Request,
-  params: Params<string>
-) => {
-  let { searchParams } = new URL(request.url);
-  let id = searchParams.get("contentId");
-
-  const departments = await getDepartments();
-  const productSubCategories = await getProductSubCategories();
-  const articleCategories = await getArticleCategories();
-
-  if (id === "add") {
-    const productCategory = {};
-    return json({ productCategory } as {
-      productCategory: ProductCategoryWithDetails;
-      departments: DepartmentWithDetails[];
-      productSubCategories: ProductSubCategoryWithDetails[];
-      articleCategories: ArticleCategoryWithDetails[];
-    });
-  }
-
-  if (!id) {
-    throw new Response(null, {
-      status: 404,
-      statusText: "Product Category Not Found",
-    });
-  }
-
-  const productCategory = await getProductCategory(id);
-
-  return json({
-    productCategory,
-    departments,
-    productSubCategories,
-    articleCategories,
-  });
-};
-
-export const productCategoryUpsertAction = async (
-  request: Request,
-  params: Params<string>
-) => {
-  let notification: PageNotification;
-
-  let { searchParams } = new URL(request.url);
-  const contentId = searchParams.get("contentId");
-  let id = contentId === "add" || !contentId ? undefined : contentId;
-
-  const { formEntries, formErrors } = validateForm(
-    await request.formData(),
-    validateOptions
-  );
-
-  const {
-    name,
-    index,
-    department,
-    displayInNavigation,
-    isActive,
-    articleCategories,
-    productSubCategories,
-  } = formEntries;
-
-  switch (formEntries._action) {
-    case "upsert":
-      if (formErrors) {
-        return json({ serverValidationErrors: formErrors });
-      }
-
-      const categoryData: NewProductCategory = {
-        name: name as string,
-        index: parseInt(index as string),
-        department: department as string,
-        displayInNavigation: displayInNavigation ? true : false,
-        isActive: isActive ? true : false,
-        productSubCategories:
-          productSubCategories && JSON.parse(productSubCategories as string),
-        articleCategories:
-          articleCategories && JSON.parse(articleCategories as string),
-        id: id,
-      };
-
-      await upsertProductCategory(categoryData);
-
-      notification = {
-        type: "success",
-        message: `Category ${id === "add" ? "Added" : "Updated"}.`,
-      };
-
-      return json({ success: true, notification });
-  }
 };
 
 type Props = {
@@ -264,9 +150,9 @@ const ProductCategoryUpsert = ({ offRouteModule }: Props) => {
                   label="Sub Categories"
                   customWidth="w-full"
                   selections={productSubCategories.filter(
-                    (e) =>
+                    (e: any) =>
                       !e.productCategoryId ||
-                      e.productCategoryId === productCategory?.id
+                      e.productCategoryId === productCategory?.id,
                   )}
                   defaultValues={productCategory?.productSubCategories}
                 />

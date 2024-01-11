@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
-import { json } from "@remix-run/node";
 import { IoAdd } from "react-icons/io5";
 import Pagination from "~/components/Pagination";
-import { getStores } from "~/models/stores.server";
 import DarkOverlay from "~/components/Layout/Overlays/DarkOverlay";
-import { addTeamMemberToTeam } from "~/models/teams.server";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import BasicTitleBar from "~/components/Layout/TitleBars/BasicTitleBar";
 import type { ActionReturnTypes } from "~/utility/actionTypes";
@@ -12,78 +9,17 @@ import { placeholderAvatar } from "~/utility/placeholderAvatar";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import { ActionAlert } from "~/components/Notifications/Alerts";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
-import { searchStaff, type StaffWithDetails } from "~/models/staff.server";
-import useNotification, {
-  type PageNotification,
-} from "~/hooks/PageNotification";
+import { type StaffWithDetails } from "~/models/staff.server";
+import useNotification from "~/hooks/PageNotification";
 import {
   Form,
   Outlet,
-  type Params,
   useActionData,
   useLoaderData,
   useNavigate,
   useSubmit,
 } from "@remix-run/react";
-export const teamAddStaffLoader = async (
-  request: Request,
-  params: Params<string>
-) => {
-  const contentType = params.contentType;
-
-  if (!contentType || contentType !== "team") {
-    throw new Response(null, {
-      status: 404,
-      statusText: "Page Not Found",
-    });
-  }
-
-  const url = new URL(request.url);
-
-  const searchQuery = {
-    firstName: url.searchParams.get("firstName") as string,
-    lastName: url.searchParams.get("lastName") as string,
-    email: url.searchParams.get("email") as string,
-    page: Number(url.searchParams.get("pageNumber")) || 1,
-    perPage: 10,
-  };
-
-  const { staff, totalPages } = await searchStaff(searchQuery, true);
-
-  const stores = await getStores();
-  const teamId = url.searchParams.get("teamId");
-
-  return json({ staff, totalPages, stores, teamId });
-};
-
-export const teamAddStaffAction = async (
-  request: Request,
-  params: Params<string>
-) => {
-  const form = Object.fromEntries(await request.formData());
-  let notification: PageNotification;
-
-  switch (form._action) {
-    case "addUser":
-      const { staffId, teamId } = form;
-
-      try {
-        await addTeamMemberToTeam(staffId as string, teamId as string);
-
-        notification = {
-          type: "success",
-          message: "User Added",
-        };
-        return json({ success: true, notification });
-      } catch (err) {
-        notification = {
-          type: "error",
-          message: "Error Adding User",
-        };
-        return json({ success: false, notification });
-      }
-  }
-};
+import type { teamAddStaffLoader } from "./index.server";
 
 const TeamAddStaff = () => {
   const { staff, totalPages, stores, teamId } =
@@ -101,7 +37,7 @@ const TeamAddStaff = () => {
   const handleAddUserToTeam = (
     staffId: number,
     firstName?: string | null,
-    lastName?: string | null
+    lastName?: string | null,
   ) => {
     const hasFullName = firstName && lastName;
 
@@ -115,7 +51,7 @@ const TeamAddStaff = () => {
           formData.set("staffId", staffId.toString());
           formData.set("teamId", teamId.toString());
           submit(formData, { method: "POST" });
-        }
+        },
       );
   };
 
@@ -178,7 +114,7 @@ const TeamAddStaff = () => {
                 {staff?.map(
                   (
                     { id, userDetails, avatar, jobTitle }: StaffWithDetails,
-                    index: number
+                    index: number,
                   ) => {
                     const { firstName, lastName } = userDetails!;
                     return (
@@ -220,7 +156,7 @@ const TeamAddStaff = () => {
                         </td>
                       </tr>
                     );
-                  }
+                  },
                 )}
               </tbody>
             </table>

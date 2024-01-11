@@ -46,7 +46,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   }
 };
 
-export const RegisterPage = () => {
+export default function ForgotPassword() {
   const navigate = useNavigate();
   const { validationErrors, success } =
     (useActionData() as ActionReturnTypes) || {};
@@ -56,7 +56,7 @@ export const RegisterPage = () => {
       ActionAlert(
         "Verification Email Sent!",
         "Check your inbox to reset your password.",
-        () => navigate("/login")
+        () => navigate("/login"),
       );
     };
 
@@ -111,6 +111,4 @@ export const RegisterPage = () => {
       </Form>
     </div>
   );
-};
-
-export default RegisterPage;
+}

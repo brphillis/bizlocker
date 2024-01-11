@@ -1,5 +1,5 @@
 import type { Config } from "tailwindcss";
-const colors = require('./theme/theme');
+import { themeColors } from "./theme/theme.js";
 
 export default {
   content: ["./app/**/*.{js,jsx,ts,tsx}"],
@@ -10,7 +10,7 @@ export default {
       notosans: ["Noto Sans", "sans-serif"],
     },
     extend: {
-      colors: colors,
+      colors: themeColors,
       scale: {
         "-100": "-1",
       },
@@ -20,7 +20,7 @@ export default {
   daisyui: {
     themes: [
       {
-        "brand-light": colors,
+        "brand-light": themeColors,
       },
     ],
   },

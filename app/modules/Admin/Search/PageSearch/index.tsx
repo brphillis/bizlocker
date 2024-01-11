@@ -1,29 +1,16 @@
-import { json } from "@remix-run/node";
 import type { WebPage } from "@prisma/client";
 import Pagination from "~/components/Pagination";
 import BasicTable from "~/components/Tables/BasicTable";
-import { searchWebPages } from "~/models/webPages.server";
 import AdminContentSearch from "~/components/Search/AdminContentSearch";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/Wrappers/AdminPageWrapper";
 import {
   Form,
-  type Params,
   useLoaderData,
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
-
-export const pageSearchLoader = async (
-  request: Request,
-  params: Params<string>
-) => {
-  const url = new URL(request.url);
-
-  const { webPages, totalPages } = await searchWebPages(undefined, url);
-
-  return json({ webPages, totalPages });
-};
+import type { pageSearchLoader } from "./index.server";
 
 const PageSearch = () => {
   const navigate = useNavigate();

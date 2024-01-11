@@ -64,7 +64,7 @@ const AdminSideBar = ({ staffMember, userNotifications }: Props) => {
               {adminNavBarRoutes.map(
                 (
                   { name, icon, link, children }: NavigationRouteItem,
-                  i: number
+                  i: number,
                 ) => {
                   const isFirstDropdown =
                     children &&
@@ -91,7 +91,7 @@ const AdminSideBar = ({ staffMember, userNotifications }: Props) => {
                       </React.Fragment>
                     );
                   }
-                }
+                },
               )}
             </div>
 

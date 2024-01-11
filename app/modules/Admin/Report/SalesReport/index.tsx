@@ -1,38 +1,17 @@
-import { Form, Outlet, type Params, useLoaderData } from "@remix-run/react";
+import { Form, Outlet, useLoaderData } from "@remix-run/react";
 import PieReChart from "~/components/Charts/PieChart";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/Wrappers/AdminPageWrapper";
-import { getSalesToday } from "~/models/saleReports.server";
 import { calculatePercentageChange } from "~/helpers/numberHelpers";
 import WindowContainer from "~/components/Layout/Containers/WindowContainer";
 import BasicButton from "~/components/Buttons/BasicButton";
+import type { salesReportLoader } from "./index.server";
 
 type ReportData = {
   productSubCategory?: string | null;
   brand?: string | null;
   totalSales?: number | null;
   totalSalesYesterday?: number | null;
-};
-
-export const salesReportLoader = async (
-  request: Request,
-  params: Params<string>
-) => {
-  const {
-    totalSalesToday,
-    totalSalesYesterday,
-    productCountToday,
-    topProductSubCategoriesToday,
-    topBrandsToday,
-  } = await getSalesToday();
-
-  return {
-    totalSalesToday,
-    totalSalesYesterday,
-    productCountToday,
-    topProductSubCategoriesToday,
-    topBrandsToday,
-  };
 };
 
 const SalesReporting = () => {
@@ -65,8 +44,7 @@ const SalesReporting = () => {
 
         <div className="flex flex-col gap-3">
           <WindowContainer
-            label="Sales Today"
-            direction="col"
+            title="Sales Today"
             extendStyle="bg-base-200"
             children={
               <div className="stats rounded-none bg-base-200">
@@ -90,7 +68,7 @@ const SalesReporting = () => {
                     {totalSalesToday && totalSalesYesterday
                       ? calculatePercentageChange(
                           totalSalesToday,
-                          totalSalesYesterday
+                          totalSalesYesterday,
                         )?.toFixed(0) + "%"
                       : "No Stats"}
                   </div>
@@ -100,8 +78,7 @@ const SalesReporting = () => {
           />
 
           <WindowContainer
-            label="Charts"
-            direction="col"
+            title="Charts"
             extendStyle="bg-base-200"
             children={
               <div className="flex h-max w-full flex-row flex-wrap items-center justify-center">
@@ -125,8 +102,7 @@ const SalesReporting = () => {
           />
 
           <WindowContainer
-            label="Generate Reports"
-            direction="col"
+            title="Generate Reports"
             extendStyle="bg-base-200"
             children={
               <>

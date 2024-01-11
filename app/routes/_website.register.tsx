@@ -55,7 +55,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   }
 };
 
-export const RegisterPage = () => {
+export default function RegisterPage() {
   const navigate = useNavigate();
   const { validationErrors, success } =
     (useActionData() as ActionReturnTypes) || {};
@@ -65,7 +65,7 @@ export const RegisterPage = () => {
       ActionAlert(
         "Registration Complete",
         "We Have Sent You a Verification Email.",
-        () => navigate("/login")
+        () => navigate("/login"),
       );
     };
 
@@ -140,6 +140,4 @@ export const RegisterPage = () => {
       </AuthContainer>
     </AuthPageWrapper>
   );
-};
-
-export default RegisterPage;
+}

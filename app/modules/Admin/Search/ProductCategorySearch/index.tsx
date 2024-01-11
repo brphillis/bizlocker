@@ -1,45 +1,18 @@
 import Pagination from "~/components/Pagination";
 import CategorySort from "~/components/Sorting/CategorySort";
-import { getDepartments } from "~/models/departments.server";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/Wrappers/AdminPageWrapper";
-import {
-  searchProductCategories,
-  type ProductCategory,
-} from "~/models/productCategories.server";
-import { getProductSubCategories } from "~/models/productSubCategories.server";
-import { json } from "@remix-run/node";
+import { type ProductCategory } from "~/models/productCategories.server";
 import {
   Form,
   Outlet,
-  type Params,
   useLoaderData,
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
 import BasicTable from "~/components/Tables/BasicTable";
 import AdminContentSearch from "~/components/Search/AdminContentSearch";
-
-export const productCategorySearchLoader = async (
-  request: Request,
-  params: Params<string>
-) => {
-  const url = new URL(request.url);
-
-  const { productCategories, totalPages } = await searchProductCategories(
-    undefined,
-    url
-  );
-  const departments = await getDepartments();
-  const productSubCategories = await getProductSubCategories();
-
-  return json({
-    productCategories,
-    totalPages,
-    departments,
-    productSubCategories,
-  });
-};
+import type { productCategorySearchLoader } from "./index.server";
 
 const ProductCategorySearch = () => {
   const { productCategories, totalPages, productSubCategories, departments } =

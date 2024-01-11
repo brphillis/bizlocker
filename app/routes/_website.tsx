@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
-import stylesheet from "~/tailwind.css";
 import Spinner from "~/components/Spinner";
 import SearchBar from "~/components/SearchBar";
 import { getCart } from "~/models/cart.server";
 import { getBrands } from "~/models/brands.server";
-import { cssBundleHref } from "@remix-run/css-bundle";
 import Footer from "~/components/Layout/_Website/Footer";
 import DarkOverlay from "~/components/Layout/Overlays/DarkOverlay";
 import { getUserDataFromSession } from "~/session.server";
@@ -13,7 +11,6 @@ import { getProductCategories } from "~/models/productCategories.server";
 import {
   json,
   type MetaFunction,
-  type LinksFunction,
   type LoaderFunctionArgs,
 } from "@remix-run/node";
 import MobileMenu from "~/components/Layout/_Website/Navigation/MobileMenu";
@@ -35,10 +32,6 @@ import "sweetalert2/dist/sweetalert2.css";
 
 import type { User } from "@prisma/client";
 import CountDown from "~/components/Indicators/Countdown";
-export const links: LinksFunction = () => [
-  { rel: "stylesheet", href: stylesheet },
-  ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
-];
 
 export const meta: MetaFunction = ({ data }) => {
   return [

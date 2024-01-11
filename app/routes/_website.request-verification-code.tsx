@@ -44,7 +44,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     const { user, error } = await verifyLogin(
       email as string,
       password as string,
-      false
+      false,
     );
 
     if (error) {
@@ -65,7 +65,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   }
 };
 
-export const RequestVerificationCode = () => {
+export default function RequestVerificationCode() {
   const navigate = useNavigate();
   const { validationErrors, success } =
     (useActionData() as ActionReturnTypes) || {};
@@ -75,7 +75,7 @@ export const RequestVerificationCode = () => {
       ActionAlert(
         "Verification Email Sent",
         "We Have Sent You a Verification Email.",
-        () => navigate("/login")
+        () => navigate("/login"),
       );
     };
 
@@ -126,7 +126,7 @@ export const RequestVerificationCode = () => {
           ))}
 
           {Object.values(validationErrors)?.includes(
-            "Password" && "Requirements"
+            "Password" && "Requirements",
           ) && (
             <div className="flex flex-col items-start text-[10px] text-red-500/75">
               <div>- At least one uppercase letter (A-Z) </div>
@@ -150,6 +150,4 @@ export const RequestVerificationCode = () => {
       </AuthContainer>
     </AuthPageWrapper>
   );
-};
-
-export default RequestVerificationCode;
+}

@@ -1,42 +1,18 @@
-import { json } from "@remix-run/node";
 import Pagination from "~/components/Pagination";
-import { getBrands } from "~/models/brands.server";
 import BasicTable from "~/components/Tables/BasicTable";
 import ProductSort from "~/components/Sorting/ProductSort";
 import AdminContentSearch from "~/components/Search/AdminContentSearch";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/Wrappers/AdminPageWrapper";
-import { getProductSubCategories } from "~/models/productSubCategories.server";
-import {
-  searchProducts,
-  type ProductWithDetails,
-} from "~/models/products.server";
+import { type ProductWithDetails } from "~/models/products.server";
 import {
   Form,
   Outlet,
-  type Params,
   useLoaderData,
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
-
-export const productSearchLoader = async (
-  request: Request,
-  params: Params<string>
-) => {
-  const url = new URL(request.url);
-
-  const { products, totalPages } = await searchProducts(undefined, url);
-  const brands = await getBrands();
-  const productSubCategories = await getProductSubCategories();
-
-  return json({
-    products,
-    brands,
-    productSubCategories,
-    totalPages,
-  });
-};
+import type { productSearchLoader } from "./index.server";
 
 const ProductSearch = () => {
   const { products, totalPages, productSubCategories, brands } =

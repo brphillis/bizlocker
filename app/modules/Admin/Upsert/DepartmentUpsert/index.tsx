@@ -1,19 +1,14 @@
 import { type FormEvent, useEffect, useState } from "react";
-import { json } from "@remix-run/node";
 import { getFormData } from "~/helpers/formHelpers";
 import DarkOverlay from "~/components/Layout/Overlays/DarkOverlay";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import type { ActionReturnTypes } from "~/utility/actionTypes";
 import { type ValidationErrors, validateForm } from "~/utility/validate";
-import { getProductCategories } from "~/models/productCategories.server";
 import BasicMultiSelect from "~/components/Forms/Select/BasicMultiSelect";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
-import useNotification, {
-  type PageNotification,
-} from "~/hooks/PageNotification";
+import useNotification from "~/hooks/PageNotification";
 import {
   Form,
-  type Params,
   useActionData,
   useLoaderData,
   useNavigate,
@@ -21,95 +16,16 @@ import {
   useSearchParams,
   useParams,
 } from "@remix-run/react";
-import {
-  getDepartment,
-  type DepartmentWithDetails,
-  type NewDepartment,
-  upsertDepartment,
-} from "~/models/departments.server";
 
-import "~/models/productSubCategories.server";
 import WindowContainer, {
   handleWindowedFormData,
 } from "~/components/Layout/Containers/WindowContainer";
+import type { departmentUpsertLoader } from "./index.server";
 
 const validateOptions = {
   name: true,
   department: true,
   index: true,
-};
-
-export const departmentUpsertLoader = async (
-  request: Request,
-  params: Params<string>
-) => {
-  let { searchParams } = new URL(request.url);
-  let id = searchParams.get("contentId");
-
-  if (!id) {
-    throw new Response(null, {
-      status: 404,
-      statusText: "Department Not Found",
-    });
-  }
-
-  const department =
-    id === "add" ? ({} as DepartmentWithDetails) : await getDepartment(id);
-
-  if (!department) {
-    throw new Response(null, {
-      status: 404,
-      statusText: "Department Not Found",
-    });
-  }
-
-  const productCategories = await getProductCategories();
-
-  return json({ department, productCategories });
-};
-
-export const departmentUpsertAction = async (
-  request: Request,
-  params: Params<string>
-) => {
-  let notification: PageNotification;
-
-  let { searchParams } = new URL(request.url);
-  const contentId = searchParams.get("contentId");
-  let id = contentId === "add" || !contentId ? undefined : contentId;
-
-  const { formEntries, formErrors } = validateForm(
-    await request.formData(),
-    validateOptions
-  );
-
-  const { name, isActive, index, displayInNavigation, productCategories } =
-    formEntries;
-
-  switch (formEntries._action) {
-    case "upsert":
-      if (formErrors) {
-        return { serverValidationErrors: formErrors };
-      }
-      const departmentData: NewDepartment = {
-        name: name as string,
-        index: parseInt(index as string),
-        isActive: isActive ? true : false,
-        displayInNavigation: displayInNavigation ? true : false,
-        productCategories:
-          productCategories && JSON.parse(productCategories as string),
-        id: id,
-      };
-
-      await upsertDepartment(departmentData);
-
-      notification = {
-        type: "success",
-        message: `Department ${id === "add" ? "Added" : "Updated"}.`,
-      };
-
-      return json({ success: true, notification });
-  }
 };
 
 type Props = {
@@ -219,7 +135,7 @@ const DepartmentUpsert = ({ offRouteModule }: Props) => {
                 label="Categories"
                 customWidth="w-full"
                 selections={productCategories.filter(
-                  (e) => !e.departmentId || e.departmentId === department.id
+                  (e) => !e.departmentId || e.departmentId === department.id,
                 )}
                 defaultValues={department?.productCategories}
               />

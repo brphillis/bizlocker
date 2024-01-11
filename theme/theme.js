@@ -1,7 +1,7 @@
-const tailwindColors = require("./tailwindColors");
+import { tailwindColors } from "./tailwindColors.js";
 
 //prettier-ignore
-const themeColors ={
+export const themeColors ={
     "primary": "#3B82F6",
     "primary-dark": "#2563EB",
     "primary-content": "#F0F0F0",
@@ -35,5 +35,3 @@ const themeColors ={
     "brand-indigo" : "#4B0082",
     ...tailwindColors
   }
-
-module.exports = themeColors;

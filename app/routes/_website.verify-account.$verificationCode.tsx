@@ -27,7 +27,7 @@ export const loader = async ({ params, request }: ActionFunctionArgs) => {
   if (emailAddress && verificationCode) {
     const { success: verified } = await verifyUserAccount(
       emailAddress,
-      verificationCode
+      verificationCode,
     );
     return json(verified);
   } else return null;

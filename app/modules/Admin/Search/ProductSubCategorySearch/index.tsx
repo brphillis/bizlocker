@@ -1,39 +1,20 @@
 import Pagination from "~/components/Pagination";
-import { json } from "@remix-run/server-runtime";
 import BasicTable from "~/components/Tables/BasicTable";
 import { type ProductSubCategory } from "@prisma/client";
 import CategorySort from "~/components/Sorting/CategorySort";
 import AdminContentSearch from "~/components/Search/AdminContentSearch";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
-import { getProductCategories } from "~/models/productCategories.server";
 import AdminPageWrapper from "~/components/Layout/Wrappers/AdminPageWrapper";
-import { searchProductSubCategories } from "~/models/productSubCategories.server";
 import {
   Form,
   Outlet,
-  type Params,
   useLoaderData,
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
+import type { productSubCategorySearchLoader } from "./index.server";
 
-export const productSubCategorySearchLoader = async (
-  request: Request,
-  params: Params<string>
-) => {
-  const url = new URL(request.url);
-
-  const { productSubCategories, totalPages } = await searchProductSubCategories(
-    undefined,
-    url
-  );
-
-  const productCategories = await getProductCategories();
-
-  return json({ productSubCategories, productCategories, totalPages });
-};
-
-const ProductSubCategorySearch = () => {
+export default function ProductSubCategorySearch() {
   const { productSubCategories, productCategories, totalPages } =
     useLoaderData<typeof productSubCategorySearchLoader>();
 
@@ -78,6 +59,4 @@ const ProductSubCategorySearch = () => {
       <Outlet />
     </AdminPageWrapper>
   );
-};
-
-export default ProductSubCategorySearch;
+}

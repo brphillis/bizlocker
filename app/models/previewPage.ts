@@ -5,9 +5,9 @@ import {
   type BlockWithContent,
   disconnectBlock,
 } from "./pageBuilder.server";
-import { getBlocks } from "~/helpers/blockHelpers";
 import type { PageType } from "~/utility/pageBuilder";
 import { activeContentTypes } from "~/utility/blockMaster/blockMaster";
+import { getBlocks } from "./blocks.server";
 
 export const getPreviewPage = async (id: string): Promise<Page | null> => {
   return (await prisma.previewPage.findUnique({
@@ -29,7 +29,7 @@ export const getPreviewPage = async (id: string): Promise<Page | null> => {
 
 export const addPreviewPage = async (
   pageType: PageType,
-  pageId: string
+  pageId: string,
 ): Promise<PreviewPage> => {
   return await prisma.previewPage.create({
     data: {
@@ -39,7 +39,7 @@ export const addPreviewPage = async (
 };
 
 export const deletePreviewPage = async (
-  previewPageId: string
+  previewPageId: string,
 ): Promise<PreviewPage> => {
   const previewPage = await prisma.previewPage.findUnique({
     where: { id: parseInt(previewPageId) },
@@ -57,7 +57,7 @@ export const deletePreviewPage = async (
     await Promise.all(
       blocks.map(async ({ id }: BlockWithContent) => {
         await disconnectBlock(id.toString(), previewPageId);
-      })
+      }),
     );
   }
 
@@ -68,7 +68,7 @@ export const deletePreviewPage = async (
 
 export const deletePage = async (
   pageId: string,
-  pageType: PageType
+  pageType: PageType,
 ): Promise<{ success: true }> => {
   // Disconnect any removed blocks from published
   const findPage = prisma[`${pageType}`].findUnique as (args: any) => any;
@@ -86,7 +86,7 @@ export const deletePage = async (
   await Promise.all(
     previewPages.map(async ({ id }: PreviewPage) => {
       await deletePreviewPage(id.toString());
-    })
+    }),
   );
 
   const deletePageAsync = prisma[`${pageType}`].delete as (args: any) => any;

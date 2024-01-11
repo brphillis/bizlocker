@@ -1,39 +1,12 @@
 import type { Image, Product } from "@prisma/client";
 import type { BlockWithContent, Page } from "~/models/pageBuilder.server";
-import {
-  fetchBlockProducts,
-  type BlockContentWithDetails,
-  fetchBlockArticles,
-} from "~/models/blocks.server";
+import { type BlockContentWithDetails } from "~/models/blocks.server";
 import { isArrayofStrings } from "./arrayHelpers";
 import { getBlockContentTypes } from "../utility/blockMaster/blockMaster";
 
-export const getBlocks = async (
-  page: Page,
-  fetchNestedContent?: boolean
-): Promise<BlockWithContent[]> => {
-  // Populate the page with the active block types
-  let sortedBlocks = sortBlocks(page);
-
-  // Populate content in blocks that requires a search query
-  if (fetchNestedContent) {
-    for (let i = 0; i < sortedBlocks.length; i++) {
-      const block = sortedBlocks[i];
-      if (block.name === "product" && block.content) {
-        block.content.product = await fetchBlockProducts(block);
-      }
-      if (block.name === "article" && block.content) {
-        block.content.article = await fetchBlockArticles(block);
-      }
-    }
-  }
-
-  return sortedBlocks;
-};
-
 // Returns the default content selection values for a block (example:selected Products)
 export const getBlockDefaultValues = (
-  block: BlockWithContent
+  block: BlockWithContent,
 ): ContentSelection[] => {
   const blockContentTypes = getBlockContentTypes(block.name);
   const defaultValues: ContentSelection[] = [];
@@ -59,7 +32,7 @@ export const getBlockDefaultValues = (
             type: contentName,
             contentId: j.id,
             name: (j as Product).name || (j as Image).altText || "",
-          })
+          }),
       );
     } else if (
       Array.isArray(block.content[contentName]) &&
@@ -71,7 +44,7 @@ export const getBlockDefaultValues = (
           type: contentName,
           contentId: j as unknown as string,
           name: j as unknown as string,
-        })
+        }),
       );
     } else {
       let content;

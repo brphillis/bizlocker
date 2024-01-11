@@ -1,2 +1,7 @@
-const colorPrefixList = ["bg-", "text-", "border-", "outline-", "decoration-"];
-module.exports = colorPrefixList;
+export const colorPrefixList = [
+  "bg-",
+  "text-",
+  "border-",
+  "outline-",
+  "decoration-",
+];

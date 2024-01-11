@@ -4,11 +4,11 @@ import { type TypedResponse, redirect } from "@remix-run/server-runtime";
 import { prisma } from "~/db.server";
 import { activeContentTypes } from "~/utility/blockMaster/blockMaster";
 import { getOrderBy } from "~/helpers/sortHelpers";
-import { getBlocks } from "~/helpers/blockHelpers";
+import { getBlocks } from "./blocks.server";
 
 export const getWebPage = async (
   id?: string,
-  title?: string
+  title?: string,
 ): Promise<WebPage | null> => {
   let whereClause;
 
@@ -37,7 +37,7 @@ export const getWebPage = async (
 };
 
 export const deleteWebPage = async (
-  id: number
+  id: number,
 ): Promise<TypedResponse<void>> => {
   const webPage = await prisma.webPage.findUnique({
     where: {
@@ -63,8 +63,8 @@ export const deleteWebPage = async (
   await Promise.all(
     webPageBlocks.map(
       async (e: BlockWithContent) =>
-        await disconnectBlock(e.id.toString(), e.name)
-    )
+        await disconnectBlock(e.id.toString(), e.name),
+    ),
   );
 
   // Delete the webPage
@@ -79,7 +79,7 @@ export const deleteWebPage = async (
 
 export const searchWebPages = async (
   formData?: { [k: string]: FormDataEntryValue },
-  url?: URL
+  url?: URL,
 ): Promise<{ webPages: WebPage[]; totalPages: number }> => {
   const title =
     formData?.title || (url && url.searchParams.get("title")?.toString()) || "";

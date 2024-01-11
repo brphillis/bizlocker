@@ -1,4 +1,4 @@
-import type { Campaign, Image, Promotion } from "@prisma/client";
+import type { Campaign, Promotion } from "@prisma/client";
 import type { ActionReturnTypes } from "~/utility/actionTypes";
 import { type FormEvent, useEffect, useState } from "react";
 import { type ValidationErrors, validateForm } from "~/utility/validate";
@@ -6,108 +6,25 @@ import DarkOverlay from "~/components/Layout/Overlays/DarkOverlay";
 import { IoCaretForwardCircleSharp } from "react-icons/io5";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import UploadImage from "~/components/Forms/Upload/UploadImage";
-import {
-  type ImageWithDetails,
-  deleteImage,
-  getImage,
-  upsertImage,
-} from "~/models/images.server";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
-import { json } from "@remix-run/node";
 import {
   Form,
-  type Params,
   useActionData,
   useLoaderData,
   useNavigate,
   useSubmit,
   useSearchParams,
 } from "@remix-run/react";
-import useNotification, {
-  type PageNotification,
-} from "~/hooks/PageNotification";
+import useNotification from "~/hooks/PageNotification";
 import { getFormData } from "~/helpers/formHelpers";
 import { ActionAlert } from "~/components/Notifications/Alerts";
 import { hasNonEmptyArrayObjectOrIdKey } from "~/helpers/contentHelpers";
 import WindowContainer from "~/components/Layout/Containers/WindowContainer";
+import type { imageUpsertLoader } from "./index.server";
 
 const validateOptions = {
   image: true,
   altText: true,
-};
-
-export const imageUpsertLoader = async (
-  request: Request,
-  params: Params<string>
-) => {
-  let { searchParams } = new URL(request.url);
-  let id = searchParams.get("contentId");
-
-  if (!id) {
-    throw new Response(null, {
-      status: 404,
-      statusText: "Campaign Not Found",
-    });
-  }
-
-  const image = id === "add" ? ({} as ImageWithDetails) : await getImage(id);
-
-  if (!image) {
-    throw new Response(null, {
-      status: 404,
-      statusText: "Image Not Found",
-    });
-  }
-
-  return json({ image });
-};
-
-export const imageUpsertAction = async (
-  request: Request,
-  params: Params<string>
-) => {
-  let notification: PageNotification;
-
-  let { searchParams } = new URL(request.url);
-  const contentId = searchParams.get("contentId");
-  let id = contentId === "add" || !contentId ? undefined : contentId;
-
-  const { formEntries, formErrors } = validateForm(
-    await request.formData(),
-    validateOptions
-  );
-
-  const { image, altText } = formEntries;
-
-  switch (formEntries._action) {
-    case "upsert":
-      if (formErrors) {
-        return json({ serverValidationErrors: formErrors });
-      }
-
-      const parsedImage = image
-        ? (JSON.parse(image?.toString()) as Image)
-        : undefined;
-
-      parsedImage && (await upsertImage(altText as string, parsedImage, id));
-
-      notification = {
-        type: "success",
-        message: `Image ${id === "add" ? "Added" : "Updated"}.`,
-      };
-
-      return json({ success: true, notification });
-
-    case "delete":
-      await deleteImage(id as string);
-
-      notification = {
-        type: "warning",
-        message: "Image Deleted",
-      };
-
-      return json({ success: true, notification });
-  }
 };
 
 type Props = {
@@ -141,7 +58,7 @@ const ImageUpsert = ({ offRouteModule }: Props) => {
     useState<ValidationErrors>();
   const [loading, setLoading] = useState<boolean>(false);
   const [hasConnection] = useState<boolean>(
-    hasNonEmptyArrayObjectOrIdKey(image)
+    hasNonEmptyArrayObjectOrIdKey(image),
   );
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -169,7 +86,7 @@ const ImageUpsert = ({ offRouteModule }: Props) => {
         "Update this resource?",
         () => submitFunction(),
         () => setLoading(false),
-        "warning"
+        "warning",
       );
     } else {
       submitFunction();
@@ -339,7 +256,7 @@ const ImageUpsert = ({ offRouteModule }: Props) => {
                           className="ml-2"
                           onClick={() =>
                             navigate(
-                              `/admin/product-categories/${productSubCategoryId}`
+                              `/admin/product-categories/${productSubCategoryId}`,
                             )
                           }
                         >

@@ -1,29 +1,10 @@
-import { json } from "@remix-run/node";
 import type { Image } from "@prisma/client";
 import Pagination from "~/components/Pagination";
-import { searchImages } from "~/models/images.server";
 import AdminContentSearch from "~/components/Search/AdminContentSearch";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/Wrappers/AdminPageWrapper";
-import {
-  Form,
-  Outlet,
-  type Params,
-  useLoaderData,
-  useNavigate,
-} from "@remix-run/react";
-
-export const imageSearchLoader = async (
-  request: Request,
-  params: Params<string>
-) => {
-  const url = new URL(request.url);
-  url.searchParams.set("perPage", "12");
-
-  const { images, totalPages } = await searchImages(undefined, url);
-
-  return json({ images, totalPages });
-};
+import { Form, Outlet, useLoaderData, useNavigate } from "@remix-run/react";
+import type { imageSearchLoader } from "./index.server";
 
 const ImageSearch = () => {
   const { images, totalPages } = useLoaderData<typeof imageSearchLoader>();

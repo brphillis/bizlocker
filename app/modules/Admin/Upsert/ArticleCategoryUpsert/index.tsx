@@ -5,13 +5,9 @@ import BasicInput from "~/components/Forms/Input/BasicInput";
 import type { ActionReturnTypes } from "~/utility/actionTypes";
 import { type ValidationErrors, validateForm } from "~/utility/validate";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
-import useNotification, {
-  type PageNotification,
-} from "~/hooks/PageNotification";
-import { json } from "@remix-run/node";
+import useNotification from "~/hooks/PageNotification";
 import {
   Form,
-  type Params,
   useActionData,
   useLoaderData,
   useNavigate,
@@ -19,91 +15,14 @@ import {
   useSearchParams,
   useParams,
 } from "@remix-run/react";
-import {
-  deleteArticleCategory,
-  getArticleCategory,
-  type ArticleCategoryWithDetails,
-  upsertArticleCategory,
-} from "~/models/articleCategories.server";
+
 import WindowContainer, {
   handleWindowedFormData,
 } from "~/components/Layout/Containers/WindowContainer";
+import type { articleCategoryUpsertLoader } from "./index.server";
 
 const validateOptions = {
   name: true,
-};
-
-export const articleCategoryUpsertLoader = async (
-  request: Request,
-  params: Params<string>
-) => {
-  let { searchParams } = new URL(request.url);
-  let id = searchParams.get("contentId");
-
-  if (!id) {
-    throw new Response(null, {
-      status: 404,
-      statusText: "Article Not Found",
-    });
-  }
-
-  const articleCategory =
-    id === "add"
-      ? ({} as ArticleCategoryWithDetails)
-      : await getArticleCategory(id);
-
-  if (!articleCategory) {
-    throw new Response(null, {
-      status: 404,
-      statusText: "Article Not Found",
-    });
-  }
-
-  return json({ articleCategory });
-};
-
-export const articleCategoryUpsertAction = async (
-  request: Request,
-  params: Params<string>
-) => {
-  let notification: PageNotification;
-
-  let { searchParams } = new URL(request.url);
-  const contentId = searchParams.get("contentId");
-  let id = contentId === "add" || !contentId ? undefined : contentId;
-
-  const { formEntries, formErrors } = validateForm(
-    await request.formData(),
-    validateOptions
-  );
-
-  const { name } = formEntries;
-
-  switch (formEntries._action) {
-    case "upsert":
-      if (formErrors) {
-        return { serverValidationErrors: formErrors };
-      }
-
-      await upsertArticleCategory(name as string, id);
-
-      notification = {
-        type: "success",
-        message: `Category ${id === "add" ? "Added" : "Updated"}.`,
-      };
-
-      return { success: true, notification };
-
-    case "delete":
-      await deleteArticleCategory(id as string);
-
-      notification = {
-        type: "warning",
-        message: "Brand Deleted",
-      };
-
-      return { success: true, notification };
-  }
 };
 
 type Props = {

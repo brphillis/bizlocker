@@ -34,7 +34,6 @@ import {
 } from "~/utility/pageBuilder";
 import { getArticleCategories } from "~/models/articleCategories.server";
 import { getAvailableColors } from "~/models/enums.server";
-import { getBlocks } from "~/helpers/blockHelpers";
 import PatternBackground from "~/components/Layout/Backgrounds/PatternBackground";
 import { getThemeColorValueByName } from "~/utility/colors";
 import { sortPreviewPages } from "~/helpers/sortHelpers";
@@ -53,6 +52,7 @@ import { STAFF_SESSION_KEY } from "~/session.server";
 import useNotification, {
   type PageNotification,
 } from "~/hooks/PageNotification";
+import { getBlocks } from "~/models/blocks.server";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
@@ -143,7 +143,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
     case "search":
       const searchResults = await searchContentData(
         contentType as BlockContentType,
-        (name as string) || undefined
+        (name as string) || undefined,
       );
 
       actionPreview = await getPreviewPage(previewPageId as string);
@@ -178,7 +178,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
         isActive as string,
         thumbnail ? JSON.parse(thumbnail as string) : undefined,
         previewPageId ? (previewPageId as string) : undefined,
-        articleCategories ? JSON.parse(articleCategories as string) : undefined
+        articleCategories ? JSON.parse(articleCategories as string) : undefined,
       );
 
       notification = {
@@ -193,7 +193,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
     case "addpreview":
       const addPreviewSuccess = await addPreviewPage(
         pageType as PageType,
-        pageId as string
+        pageId as string,
       );
 
       notification = {
@@ -205,7 +205,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
     case "deletepreview":
       const deletePreviewSuccess = await deletePreviewPage(
-        previewPageId as string
+        previewPageId as string,
       );
 
       notification = {
@@ -244,7 +244,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
         previewPageId as string,
         newBlockData as NewBlockData,
         blockOptions,
-        blockLabel as string
+        blockLabel as string,
       );
       actionPreview = await getPreviewPage(previewPageId as string);
       actionBlocks = await getBlocks(actionPreview as any);
@@ -261,7 +261,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
         pageType as PageType,
         previewPageId as string,
         pageId as string,
-        request
+        request,
       );
 
       actionPreview = await getPreviewPage(previewPageId as string);
@@ -283,7 +283,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
       const revertSuccess = await revertPreviewChanges(
         pageType as PageType,
         previewPageId as string,
-        pageId as string
+        pageId as string,
       );
 
       actionPreview = await getPreviewPage(previewPageId as string);
@@ -303,7 +303,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
         previewPageId as string,
         blocks as string,
         parseInt(index as string),
-        direction as "up" | "down"
+        direction as "up" | "down",
       );
 
       actionPreview = await getPreviewPage(previewPageId as string);
@@ -356,15 +356,15 @@ const ManageHomePage = () => {
   useNotification(notification);
 
   const [currentVersion, setCurrentVersion] = useState<Page | null>(
-    currentPreviewPage
+    currentPreviewPage,
   );
 
   const [currentBlocks, setCurrentBlocks] = useState<BlockWithContent[] | null>(
-    blocks || null
+    blocks || null,
   );
 
   const [isActive, setIsActive] = useState<string | undefined>(
-    page?.isActive ? " " : ""
+    page?.isActive ? " " : "",
   );
 
   useEffect(() => {

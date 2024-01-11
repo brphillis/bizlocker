@@ -1,5 +1,4 @@
 import { useLoaderData } from "@remix-run/react";
-import { getBlocks } from "~/helpers/blockHelpers";
 import { getArticle } from "~/models/articles.server";
 import BlockRenderer from "~/components/BlockRenderer";
 import PageWrapper from "~/components/Layout/Wrappers/PageWrapper";
@@ -8,6 +7,7 @@ import {
   type LoaderFunctionArgs,
   type MetaFunction,
 } from "@remix-run/node";
+import { getBlocks } from "~/models/blocks.server";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   return [

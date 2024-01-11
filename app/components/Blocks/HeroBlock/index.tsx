@@ -49,10 +49,10 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
 
   const getProductLowestPrice = (
     product: ProductWithDetails,
-    decimals?: boolean
+    decimals?: boolean,
   ) => {
     const prices = product?.variants?.map(
-      ({ price }: ProductVariantWithDetails) => price
+      ({ price }: ProductVariantWithDetails) => price,
     );
     if (prices) {
       const lowestPrice = Math.min(...prices);
@@ -130,7 +130,7 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
                           ? `/product/SlackSki%20Jacket?id=${
                               (content.product?.[0] as Product).id
                             }`
-                          : (linkPrimary as string)
+                          : (linkPrimary as string),
                       )
                     }
                     className="text-md mr-4 cursor-pointer rounded-sm border-2 border-transparent bg-primary px-4 py-2 uppercase text-white hover:bg-primary"

@@ -5,12 +5,11 @@ import type {
   Image,
   PreviewPage,
 } from "@prisma/client";
-import type { BlockWithBlockOptions } from "./blocks.server";
+import { getBlocks, type BlockWithBlockOptions } from "./blocks.server";
 import { prisma } from "~/db.server";
 import { activeContentTypes } from "~/utility/blockMaster/blockMaster";
 import { getOrderBy } from "~/helpers/sortHelpers";
 import { type BlockWithContent, disconnectBlock } from "./pageBuilder.server";
-import { getBlocks } from "~/helpers/blockHelpers";
 
 export interface ArticleWithContent extends Article {
   articleCategories?: ArticleCategory[] | null;
@@ -21,7 +20,7 @@ export interface ArticleWithContent extends Article {
 
 export const getArticle = async (
   id?: string,
-  title?: string
+  title?: string,
 ): Promise<Article | null> => {
   let whereClause;
 
@@ -56,7 +55,7 @@ export const getArticle = async (
 };
 
 export const deleteArticle = async (
-  id: number
+  id: number,
 ): Promise<TypedResponse<never>> => {
   const article = await prisma.article.findUnique({
     where: {
@@ -84,8 +83,8 @@ export const deleteArticle = async (
   await Promise.all(
     articleBlocks.map(
       async (e: BlockWithContent) =>
-        await disconnectBlock(e.id.toString(), e.name)
-    )
+        await disconnectBlock(e.id.toString(), e.name),
+    ),
   );
 
   // Delete the article
@@ -100,7 +99,7 @@ export const deleteArticle = async (
 
 export const searchArticles = async (
   formData?: { [k: string]: FormDataEntryValue },
-  url?: URL
+  url?: URL,
 ): Promise<{ articles: ArticleWithContent[]; totalPages: number }> => {
   const title =
     formData?.title || (url && url.searchParams.get("title")?.toString()) || "";

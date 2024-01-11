@@ -1,6 +1,3 @@
-import { cssBundleHref } from "@remix-run/css-bundle";
-import type { LinksFunction } from "@remix-run/node";
-
 import {
   Links,
   LiveReload,
@@ -12,16 +9,11 @@ import {
   useRouteError,
 } from "@remix-run/react";
 
-import stylesheet from "~/tailwind.css";
-
 import BasicButton from "./components/Buttons/BasicButton";
 import AuthContainer from "~/components/Layout/Containers/AuthContainer";
 import AuthPageWrapper from "~/components/Layout/Wrappers/AuthPageWrapper";
 
-export const links: LinksFunction = () => [
-  { rel: "stylesheet", href: stylesheet },
-  ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
-];
+import "./tailwind.css";
 
 export default function Root() {
   return (

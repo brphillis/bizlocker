@@ -2,57 +2,40 @@ import { useParams } from "@remix-run/react";
 import { redirect, type ActionFunctionArgs } from "@remix-run/server-runtime";
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
-import UserSearch, {
-  userSearchLoader,
-} from "~/modules/Admin/Search/UserSearch";
-import ProductSearch, {
-  productSearchLoader,
-} from "~/modules/Admin/Search/ProductSearch";
-import PromotionSearch, {
-  promotionSearchLoader,
-} from "~/modules/Admin/Search/PromotionSearch";
-import ProductCategorySearch, {
-  productCategorySearchLoader,
-} from "~/modules/Admin/Search/ProductCategorySearch";
-import ProductSubCategorySearch, {
-  productSubCategorySearchLoader,
-} from "~/modules/Admin/Search/ProductSubCategorySearch";
-import ImageSearch, {
-  imageSearchLoader,
-} from "~/modules/Admin/Search/ImageSearch";
-import BrandSearch, {
-  brandSearchLoader,
-} from "~/modules/Admin/Search/BrandSearch";
-import TeamSearch, {
-  teamSearchLoader,
-} from "~/modules/Admin/Search/TeamSearch";
-import StoreSearch, {
-  storeSearchLoader,
-} from "~/modules/Admin/Search/StoreSearch";
-import StaffSearch, {
-  staffSearchLoader,
-} from "~/modules/Admin/Search/StaffSearch";
-import StockTransferSearch, {
-  stockTransferSearchLoader,
-} from "~/modules/Admin/Search/StockTransferSearch";
-import CampaignSearch, {
-  campaignSearchLoader,
-} from "~/modules/Admin/Search/CampaignSearch";
-import DepartmentSearch, {
-  departmentSearchLoader,
-} from "~/modules/Admin/Search/DepartmentSearch";
-import ArticleSearch, {
-  articleSearchLoader,
-} from "~/modules/Admin/Search/ArticleSearch";
-import OrderSearch, {
-  orderSearchLoader,
-} from "~/modules/Admin/Search/OrderSearch";
-import ArticleCategorySearch, {
-  articleCategorySearchLoader,
-} from "~/modules/Admin/Search/ArticleCategorySearch";
-import PageSearch, {
-  pageSearchLoader,
-} from "~/modules/Admin/Search/PageSearch";
+import UserSearch from "~/modules/Admin/Search/UserSearch";
+import ProductSearch from "~/modules/Admin/Search/ProductSearch";
+import PromotionSearch from "~/modules/Admin/Search/PromotionSearch";
+import ProductCategorySearch from "~/modules/Admin/Search/ProductCategorySearch";
+import ProductSubCategorySearch from "~/modules/Admin/Search/ProductSubCategorySearch";
+import ImageSearch from "~/modules/Admin/Search/ImageSearch";
+import BrandSearch from "~/modules/Admin/Search/BrandSearch";
+import TeamSearch from "~/modules/Admin/Search/TeamSearch";
+import StoreSearch from "~/modules/Admin/Search/StoreSearch";
+import StaffSearch from "~/modules/Admin/Search/StaffSearch";
+import StockTransferSearch from "~/modules/Admin/Search/StockTransferSearch";
+import CampaignSearch from "~/modules/Admin/Search/CampaignSearch";
+import DepartmentSearch from "~/modules/Admin/Search/DepartmentSearch";
+import ArticleSearch from "~/modules/Admin/Search/ArticleSearch";
+import OrderSearch from "~/modules/Admin/Search/OrderSearch";
+import ArticleCategorySearch from "~/modules/Admin/Search/ArticleCategorySearch";
+import PageSearch from "~/modules/Admin/Search/PageSearch";
+import { articleCategorySearchLoader } from "~/modules/Admin/Search/ArticleCategorySearch/index.server";
+import { articleSearchLoader } from "~/modules/Admin/Search/ArticleSearch/index.server";
+import { brandSearchLoader } from "~/modules/Admin/Search/BrandSearch/index.server";
+import { campaignSearchLoader } from "~/modules/Admin/Search/CampaignSearch/index.server";
+import { departmentSearchLoader } from "~/modules/Admin/Search/DepartmentSearch/index.server";
+import { imageSearchLoader } from "~/modules/Admin/Search/ImageSearch/index.server";
+import { orderSearchLoader } from "~/modules/Admin/Search/OrderSearch/index.server";
+import { pageSearchLoader } from "~/modules/Admin/Search/PageSearch/index.server";
+import { productCategorySearchLoader } from "~/modules/Admin/Search/ProductCategorySearch/index.server";
+import { productSearchLoader } from "~/modules/Admin/Search/ProductSearch/index.server";
+import { productSubCategorySearchLoader } from "~/modules/Admin/Search/ProductSubCategorySearch/index.server";
+import { promotionSearchLoader } from "~/modules/Admin/Search/PromotionSearch/index.server";
+import { staffSearchLoader } from "~/modules/Admin/Search/StaffSearch/index.server";
+import { stockTransferSearchLoader } from "~/modules/Admin/Search/StockTransferSearch/index.server";
+import { storeSearchLoader } from "~/modules/Admin/Search/StoreSearch/index.server";
+import { teamSearchLoader } from "~/modules/Admin/Search/TeamSearch/index.server";
+import { userSearchLoader } from "~/modules/Admin/Search/UserSearch/index.server";
 
 export const loader = async ({ request, params }: ActionFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);

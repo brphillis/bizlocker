@@ -1,32 +1,17 @@
-import { json } from "@remix-run/node";
 import Pagination from "~/components/Pagination";
 import BasicTable from "~/components/Tables/BasicTable";
-import { searchTeams, type TeamWithStaff } from "~/models/teams.server";
+import { type TeamWithStaff } from "~/models/teams.server";
 import AdminContentSearch from "~/components/Search/AdminContentSearch";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/Wrappers/AdminPageWrapper";
 import {
   Form,
   Outlet,
-  type Params,
   useLoaderData,
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
-
-export const teamSearchLoader = async (
-  request: Request,
-  params: Params<string>
-) => {
-  const url = new URL(request.url);
-
-  const { teams, totalPages } = await searchTeams(undefined, url);
-
-  return json({
-    teams,
-    totalPages,
-  });
-};
+import type { teamSearchLoader } from "./index.server";
 
 const TeamSearch = () => {
   const { teams, totalPages } = useLoaderData<typeof teamSearchLoader>();

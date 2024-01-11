@@ -1,71 +1,87 @@
 import { useParams } from "@remix-run/react";
 import { redirect, type ActionFunctionArgs } from "@remix-run/server-runtime";
-import ArticleCategoryUpsert, {
-  articleCategoryUpsertAction,
-  articleCategoryUpsertLoader,
-} from "~/modules/Admin/Upsert/ArticleCategoryUpsert";
-import BrandUpsert, {
-  brandUpsertAction,
-  brandUpsertLoader,
-} from "~/modules/Admin/Upsert/BrandUpsert";
-import CampaignUpsert, {
-  campaignUpsertAction,
-  campaignUpsertLoader,
-} from "~/modules/Admin/Upsert/CampaignUpsert";
-import DepartmentUpsert, {
-  departmentUpsertAction,
-  departmentUpsertLoader,
-} from "~/modules/Admin/Upsert/DepartmentUpsert";
-import ImageUpsert, {
-  imageUpsertAction,
-  imageUpsertLoader,
-} from "~/modules/Admin/Upsert/ImageUpsert";
-import OrderUpsert, {
-  orderUpsertAction,
-  orderUpsertLoader,
-} from "~/modules/Admin/Upsert/OrderUpsert";
-import ProductCategoryUpsert, {
-  productCategoryUpsertAction,
-  productCategoryUpsertLoader,
-} from "~/modules/Admin/Upsert/ProductCategoryUpsert";
-import ProductSubCategoryUpsert, {
-  productSubCategoryUpsertAction,
-  productSubCategoryUpsertLoader,
-} from "~/modules/Admin/Upsert/ProductSubCategoryUpsert";
-import ProductUpsert, {
-  productUpsertAction,
-  productUpsertLoader,
-} from "~/modules/Admin/Upsert/ProductUpsert";
-import PromotionUpsert, {
-  promotionUpsertAction,
-  promotionUpsertLoader,
-} from "~/modules/Admin/Upsert/PromotionUpsert";
-import StaffUpsert, {
-  staffUpsertAction,
-  staffUpsertLoader,
-} from "~/modules/Admin/Upsert/StaffUpsert";
-import StockTransferUpsert, {
-  stockTransferUpsertAction,
-  stockTransferUpsertLoader,
-} from "~/modules/Admin/Upsert/StockTransferUpsert";
-import StoreUpsert, {
-  storeUpsertAction,
-  storeUpsertLoader,
-} from "~/modules/Admin/Upsert/StoreUpsert";
-import TeamUpsert, {
-  teamUpsertAction,
-  teamUpsertLoader,
-} from "~/modules/Admin/Upsert/TeamUpsert";
-import UserUpsert, {
-  userUpsertAction,
-  userUpsertLoader,
-} from "~/modules/Admin/Upsert/UserUpsert";
+import ArticleCategoryUpsert from "~/modules/Admin/Upsert/ArticleCategoryUpsert";
+import BrandUpsert from "~/modules/Admin/Upsert/BrandUpsert";
+import CampaignUpsert from "~/modules/Admin/Upsert/CampaignUpsert";
+import DepartmentUpsert from "~/modules/Admin/Upsert/DepartmentUpsert";
+import ImageUpsert from "~/modules/Admin/Upsert/ImageUpsert";
+import OrderUpsert from "~/modules/Admin/Upsert/OrderUpsert";
+import ProductCategoryUpsert from "~/modules/Admin/Upsert/ProductCategoryUpsert";
+import ProductSubCategoryUpsert from "~/modules/Admin/Upsert/ProductSubCategoryUpsert";
+import ProductUpsert from "~/modules/Admin/Upsert/ProductUpsert";
+import PromotionUpsert from "~/modules/Admin/Upsert/PromotionUpsert";
+import StaffUpsert from "~/modules/Admin/Upsert/StaffUpsert";
+import StockTransferUpsert from "~/modules/Admin/Upsert/StockTransferUpsert";
+import StoreUpsert from "~/modules/Admin/Upsert/StoreUpsert";
+import TeamUpsert from "~/modules/Admin/Upsert/TeamUpsert";
+import UserUpsert from "~/modules/Admin/Upsert/UserUpsert";
 import { tokenAuth } from "~/auth.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
-import SiteSettingsUpsert, {
-  siteSettingsUpsertAction,
+import SiteSettingsUpsert from "~/modules/Admin/Upsert/SiteSettingsUpsert";
+import {
+  articleCategoryUpsertLoader,
+  articleCategoryUpsertAction,
+} from "~/modules/Admin/Upsert/ArticleCategoryUpsert/index.server";
+import {
+  brandUpsertLoader,
+  brandUpsertAction,
+} from "~/modules/Admin/Upsert/BrandUpsert/index.server";
+import {
+  campaignUpsertLoader,
+  campaignUpsertAction,
+} from "~/modules/Admin/Upsert/CampaignUpsert/index.server";
+import {
+  departmentUpsertLoader,
+  departmentUpsertAction,
+} from "~/modules/Admin/Upsert/DepartmentUpsert/index.server";
+import {
+  imageUpsertLoader,
+  imageUpsertAction,
+} from "~/modules/Admin/Upsert/ImageUpsert/index.server";
+import {
+  orderUpsertLoader,
+  orderUpsertAction,
+} from "~/modules/Admin/Upsert/OrderUpsert/index.server";
+import {
+  productCategoryUpsertLoader,
+  productCategoryUpsertAction,
+} from "~/modules/Admin/Upsert/ProductCategoryUpsert/index.server";
+import {
+  productSubCategoryUpsertLoader,
+  productSubCategoryUpsertAction,
+} from "~/modules/Admin/Upsert/ProductSubCategoryUpsert/index.server";
+import {
+  productUpsertLoader,
+  productUpsertAction,
+} from "~/modules/Admin/Upsert/ProductUpsert/index.server";
+import {
+  promotionUpsertLoader,
+  promotionUpsertAction,
+} from "~/modules/Admin/Upsert/PromotionUpsert/index.server";
+import {
   siteSettingsUpsertLoader,
-} from "~/modules/Admin/Upsert/SiteSettingsUpsert";
+  siteSettingsUpsertAction,
+} from "~/modules/Admin/Upsert/SiteSettingsUpsert/index.server";
+import {
+  staffUpsertLoader,
+  staffUpsertAction,
+} from "~/modules/Admin/Upsert/StaffUpsert/index.server";
+import {
+  stockTransferUpsertLoader,
+  stockTransferUpsertAction,
+} from "~/modules/Admin/Upsert/StockTransferUpsert/index.server";
+import {
+  storeUpsertLoader,
+  storeUpsertAction,
+} from "~/modules/Admin/Upsert/StoreUpsert/index.server";
+import {
+  teamUpsertLoader,
+  teamUpsertAction,
+} from "~/modules/Admin/Upsert/TeamUpsert/index.server";
+import {
+  userUpsertLoader,
+  userUpsertAction,
+} from "~/modules/Admin/Upsert/UserUpsert/index.server";
 
 export const loader = async ({ request, params }: ActionFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);

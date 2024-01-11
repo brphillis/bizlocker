@@ -1,10 +1,8 @@
 import { type FormEvent, useEffect, useState } from "react";
-import { json } from "@remix-run/node";
 import { getFormData } from "~/helpers/formHelpers";
-import type { Image, Product } from "@prisma/client";
+import type { Product } from "@prisma/client";
 import DarkOverlay from "~/components/Layout/Overlays/DarkOverlay";
 import BasicInput from "~/components/Forms/Input/BasicInput";
-import { getDepartments } from "~/models/departments.server";
 import type { ActionReturnTypes } from "~/utility/actionTypes";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import SelectGender from "~/components/Forms/Select/SelectGender";
@@ -13,12 +11,9 @@ import type { ProductWithDetails } from "~/models/products.server";
 import { type ValidationErrors, validateForm } from "~/utility/validate";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
 import UploadImageCollapse from "~/components/Forms/Upload/UploadImageCollapse";
-import useNotification, {
-  type PageNotification,
-} from "~/hooks/PageNotification";
+import useNotification from "~/hooks/PageNotification";
 import {
   Form,
-  type Params,
   useActionData,
   useLoaderData,
   useNavigate,
@@ -26,17 +21,12 @@ import {
   useSearchParams,
   useParams,
 } from "@remix-run/react";
-import {
-  getPromotion,
-  type NewPromotion,
-  type PromotionWithContent,
-  upsertPromotion,
-} from "~/models/promotions.server";
 import WindowContainer, {
   handleWindowedFormData,
 } from "~/components/Layout/Containers/WindowContainer";
 import TabValidationErrors from "~/components/Forms/Validation/TabValidationErrors";
 import TabContent from "~/components/Tabs/TabContent";
+import type { promotionUpsertLoader } from "./index.server";
 
 const validateOptions = {
   name: true,
@@ -44,104 +34,6 @@ const validateOptions = {
   discountPercentage: true,
   bannerImage: true,
   tileImage: true,
-};
-
-export const promotionUpsertLoader = async (
-  request: Request,
-  params: Params<string>
-) => {
-  const departments = await getDepartments();
-
-  let { searchParams } = new URL(request.url);
-  let id = searchParams.get("contentId");
-
-  if (!id) {
-    throw new Response(null, {
-      status: 404,
-      statusText: "Promotion Not Found",
-    });
-  }
-
-  const promotion =
-    id === "add" ? ({} as PromotionWithContent) : await getPromotion(id);
-
-  if (!promotion) {
-    throw new Response(null, {
-      status: 404,
-      statusText: "Promotion Not Found",
-    });
-  }
-
-  return json({ promotion, departments });
-};
-
-export const promotionUpsertAction = async (
-  request: Request,
-  params: Params<string>
-) => {
-  let { searchParams } = new URL(request.url);
-  const contentId = searchParams.get("contentId");
-  let id = contentId === "add" || !contentId ? undefined : contentId;
-
-  const { formEntries, formErrors } = validateForm(
-    await request.formData(),
-    validateOptions
-  );
-
-  const {
-    name,
-    metaDescription,
-    department,
-    products,
-    discountPercentage,
-    gender,
-    bannerImage,
-    tileImage,
-    isActive,
-  } = formEntries;
-
-  let notification: PageNotification;
-
-  switch (formEntries._action) {
-    case "upsert":
-      if (formErrors) {
-        return json({ serverValidationErrors: formErrors });
-      }
-
-      const parsedBanner = JSON.parse(bannerImage?.toString()) as Image;
-
-      const parsedTile = JSON.parse(tileImage?.toString()) as Image;
-
-      const updateData: NewPromotion = {
-        parsedBanner: parsedBanner,
-        parsedTile: parsedTile,
-        name: name as string,
-        metaDescription: metaDescription as string,
-        department: department as string,
-        products: products && JSON.parse(products as string),
-        discountPercentage: discountPercentage as string,
-        gender: gender as string,
-        isActive: isActive ? true : false,
-        id: id,
-      };
-
-      await upsertPromotion(updateData);
-
-      notification = {
-        type: "success",
-        message: `Promotion ${id === "add" ? "Added" : "Updated"}.`,
-      };
-
-      return json({ success: true, notification });
-
-    case "delete":
-      notification = {
-        type: "warning",
-        message: "Promotion Deleted",
-      };
-
-      return json({ success: true, notification });
-  }
 };
 
 type Props = {
