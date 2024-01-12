@@ -21,7 +21,7 @@ type PhoneNumber = {
   dialnumber: string;
 };
 
-const BasicInput = ({
+const PhoneInput = ({
   label,
   type,
   name,
@@ -112,4 +112,4 @@ const BasicInput = ({
   );
 };
 
-export default BasicInput;
+export default PhoneInput;

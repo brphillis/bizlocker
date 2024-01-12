@@ -41,7 +41,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   try {
     const { staff } = await verifyStaffLogin(
       email as string,
-      password as string
+      password as string,
     );
 
     return createStaffSession({

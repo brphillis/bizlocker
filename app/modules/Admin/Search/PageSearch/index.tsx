@@ -25,7 +25,7 @@ const PageSearch = () => {
         <AdminPageHeader
           title="Manage Pages"
           buttonLabel="Add Page"
-          buttonLink="/admin/pagebuilder/new?req=webpage"
+          buttonLink="/admin/pagebuilder/webpage?id=add"
         />
 
         <AdminContentSearch title={true} />

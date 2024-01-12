@@ -17,7 +17,7 @@ const IsActiveToggle = ({
   extendStyle,
 }: Props) => {
   const [searchParams] = useSearchParams();
-  const contentId = searchParams.get("contentId");
+  const contentId = searchParams.get("contentId") || searchParams.get("id");
 
   let mode = contentId === "add" ? "add" : "edit";
 

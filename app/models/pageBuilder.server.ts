@@ -45,12 +45,12 @@ export interface BlockWithContent {
 export const getPageType = async (
   pageType: PageType,
   returnPreviews?: boolean,
-  id?: string
+  id?: string,
 ): Promise<Page> => {
   if (returnPreviews) {
     // we find the page with the blockContent
     const findPageWithBlockContent = prisma[pageType].findFirst as (
-      args: any
+      args: any,
     ) => any;
 
     const pageWithBlockContent = await findPageWithBlockContent({
@@ -84,15 +84,11 @@ export const getPageType = async (
       },
     });
 
-    if (!pageWithBlockContent) {
-      throw new Error(`No Page Found`);
-    }
-
     return pageWithBlockContent;
   } else {
     // we find the page with the blockContent
     const findPageWithoutBlockContent = prisma[pageType].findFirst as (
-      args: any
+      args: any,
     ) => any;
 
     const pageWithOutBlockContent = await findPageWithoutBlockContent({
@@ -127,7 +123,7 @@ export const upsertPageMeta = async (
   isActive: string,
   thumbnail: Image,
   previewPageId?: string,
-  articleCategories?: string[]
+  articleCategories?: string[],
 ): Promise<number> => {
   let page;
   const refinedPageType =
@@ -217,7 +213,7 @@ export const upsertPageMeta = async (
       if (existingThumbnail) {
         const repoLinkThumbnail = await updateImage_Integration(
           existingThumbnail as Image,
-          thumbnail
+          thumbnail,
         );
 
         updateData.thumbnail = {
@@ -264,7 +260,7 @@ export const upsertPageMeta = async (
 
 const updateOrCreateBlockOptions = async (
   blockId: string,
-  blockOptions: BlockOptions
+  blockOptions: BlockOptions,
 ): Promise<BlockOptions> => {
   // we set unndefined keys to null so the enum values can be removed/disconnected
   const sanitizedBlockOptions: BlockOptions = { ...blockOptions };
@@ -308,7 +304,7 @@ export const updateBlock = async (
   pageId: string,
   blockData: NewBlockData,
   blockOptions?: BlockOptions,
-  blockLabel?: string
+  blockLabel?: string,
 ): Promise<number | Page> => {
   const { blockName, itemIndex, contentData } = blockData;
 
@@ -338,13 +334,13 @@ export const updateBlock = async (
 
   // select the block we are going to edit
   const existingBlock = blocks.find(
-    (e: any) => e.id === previewPage.blockOrder[itemIndex]
+    (e: any) => e.id === previewPage.blockOrder[itemIndex],
   );
 
   if (existingBlock?.id) {
     await disconnectBlock(
       existingBlock.id.toString(),
-      previewPage.id.toString()
+      previewPage.id.toString(),
     );
   }
 
@@ -376,7 +372,7 @@ export const updateBlock = async (
           (Array.isArray(value) &&
             value.length > 0 &&
             value.every(
-              (item) => typeof item === "string" && isNaN(parseInt(item))
+              (item) => typeof item === "string" && isNaN(parseInt(item)),
             )) ||
           (typeof value === "string" && isNaN(parseInt(value)))
         ) {
@@ -448,7 +444,7 @@ export const changeBlockOrder = async (
   previewPageId: string,
   blocks: string,
   index: number,
-  direction: "up" | "down"
+  direction: "up" | "down",
 ) => {
   let blockIds: string[] = [];
   if (blocks) {
@@ -490,7 +486,7 @@ export const publishPage = async (
   pageType: PageType,
   previewPageId: string,
   pageId: string,
-  request: Request
+  request: Request,
 ): Promise<{ success: true }> => {
   try {
     // Find the previewPage
@@ -515,7 +511,7 @@ export const publishPage = async (
 
     if (currentPage.blocks) {
       const disconnectBlocks = prisma[`${pageType}`].update as (
-        args: any
+        args: any,
       ) => any;
 
       await disconnectBlocks({
@@ -586,20 +582,20 @@ export const publishPage = async (
 
     // create arrays of IDs in Before and After update
     const previewPageBlockIds = previewPage.blocks.map(
-      (block: any) => block.id
+      (block: any) => block.id,
     );
     const currentPageBlockIds = currentPage.blocks.map(
-      (block: Block) => block.id
+      (block: Block) => block.id,
     );
     const updatedPageBlockIds = updatedPage.blocks.map(
-      (block: Block) => block.id
+      (block: Block) => block.id,
     );
 
     // construct array of block IDs that could have no connections
     const blocksToValidate: string[] = findUniqueStringsInArrays(
       previewPageBlockIds,
       currentPageBlockIds,
-      updatedPageBlockIds
+      updatedPageBlockIds,
     );
 
     if (blocksToValidate) {
@@ -641,7 +637,7 @@ export const publishPage = async (
               },
             });
           }
-        })
+        }),
       );
     }
 
@@ -654,7 +650,7 @@ export const publishPage = async (
 export const revertPreviewChanges = async (
   pageType: PageType,
   previewPageId: string,
-  pageId: string
+  pageId: string,
 ): Promise<{ success: boolean }> => {
   try {
     // Find the previewPage
@@ -748,7 +744,7 @@ const deleteBlock = async (block: BlockWithContent) => {
 // Disconnects block from Page and removes if no connections exist
 export const disconnectBlock = async (
   blockId: string,
-  previewPageId: string
+  previewPageId: string,
 ): Promise<{ success: boolean }> => {
   try {
     const block = await prisma.block.findFirst({
@@ -775,7 +771,7 @@ export const disconnectBlock = async (
       });
 
       const newBlockOrder = previewPage?.blockOrder.filter(
-        (e) => e !== block.id
+        (e) => e !== block.id,
       );
 
       await prisma.previewPage.update({

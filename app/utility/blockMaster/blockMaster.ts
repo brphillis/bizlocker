@@ -324,7 +324,7 @@ export const activeContentTypes = {
 
 // returns an array of content types a block accepts, built from the blockmaster object
 export const getBlockContentTypes = (
-  blockName: BlockName
+  blockName: BlockName,
 ): BlockContentType[] => {
   const block = blockMaster.find((b) => b.name === blockName);
 

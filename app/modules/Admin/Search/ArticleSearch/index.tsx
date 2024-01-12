@@ -28,7 +28,7 @@ const ArticleSearch = () => {
         <AdminPageHeader
           title="Manage Articles"
           buttonLabel="Add Article"
-          buttonLink="/admin/pagebuilder/new?req=article"
+          buttonLink="/admin/pagebuilder/article?id=add"
         />
 
         <div className="mt-3 flex flex-col">

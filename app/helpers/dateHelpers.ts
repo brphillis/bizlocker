@@ -5,7 +5,7 @@ export const isValidDate = (dateString: string): boolean => {
 
 export const formatDate = (
   date?: Date | string,
-  includeHoursSecondsMinutes?: boolean
+  includeHoursSecondsMinutes?: boolean,
 ) => {
   if (date) {
     const dateToFormat = new Date(date);
@@ -27,7 +27,7 @@ export const formatDate = (
 };
 
 export const formatDateForFormField = (
-  dateString?: string | null
+  dateString?: string | null,
 ): string | undefined => {
   return dateString
     ? new Date(dateString).toISOString().split("T")[0]
@@ -47,4 +47,21 @@ export const createYesterdayISODate = (): string => {
 
   const isoDate = yesterday.toISOString().split("T")[0];
   return isoDate;
+};
+
+export const isMostRecentDate = (
+  testDate: string,
+  stringDates: string[] | (string | null)[],
+) => {
+  const validDates = stringDates?.filter((date) => date !== null);
+
+  const mostRecentDateString = validDates?.reduce((maxDate, currentDate) => {
+    if (currentDate && maxDate) {
+      return currentDate > maxDate ? currentDate : maxDate;
+    } else return null;
+  }, validDates[0]);
+
+  if (testDate === mostRecentDateString) {
+    return true;
+  } else return false;
 };

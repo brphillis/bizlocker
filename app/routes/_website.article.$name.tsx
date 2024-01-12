@@ -23,6 +23,13 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   const articleName = params.name;
   const article = await getArticle(undefined, articleName);
 
+  if (!article || (article && !article.isActive)) {
+    throw new Response(null, {
+      status: 404,
+      statusText: "Page Not Found",
+    });
+  }
+
   let title, description, backgroundColor, blocks;
 
   if (article) {

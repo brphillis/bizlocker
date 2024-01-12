@@ -20,7 +20,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   const pageName = params.name?.replace("-", " ");
   const webPage = await getWebPage(undefined, pageName);
 
-  if (!webPage) {
+  if (!webPage || (webPage && !webPage.isActive)) {
     throw new Response(null, {
       status: 404,
       statusText: "Page Not Found",

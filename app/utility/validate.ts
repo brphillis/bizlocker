@@ -389,7 +389,7 @@ export const validationMaster: FormConfig = {
 
 export const validateForm = (
   formData: FormData,
-  validate: Record<string, boolean>
+  validate: Record<string, boolean>,
 ): {
   formEntries: Record<string, FormDataEntryValue>;
   formErrors: ValidationErrors | null;

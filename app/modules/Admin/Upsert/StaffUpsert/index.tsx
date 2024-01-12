@@ -106,7 +106,7 @@ const StaffUpsert = ({ offRouteModule }: Props) => {
           <Form
             method="POST"
             onSubmit={handleSubmit}
-            className="scrollbar-hide relative w-[600px] max-w-[100vw] overflow-y-auto bg-base-200 px-3 py-6 sm:px-6"
+            className="scrollbar-hide relative w-[600px] max-w-full overflow-y-auto"
           >
             <div className="form-control gap-3">
               <UploadAvatar avatar={staffMember?.avatar} />
