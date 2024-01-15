@@ -54,10 +54,7 @@ const ContentSearch = ({
   return (
     <>
       {selectedBlock && shouldDisplay() && (
-        <div className="mt-10 hidden w-full flex-wrap justify-start gap-3 rounded-sm bg-brand-white/20 px-4 pb-4 pt-2 max-md:px-2 [&:has(div)]:flex">
-          <span className="absolute -mt-10 block font-bold">
-            Content Selection
-          </span>
+        <div className="relative hidden w-full flex-wrap justify-start gap-3 rounded-sm bg-brand-white/20 px-4 pb-4 pt-2 max-md:px-2 [&:has(div)]:flex">
           <div className="flex flex-wrap items-end justify-start gap-3 max-md:justify-end">
             <div className="form-control w-[215px] text-brand-black max-md:w-full">
               <label className="label text-sm text-brand-white">
@@ -82,7 +79,7 @@ const ContentSearch = ({
                         {capitalizeFirst(contentType)}
                       </option>
                     );
-                  }
+                  },
                 )}
               </select>
             </div>

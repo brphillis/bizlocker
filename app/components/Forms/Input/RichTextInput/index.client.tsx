@@ -7,6 +7,7 @@ import type { ValidationErrors } from "~/utility/validate";
 interface RichTextEditorProps {
   extendStyle?: string;
   label?: string;
+  labelStyle?: string;
   name?: string;
   onChange?: (value: string) => void;
   validationErrors?: ValidationErrors;
@@ -16,6 +17,7 @@ interface RichTextEditorProps {
 const RichTextInput = ({
   extendStyle,
   label,
+  labelStyle,
   name,
   onChange,
   validationErrors,
@@ -82,22 +84,27 @@ const RichTextInput = ({
     <Suspense fallback={<div>Loading...</div>}>
       <div className="form-control relative my-3 w-full self-center">
         {label && (
-          <label className="label">
-            <span className="label-text">{label}</span>
+          <label
+            className={`label text-brand-white mb-[24px] mt-[-24px] ${labelStyle}`}
+          >
+            QQQ
           </label>
         )}
-        <ReactQuill
-          theme="snow"
-          modules={{ toolbar: tools }}
-          value={richText.toString()}
-          defaultValue={richText.toString() || ""}
-          onChange={handleEditorChange}
-          className={`${extendStyle} ${
-            name && validationErrors?.hasOwnProperty(name)
-              ? "border border-[oklch(var(--er))]"
-              : ""
-          }`}
-        />
+
+        <div className="bg-brand-white mt-[-24px]">
+          <ReactQuill
+            theme="snow"
+            modules={{ toolbar: tools }}
+            value={richText.toString()}
+            defaultValue={richText.toString() || ""}
+            onChange={handleEditorChange}
+            className={`bg-brand-white py-0 ${extendStyle} ${
+              name && validationErrors?.hasOwnProperty(name)
+                ? "border border-[oklch(var(--er))]"
+                : ""
+            }`}
+          />
+        </div>
 
         {name && validationErrors?.hasOwnProperty(name) && (
           <ToolTip tip={validationErrors[name]} iconColor="text-error" />

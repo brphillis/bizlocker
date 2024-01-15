@@ -22,9 +22,14 @@ const BlockCard = ({
   label,
 }: Props) => {
   return (
-    <div className="flex w-full cursor-pointer items-center justify-between rounded-sm border border-brand-white/25 bg-brand-white/20 p-3 hover:scale-[1.005]">
+    <div
+      className={`flex w-full cursor-pointer items-center justify-between border-b border-b-brand-white/25 
+    bg-brand-white/20 p-3 hover:scale-[1.005] ${
+      index === 0 && "border-t border-t-brand-white/25"
+    }`}
+    >
       <div
-        className="flex items-center gap-3"
+        className="flex items-center gap-3 text-brand-white"
         onClick={() => {
           onClick(index);
         }}

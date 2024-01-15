@@ -40,7 +40,7 @@ export interface OrderItemWithDetails extends OrderItem {
 }
 
 export const getOrder = async (
-  orderId: string
+  orderId: string,
 ): Promise<OrderWithDetails | null> => {
   return await prisma.order.findUnique({
     where: {
@@ -63,7 +63,7 @@ export const getOrder = async (
 };
 
 export const getOrdersCurrentUser = async (
-  request: Request
+  request: Request,
 ): Promise<OrderWithDetails[] | null> => {
   const userData = (await getUserDataFromSession(request)) as User;
   const userId = userData?.id;
@@ -89,16 +89,16 @@ export const getOrdersCurrentUser = async (
 };
 
 export const getSquareOrderDetails = async (
-  orderId: string
+  orderId: string,
 ): Promise<{ shippingDetails: SquareShippingDetails; email: string }> => {
   const response = await squareClient.ordersApi.retrieveOrder(orderId);
 
   const shippingDetails = response?.result?.order?.fulfillments?.find(
-    (fulfillment) => fulfillment.type === "SHIPMENT"
+    (fulfillment) => fulfillment.type === "SHIPMENT",
   )?.shipmentDetails?.recipient?.address as SquareShippingDetails;
 
   const email = response?.result?.order?.fulfillments?.find(
-    (fulfillment) => fulfillment.type === "SHIPMENT"
+    (fulfillment) => fulfillment.type === "SHIPMENT",
   )?.shipmentDetails?.recipient?.emailAddress as string;
 
   return { shippingDetails, email };
@@ -113,7 +113,7 @@ export const createOrder = async (
   address: Address,
   shippingMethod: string,
   shippingPrice: string,
-  rememberInformation: boolean
+  rememberInformation: boolean,
 ): Promise<TypedResponse<never>> => {
   const userData = (await getUserDataFromSession(request)) as User;
   const cart = await getCart(request);
@@ -141,7 +141,7 @@ export const createOrder = async (
       }
 
       const itemTotalPrice = parseInt(
-        getVariantUnitPrice(variant, undefined, variant?.product?.promotion)
+        getVariantUnitPrice(variant, undefined, variant?.product?.promotion),
       );
 
       if (itemTotalPrice) {
@@ -153,7 +153,7 @@ export const createOrder = async (
           // Get the long and lat of the shipping postcode
           shippingCoords = await fetchLatLong(
             address.postcode,
-            address.country
+            address.country,
           );
 
           if (!shippingCoords) {
@@ -166,7 +166,7 @@ export const createOrder = async (
 
           if (!variantStoreIds || !isArrayofNumbers(variantStoreIds)) {
             throw new Error(
-              `No Available Stock for ${variant?.product?.name} - ${variant?.sku}`
+              `No Available Stock for ${variant?.product?.name} - ${variant?.sku}`,
             );
           }
 
@@ -178,17 +178,15 @@ export const createOrder = async (
             },
           });
 
-          console.log("stores with Stock", stockedStores);
-
           // Find the closest store with stock
           const closestPostCode = findClosestPostcode(
             shippingCoords?.lat,
             shippingCoords?.long,
-            stockedStores as Address[]
+            stockedStores as Address[],
           );
 
           closestStoreId = stockedStores.find(
-            (e) => e.postcode === closestPostCode
+            (e) => e.postcode === closestPostCode,
           )?.storeId;
         }
 
@@ -289,7 +287,7 @@ export const createOrder = async (
 };
 
 export const confirmPayment = async (
-  paymentCode: string
+  paymentCode: string,
 ): Promise<OrderWithDetails> => {
   // Find the order based on the payment code
   const order = await prisma.order.findFirst({
@@ -435,7 +433,7 @@ export const confirmPayment = async (
 
 export const updateOrderStatus = async (
   orderId: string,
-  updatedStatus: OrderStatus
+  updatedStatus: OrderStatus,
 ): Promise<Order> => {
   return await prisma.order.update({
     where: {
@@ -457,7 +455,7 @@ export const updateOrderShippingDetails = async (
   state: string,
   postcode: string,
   country: string,
-  trackingNumber: string
+  trackingNumber: string,
 ): Promise<Order> => {
   const updatedOrder = await prisma.order.update({
     where: { id: Number(orderId) },
@@ -481,7 +479,7 @@ export const updateOrderShippingDetails = async (
 };
 
 export const searchOrders = async (
-  searchArgs: BasicSearchArgs
+  searchArgs: BasicSearchArgs,
 ): Promise<{ orders: Order[]; totalPages: number }> => {
   const {
     id,

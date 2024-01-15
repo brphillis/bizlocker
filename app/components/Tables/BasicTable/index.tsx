@@ -71,7 +71,6 @@ const BasicTable = ({
         </thead>
         <tbody>
           {objectArray?.map((obj: string | any, i) => {
-            console.log("OBJ", objectArray);
             return (
               <tr
                 key={"TableRow_" + obj + i}
@@ -79,7 +78,7 @@ const BasicTable = ({
                 onClick={() => {
                   !onRowClick && obj.id
                     ? navigate(
-                        `${location.pathname + "/" + obj.id}${location.search}`
+                        `${location.pathname + "/" + obj.id}${location.search}`,
                       )
                     : onRowClick && onRowClick(obj.id, i, obj.name);
                 }}

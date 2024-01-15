@@ -28,8 +28,8 @@ const ArticleBlockOptions = ({
   };
 
   return (
-    <details className="collapse collapse-plus -mt-3 !hidden !max-w-full !rounded-sm bg-brand-white/20 [&:has(div>div)]:!grid">
-      <summary className="collapse-title text-xl font-medium">
+    <details className="collapse collapse-plus !hidden !max-w-full !rounded-sm bg-brand-white/20 [&:has(div>div)]:!grid">
+      <summary className="collapse-title text-xl font-medium text-brand-white">
         Article Filters
       </summary>
       <div className="collapse-content relative sm:!px-3">
@@ -49,7 +49,7 @@ const ArticleBlockOptions = ({
                 onChange={(selectedValue) => {
                   selectItem(
                     "articleCategory",
-                    parseInt(selectedValue as string)
+                    parseInt(selectedValue as string),
                   );
                 }}
               />

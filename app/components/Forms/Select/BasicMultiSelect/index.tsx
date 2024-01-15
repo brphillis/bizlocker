@@ -3,6 +3,7 @@ import ToolTip from "~/components/Indicators/ToolTip";
 import type { ValidationErrors } from "~/utility/validate";
 
 type Props = {
+  id?: string;
   customWidth?: string;
   defaultValues?: SelectValue[] | null;
   extendStyle?: string;
@@ -11,9 +12,11 @@ type Props = {
   name: string;
   selections: SelectValue[];
   validationErrors?: ValidationErrors;
+  onChange?: (e: string[]) => void;
 };
 
 const BasicMultiSelect = ({
+  id,
   customWidth,
   defaultValues,
   extendStyle,
@@ -22,17 +25,22 @@ const BasicMultiSelect = ({
   name,
   selections,
   validationErrors,
+  onChange,
 }: Props) => {
   const [selectedValues, setSelectedValues] = useState<string[] | undefined>(
-    defaultValues ? defaultValues?.map((e) => e?.id.toString()) : undefined
+    defaultValues ? defaultValues?.map((e) => e?.id.toString()) : undefined,
   );
 
   const handleOptionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedOptions = Array.from(
       e.target.selectedOptions,
-      (option: HTMLOptionElement) => option.value
+      (option: HTMLOptionElement) => option.value,
     );
     setSelectedValues(selectedOptions);
+
+    if (onChange) {
+      setSelectedValues(selectedOptions);
+    }
   };
 
   return (
@@ -79,6 +87,7 @@ const BasicMultiSelect = ({
       )}
 
       <input
+        id={id}
         hidden
         readOnly
         name={name}

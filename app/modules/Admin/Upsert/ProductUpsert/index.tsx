@@ -81,12 +81,9 @@ const UpsertProduct = ({ offRouteModule }: Props) => {
 
     form = handleWindowedFormData(form);
 
-    console.log("form", form);
-
     const { formErrors } = validateForm(new FormData(form), validateOptions);
 
     if (formErrors) {
-      console.log("errs", formErrors);
       setClientValidationErrors(formErrors);
       setLoading(false);
       return;

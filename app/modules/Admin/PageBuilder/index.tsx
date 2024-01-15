@@ -1,18 +1,15 @@
-import type { ActionReturnTypes } from "~/utility/actionTypes";
+import { useEffect, useState } from "react";
 import { Form, Outlet, useActionData, useLoaderData } from "@remix-run/react";
+import useNotification from "~/hooks/PageNotification";
+import type { ActionReturnTypes } from "~/utility/actionTypes";
 import AdminPageWrapper from "~/components/Layout/Wrappers/AdminPageWrapper";
-import LargeCollapse from "~/components/Collapse/LargeCollapse";
+import { type BlockWithContent, type Page } from "~/models/pageBuilder.server";
+import type { BlockName } from "~/utility/blockMaster/types";
+import type { pageBuilderLoader } from "./index.server";
+import PanelPage from "./Components/PanelPage";
+import PanelBlock from "./Components/PanelBlock";
 import PatternBackground from "~/components/Layout/Backgrounds/PatternBackground";
 import { getThemeColorValueByName } from "~/utility/colors";
-import { useEffect, useState } from "react";
-import SquareIconButton from "~/components/Buttons/SquareIconButton";
-import { type Page, type BlockWithContent } from "~/models/pageBuilder.server";
-import { type PageType } from "~/utility/pageBuilder";
-import useNotification from "~/hooks/PageNotification";
-import type { pageBuilderLoader } from "./index.server";
-import Meta from "./Components/Meta";
-import PageBuilder from "./Components";
-import VersionControl from "./Components/VersionControl";
 
 export const PageBuilderModule = () => {
   const {
@@ -21,7 +18,7 @@ export const PageBuilderModule = () => {
     brands,
     colors,
     currentPreviewPage,
-    page,
+    publishedPage,
     pageType,
     previewPages,
     productCategories,
@@ -40,7 +37,7 @@ export const PageBuilderModule = () => {
 
   useNotification(notification);
 
-  const [currentVersion, setCurrentVersion] = useState<Page | null>(
+  const [previewPage, setPreviewPage] = useState<Page | null>(
     currentPreviewPage,
   );
 
@@ -48,12 +45,24 @@ export const PageBuilderModule = () => {
     blocks || null,
   );
 
+  const [selectedBlock, setSelectedBlock] = useState<BlockName | undefined>();
+  const [editingContent, setEditingContent] = useState<boolean>(false);
+  const [editingIndex, setEditingIndex] = useState<number>(1);
+  const [selectedItems, setSelectedItems] = useState<ContentSelection[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const reset = () => {
+    setEditingContent(false);
+    setSelectedBlock(undefined);
+    setSelectedItems([]);
+  };
+
   useEffect(() => {
     if (currentPreviewPage && !actionPreview) {
-      setCurrentVersion(currentPreviewPage);
+      setPreviewPage(currentPreviewPage);
     }
     if (actionPreview) {
-      setCurrentVersion(actionPreview);
+      setPreviewPage(actionPreview);
     }
     if (blocks && !actionBlocks) {
       setCurrentBlocks(blocks);
@@ -61,91 +70,82 @@ export const PageBuilderModule = () => {
     if (actionBlocks) {
       setCurrentBlocks(actionBlocks);
     }
-    console.log("CV", currentVersion);
-  }, [actionPreview, actionBlocks, blocks, currentPreviewPage, currentVersion]);
+  }, [actionPreview, actionBlocks, blocks, currentPreviewPage, previewPage]);
+
+  useEffect(() => {
+    if (updateSuccess) {
+      reset();
+    }
+    setLoading(false);
+  }, [updateSuccess]);
 
   return (
     <>
       <AdminPageWrapper>
-        <div className="relative h-full p-6 max-sm:p-0 sm:w-full">
-          <div className="absolute left-0 top-0 h-full w-full bg-brand-white"></div>
-          <PatternBackground
-            backgroundColor={getThemeColorValueByName("brand-black")}
-            brightness={-1.5}
-            name="isometric"
-            patternColor={getThemeColorValueByName("brand-white")}
-            patternOpacity={0.2}
-            patternSize={140}
-          />
+        <PatternBackground
+          name="isometric"
+          backgroundColor={getThemeColorValueByName("brand-black")}
+          patternColor={getThemeColorValueByName("brand-white")}
+          patternOpacity={0.2}
+          patternSize={140}
+          brightness={-1.5}
+        />
 
-          <div className="flex w-full justify-center">
-            <div className="flex flex-col gap-3 rounded-none text-brand-white">
-              <div className="relative flex flex-col items-center justify-center gap-6 bg-brand-black py-6 text-center text-xl font-bold text-brand-white max-sm:gap-3">
-                <div className="w-full">
-                  {page?.title ? page?.title : "Add Page"}
-                </div>
-                {pageType !== "homePage" && (
-                  <Form method="POST" className="absolute right-3">
-                    {page?.id && (
-                      <input
-                        hidden
-                        readOnly
-                        name="pageId"
-                        value={page.id.toString()}
-                      />
-                    )}
-                    <input hidden readOnly name="pageType" value={pageType} />
-                    <SquareIconButton
-                      color="error"
-                      iconName="IoTrashBin"
-                      name="_action"
-                      size="small"
-                      type="submit"
-                      value="deletepage"
-                    />
-                  </Form>
-                )}
-              </div>
+        <div className="flex flex-row justify-start border-x border-x-brand-black/75 max-w-[100vw] h-[100dvh] max-md:max-h-max">
+          <Form
+            method="POST"
+            className={`relative flex flex-row w-full max-h-[100vh] max-md:max-h-max max-md:flex-col`}
+          >
+            <PanelPage
+              articleCategories={articleCategories}
+              colors={colors}
+              currentBlocks={currentBlocks}
+              metaValidationError={metaValidationError}
+              pageType={pageType}
+              previewPage={previewPage}
+              previewPages={previewPages}
+              publishedPage={publishedPage}
+              publishSuccess={publishSuccess}
+              setEditingContent={setEditingContent}
+              setEditingIndex={setEditingIndex}
+              setSelectedBlock={setSelectedBlock}
+              setSelectedItems={setSelectedItems}
+            />
 
-              <Meta
-                key={currentVersion?.id}
+            {editingContent && previewPage && (
+              <PanelBlock
                 articleCategories={articleCategories}
+                brands={brands}
                 colors={colors}
-                currentVersion={currentVersion}
-                metaValidationError={metaValidationError}
-                pageType={pageType as PageType}
+                currentBlocks={currentBlocks}
+                editingIndex={editingIndex}
+                loading={loading}
+                previewPage={previewPage}
+                productCategories={productCategories}
+                productSubCategories={productSubCategories}
+                reset={reset}
+                searchResults={searchResults}
+                selectedBlock={selectedBlock}
+                selectedItems={selectedItems}
+                setLoading={setLoading}
+                setSelectedBlock={setSelectedBlock}
+                setSelectedItems={setSelectedItems}
               />
+            )}
 
-              {page && currentVersion && (
-                <LargeCollapse
-                  title="Blocks"
-                  forceOpen={true}
-                  content={
-                    <PageBuilder
-                      articleCategories={articleCategories}
-                      blocks={currentBlocks}
-                      brands={brands}
-                      colors={colors}
-                      previewPage={currentVersion}
-                      productCategories={productCategories}
-                      productSubCategories={productSubCategories}
-                      searchResults={searchResults}
-                      updateSuccess={updateSuccess}
-                    />
-                  }
-                />
-              )}
-
-              {page?.previewPage && (
-                <VersionControl
-                  currentVersion={currentVersion}
-                  page={page as Page}
-                  previewPages={previewPages}
-                  updateSuccess={publishSuccess}
-                />
-              )}
-            </div>
-          </div>
+            <input
+              name="previewPageId"
+              value={previewPage?.id}
+              hidden
+              readOnly
+            />
+            <input
+              name="itemIndex"
+              value={editingIndex.toString()}
+              hidden
+              readOnly
+            />
+          </Form>
         </div>
       </AdminPageWrapper>
       <Outlet />

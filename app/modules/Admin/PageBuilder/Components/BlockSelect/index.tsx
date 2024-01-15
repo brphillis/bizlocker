@@ -39,7 +39,7 @@ const BlockSelect = ({
   };
 
   return (
-    <div className="mx-auto flex max-w-[600px] flex-wrap items-center justify-center gap-3">
+    <div className="mx-auto flex max-w-full flex-wrap items-center justify-center gap-3 py-6">
       {blockMaster.map(({ name }: BlockMaster, i: number) => {
         return (
           <React.Fragment key={"BlockSelectionTiles_" + i}>
@@ -48,7 +48,11 @@ const BlockSelect = ({
               className={`flex h-24 w-24 cursor-pointer flex-col items-center gap-3 rounded-sm border border-brand-white/50 p-3 transition-all duration-300 ease-in-out hover:scale-[1.05]
            ${selectedBlock === name ? "scale-[1.05] border-primary" : ""}`}
             >
-              <BlockIcon blockName={name} size={28} />
+              <BlockIcon
+                blockName={name}
+                size={28}
+                extendStyle="text-brand-white/75"
+              />
 
               <p className="text-md text-brand-white/75">
                 {capitalizeFirst(name)}

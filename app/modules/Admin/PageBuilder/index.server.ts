@@ -50,18 +50,19 @@ export const pageBuilderLoader = async (
   const url = new URL(request.url);
   const id = url.searchParams.get("id") || undefined;
 
-  let page = {} as Page;
+  let publishedPage = {} as Page;
 
   if (id !== "add") {
-    page = await getPageType(pageType as PageType, true, id);
+    publishedPage = await getPageType(pageType as PageType, true, id);
   }
 
   let previewPages: PreviewPage[] | null | undefined = null;
   let blocks: BlockWithContent[] | null = null;
   let currentPreviewPage: Page | null = null;
 
-  if (page) {
-    previewPages = page.previewPage && sortPreviewPages(page.previewPage);
+  if (publishedPage) {
+    previewPages =
+      publishedPage.previewPage && sortPreviewPages(publishedPage.previewPage);
 
     if (previewPages && previewPages[0].id) {
       currentPreviewPage = await getPreviewPage(previewPages[0].id.toString());
@@ -78,7 +79,7 @@ export const pageBuilderLoader = async (
     brands,
     colors,
     currentPreviewPage,
-    page,
+    publishedPage,
     pageType,
     previewPages,
     productCategories,
@@ -159,7 +160,7 @@ export const pageBuilderAction = async (
 
       notification = {
         type: "success",
-        message: "Meta Added.",
+        message: "Page Settings Updated.",
       };
 
       if (!previewPageId) {

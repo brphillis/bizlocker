@@ -12,7 +12,7 @@ type Props = {
 const ContentCard = ({ type, name, onDelete, onNavigate }: Props) => {
   return (
     <div className="flex cursor-pointer items-center justify-between rounded-sm bg-brand-white/20 p-3 hover:scale-[1.005]">
-      <div>
+      <div className="text-brand-white">
         {type && capitalizeFirst(type)}
         {" / "}
         {name && capitalizeFirst(name)}

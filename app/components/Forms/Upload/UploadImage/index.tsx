@@ -5,14 +5,16 @@ import { ConvertToBase64Image, type NewImage } from "~/helpers/fileHelpers";
 import { findFirstNotNullInputValue } from "~/helpers/formHelpers";
 
 type Props = {
+  id?: string;
   defaultValue: Image | undefined | null;
   name?: string;
   label?: string;
+  onChange?: (e: string) => void;
 };
 
-const UploadImage = ({ defaultValue, name, label }: Props) => {
+const UploadImage = ({ id, defaultValue, name, label, onChange }: Props) => {
   const [image, setImage] = useState<Image | NewImage | undefined>(
-    defaultValue || undefined
+    defaultValue || undefined,
   );
 
   return (
@@ -67,10 +69,15 @@ const UploadImage = ({ defaultValue, name, label }: Props) => {
             }
 
             convertedImage && setImage(convertedImage);
+
+            if (onChange && image) {
+              onChange(JSON.stringify(image));
+            }
           }}
         />
       )}
       <input
+        id={id}
         type="hidden"
         name={name ? name : "image"}
         value={JSON.stringify(image) || ""}

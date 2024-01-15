@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
 
+//do not place spaces in tab names
+
 type Props = {
   tabNames: string[];
   activeTab: string;
   setActiveTab: (tab: string) => void;
   dynamicTabNames?: boolean;
+  extendStyle?: string;
 };
 
 const BoxedTabs = (props: Props) => {
@@ -36,14 +39,13 @@ const BoxedTabs = (props: Props) => {
     });
 
     setTabsWithErrors(tabsToSet);
-    console.log("TABS", tabsToSet);
   }, [props.tabNames, props.dynamicTabNames]);
 
   return (
     <div
       id="BoxTabContainer"
       role="tablist"
-      className="tabs-boxed tabs w-full rounded-none !p-0"
+      className={`tabs-boxed tabs w-full rounded-none !p-0 ${props?.extendStyle}`}
     >
       {props.tabNames?.map((tabName: string) => {
         let containsError = tabsWithErrors?.find((e) => e === tabName);

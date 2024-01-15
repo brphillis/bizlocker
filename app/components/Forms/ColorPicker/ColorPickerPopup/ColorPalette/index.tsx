@@ -39,7 +39,7 @@ const ColorPalette = ({
 
   return (
     <div className="relative">
-      <div className="select-none">{label}</div>
+      <div className="select-none text-brand-white/75 text-sm">{label}</div>
       <div
         ref={colorSelectionRef}
         className="scrollbar-hide flex max-h-[220px] flex-row flex-wrap items-center justify-center gap-3 overflow-scroll py-3"

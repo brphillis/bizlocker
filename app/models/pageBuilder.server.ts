@@ -527,7 +527,7 @@ export const publishPage = async (
     }
 
     // Store the preview page blocks and meta in a variable
-    const previewPageBlocks = previewPage.blocks;
+    const previewPageBlocks = previewPage?.blocks;
 
     let updateData: any = {
       blocks: {
@@ -566,6 +566,7 @@ export const publishPage = async (
     // Update the published date on the previewpage
 
     let userEmail;
+
     if (request) {
       const { email } =
         ((await getUserDataFromSession(request, STAFF_SESSION_KEY)) as Staff) ||
@@ -643,6 +644,7 @@ export const publishPage = async (
 
     return { success: true };
   } catch (error) {
+    console.log("ERROR", error);
     throw new Error("Error publishing page");
   }
 };
@@ -701,6 +703,7 @@ export const revertPreviewChanges = async (
 
     return { success: true };
   } catch (error) {
+    console.log("ERROR", error);
     throw new Error("Error Reverting Page Changes");
   }
 };

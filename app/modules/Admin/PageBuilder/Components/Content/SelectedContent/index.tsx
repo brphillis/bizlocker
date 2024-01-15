@@ -2,6 +2,7 @@ import React from "react";
 import type { BlockName } from "~/utility/blockMaster/types";
 import { blockMaster } from "~/utility/blockMaster/blockMaster";
 import ContentCard from "./ContentCard";
+import { useNavigate } from "@remix-run/react";
 
 type Props = {
   selectedItems: ContentSelection[];
@@ -14,6 +15,8 @@ const SelectedContent = ({
   setSelectedItems,
   selectedBlock,
 }: Props) => {
+  const navigate = useNavigate();
+
   const selectedBlocksContentLimit =
     blockMaster.find((e) => selectedBlock === e.name)?.maxContentItems || 1;
 
@@ -23,7 +26,7 @@ const SelectedContent = ({
     <>
       {selectedItems && selectedItems.length > 0 && (
         <div className="py-6">
-          <div className="ml-3 pb-3">
+          <div className="ml-3 pb-3 text-brand-white">
             Selected Items{" "}
             {"( " +
               selectedItemsTotal +
@@ -42,16 +45,12 @@ const SelectedContent = ({
                     <ContentCard
                       type={type}
                       name={name}
-                      onNavigate={() =>
-                        window.open(
-                          `/admin/${type + "s"}/${contentId}`,
-                          "_blank",
-                          "rel=noopener noreferrer"
-                        )
-                      }
+                      onNavigate={() => {
+                        navigate(`${type}?contentId=${contentId}`);
+                      }}
                       onDelete={() =>
                         setSelectedItems(
-                          selectedItems.filter((_, i) => i !== index)
+                          selectedItems.filter((_, i) => i !== index),
                         )
                       }
                     />

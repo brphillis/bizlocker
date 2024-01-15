@@ -32,16 +32,15 @@ const OptionsModule = ({
   colors,
   activeTab,
 }: Props) => {
-  const selectedBlockOptions = blockMaster.find(
-    (e) => e.name === selectedBlock
-  )?.options;
+  const selectedBlockOptions = blockMaster.find((e) => e.name === selectedBlock)
+    ?.options;
 
   return (
     <>
       {selectedBlock && (
         <div className="w-full">
           <div
-            className={`flex flex-wrap gap-6 
+            className={`flex flex-wrap gap-3 
             ${activeTab !== "block" ? "hidden" : "pb-3"}`}
           >
             <BackgroundOptions

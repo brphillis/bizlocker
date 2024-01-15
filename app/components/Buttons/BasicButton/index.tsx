@@ -6,6 +6,7 @@ type Props = {
   extendStyle?: string;
   type?: "button" | "reset" | "submit";
   hoverEffect?: "grow" | "color";
+  disabled?: boolean;
 };
 
 const BasicButton = ({
@@ -16,6 +17,7 @@ const BasicButton = ({
   extendStyle,
   type,
   hoverEffect,
+  disabled,
 }: Props) => {
   let currentEffect = "";
 
@@ -34,12 +36,13 @@ const BasicButton = ({
       name={name ? name : undefined}
       value={value ? value : undefined}
       className={`
-      inline-flex h-[3rem] min-h-[3rem] cursor-pointer items-center justify-center rounded-sm border-[1px] pl-[1rem] pr-[1rem] text-center font-semibold shadow-sm
+      inline-flex h-[3rem] min-h-[3rem] text-sm cursor-pointer items-center justify-center rounded-sm border-[1px] pl-[1rem] pr-[1rem] text-center font-semibold shadow-sm
+      ${disabled && "btn-disabled"}
        ${currentEffect} ${
-        extendStyle
-          ? extendStyle
-          : "border-primary bg-primary text-brand-white transition-colors duration-300 hover:bg-primary-dark"
-      } `}
+         extendStyle
+           ? extendStyle
+           : "border-primary bg-primary text-brand-white transition-colors duration-300 hover:bg-primary-dark"
+       } `}
       onClick={() => onClick && onClick()}
     >
       {label}

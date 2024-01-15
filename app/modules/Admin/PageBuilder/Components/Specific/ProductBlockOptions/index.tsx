@@ -39,8 +39,8 @@ const ProductBlockOptions = ({
   };
 
   return (
-    <details className="collapse collapse-plus -mt-3 !hidden !max-w-full !rounded-sm bg-brand-white/20 [&:has(div>div)]:!grid">
-      <summary className="collapse-title text-xl font-medium">
+    <details className="collapse collapse-plus !hidden !max-w-full !rounded-sm bg-brand-white/20 [&:has(div>div)]:!grid">
+      <summary className="collapse-title text-xl font-medium text-brand-white">
         Product Filters
       </summary>
       <div className="collapse-content relative sm:!px-3">
@@ -58,7 +58,7 @@ const ProductBlockOptions = ({
                   onChange={(selectedValue) => {
                     selectItem(
                       "productCategory",
-                      parseInt(selectedValue as string)
+                      parseInt(selectedValue as string),
                     );
                   }}
                 />
@@ -73,7 +73,7 @@ const ProductBlockOptions = ({
                   onChange={(selectedValue) =>
                     selectItem(
                       "productSubCategory",
-                      parseInt(selectedValue as string)
+                      parseInt(selectedValue as string),
                     )
                   }
                 />
