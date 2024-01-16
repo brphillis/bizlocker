@@ -2,6 +2,7 @@
   "name": "brockdev-remix-2eda",
   "private": true,
   "sideEffects": false,
+  "type": "module",
   "scripts": {
     "update-theme": "node ./theme/themebuilder.js",
     "dev": "node ./server.mjs",

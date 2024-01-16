@@ -4,8 +4,7 @@
     "**/*.ts",
     "**/*.tsx",
     "app/routes/._index.tsx",
-    "node_modules/@prisma/client/index.d.ts",
-    "server.mjs"
+    "node_modules/@prisma/client/index.d.ts"
   ],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2022"],

@@ -26,7 +26,6 @@ const validateOptions = {};
 
 const SiteSettingsUpsert = () => {
   const { siteSettings } = useLoaderData<typeof siteSettingsUpsertLoader>();
-
   const { notification } = (useActionData() as ActionReturnTypes) || {};
 
   const {
