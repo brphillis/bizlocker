@@ -28,6 +28,7 @@ const Meta = ({
   const id = searchParams.get("id");
 
   const handleUpdateMeta = () => {
+    console.log("being clicked");
     const title = (document.querySelector("#PageMetaTitle") as HTMLInputElement)
       ?.value;
     const description = (
@@ -46,22 +47,23 @@ const Meta = ({
       document.querySelector("#PageArticleCategories") as HTMLInputElement
     )?.value;
 
-    if (currentVersion?.id) {
-      const formData = new FormData();
-      formData.set("_action", "updateMeta");
-      formData.set("pageType", pageType);
-      title && formData.set("title", title);
-      description && formData.set("description", description);
-      backgroundColor && formData.set("backgroundColor", backgroundColor);
-      isActive && formData.set("isActive", isActive);
-      thumbnail && formData.set("thumbnail", thumbnail);
+    const formData = new FormData();
+    formData.set("_action", "updateMeta");
+    formData.set("pageType", pageType);
+    title && formData.set("title", title);
+    description && formData.set("description", description);
+    backgroundColor && formData.set("backgroundColor", backgroundColor);
+    isActive && formData.set("isActive", isActive);
+    thumbnail && formData.set("thumbnail", thumbnail);
+    pageArticleCategories &&
       pageArticleCategories &&
-        pageArticleCategories &&
-        formData.set("articleCategories", pageArticleCategories);
-      formData.set("previewPageId", currentVersion?.id?.toString());
+      formData.set("articleCategories", pageArticleCategories);
 
-      submit(formData, { method: "POST" });
+    if (currentVersion?.id) {
+      formData.set("previewPageId", currentVersion?.id?.toString());
     }
+
+    submit(formData, { method: "POST" });
   };
 
   return (
@@ -162,7 +164,7 @@ const Meta = ({
         </div>
       )}
 
-      <BasicButton label="Submit" onClick={handleUpdateMeta} />
+      <BasicButton label="Submit" onClick={() => handleUpdateMeta()} />
     </div>
   );
 };

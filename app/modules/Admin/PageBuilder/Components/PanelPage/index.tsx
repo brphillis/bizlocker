@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSearchParams, useSubmit } from "@remix-run/react";
 import { IoTrashSharp } from "react-icons/io5";
 import type { PreviewPage } from "@prisma/client";
@@ -48,8 +48,8 @@ const PanelPage = ({
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
 
-  const [tabNames] = useState<string[]>(
-    previewPage ? ["blocks", "settings"] : ["settings"],
+  const [tabNames, setTabNames] = useState<string[]>(
+    id === "add" ? ["settings"] : ["blocks", "settings"],
   );
   const [activeTab, setActiveTab] = useState<string>(tabNames?.[0]);
 
@@ -108,6 +108,14 @@ const PanelPage = ({
     }
   };
 
+  useEffect(() => {
+    if (id === "add") {
+      setTabNames(["settings"]);
+    } else {
+      setTabNames(["blocks", "settings"]);
+    }
+  }, [id]);
+
   return (
     <div className="relative h-[100vh] overflow-scroll scrollbar-hide w-[360px] min-w-[360px] max-md:min-w-[100vw] bg-brand-black border-r border-r-brand-white/25">
       <BoxedTabs
@@ -145,8 +153,13 @@ const PanelPage = ({
               )}
 
               <div
-                className="max-w-full flex items-center justify-center w-full h-[58px] cursor-pointer border-b border-b-brand-white/50 px-3 
-                 py-3 transition duration-300 ease-in-out hover:scale-[1.01] hover:text-brand-white text-brand-white/50"
+                className={`max-w-full flex items-center justify-center w-full h-[58px] cursor-pointer border-b border-b-brand-white/50 px-3 
+                 py-3 transition duration-300 ease-in-out hover:scale-[1.01] hover:text-brand-white text-brand-white/50
+                 ${
+                   (!currentBlocks ||
+                     (currentBlocks && currentBlocks.length === 0)) &&
+                   "border-t border-t-brand-white/50"
+                 }`}
                 onClick={() => {
                   currentBlocks && setEditingIndex(currentBlocks.length);
                   setEditingContent(true);

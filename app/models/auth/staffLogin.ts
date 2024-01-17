@@ -11,7 +11,7 @@ export interface StaffSession {
 
 export const verifyStaffLogin = async (
   email: string,
-  password: string
+  password: string,
 ): Promise<{ staff: StaffSession }> => {
   const userWithPassword = await prisma.staff.findUnique({
     where: {

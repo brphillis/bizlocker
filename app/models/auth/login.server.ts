@@ -13,7 +13,7 @@ export interface UserLoginResponse {
 export const verifyLogin = async (
   email: string,
   password: string,
-  verifiedOnly: boolean = true
+  verifiedOnly: boolean = true,
 ): Promise<{ user: UserLoginResponse | null; error: string | null }> => {
   const userWithPassword = await prisma.user.findUnique({
     where: {
@@ -53,7 +53,7 @@ export const verifyLogin = async (
 
 export const googleLogin = async (
   request: Request,
-  credential: any
+  credential: any,
 ): Promise<undefined | TypedResponse<never>> => {
   const credentials = jwt.decode(credential) as GoogleAuthResponse;
 
@@ -99,7 +99,7 @@ export const googleLogin = async (
   if (user && user.googleLogin) {
     const { password: _, ...userWithoutPassword } = user;
 
-    return createUserSession({
+    return await createUserSession({
       request,
       user: JSON.stringify(userWithoutPassword),
       remember: true,
@@ -119,7 +119,7 @@ export const googleLogin = async (
 
     const { password: _, ...userWithoutPassword } = user;
 
-    return createUserSession({
+    return await createUserSession({
       request,
       user: JSON.stringify(userWithoutPassword),
       remember: true,

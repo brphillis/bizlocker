@@ -44,7 +44,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       password as string,
     );
 
-    return createStaffSession({
+    return await createStaffSession({
       request,
       user: JSON.stringify(staff),
       remember: remember === "on" ? true : false,

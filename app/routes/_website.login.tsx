@@ -47,7 +47,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
       const { user, error } = await verifyLogin(
         email as string,
-        password as string
+        password as string,
       );
 
       if (error) {
@@ -56,7 +56,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       }
 
       if (user) {
-        return createUserSession({
+        return await createUserSession({
           request,
           user: JSON.stringify(user),
           remember: remember === "on" ? true : false,

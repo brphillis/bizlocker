@@ -29,17 +29,18 @@ const VersionControl = ({
   const publishedDates = previewPages?.map((e) => e.publishedAt);
 
   const handlePublish = () => {
+    setLoading(true);
+
+    const formData = new FormData();
+    formData.set("_action", "publish");
+    formData.set("pageId", publishedPage?.id?.toString());
+    formData.set("pageType", pageType);
+
     if (currentVersion?.id) {
-      setLoading(true);
-
-      const formData = new FormData();
-      formData.set("_action", "publish");
-      formData.set("pageId", publishedPage?.id?.toString());
       formData.set("previewPageId", currentVersion?.id?.toString());
-      formData.set("pageType", pageType);
-
-      submit(formData, { method: "POST" });
     }
+
+    submit(formData, { method: "POST" });
   };
 
   const handleRevert = () => {

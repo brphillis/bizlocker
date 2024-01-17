@@ -7,6 +7,9 @@ installGlobals();
 
 export default defineConfig(() => {
   return {
+    ssr: {
+      noExternal: ["react-icons"],
+    },
     plugins: [remix(), tsconfigPaths()],
   };
 });

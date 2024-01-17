@@ -91,7 +91,7 @@ export const pageBuilderAction = async (
   request: Request,
   params: Params<string>,
 ) => {
-  const pageType = params?.pagetype?.replace(/p/g, "P");
+  const pageType = params?.pagetype?.toLocaleLowerCase();
 
   const form = Object.fromEntries(await request.formData());
   const {
@@ -163,7 +163,10 @@ export const pageBuilderAction = async (
         message: "Page Settings Updated.",
       };
 
+      console.log("THE PREVIEW PAGEID", previewPageId);
+
       if (!previewPageId) {
+        console.log("REACHED");
         return redirect(`/admin/pagebuilder/${pageType}?id=${newId}`);
       } else {
         actionPreview = await getPreviewPage(previewPageId as string);

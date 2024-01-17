@@ -1,13 +1,42 @@
 version: "3.7"
+
 services:
   postgres:
-    image: postgres:latest
-    restart: always
+    image: postgres:15
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=postgres
+      - POSTGRES_USER=testing
+      - POSTGRES_PASSWORD=testing
+      - POSTGRES_DB=testing
     ports:
       - "5432:5432"
-    volumes:
-      - ./postgres-data:/var/lib/postgresql/data
+    networks:
+      - clutch_network
+    restart: always
+
+  bizlocker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://testing:testing@brockdev-remix-postgres-1/testing?connection_limit=5&connect_timeout=300
+      - SITE_URL=http://139.180.181.36:3000
+      - SESSION_SECRET=347b0e6265fd48803179576670065436
+      - PORT=3000
+      - JWT_ACCESS_SECRET=TEMPCODEACCESS
+      - JWT_REFRESH_SECRET=TEMPCODEREFRESH
+      - AWS_ACCESS=AKIAZF32J7JJTVTTFOJO
+      - AWS_SECRET=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
+      - SQUARE_ACCESS=EAAAEES4eypdVty9y-LGPoELlnKfZqRBxkdoPeMf3SlpvieU9_TEcjVXLMzkzzqw
+      - SENDGRID_KEY=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
+      - AUSPOST_ACCESS=1f50f189-7ff2-449a-8c67-8939a6f183ac
+      - AUTOSLEEP_MINUTES=15
+    networks:
+      - clutch_network
+
+networks:
+  clutch_network:
+    driver: bridge

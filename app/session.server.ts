@@ -27,10 +27,11 @@ export async function getSession(request: Request) {
 
 export async function getUserDataFromSession(
   request: Request,
-  sessionKey: string = USER_SESSION_KEY
+  sessionKey: string = USER_SESSION_KEY,
 ): Promise<User | Staff | undefined | null> {
   const session = await getSession(request);
   const userData = session.get(sessionKey);
+
   if (userData) {
     if (typeof userData === "string") {
       return JSON.parse(userData);
@@ -71,11 +72,11 @@ export async function createUserSession({
   headers.append("Set-Cookie", sessionCookie);
   headers.append(
     "Set-Cookie",
-    `access_token=${accessToken}; HttpOnly; SameSite=Lax; Path=/;`
+    `access_token=${accessToken}; HttpOnly; SameSite=Lax; Path=/;`,
   );
   headers.append(
     "Set-Cookie",
-    `refresh_token=${refreshToken}; HttpOnly; SameSite=Lax; Path=/;`
+    `refresh_token=${refreshToken}; HttpOnly; SameSite=Lax; Path=/;`,
   );
 
   return redirect(redirectTo, { headers });
@@ -112,11 +113,11 @@ export async function createStaffSession({
   headers.append("Set-Cookie", sessionCookie);
   headers.append(
     "Set-Cookie",
-    `access_token=${accessToken}; HttpOnly; SameSite=Lax; Path=/;`
+    `access_token=${accessToken}; HttpOnly; SameSite=Lax; Path=/;`,
   );
   headers.append(
     "Set-Cookie",
-    `refresh_token=${refreshToken}; HttpOnly; SameSite=Lax; Path=/;`
+    `refresh_token=${refreshToken}; HttpOnly; SameSite=Lax; Path=/;`,
   );
 
   return redirect(redirectTo, { headers });
