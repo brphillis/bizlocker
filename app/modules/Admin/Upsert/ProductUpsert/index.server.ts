@@ -31,6 +31,13 @@ export const productUpsertLoader = async (
   const { storeId } =
     ((await getUserDataFromSession(request, STAFF_SESSION_KEY)) as Staff) || {};
 
+  if (!storeId) {
+    throw new Response(null, {
+      status: 505,
+      statusText: "You Must Be Assigned to a Store",
+    });
+  }
+
   const productSubCategories = await getProductSubCategories();
   const brands = await getBrands();
   const promotions = await getPromotions();

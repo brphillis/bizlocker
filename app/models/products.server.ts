@@ -57,7 +57,7 @@ export type NewProduct = {
 };
 
 export const getProducts = async (
-  count?: string
+  count?: string,
 ): Promise<ProductWithDetails[]> => {
   if (count) {
     return await prisma.product.findMany({
@@ -80,7 +80,7 @@ export const getProducts = async (
 };
 
 export const getProduct = async (
-  id: string
+  id: string,
 ): Promise<ProductWithDetails | null> => {
   return await prisma.product.findUnique({
     where: {
@@ -114,7 +114,7 @@ export const getProduct = async (
 };
 
 export const getProductVariant = async (
-  id: string
+  id: string,
 ): Promise<ProductVariantWithDetails | null> => {
   return await prisma.productVariant.findUnique({
     where: {
@@ -129,7 +129,7 @@ export const getProductVariant = async (
 
 export const upsertProduct = async (
   request: Request,
-  productData: NewProduct
+  productData: NewProduct,
 ) => {
   const {
     name,
@@ -153,10 +153,10 @@ export const upsertProduct = async (
 
   // Compute the discountPercentageHigh and discountPercentageLow for the product from the variants
   const activeVariants = variants.filter(
-    (variant: ProductVariant) => variant.isActive
+    (variant: ProductVariant) => variant.isActive,
   );
   const discountPercentages = activeVariants.map((variant: ProductVariant) =>
-    calculateDiscountPercentage(variant.price, variant.salePrice!)
+    calculateDiscountPercentage(variant.price, variant.salePrice!),
   );
   const discountPercentageHigh =
     discountPercentages.length > 0 ? Math.max(...discountPercentages) : 0;
@@ -440,7 +440,7 @@ export const upsertProduct = async (
       const variant = variants[i];
 
       const currentStockLevel = existingProduct.variants?.[i]?.stock.find(
-        (e) => e.storeId === storeId
+        (e) => e.storeId === storeId,
       )?.quantity;
 
       // Check if we should update stock / save on number of queries
@@ -534,7 +534,7 @@ export const deleteProduct = async (id: string) => {
 export const searchProducts = async (
   formData?: { [k: string]: FormDataEntryValue },
   url?: URL,
-  activeOnly?: boolean
+  activeOnly?: boolean,
 ): Promise<{ products: Product[] | null; totalPages: number }> => {
   const name =
     formData?.name || (url && url?.searchParams.get("name")?.toString()) || "";

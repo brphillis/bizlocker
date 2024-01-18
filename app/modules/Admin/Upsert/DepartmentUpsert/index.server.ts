@@ -12,7 +12,6 @@ import {
 
 const validateOptions = {
   name: true,
-  department: true,
   index: true,
 };
 

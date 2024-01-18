@@ -13,6 +13,7 @@ export interface ActionReturnTypes {
   success: boolean;
   actionShippingOptions: AusPostDeliveryOption[];
   publishSuccess: boolean;
+  revertSuccess: boolean;
   updateSuccess: boolean;
   searchResults: any;
   metaValidationError: string[];

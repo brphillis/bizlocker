@@ -82,12 +82,12 @@ const RichTextInput = ({
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <div className="form-control relative my-3 w-full self-center">
+      <div className="form-control relative mt-6 mb-3 w-full self-center">
         {label && (
           <label
-            className={`label text-brand-white mb-[24px] mt-[-24px] ${labelStyle}`}
+            className={`label text-brand-white mb-[24px] mt-[-12px] ${labelStyle}`}
           >
-            QQQ
+            {label}
           </label>
         )}
 

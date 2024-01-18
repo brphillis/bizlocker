@@ -46,7 +46,9 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
 
   return (
     <div
-      className={`relative grid h-max place-items-center gap-6 py-3 max-md:gap-3 max-md:px-3 ${margin} ${padding} 
+      className={`relative grid h-max place-items-center gap-6 max-md:gap-3 max-md:px-3 
+      ${!columns || (columns && columns <= 3) ? "py-6" : "py-3"}
+      ${margin} ${padding} 
       ${colsMobile || "max-md:!grid-cols-2"}`}
       style={{
         gridTemplateColumns: columns

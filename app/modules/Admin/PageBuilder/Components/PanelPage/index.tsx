@@ -24,6 +24,7 @@ type Props = {
   currentBlocks: BlockWithContent[] | null;
   previewPages?: PreviewPage[] | null;
   publishSuccess: boolean;
+  revertSuccess: boolean;
   metaValidationError: string[];
   colors: string[];
   articleCategories: SelectValue[];
@@ -40,6 +41,7 @@ const PanelPage = ({
   publishedPage,
   previewPages,
   publishSuccess,
+  revertSuccess,
   metaValidationError,
   colors,
   articleCategories,
@@ -176,7 +178,7 @@ const PanelPage = ({
                   pageType={pageType as PageType}
                   previewPages={previewPages}
                   publishedPage={publishedPage as Page}
-                  updateSuccess={publishSuccess}
+                  updateSuccess={publishSuccess || revertSuccess}
                 />
               </div>
             )}

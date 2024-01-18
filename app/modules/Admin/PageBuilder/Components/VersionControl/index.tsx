@@ -124,39 +124,37 @@ const VersionControl = ({
             }}
             defaultValue={previewPages?.[0]?.id}
           >
-            {previewPages &&
-              previewPages
-                .slice()
-                .sort(
-                  (a: any, b: any) =>
-                    (b.publishedAt || 0) - (a.publishedAt || 0),
-                )
-                .map((previewPageData: PreviewPage, i: number) => {
-                  const { id, publishedAt } = previewPageData;
-                  const publishedDate = publishedAt
-                    ? formatDate(publishedAt, true)
-                    : "unpublished";
+            {previewPages
+              ?.slice()
+              .sort(
+                (a: any, b: any) => (b.publishedAt || 0) - (a.publishedAt || 0),
+              )
+              .map((previewPageData: PreviewPage, i: number) => {
+                const { id, publishedAt } = previewPageData;
+                const publishedDate = publishedAt
+                  ? formatDate(publishedAt, true)
+                  : "unpublished";
 
-                  let isMostRecentlyPublished = false;
+                let isMostRecentlyPublished = false;
 
-                  if (
-                    publishedDates &&
-                    publishedAt &&
-                    isMostRecentDate(publishedAt, publishedDates)
-                  ) {
-                    isMostRecentlyPublished = true;
-                  }
+                if (
+                  publishedDates &&
+                  publishedAt &&
+                  isMostRecentDate(publishedAt, publishedDates)
+                ) {
+                  isMostRecentlyPublished = true;
+                }
 
-                  const optionLabel = isMostRecentlyPublished
-                    ? "Current"
-                    : "Previous";
+                const optionLabel = isMostRecentlyPublished
+                  ? "Current"
+                  : "Previous";
 
-                  return (
-                    <option key={"preivewPageVersionSelection_" + i} value={id}>
-                      {optionLabel}: {publishedDate}
-                    </option>
-                  );
-                })}
+                return (
+                  <option key={"preivewPageVersionSelection_" + i} value={id}>
+                    {optionLabel}: {publishedDate}
+                  </option>
+                );
+              })}
           </select>
 
           <SquareIconButton

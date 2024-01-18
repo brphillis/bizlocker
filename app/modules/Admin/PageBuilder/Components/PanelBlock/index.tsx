@@ -181,7 +181,7 @@ const PanelBlock = ({
           activeTab={activeTab}
         />
 
-        <div className={`${activeTab !== "block pb-6" && "hidden"}`}>
+        {selectedBlock === "product" && (
           <ProductBlockOptions
             selectedBlock={selectedBlock}
             selectedItems={selectedItems}
@@ -193,7 +193,9 @@ const PanelBlock = ({
               currentBlocks?.[editingIndex]?.content as BlockContentWithDetails
             }
           />
+        )}
 
+        {selectedBlock === "article" && (
           <ArticleBlockOptions
             selectedBlock={selectedBlock}
             selectedItems={selectedItems}
@@ -203,7 +205,9 @@ const PanelBlock = ({
               currentBlocks?.[editingIndex]?.content as BlockContentWithDetails
             }
           />
+        )}
 
+        {selectedBlock === "text" && (
           <TextBlockContentModule
             selectedBlock={selectedBlock}
             selectedItems={selectedItems}
@@ -212,7 +216,7 @@ const PanelBlock = ({
               currentBlocks?.[editingIndex]?.content as BlockContentWithDetails
             }
           />
-        </div>
+        )}
 
         {selectedItems && (
           <input

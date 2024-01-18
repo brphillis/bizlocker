@@ -67,9 +67,9 @@ export const getBlocks = async (
 export const fetchBlockProducts = async (
   block: BlockWithContent,
 ): Promise<Product[] | null> => {
-  const brandId = block.content.brand?.[0].id;
-  const productCategoryId = block.content.productCategory?.[0].id;
-  const productSubCategoryId = block.content.productSubCategory?.[0].id;
+  const brandId = block.content.brand?.[0]?.id;
+  const productCategoryId = block.content.productCategory?.[0]?.id;
+  const productSubCategoryId = block.content.productSubCategory?.[0]?.id;
   const gender = block.content.gender?.[0];
 
   const { count, sortBy, sortOrder } = block.blockOptions[0] || {};

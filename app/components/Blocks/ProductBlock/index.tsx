@@ -52,7 +52,7 @@ const ProductBlock = ({ content, options: optionsArray }: Props) => {
 
   const determineDisplayedFilter = () => {
     if (
-      brand?.name.toLowerCase() === "none" &&
+      brand?.name.toLowerCase() === "generic" &&
       productSubCategory?.name &&
       productCategory?.name &&
       gender
@@ -60,7 +60,7 @@ const ProductBlock = ({ content, options: optionsArray }: Props) => {
       return;
     }
 
-    if (brand?.name && brand?.name.toLowerCase() !== "none") {
+    if (brand?.name && brand?.name.toLowerCase() !== "generic") {
       return brand?.name;
     }
     if (productSubCategory?.name) {
@@ -93,7 +93,9 @@ const ProductBlock = ({ content, options: optionsArray }: Props) => {
     <>
       <p className="select-none self-start pl-3 text-xl font-bold md:pl-1">
         {options?.sortBy ? determineSortPhrase(options?.sortBy) : null}
-        <span className="text-2xl">{determineDisplayedFilter()}</span>
+        <span className="text-2xl">
+          {determineDisplayedFilter() || "Our Range"}
+        </span>
       </p>
 
       {products && (

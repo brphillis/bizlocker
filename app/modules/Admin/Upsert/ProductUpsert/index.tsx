@@ -145,7 +145,7 @@ const UpsertProduct = ({ offRouteModule }: Props) => {
                       <BasicSelect
                         name="brand"
                         label="Brand"
-                        placeholder="Brand"
+                        placeholder="Select Brand"
                         customWidth="w-full"
                         selections={brands}
                         defaultValue={product?.brandId?.toString() || "1"}
@@ -163,7 +163,7 @@ const UpsertProduct = ({ offRouteModule }: Props) => {
                       <BasicSelect
                         name="promotion"
                         label="Promotion"
-                        placeholder="Promotion"
+                        placeholder="Select Promotion"
                         customWidth="w-full"
                         selections={promotions}
                         defaultValue={product?.promotionId?.toString()}
@@ -186,6 +186,7 @@ const UpsertProduct = ({ offRouteModule }: Props) => {
                       {() => (
                         <RichTextInput
                           label="Description"
+                          labelStyle="!text-brand-black"
                           name="description"
                           value={richText || product?.description}
                           onChange={setRichText}

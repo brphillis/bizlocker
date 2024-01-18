@@ -33,6 +33,7 @@ export const PageBuilderModule = () => {
     updateSuccess,
     publishSuccess,
     notification,
+    revertSuccess,
   } = (useActionData() as ActionReturnTypes) || {};
 
   useNotification(notification);
@@ -106,6 +107,7 @@ export const PageBuilderModule = () => {
               previewPages={previewPages}
               publishedPage={publishedPage}
               publishSuccess={publishSuccess}
+              revertSuccess={revertSuccess}
               setEditingContent={setEditingContent}
               setEditingIndex={setEditingIndex}
               setSelectedBlock={setSelectedBlock}

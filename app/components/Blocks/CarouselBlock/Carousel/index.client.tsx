@@ -85,7 +85,7 @@ const Carousel = ({ joinedContent, options }: Props) => {
       className={`relative shadow-md 
       ${backgroundColor ? "py-6" : "p-0"} 
       ${width ? width : "w-screen"}
-      ${margin} ${padding}
+      ${margin} ${backgroundColor ? padding : ""}
       ${
         backgroundColor && backgroundWidth !== "w-screen" && "px-6 max-md:px-0"
       }`}

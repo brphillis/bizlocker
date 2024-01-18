@@ -122,8 +122,8 @@ const App = () => {
           location.pathname.includes("/account")
         ) && (
           <div className="navbar relative z-0 flex !min-h-[50px] w-full select-none items-center justify-center gap-6 bg-brand-white !py-0 text-sm font-bold text-brand-black/80 shadow-md">
-            <div className="max-md:text-xs">CHRISTMAS SALES END SOON!</div>
-            <CountDown targetDate={new Date("2024-01-01T00:00:00")} />
+            <div className="max-md:text-xs">SEASON SALE ENDS SOON!</div>
+            <CountDown targetDate={new Date("2024-03-03T00:00:00")} />
           </div>
         )}
 

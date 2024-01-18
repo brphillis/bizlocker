@@ -37,8 +37,7 @@ export const fontWeightSelectValues = [
   { id: "font-medium", name: "Medium" },
   { id: "font-semibold", name: "Semi Bold" },
   { id: "font-bold", name: "Bold" },
-  { id: "font-extrabold", name: "Bold" },
-  { id: "font-bold", name: "X Bold" },
+  { id: "font-extrabold", name: "X Bold" },
   { id: "font-black", name: "Boldest" },
 ];
 

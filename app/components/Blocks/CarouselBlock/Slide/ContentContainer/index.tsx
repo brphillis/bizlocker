@@ -30,8 +30,8 @@ const ContentContainer = ({ index, blockOptions }: Props) => {
 
   return (
     <div
-      className={`relative z-10 m-12 h-max w-max max-w-full select-none flex-col items-center gap-6 overflow-hidden p-6 font-semibold 
-        max-md:m-0 max-md:gap-3 
+      className={`relative z-10 m-12 h-max w-max max-w-full select-none flex-col items-center overflow-hidden p-6 font-semibold 
+        max-md:m-0 gap-3 
         ${hasCardContent ? "flex" : "hidden"}`}
     >
       <PatternBackground
@@ -53,7 +53,7 @@ const ContentContainer = ({ index, blockOptions }: Props) => {
 
       {itemShortText[index] && (
         <div
-          className={`relative select-none text-center max-md:max-w-[90%] max-md:pb-3
+          className={`relative select-none text-center max-md:max-w-[90%] pb-3
            ${itemShortTextColors[index]} ${itemShortTextSizes[index]} ${itemShortTextSizesMobile[index]}`}
         >
           {itemShortText[index]}

@@ -5,8 +5,8 @@ type Props = {
 
 const SEOCardSkeleton = ({ containerStyle, SEOWords }: Props) => {
   return (
-    <div className={`relative ${containerStyle}`}>
-      <div className="skeleton relative h-full w-full"></div>
+    <div className={`relative !rounded-none ${containerStyle}`}>
+      <div className="skeleton !rounded-none relative h-full w-full"></div>
 
       <div className="absolute left-[50%] top-[25%] flex translate-x-[-50%] flex-col items-center gap-3 font-bold text-brand-white/10">
         {SEOWords?.map((word, i) => {

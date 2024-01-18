@@ -21,12 +21,14 @@ const ItemSelectInput = ({
   valueName,
 }: Props) => {
   const [items, setItems] = useState<(string | number | undefined)[]>(
-    defaultValues || []
+    defaultValues || [],
   );
 
   return (
     <details className="collapse collapse-plus !hidden !max-w-full !rounded-sm bg-brand-white/20 [&:has(div>div)]:!grid">
-      <summary className="collapse-title text-xl font-medium">{title}</summary>
+      <summary className="collapse-title text-xl font-medium text-brand-white">
+        {title}
+      </summary>
       <div className="flex max-w-full flex-wrap justify-start !gap-3 px-3 pb-3 max-md:justify-center max-md:px-0">
         {selectedItems.map((_, i) => {
           const relativeIndex = i + 1;
@@ -53,7 +55,7 @@ const ItemSelectInput = ({
                       i,
                       e.target.value,
                       items,
-                      setItems
+                      setItems,
                     )
                   }
                 >
@@ -66,7 +68,7 @@ const ItemSelectInput = ({
                       >
                         {name}
                       </option>
-                    )
+                    ),
                   )}
                 </select>
               </div>

@@ -28,7 +28,6 @@ const Meta = ({
   const id = searchParams.get("id");
 
   const handleUpdateMeta = () => {
-    console.log("being clicked");
     const title = (document.querySelector("#PageMetaTitle") as HTMLInputElement)
       ?.value;
     const description = (

@@ -301,7 +301,7 @@ const updateOrCreateBlockOptions = async (
 
 export const updateBlock = async (
   pageType: PageType,
-  pageId: string,
+  previewPageId: string,
   blockData: NewBlockData,
   blockOptions?: BlockOptions,
   blockLabel?: string,
@@ -309,7 +309,7 @@ export const updateBlock = async (
   const { blockName, itemIndex, contentData } = blockData;
 
   const previewPage = await prisma.previewPage.findUnique({
-    where: { id: parseInt(pageId) },
+    where: { id: parseInt(previewPageId) },
     include: {
       blocks: true,
       ...includeAllPageTypes(["previewPage"]),
@@ -317,11 +317,11 @@ export const updateBlock = async (
   });
 
   if (!previewPage) {
-    throw new Error(`Page not found for pageId: ${pageId}`);
+    throw new Error(`Page not found for pageId: ${previewPageId}`);
   }
 
-  if (!previewPage[pageType]) {
-    throw new Error(`Page has no Blocks: ${pageId}`);
+  if (!previewPage.blocks) {
+    throw new Error(`Page has no Blocks: ${previewPageId}`);
   }
 
   const blocks = previewPage.blocks;
@@ -600,6 +600,7 @@ export const publishPage = async (
     );
 
     if (blocksToValidate) {
+      console.log("VALIDATING");
       await Promise.all(
         blocksToValidate.map(async (id: string) => {
           const blockToCheck = await prisma.block.findUnique({

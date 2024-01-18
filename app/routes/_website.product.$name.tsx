@@ -218,17 +218,18 @@ const Product = () => {
       <div className="mx-auto cursor-auto px-3 pt-3 max-xl:px-0 max-xl:pt-0">
         <div className="mx-auto flex justify-center max-xl:flex-wrap">
           <div className="flex h-[740px] gap-3 max-xl:h-max max-xl:flex-col max-xl:gap-6">
-            <div className="scrollbar-hide flex h-full flex-col justify-start gap-3 overflow-auto max-xl:order-2 max-xl:h-[200px] max-xl:flex-row">
+            <div className="max-xl:w-screen max-xl:h-max w-[150px] max-xl:px-3 gap-3 scrollbar-hide flex h-full flex-col justify-start overflow-auto max-xl:order-2 max-xl:flex-row">
               {images?.map(({ href }: Image, i: number) => {
                 if (href) {
                   return (
-                    <BasicImage
-                      key={"productImage_" + i}
-                      alt="ecommerce"
-                      extendStyle="m-0 h-[calc(100%/3)] w-auto cursor-pointer object-cover shadow-sm max-xl:h-[200px] max-sm:shadow-md"
-                      onClick={() => setSelectedImage(images[i])}
-                      src={href}
-                    />
+                    <div className="m-0 w-full cursor-pointer object-cover shadow-sm max-xl:h-max max-sm:shadow-md">
+                      <BasicImage
+                        key={"productImage_" + i}
+                        alt="ecommerce"
+                        onClick={() => setSelectedImage(images[i])}
+                        src={href}
+                      />
+                    </div>
                   );
                 } else return null;
               })}
@@ -376,7 +377,7 @@ const Product = () => {
 
             <div className="my-3 w-full border-b border-brand-black/20" />
 
-            <div className="leading-relaxed max-md:px-3">
+            <div className="leading-relaxed">
               <div>
                 <b>Return Policy</b>
               </div>
@@ -395,7 +396,7 @@ const Product = () => {
             <div className="my-3 w-full border-b border-brand-black/20" />
 
             {hasSizes && (
-              <div className="leading-relaxed max-md:px-3">
+              <div className="leading-relaxed">
                 <div>
                   <b>Size Guide</b>
                 </div>

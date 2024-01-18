@@ -19,7 +19,7 @@ const BlockSelectInput = ({
   tooltip,
 }: Props) => {
   const processDefaultValue = (
-    defaultValue: boolean | any
+    defaultValue: boolean | any,
   ): number | undefined => {
     if (typeof defaultValue === "boolean") {
       return defaultValue ? undefined : 0;
@@ -33,7 +33,9 @@ const BlockSelectInput = ({
       {blockMasterOption && (
         <div className="flex max-w-full flex-wrap justify-start !gap-3 px-3 pb-3 max-md:justify-center max-md:px-0">
           <div className="form-control relative max-sm:items-center">
-            {tooltip && <ToolTip tip={tooltip} />}
+            {tooltip && (
+              <ToolTip tip={tooltip} iconColor="!text-brand-white/75" />
+            )}
             <label className="label self-start">
               <span className="label-text text-brand-white">
                 {capitalizeFirst(valueName)}

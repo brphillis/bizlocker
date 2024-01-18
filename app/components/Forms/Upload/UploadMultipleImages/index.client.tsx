@@ -1,4 +1,4 @@
-import { type ChangeEvent, Suspense, useState } from "react";
+import { type ChangeEvent, Suspense, useState, useEffect } from "react";
 import type { Image } from "@prisma/client";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
@@ -13,9 +13,9 @@ type ImageUploadSliderProps = {
 
 const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
   const [activeSlide, setActiveSlide] = useState(0);
-  const [images, setCurrentImages] = useState<
-    Image[] | NewImage[] | null | undefined
-  >(defaultImages);
+  const [images, setCurrentImages] = useState<Image[] | NewImage[] | null>(
+    defaultImages || null,
+  );
 
   const handleRemoveImage = (index: number) => {
     const updatedImages = [...(images || [])];
@@ -25,12 +25,16 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
 
   const handleAddImage = async (
     inputEvent: ChangeEvent<HTMLInputElement>,
-    index: number
+    index: number,
   ) => {
     const convertedImage = await ConvertToBase64Image(inputEvent);
+    console.log("converted", convertedImage);
     if (convertedImage) {
-      const updatedImages = [...(images || [])];
+      let updatedImages = images ? [...images] : [];
+
       updatedImages[index] = convertedImage;
+      console.log("point", updatedImages[index]);
+
       if (updatedImages[index]?.altText?.includes(".") || null) {
         const nameSelector = findFirstNotNullInputValue("name");
         const titleSelector = findFirstNotNullInputValue("title");
@@ -44,6 +48,10 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
           updatedImages[index].altText = altTextSelector.value + " " + index;
         }
       }
+
+      //sanitize array of empty objects
+      updatedImages = updatedImages.filter((e) => e !== undefined);
+
       setCurrentImages(updatedImages as Image[]);
     }
   };

@@ -24,7 +24,6 @@ import type { departmentUpsertLoader } from "./index.server";
 
 const validateOptions = {
   name: true,
-  department: true,
   index: true,
 };
 

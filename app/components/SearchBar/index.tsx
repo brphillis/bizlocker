@@ -40,7 +40,7 @@ const SearchBar = ({ departments, productCategories, brands }: Props) => {
   useEffect(() => {
     if (searchedDepartment) {
       const departmentsCategories = productCategories?.filter(
-        (e) => e?.department?.name === searchedDepartment
+        (e) => e?.department?.name === searchedDepartment,
       );
 
       if (departmentsCategories) {
@@ -98,7 +98,7 @@ const SearchBar = ({ departments, productCategories, brands }: Props) => {
                 departments?.[e.target.selectedIndex - 1].productCategories
               ) {
                 setCategories(
-                  departments?.[e.target.selectedIndex - 1]?.productCategories
+                  departments?.[e.target.selectedIndex - 1]?.productCategories,
                 );
               }
               searchParams.delete("productCategory");
@@ -126,7 +126,7 @@ const SearchBar = ({ departments, productCategories, brands }: Props) => {
                 setSubCategories(null);
               } else {
                 const selectedCategory = productCategories?.find(
-                  (f: ProductCategory) => f.name === e.target.value
+                  (f: ProductCategory) => f.name === e.target.value,
                 );
                 if (selectedCategory?.productSubCategories) {
                   setSubCategories(selectedCategory?.productSubCategories);

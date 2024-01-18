@@ -65,12 +65,12 @@ export const justifySelectMobileValues = [
 ];
 
 export const alignSelectValues = [
-  { id: "align-center", name: "Center" },
-  { id: "align-start", name: "Start" },
-  { id: "align-end", name: "End" },
-  { id: "align-between", name: "Space Between" },
-  { id: "align-around", name: "Space Around" },
-  { id: "align-evenly", name: "Space Evenly" },
+  { id: "items-center", name: "Center" },
+  { id: "items-start", name: "Start" },
+  { id: "items-end", name: "End" },
+  { id: "items-between", name: "Space Between" },
+  { id: "items-around", name: "Space Around" },
+  { id: "items-evenly", name: "Space Evenly" },
 ];
 
 export const alignSelectMobileValues = [

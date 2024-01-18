@@ -20,7 +20,7 @@ const TextBlockContentModule = ({
 
   const selectItem = (
     type: BlockContentType = "richText",
-    contentId: string
+    contentId: string,
   ) => {
     setSelectedItems((prevSelectedItems: any) => {
       if (!Array.isArray(prevSelectedItems)) {
@@ -43,7 +43,7 @@ const TextBlockContentModule = ({
             onChange={(selectedValue) => {
               selectItem("richText", selectedValue);
             }}
-            extendStyle="mb-12 mt-3 h-[320px]"
+            extendStyle="mb-[42px] h-[320px]"
           />
         </div>
       )}

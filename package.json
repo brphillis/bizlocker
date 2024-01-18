@@ -13,14 +13,15 @@
     "setup": "prisma generate && prisma migrate deploy && prisma db seed",
     "typecheck": "tsc && tsc",
     "validate": "run-p \"test -- --run\" lint typecheck test:e2e:run",
-    "compose-containers": "docker-compose up -d postgres && docker-compose up -d bizlocker",
-    "compose-db": "docker-compose up -d postgres",
-    "compose-app": "docker-compose up -d bizlocker"
+    "compose-containers": "docker-compose up -d --build postgres && docker-compose up -d --build bizlocker",
+    "compose-db": "docker-compose up -d --build postgres",
+    "compose-app": "docker-compose up -d --build bizlocker"
   },
   "prettier": {},
   "eslintIgnore": [
     "/node_modules",
     "/build",
+    "/public/build",
     "/public/build",
     "/postgres-data"
   ],

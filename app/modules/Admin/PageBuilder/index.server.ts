@@ -34,6 +34,7 @@ import {
   updateBlock,
   upsertPageMeta,
 } from "~/models/pageBuilder.server";
+import { capitalizeFirstLetterOfWordInString } from "~/helpers/stringHelpers";
 
 export const pageBuilderLoader = async (
   request: Request,
@@ -91,7 +92,11 @@ export const pageBuilderAction = async (
   request: Request,
   params: Params<string>,
 ) => {
-  const pageType = params?.pagetype?.toLocaleLowerCase();
+  let pageType;
+
+  if (params?.pagetype) {
+    pageType = capitalizeFirstLetterOfWordInString(params?.pagetype, "page");
+  }
 
   const form = Object.fromEntries(await request.formData());
   const {
@@ -163,10 +168,7 @@ export const pageBuilderAction = async (
         message: "Page Settings Updated.",
       };
 
-      console.log("THE PREVIEW PAGEID", previewPageId);
-
       if (!previewPageId) {
-        console.log("REACHED");
         return redirect(`/admin/pagebuilder/${pageType}?id=${newId}`);
       } else {
         actionPreview = await getPreviewPage(previewPageId as string);
@@ -223,7 +225,6 @@ export const pageBuilderAction = async (
 
         return json({ actionPreview, actionBlocks, notification });
       } else {
-        console.log("ERROR HAS OCCURED");
         return json({ previewChangeError: true });
       }
 
