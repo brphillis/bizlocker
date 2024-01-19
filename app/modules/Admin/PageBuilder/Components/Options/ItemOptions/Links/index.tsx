@@ -1,6 +1,6 @@
 import type { BlockOptions } from "@prisma/client";
 import type { BlockMasterOptions } from "~/utility/blockMaster/types";
-import ItemInput from "../../FieldComponents/Items/ItemInput";
+import ItemInput from "../_FieldComponents/ItemInput";
 
 type Props = {
   selectedItems: ContentSelection[];

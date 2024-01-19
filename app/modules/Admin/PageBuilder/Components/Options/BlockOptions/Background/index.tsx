@@ -4,9 +4,10 @@ import type { BlockMasterOptions } from "~/utility/blockMaster/blockMaster";
 import { blockWidthSelectValues } from "../../Values/width";
 import { backgroundPatternSelectValues } from "../../Values/background";
 import { containerDisplaySelectValues } from "../../Values/basic";
-import BlockSelectInput from "../../FieldComponents/Blocks/BlockSelectInput";
-import BlockColorInput from "../../FieldComponents/Blocks/BlockColorInput";
-import BlockInput from "../../FieldComponents/Blocks/BlockInput";
+import BlockSelectInput from "../_FieldComponents/BlockSelectInput";
+import BlockColorInput from "../_FieldComponents/BlockColorInput";
+import BlockInput from "../_FieldComponents/BlockInput";
+import Divider from "~/components/Filter/ProductFilterSideBar/Divider";
 
 type Props = {
   defaultValues?: BlockOptions;
@@ -19,146 +20,203 @@ const BackgroundOptions = ({ defaultValues, selectedBlockOptions }: Props) => {
     hasTruePropertyStartingWith("background", selectedBlockOptions)
   ) {
     return (
-      <details className="collapse collapse-plus !hidden !max-w-full !rounded-sm bg-brand-white/20 [&:has(div>div)]:!grid">
-        <summary className="collapse-title text-xl font-medium !text-brand-white">
+      <details className="collapse collapse-plus !hidden !max-w-[100vw] max-md:!w-[100dvw] !rounded-sm bg-brand-white/20 [&:has(div>div)]:!grid">
+        <summary className="collapse-title text-xl font-medium !text-brand-white !max-w-full">
           Background
         </summary>
-        <div className="collapse-content relative sm:!px-3">
-          <div className="flex max-w-full flex-wrap justify-start !gap-3 max-md:justify-center">
-            <BlockSelectInput
-              valueName="Display Background"
-              formName="backgroundDisplay"
-              blockMasterOption={selectedBlockOptions?.backgroundDisplay}
-              defaultValue={defaultValues?.backgroundDisplay}
-              selections={containerDisplaySelectValues}
-            />
 
-            <BlockColorInput
-              valueName="Background Color"
-              formName="backgroundColor"
-              blockMasterOption={selectedBlockOptions?.backgroundColor}
-              defaultValue={defaultValues?.backgroundColor}
-              type="bg"
-            />
+        <div className="flex flex-col gap-3 flex-wrap items-start justify-start w-full px-3 pb-6 max-md:pb-3">
+          {Object.keys(selectedBlockOptions || {}).some(
+            (key) => key.startsWith("background") && key.endsWith("Primary"),
+          ) && (
+            <div className="pt-3 pl-1 text-sm font-medium text-brand-white">
+              Primary Background
+            </div>
+          )}
 
-            <BlockSelectInput
-              valueName="Width"
-              formName="backgroundWidth"
-              blockMasterOption={selectedBlockOptions?.backgroundWidth}
-              defaultValue={defaultValues?.backgroundWidth}
-              selections={blockWidthSelectValues}
-            />
+          {Object.keys(selectedBlockOptions || {}).some(
+            (key) => key.startsWith("background") && key.endsWith("Primary"),
+          ) && (
+            <div className="flex flex-row gap-3 flex-wrap justify-start w-full">
+              <BlockSelectInput
+                valueName="Display"
+                formName="backgroundDisplayPrimary"
+                blockMasterOption={
+                  selectedBlockOptions?.backgroundDisplayPrimary
+                }
+                defaultValue={defaultValues?.backgroundDisplayPrimary}
+                selections={containerDisplaySelectValues}
+              />
 
-            <BlockInput
-              valueName="Background Brightness"
-              formName="backgroundBrightness"
-              blockMasterOption={selectedBlockOptions?.backgroundBrightness}
-              defaultValue={defaultValues?.backgroundBrightness}
-              type="number"
-              tooltip="Brightness Filter ( Blank for Default )"
-            />
+              <BlockColorInput
+                valueName="Color"
+                formName="backgroundColor"
+                blockMasterOption={selectedBlockOptions?.backgroundColorPrimary}
+                defaultValue={defaultValues?.backgroundColorPrimary}
+                type="bg"
+              />
 
-            <BlockSelectInput
-              valueName="Background Pattern"
-              formName="backgroundPatternName"
-              blockMasterOption={selectedBlockOptions?.backgroundPatternName}
-              defaultValue={defaultValues?.backgroundPatternName}
-              selections={backgroundPatternSelectValues}
-            />
+              <BlockSelectInput
+                valueName="Width"
+                formName="backgroundWidth"
+                blockMasterOption={selectedBlockOptions?.backgroundWidthPrimary}
+                defaultValue={defaultValues?.backgroundWidthPrimary}
+                selections={blockWidthSelectValues}
+              />
 
-            <BlockColorInput
-              valueName="Background Pattern Color"
-              formName="backgroundPatternColor"
-              blockMasterOption={selectedBlockOptions?.backgroundPatternColor}
-              defaultValue={defaultValues?.backgroundPatternColor}
-            />
+              <BlockInput
+                valueName="Brightness"
+                formName="backgroundBrightness"
+                blockMasterOption={
+                  selectedBlockOptions?.backgroundBrightnessPrimary
+                }
+                defaultValue={defaultValues?.backgroundBrightnessPrimary}
+                type="number"
+                tooltip="Brightness Filter ( Blank for Default )"
+              />
 
-            <BlockInput
-              valueName="Background Pattern Size"
-              formName="backgroundPatternSize"
-              blockMasterOption={selectedBlockOptions?.backgroundPatternSize}
-              defaultValue={defaultValues?.backgroundPatternSize}
-              tooltip="Size of Pattern"
-              type="number"
-              max="120"
-            />
+              <BlockSelectInput
+                valueName="Pattern"
+                formName="backgroundPatternName"
+                blockMasterOption={
+                  selectedBlockOptions?.backgroundPatternNamePrimary
+                }
+                defaultValue={defaultValues?.backgroundPatternNamePrimary}
+                selections={backgroundPatternSelectValues}
+              />
 
-            <BlockInput
-              valueName="Background Pattern Opacity"
-              formName="backgroundPatternOpacity"
-              blockMasterOption={selectedBlockOptions?.backgroundPatternOpacity}
-              defaultValue={defaultValues?.backgroundPatternOpacity}
-              type="number"
-            />
+              <BlockColorInput
+                valueName="Pattern Color"
+                formName="backgroundPatternColor"
+                blockMasterOption={
+                  selectedBlockOptions?.backgroundPatternColorPrimary
+                }
+                defaultValue={defaultValues?.backgroundPatternColorPrimary}
+              />
 
-            <BlockColorInput
-              valueName="Background Color 2"
-              formName="backgroundColorSecondary"
-              blockMasterOption={selectedBlockOptions?.backgroundColorSecondary}
-              defaultValue={defaultValues?.backgroundColorSecondary}
-              type="bg"
-            />
+              <BlockInput
+                valueName="Pattern Size"
+                formName="backgroundPatternSize"
+                blockMasterOption={
+                  selectedBlockOptions?.backgroundPatternSizePrimary
+                }
+                defaultValue={defaultValues?.backgroundPatternSizePrimary}
+                tooltip="Size of Pattern"
+                type="number"
+                max="120"
+              />
 
-            <BlockSelectInput
-              valueName="Width 2"
-              formName="backgroundWidthSecondary"
-              blockMasterOption={selectedBlockOptions?.backgroundWidthSecondary}
-              defaultValue={defaultValues?.backgroundWidthSecondary}
-              selections={blockWidthSelectValues}
-            />
+              <BlockInput
+                valueName="Pattern Opacity"
+                formName="backgroundPatternOpacity"
+                blockMasterOption={
+                  selectedBlockOptions?.backgroundPatternOpacityPrimary
+                }
+                defaultValue={defaultValues?.backgroundPatternOpacityPrimary}
+                type="number"
+              />
+            </div>
+          )}
 
-            <BlockInput
-              valueName="Background Brightness 2"
-              formName="backgroundBrightnessSecondary"
-              blockMasterOption={
-                selectedBlockOptions?.backgroundBrightnessSecondary
-              }
-              defaultValue={defaultValues?.backgroundBrightnessSecondary}
-              type="number"
-              tooltip="Brightness Filter ( Blank for Default )"
-            />
+          {Object.keys(selectedBlockOptions || {}).some(
+            (key) => key.startsWith("background") && key.endsWith("Secondary"),
+          ) && (
+            <>
+              <Divider color="white" />
 
-            <BlockSelectInput
-              valueName="Background Pattern 2"
-              formName="backgroundPatternNameSecondary"
-              blockMasterOption={
-                selectedBlockOptions?.backgroundPatternNameSecondary
-              }
-              defaultValue={defaultValues?.backgroundPatternNameSecondary}
-              selections={backgroundPatternSelectValues}
-            />
+              <div className="pl-1 text-sm font-medium text-brand-white">
+                Secondary Background
+              </div>
+            </>
+          )}
 
-            <BlockColorInput
-              valueName="Background Pattern Color 2"
-              formName="backgroundPatternColorSecondary"
-              blockMasterOption={
-                selectedBlockOptions?.backgroundPatternColorSecondary
-              }
-              defaultValue={defaultValues?.backgroundPatternColorSecondary}
-            />
+          {Object.keys(selectedBlockOptions || {}).some(
+            (key) => key.startsWith("background") && key.endsWith("Primary"),
+          ) && (
+            <div className="flex flex-row gap-3 flex-wrap justify-start w-full">
+              <BlockSelectInput
+                valueName="Background"
+                formName="backgroundDisplay"
+                blockMasterOption={
+                  selectedBlockOptions?.backgroundDisplaySecondary
+                }
+                defaultValue={defaultValues?.backgroundDisplaySecondary}
+                selections={containerDisplaySelectValues}
+              />
 
-            <BlockInput
-              valueName="Background Pattern Size 2"
-              formName="backgroundPatternSizeSecondary"
-              blockMasterOption={
-                selectedBlockOptions?.backgroundPatternSizeSecondary
-              }
-              defaultValue={defaultValues?.backgroundPatternSizeSecondary}
-              tooltip="Size of Pattern"
-              type="number"
-              max="120"
-            />
+              <BlockColorInput
+                valueName="Color"
+                formName="backgroundColorSecondary"
+                blockMasterOption={
+                  selectedBlockOptions?.backgroundColorSecondary
+                }
+                defaultValue={defaultValues?.backgroundColorSecondary}
+                type="bg"
+              />
 
-            <BlockInput
-              valueName="Background Pattern Opacity 2"
-              formName="backgroundPatternOpacitySecondary"
-              blockMasterOption={
-                selectedBlockOptions?.backgroundPatternOpacitySecondary
-              }
-              defaultValue={defaultValues?.backgroundPatternOpacitySecondary}
-              type="number"
-            />
-          </div>
+              <BlockSelectInput
+                valueName="Width"
+                formName="backgroundWidthSecondary"
+                blockMasterOption={
+                  selectedBlockOptions?.backgroundWidthSecondary
+                }
+                defaultValue={defaultValues?.backgroundWidthSecondary}
+                selections={blockWidthSelectValues}
+              />
+
+              <BlockInput
+                valueName="Brightness"
+                formName="backgroundBrightnessSecondary"
+                blockMasterOption={
+                  selectedBlockOptions?.backgroundBrightnessSecondary
+                }
+                defaultValue={defaultValues?.backgroundBrightnessSecondary}
+                type="number"
+                tooltip="Brightness Filter ( Blank for Default )"
+              />
+
+              <BlockSelectInput
+                valueName="Pattern"
+                formName="backgroundPatternNameSecondary"
+                blockMasterOption={
+                  selectedBlockOptions?.backgroundPatternNameSecondary
+                }
+                defaultValue={defaultValues?.backgroundPatternNameSecondary}
+                selections={backgroundPatternSelectValues}
+              />
+
+              <BlockColorInput
+                valueName="Pattern Color"
+                formName="backgroundPatternColorSecondary"
+                blockMasterOption={
+                  selectedBlockOptions?.backgroundPatternColorSecondary
+                }
+                defaultValue={defaultValues?.backgroundPatternColorSecondary}
+              />
+
+              <BlockInput
+                valueName="Pattern Size"
+                formName="backgroundPatternSizeSecondary"
+                blockMasterOption={
+                  selectedBlockOptions?.backgroundPatternSizeSecondary
+                }
+                defaultValue={defaultValues?.backgroundPatternSizeSecondary}
+                tooltip="Size of Pattern"
+                type="number"
+                max="120"
+              />
+
+              <BlockInput
+                valueName="Pattern Opacity"
+                formName="backgroundPatternOpacitySecondary"
+                blockMasterOption={
+                  selectedBlockOptions?.backgroundPatternOpacitySecondary
+                }
+                defaultValue={defaultValues?.backgroundPatternOpacitySecondary}
+                type="number"
+              />
+            </div>
+          )}
         </div>
       </details>
     );

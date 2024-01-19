@@ -38,8 +38,8 @@ const BlockCard = ({
         <div className="text-xs"># {index + 1}</div>
         {/* ICON */}
         <div className="flex gap-3">
-          <BlockIcon blockName={name} size={18} extendStyle={"mt-[3px]"} />
-          <p className="font-bold">{capitalizeFirst(label || name)}</p>
+          <BlockIcon blockName={name} size={18} extendStyle={"mt-[1px]"} />
+          <p className="font-bold text-sm">{capitalizeFirst(label || name)}</p>
         </div>
       </div>
 
@@ -48,7 +48,7 @@ const BlockCard = ({
         {index < blockCount - 1 && (
           <SquareIconButton
             iconName="IoArrowDown"
-            size="small"
+            size="xsmall"
             color="primary"
             onClick={() => onChangeOrder("down")}
           />
@@ -57,7 +57,7 @@ const BlockCard = ({
         {index > 0 && (
           <SquareIconButton
             iconName="IoArrowUp"
-            size="small"
+            size="xsmall"
             color="primary"
             onClick={() => onChangeOrder("up")}
           />
@@ -65,7 +65,7 @@ const BlockCard = ({
 
         <SquareIconButton
           iconName="IoPencilSharp"
-          size="small"
+          size="xsmall"
           color="primary"
           onClick={() => onClick(index)}
         />
@@ -73,7 +73,7 @@ const BlockCard = ({
         {index > 0 && (
           <SquareIconButton
             iconName="IoTrashBin"
-            size="small"
+            size="xsmall"
             color="error"
             onClick={() => onDelete()}
           />

@@ -4,9 +4,9 @@ import {
   fontSizeSelectValues,
   mobileFontSizeSelectValues,
 } from "../../Values/font";
-import ItemInput from "../../FieldComponents/Items/ItemInput";
-import ItemColorInput from "../../FieldComponents/Items/ItemColorInput";
-import ItemSelectInput from "../../FieldComponents/Items/ItemSelectInput";
+import ItemInput from "../_FieldComponents/ItemInput";
+import ItemColorInput from "../_FieldComponents/ItemColorInput";
+import ItemSelectInput from "../_FieldComponents/ItemSelectInput";
 
 type Props = {
   selectedItems: ContentSelection[];
@@ -26,7 +26,7 @@ const Text = ({
       </summary>
       <div className="flex max-w-full flex-wrap justify-start !gap-3 px-3 pb-3 max-md:justify-center max-md:px-0">
         <ItemInput
-          title="Short Text"
+          title="Text"
           formName="itemShortText"
           selectedItems={selectedItems}
           valueName="Short Text"
@@ -35,30 +35,30 @@ const Text = ({
         />
 
         <ItemColorInput
-          title="Short Text Colors"
+          title="Colors"
           formName="itemShortTextColors"
           selectedItems={selectedItems}
-          valueName="Short Text Color"
+          valueName="Color"
           blockMasterOption={selectedBlockOptions?.itemShortTextColors}
           defaultValues={defaultValues?.itemShortTextColors}
           type="text"
         />
 
         <ItemSelectInput
-          title="Short Text Sizes"
+          title="Sizes"
           formName="itemShortTextSizes"
           selectedItems={selectedItems}
-          valueName="Short Text Size"
+          valueName="Size"
           blockMasterOption={selectedBlockOptions?.itemShortTextSizes}
           defaultValues={defaultValues?.itemShortTextSizes}
           selections={fontSizeSelectValues}
         />
 
         <ItemSelectInput
-          title="Short Text Sizes Mobile"
+          title="Sizes Mobile"
           formName="itemShortTextSizesMobile"
           selectedItems={selectedItems}
-          valueName="Short Text Size Mobile"
+          valueName="Size Mobile"
           blockMasterOption={selectedBlockOptions?.itemShortTextSizesMobile}
           defaultValues={defaultValues?.itemShortTextSizesMobile}
           selections={mobileFontSizeSelectValues}

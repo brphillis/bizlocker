@@ -97,7 +97,7 @@ const DepartmentUpsert = ({ offRouteModule }: Props) => {
               type="text"
               name="name"
               placeholder="Name"
-              customWidth="w-full"
+              extendContainerStyle="w-full"
               defaultValue={department?.name || ""}
               validationErrors={
                 serverValidationErrors || clientValidationErrors
@@ -109,7 +109,7 @@ const DepartmentUpsert = ({ offRouteModule }: Props) => {
               type="number"
               name="index"
               placeholder="Index"
-              customWidth="w-full"
+              extendContainerStyle="w-full"
               defaultValue={department?.index || 0}
               validationErrors={
                 serverValidationErrors || clientValidationErrors
@@ -132,7 +132,7 @@ const DepartmentUpsert = ({ offRouteModule }: Props) => {
               <BasicMultiSelect
                 name="productCategories"
                 label="Categories"
-                customWidth="w-full"
+                extendContainerStyle="w-full"
                 selections={productCategories.filter(
                   (e) => !e.departmentId || e.departmentId === department.id,
                 )}

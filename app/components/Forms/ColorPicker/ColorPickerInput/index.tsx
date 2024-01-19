@@ -8,7 +8,6 @@ type Props = {
   inputBackgroundColor?: string;
   inputOnClick: () => void;
   tooltip?: string;
-  customWidth?: string;
   extendStyle?: string;
 };
 
@@ -17,13 +16,12 @@ const ColorPickerInput = ({
   inputBackgroundColor,
   inputOnClick,
   tooltip,
-  customWidth,
   extendStyle,
 }: Props) => {
   return (
     <div
-      className={`group form-control relative max-md:w-full max-md:items-center max-md:px-3
-      ${extendStyle} ${customWidth ? customWidth : "w-[215px]"}`}
+      className={`group form-control relative max-md:items-center w-[215px] max-md:w-full
+      ${extendStyle}`}
     >
       {tooltip && <ToolTip tip={tooltip} />}
       <label className="label self-start">

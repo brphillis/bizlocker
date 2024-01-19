@@ -3,7 +3,7 @@ import type { BlockName } from "~/utility/blockMaster/types";
 import { blockMaster } from "~/utility/blockMaster/blockMaster";
 import TitleOptions from "./BlockOptions/Title";
 import StyleOptions from "./BlockOptions/Style";
-import ShortTextOptions from "./BlockOptions/ShortText";
+import TextOptions from "./BlockOptions/Text";
 import BackgroundOptions from "./BlockOptions/Background";
 import BorderOptions from "./BlockOptions/Border";
 import SortAndOrderOptions from "./BlockOptions/SortAndOrder";
@@ -43,6 +43,19 @@ const OptionsModule = ({
             className={`flex flex-wrap gap-3 
             ${activeTab !== "block" ? "hidden" : "pb-3"}`}
           >
+            <TitleOptions
+              selectedBlock={selectedBlock}
+              defaultValues={defaultValues}
+              selectedBlockOptions={selectedBlockOptions}
+            />
+
+            <TextOptions
+              selectedBlock={selectedBlock}
+              colors={colors}
+              defaultValues={defaultValues}
+              selectedBlockOptions={selectedBlockOptions}
+            />
+
             <BackgroundOptions
               defaultValues={defaultValues}
               selectedBlockOptions={selectedBlockOptions}
@@ -88,13 +101,6 @@ const OptionsModule = ({
               selectedBlockOptions={selectedBlockOptions}
             />
 
-            <ShortTextOptions
-              selectedBlock={selectedBlock}
-              colors={colors}
-              defaultValues={defaultValues}
-              selectedBlockOptions={selectedBlockOptions}
-            />
-
             <SizeOptions
               selectedBlock={selectedBlock}
               defaultValues={defaultValues}
@@ -108,12 +114,6 @@ const OptionsModule = ({
             />
 
             <StyleOptions
-              defaultValues={defaultValues}
-              selectedBlockOptions={selectedBlockOptions}
-            />
-
-            <TitleOptions
-              selectedBlock={selectedBlock}
               defaultValues={defaultValues}
               selectedBlockOptions={selectedBlockOptions}
             />

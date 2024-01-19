@@ -10,6 +10,7 @@ type Props = {
 
 const ContentContainer = ({ index, blockOptions }: Props) => {
   const {
+    columns,
     itemButtonsPrimary,
     itemShortText,
     itemShortTextColors,
@@ -21,8 +22,16 @@ const ContentContainer = ({ index, blockOptions }: Props) => {
     itemTitleFontWeights,
     itemTitleFontWeightsMobile,
     itemTitleSizesMobile,
-    itemBackgroundColorsSecondary,
-    itemBackgroundDisplaysSecondary,
+    itemBackgroundColorsPrimary,
+    itemBackgroundDisplaysPrimary,
+    itemMarginTop,
+    itemMarginRight,
+    itemMarginBottom,
+    itemMarginLeft,
+    itemMarginTopMobile,
+    itemMarginRightMobile,
+    itemMarginBottomMobile,
+    itemMarginLeftMobile,
   } = blockOptions;
 
   const hasCardContent =
@@ -30,41 +39,50 @@ const ContentContainer = ({ index, blockOptions }: Props) => {
 
   return (
     <div
-      className={`relative z-10 m-12 h-max w-max max-w-full select-none flex-col items-center overflow-hidden p-6 font-semibold 
-        max-md:m-0 gap-3 
-        ${hasCardContent ? "flex" : "hidden"}`}
+      className={`${
+        columns && columns > 1 ? "m-12 max-md:!m-0" : "mx-32 my-12 max-md:!m-0"
+      }`}
     >
-      <PatternBackground
-        backgroundColor={getThemeColorValueByName(
-          itemBackgroundColorsSecondary[index],
-        )}
-        displayStyle={itemBackgroundDisplaysSecondary[index]}
-      />
+      <div
+        className={`relative z-10 h-max w-max max-w-full select-none flex-col items-center overflow-hidden p-6 font-semibold 
+        max-md:m-0 gap-3 
+        ${hasCardContent ? "flex" : "hidden"}
+        ${itemMarginTop} ${itemMarginRight} ${itemMarginBottom} ${itemMarginLeft} ${itemMarginTopMobile}
+        ${itemMarginRightMobile} ${itemMarginBottomMobile} ${itemMarginLeftMobile}   
+        `}
+      >
+        <PatternBackground
+          backgroundColor={getThemeColorValueByName(
+            itemBackgroundColorsPrimary[index],
+          )}
+          displayStyle={itemBackgroundDisplaysPrimary[index]}
+        />
 
-      {itemTitles[index] && (
-        <div
-          className={`relative select-none text-center !leading-[55px] max-md:max-w-[90%]
+        {itemTitles[index] && (
+          <div
+            className={`relative select-none text-center !leading-[55px] max-md:max-w-[90%]
           ${itemTitleColors[index]} ${itemTitleSizes[index]} ${itemTitleSizesMobile[index]} 
           ${itemTitleFontWeights[index]} ${itemTitleFontWeightsMobile[index]}`}
-        >
-          {itemTitles[index]}
-        </div>
-      )}
+          >
+            {itemTitles[index]}
+          </div>
+        )}
 
-      {itemShortText[index] && (
-        <div
-          className={`relative select-none text-center max-md:max-w-[90%] pb-3
+        {itemShortText[index] && (
+          <div
+            className={`relative select-none text-center max-md:max-w-[90%] pb-3
            ${itemShortTextColors[index]} ${itemShortTextSizes[index]} ${itemShortTextSizesMobile[index]}`}
-        >
-          {itemShortText[index]}
-        </div>
-      )}
+          >
+            {itemShortText[index]}
+          </div>
+        )}
 
-      {!itemShortText[index] && (
-        <div className="my-1 hidden max-md:block"></div>
-      )}
+        {!itemShortText[index] && (
+          <div className="my-1 hidden max-md:block"></div>
+        )}
 
-      <ButtonContainer index={index} blockOptions={blockOptions} />
+        <ButtonContainer index={index} blockOptions={blockOptions} />
+      </div>
     </div>
   );
 };

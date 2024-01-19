@@ -31,8 +31,8 @@ const BlockSelectInput = ({
   return (
     <>
       {blockMasterOption && (
-        <div className="flex max-w-full flex-wrap justify-start !gap-3 px-3 pb-3 max-md:justify-center max-md:px-0">
-          <div className="form-control relative max-sm:items-center">
+        <div className="flex max-w-full flex-wrap justify-start !gap-3 max-md:justify-center max-md:px-0 w-[215px] max-md:w-full">
+          <div className="form-control relative max-sm:items-center w-full">
             {tooltip && (
               <ToolTip tip={tooltip} iconColor="!text-brand-white/75" />
             )}
@@ -43,7 +43,7 @@ const BlockSelectInput = ({
             </label>
             <select
               name={formName}
-              className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
+              className="select text-brand-black/75 w-full"
               defaultValue={processDefaultValue(defaultValue)}
             >
               <option value="">Default</option>

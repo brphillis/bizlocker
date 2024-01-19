@@ -89,7 +89,7 @@ const TeamAddStaff = () => {
               <BasicSelect
                 label="Location"
                 name="location"
-                customWidth="w-full"
+                extendContainerStyle="w-full"
                 placeholder="Select a Location"
                 selections={stores as unknown as SelectValue[]}
               />

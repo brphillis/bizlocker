@@ -11,11 +11,11 @@ type Props = {
 const TextBanner = ({ options, imageLink }: Props) => {
   const navigate = useNavigate();
   const {
-    backgroundPatternName,
-    backgroundColor,
-    backgroundPatternColor,
-    backgroundPatternSize,
-    backgroundBrightness,
+    backgroundPatternNamePrimary,
+    backgroundColorPrimary,
+    backgroundPatternColorPrimary,
+    backgroundPatternSizePrimary,
+    backgroundBrightnessPrimary,
     borderColor,
     borderRadius,
     borderSize,
@@ -38,17 +38,19 @@ const TextBanner = ({ options, imageLink }: Props) => {
           `}
         >
           <PatternBackground
-            name={backgroundPatternName as BackgroundPatternName}
+            name={backgroundPatternNamePrimary as BackgroundPatternName}
             backgroundColor={
-              backgroundColor ? getThemeColorValueByName(backgroundColor) : ""
-            }
-            patternColor={
-              backgroundPatternColor
-                ? getThemeColorValueByName(backgroundPatternColor)
+              backgroundColorPrimary
+                ? getThemeColorValueByName(backgroundColorPrimary)
                 : ""
             }
-            patternSize={backgroundPatternSize || 32}
-            brightness={backgroundBrightness || undefined}
+            patternColor={
+              backgroundPatternColorPrimary
+                ? getThemeColorValueByName(backgroundPatternColorPrimary)
+                : ""
+            }
+            patternSize={backgroundPatternSizePrimary || 32}
+            brightness={backgroundBrightnessPrimary || undefined}
           />
           <div className="relative flex flex-col items-center">
             <h1
@@ -71,17 +73,19 @@ const TextBanner = ({ options, imageLink }: Props) => {
           ${borderSize} ${borderColor} ${borderRadius}`}
         >
           <PatternBackground
-            name={backgroundPatternName as BackgroundPatternName}
+            name={backgroundPatternNamePrimary as BackgroundPatternName}
             backgroundColor={
-              backgroundColor ? getThemeColorValueByName(backgroundColor) : ""
-            }
-            patternColor={
-              backgroundPatternColor
-                ? getThemeColorValueByName(backgroundPatternColor)
+              backgroundColorPrimary
+                ? getThemeColorValueByName(backgroundColorPrimary)
                 : ""
             }
-            patternSize={backgroundPatternSize || 32}
-            brightness={backgroundBrightness || undefined}
+            patternColor={
+              backgroundPatternColorPrimary
+                ? getThemeColorValueByName(backgroundPatternColorPrimary)
+                : ""
+            }
+            patternSize={backgroundPatternSizePrimary || 32}
+            brightness={backgroundBrightnessPrimary || undefined}
           />
           <div className="relative flex flex-col items-center gap-2 max-md:gap-1">
             <h1
@@ -104,17 +108,19 @@ const TextBanner = ({ options, imageLink }: Props) => {
           ${borderSize} ${borderColor} ${borderRadius}`}
         >
           <PatternBackground
-            name={backgroundPatternName as BackgroundPatternName}
+            name={backgroundPatternNamePrimary as BackgroundPatternName}
             backgroundColor={
-              backgroundColor ? getThemeColorValueByName(backgroundColor) : ""
-            }
-            patternColor={
-              backgroundPatternColor
-                ? getThemeColorValueByName(backgroundPatternColor)
+              backgroundColorPrimary
+                ? getThemeColorValueByName(backgroundColorPrimary)
                 : ""
             }
-            patternSize={backgroundPatternSize || 32}
-            brightness={backgroundBrightness || undefined}
+            patternColor={
+              backgroundPatternColorPrimary
+                ? getThemeColorValueByName(backgroundPatternColorPrimary)
+                : ""
+            }
+            patternSize={backgroundPatternSizePrimary || 32}
+            brightness={backgroundBrightnessPrimary || undefined}
           />
 
           <div className="relative flex flex-col items-center gap-3 max-md:gap-2">

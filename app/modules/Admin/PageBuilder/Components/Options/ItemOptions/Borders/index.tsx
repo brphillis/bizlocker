@@ -5,8 +5,8 @@ import {
   borderRadiusSelectValues,
   borderSizeSelectValues,
 } from "../../Values/borders";
-import ItemSelectInput from "../../FieldComponents/Items/ItemSelectInput";
-import ItemColorInput from "../../FieldComponents/Items/ItemColorInput";
+import ItemSelectInput from "../_FieldComponents/ItemSelectInput";
+import ItemColorInput from "../_FieldComponents/ItemColorInput";
 
 type Props = {
   selectedItems: ContentSelection[];
@@ -26,40 +26,40 @@ const Borders = ({
       </summary>
       <div className="flex max-w-full flex-wrap justify-start !gap-3 px-3 pb-3 max-md:justify-center max-md:px-0">
         <ItemSelectInput
-          title="Border Displays"
+          title="Displays"
           formName="itemBorderDisplays"
           selectedItems={selectedItems}
-          valueName="Border Display"
+          valueName="Display"
           blockMasterOption={selectedBlockOptions?.itemBorderDisplays}
           defaultValues={defaultValues?.itemBorderDisplays}
           selections={borderDisplaySelectValues}
         />
 
         <ItemColorInput
-          title="Border Colors"
+          title="Colors"
           formName="itemBorderColors"
           selectedItems={selectedItems}
-          valueName="Border Color"
+          valueName="Color"
           blockMasterOption={selectedBlockOptions?.itemBorderColors}
           defaultValues={defaultValues?.itemBorderColors}
           type="border"
         />
 
         <ItemSelectInput
-          title="Border Radius"
+          title="Radius"
           formName="itemBorderRadius"
           selectedItems={selectedItems}
-          valueName="Border Radius"
+          valueName="Radius"
           blockMasterOption={selectedBlockOptions?.itemBorderRadius}
           defaultValues={defaultValues?.itemBorderRadius}
           selections={borderRadiusSelectValues}
         />
 
         <ItemSelectInput
-          title="Border Sizes"
+          title="Sizes"
           formName="itemBorderSizes"
           selectedItems={selectedItems}
-          valueName="Border Radius"
+          valueName="Radius"
           blockMasterOption={selectedBlockOptions?.itemBorderSizes}
           defaultValues={defaultValues?.itemBorderSizes}
           selections={borderSizeSelectValues}

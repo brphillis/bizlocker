@@ -48,7 +48,7 @@ const Opacity = ({ currentOpacity, setCurrentOpacity }: Props) => {
         label="Opacity"
         placeholder="Opacity"
         type="number"
-        customWidth="w-full"
+        extendContainerStyle="w-full"
         labelStyle="text-brand-white"
         value={currentOpacity}
         step={5}

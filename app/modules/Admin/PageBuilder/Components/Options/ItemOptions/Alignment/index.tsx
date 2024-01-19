@@ -8,7 +8,7 @@ import {
   objectPositionMobileSelectValues,
   objectPositionSelectValues,
 } from "../../Values/position";
-import ItemSelectInput from "../../FieldComponents/Items/ItemSelectInput";
+import ItemSelectInput from "../_FieldComponents/ItemSelectInput";
 
 type Props = {
   selectedItems: ContentSelection[];
@@ -28,40 +28,40 @@ const Alignment = ({
       </summary>
       <div className="flex max-w-full flex-wrap justify-start !gap-3 px-3 pb-3 max-md:justify-center max-md:px-0">
         <ItemSelectInput
-          title="Justify"
+          title="X Axis"
           formName="itemJustify"
           selectedItems={selectedItems}
-          valueName="Justify"
+          valueName="X Axis"
           blockMasterOption={selectedBlockOptions?.itemJustify}
           defaultValues={defaultValues?.itemJustify}
           selections={justifySelectValues}
         />
 
         <ItemSelectInput
-          title="Justify Mobile"
-          formName="itemJustifyMobile"
-          selectedItems={selectedItems}
-          valueName="Justify Mobile"
-          blockMasterOption={selectedBlockOptions?.itemJustifyMobile}
-          defaultValues={defaultValues?.itemJustifyMobile}
-          selections={justifySelectMobileValues}
-        />
-
-        <ItemSelectInput
-          title="Align"
+          title="Y Axis"
           formName="itemAlign"
           selectedItems={selectedItems}
-          valueName="Align"
+          valueName="Y Axis"
           blockMasterOption={selectedBlockOptions?.itemAlign}
           defaultValues={defaultValues?.itemAlign}
           selections={alignSelectValues}
         />
 
         <ItemSelectInput
-          title="Align Mobile"
+          title="X Axis Mobile"
+          formName="itemJustifyMobile"
+          selectedItems={selectedItems}
+          valueName="X Axis Mobile"
+          blockMasterOption={selectedBlockOptions?.itemJustifyMobile}
+          defaultValues={defaultValues?.itemJustifyMobile}
+          selections={justifySelectMobileValues}
+        />
+
+        <ItemSelectInput
+          title="Y Axis Mobile"
           formName="itemAlignMobile"
           selectedItems={selectedItems}
-          valueName="Align Mobile"
+          valueName="Y Axis Mobile"
           blockMasterOption={selectedBlockOptions?.itemAlignMobile}
           defaultValues={defaultValues?.itemAlignMobile}
           selections={alignSelectMobileValues}

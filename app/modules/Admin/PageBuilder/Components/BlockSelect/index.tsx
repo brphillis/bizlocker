@@ -39,7 +39,7 @@ const BlockSelect = ({
   };
 
   return (
-    <div className="mx-auto flex max-w-full flex-wrap items-center justify-center gap-3 py-6">
+    <div className="mx-auto flex max-w-full flex-wrap items-center justify-center gap-3 pt-6 pb-3">
       {blockMaster.map(({ name }: BlockMaster, i: number) => {
         return (
           <React.Fragment key={"BlockSelectionTiles_" + i}>

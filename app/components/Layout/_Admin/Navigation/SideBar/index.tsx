@@ -24,7 +24,7 @@ const AdminSideBar = ({ staffMember, userNotifications }: Props) => {
       className="drawer min-h-screen lg:drawer-open"
     >
       <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
-      <div className="drawer-content relative flex min-h-[calc(100vh-60px)] flex-col items-center justify-start overflow-x-hidden">
+      <div className="drawer-content relative flex min-h-[calc(100dvh-60px)] flex-col items-center justify-start overflow-x-hidden">
         <div className="flex h-[60px] w-full flex-row items-center gap-6 self-start justify-self-start bg-brand-black px-1 py-3 lg:hidden">
           <label
             htmlFor="my-drawer-2"

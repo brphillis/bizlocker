@@ -8,9 +8,9 @@ import {
   mobileFontSizeSelectValues,
   mobilefontWeightSelectValues,
 } from "../../Values/font";
-import BlockInput from "../../FieldComponents/Blocks/BlockInput";
-import BlockColorInput from "../../FieldComponents/Blocks/BlockColorInput";
-import BlockSelectInput from "../../FieldComponents/Blocks/BlockSelectInput";
+import BlockInput from "../_FieldComponents/BlockInput";
+import BlockColorInput from "../_FieldComponents/BlockColorInput";
+import BlockSelectInput from "../_FieldComponents/BlockSelectInput";
 
 type Props = {
   selectedBlock?: BlockName;
@@ -24,11 +24,11 @@ const TitleOptions = ({
   selectedBlockOptions,
 }: Props) => {
   return (
-    <details className="collapse collapse-plus !hidden !max-w-full !rounded-sm bg-brand-white/20 [&:has(div>div)]:!grid">
+    <details className="collapse collapse-plus !hidden !max-w-[100vw] max-md:!w-[100dvw] !rounded-sm bg-brand-white/20 [&:has(div>div)]:!grid">
       <summary className="collapse-title text-xl font-medium text-brand-white">
         {selectedBlock === "text" ? "Heading" : "Title"}
       </summary>
-      <div className="flex max-w-full flex-wrap justify-start !gap-3 px-3 pb-3 max-md:justify-center max-md:px-0">
+      <div className="flex gap-3 flex-wrap items-start justify-start w-full px-3 pb-6 max-md:pb-3">
         <BlockInput
           valueName="Title"
           formName="title"

@@ -115,7 +115,7 @@ const StaffUpsert = ({ offRouteModule }: Props) => {
                 <BasicSelect
                   name="role"
                   label="Role"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   placeholder="Role"
                   selections={roles?.map((e: string) => {
                     return { id: e, name: e };
@@ -128,7 +128,7 @@ const StaffUpsert = ({ offRouteModule }: Props) => {
                   label="Job Title"
                   placeholder="Job Title"
                   type="text"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   defaultValue={staffMember?.jobTitle || undefined}
                   validationErrors={
                     serverValidationErrors || clientValidationErrors
@@ -138,7 +138,7 @@ const StaffUpsert = ({ offRouteModule }: Props) => {
                 <BasicSelect
                   label="Store"
                   name="store"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   placeholder="Select a Store"
                   selections={stores}
                   defaultValue={staffMember?.storeId || ""}
@@ -149,7 +149,7 @@ const StaffUpsert = ({ offRouteModule }: Props) => {
                   label="Email Address"
                   placeholder="Email Address"
                   type="text"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   defaultValue={staffMember?.email || undefined}
                   validationErrors={
                     serverValidationErrors || clientValidationErrors
@@ -161,7 +161,7 @@ const StaffUpsert = ({ offRouteModule }: Props) => {
                   label="First Name"
                   placeholder="First Name"
                   type="text"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   defaultValue={
                     staffMember?.userDetails?.firstName || undefined
                   }
@@ -175,7 +175,7 @@ const StaffUpsert = ({ offRouteModule }: Props) => {
                   label="Last Name"
                   placeholder="Last Name"
                   type="text"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   defaultValue={staffMember?.userDetails?.lastName || undefined}
                   validationErrors={
                     serverValidationErrors || clientValidationErrors
@@ -187,7 +187,7 @@ const StaffUpsert = ({ offRouteModule }: Props) => {
                   label="Phone Number"
                   placeholder="Phone Number"
                   type="text"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   defaultValue={
                     staffMember?.userDetails?.phoneNumber || undefined
                   }
@@ -201,7 +201,7 @@ const StaffUpsert = ({ offRouteModule }: Props) => {
                   label="Date of Birth"
                   placeholder="Date of Birth"
                   type="date"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   defaultValue={formatDateForFormField(
                     staffMember?.userDetails?.dateOfBirth,
                   )}
@@ -215,7 +215,7 @@ const StaffUpsert = ({ offRouteModule }: Props) => {
                   label="Address Line 1"
                   placeholder="Address Line 1"
                   type="text"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   defaultValue={staffMember?.address?.addressLine1 || undefined}
                   validationErrors={
                     serverValidationErrors || clientValidationErrors
@@ -227,7 +227,7 @@ const StaffUpsert = ({ offRouteModule }: Props) => {
                   label="Address Line 2"
                   placeholder="Address Line 2"
                   type="text"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   defaultValue={staffMember?.address?.addressLine2 || undefined}
                   validationErrors={
                     serverValidationErrors || clientValidationErrors
@@ -239,7 +239,7 @@ const StaffUpsert = ({ offRouteModule }: Props) => {
                   label="Suburb"
                   placeholder="Suburb"
                   type="text"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   defaultValue={staffMember?.address?.suburb || undefined}
                   validationErrors={
                     serverValidationErrors || clientValidationErrors
@@ -251,7 +251,7 @@ const StaffUpsert = ({ offRouteModule }: Props) => {
                   label="PostCode"
                   placeholder="PostCode"
                   type="text"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   defaultValue={staffMember?.address?.postcode || undefined}
                   validationErrors={
                     serverValidationErrors || clientValidationErrors
@@ -263,7 +263,7 @@ const StaffUpsert = ({ offRouteModule }: Props) => {
                   label="State"
                   placeholder="State"
                   type="text"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   defaultValue={staffMember?.address?.state || undefined}
                   validationErrors={
                     serverValidationErrors || clientValidationErrors
@@ -286,7 +286,7 @@ const StaffUpsert = ({ offRouteModule }: Props) => {
                         label="Password"
                         placeholder="Password"
                         type="password"
-                        customWidth="w-full"
+                        extendContainerStyle="w-full"
                         defaultValue={undefined}
                         validationErrors={
                           serverValidationErrors || clientValidationErrors

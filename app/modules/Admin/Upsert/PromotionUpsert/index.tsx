@@ -6,7 +6,7 @@ import BasicInput from "~/components/Forms/Input/BasicInput";
 import type { ActionReturnTypes } from "~/utility/actionTypes";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import SelectGender from "~/components/Forms/Select/SelectGender";
-import BasicTextArea from "~/components/Forms/TextArea/BasicInput";
+import BasicTextArea from "~/components/Forms/TextArea";
 import type { ProductWithDetails } from "~/models/products.server";
 import { type ValidationErrors, validateForm } from "~/utility/validate";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
@@ -123,7 +123,7 @@ const PromotionUpsert = ({ offRouteModule }: Props) => {
                     name="name"
                     type="text"
                     placeholder="Name"
-                    customWidth="w-full"
+                    extendContainerStyle="w-full"
                     defaultValue={promotion?.name || undefined}
                     validationErrors={
                       serverValidationErrors || clientValidationErrors
@@ -135,7 +135,7 @@ const PromotionUpsert = ({ offRouteModule }: Props) => {
                     label="Department"
                     selections={departments}
                     placeholder="Department"
-                    customWidth="w-full"
+                    extendContainerStyle="w-full"
                     defaultValue={promotion?.department?.id.toString()}
                     validationErrors={
                       serverValidationErrors || clientValidationErrors
@@ -147,7 +147,7 @@ const PromotionUpsert = ({ offRouteModule }: Props) => {
                     label="Discount %"
                     placeholder="Discount %"
                     type="number"
-                    customWidth="w-full"
+                    extendContainerStyle="w-full"
                     defaultValue={promotion?.discountPercentage || ""}
                     validationErrors={
                       serverValidationErrors || clientValidationErrors
@@ -157,7 +157,7 @@ const PromotionUpsert = ({ offRouteModule }: Props) => {
                   <SelectGender
                     defaultValue={promotion?.targetGender}
                     label="Has Target Gender?"
-                    customWidth="w-full"
+                    extendContainerStyle="w-full"
                   />
                 </>
               }
@@ -207,7 +207,7 @@ const PromotionUpsert = ({ offRouteModule }: Props) => {
                   name="metaDescription"
                   label="Meta Description"
                   placeholder="Meta Description"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   defaultValue={promotion?.metaDescription || ""}
                   validationErrors={
                     serverValidationErrors || clientValidationErrors

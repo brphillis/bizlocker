@@ -122,7 +122,7 @@ const TeamUpsert = ({ offRouteModule }: Props) => {
                 label="Team Name"
                 placeholder="Name"
                 type="text"
-                customWidth="w-full"
+                extendContainerStyle="w-full"
                 defaultValue={team?.name || undefined}
                 validationErrors={
                   serverValidationErrors || clientValidationErrors
@@ -132,7 +132,7 @@ const TeamUpsert = ({ offRouteModule }: Props) => {
               <BasicSelect
                 label="Location"
                 name="location"
-                customWidth="w-full"
+                extendContainerStyle="w-full"
                 placeholder="Select a Location"
                 selections={stores as unknown as SelectValue[]}
                 defaultValue={team.storeId?.toString() || undefined}

@@ -2,22 +2,20 @@ type Props = {
   label: string;
   type: "order" | "approval";
   onChange?: (value: string | React.ChangeEvent<HTMLSelectElement>) => void;
-  customWidth?: string;
+  extendContainerStyle?: string;
   labelStyle?: string;
 };
 
 const SelectStatus = ({
   label,
   type,
-  customWidth,
+  extendContainerStyle,
   labelStyle,
   onChange,
 }: Props) => {
   return (
     <div
-      className={`form-control max-md:w-full ${
-        customWidth ? customWidth : "w-[215px]"
-      }`}
+      className={`form-control max-md:w-full w-[215px] ${extendContainerStyle}`}
     >
       <label className="label">
         <span

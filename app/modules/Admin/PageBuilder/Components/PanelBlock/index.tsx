@@ -19,6 +19,7 @@ import SelectedContent from "../Content/SelectedContent";
 import TextBlockContentModule from "../Content/TextBlockContent";
 import ProductBlockOptions from "../Specific/ProductBlockOptions";
 import ArticleBlockOptions from "../Specific/ArticleBlockOptions";
+import LabelEdit from "./LabelEdit";
 
 type Props = {
   articleCategories: ArticleCategoryWithDetails[];
@@ -104,13 +105,21 @@ const PanelBlock = ({
 
   return (
     <div className="relative flex w-full flex-col max-md:px-0 bg-brand-black max-md:fixed max-md:top-0 max-md:h-[100dvh] max-md:overflow-y-scroll">
-      <div className="relative flex w-full flex-col overflow-y-scroll scrollbar-hide max-h-[calc(100vh-100px] px-3">
+      <div className="relative flex w-full flex-col overflow-y-scroll scrollbar-hide max-h-[calc(100dvh-100px] max-md:px-0 px-3">
         <BlockSelect
           selectedBlock={selectedBlock}
           setSelectedBlock={setSelectedBlock}
           selectedItems={selectedItems}
           setSelectedItems={setSelectedItems}
         />
+
+        {selectedBlock && (
+          <LabelEdit
+            currentBlocks={currentBlocks}
+            editingIndex={editingIndex}
+            selectedBlock={selectedBlock}
+          />
+        )}
 
         <div
           className={`max-w-[600px] relative left-[50%] translate-x-[-50%]
@@ -134,7 +143,6 @@ const PanelBlock = ({
           />
 
           <ResultsTable
-            selectedBlock={selectedBlock}
             setSelectedItems={handleLimitedItemSelect}
             searchResults={searchResults as Campaign[] | Promotion[] | Brand[]}
             contentType={contentType}
@@ -156,23 +164,6 @@ const PanelBlock = ({
           />
         </div>
 
-        {/* <details className="collapse collapse-plus grid !max-w-full !rounded-sm bg-brand-white/20">
-              <summary className="collapse-title text-xl font-medium text-brand-white">
-                Block Label
-              </summary>
-              <div className="flex max-w-full flex-wrap justify-start !gap-3 px-3 pb-3 max-md:justify-center max-md:px-0">
-                <BasicInput
-                  name="blockLabel"
-                  type="text"
-                  label="Block Label"
-                  placeholder="Label"
-                  labelStyle="text-brand-white"
-                  customWidth="pl-3 w-[215px] pb-3"
-                  defaultValue={blocks?.[editingIndex]?.label}
-                />
-              </div>
-            </details> */}
-
         <OptionsModule
           selectedBlock={selectedBlock}
           defaultValues={currentBlocks?.[editingIndex]?.blockOptions[0]}
@@ -184,7 +175,6 @@ const PanelBlock = ({
         {selectedBlock === "product" && (
           <ProductBlockOptions
             selectedBlock={selectedBlock}
-            selectedItems={selectedItems}
             setSelectedItems={setSelectedItems}
             productCategories={productCategories}
             productSubCategories={productSubCategories}
@@ -232,7 +222,7 @@ const PanelBlock = ({
         )}
       </div>
 
-      <div className="relative bottom-0 left-1/2 translate-x-[-50%] bg-brand-black pt-6 pb-3 w-full border-t border-t-brand-white/25 mt-3">
+      <div className="relative bottom-0 left-1/2 translate-x-[-50%] bg-brand-black pt-6 pb-3 w-full border-t border-t-brand-white/25 mt-3 flex gap-3 justify-center">
         <BackSubmitButtons
           value="update"
           divider={false}

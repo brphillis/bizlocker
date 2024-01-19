@@ -10,7 +10,6 @@ import type { BlockContentType, BlockName } from "~/utility/blockMaster/types";
 
 type Props = {
   selectedBlock: BlockName | undefined;
-  selectedItems: ContentSelection[];
   setSelectedItems: Function;
   productCategories: ProductCategory[];
   productSubCategories: ProductSubCategory[];
@@ -19,7 +18,6 @@ type Props = {
 };
 
 const ProductBlockOptions = ({
-  selectedItems,
   setSelectedItems,
   selectedBlock,
   productCategories,
@@ -54,7 +52,7 @@ const ProductBlockOptions = ({
                   labelStyle="text-brand-white"
                   placeholder="Product Category"
                   selections={productCategories as unknown as SelectValue[]}
-                  defaultValue={defaultValues?.productCategory?.[0].id?.toString()}
+                  defaultValue={defaultValues?.productCategory?.[0]?.id?.toString()}
                   onChange={(selectedValue) => {
                     selectItem(
                       "productCategory",
@@ -69,7 +67,7 @@ const ProductBlockOptions = ({
                   labelStyle="text-brand-white"
                   placeholder="Product SubCategory"
                   selections={productSubCategories as unknown as SelectValue[]}
-                  defaultValue={defaultValues?.productSubCategory?.[0]?.id.toString()}
+                  defaultValue={defaultValues?.productSubCategory?.[0]?.id?.toString()}
                   onChange={(selectedValue) =>
                     selectItem(
                       "productSubCategory",
@@ -84,7 +82,7 @@ const ProductBlockOptions = ({
                   labelStyle="text-brand-white"
                   placeholder="Brand"
                   selections={brands as unknown as SelectValue[]}
-                  defaultValue={defaultValues?.brand?.[0].id.toString()}
+                  defaultValue={defaultValues?.brand?.[0]?.id?.toString()}
                   onChange={(selectedValue) =>
                     selectItem("brand", parseInt(selectedValue as string))
                   }
@@ -93,7 +91,7 @@ const ProductBlockOptions = ({
                 <SelectGender
                   label="Gender"
                   labelStyle="text-brand-white"
-                  defaultValue={defaultValues?.gender?.[0].toString()}
+                  defaultValue={defaultValues?.gender?.[0]?.toString()}
                   onChange={(selectedValue) =>
                     selectItem("gender", selectedValue as string)
                   }

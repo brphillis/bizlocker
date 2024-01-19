@@ -11,7 +11,7 @@ type Props = {
   defaultValue?: any;
   validationErrors?: ValidationErrors;
   extendStyle?: string;
-  customWidth?: string;
+  extendContainerStyle?: string;
   labelStyle?: string;
   onChange?: (value: string | React.ChangeEvent<HTMLSelectElement>) => void;
 };
@@ -29,7 +29,7 @@ const PhoneInput = ({
   defaultValue,
   validationErrors,
   extendStyle,
-  customWidth,
+  extendContainerStyle,
   labelStyle,
 }: Props) => {
   const [phoneNumber, setPhoneNumber] = useState<PhoneNumber>({
@@ -53,9 +53,7 @@ const PhoneInput = ({
 
   return (
     <div
-      className={`form-control relative max-md:w-full ${
-        customWidth ? customWidth : "w-[215px]"
-      }`}
+      className={`form-control relative max-md:w-full w-[215px] ${extendContainerStyle}`}
     >
       <input
         type="hidden"

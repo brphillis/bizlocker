@@ -94,7 +94,7 @@ const BrandUpsert = ({ offRouteModule }: Props) => {
                 label="Name"
                 placeholder="Name"
                 type="text"
-                customWidth="w-full"
+                extendContainerStyle="w-full"
                 defaultValue={brand?.name || undefined}
                 validationErrors={
                   serverValidationErrors || clientValidationErrors

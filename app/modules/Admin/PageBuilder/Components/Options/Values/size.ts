@@ -61,9 +61,9 @@ export const getHeightSelectValues = (blockName?: BlockName) => {
 export const getMobileHeightSelectValues = (blockName?: BlockName) => {
   if (blockName === "carousel") {
     return [
-      { id: "max-md:h-screen", name: "Full Screen" },
-      { id: "max-md:h-[calc(100vh-25%)]", name: "3Qtr Screen" },
-      { id: "max-md:w-[calc(100vh/2)]", name: "Half Screen" },
+      { id: "max-md:h-[100dvh]", name: "Full Screen" },
+      { id: "max-md:h-[calc(100dvh-25%)]", name: "3Qtr Screen" },
+      { id: "max-md:w-[calc(100dvh/2)]", name: "Half Screen" },
       { id: "max-md:h-[calc(100dvh-110px)]", name: "Full Screen - NavBar" },
     ];
   } else {

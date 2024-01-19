@@ -129,7 +129,7 @@ const StockTransferUpsert = ({ offRouteModule }: Props) => {
                     label="Status"
                     name="status"
                     placeholder="Select a Status"
-                    customWidth="w-full"
+                    extendContainerStyle="w-full"
                     selections={statusList?.map((status: string) => ({
                       id: status,
                       name: capitalizeFirst(status),
@@ -143,7 +143,7 @@ const StockTransferUpsert = ({ offRouteModule }: Props) => {
                 label="SKU"
                 placeholder="SKU"
                 type="text"
-                customWidth="w-full"
+                extendContainerStyle="w-full"
                 disabled={true}
                 defaultValue={
                   stockTransferRequest?.productVariant?.sku || undefined
@@ -157,7 +157,7 @@ const StockTransferUpsert = ({ offRouteModule }: Props) => {
                 label="From Store"
                 name="fromStore"
                 placeholder="Select a Store"
-                customWidth="w-full"
+                extendContainerStyle="w-full"
                 selections={stores as unknown as SelectValue[]}
                 disabled={true}
                 defaultValue={stockTransferRequest.fromStoreId.toString()}
@@ -167,7 +167,7 @@ const StockTransferUpsert = ({ offRouteModule }: Props) => {
                 label="To Store"
                 name="toStore"
                 placeholder="Select a Store"
-                customWidth="w-full"
+                extendContainerStyle="w-full"
                 selections={stores as unknown as SelectValue[]}
                 disabled={true}
                 defaultValue={stockTransferRequest.toStoreId.toString()}
@@ -178,7 +178,7 @@ const StockTransferUpsert = ({ offRouteModule }: Props) => {
                 label="Quantity"
                 placeholder="Quantity"
                 type="number"
-                customWidth="w-full"
+                extendContainerStyle="w-full"
                 disabled={true}
                 defaultValue={stockTransferRequest?.quantity || undefined}
                 validationErrors={
@@ -191,7 +191,7 @@ const StockTransferUpsert = ({ offRouteModule }: Props) => {
                 label="Tracking Number"
                 placeholder="Tracking number"
                 type="text"
-                customWidth="w-full"
+                extendContainerStyle="w-full"
                 disabled={true}
                 defaultValue={stockTransferRequest?.trackingNumber || undefined}
                 validationErrors={
@@ -204,7 +204,7 @@ const StockTransferUpsert = ({ offRouteModule }: Props) => {
                 label="Created By"
                 placeholder="Created By"
                 type="text"
-                customWidth="w-full"
+                extendContainerStyle="w-full"
                 disabled={true}
                 defaultValue={stockTransferRequest?.createdBy || undefined}
                 validationErrors={

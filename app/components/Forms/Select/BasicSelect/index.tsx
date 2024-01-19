@@ -2,7 +2,7 @@ import type { ValidationErrors } from "~/utility/validate";
 import ToolTip from "~/components/Indicators/ToolTip";
 
 type Props = {
-  customWidth?: string;
+  extendContainerStyle?: string;
   defaultValue?: string | number | null;
   extendStyle?: string;
   disabled?: boolean;
@@ -17,7 +17,7 @@ type Props = {
 };
 
 const BasicSelect = ({
-  customWidth,
+  extendContainerStyle,
   defaultValue,
   disabled,
   extendStyle,
@@ -32,9 +32,7 @@ const BasicSelect = ({
 }: Props) => {
   return (
     <div
-      className={`form-control relative max-md:w-full ${
-        customWidth ? customWidth : "w-[215px]"
-      }`}
+      className={`form-control relative max-md:w-full w-[215px] ${extendContainerStyle}`}
     >
       <label className="label">
         <span

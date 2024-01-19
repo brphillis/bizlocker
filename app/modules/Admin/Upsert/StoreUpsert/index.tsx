@@ -106,7 +106,7 @@ const StoreUpsert = ({ offRouteModule }: Props) => {
                 label="Name"
                 placeholder="Name"
                 type="text"
-                customWidth="w-full"
+                extendContainerStyle="w-full"
                 defaultValue={store?.name || undefined}
                 validationErrors={
                   serverValidationErrors || clientValidationErrors
@@ -118,7 +118,7 @@ const StoreUpsert = ({ offRouteModule }: Props) => {
                 label="Phone Number"
                 placeholder="Phone Number"
                 type="text"
-                customWidth="w-full"
+                extendContainerStyle="w-full"
                 defaultValue={store?.phoneNumber || undefined}
                 validationErrors={
                   serverValidationErrors || clientValidationErrors
@@ -130,7 +130,7 @@ const StoreUpsert = ({ offRouteModule }: Props) => {
                 label="Fax Number"
                 placeholder="Fax Number"
                 type="number"
-                customWidth="w-full"
+                extendContainerStyle="w-full"
                 defaultValue={store?.faxNumber || undefined}
                 validationErrors={
                   serverValidationErrors || clientValidationErrors
@@ -142,7 +142,7 @@ const StoreUpsert = ({ offRouteModule }: Props) => {
                 label="Address Line 1"
                 placeholder="Address Line 1"
                 type="text"
-                customWidth="w-full"
+                extendContainerStyle="w-full"
                 defaultValue={store?.address?.addressLine1 || undefined}
                 validationErrors={
                   serverValidationErrors || clientValidationErrors
@@ -154,7 +154,7 @@ const StoreUpsert = ({ offRouteModule }: Props) => {
                 label="Address Line 2"
                 placeholder="Address Line 2"
                 type="text"
-                customWidth="w-full"
+                extendContainerStyle="w-full"
                 defaultValue={store?.address?.addressLine2 || undefined}
                 validationErrors={
                   serverValidationErrors || clientValidationErrors
@@ -166,7 +166,7 @@ const StoreUpsert = ({ offRouteModule }: Props) => {
                 label="Suburb"
                 placeholder="Suburb"
                 type="text"
-                customWidth="w-full"
+                extendContainerStyle="w-full"
                 defaultValue={store?.address?.suburb || undefined}
                 validationErrors={
                   serverValidationErrors || clientValidationErrors
@@ -178,7 +178,7 @@ const StoreUpsert = ({ offRouteModule }: Props) => {
                 label="PostCode"
                 placeholder="PostCode"
                 type="text"
-                customWidth="w-full"
+                extendContainerStyle="w-full"
                 defaultValue={store?.address?.postcode || undefined}
                 validationErrors={
                   serverValidationErrors || clientValidationErrors
@@ -190,7 +190,7 @@ const StoreUpsert = ({ offRouteModule }: Props) => {
                 label="State"
                 placeholder="State"
                 type="text"
-                customWidth="w-full"
+                extendContainerStyle="w-full"
                 defaultValue={store?.address?.state || undefined}
                 validationErrors={
                   serverValidationErrors || clientValidationErrors
@@ -210,7 +210,7 @@ const StoreUpsert = ({ offRouteModule }: Props) => {
                 label="Longitude"
                 placeholder="Longitude"
                 type="text"
-                customWidth="w-full"
+                extendContainerStyle="w-full"
                 defaultValue={store?.address?.longitude || undefined}
                 validationErrors={
                   serverValidationErrors || clientValidationErrors
@@ -222,7 +222,7 @@ const StoreUpsert = ({ offRouteModule }: Props) => {
                 label="Latitude"
                 placeholder="Latitude"
                 type="text"
-                customWidth="w-full"
+                extendContainerStyle="w-full"
                 defaultValue={store?.address?.latitude || undefined}
                 validationErrors={
                   serverValidationErrors || clientValidationErrors
@@ -234,7 +234,7 @@ const StoreUpsert = ({ offRouteModule }: Props) => {
                 label="Payment Provider Id"
                 placeholder="Payment Provider Id"
                 type="text"
-                customWidth="w-full"
+                extendContainerStyle="w-full"
                 defaultValue={store?.paymentProviderId || undefined}
                 validationErrors={
                   serverValidationErrors || clientValidationErrors

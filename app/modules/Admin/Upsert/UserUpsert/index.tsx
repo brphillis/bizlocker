@@ -116,7 +116,7 @@ const UserUpsert = ({ offRouteModule }: Props) => {
                   label="Email Address"
                   placeholder="Email Address"
                   type="text"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   defaultValue={user?.email || undefined}
                   validationErrors={
                     serverValidationErrors || clientValidationErrors
@@ -128,7 +128,7 @@ const UserUpsert = ({ offRouteModule }: Props) => {
                   label="First Name"
                   placeholder="First Name"
                   type="text"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   defaultValue={user?.userDetails?.firstName || undefined}
                   validationErrors={
                     serverValidationErrors || clientValidationErrors
@@ -140,7 +140,7 @@ const UserUpsert = ({ offRouteModule }: Props) => {
                   label="Last Name"
                   placeholder="Last Name"
                   type="text"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   defaultValue={user?.userDetails?.lastName || undefined}
                   validationErrors={
                     serverValidationErrors || clientValidationErrors
@@ -152,7 +152,7 @@ const UserUpsert = ({ offRouteModule }: Props) => {
                   label="Phone Number"
                   placeholder="Phone Number"
                   type="text"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   defaultValue={user?.userDetails?.phoneNumber || undefined}
                   validationErrors={
                     serverValidationErrors || clientValidationErrors
@@ -164,7 +164,7 @@ const UserUpsert = ({ offRouteModule }: Props) => {
                   label="Date of Birth"
                   placeholder="Date of Birth"
                   type="date"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   defaultValue={formatDateForFormField(
                     user?.userDetails?.dateOfBirth,
                   )}
@@ -178,7 +178,7 @@ const UserUpsert = ({ offRouteModule }: Props) => {
                   label="Address Line 1"
                   placeholder="Address Line 1"
                   type="text"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   defaultValue={user?.address?.addressLine1 || undefined}
                   validationErrors={
                     serverValidationErrors || clientValidationErrors
@@ -190,7 +190,7 @@ const UserUpsert = ({ offRouteModule }: Props) => {
                   label="Address Line 2"
                   placeholder="Address Line 2"
                   type="text"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   defaultValue={user?.address?.addressLine2 || undefined}
                   validationErrors={
                     serverValidationErrors || clientValidationErrors
@@ -202,7 +202,7 @@ const UserUpsert = ({ offRouteModule }: Props) => {
                   label="Suburb"
                   placeholder="Suburb"
                   type="text"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   defaultValue={user?.address?.suburb || undefined}
                   validationErrors={
                     serverValidationErrors || clientValidationErrors
@@ -214,7 +214,7 @@ const UserUpsert = ({ offRouteModule }: Props) => {
                   label="PostCode"
                   placeholder="PostCode"
                   type="text"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   defaultValue={user?.address?.postcode || undefined}
                   validationErrors={
                     serverValidationErrors || clientValidationErrors
@@ -226,7 +226,7 @@ const UserUpsert = ({ offRouteModule }: Props) => {
                   label="State"
                   placeholder="State"
                   type="text"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   defaultValue={user?.address?.state || undefined}
                   validationErrors={
                     serverValidationErrors || clientValidationErrors

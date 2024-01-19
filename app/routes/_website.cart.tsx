@@ -66,7 +66,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   if (userAddress && cart) {
     loaderShippingOptions = await getCartDeliveryOptions(
       cart,
-      parseInt(userAddress.postcode!)
+      parseInt(userAddress.postcode!),
     );
   }
 
@@ -89,7 +89,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   const { formEntries, formErrors } = validateForm(
     await request.formData(),
-    validate
+    validate,
   );
 
   switch (formEntries._action) {
@@ -135,7 +135,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         address as Address,
         shippingMethod as string,
         shippingPrice as string,
-        rememberInformation ? true : false
+        rememberInformation ? true : false,
       );
       return createdOrder;
 
@@ -146,7 +146,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       if (cart && !isNaN(parseInt(postCode as string))) {
         const actionShippingOptions = await getCartDeliveryOptions(
           cart as unknown as CartWithDetails,
-          parseInt(postCode as string)
+          parseInt(postCode as string),
         );
         return json({ actionShippingOptions });
       } else return null;
@@ -254,7 +254,7 @@ const Cart = () => {
             name="firstName"
             label="First Name"
             placeholder="First Name"
-            customWidth="w-full"
+            extendContainerStyle="w-full"
             extendStyle="input-bordered"
             type="text"
             defaultValue={userDetails?.firstName || undefined}
@@ -265,7 +265,7 @@ const Cart = () => {
             name="lastName"
             label="Last Name"
             placeholder="Last Name"
-            customWidth="w-full"
+            extendContainerStyle="w-full"
             extendStyle="input-bordered"
             type="text"
             defaultValue={userDetails?.lastName || undefined}
@@ -276,7 +276,7 @@ const Cart = () => {
             name="email"
             label="Email Address"
             placeholder="Email Address"
-            customWidth="w-full"
+            extendContainerStyle="w-full"
             extendStyle="input-bordered"
             type="text"
             defaultValue={user?.email || undefined}
@@ -287,7 +287,7 @@ const Cart = () => {
             name="addressLine1"
             label="Address Line 1"
             placeholder="Address Line 1"
-            customWidth="w-full"
+            extendContainerStyle="w-full"
             extendStyle="input-bordered"
             type="text"
             defaultValue={userAddress?.addressLine1 || undefined}
@@ -298,7 +298,7 @@ const Cart = () => {
             name="addressLine2"
             label="Address Line 2"
             placeholder="Address Line 2"
-            customWidth="w-full"
+            extendContainerStyle="w-full"
             extendStyle="input-bordered"
             type="text"
             defaultValue={userAddress?.addressLine2 || undefined}
@@ -309,7 +309,7 @@ const Cart = () => {
             name="suburb"
             label="Suburb"
             placeholder="Suburb"
-            customWidth="w-full"
+            extendContainerStyle="w-full"
             extendStyle="input-bordered"
             type="text"
             defaultValue={userAddress?.suburb || undefined}
@@ -320,7 +320,7 @@ const Cart = () => {
             name="postcode"
             label="PostCode"
             placeholder="PostCode"
-            customWidth="w-full"
+            extendContainerStyle="w-full"
             extendStyle="input-bordered"
             type="text"
             defaultValue={userAddress?.postcode || undefined}
@@ -336,7 +336,7 @@ const Cart = () => {
             name="state"
             label="State"
             placeholder="State"
-            customWidth="w-full"
+            extendContainerStyle="w-full"
             extendStyle="input-bordered"
             type="text"
             defaultValue={userAddress?.state || undefined}
@@ -347,7 +347,7 @@ const Cart = () => {
             name="phoneNumber"
             label="Phone Number"
             placeholder="Phone Number"
-            customWidth="w-full"
+            extendContainerStyle="w-full"
             extendStyle="input-bordered"
             type="text"
             defaultValue={userDetails?.phoneNumber || undefined}
@@ -370,7 +370,7 @@ const Cart = () => {
                   name="shippingOptions"
                   label="Shipping Options"
                   placeholder="Shipping Options"
-                  customWidth="!w-full"
+                  extendContainerStyle="!w-full"
                   defaultValue={undefined}
                   selections={(
                     actionShippingOptions || loaderShippingOptions

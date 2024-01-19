@@ -3,25 +3,21 @@ import { handleBlockOptionItemInputChange } from "~/helpers/blockOptionHelpers";
 
 type Props = {
   blockMasterOption?: boolean;
-  defaultValues?: string[] | number[];
+  defaultValues?: string[];
   formName: string;
-  max?: string;
   selectedItems: ContentSelection[];
+  selections: Array<SelectValue> | null;
   title: string;
-  tooltip?: string;
-  type?: "string" | "number";
   valueName: string;
 };
 
-const ItemInput = ({
+const ItemSelectInput = ({
   blockMasterOption,
   defaultValues,
   formName,
-  max,
   selectedItems,
+  selections,
   title,
-  tooltip,
-  type = "string",
   valueName,
 }: Props) => {
   const [items, setItems] = useState<(string | number | undefined)[]>(
@@ -29,7 +25,7 @@ const ItemInput = ({
   );
 
   return (
-    <details className="collapse collapse-plus !hidden !max-w-full !rounded-sm bg-brand-white/20 [&:has(div>div)]:!grid">
+    <details className="collapse collapse-plus !hidden !max-w-full !rounded-sm bg-brand-white/20 [&:has(div>div)]:!grid max-md:pb-3">
       <summary className="collapse-title text-xl font-medium text-brand-white">
         {title}
       </summary>
@@ -45,17 +41,14 @@ const ItemInput = ({
                 key={`${valueName}Options_Item${valueName}_` + i}
                 className="form-control w-[215px] max-md:w-full max-md:items-center"
               >
-                <label className="label self-start max-md:ml-3">
+                <label className="label max-md:ml-3 max-md:!self-start">
                   <span className="label-text text-brand-white">
                     {"Item " + relativeIndex.toString() + " " + valueName}
                   </span>
                 </label>
-                <input
-                  type={type}
-                  step={type === "number" ? "any" : undefined}
-                  max={max ? max : undefined}
-                  className="input input-bordered w-[95vw] max-w-full text-brand-black sm:w-[215px]"
-                  placeholder="None"
+
+                <select
+                  className="select w-[95vw] text-brand-black/75 sm:w-[215px]"
                   defaultValue={dynamicDefault ? dynamicDefault : undefined}
                   onChange={(e) =>
                     handleBlockOptionItemInputChange(
@@ -65,7 +58,19 @@ const ItemInput = ({
                       setItems,
                     )
                   }
-                />
+                >
+                  <option value="">Unselected</option>
+                  {selections?.map(
+                    ({ id, name }: SelectValue, index: number) => (
+                      <option
+                        key={`multipleItemSelect_${name}_${id}_${index}`}
+                        value={id}
+                      >
+                        {name}
+                      </option>
+                    ),
+                  )}
+                </select>
               </div>
             );
           } else return null;
@@ -79,4 +84,4 @@ const ItemInput = ({
   );
 };
 
-export default ItemInput;
+export default ItemSelectInput;

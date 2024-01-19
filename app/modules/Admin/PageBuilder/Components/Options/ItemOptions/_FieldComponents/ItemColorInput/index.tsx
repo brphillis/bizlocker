@@ -29,7 +29,7 @@ const ItemColorInput = ({
   const [valuesEdited, setValuesEdited] = useState<boolean>(false);
 
   return (
-    <details className="collapse collapse-plus !hidden !max-w-full !rounded-sm bg-brand-white/20 [&:has(div>div)]:!grid">
+    <details className="collapse collapse-plus !hidden !max-w-full !rounded-sm bg-brand-white/20 [&:has(div>div)]:!grid px-0 max-md:px-3 max-md:pb-3">
       <summary className="collapse-title text-xl font-medium text-brand-white">
         {title}
       </summary>

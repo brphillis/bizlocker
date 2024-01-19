@@ -236,7 +236,7 @@ const ProductVariantUpsert = ({ storeId, product, availableColors }: Props) => {
                   name="name"
                   label="Variant Name"
                   placeholder="Name"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   type="text"
                   defaultValue={
                     (activeVariant as ProductVariantWithDetails)?.name || "BASE"
@@ -255,7 +255,7 @@ const ProductVariantUpsert = ({ storeId, product, availableColors }: Props) => {
                   name="color"
                   label="Color"
                   placeholder="Color"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   selections={availableColors.map((e) => {
                     return { id: e, name: e };
                   })}
@@ -275,7 +275,7 @@ const ProductVariantUpsert = ({ storeId, product, availableColors }: Props) => {
                   name="size"
                   label="Size"
                   placeholder="Size"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   type="text"
                   defaultValue={
                     (activeVariant as ProductVariantWithDetails)?.size || ""
@@ -296,7 +296,7 @@ const ProductVariantUpsert = ({ storeId, product, availableColors }: Props) => {
                     label="SKU"
                     placeholder="SKU"
                     type="text"
-                    customWidth="!w-full !max-w-full"
+                    extendContainerStyle="!w-full !max-w-full"
                     // disabled={upsertState === "edit" ? true : false}
 
                     defaultValue={
@@ -327,7 +327,7 @@ const ProductVariantUpsert = ({ storeId, product, availableColors }: Props) => {
                     label="Remaining Stock"
                     placeholder="Remaining Stock"
                     type="number"
-                    customWidth="!w-full !max-w-full"
+                    extendContainerStyle="!w-full !max-w-full"
                     defaultValue={
                       (activeVariant as ProductVariantWithDetails)?.stock || ""
                     }
@@ -345,9 +345,9 @@ const ProductVariantUpsert = ({ storeId, product, availableColors }: Props) => {
                     className="btn btn-primary flex !h-[41px] !min-h-[41px] w-[103px] items-center justify-center !rounded-sm sm:!ml-0"
                     onClick={() =>
                       navigate(
-                        `/admin/upsert/product/productStock?contentId=${
-                          (activeVariant as ProductVariantWithDetails)?.id
-                        }`
+                        `/admin/upsert/product/productStock?contentId=${(
+                          activeVariant as ProductVariantWithDetails
+                        )?.id}`,
                       )
                     }
                   >
@@ -385,7 +385,7 @@ const ProductVariantUpsert = ({ storeId, product, availableColors }: Props) => {
                   name="price"
                   label="Price"
                   placeholder="Price"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   type="number"
                   decimals={2}
                   defaultValue={
@@ -404,7 +404,7 @@ const ProductVariantUpsert = ({ storeId, product, availableColors }: Props) => {
                   name="salePrice"
                   label="Sale Price"
                   placeholder="Sale Price"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   type="number"
                   decimals={2}
                   defaultValue={
@@ -478,7 +478,7 @@ const ProductVariantUpsert = ({ storeId, product, availableColors }: Props) => {
                   name="length"
                   label="Length (cm)"
                   placeholder="Length"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   type="number"
                   defaultValue={
                     (activeVariant as ProductVariantWithDetails)?.length || ""
@@ -496,7 +496,7 @@ const ProductVariantUpsert = ({ storeId, product, availableColors }: Props) => {
                   name="width"
                   label="Width (cm)"
                   placeholder="Width"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   type="number"
                   defaultValue={
                     (activeVariant as ProductVariantWithDetails)?.width || ""
@@ -514,7 +514,7 @@ const ProductVariantUpsert = ({ storeId, product, availableColors }: Props) => {
                   name="height"
                   label="Height (cm)"
                   placeholder="Height"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   type="number"
                   defaultValue={
                     (activeVariant as ProductVariantWithDetails)?.height || ""
@@ -532,7 +532,7 @@ const ProductVariantUpsert = ({ storeId, product, availableColors }: Props) => {
                   name="weight"
                   label="Weight (kg)"
                   placeholder="Weight"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   type="number"
                   decimals={2}
                   defaultValue={

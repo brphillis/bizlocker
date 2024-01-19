@@ -96,7 +96,7 @@ const ProductSubCategoryUpsert = ({ offRouteModule }: Props) => {
                 type="text"
                 name="name"
                 placeholder="Name"
-                customWidth="w-full"
+                extendContainerStyle="w-full"
                 defaultValue={productSubCategory?.name || ""}
                 validationErrors={
                   serverValidationErrors || clientValidationErrors
@@ -108,7 +108,7 @@ const ProductSubCategoryUpsert = ({ offRouteModule }: Props) => {
                 type="number"
                 name="index"
                 placeholder="Index"
-                customWidth="w-full"
+                extendContainerStyle="w-full"
                 defaultValue={productSubCategory?.index || 0}
                 validationErrors={
                   serverValidationErrors || clientValidationErrors
@@ -123,7 +123,7 @@ const ProductSubCategoryUpsert = ({ offRouteModule }: Props) => {
                   { id: "no", name: "No" },
                 ]}
                 placeholder="Display In Navigation"
-                customWidth="w-full"
+                extendContainerStyle="w-full"
                 defaultValue={
                   productSubCategory?.displayInNavigation ? "yes" : "no"
                 }
@@ -134,7 +134,7 @@ const ProductSubCategoryUpsert = ({ offRouteModule }: Props) => {
                 label="Category"
                 selections={productCategories}
                 placeholder="Parent Category"
-                customWidth="w-full"
+                extendContainerStyle="w-full"
                 defaultValue={productSubCategory.productCategoryId?.toString()}
               />
 

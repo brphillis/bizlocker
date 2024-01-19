@@ -1,6 +1,6 @@
 import type { BlockOptions } from "@prisma/client";
 import type { BlockMasterOptions } from "~/utility/blockMaster/types";
-import ItemColorInput from "../../FieldComponents/Items/ItemColorInput";
+import ItemColorInput from "../_FieldComponents/ItemColorInput";
 
 type Props = {
   selectedItems: ContentSelection[];
@@ -20,7 +20,7 @@ const Colors = ({
       </summary>
       <div className="flex max-w-full flex-wrap justify-start !gap-3 px-3 pb-3 max-md:justify-center max-md:px-0">
         <ItemColorInput
-          title="Item Colors"
+          title="Primary Colors"
           formName="itemColors"
           selectedItems={selectedItems}
           valueName="Color"

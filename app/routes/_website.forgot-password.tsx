@@ -66,7 +66,7 @@ export default function ForgotPassword() {
   }, [success, navigate]);
 
   return (
-    <div className="relative flex h-full min-h-[calc(100vh-64px)] w-full items-center justify-center">
+    <div className="relative flex h-full min-h-[calc(100dvh-64px)] w-full items-center justify-center">
       <div
         style={{
           backgroundImage: `url(${background})`,

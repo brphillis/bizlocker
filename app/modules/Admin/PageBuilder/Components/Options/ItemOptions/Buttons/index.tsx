@@ -2,9 +2,10 @@ import type { BlockOptions } from "@prisma/client";
 import type { BlockMasterOptions } from "~/utility/blockMaster/types";
 import { buttonStyleSelectValues } from "../../Values/buttons";
 import { flexAlignSelectValues } from "../../Values/basic";
-import ItemSelectInput from "../../FieldComponents/Items/ItemSelectInput";
-import ItemInput from "../../FieldComponents/Items/ItemInput";
-import ItemColorInput from "../../FieldComponents/Items/ItemColorInput";
+import ItemSelectInput from "../_FieldComponents/ItemSelectInput";
+import ItemInput from "../_FieldComponents/ItemInput";
+import ItemColorInput from "../_FieldComponents/ItemColorInput";
+import Divider from "~/components/Filter/ProductFilterSideBar/Divider";
 
 type Props = {
   selectedItems: ContentSelection[];
@@ -24,7 +25,7 @@ const Buttons = ({
       </summary>
       <div className="flex max-w-full flex-wrap justify-start !gap-3 px-3 pb-3 max-md:justify-center max-md:px-0">
         <ItemSelectInput
-          title="Align Buttons"
+          title="Align"
           formName="itemButtonAlign"
           selectedItems={selectedItems}
           valueName="Align Buttons"
@@ -33,8 +34,20 @@ const Buttons = ({
           selections={flexAlignSelectValues}
         />
 
+        {Object.keys(selectedBlockOptions || {}).some(
+          (key) => key.startsWith("itemBackground") && key.endsWith("Primary"),
+        ) && (
+          <>
+            <Divider color="white" />
+
+            <div className="pl-1 text-sm font-medium text-brand-white">
+              Primary Button
+            </div>
+          </>
+        )}
+
         <ItemSelectInput
-          title="Primary Buttons"
+          title="Primary Style"
           formName="itemButtonsPrimary"
           selectedItems={selectedItems}
           valueName="Primary Button"
@@ -44,7 +57,7 @@ const Buttons = ({
         />
 
         <ItemInput
-          title="Primary Button Labels"
+          title="Primary Labels"
           formName="itemButtonLabelsPrimary"
           selectedItems={selectedItems}
           valueName="Label"
@@ -53,7 +66,7 @@ const Buttons = ({
         />
 
         <ItemColorInput
-          title="Primary Button Label Colors"
+          title="Primary Label Colors"
           formName="itemButtonLabelColorsPrimary"
           selectedItems={selectedItems}
           valueName="Label Color"
@@ -63,7 +76,7 @@ const Buttons = ({
         />
 
         <ItemColorInput
-          title="Primary Button BG Colors"
+          title="Primary BG Colors"
           formName="itemButtonColorsPrimary"
           selectedItems={selectedItems}
           valueName="BG Color"
@@ -73,7 +86,7 @@ const Buttons = ({
         />
 
         <ItemColorInput
-          title="Primary Button Border Colors"
+          title="Primary Border Colors"
           formName="itemButtonBorderColorsPrimary"
           selectedItems={selectedItems}
           valueName="Border Color"
@@ -85,7 +98,7 @@ const Buttons = ({
         />
 
         <ItemInput
-          title="Primary Button Links"
+          title="Primary Links"
           formName="itemButtonLinksPrimary"
           selectedItems={selectedItems}
           valueName="Button Link"
@@ -93,18 +106,31 @@ const Buttons = ({
           defaultValues={defaultValues?.itemButtonLinksPrimary}
         />
 
+        {Object.keys(selectedBlockOptions || {}).some(
+          (key) =>
+            key.startsWith("itemBackground") && key.endsWith("Secondary"),
+        ) && (
+          <>
+            <Divider color="white" />
+
+            <div className="pl-1 text-sm font-medium text-brand-white">
+              Secondary Button
+            </div>
+          </>
+        )}
+
         <ItemSelectInput
-          title="Secondary Buttons"
+          title="Secondary Style"
           formName="itemButtonsSecondary"
           selectedItems={selectedItems}
-          valueName="Secondary Button"
+          valueName="Secondary Style"
           blockMasterOption={selectedBlockOptions?.itemButtonsSecondary}
           defaultValues={defaultValues?.itemButtonsSecondary}
           selections={buttonStyleSelectValues}
         />
 
         <ItemInput
-          title="Secondary Button Labels"
+          title="Secondary Labels"
           formName="itemButtonLabelsSecondary"
           selectedItems={selectedItems}
           valueName="Label"
@@ -113,7 +139,7 @@ const Buttons = ({
         />
 
         <ItemColorInput
-          title="Secondary Button Label Colors"
+          title="Secondary Label Colors"
           formName="itemButtonLabelColorsSecondary"
           selectedItems={selectedItems}
           valueName="Label Color"
@@ -125,7 +151,7 @@ const Buttons = ({
         />
 
         <ItemColorInput
-          title="Secondary Button BG Colors"
+          title="Secondary BG Colors"
           formName="itemButtonColorsSecondary"
           selectedItems={selectedItems}
           valueName="BG Color"
@@ -135,7 +161,7 @@ const Buttons = ({
         />
 
         <ItemColorInput
-          title="Secondary Button Border Colors"
+          title="Secondary Border Colors"
           formName="itemButtonBorderColorsSecondary"
           selectedItems={selectedItems}
           valueName="Border Color"
@@ -147,7 +173,7 @@ const Buttons = ({
         />
 
         <ItemInput
-          title="Secondary Button Links"
+          title="Secondary Links"
           formName="itemButtonLinksSecondary"
           selectedItems={selectedItems}
           valueName="Button Link"

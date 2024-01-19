@@ -4,7 +4,7 @@ import type { ValidationErrors } from "~/utility/validate";
 
 type Props = {
   id?: string;
-  customWidth?: string;
+  extendContainerStyle?: string;
   defaultValues?: SelectValue[] | null;
   extendStyle?: string;
   label: string;
@@ -17,7 +17,7 @@ type Props = {
 
 const BasicMultiSelect = ({
   id,
-  customWidth,
+  extendContainerStyle,
   defaultValues,
   extendStyle,
   label,
@@ -45,9 +45,7 @@ const BasicMultiSelect = ({
 
   return (
     <div
-      className={`form-control relative max-md:w-full ${
-        customWidth ? customWidth : "w-[215px]"
-      }`}
+      className={`form-control relative max-md:w-full w-[215px] ${extendContainerStyle}`}
     >
       <label className="label">
         <span

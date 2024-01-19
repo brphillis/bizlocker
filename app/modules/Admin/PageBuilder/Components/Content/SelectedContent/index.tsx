@@ -26,7 +26,7 @@ const SelectedContent = ({
     <>
       {selectedItems && selectedItems.length > 0 && (
         <div className="py-6">
-          <div className="ml-3 pb-3 text-brand-white">
+          <div className="pl-1 pb-3 text-brand-white">
             Selected Items{" "}
             {"( " +
               selectedItemsTotal +

@@ -58,7 +58,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   const { formErrors, formEntries } = validateForm(
     await request.formData(),
-    validate
+    validate,
   );
 
   const { firstName, lastName, dateofbirth, phoneNumber } = formEntries;
@@ -110,7 +110,7 @@ const Account = () => {
           name="firstName"
           label="First Name"
           placeholder="First Name"
-          customWidth="w-full"
+          extendContainerStyle="w-full"
           extendStyle="input-bordered"
           type="text"
           defaultValue={userDetails?.firstName || undefined}
@@ -121,7 +121,7 @@ const Account = () => {
           name="lastName"
           label="Last Name"
           placeholder="Last Name"
-          customWidth="w-full"
+          extendContainerStyle="w-full"
           extendStyle="input-bordered"
           type="text"
           defaultValue={userDetails?.lastName || undefined}
@@ -132,7 +132,7 @@ const Account = () => {
           name="phoneNumber"
           label="Phone Number"
           placeholder="Phone Number"
-          customWidth="w-full"
+          extendContainerStyle="w-full"
           extendStyle="input-bordered"
           type="text"
           defaultValue={userDetails?.phoneNumber || undefined}
@@ -157,7 +157,7 @@ const Account = () => {
           name="dateofbirth"
           label="Date of Birth"
           placeholder="Date of Birth"
-          customWidth="w-full"
+          extendContainerStyle="w-full"
           extendStyle="input-bordered"
           type="date"
           defaultValue={

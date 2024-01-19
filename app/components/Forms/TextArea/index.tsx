@@ -2,7 +2,7 @@ import type { ValidationErrors } from "~/utility/validate";
 import ToolTip from "~/components/Indicators/ToolTip";
 
 type Props = {
-  customWidth?: string;
+  extendContainerStyle?: string;
   defaultValue?: any;
   disabled?: boolean;
   id?: string;
@@ -16,7 +16,7 @@ type Props = {
 };
 
 const BasicTextArea = ({
-  customWidth,
+  extendContainerStyle,
   defaultValue,
   disabled,
   id,
@@ -31,7 +31,7 @@ const BasicTextArea = ({
   return (
     <div
       className={`form-control relative max-md:w-full ${
-        customWidth ? customWidth : "w-[215px]"
+        extendContainerStyle ? extendContainerStyle : "w-[215px]"
       }`}
     >
       <label className="label">

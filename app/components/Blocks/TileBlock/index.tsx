@@ -19,12 +19,12 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
   const options = ArrayOptions[0];
 
   const {
-    backgroundBrightness,
-    backgroundColor,
-    backgroundPatternColor,
-    backgroundPatternName,
-    backgroundPatternSize,
-    backgroundWidth,
+    backgroundBrightnessPrimary,
+    backgroundColorPrimary,
+    backgroundPatternColorPrimary,
+    backgroundPatternNamePrimary,
+    backgroundPatternSizePrimary,
+    backgroundWidthPrimary,
     columns,
     columnsMobile,
     itemBackgroundColorsPrimary,
@@ -48,6 +48,15 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
     <div
       className={`relative grid h-max place-items-center gap-6 max-md:gap-3 max-md:px-3 
       ${!columns || (columns && columns <= 3) ? "py-6" : "py-3"}
+      ${
+        backgroundWidthPrimary !== "w-screen"
+          ? backgroundColorPrimary
+            ? columns && columns <= 3
+              ? "px-6"
+              : "py-3"
+            : ""
+          : ""
+      }
       ${margin} ${padding} 
       ${colsMobile || "max-md:!grid-cols-2"}`}
       style={{
@@ -57,12 +66,12 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
       }}
     >
       <PatternBackground
-        name={backgroundPatternName as BackgroundPatternName}
-        backgroundColor={getThemeColorValueByName(backgroundColor)}
-        patternColor={getThemeColorValueByName(backgroundPatternColor)}
-        patternSize={backgroundPatternSize || 32}
-        screenWidth={backgroundWidth === "w-screen" ? true : false}
-        brightness={backgroundBrightness || undefined}
+        name={backgroundPatternNamePrimary as BackgroundPatternName}
+        backgroundColor={getThemeColorValueByName(backgroundColorPrimary)}
+        patternColor={getThemeColorValueByName(backgroundPatternColorPrimary)}
+        patternSize={backgroundPatternSizePrimary || 32}
+        screenWidth={backgroundWidthPrimary === "w-screen" ? true : false}
+        brightness={backgroundBrightnessPrimary || undefined}
       />
 
       {joinedContent?.map((contentData: any, i: number) => {

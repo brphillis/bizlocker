@@ -6,7 +6,7 @@ type Props = {
 
 const AuthPageWrapper = ({ children }: Props) => {
   return (
-    <div className="relative flex h-[100dvh] min-h-[calc(100vh-64px)] w-full flex-col items-center justify-center">
+    <div className="relative flex h-[100dvh] min-h-[calc(100dvh-64px)] w-full flex-col items-center justify-center">
       <div
         style={{
           backgroundImage: `url(${background})`,

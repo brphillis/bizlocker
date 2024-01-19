@@ -94,7 +94,7 @@ const ArticleCategoryUpsert = ({ offRouteModule }: Props) => {
               name="name"
               type="text"
               placeholder="Name"
-              customWidth="w-full"
+              extendContainerStyle="w-full"
               defaultValue={articleCategory?.name || undefined}
               validationErrors={
                 serverValidationErrors || clientValidationErrors

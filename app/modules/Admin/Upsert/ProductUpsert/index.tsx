@@ -135,7 +135,7 @@ const UpsertProduct = ({ offRouteModule }: Props) => {
                         type="text"
                         name="name"
                         placeholder="Name"
-                        customWidth="w-full"
+                        extendContainerStyle="w-full"
                         defaultValue={product?.name}
                         validationErrors={
                           clientValidationErrors || serverValidationErrors
@@ -146,7 +146,7 @@ const UpsertProduct = ({ offRouteModule }: Props) => {
                         name="brand"
                         label="Brand"
                         placeholder="Select Brand"
-                        customWidth="w-full"
+                        extendContainerStyle="w-full"
                         selections={brands}
                         defaultValue={product?.brandId?.toString() || "1"}
                         validationErrors={
@@ -157,14 +157,14 @@ const UpsertProduct = ({ offRouteModule }: Props) => {
                       <SelectGender
                         defaultValue={product?.gender}
                         label="Product is Gendered?"
-                        customWidth="w-full"
+                        extendContainerStyle="w-full"
                       />
 
                       <BasicSelect
                         name="promotion"
                         label="Promotion"
                         placeholder="Select Promotion"
-                        customWidth="w-full"
+                        extendContainerStyle="w-full"
                         selections={promotions}
                         defaultValue={product?.promotionId?.toString()}
                       />
@@ -172,7 +172,7 @@ const UpsertProduct = ({ offRouteModule }: Props) => {
                       <BasicMultiSelect
                         name="productSubCategories"
                         label="Categories"
-                        customWidth="w-full"
+                        extendContainerStyle="w-full"
                         extendStyle="!h-[150px]"
                         selections={productSubCategories}
                         defaultValues={product?.productSubCategories}
@@ -254,7 +254,7 @@ const UpsertProduct = ({ offRouteModule }: Props) => {
                     type="text"
                     name="infoURL"
                     placeholder="Info URL"
-                    customWidth="w-full"
+                    extendContainerStyle="w-full"
                     defaultValue={product?.infoURL}
                     validationErrors={
                       clientValidationErrors || serverValidationErrors

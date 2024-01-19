@@ -74,9 +74,6 @@ export const PageBuilderModule = () => {
   }, [actionPreview, actionBlocks, blocks, currentPreviewPage, previewPage]);
 
   useEffect(() => {
-    if (updateSuccess) {
-      reset();
-    }
     setLoading(false);
   }, [updateSuccess]);
 

@@ -121,7 +121,7 @@ const ImageUpsert = ({ offRouteModule }: Props) => {
                 label="Title"
                 name="altText"
                 placeholder="Title"
-                customWidth="w-full"
+                extendContainerStyle="w-full"
                 defaultValue={altText || undefined}
                 type="text"
                 validationErrors={

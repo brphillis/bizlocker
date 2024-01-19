@@ -19,8 +19,8 @@ const CarouselBlock = ({ content, options: ArrayOptions }: Props) => {
     width,
     margin,
     padding,
-    backgroundColor,
-    backgroundDisplay,
+    backgroundColorPrimary,
+    backgroundDisplayPrimary,
     itemTitles,
   } = ArrayOptions?.[0] || {};
 
@@ -32,7 +32,11 @@ const CarouselBlock = ({ content, options: ArrayOptions }: Props) => {
           ${height ? height : "h-[540px]"} 
           ${heightMobile ? heightMobile : "max-md:h-max"} 
           ${width ? width : "w-screen"}
-          ${backgroundColor && backgroundDisplay && "my-6 max-md:my-0"}`}
+          ${
+            backgroundColorPrimary &&
+            backgroundDisplayPrimary &&
+            "my-6 max-md:my-0"
+          }`}
           SEOWords={itemTitles}
         />
       }

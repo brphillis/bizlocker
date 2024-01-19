@@ -3,9 +3,10 @@ import type { BlockMasterOptions } from "~/utility/blockMaster/types";
 import { backgroundPatternSelectValues } from "../../Values/background";
 import { blockWidthSelectValues } from "../../Values/width";
 import { containerDisplaySelectValues } from "../../Values/basic";
-import ItemSelectInput from "../../FieldComponents/Items/ItemSelectInput";
-import ItemColorInput from "../../FieldComponents/Items/ItemColorInput";
-import ItemInput from "../../FieldComponents/Items/ItemInput";
+import ItemSelectInput from "../_FieldComponents/ItemSelectInput";
+import ItemColorInput from "../_FieldComponents/ItemColorInput";
+import ItemInput from "../_FieldComponents/ItemInput";
+import Divider from "~/components/Filter/ProductFilterSideBar/Divider";
 
 type Props = {
   selectedItems: ContentSelection[];
@@ -24,11 +25,19 @@ const Backgrounds = ({
         Backgrounds
       </summary>
       <div className="flex max-w-full flex-wrap justify-start !gap-3 px-3 pb-3 max-md:justify-center max-md:px-0">
+        {Object.keys(selectedBlockOptions || {}).some(
+          (key) => key.startsWith("itemBackground") && key.endsWith("Primary"),
+        ) && (
+          <div className="pt-3 pl-1 text-sm font-medium text-brand-white">
+            Primary Background
+          </div>
+        )}
+
         <ItemSelectInput
-          title="Primary Background Display"
+          title="Background Display"
           formName="itemBackgroundDisplaysPrimary"
           selectedItems={selectedItems}
-          valueName="BG Display"
+          valueName="Display"
           blockMasterOption={
             selectedBlockOptions?.itemBackgroundDisplaysPrimary
           }
@@ -37,7 +46,7 @@ const Backgrounds = ({
         />
 
         <ItemColorInput
-          title="Primary Background Colors"
+          title="Colors"
           formName="itemBackgroundColorsPrimary"
           selectedItems={selectedItems}
           valueName="Color"
@@ -47,20 +56,20 @@ const Backgrounds = ({
         />
 
         <ItemSelectInput
-          title="Primary Background Width"
+          title="Width"
           formName="itemBackgroundWidthsPrimary"
           selectedItems={selectedItems}
-          valueName="BG Width"
+          valueName="Width"
           blockMasterOption={selectedBlockOptions?.itemBackgroundWidthsPrimary}
           defaultValues={defaultValues?.itemBackgroundWidthsPrimary}
           selections={blockWidthSelectValues}
         />
 
         <ItemInput
-          title="Primary Background Brightness"
+          title="Brightness"
           formName="itemBackgroundBrightnessesPrimary"
           selectedItems={selectedItems}
-          valueName="BG Brightness"
+          valueName="Brightness"
           type="number"
           blockMasterOption={
             selectedBlockOptions?.itemBackgroundBrightnessesPrimary
@@ -69,10 +78,10 @@ const Backgrounds = ({
         />
 
         <ItemSelectInput
-          title="Primary Background Pattern"
+          title="Pattern"
           formName="itemBackgroundPatternNamesPrimary"
           selectedItems={selectedItems}
-          valueName="BG Pattern"
+          valueName="Pattern"
           blockMasterOption={
             selectedBlockOptions?.itemBackgroundPatternNamesPrimary
           }
@@ -81,10 +90,10 @@ const Backgrounds = ({
         />
 
         <ItemColorInput
-          title="Primary Background Pattern Color"
+          title="Pattern Color"
           formName="itemBackgroundPatternColorsPrimary"
           selectedItems={selectedItems}
-          valueName="BG Pattern Color"
+          valueName="Pattern Color"
           blockMasterOption={
             selectedBlockOptions?.itemBackgroundPatternColorsPrimary
           }
@@ -93,10 +102,10 @@ const Backgrounds = ({
         />
 
         <ItemInput
-          title="Primary Background Pattern Opacity"
+          title="Pattern Opacity"
           formName="itemBackgroundPatternOpacitiesPrimary"
           selectedItems={selectedItems}
-          valueName="BG Pattern Opacity"
+          valueName="Pattern Opacity"
           type="number"
           blockMasterOption={
             selectedBlockOptions?.itemBackgroundPatternOpacitiesPrimary
@@ -105,10 +114,10 @@ const Backgrounds = ({
         />
 
         <ItemInput
-          title="Primary Background Pattern Size"
+          title="Pattern Size"
           formName="itemBackgroundPatternSizesPrimary"
           selectedItems={selectedItems}
-          valueName="BG Pattern Size"
+          valueName="Pattern Size"
           type="number"
           blockMasterOption={
             selectedBlockOptions?.itemBackgroundPatternSizesPrimary
@@ -116,8 +125,21 @@ const Backgrounds = ({
           defaultValues={defaultValues?.itemBackgroundPatternSizesPrimary}
         />
 
+        {Object.keys(selectedBlockOptions || {}).some(
+          (key) =>
+            key.startsWith("itemBackground") && key.endsWith("Secondary"),
+        ) && (
+          <>
+            <Divider color="white" />
+
+            <div className="pl-1 text-sm font-medium text-brand-white">
+              Secondary Background
+            </div>
+          </>
+        )}
+
         <ItemSelectInput
-          title="Secondary Background Display"
+          title="Display"
           formName="itemBackgroundDisplaysSecondary"
           selectedItems={selectedItems}
           valueName="BG Display"
@@ -129,7 +151,7 @@ const Backgrounds = ({
         />
 
         <ItemColorInput
-          title="Secondary Background Colors"
+          title="Colors"
           formName="itemBackgroundColorsSecondary"
           selectedItems={selectedItems}
           valueName="Color"
@@ -141,10 +163,10 @@ const Backgrounds = ({
         />
 
         <ItemSelectInput
-          title="Secondary Background Width"
+          title="Width"
           formName="itemBackgroundWidthsSecondary"
           selectedItems={selectedItems}
-          valueName="BG Width"
+          valueName="Width"
           blockMasterOption={
             selectedBlockOptions?.itemBackgroundWidthsSecondary
           }
@@ -153,10 +175,10 @@ const Backgrounds = ({
         />
 
         <ItemInput
-          title="Secondary Background Brightness"
+          title="Brightness"
           formName="itemBackgroundBrightnessesSecondary"
           selectedItems={selectedItems}
-          valueName="BG Brightness"
+          valueName="Brightness"
           type="number"
           blockMasterOption={
             selectedBlockOptions?.itemBackgroundBrightnessesSecondary
@@ -165,10 +187,10 @@ const Backgrounds = ({
         />
 
         <ItemSelectInput
-          title="Secondary Background Pattern"
+          title="Pattern"
           formName="itemBackgroundPatternNamesSecondary"
           selectedItems={selectedItems}
-          valueName="BG Pattern"
+          valueName="Pattern"
           blockMasterOption={
             selectedBlockOptions?.itemBackgroundPatternNamesSecondary
           }
@@ -177,10 +199,10 @@ const Backgrounds = ({
         />
 
         <ItemColorInput
-          title="Secondary Background Pattern Color"
+          title="Pattern Color"
           formName="itemBackgroundPatternColorsSecondary"
           selectedItems={selectedItems}
-          valueName="BG Pattern Color"
+          valueName="Pattern Color"
           blockMasterOption={
             selectedBlockOptions?.itemBackgroundPatternColorsSecondary
           }
@@ -189,10 +211,10 @@ const Backgrounds = ({
         />
 
         <ItemInput
-          title="Secondary Background Pattern Opacity"
+          title="Pattern Opacity"
           formName="itemBackgroundPatternOpacitiesSecondary"
           selectedItems={selectedItems}
-          valueName="BG Pattern Opacity"
+          valueName="Pattern Opacity"
           type="number"
           blockMasterOption={
             selectedBlockOptions?.itemBackgroundPatternOpacitiesSecondary
@@ -201,10 +223,10 @@ const Backgrounds = ({
         />
 
         <ItemInput
-          title="Secondary Background Pattern Size"
+          title="Pattern Size"
           formName="itemBackgroundPatternSizesSecondary"
           selectedItems={selectedItems}
-          valueName="BG Pattern Size"
+          valueName="Pattern Size"
           type="number"
           blockMasterOption={
             selectedBlockOptions?.itemBackgroundPatternSizesSecondary

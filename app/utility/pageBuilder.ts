@@ -56,7 +56,7 @@ export const includeAllPageTypes = (excludedPages?: PageType[]) => {
 // Checks if block has connection to a page
 export const blockHasPageConnection = (blockToCheck: any): boolean => {
   return pageTypes.some(
-    (type) => !blockToCheck?.[type] || blockToCheck[type].length > 0
+    (type) => !blockToCheck?.[type] || blockToCheck[type].length > 0,
   );
 };
 
@@ -65,20 +65,20 @@ export const getFormBlockOptions = (form: {
   [k: string]: FormDataEntryValue;
 }): BlockOptions => {
   const {
-    backgroundBrightness,
-    backgroundBrightnessSecondary,
-    backgroundColor,
+    backgroundBrightnessPrimary,
+    backgroundColorPrimary,
+    backgroundDisplayPrimary,
+    backgroundPatternColorPrimary,
+    backgroundPatternNamePrimary,
+    backgroundPatternOpacityPrimary,
+    backgroundPatternSizePrimary,
+    backgroundWidthPrimary,
     backgroundColorSecondary,
-    backgroundDisplay,
-    backgroundPatternColor,
+    backgroundBrightnessSecondary,
     backgroundPatternColorSecondary,
-    backgroundPatternName,
     backgroundPatternNameSecondary,
-    backgroundPatternOpacity,
     backgroundPatternOpacitySecondary,
-    backgroundPatternSize,
     backgroundPatternSizeSecondary,
-    backgroundWidth,
     backgroundWidthSecondary,
     borderColor,
     borderDisplay,
@@ -185,33 +185,54 @@ export const getFormBlockOptions = (form: {
     itemBackgroundPatternSizesPrimary,
     itemBackgroundBrightnessesPrimary,
     itemBackgroundPatternOpacitiesPrimary,
+
+    itemMarginTop,
+    itemMarginTopMobile,
+    itemMarginRight,
+    itemMarginRightMobile,
+    itemMarginBottom,
+    itemMarginBottomMobile,
+    itemMarginLeft,
+    itemMarginLeftMobile,
+    itemPaddingTop,
+    itemPaddingTopMobile,
+    itemPaddingRight,
+    itemPaddingRightMobile,
+    itemPaddingBottom,
+    itemPaddingBottomMobile,
+    itemPaddingLeft,
+    itemPaddingLeftMobile,
   } = form;
 
   const blockOptions = {
     speed: speed ? Number(speed) : undefined,
     autoplay: Number(autoplay) === 1 ? true : undefined,
-    backgroundBrightness: backgroundBrightness
-      ? parseFloat(backgroundBrightness as string)
+    backgroundBrightnessPrimary: backgroundBrightnessPrimary
+      ? parseFloat(backgroundBrightnessPrimary as string)
       : undefined,
     backgroundBrightnessSecondary: backgroundBrightnessSecondary
       ? parseFloat(backgroundBrightnessSecondary as string)
       : undefined,
-    backgroundColor: backgroundColor ? (backgroundColor as string) : undefined,
-    backgroundDisplay: backgroundDisplay
-      ? (backgroundDisplay as string)
+    backgroundColorPrimary: backgroundColorPrimary
+      ? (backgroundColorPrimary as string)
       : undefined,
-    backgroundWidth: backgroundWidth ? (backgroundWidth as string) : undefined,
-    backgroundPatternName: backgroundPatternName
-      ? (backgroundPatternName as string)
+    backgroundDisplayPrimary: backgroundDisplayPrimary
+      ? (backgroundDisplayPrimary as string)
       : undefined,
-    backgroundPatternColor: backgroundPatternColor
-      ? (backgroundPatternColor as string)
+    backgroundWidthPrimary: backgroundWidthPrimary
+      ? (backgroundWidthPrimary as string)
       : undefined,
-    backgroundPatternOpacity: backgroundPatternOpacity
-      ? parseFloat(backgroundPatternOpacity as string)
+    backgroundPatternNamePrimary: backgroundPatternNamePrimary
+      ? (backgroundPatternNamePrimary as string)
       : undefined,
-    backgroundPatternSize: backgroundPatternSize
-      ? parseInt(backgroundPatternSize as string)
+    backgroundPatternColorPrimary: backgroundPatternColorPrimary
+      ? (backgroundPatternColorPrimary as string)
+      : undefined,
+    backgroundPatternOpacityPrimary: backgroundPatternOpacityPrimary
+      ? parseFloat(backgroundPatternOpacityPrimary as string)
+      : undefined,
+    backgroundPatternSizePrimary: backgroundPatternSizePrimary
+      ? parseInt(backgroundPatternSizePrimary as string)
       : undefined,
     backgroundColorSecondary: backgroundColorSecondary
       ? (backgroundColorSecondary as string)
@@ -244,6 +265,54 @@ export const getFormBlockOptions = (form: {
     flipX: flipX ? (flipX as string) : undefined,
     height: height ? (height as string) : undefined,
     heightMobile: heightMobile ? (heightMobile as string) : undefined,
+    itemPaddingLeftMobile: itemPaddingLeftMobile
+      ? JSON.parse(itemPaddingLeftMobile as string)
+      : undefined,
+    itemPaddingLeft: itemPaddingLeft
+      ? JSON.parse(itemPaddingLeft as string)
+      : undefined,
+    itemPaddingBottomMobile: itemPaddingBottomMobile
+      ? JSON.parse(itemPaddingBottomMobile as string)
+      : undefined,
+    itemPaddingBottom: itemPaddingBottom
+      ? JSON.parse(itemPaddingBottom as string)
+      : undefined,
+    itemPaddingRightMobile: itemPaddingRightMobile
+      ? JSON.parse(itemPaddingRightMobile as string)
+      : undefined,
+    itemPaddingRight: itemPaddingRight
+      ? JSON.parse(itemPaddingRight as string)
+      : undefined,
+    itemPaddingTopMobile: itemPaddingTopMobile
+      ? JSON.parse(itemPaddingTopMobile as string)
+      : undefined,
+    itemPaddingTop: itemPaddingTop
+      ? JSON.parse(itemPaddingTop as string)
+      : undefined,
+    itemMarginLeftMobile: itemMarginLeftMobile
+      ? JSON.parse(itemMarginLeftMobile as string)
+      : undefined,
+    itemMarginLeft: itemMarginLeft
+      ? JSON.parse(itemMarginLeft as string)
+      : undefined,
+    itemMarginBottomMobile: itemMarginBottomMobile
+      ? JSON.parse(itemMarginBottomMobile as string)
+      : undefined,
+    itemMarginBottom: itemMarginBottom
+      ? JSON.parse(itemMarginBottom as string)
+      : undefined,
+    itemMarginRightMobile: itemMarginRightMobile
+      ? JSON.parse(itemMarginRightMobile as string)
+      : undefined,
+    itemMarginRight: itemMarginRight
+      ? JSON.parse(itemMarginRight as string)
+      : undefined,
+    itemMarginTop: itemMarginTop
+      ? JSON.parse(itemMarginTop as string)
+      : undefined,
+    itemMarginTopMobile: itemMarginTopMobile
+      ? JSON.parse(itemMarginTopMobile as string)
+      : undefined,
     itemLinks: itemLinks ? JSON.parse(itemLinks as string) : undefined,
     itemTitles: itemTitles ? JSON.parse(itemTitles as string) : undefined,
     itemTitleSizes: itemTitleSizes
@@ -486,7 +555,7 @@ export const buildNewBlockData = (
   blockName: BlockName,
   form: {
     [k: string]: FormDataEntryValue;
-  }
+  },
 ) => {
   let newData: any = {};
 
@@ -501,7 +570,7 @@ export const buildNewBlockData = (
       // in newData we set the keys recieved from getBlockContentTypes
       blockContentTypes?.map(
         (contentTypeName) =>
-          (newData[contentTypeName] = hasMultipleContent ? [] : undefined)
+          (newData[contentTypeName] = hasMultipleContent ? [] : undefined),
       );
 
       let { contentSelection } = form;
@@ -519,7 +588,7 @@ export const buildNewBlockData = (
             }
             return null;
           });
-        }
+        },
       );
     }
     return null;
@@ -531,7 +600,7 @@ export const buildNewBlockData = (
 // returns content data that a user searches for in the pagebuilder
 export const searchContentData = async (
   contentType: BlockContentType,
-  name?: string
+  name?: string,
 ) => {
   const formData = new FormData();
   if (name) {
@@ -546,7 +615,7 @@ export const searchContentData = async (
   switch (contentType) {
     case "promotion":
       const { promotions } = await searchPromotions(
-        Object.fromEntries(formData)
+        Object.fromEntries(formData),
       );
       searchResults = promotions;
 

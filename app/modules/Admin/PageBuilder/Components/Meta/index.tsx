@@ -6,7 +6,7 @@ import type { Page } from "~/models/pageBuilder.server";
 import type { PageType } from "~/utility/pageBuilder";
 import ColorPicker from "~/components/Forms/ColorPicker";
 import IsActiveToggle from "~/components/Forms/Toggle/IsActiveToggle";
-import BasicTextArea from "~/components/Forms/TextArea/BasicInput";
+import BasicTextArea from "~/components/Forms/TextArea";
 import BasicButton from "~/components/Buttons/BasicButton";
 
 type Props = {
@@ -70,14 +70,14 @@ const Meta = ({
       id="PageSettingsContainer"
       className="relative flex w-full flex-col items-center gap-6 max-md:px-3"
     >
-      <div className="flex flex-col gap-3 items-start pt-3">
+      <div className="flex flex-col gap-3 pt-3 w-full items-center px-3">
         {id === "add" && (
           <div className="text-brand-white text-center w-full">Add a Page</div>
         )}
 
         <BasicInput
           id="PageMetaTitle"
-          customWidth="w-[320px] max-md:w-full"
+          extendContainerStyle="w-[320px] max-md:w-full"
           defaultValue={currentVersion?.title}
           label="Title"
           labelStyle="text-brand-white"
@@ -88,9 +88,8 @@ const Meta = ({
 
         <ColorPicker
           id="PageBackgroundColor"
-          customWidth="w-[320px] max-md:w-full"
+          extendStyle="w-[320px] max-md:w-full"
           defaultValue={currentVersion?.backgroundColor || undefined}
-          extendStyle="max-md:!px-0"
           formName="backgroundColor"
           label="Background Color"
           type="bg"
@@ -103,16 +102,14 @@ const Meta = ({
           placeholder="Description"
           defaultValue={currentVersion?.description}
           labelStyle="text-brand-white"
-          customWidth={
-            pageType === "article" ? "w-[320px] max-md:w-full" : "w-full"
-          }
+          extendContainerStyle="w-full px-2 max-md:px-0"
           extendStyle="h-[82px]"
         />
 
         {pageType === "article" && (
           <BasicMultiSelect
             id="PageArticleCategories"
-            customWidth="w-[320px]"
+            extendContainerStyle="w-[320px]"
             defaultValues={(currentVersion as any)?.articleCategories}
             label="Categories"
             labelStyle="text-brand-white"

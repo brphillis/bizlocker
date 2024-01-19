@@ -5,12 +5,12 @@ import type {
   Promotion,
   Store,
 } from "@prisma/client";
-import type { BlockContentType, BlockName } from "~/utility/blockMaster/types";
-import { capitalizeFirst } from "~/helpers/stringHelpers";
-import SquareIconButton from "~/components/Buttons/SquareIconButton";
+import type { BlockContentType } from "~/utility/blockMaster/types";
+import React from "react";
+import ContentCard from "../SelectedContent/ContentCard";
+import { useNavigate } from "@remix-run/react";
 
 type Props = {
-  selectedBlock: BlockName | undefined;
   setSelectedItems: Function;
   searchResults: Campaign[] | Promotion[] | Product[] | Brand[];
   contentType: BlockContentType | undefined;
@@ -19,19 +19,22 @@ type Props = {
 
 const ResultsTable = ({
   setSelectedItems,
-  selectedBlock,
   searchResults,
   contentType,
   selectedItems,
 }: Props) => {
+  const navigate = useNavigate();
+
   const selectItems = (
     type: BlockContentType,
     contentId: number,
-    name: string
+    name: string,
   ) => {
     const itemExists = selectedItems.some(
       (item) =>
-        item.type === type && item.contentId === contentId && item.name === name
+        item.type === type &&
+        item.contentId === contentId &&
+        item.name === name,
     );
 
     if (!itemExists) {
@@ -63,57 +66,39 @@ const ResultsTable = ({
   return (
     <>
       {shouldDisplay() && (
-        <div className="py-6">
-          <div className="ml-3 pb-3">Results</div>
+        <div className="pt-6">
+          <div className="pl-1 pb-3 text-brand-white">Results</div>
 
           {searchResults && searchResults.length === 0 && (
-            <div className="ml-6 pt-6">No Results</div>
+            <div className="ml-6 py-3 text-brand-white">No Results</div>
           )}
 
           <div className="flex flex-col gap-3">
             {contentType &&
               searchResults?.map(
                 (
-                  { name }: Promotion | Campaign | Product | Brand | Store,
-                  index: number
+                  { id, name }: Promotion | Campaign | Product | Brand | Store,
+                  index: number,
                 ) => {
                   return (
-                    <div
-                      key={"selectedContent_" + name + index}
-                      className="flex cursor-pointer items-center justify-between rounded-sm bg-brand-white/20 p-3 hover:scale-[1.005]"
-                      onClick={() => {
-                        selectItems(contentType, searchResults[index].id, name);
-                      }}
-                    >
-                      <div>{name && capitalizeFirst(name)}</div>
-                      <div className="flex items-center gap-3">
-                        <SquareIconButton
-                          iconName="IoSearch"
-                          size="small"
-                          color="primary"
-                          onClick={() =>
-                            setSelectedItems(
-                              selectedItems.filter((_, i) => i !== index)
-                            )
-                          }
-                        />
-
-                        <SquareIconButton
-                          iconName="IoAdd"
-                          size="small"
-                          color="primary"
-                          onClick={() => {
-                            selectItems(
-                              contentType,
-                              searchResults[index].id,
-                              name
-                            );
-                          }}
-                        />
-                      </div>
-                    </div>
+                    <React.Fragment key={"ResultContent_" + name + index}>
+                      <ContentCard
+                        type={contentType}
+                        name={name}
+                        onNavigate={() => {
+                          navigate(`${contentType}?contentId=${id}`, {});
+                        }}
+                        onAdd={() => {
+                          selectItems(
+                            contentType,
+                            searchResults[index].id,
+                            name,
+                          );
+                        }}
+                      />
+                    </React.Fragment>
                   );
-                }
+                },
               )}
           </div>
         </div>

@@ -6,10 +6,11 @@ type Props = {
   type: BlockContentType;
   name: string;
   onNavigate: () => void;
-  onDelete: () => void;
+  onDelete?: () => void;
+  onAdd?: () => void;
 };
 
-const ContentCard = ({ type, name, onDelete, onNavigate }: Props) => {
+const ContentCard = ({ type, name, onAdd, onDelete, onNavigate }: Props) => {
   return (
     <div className="flex cursor-pointer items-center justify-between rounded-sm bg-brand-white/20 p-3 hover:scale-[1.005]">
       <div className="text-brand-white">
@@ -25,12 +26,23 @@ const ContentCard = ({ type, name, onDelete, onNavigate }: Props) => {
           onClick={() => onNavigate()}
         />
 
-        <SquareIconButton
-          iconName="IoTrashBin"
-          size="small"
-          color="error"
-          onClick={() => onDelete()}
-        />
+        {onDelete && (
+          <SquareIconButton
+            iconName="IoTrashBin"
+            size="small"
+            color="error"
+            onClick={() => onDelete()}
+          />
+        )}
+
+        {onAdd && (
+          <SquareIconButton
+            iconName="IoAdd"
+            size="small"
+            color="primary"
+            onClick={() => onAdd()}
+          />
+        )}
       </div>
     </div>
   );

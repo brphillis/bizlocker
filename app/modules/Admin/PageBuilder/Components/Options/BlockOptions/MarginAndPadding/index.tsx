@@ -5,7 +5,7 @@ import {
   marginSelectValues,
   paddingSelectValues,
 } from "../../Values/marginAndPadding";
-import BlockSelectInput from "../../FieldComponents/Blocks/BlockSelectInput";
+import BlockSelectInput from "../_FieldComponents/BlockSelectInput";
 
 type Props = {
   defaultValues?: BlockOptions;
@@ -17,11 +17,11 @@ const MarginAndPaddingOptions = ({
   selectedBlockOptions,
 }: Props) => {
   return (
-    <details className="bg-brand-white/20 collapse collapse-plus !hidden !max-w-full !rounded-sm [&:has(div>div)]:!grid">
+    <details className="collapse collapse-plus !hidden !max-w-[100vw] max-md:!w-[100dvw] !rounded-sm bg-brand-white/20 [&:has(div>div)]:!grid">
       <summary className="collapse-title text-xl font-medium text-brand-white">
         Margin & Padding
       </summary>
-      <div className="flex max-w-full flex-wrap justify-start !gap-3 px-3 pb-3 max-md:justify-center max-md:px-0">
+      <div className="flex gap-3 flex-wrap items-start justify-start w-full px-3 pb-6 max-md:pb-3">
         <BlockSelectInput
           valueName="Margin"
           formName="margin"

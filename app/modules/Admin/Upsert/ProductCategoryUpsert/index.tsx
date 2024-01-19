@@ -98,7 +98,7 @@ const ProductCategoryUpsert = ({ offRouteModule }: Props) => {
                 name="name"
                 label="Name"
                 placeholder="Name"
-                customWidth="w-full"
+                extendContainerStyle="w-full"
                 type="text"
                 defaultValue={productCategory?.name || ""}
                 validationErrors={
@@ -111,7 +111,7 @@ const ProductCategoryUpsert = ({ offRouteModule }: Props) => {
                 label="Department"
                 selections={departments}
                 placeholder="Department"
-                customWidth="w-full"
+                extendContainerStyle="w-full"
                 defaultValue={productCategory?.department?.id.toString()}
                 validationErrors={
                   clientValidationErrors || serverValidationErrors
@@ -123,7 +123,7 @@ const ProductCategoryUpsert = ({ offRouteModule }: Props) => {
                 type="number"
                 name="index"
                 placeholder="Index"
-                customWidth="w-full"
+                extendContainerStyle="w-full"
                 defaultValue={productCategory?.index || 100}
                 validationErrors={
                   serverValidationErrors || clientValidationErrors
@@ -138,7 +138,7 @@ const ProductCategoryUpsert = ({ offRouteModule }: Props) => {
                   { id: "no", name: "No" },
                 ]}
                 placeholder="Display In Navigation"
-                customWidth="w-full"
+                extendContainerStyle="w-full"
                 defaultValue={
                   productCategory?.displayInNavigation ? "yes" : "no"
                 }
@@ -148,7 +148,7 @@ const ProductCategoryUpsert = ({ offRouteModule }: Props) => {
                 <BasicMultiSelect
                   name="productSubCategories"
                   label="Sub Categories"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   selections={productSubCategories.filter(
                     (e: any) =>
                       !e.productCategoryId ||

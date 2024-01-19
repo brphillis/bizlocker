@@ -160,7 +160,7 @@ const OrderUpsert = () => {
                   label="First Name"
                   placeholder="First Name"
                   type="text"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   defaultValue={order?.firstName}
                 />
 
@@ -169,7 +169,7 @@ const OrderUpsert = () => {
                   label="Last Name"
                   placeholder="Last Name"
                   type="text"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   defaultValue={order?.lastName}
                 />
 
@@ -178,7 +178,7 @@ const OrderUpsert = () => {
                   label="Address Line 1"
                   placeholder="Address Line 1"
                   type="text"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   defaultValue={address?.addressLine1}
                 />
 
@@ -187,7 +187,7 @@ const OrderUpsert = () => {
                   label="Address Line 2"
                   placeholder="Address Line 2"
                   type="text"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   defaultValue={address?.addressLine2}
                 />
 
@@ -196,7 +196,7 @@ const OrderUpsert = () => {
                   label="Suburb"
                   placeholder="Suburb"
                   type="text"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   defaultValue={address?.suburb}
                 />
 
@@ -205,7 +205,7 @@ const OrderUpsert = () => {
                   label="state"
                   placeholder="State"
                   type="text"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   defaultValue={address?.state}
                 />
 
@@ -214,7 +214,7 @@ const OrderUpsert = () => {
                   label="Post Code"
                   placeholder="Post Code"
                   type="text"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   defaultValue={address?.postcode}
                 />
 
@@ -227,7 +227,7 @@ const OrderUpsert = () => {
                   name="phoneNumber"
                   label="Phone Number"
                   placeholder="Phone Number"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   extendStyle="input-bordered"
                   type="text"
                   defaultValue={order?.phoneNumber || undefined}
@@ -238,7 +238,7 @@ const OrderUpsert = () => {
                   label="Shipping Method"
                   placeholder="Shipping Method"
                   type="text"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   defaultValue={order?.shippingMethod}
                 />
 
@@ -247,7 +247,7 @@ const OrderUpsert = () => {
                   label="Shipping Price"
                   placeholder="Shipping Price"
                   type="text"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   defaultValue={order?.shippingPrice}
                 />
 
@@ -256,7 +256,7 @@ const OrderUpsert = () => {
                   label="Tracking Number"
                   placeholder="Tracking Number"
                   type="text"
-                  customWidth="w-full"
+                  extendContainerStyle="w-full"
                   defaultValue={order?.trackingNumber}
                 />
 

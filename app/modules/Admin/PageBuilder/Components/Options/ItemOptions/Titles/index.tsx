@@ -6,9 +6,9 @@ import {
   mobileFontSizeSelectValues,
   mobilefontWeightSelectValues,
 } from "../../Values/font";
-import ItemInput from "../../FieldComponents/Items/ItemInput";
-import ItemColorInput from "../../FieldComponents/Items/ItemColorInput";
-import ItemSelectInput from "../../FieldComponents/Items/ItemSelectInput";
+import ItemInput from "../_FieldComponents/ItemInput";
+import ItemColorInput from "../_FieldComponents/ItemColorInput";
+import ItemSelectInput from "../_FieldComponents/ItemSelectInput";
 
 type Props = {
   selectedItems: ContentSelection[];
@@ -37,50 +37,50 @@ const Titles = ({
         />
 
         <ItemColorInput
-          title="Title Colors"
+          title="Colors"
           formName="itemTitleColors"
           selectedItems={selectedItems}
-          valueName="Title Color"
+          valueName="Color"
           blockMasterOption={selectedBlockOptions?.itemTitleColors}
           defaultValues={defaultValues?.itemTitleColors}
           type="text"
         />
 
         <ItemSelectInput
-          title="Title Sizes"
+          title="Sizes"
           formName="itemTitleSizes"
           selectedItems={selectedItems}
-          valueName="Title Size"
+          valueName="Size"
           blockMasterOption={selectedBlockOptions?.itemTitleSizes}
           defaultValues={defaultValues?.itemTitleSizes}
           selections={fontSizeSelectValues}
         />
 
         <ItemSelectInput
-          title="Title Sizes Mobile"
+          title="Sizes Mobile"
           formName="itemTitleSizesMobile"
           selectedItems={selectedItems}
-          valueName="Title Size"
+          valueName="Size"
           blockMasterOption={selectedBlockOptions?.itemTitleSizesMobile}
           defaultValues={defaultValues?.itemTitleSizesMobile}
           selections={mobileFontSizeSelectValues}
         />
 
         <ItemSelectInput
-          title="Title Weights"
+          title="Weights"
           formName="itemTitleFontWeights"
           selectedItems={selectedItems}
-          valueName="Title Weight"
+          valueName="Weight"
           blockMasterOption={selectedBlockOptions?.itemTitleFontWeights}
           defaultValues={defaultValues?.itemTitleFontWeights}
           selections={fontWeightSelectValues}
         />
 
         <ItemSelectInput
-          title="Title Weights Mobile"
+          title="Weights Mobile"
           formName="itemTitleFontWeightsMobile"
           selectedItems={selectedItems}
-          valueName="Title Weight"
+          valueName="Weight"
           blockMasterOption={selectedBlockOptions?.itemTitleFontWeightsMobile}
           defaultValues={defaultValues?.itemTitleFontWeightsMobile}
           selections={mobilefontWeightSelectValues}

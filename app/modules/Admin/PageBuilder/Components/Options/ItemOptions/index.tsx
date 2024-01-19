@@ -9,6 +9,7 @@ import Effects from "./Effects";
 import Links from "./Links";
 import Text from "./Text";
 import Titles from "./Titles";
+import PaddingAndPadding from "./MarginAndPadding";
 
 type Props = {
   selectedItems: ContentSelection[];
@@ -30,6 +31,12 @@ const ItemOptions = ({
       />
 
       <Backgrounds
+        selectedItems={selectedItems}
+        selectedBlockOptions={selectedBlockOptions}
+        defaultValues={defaultValues}
+      />
+
+      <PaddingAndPadding
         selectedItems={selectedItems}
         selectedBlockOptions={selectedBlockOptions}
         defaultValues={defaultValues}
@@ -65,13 +72,13 @@ const ItemOptions = ({
         defaultValues={defaultValues}
       />
 
-      <Text
+      <Titles
         selectedItems={selectedItems}
         selectedBlockOptions={selectedBlockOptions}
         defaultValues={defaultValues}
       />
 
-      <Titles
+      <Text
         selectedItems={selectedItems}
         selectedBlockOptions={selectedBlockOptions}
         defaultValues={defaultValues}

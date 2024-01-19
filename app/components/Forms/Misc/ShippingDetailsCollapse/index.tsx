@@ -17,7 +17,7 @@ const index = ({ order }: Props) => {
             label="First Name"
             placeholder="First Name"
             type="text"
-            customWidth="w-full"
+            extendContainerStyle="w-full"
             defaultValue={order?.firstName}
           />
 
@@ -26,7 +26,7 @@ const index = ({ order }: Props) => {
             label="Last Name"
             placeholder="Last Name"
             type="text"
-            customWidth="w-full"
+            extendContainerStyle="w-full"
             defaultValue={order?.lastName}
           />
 
@@ -35,7 +35,7 @@ const index = ({ order }: Props) => {
             label="Address Line 1"
             placeholder="Address Line 1"
             type="text"
-            customWidth="w-full"
+            extendContainerStyle="w-full"
             defaultValue={order?.address?.addressLine1}
           />
 
@@ -44,7 +44,7 @@ const index = ({ order }: Props) => {
             label="Address Line 2"
             placeholder="Address Line 2"
             type="text"
-            customWidth="w-full"
+            extendContainerStyle="w-full"
             defaultValue={order?.address?.addressLine2}
           />
 
@@ -53,7 +53,7 @@ const index = ({ order }: Props) => {
             label="Suburb"
             placeholder="Suburb"
             type="text"
-            customWidth="w-full"
+            extendContainerStyle="w-full"
             defaultValue={order?.address?.suburb}
           />
 
@@ -62,7 +62,7 @@ const index = ({ order }: Props) => {
             label="State"
             placeholder="State"
             type="text"
-            customWidth="w-full"
+            extendContainerStyle="w-full"
             defaultValue={order?.address?.state}
           />
 
@@ -71,7 +71,7 @@ const index = ({ order }: Props) => {
             label="PostCode"
             placeholder="PostCode"
             type="text"
-            customWidth="w-full"
+            extendContainerStyle="w-full"
             defaultValue={order?.address?.postcode}
           />
 
@@ -80,7 +80,7 @@ const index = ({ order }: Props) => {
             label="Country"
             placeholder="Country"
             type="text"
-            customWidth="w-full"
+            extendContainerStyle="w-full"
             defaultValue={order?.address?.country}
           />
 

@@ -9,7 +9,6 @@ type Props = {
   defaultValue?: string;
   tooltip?: string;
   type?: "bg" | "text" | "border" | "outline" | "decoration";
-  customWidth?: string;
   extendStyle?: string;
   onChange?: (e: string) => void;
 };
@@ -21,7 +20,6 @@ const ColorPicker = ({
   defaultValue,
   tooltip,
   type,
-  customWidth,
   extendStyle,
   onChange,
 }: Props) => {
@@ -37,7 +35,6 @@ const ColorPicker = ({
         tooltip={tooltip}
         inputBackgroundColor={selectedValue}
         inputOnClick={() => setEditing(true)}
-        customWidth={customWidth}
         extendStyle={extendStyle}
       />
 

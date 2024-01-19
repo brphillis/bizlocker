@@ -23,8 +23,8 @@ const BlockInput = ({
   return (
     <>
       {blockMasterOption && (
-        <div className="flex max-w-full flex-wrap justify-start !gap-3 px-3 pb-3 max-md:justify-center max-md:px-0">
-          <div className="form-control relative max-sm:items-center">
+        <div className="flex max-w-full flex-wrap justify-start !gap-3 max-md:justify-center max-md:px-0 w-[215px] max-md:w-full">
+          <div className="form-control relative max-sm:items-center w-full">
             {tooltip && (
               <ToolTip tip={tooltip} iconColor="text-brand-white/75" />
             )}
@@ -37,7 +37,7 @@ const BlockInput = ({
               type={type}
               step={type === "number" ? "any" : undefined}
               max={max ? max : undefined}
-              className="input input-bordered w-[95vw] max-w-full text-brand-black sm:w-[215px]"
+              className="input input-bordered w-full text-brand-black"
               placeholder="None"
               name={formName}
               defaultValue={defaultValue || undefined}

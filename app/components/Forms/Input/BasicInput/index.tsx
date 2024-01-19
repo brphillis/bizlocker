@@ -2,12 +2,12 @@ import type { ValidationErrors } from "~/utility/validate";
 import ToolTip from "~/components/Indicators/ToolTip";
 
 type Props = {
-  customWidth?: string;
+  extendContainerStyle?: string;
   decimals?: number;
   defaultValue?: any;
   disabled?: boolean;
   id?: string;
-  label: string;
+  label?: string;
   labelStyle?: string;
   name: string;
   onChange?: (value: string | React.ChangeEvent<HTMLSelectElement>) => void;
@@ -20,7 +20,7 @@ type Props = {
 };
 
 const BasicInput = ({
-  customWidth,
+  extendContainerStyle,
   decimals,
   defaultValue,
   disabled,
@@ -39,18 +39,20 @@ const BasicInput = ({
   return (
     <div
       className={`form-control relative max-md:w-full ${
-        customWidth ? customWidth : "w-[215px]"
+        extendContainerStyle ? extendContainerStyle : "w-[215px]"
       }`}
     >
-      <label className="label">
-        <span
-          className={`label-text  ${
-            labelStyle ? labelStyle : "text-brand-black"
-          }`}
-        >
-          {label}
-        </span>
-      </label>
+      {label && (
+        <label className="label">
+          <span
+            className={`label-text  ${
+              labelStyle ? labelStyle : "text-brand-black"
+            }`}
+          >
+            {label}
+          </span>
+        </label>
+      )}
       <input
         id={id}
         name={name}

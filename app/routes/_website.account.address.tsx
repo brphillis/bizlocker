@@ -58,7 +58,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   const { formEntries, formErrors } = validateForm(
     await request.formData(),
-    validate
+    validate,
   );
 
   if (formErrors) {
@@ -111,7 +111,7 @@ const Address = () => {
           name="addressLine1"
           label="Address Line 1"
           placeholder="Address Line 1"
-          customWidth="w-full"
+          extendContainerStyle="w-full"
           extendStyle="input-bordered"
           type="text"
           defaultValue={userAddress?.addressLine1 || undefined}
@@ -122,7 +122,7 @@ const Address = () => {
           name="addressLine2"
           label="Address Line 2"
           placeholder="Address Line 2"
-          customWidth="w-full"
+          extendContainerStyle="w-full"
           extendStyle="input-bordered"
           type="text"
           defaultValue={userAddress?.addressLine2 || undefined}
@@ -133,7 +133,7 @@ const Address = () => {
           name="suburb"
           label="Suburb"
           placeholder="Suburb"
-          customWidth="w-full"
+          extendContainerStyle="w-full"
           extendStyle="input-bordered"
           type="text"
           defaultValue={userAddress?.suburb || undefined}
@@ -144,7 +144,7 @@ const Address = () => {
           name="postcode"
           label="PostCode"
           placeholder="PostCode"
-          customWidth="w-full"
+          extendContainerStyle="w-full"
           extendStyle="input-bordered"
           type="text"
           defaultValue={userAddress?.postcode || undefined}
@@ -155,7 +155,7 @@ const Address = () => {
           name="state"
           label="State"
           placeholder="State"
-          customWidth="w-full"
+          extendContainerStyle="w-full"
           extendStyle="input-bordered"
           type="text"
           defaultValue={userAddress?.state || undefined}

@@ -19,14 +19,14 @@ const BlockColorInput = ({
   type,
 }: Props) => {
   const [selectedValue, setSelectedValue] = useState<string | undefined>(
-    defaultValue || undefined
+    defaultValue || undefined,
   );
   const [editing, setEditing] = useState<boolean>(false);
 
   return (
     <>
       {blockMasterOption && (
-        <div className="px-3 max-md:w-full max-md:px-0">
+        <>
           <ColorPickerInput
             label={valueName}
             tooltip={tooltip}
@@ -47,7 +47,7 @@ const BlockColorInput = ({
           )}
 
           <input hidden readOnly name={formName} value={selectedValue || ""} />
-        </div>
+        </>
       )}
     </>
   );
