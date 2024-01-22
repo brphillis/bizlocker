@@ -1,4 +1,4 @@
-export type GoogleAuthResponse = {
+export interface GoogleAuthResponse {
   iss: string;
   nbf: number;
   aud: string;
@@ -9,4 +9,4 @@ export type GoogleAuthResponse = {
   name: string;
   picture: string;
   given_name: string;
-};
+}
