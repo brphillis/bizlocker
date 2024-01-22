@@ -71,3 +71,7 @@ type BasicSearchArgs = {
 type TransformToOptionalBooleans<T> = {
   [K in keyof T]?: boolean;
 };
+
+type MetaLoader = {
+  data: { [key]: string };
+};

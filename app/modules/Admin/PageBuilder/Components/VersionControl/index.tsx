@@ -9,22 +9,24 @@ import BasicButton from "~/components/Buttons/BasicButton";
 
 type Props = {
   currentVersion: Page | null;
+  loading: boolean;
+  pageType: PageType;
   previewPages?: PreviewPage[] | null;
   publishedPage: Page;
-  pageType: PageType;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   updateSuccess: boolean;
 };
 
 const VersionControl = ({
   currentVersion,
+  loading,
+  pageType,
   previewPages,
   publishedPage,
+  setLoading,
   updateSuccess,
-  pageType,
 }: Props) => {
   const submit = useSubmit();
-
-  const [loading, setLoading] = useState<boolean>(false);
 
   const publishedDates = previewPages?.map((e) => e.publishedAt);
 
@@ -83,8 +85,6 @@ const VersionControl = ({
   };
 
   useEffect(() => {
-    setLoading(false);
-
     // change selected option to newly published option
     if (updateSuccess) {
       const versionSelector = document.querySelector(
@@ -98,6 +98,10 @@ const VersionControl = ({
       }
     }
   }, [updateSuccess]);
+
+  useEffect(() => {
+    setLoading(false);
+  }, []);
 
   return (
     <div
@@ -179,7 +183,7 @@ const VersionControl = ({
           bg-primary hover:bg-primary-dark`}
           onClick={() => {
             if (!loading) {
-              window.open(`/preview/${currentVersion?.id}`, "_blank");
+              window.open(`/preview?id=${currentVersion?.id}`, "_blank");
             }
           }}
         >

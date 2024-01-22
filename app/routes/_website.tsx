@@ -118,7 +118,8 @@ const App = () => {
         {!(
           location.pathname.includes("/login") ||
           location.pathname.includes("/register") ||
-          location.pathname.includes("/forgot-password") ||
+          location.pathname.includes("/password-recovery") ||
+          location.pathname.includes("/verify") ||
           location.pathname.includes("/account")
         ) && (
           <div className="navbar relative z-0 flex !min-h-[50px] w-full select-none items-center justify-center gap-6 bg-brand-white !py-0 text-sm font-bold text-brand-black/80 shadow-md">

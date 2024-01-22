@@ -26,7 +26,7 @@ import {
 import {
   changeBlockOrder,
   disconnectBlock,
-  getPageType,
+  getPageByPageType,
   publishPage,
   revertPreviewChanges,
   type BlockWithContent,
@@ -54,7 +54,7 @@ export const pageBuilderLoader = async (
   let publishedPage = {} as Page;
 
   if (id !== "add") {
-    publishedPage = await getPageType(pageType as PageType, true, id);
+    publishedPage = await getPageByPageType(pageType as PageType, id);
   }
 
   let previewPages: PreviewPage[] | null | undefined = null;
@@ -66,7 +66,8 @@ export const pageBuilderLoader = async (
       publishedPage.previewPage && sortPreviewPages(publishedPage.previewPage);
 
     if (previewPages && previewPages[0].id) {
-      currentPreviewPage = await getPreviewPage(previewPages[0].id.toString());
+      currentPreviewPage =
+        (await getPreviewPage(previewPages[0].id.toString())) || null;
     }
 
     if (currentPreviewPage) {

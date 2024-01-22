@@ -7,9 +7,13 @@ import type {
 } from "@prisma/client";
 import { getBlocks, type BlockWithBlockOptions } from "./blocks.server";
 import { prisma } from "~/db.server";
-import { activeContentTypes } from "~/utility/blockMaster/blockMaster";
+import { buildBlocksContentQuery } from "~/utility/blockMaster/blockMaster";
 import { getOrderBy } from "~/helpers/sortHelpers";
-import { type BlockWithContent, disconnectBlock } from "./pageBuilder.server";
+import {
+  type BlockWithContent,
+  disconnectBlock,
+  Page,
+} from "./pageBuilder.server";
 
 export interface ArticleWithContent extends Article {
   articleCategories?: ArticleCategory[] | null;
@@ -32,26 +36,52 @@ export const getArticle = async (
     throw new Error("Either id or name must be specified");
   }
 
-  return await prisma.article.findUnique({
+  // get the article
+  const article = await prisma.article.findUnique({
     where: whereClause,
     include: {
       blocks: {
-        include: {
-          blockOptions: true,
-          content: {
-            include: activeContentTypes,
-          },
-        },
-      },
-      articleCategories: {
         select: {
           id: true,
           name: true,
         },
       },
-      thumbnail: true,
     },
   });
+
+  if (!article) {
+    throw new Error(`No article Found`);
+  }
+
+  // get the article with appropriate content
+  // this avoids doing nested queries to all content types to begin with
+  // and only querying for relevant content assosiated with the pages active blocks
+
+  if (article.blocks) {
+    // get the homepage
+    const articleWithContent = (await prisma.article.findUnique({
+      where: whereClause,
+      include: {
+        blocks: {
+          include: {
+            blockOptions: true,
+            content: buildBlocksContentQuery(article.blocks),
+          },
+        },
+        articleCategories: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        thumbnail: true,
+      },
+    })) as unknown as Page;
+
+    return articleWithContent;
+  } else {
+    throw new Error(`Page has No Content`);
+  }
 };
 
 export const deleteArticle = async (
@@ -65,9 +95,7 @@ export const deleteArticle = async (
       blocks: {
         include: {
           blockOptions: true,
-          content: {
-            include: activeContentTypes,
-          },
+          content: true,
         },
       },
     },
@@ -80,19 +108,21 @@ export const deleteArticle = async (
   //find and delete the associated blocks
   const articleBlocks = await getBlocks(article as any);
 
-  await Promise.all(
-    articleBlocks.map(
-      async (e: BlockWithContent) =>
-        await disconnectBlock(e.id.toString(), e.name),
-    ),
-  );
+  if (articleBlocks) {
+    await Promise.all(
+      articleBlocks.map(
+        async (e: BlockWithContent) =>
+          await disconnectBlock(e.id.toString(), e.name),
+      ),
+    );
 
-  // Delete the article
-  await prisma.article.delete({
-    where: {
-      id,
-    },
-  });
+    // Delete the article
+    await prisma.article.delete({
+      where: {
+        id,
+      },
+    });
+  }
 
   return redirect("/admin/articles");
 };

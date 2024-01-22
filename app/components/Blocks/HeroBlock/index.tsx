@@ -1,21 +1,21 @@
 import { useNavigate } from "@remix-run/react";
 import { getThemeColorValueByName } from "~/utility/colors";
-import type { BlockContentWithDetails } from "~/models/blocks.server";
+import type { BlockContentSorted } from "~/models/blocks.server";
 import type { BlockOptions, Product } from "@prisma/client";
 import PatternBackground from "~/components/Layout/Backgrounds/PatternBackground";
-import { determineContentType } from "~/helpers/contentHelpers";
+import { getContentType } from "~/helpers/contentHelpers";
 import type {
   ProductVariantWithDetails,
   ProductWithDetails,
 } from "~/models/products.server";
 type Props = {
-  content: BlockContentWithDetails;
+  content: BlockContentSorted[];
   options: BlockOptions[];
 };
 
-const HeroBlock = ({ content, options: optionsArray }: Props) => {
+const HeroBlock = ({ content, options: options }: Props) => {
   const navigate = useNavigate();
-  const options = optionsArray[0];
+
   const {
     title,
     titleColor,
@@ -40,12 +40,12 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
     padding,
     linkPrimary,
     linkSecondary,
-  } = options || {};
+  } = options[0] || {};
 
-  const product = content.product?.[0] as ProductWithDetails;
+  const product = content[0]?.product as ProductWithDetails;
   const productImage = product.heroImage?.href;
 
-  const contentType = determineContentType(content);
+  const contentType = getContentType(content[0]);
 
   const getProductLowestPrice = (
     product: ProductWithDetails,
@@ -128,7 +128,7 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
                       navigate(
                         contentType === "product"
                           ? `/product/SlackSki%20Jacket?id=${
-                              (content.product?.[0] as Product).id
+                              (content[0]?.product as Product).id
                             }`
                           : (linkPrimary as string),
                       )

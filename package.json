@@ -15,7 +15,8 @@
     "validate": "run-p \"test -- --run\" lint typecheck test:e2e:run",
     "compose-containers": "docker-compose up -d --build postgres && docker-compose up -d --build bizlocker",
     "compose-db": "docker-compose up -d --build postgres",
-    "compose-app": "docker-compose up -d --build bizlocker"
+    "compose-app": "docker-compose up -d --build bizlocker",
+    "compose-migrate": "npm run compose-containers && npx prisma migrate deploy"
   },
   "prettier": {},
   "eslintIgnore": [

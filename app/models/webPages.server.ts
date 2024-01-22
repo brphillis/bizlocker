@@ -1,15 +1,19 @@
 import type { WebPage } from "@prisma/client";
-import { type BlockWithContent, disconnectBlock } from "./pageBuilder.server";
+import {
+  type BlockWithContent,
+  disconnectBlock,
+  Page,
+} from "./pageBuilder.server";
 import { type TypedResponse, redirect } from "@remix-run/server-runtime";
 import { prisma } from "~/db.server";
-import { activeContentTypes } from "~/utility/blockMaster/blockMaster";
+import { buildBlocksContentQuery } from "~/utility/blockMaster/blockMaster";
 import { getOrderBy } from "~/helpers/sortHelpers";
 import { getBlocks } from "./blocks.server";
 
 export const getWebPage = async (
   id?: string,
   title?: string,
-): Promise<WebPage | null> => {
+): Promise<Page | null> => {
   let whereClause;
 
   if (id) {
@@ -20,20 +24,46 @@ export const getWebPage = async (
     throw new Error("Either id or name must be specified");
   }
 
-  return await prisma.webPage.findUnique({
+  // get the webPage
+  const webPage = await prisma.webPage.findUnique({
     where: whereClause,
     include: {
       blocks: {
-        include: {
-          blockOptions: true,
-          content: {
-            include: activeContentTypes,
-          },
+        select: {
+          id: true,
+          name: true,
         },
       },
-      thumbnail: true,
     },
   });
+
+  if (!webPage) {
+    throw new Error(`No webPage Found`);
+  }
+
+  // get the webPage with appropriate content
+  // this avoids doing nested queries to all content types to begin with
+  // and only querying for relevant content assosiated with the pages active blocks
+
+  if (webPage.blocks) {
+    // get the homepage
+    const webPageWithContent = (await prisma.webPage.findUnique({
+      where: whereClause,
+      include: {
+        blocks: {
+          include: {
+            blockOptions: true,
+            content: buildBlocksContentQuery(webPage.blocks),
+          },
+        },
+        thumbnail: true,
+      },
+    })) as unknown as Page;
+
+    return webPageWithContent;
+  } else {
+    throw new Error(`Page has No Content`);
+  }
 };
 
 export const deleteWebPage = async (
@@ -47,7 +77,7 @@ export const deleteWebPage = async (
       blocks: {
         include: {
           blockOptions: true,
-          content: { include: activeContentTypes },
+          content: true,
         },
       },
     },

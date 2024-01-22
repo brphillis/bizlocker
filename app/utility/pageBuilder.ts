@@ -149,6 +149,10 @@ export const getFormBlockOptions = (form: {
     itemAlign,
     itemJustify,
     itemAlignMobile,
+    shortTextSize,
+    shortTextSizeMobile,
+    shortTextFontWeight,
+    shortTextFontWeightMobile,
     itemJustifyMobile,
     buttonLabelPrimary,
     buttonLabelColorPrimary,
@@ -185,7 +189,7 @@ export const getFormBlockOptions = (form: {
     itemBackgroundPatternSizesPrimary,
     itemBackgroundBrightnessesPrimary,
     itemBackgroundPatternOpacitiesPrimary,
-
+    itemGapMobile,
     itemMarginTop,
     itemMarginTopMobile,
     itemMarginRight,
@@ -202,6 +206,9 @@ export const getFormBlockOptions = (form: {
     itemPaddingBottomMobile,
     itemPaddingLeft,
     itemPaddingLeftMobile,
+    itemShortTextFontWeights,
+    itemShortTextFontWeightsMobile,
+    itemGap,
   } = form;
 
   const blockOptions = {
@@ -314,6 +321,16 @@ export const getFormBlockOptions = (form: {
       ? JSON.parse(itemMarginTopMobile as string)
       : undefined,
     itemLinks: itemLinks ? JSON.parse(itemLinks as string) : undefined,
+    itemShortTextFontWeights: itemShortTextFontWeights
+      ? JSON.parse(itemShortTextFontWeights as string)
+      : undefined,
+    itemShortTextFontWeightsMobile: itemShortTextFontWeightsMobile
+      ? JSON.parse(itemShortTextFontWeightsMobile as string)
+      : undefined,
+    itemGap: itemGap ? JSON.parse(itemGap as string) : undefined,
+    itemGapMobile: itemGapMobile
+      ? JSON.parse(itemGapMobile as string)
+      : undefined,
     itemTitles: itemTitles ? JSON.parse(itemTitles as string) : undefined,
     itemTitleSizes: itemTitleSizes
       ? JSON.parse(itemTitleSizes as string)
@@ -489,7 +506,16 @@ export const getFormBlockOptions = (form: {
     itemBackgroundPatternOpacitiesPrimary: itemBackgroundPatternOpacitiesPrimary
       ? JSON.parse(itemBackgroundPatternOpacitiesPrimary as string)
       : undefined,
-
+    shortTextSize: shortTextSize ? (shortTextSize as string) : undefined,
+    shortTextSizeMobile: shortTextSizeMobile
+      ? (shortTextSizeMobile as string)
+      : undefined,
+    shortTextFontWeight: shortTextFontWeight
+      ? (shortTextFontWeight as string)
+      : undefined,
+    shortTextFontWeightMobile: shortTextFontWeightMobile
+      ? (shortTextFontWeightMobile as string)
+      : undefined,
     rows: rows ? parseInt(rows as string) : undefined,
     shortText: shortText ? (shortText as string) : undefined,
     shortTextColor: shortTextColor ? (shortTextColor as string) : undefined,

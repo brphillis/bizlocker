@@ -1,4 +1,5 @@
 import React from "react";
+import { sortBlockContent } from "~/helpers/contentHelpers";
 import type { BlockWithContent } from "~/models/pageBuilder.server";
 import { blockMaster } from "~/utility/blockMaster/blockMaster";
 
@@ -17,7 +18,10 @@ const BlockRenderer = ({ blocks }: Props) => {
         const Component = blockConfig?.component;
         return (
           <React.Fragment key={`${name}Block_${i}`}>
-            <Component content={content} options={blockOptions} />
+            <Component
+              content={sortBlockContent(content)}
+              options={blockOptions}
+            />
           </React.Fragment>
         );
       })}

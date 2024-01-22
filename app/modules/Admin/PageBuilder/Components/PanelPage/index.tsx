@@ -14,37 +14,41 @@ import BlockCard from "../BlockCard";
 import VersionControl from "../VersionControl";
 
 type Props = {
-  setEditingContent: React.Dispatch<React.SetStateAction<boolean>>;
-  setEditingIndex: React.Dispatch<React.SetStateAction<number>>;
-  setSelectedItems: React.Dispatch<React.SetStateAction<ContentSelection[]>>;
-  setSelectedBlock: React.Dispatch<React.SetStateAction<BlockName | undefined>>;
+  articleCategories: SelectValue[];
+  colors: string[];
+  currentBlocks: BlockWithContent[] | null;
+  loading: boolean;
+  metaValidationError: string[];
   pageType?: string;
   previewPage: Page | null;
-  publishedPage: Page | null;
-  currentBlocks: BlockWithContent[] | null;
   previewPages?: PreviewPage[] | null;
+  publishedPage: Page | null;
   publishSuccess: boolean;
   revertSuccess: boolean;
-  metaValidationError: string[];
-  colors: string[];
-  articleCategories: SelectValue[];
+  setEditingContent: React.Dispatch<React.SetStateAction<boolean>>;
+  setEditingIndex: React.Dispatch<React.SetStateAction<number>>;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setSelectedBlock: React.Dispatch<React.SetStateAction<BlockName | undefined>>;
+  setSelectedItems: React.Dispatch<React.SetStateAction<ContentSelection[]>>;
 };
 
 const PanelPage = ({
-  setEditingContent,
-  setEditingIndex,
-  setSelectedItems,
-  setSelectedBlock,
+  articleCategories,
+  colors,
+  currentBlocks,
+  loading,
+  metaValidationError,
   pageType,
   previewPage,
-  currentBlocks,
-  publishedPage,
   previewPages,
+  publishedPage,
   publishSuccess,
   revertSuccess,
-  metaValidationError,
-  colors,
-  articleCategories,
+  setEditingContent,
+  setEditingIndex,
+  setLoading,
+  setSelectedBlock,
+  setSelectedItems,
 }: Props) => {
   const submit = useSubmit();
   const [searchParams] = useSearchParams();
@@ -175,9 +179,11 @@ const PanelPage = ({
               <div className="absolute bottom-0 left-[50%] translate-x-[-50%] w-full">
                 <VersionControl
                   currentVersion={previewPage}
+                  loading={loading}
                   pageType={pageType as PageType}
                   previewPages={previewPages}
                   publishedPage={publishedPage as Page}
+                  setLoading={setLoading}
                   updateSuccess={publishSuccess || revertSuccess}
                 />
               </div>

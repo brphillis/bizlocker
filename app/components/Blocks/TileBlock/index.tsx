@@ -1,17 +1,19 @@
-import type { BlockContentWithDetails } from "~/models/blocks.server";
 import type { BlockOptions } from "@prisma/client";
+import { getThemeColorValueByName } from "~/utility/colors";
+import type {
+  BlockContentWithDetails,
+  BlockContentSorted,
+} from "~/models/blocks.server";
 import PatternBackground from "~/components/Layout/Backgrounds/PatternBackground";
 import {
   buildImageFromBlockContent,
-  concatBlockContent,
-  determineContentType,
+  getContentType,
 } from "~/helpers/contentHelpers";
-import ContentTile from "./ContentTile";
 import IconTile from "./IconTile";
-import { getThemeColorValueByName } from "~/utility/colors";
+import ContentTile from "./ContentTile";
 
 type Props = {
-  content: BlockContentWithDetails;
+  content: BlockContentSorted[];
   options: BlockOptions[];
 };
 
@@ -27,12 +29,7 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
     backgroundWidthPrimary,
     columns,
     columnsMobile,
-    itemBackgroundColorsPrimary,
-    itemColors,
-    itemFilters,
     itemLinks,
-    itemTitleColors,
-    itemTitles,
     margin,
     padding,
     itemBorderDisplays,
@@ -41,7 +38,6 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
     itemBorderSizes,
   } = options || {};
 
-  const joinedContent = concatBlockContent(content);
   const colsMobile = `max-md:!grid-cols-${columnsMobile}`;
 
   return (
@@ -74,10 +70,8 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
         brightness={backgroundBrightnessPrimary || undefined}
       />
 
-      {joinedContent?.map((contentData: any, i: number) => {
-        const contentType = determineContentType(
-          contentData as BlockContentWithDetails,
-        );
+      {content?.map((contentData: BlockContentSorted, i: number) => {
+        const contentType = getContentType(contentData);
 
         const { name, link, imageSrc } =
           buildImageFromBlockContent(contentData, "tileImage", itemLinks[i]) ||
@@ -89,36 +83,19 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
             className={`relative flex aspect-square cursor-pointer items-center justify-center transition duration-300 ease-in-out hover:scale-[1.01] 
             ${itemBorderDisplays[i]} ${itemBorderRadius[i]} 
             ${itemBorderSizes[i]} ${itemBorderColors[i]} ${itemBorderColors[i]}
-            ${
-              joinedContent.length % 2 !== 0 ? "max-sm:last:col-span-full" : ""
-            }`}
+            ${content.length % 2 !== 0 ? "max-sm:last:col-span-full" : ""}`}
           >
             {contentType === "icon" && (
-              <IconTile
-                borderRadius={itemBorderRadius[i]}
-                filter={itemFilters[i]}
-                imageSrc={imageSrc}
-                index={i}
-                title={itemTitles[i]}
-                joinedContent={joinedContent}
-                link={itemLinks[i]}
-                name={name}
-                itemColor={itemColors[i]}
-                itemTitleColor={itemTitleColors[i]}
-                itemBackgroundColor={itemBackgroundColorsPrimary[i]}
-              />
+              <IconTile content={content} index={i} blockOptions={options} />
             )}
 
             {contentType !== "icon" && (
               <ContentTile
-                borderRadius={itemBorderRadius[i]}
-                filter={itemFilters[i]}
+                index={i}
+                blockOptions={options}
                 imageSrc={imageSrc}
-                itemBackgroundColor={itemBackgroundColorsPrimary[i]}
-                joinedContent={joinedContent}
-                link={link}
-                name={name}
-                contentType={contentType}
+                imageLink={link}
+                imageName={name}
               />
             )}
           </div>

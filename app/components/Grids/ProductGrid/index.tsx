@@ -25,7 +25,7 @@ const ProductGrid = ({
     const mediaQuery = window.matchMedia("(max-width: 768px)");
 
     const handleResize = (
-      event: MediaQueryListEvent | MediaQueryListEventInit
+      event: MediaQueryListEvent | MediaQueryListEventInit,
     ) => {
       setShowPlaceHolder(event.matches as boolean);
     };
@@ -50,8 +50,8 @@ const ProductGrid = ({
         }}
         className="relative grid justify-items-center gap-3 gap-y-3 px-3 max-lg:!grid-cols-4 max-md:!grid-cols-3 max-sm:!grid-cols-2 md:gap-6 md:gap-y-6 xl:px-0"
       >
-        {products?.map((product) => (
-          <React.Fragment key={"productCard_" + product.id}>
+        {products?.map((product, i: number) => (
+          <React.Fragment key={"productCard_" + product?.id + i}>
             <ProductCard {...product} />
           </React.Fragment>
         ))}

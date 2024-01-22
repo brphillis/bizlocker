@@ -28,12 +28,11 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
     index: number,
   ) => {
     const convertedImage = await ConvertToBase64Image(inputEvent);
-    console.log("converted", convertedImage);
+
     if (convertedImage) {
       let updatedImages = images ? [...images] : [];
 
       updatedImages[index] = convertedImage;
-      console.log("point", updatedImages[index]);
 
       if (updatedImages[index]?.altText?.includes(".") || null) {
         const nameSelector = findFirstNotNullInputValue("name");

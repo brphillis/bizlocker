@@ -12,7 +12,7 @@ export const findUniqueStringsInArrays = (...arrays: string[][]): string[] => {
 
   // Filter strings that are not present in all arrays
   const uniqueStrings = Array.from(stringCounts.keys()).filter(
-    (str) => stringCounts.get(str) !== arrays.length
+    (str) => stringCounts.get(str) !== arrays.length,
   );
 
   return uniqueStrings;
@@ -32,4 +32,12 @@ export const isArrayofNumbers = (value: any): value is number[] => {
   }
 
   return value.every((item) => typeof item === "number");
+};
+
+export const sanitizeArray = <T>(arr: (T | null | undefined)[]): T[] => {
+  // Use filter to remove null and undefined values
+  const sanitizedArray: T[] = arr.filter(
+    (item): item is T => item !== null && item !== undefined,
+  );
+  return sanitizedArray;
 };

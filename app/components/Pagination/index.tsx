@@ -52,7 +52,7 @@ const Pagination = ({ totalPages }: Props) => {
               } else if (pageNumber === totalPages - 2) {
                 // Show ellipsis before the last page
                 return (
-                  <span key={`ellipsis-end`} className="mx-1">
+                  <span key={`ellipsis-end` + i} className="mx-1">
                     ...
                   </span>
                 );
@@ -64,7 +64,7 @@ const Pagination = ({ totalPages }: Props) => {
               } else if (pageNumber === totalPages - 4) {
                 // Show ellipsis before the last 6 pages
                 return (
-                  <span key={`ellipsis-start`} className="mx-1">
+                  <span key={`ellipsis-start` + i} className="mx-1">
                     ...
                   </span>
                 );

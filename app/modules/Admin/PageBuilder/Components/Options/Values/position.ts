@@ -81,3 +81,35 @@ export const alignSelectMobileValues = [
   { id: "max-md:items-around", name: "Space Around" },
   { id: "max-md:items-evenly", name: "Space Evenly" },
 ];
+
+export const gapSelectValues = [
+  { id: "gap-0", name: "0" },
+  { id: "gap-1", name: "1" },
+  { id: "gap-2", name: "2" },
+  { id: "gap-3", name: "3" },
+  { id: "gap-4", name: "4" },
+  { id: "gap-5", name: "5" },
+  { id: "gap-6", name: "6" },
+  { id: "gap-7", name: "7" },
+  { id: "gap-8", name: "8" },
+  { id: "gap-9", name: "9" },
+  { id: "gap-10", name: "10" },
+  { id: "gap-11", name: "11" },
+  { id: "gap-12", name: "12" },
+];
+
+export const gapSelectMobileValues = [
+  { id: "max-md:!gap-0", name: "0" },
+  { id: "max-md:!gap-1", name: "1" },
+  { id: "max-md:!gap-2", name: "2" },
+  { id: "max-md:!gap-3", name: "3" },
+  { id: "max-md:!gap-4", name: "4" },
+  { id: "max-md:!gap-5", name: "5" },
+  { id: "max-md:!gap-6", name: "6" },
+  { id: "max-md:!gap-7", name: "7" },
+  { id: "max-md:!gap-8", name: "8" },
+  { id: "max-md:!gap-9", name: "9" },
+  { id: "max-md:!gap-10", name: "10" },
+  { id: "max-md:!gap-11", name: "11" },
+  { id: "max-md:!gap-12", name: "12" },
+];

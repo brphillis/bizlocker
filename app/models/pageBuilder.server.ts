@@ -3,12 +3,10 @@ import { createNowISODate } from "~/helpers/dateHelpers";
 import type { BlockName } from "~/utility/blockMaster/types";
 import { findUniqueStringsInArrays } from "~/helpers/arrayHelpers";
 import { getUserDataFromSession, STAFF_SESSION_KEY } from "~/session.server";
-import {
-  activeContentTypes,
-  blockMaster,
-} from "~/utility/blockMaster/blockMaster";
+import { blockMaster } from "~/utility/blockMaster/blockMaster";
 import type {
   Block,
+  BlockContent,
   BlockOptions,
   Image,
   PreviewPage,
@@ -42,77 +40,28 @@ export interface BlockWithContent {
   blockOptions: BlockOptions[];
 }
 
-export const getPageType = async (
+export const getPageByPageType = async (
   pageType: PageType,
-  returnPreviews?: boolean,
   id?: string,
 ): Promise<Page> => {
-  if (returnPreviews) {
-    // we find the page with the blockContent
-    const findPageWithBlockContent = prisma[pageType].findFirst as (
-      args: any,
-    ) => any;
+  const findPageByPageType = prisma[pageType].findFirst as (args: any) => any;
 
-    const pageWithBlockContent = await findPageWithBlockContent({
-      where: {
-        id: id ? parseInt(id) : id,
-      },
-      include: {
-        blocks: {
-          include: {
-            blockOptions: true,
-            content: {
-              include: activeContentTypes,
-            },
-          },
-        },
-        previewPage: {
-          select: {
-            id: true,
-            publisher: true,
-            publishedAt: true,
-            blocks: {
-              include: {
-                blockOptions: true,
-                content: {
-                  include: activeContentTypes,
-                },
-              },
-            },
-          },
+  const pageWithBlockContent = await findPageByPageType({
+    where: {
+      id: id ? parseInt(id) : id,
+    },
+    include: {
+      previewPage: {
+        select: {
+          id: true,
+          publisher: true,
+          publishedAt: true,
         },
       },
-    });
+    },
+  });
 
-    return pageWithBlockContent;
-  } else {
-    // we find the page with the blockContent
-    const findPageWithoutBlockContent = prisma[pageType].findFirst as (
-      args: any,
-    ) => any;
-
-    const pageWithOutBlockContent = await findPageWithoutBlockContent({
-      where: {
-        id: id ? parseInt(id) : id,
-      },
-      include: {
-        blocks: {
-          include: {
-            blockOptions: true,
-            content: {
-              include: activeContentTypes,
-            },
-          },
-        },
-      },
-    });
-
-    if (!pageWithOutBlockContent) {
-      throw new Error(`No Page Found`);
-    }
-
-    return pageWithOutBlockContent;
-  }
+  return pageWithBlockContent;
 };
 
 export const upsertPageMeta = async (
@@ -366,7 +315,7 @@ export const updateBlock = async (
     // Populate the updates object based on the provided values
     for (const field in contentData) {
       if (contentData.hasOwnProperty(field)) {
-        const value = contentData[field as keyof BlockContentWithDetails];
+        const value = contentData[field as keyof BlockContent];
 
         if (
           (Array.isArray(value) &&
@@ -378,17 +327,17 @@ export const updateBlock = async (
         ) {
           // the value is an Enum or array of Enums
 
-          updates[field as keyof BlockContentWithDetails] = value;
+          updates[field as keyof BlockContent] = value;
         } else if (value) {
           // If the value is truthy (not null or undefined)
           if (Array.isArray(value) && value.length > 0) {
             // If it's an array, use 'connect' to connect multiple records
-            updates[field as keyof BlockContentWithDetails] = {
+            updates[field as keyof BlockContent] = {
               connect: value.map((item) => ({ id: parseInt(item as any) })),
             };
           } else if (value && !isNaN(parseInt(value))) {
             // If it's not an array, use 'connect' to connect a single record
-            updates[field as keyof BlockContentWithDetails] = {
+            updates[field as keyof BlockContent] = {
               connect: { id: parseInt(value as any) },
             };
           }
@@ -600,7 +549,6 @@ export const publishPage = async (
     );
 
     if (blocksToValidate) {
-      console.log("VALIDATING");
       await Promise.all(
         blocksToValidate.map(async (id: string) => {
           const blockToCheck = await prisma.block.findUnique({
@@ -645,7 +593,6 @@ export const publishPage = async (
 
     return { success: true };
   } catch (error) {
-    console.log("ERROR", error);
     throw new Error("Error publishing page");
   }
 };
@@ -704,7 +651,6 @@ export const revertPreviewChanges = async (
 
     return { success: true };
   } catch (error) {
-    console.log("ERROR", error);
     throw new Error("Error Reverting Page Changes");
   }
 };

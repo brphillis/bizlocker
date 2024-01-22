@@ -2,7 +2,9 @@ import type { BlockOptions } from "@prisma/client";
 import type { BlockMasterOptions } from "~/utility/blockMaster/types";
 import {
   fontSizeSelectValues,
+  fontWeightSelectValues,
   mobileFontSizeSelectValues,
+  mobilefontWeightSelectValues,
 } from "../../Values/font";
 import ItemInput from "../_FieldComponents/ItemInput";
 import ItemColorInput from "../_FieldComponents/ItemColorInput";
@@ -62,6 +64,28 @@ const Text = ({
           blockMasterOption={selectedBlockOptions?.itemShortTextSizesMobile}
           defaultValues={defaultValues?.itemShortTextSizesMobile}
           selections={mobileFontSizeSelectValues}
+        />
+
+        <ItemSelectInput
+          title="Weights"
+          formName="itemShortTextFontWeights"
+          selectedItems={selectedItems}
+          valueName="Weight"
+          blockMasterOption={selectedBlockOptions?.itemShortTextFontWeights}
+          defaultValues={defaultValues?.itemShortTextFontWeights}
+          selections={fontWeightSelectValues}
+        />
+
+        <ItemSelectInput
+          title="Weights Mobile"
+          formName="itemShortTextFontWeightsMobile"
+          selectedItems={selectedItems}
+          valueName="Weight"
+          blockMasterOption={
+            selectedBlockOptions?.itemShortTextFontWeightsMobile
+          }
+          defaultValues={defaultValues?.itemShortTextFontWeightsMobile}
+          selections={mobilefontWeightSelectValues}
         />
       </div>
     </details>

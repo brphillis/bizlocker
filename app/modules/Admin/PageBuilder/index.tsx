@@ -75,7 +75,7 @@ export const PageBuilderModule = () => {
 
   useEffect(() => {
     setLoading(false);
-  }, [updateSuccess]);
+  }, [updateSuccess, notification]);
 
   return (
     <>
@@ -98,6 +98,7 @@ export const PageBuilderModule = () => {
               articleCategories={articleCategories}
               colors={colors}
               currentBlocks={currentBlocks}
+              loading={loading}
               metaValidationError={metaValidationError}
               pageType={pageType}
               previewPage={previewPage}
@@ -107,6 +108,7 @@ export const PageBuilderModule = () => {
               revertSuccess={revertSuccess}
               setEditingContent={setEditingContent}
               setEditingIndex={setEditingIndex}
+              setLoading={setLoading}
               setSelectedBlock={setSelectedBlock}
               setSelectedItems={setSelectedItems}
             />

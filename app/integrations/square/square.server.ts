@@ -15,7 +15,7 @@ export const squareClient = new Client({
 export const squareLocationId = "LB9PSX20NJ5X8";
 
 export const CartItemsToSquareApiLineItems = (
-  cartItems: CartItemWithDetails[]
+  cartItems: CartItemWithDetails[],
 ): OrderLineItem[] => {
   return cartItems.map((item: CartItemWithDetails) => {
     const lineItem: OrderLineItem = {
@@ -25,7 +25,7 @@ export const CartItemsToSquareApiLineItems = (
         amount: BigInt(
           item?.variant?.isOnSale
             ? Math.round(item.variant.salePrice! * 100)
-            : Math.round(item.variant!.price * 100)
+            : Math.round(item.variant!.price * 100),
         ),
         currency: "AUD",
       },
@@ -36,7 +36,7 @@ export const CartItemsToSquareApiLineItems = (
 };
 
 export const createSquarePaymentLink = async (
-  cartItems: CartItemWithDetails[]
+  cartItems: CartItemWithDetails[],
 ): Promise<{
   createPaymentLinkResponse: CreatePaymentLinkResponse;
   confirmCode: string;
@@ -53,7 +53,7 @@ export const createSquarePaymentLink = async (
       lineItems: squareLineItems,
     },
     checkoutOptions: {
-      redirectUrl: `${process.env.SITE_URL}/order/payment-confirm/${confirmCode}`,
+      redirectUrl: `${process.env.SITE_URL}/payment-confirm/${confirmCode}`,
       askForShippingAddress: false,
       acceptedPaymentMethods: {
         applePay: true,
@@ -63,7 +63,7 @@ export const createSquarePaymentLink = async (
   };
 
   const { result } = (await squareClient.checkoutApi.createPaymentLink(
-    orderRequest
+    orderRequest,
   )) as any;
 
   const createPaymentLinkResponse = result;

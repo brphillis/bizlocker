@@ -41,6 +41,14 @@ export interface BlockContentWithDetails {
   icon?: string[];
 }
 
+type Unarray<T> = T extends (infer U)[] ? U : T;
+
+type UnarrayProperties<T> = {
+  [K in keyof T]: Unarray<T[K]>;
+};
+
+export type BlockContentSorted = UnarrayProperties<BlockContentWithDetails>;
+
 export const getBlocks = async (
   page: Page,
   fetchNestedContent?: boolean,

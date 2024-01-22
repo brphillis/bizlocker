@@ -69,7 +69,7 @@ export const sortBlocks = ({
   blocks,
   blockOrder,
 }: Page): BlockWithContent[] => {
-  const sortedBlocks = blocks.sort((a, b) => {
+  let sortedBlocks = blocks.sort((a, b) => {
     // Find the index of each object's ID in the string array
     const indexA = blockOrder.indexOf(a?.id);
     const indexB = blockOrder.indexOf(b?.id);

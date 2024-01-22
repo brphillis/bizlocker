@@ -5,14 +5,12 @@ import type { BlockContentType, BlockName } from "~/utility/blockMaster/types";
 
 type Props = {
   selectedBlock: BlockName | undefined;
-  selectedItems: ContentSelection[];
   setSelectedItems: Function;
   articleCategories: ArticleCategory[];
   defaultValues: BlockContentWithDetails;
 };
 
 const ArticleBlockOptions = ({
-  selectedItems,
   setSelectedItems,
   selectedBlock,
   defaultValues,

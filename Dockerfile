@@ -32,6 +32,7 @@ WORKDIR /brockdev
 COPY --from=deps /brockdev/node_modules /brockdev/node_modules
 
 ADD prisma .
+
 RUN npx prisma generate
 
 ADD . .

@@ -1,16 +1,16 @@
-import type { BlockContentWithDetails } from "~/models/blocks.server";
+import type { BlockContentSorted } from "~/models/blocks.server";
 import type { BlockOptions } from "@prisma/client";
 import { parseOptions } from "~/utility/parseOptions";
 import parse from "html-react-parser";
 import { getThemeColorValueByName } from "~/utility/colors";
 
 type Props = {
-  content: BlockContentWithDetails;
+  content: BlockContentSorted[];
   options: BlockOptions[];
 };
 
 const TextBlock = ({ content, options: ArrayOptions }: Props) => {
-  const { richText } = content || {};
+  const { richText } = content[0] || {};
   const options = ArrayOptions && ArrayOptions[0];
   const { backgroundColorPrimary, backgroundWidthPrimary, margin, size } =
     options || {};

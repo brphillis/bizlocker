@@ -6,25 +6,45 @@ import {
   disconnectBlock,
 } from "./pageBuilder.server";
 import type { PageType } from "~/utility/pageBuilder";
-import { activeContentTypes } from "~/utility/blockMaster/blockMaster";
+import { buildBlocksContentQuery } from "~/utility/blockMaster/blockMaster";
 import { getBlocks } from "./blocks.server";
 
-export const getPreviewPage = async (id: string): Promise<Page | null> => {
-  return (await prisma.previewPage.findUnique({
-    where: { id: parseInt(id) },
+export const getPreviewPage = async (id: string): Promise<Page | undefined> => {
+  // get the homepage
+  const previewPage = await prisma.previewPage.findFirst({
+    where: {
+      id: Number(id),
+    },
     include: {
       blocks: {
-        include: {
-          blockOptions: true,
-          content: {
-            include: activeContentTypes,
-          },
+        select: {
+          id: true,
+          name: true,
         },
       },
-      articleCategories: true,
-      thumbnail: true,
     },
-  })) as unknown as Page;
+  });
+
+  if (previewPage && previewPage.blocks) {
+    // get the previewPage
+    const previewPageWithContent = (await prisma.previewPage.findFirst({
+      where: {
+        id: Number(id),
+      },
+      include: {
+        blocks: {
+          include: {
+            blockOptions: true,
+            content: buildBlocksContentQuery(previewPage.blocks),
+          },
+        },
+        articleCategories: true,
+        thumbnail: true,
+      },
+    })) as unknown as Page;
+
+    return previewPageWithContent;
+  }
 };
 
 export const addPreviewPage = async (

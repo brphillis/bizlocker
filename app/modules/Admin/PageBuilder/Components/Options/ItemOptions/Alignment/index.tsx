@@ -3,6 +3,8 @@ import type { BlockMasterOptions } from "~/utility/blockMaster/types";
 import {
   alignSelectMobileValues,
   alignSelectValues,
+  gapSelectMobileValues,
+  gapSelectValues,
   justifySelectMobileValues,
   justifySelectValues,
   objectPositionMobileSelectValues,
@@ -65,6 +67,26 @@ const Alignment = ({
           blockMasterOption={selectedBlockOptions?.itemAlignMobile}
           defaultValues={defaultValues?.itemAlignMobile}
           selections={alignSelectMobileValues}
+        />
+
+        <ItemSelectInput
+          title="Gap"
+          formName="itemGap"
+          selectedItems={selectedItems}
+          valueName="Gap"
+          blockMasterOption={selectedBlockOptions?.itemGap}
+          defaultValues={defaultValues?.itemGap}
+          selections={gapSelectValues}
+        />
+
+        <ItemSelectInput
+          title="Gap Mobile"
+          formName="itemGapMobile"
+          selectedItems={selectedItems}
+          valueName="Gap Mobile"
+          blockMasterOption={selectedBlockOptions?.itemGapMobile}
+          defaultValues={defaultValues?.itemGapMobile}
+          selections={gapSelectMobileValues}
         />
 
         <ItemSelectInput

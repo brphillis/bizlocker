@@ -22,7 +22,7 @@ export const generateRefreshToken = (user: any) => {
 
 export const tokenAuth = async (
   request: Request,
-  sessionKey: string = USER_SESSION_KEY
+  sessionKey: string = USER_SESSION_KEY,
 ) => {
   const session = await getSession(request);
 

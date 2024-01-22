@@ -130,7 +130,7 @@ model BlockContent {
 }
 
 model BlockOptions {
-  id                                      Int      @id @default(autoincrement())
+  id                                      Int        @id @default(autoincrement())
   align                                   String?
   alignMobile                             String?
   autoplay                                Boolean?
@@ -150,7 +150,7 @@ model BlockOptions {
   backgroundPatternSizeSecondary          Int?
   backgroundWidthPrimary                  String?
   backgroundWidthSecondary                String?
-  block                                   Block    @relation("BlockToBlockOptions", fields: [blockId], references: [id])
+  block                                   Block      @relation("BlockToBlockOptions", fields: [blockId], references: [id])
   blockId                                 Int
   borderColor                             String?
   borderDisplay                           String?
@@ -225,6 +225,8 @@ model BlockOptions {
   itemColorsSecondary                     String[]
   itemShortText                           String[]
   itemShortTextColors                     String[]
+  itemShortTextFontWeights                String[]
+  itemShortTextFontWeightsMobile          String[]
   itemShortTextSizes                      String[]
   itemShortTextSizesMobile                String[]
   itemTitleColors                         String[]
@@ -233,51 +235,55 @@ model BlockOptions {
   itemTitleFontWeightsMobile              String[]
   itemTitleSizes                          String[]
   itemTitleSizesMobile                    String[]
-
-  itemMarginTop           String[]
-  itemMarginTopMobile     String[]
-  itemMarginRight         String[]
-  itemMarginRightMobile   String[]
-  itemMarginBottom        String[]
-  itemMarginBottomMobile  String[]
-  itemMarginLeft          String[]
-  itemMarginLeftMobile    String[]
-  itemPaddingTop          String[]
-  itemPaddingTopMobile    String[]
-  itemPaddingRight        String[]
-  itemPaddingRightMobile  String[]
-  itemPaddingBottom       String[]
-  itemPaddingBottomMobile String[]
-  itemPaddingLeft         String[]
-  itemPaddingLeftMobile   String[]
-
-  justify               String?
-  justifyMobile         String?
-  linkPrimary           String?
-  linkSecondary         String?
-  margin                String?
-  order                 Int?
-  padding               String?
-  rows                  Int?
-  shortText             String?
-  shortTextColor        String?
-  size                  String?
-  sizeMobile            String?
-  sortBy                SortBy?
-  sortOrder             SortOrder?
-  speed                 Int?
-  style                 String?
-  title                 String?
-  titleAlign            String?
-  titleColor            String?
-  titleSize             String?
-  titleSizeMobile       String?
-  titleFontWeight       String?
-  titleFontWeightMobile String?
-  width                 String?
-  widthMobile           String?
-  createdAt             String?
-  updatedAt             String?
+  itemMarginTop                           String[]
+  itemMarginTopMobile                     String[]
+  itemMarginRight                         String[]
+  itemMarginRightMobile                   String[]
+  itemMarginBottom                        String[]
+  itemMarginBottomMobile                  String[]
+  itemMarginLeft                          String[]
+  itemMarginLeftMobile                    String[]
+  itemPaddingTop                          String[]
+  itemPaddingTopMobile                    String[]
+  itemPaddingRight                        String[]
+  itemPaddingRightMobile                  String[]
+  itemPaddingBottom                       String[]
+  itemPaddingBottomMobile                 String[]
+  itemPaddingLeft                         String[]
+  itemPaddingLeftMobile                   String[]
+  itemGap                                 String[]
+  itemGapMobile                           String[]
+  justify                                 String?
+  justifyMobile                           String?
+  linkPrimary                             String?
+  linkSecondary                           String?
+  margin                                  String?
+  order                                   Int?
+  padding                                 String?
+  rows                                    Int?
+  shortText                               String?
+  shortTextColor                          String?
+  size                                    String?
+  sizeMobile                              String?
+  sortBy                                  SortBy?
+  sortOrder                               SortOrder?
+  speed                                   Int?
+  style                                   String?
+  title                                   String?
+  titleAlign                              String?
+  titleColor                              String?
+  titleSize                               String?
+  titleSizeMobile                         String?
+  titleFontWeight                         String?
+  titleFontWeightMobile                   String?
+  width                                   String?
+  widthMobile                             String?
+  shortTextSize                           String?
+  shortTextSizeMobile                     String?
+  shortTextFontWeight                     String?
+  shortTextFontWeightMobile               String?
+  createdAt                               String?
+  updatedAt                               String?
 }
 
 model Store {
@@ -379,7 +385,7 @@ model User {
 model Verifier {
   id         Int         @id @default(autoincrement())
   code       String?     @default(cuid())
-  email      String      @unique
+  email      String
   expiration DateTime    @default(dbgenerated("NOW() + interval '3 hours'"))
   type       VerifyTypes
 

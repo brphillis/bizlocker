@@ -1,18 +1,15 @@
-import type { BlockContentWithDetails } from "~/models/blocks.server";
+import type { BlockContentSorted } from "~/models/blocks.server";
 import type { BlockOptions } from "@prisma/client";
 import { ClientOnly } from "~/components/Client/ClientOnly";
-import { concatBlockContent } from "~/helpers/contentHelpers";
 import Carousel from "./Carousel/index.client";
 import SEOCardSkeleton from "~/components/Client/Skeletons/SEOCardSkeleton";
 
 type Props = {
-  content: BlockContentWithDetails;
+  content: BlockContentSorted[];
   options: BlockOptions[];
 };
 
 const CarouselBlock = ({ content, options: ArrayOptions }: Props) => {
-  const joinedContent = concatBlockContent(content);
-
   const {
     height,
     heightMobile,
@@ -41,9 +38,7 @@ const CarouselBlock = ({ content, options: ArrayOptions }: Props) => {
         />
       }
     >
-      {() => (
-        <Carousel options={ArrayOptions?.[0]} joinedContent={joinedContent} />
-      )}
+      {() => <Carousel options={ArrayOptions?.[0]} content={content} />}
     </ClientOnly>
   );
 };

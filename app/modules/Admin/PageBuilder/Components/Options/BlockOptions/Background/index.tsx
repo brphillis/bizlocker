@@ -50,7 +50,7 @@ const BackgroundOptions = ({ defaultValues, selectedBlockOptions }: Props) => {
 
               <BlockColorInput
                 valueName="Color"
-                formName="backgroundColor"
+                formName="backgroundColorPrimary"
                 blockMasterOption={selectedBlockOptions?.backgroundColorPrimary}
                 defaultValue={defaultValues?.backgroundColorPrimary}
                 type="bg"
@@ -58,7 +58,7 @@ const BackgroundOptions = ({ defaultValues, selectedBlockOptions }: Props) => {
 
               <BlockSelectInput
                 valueName="Width"
-                formName="backgroundWidth"
+                formName="backgroundWidthPrimary"
                 blockMasterOption={selectedBlockOptions?.backgroundWidthPrimary}
                 defaultValue={defaultValues?.backgroundWidthPrimary}
                 selections={blockWidthSelectValues}
@@ -66,7 +66,7 @@ const BackgroundOptions = ({ defaultValues, selectedBlockOptions }: Props) => {
 
               <BlockInput
                 valueName="Brightness"
-                formName="backgroundBrightness"
+                formName="backgroundBrightnessPrimary"
                 blockMasterOption={
                   selectedBlockOptions?.backgroundBrightnessPrimary
                 }
@@ -77,7 +77,7 @@ const BackgroundOptions = ({ defaultValues, selectedBlockOptions }: Props) => {
 
               <BlockSelectInput
                 valueName="Pattern"
-                formName="backgroundPatternName"
+                formName="backgroundPatternNamePrimary"
                 blockMasterOption={
                   selectedBlockOptions?.backgroundPatternNamePrimary
                 }
@@ -87,7 +87,7 @@ const BackgroundOptions = ({ defaultValues, selectedBlockOptions }: Props) => {
 
               <BlockColorInput
                 valueName="Pattern Color"
-                formName="backgroundPatternColor"
+                formName="backgroundPatternColorPrimary"
                 blockMasterOption={
                   selectedBlockOptions?.backgroundPatternColorPrimary
                 }
@@ -96,7 +96,7 @@ const BackgroundOptions = ({ defaultValues, selectedBlockOptions }: Props) => {
 
               <BlockInput
                 valueName="Pattern Size"
-                formName="backgroundPatternSize"
+                formName="backgroundPatternSizePrimary"
                 blockMasterOption={
                   selectedBlockOptions?.backgroundPatternSizePrimary
                 }
@@ -108,7 +108,7 @@ const BackgroundOptions = ({ defaultValues, selectedBlockOptions }: Props) => {
 
               <BlockInput
                 valueName="Pattern Opacity"
-                formName="backgroundPatternOpacity"
+                formName="backgroundPatternOpacityPrimary"
                 blockMasterOption={
                   selectedBlockOptions?.backgroundPatternOpacityPrimary
                 }
@@ -136,7 +136,7 @@ const BackgroundOptions = ({ defaultValues, selectedBlockOptions }: Props) => {
             <div className="flex flex-row gap-3 flex-wrap justify-start w-full">
               <BlockSelectInput
                 valueName="Background"
-                formName="backgroundDisplay"
+                formName="backgroundDisplaySecondary"
                 blockMasterOption={
                   selectedBlockOptions?.backgroundDisplaySecondary
                 }

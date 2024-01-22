@@ -1,11 +1,12 @@
 import { prisma } from "~/db.server";
 import { sendEmailVerificationEmail } from "~/integrations/sendgrid/emails/emailVerification";
 import { sendPasswordResetEmail } from "~/integrations/sendgrid/emails/passwordReset";
+import { ValidationErrors } from "~/utility/validate";
 
 type VerifyTypes = "email" | "password";
 
 export const initiateVerifyUserAccount = async (
-  email: string
+  email: string,
 ): Promise<{ success: boolean }> => {
   const { code: verificationCode } = await prisma.verifier.create({
     data: {
@@ -22,7 +23,7 @@ export const initiateVerifyUserAccount = async (
 
 export const requestNewVerifyEmail = async (
   email: string,
-  type: VerifyTypes
+  type: VerifyTypes,
 ): Promise<{ success: boolean }> => {
   const existingVerifier = await prisma.verifier.findFirst({
     where: { email, type },
@@ -56,7 +57,7 @@ export const requestNewVerifyEmail = async (
 
 export const verifyUserAccount = async (
   email: string,
-  verificationCode: string
+  verificationCode: string,
 ): Promise<{ success: boolean; email: string | null }> => {
   try {
     const {
@@ -92,8 +93,27 @@ export const verifyUserAccount = async (
 };
 
 export const initiatePasswordReset = async (
-  email: string
-): Promise<{ success: boolean }> => {
+  email: string,
+): Promise<{ success: boolean; validationErrors?: ValidationErrors }> => {
+  const existingPasswordVerification = await prisma.verifier.findFirst({
+    where: {
+      email,
+      type: "password",
+      expiration: {
+        gte: new Date(),
+      },
+    },
+  });
+
+  if (existingPasswordVerification) {
+    return {
+      success: false,
+      validationErrors: {
+        existing: "Request Recently Recieved, wait 3 Hours.",
+      },
+    };
+  }
+
   const { code: verificationCode } = await prisma.verifier.create({
     data: {
       email: email,
@@ -110,7 +130,7 @@ export const initiatePasswordReset = async (
 export const verifyPasswordReset = async (
   email: string,
   verificationCode: string,
-  deleteVerifier?: boolean
+  deleteVerifier?: boolean,
 ): Promise<{ success: boolean; email: string | null }> => {
   try {
     const {

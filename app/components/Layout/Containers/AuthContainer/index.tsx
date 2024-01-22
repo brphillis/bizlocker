@@ -5,7 +5,7 @@ type Props = {
   sloganText?: string;
 };
 
-const AuthPageWrapper = ({ children, sloganText }: Props) => {
+const AuthContainer = ({ children, sloganText }: Props) => {
   return (
     <Form
       method="POST"
@@ -21,4 +21,4 @@ const AuthPageWrapper = ({ children, sloganText }: Props) => {
   );
 };
 
-export default AuthPageWrapper;
+export default AuthContainer;

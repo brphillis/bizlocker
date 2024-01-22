@@ -188,7 +188,6 @@ const PanelBlock = ({
         {selectedBlock === "article" && (
           <ArticleBlockOptions
             selectedBlock={selectedBlock}
-            selectedItems={selectedItems}
             setSelectedItems={setSelectedItems}
             articleCategories={articleCategories}
             defaultValues={

@@ -5,14 +5,15 @@ import {
   returnOtherColorPrefix,
 } from "~/utility/colors";
 import type { BlockOptions } from "@prisma/client";
-import type { BlockContentWithDetails } from "~/models/blocks.server";
+import type { BlockContentSorted } from "~/models/blocks.server";
 import type { MapFunctions } from "~/components/Map/types";
 import { ClientOnly } from "~/components/Client/ClientOnly";
 import { getCountryFromISO3166 } from "~/utility/countryList";
 import type { StoreWithDetails } from "~/models/stores.server";
 import { IoCall, IoLocationSharp, IoPrint } from "react-icons/io5";
+
 type Props = {
-  content: BlockContentWithDetails;
+  content: BlockContentSorted[];
   options: BlockOptions[];
 };
 
@@ -34,7 +35,7 @@ const MapBlock = ({ content, options: optionsArray }: Props) => {
     colorPrimary,
   } = options || {};
 
-  const locations = content.store as StoreWithDetails[];
+  const locations = content.map((e) => e.store) as StoreWithDetails[];
 
   const mapRef = useRef<MapFunctions | null>(null);
 
@@ -123,9 +124,9 @@ const MapBlock = ({ content, options: optionsArray }: Props) => {
                             : "text-brand-black"
                         }`}
                       >
-                        <IoLocationSharp size={28} />
+                        <IoLocationSharp size={42} />
                       </div>
-                      <div className="font-bold text-brand-black transition-all duration-500">
+                      <div className="font-bold text-brand-black transition-all duration-500 text-xl max-md:text-lg">
                         {name}
                       </div>
                     </div>
@@ -150,7 +151,7 @@ const MapBlock = ({ content, options: optionsArray }: Props) => {
                                 : "text-brand-black"
                             }`}
                           >
-                            <IoCall size={14} />
+                            <IoCall size={22} />
                           </div>
                           <a
                             className="transition-all duration-500 hover:scale-110"
@@ -167,7 +168,7 @@ const MapBlock = ({ content, options: optionsArray }: Props) => {
                                 : "text-brand-black"
                             }`}
                           >
-                            <IoPrint size={14} />
+                            <IoPrint size={22} />
                           </div>
 
                           <a
