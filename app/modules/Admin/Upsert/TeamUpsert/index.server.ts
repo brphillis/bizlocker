@@ -1,25 +1,21 @@
 import { json } from "@remix-run/node";
-import type { Params } from "@remix-run/react";
-import type { PageNotification } from "~/hooks/PageNotification";
-import { getStores } from "~/models/stores.server";
+import { validateForm } from "~/utility/validate";
+import { TeamWithStaff } from "~/models/Teams/types";
+import { getStores } from "~/models/Stores/index.server";
+import { PageNotification } from "~/hooks/PageNotification";
 import {
   getTeam,
   removeTeamMemberFromTeam,
-  type TeamWithStaff,
   upsertTeam,
-} from "~/models/teams.server";
-import { validateForm } from "~/utility/validate";
+} from "~/models/Teams/index.server";
 
 const validateOptions = {
   name: true,
 };
 
-export const teamUpsertLoader = async (
-  request: Request,
-  params: Params<string>,
-) => {
-  let { searchParams } = new URL(request.url);
-  let id = searchParams.get("teamId");
+export const teamUpsertLoader = async (request: Request) => {
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get("teamId");
 
   if (!id) {
     throw new Response(null, {
@@ -49,15 +45,12 @@ export const teamUpsertLoader = async (
   return json({ team, stores });
 };
 
-export const teamUpsertAction = async (
-  request: Request,
-  params: Params<string>,
-) => {
+export const teamUpsertAction = async (request: Request) => {
   let notification: PageNotification;
 
-  let { searchParams } = new URL(request.url);
+  const { searchParams } = new URL(request.url);
   const teamId = searchParams.get("teamId");
-  let id = teamId === "add" || !teamId ? undefined : teamId;
+  const id = teamId === "add" || !teamId ? undefined : teamId;
 
   const { formEntries, formErrors } = validateForm(
     await request.formData(),
@@ -67,7 +60,7 @@ export const teamUpsertAction = async (
   const { name, location, isActive } = formEntries;
 
   switch (formEntries._action) {
-    case "upsert":
+    case "upsert": {
       if (formErrors) {
         return { serverValidationErrors: formErrors };
       }
@@ -87,8 +80,9 @@ export const teamUpsertAction = async (
       };
 
       return { success: true, notification };
+    }
 
-    case "removeUser":
+    case "removeUser": {
       const { staffId, teamId } = formEntries;
 
       try {
@@ -108,5 +102,6 @@ export const teamUpsertAction = async (
 
         return { success: false, notification };
       }
+    }
   }
 };

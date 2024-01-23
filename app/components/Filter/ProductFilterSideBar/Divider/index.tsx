@@ -1,7 +1,19 @@
-type Props = {};
+type Props = {
+  extendStyle?: string;
+  color?: "black" | "white";
+};
 
-const Divider = (props: Props) => {
-  return <div className="my-3 w-full border-b-2 border-brand-black/5" />;
+const Divider = ({ extendStyle, color }: Props) => {
+  let currentColor = "border-brand-black/5";
+
+  switch (color) {
+    case "white":
+      currentColor = "border-brand-white/5";
+  }
+
+  return (
+    <div className={`my-3 w-full border-b-2 ${currentColor} ${extendStyle}`} />
+  );
 };
 
 export default Divider;

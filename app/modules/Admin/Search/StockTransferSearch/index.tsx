@@ -1,6 +1,3 @@
-import Pagination from "~/components/Pagination";
-import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
-import AdminPageWrapper from "~/components/Layout/Wrappers/AdminPageWrapper";
 import {
   Form,
   Outlet,
@@ -8,10 +5,13 @@ import {
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
-import { type StockTransferRequestWithDetails } from "~/models/stock.server";
+import Pagination from "~/components/Pagination";
+import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
+import AdminPageWrapper from "~/components/Layout/Wrappers/AdminPageWrapper";
 import BasicTable from "~/components/Tables/BasicTable";
 import AdminContentSearch from "~/components/Search/AdminContentSearch";
-import type { stockTransferSearchLoader } from "./index.server";
+import { stockTransferSearchLoader } from "./index.server";
+import { StockTransferRequestWithDetails } from "~/models/Stock/types";
 
 const StockTransferSearch = () => {
   const { stockTransfers, totalPages, stores } =

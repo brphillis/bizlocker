@@ -3,7 +3,7 @@ import { formatDate, isValidDate } from "~/helpers/dateHelpers";
 import { capitalizeAndSpace, capitalizeFirst } from "~/helpers/stringHelpers";
 
 type Props = {
-  objectArray: Object[];
+  objectArray: object[];
   currentPage?: number;
   onRowClick?: (id: string | number, index: number, name: string) => void;
   size?: "xs" | "sm" | "md" | "lg";
@@ -58,11 +58,11 @@ const BasicTable = ({
           <tr className="text-center">
             {currentPage && <th>#</th>}
 
-            {Object.keys(objectArray[0]).map((obj: string | any, i) => {
-              if (obj.toString().toLowerCase() !== "id") {
+            {Object.keys(objectArray[0]).map((obj: string | unknown, i) => {
+              if ((obj as string).toString().toLowerCase() !== "id") {
                 return (
                   <th key={"TableHead_" + obj + i}>
-                    {capitalizeAndSpace(obj)}
+                    {capitalizeAndSpace(obj as string)}
                   </th>
                 );
               } else return null;
@@ -70,8 +70,8 @@ const BasicTable = ({
           </tr>
         </thead>
         <tbody>
+          {/*  eslint-disable-next-line */}
           {objectArray?.map((obj: string | any, i) => {
-            console.log("OBJ", objectArray);
             return (
               <tr
                 key={"TableRow_" + obj + i}
@@ -79,7 +79,7 @@ const BasicTable = ({
                 onClick={() => {
                   !onRowClick && obj.id
                     ? navigate(
-                        `${location.pathname + "/" + obj.id}${location.search}`
+                        `${location.pathname + "/" + obj.id}${location.search}`,
                       )
                     : onRowClick && onRowClick(obj.id, i, obj.name);
                 }}

@@ -1,10 +1,10 @@
 import Pagination from "~/components/Pagination";
 import BasicTable from "~/components/Tables/BasicTable";
 import ProductSort from "~/components/Sorting/ProductSort";
+import { ProductWithDetails } from "~/models/Products/types";
 import AdminContentSearch from "~/components/Search/AdminContentSearch";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/Wrappers/AdminPageWrapper";
-import { type ProductWithDetails } from "~/models/products.server";
 import {
   Form,
   Outlet,
@@ -12,7 +12,7 @@ import {
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
-import type { productSearchLoader } from "./index.server";
+import { productSearchLoader } from "./index.server";
 
 const ProductSearch = () => {
   const { products, totalPages, productSubCategories, brands } =

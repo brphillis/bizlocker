@@ -1,11 +1,7 @@
-import type { Params } from "@remix-run/react";
 import { json } from "@remix-run/node";
-import { searchArticleCategories } from "~/models/articleCategories.server";
+import { searchArticleCategories } from "~/models/ArticleCategories/index.server";
 
-export const articleCategorySearchLoader = async (
-  request: Request,
-  params: Params<string>,
-) => {
+export const articleCategorySearchLoader = async (request: Request) => {
   const url = new URL(request.url);
 
   const searchQuery = {

@@ -1,27 +1,23 @@
-import type {
-  BlockOptions,
-  Brand,
-  Product,
-  ProductCategory,
-  ProductSubCategory,
-} from "@prisma/client";
-import ProductGrid from "~/components/Grids/ProductGrid";
 import Spinner from "~/components/Spinner";
-import type { BlockContentWithDetails } from "~/models/blocks.server";
-
+import { BlockOptions, Product } from "@prisma/client";
+import ProductGrid from "~/components/Grids/ProductGrid";
+import { BlockContentSorted } from "~/models/Blocks/types";
 type Props = {
-  content: BlockContentWithDetails;
+  content: BlockContentSorted[];
   options: BlockOptions[];
 };
 
 const ProductBlock = ({ content, options: optionsArray }: Props) => {
   const options = optionsArray[0];
-  const products = content?.product as Product[];
-  const productSubCategory = content
-    ?.productSubCategory?.[0] as ProductSubCategory;
-  const productCategory = content?.productCategory?.[0] as ProductCategory;
-  const brand = content?.brand?.[0] as Brand;
-  const gender = content.gender;
+
+  const products = content
+    .map((e) => e.product as Product)
+    .filter((product) => product !== undefined);
+
+  const productCategory = content[0]?.productCategory;
+  const productSubCategory = content[0]?.productSubCategory;
+  const brand = content[0]?.brand;
+  const gender = content[0]?.gender;
 
   const determineSortPhrase = (sortBy: SortBy) => {
     if (
@@ -52,7 +48,7 @@ const ProductBlock = ({ content, options: optionsArray }: Props) => {
 
   const determineDisplayedFilter = () => {
     if (
-      brand?.name.toLowerCase() === "none" &&
+      brand?.name.toLowerCase() === "generic" &&
       productSubCategory?.name &&
       productCategory?.name &&
       gender
@@ -60,7 +56,7 @@ const ProductBlock = ({ content, options: optionsArray }: Props) => {
       return;
     }
 
-    if (brand?.name && brand?.name.toLowerCase() !== "none") {
+    if (brand?.name && brand?.name.toLowerCase() !== "generic") {
       return brand?.name;
     }
     if (productSubCategory?.name) {
@@ -93,7 +89,9 @@ const ProductBlock = ({ content, options: optionsArray }: Props) => {
     <>
       <p className="select-none self-start pl-3 text-xl font-bold md:pl-1">
         {options?.sortBy ? determineSortPhrase(options?.sortBy) : null}
-        <span className="text-2xl">{determineDisplayedFilter()}</span>
+        <span className="text-2xl">
+          {determineDisplayedFilter() || "Our Range"}
+        </span>
       </p>
 
       {products && (

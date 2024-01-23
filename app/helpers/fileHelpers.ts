@@ -7,7 +7,7 @@ export type NewImage = {
 };
 
 export const ConvertToBase64Image = async (
-  event: ChangeEvent<HTMLInputElement>
+  event: ChangeEvent<HTMLInputElement>,
 ): Promise<NewImage | undefined> => {
   const file = event.target.files?.[0];
   if (file && file.type.includes("image")) {
@@ -34,15 +34,15 @@ export const ConvertToBase64Image = async (
   }
 };
 
-export const base64toBufferedBinary = (dataURI: any) => {
-  var BASE64_MARKER = ";base64,";
-  var base64Index = dataURI.indexOf(BASE64_MARKER) + BASE64_MARKER.length;
-  var base64 = dataURI.substring(base64Index);
-  var raw = atob(base64);
-  var rawLength = raw.length;
-  var array = new Uint8Array(new ArrayBuffer(rawLength));
+export const base64toBufferedBinary = (dataURI: string) => {
+  const BASE64_MARKER = ";base64,";
+  const base64Index = dataURI.indexOf(BASE64_MARKER) + BASE64_MARKER.length;
+  const base64 = dataURI.substring(base64Index);
+  const raw = atob(base64);
+  const rawLength = raw.length;
+  const array = new Uint8Array(new ArrayBuffer(rawLength));
 
-  for (var i = 0; i < rawLength; i++) {
+  for (let i = 0; i < rawLength; i++) {
     array[i] = raw.charCodeAt(i);
   }
   return Buffer.from(array);

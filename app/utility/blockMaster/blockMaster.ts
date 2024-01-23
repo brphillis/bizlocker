@@ -13,10 +13,12 @@ export type BlockMasterOptions = TransformToOptionalBooleans<BlockOptions>;
 
 export interface BlockMaster {
   name: string;
+  // we can expect any component
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   component: React.ComponentType<any>;
   icon: string;
   options: BlockMasterOptions;
-  content: Object;
+  content: object | null;
   addOns?: string[];
   contentRequired?: boolean;
   maxContentItems?: number;
@@ -29,11 +31,11 @@ export const blockMaster: BlockMaster[] = [
     icon: "IoTabletLandscape",
     maxContentItems: 1,
     options: {
-      backgroundColor: true,
+      backgroundColorPrimary: true,
       backgroundColorSecondary: true,
-      backgroundPatternColor: true,
-      backgroundPatternName: true,
-      backgroundPatternSize: true,
+      backgroundPatternColorPrimary: true,
+      backgroundPatternNamePrimary: true,
+      backgroundPatternSizePrimary: true,
       borderColor: true,
       borderDisplay: true,
       borderRadius: true,
@@ -47,19 +49,23 @@ export const blockMaster: BlockMaster[] = [
       titleColor: true,
       titleFontWeight: true,
       titleFontWeightMobile: true,
+      titleSize: true,
+      titleSizeMobile: true,
+      justify: true,
+      justifyMobile: true,
+      align: true,
+      alignMobile: true,
     },
     content: {
-      include: {
-        image: true,
-        promotion: {
-          include: {
-            bannerImage: true,
-          },
+      image: true,
+      promotion: {
+        include: {
+          bannerImage: true,
         },
-        campaign: {
-          include: {
-            bannerImage: true,
-          },
+      },
+      campaign: {
+        include: {
+          bannerImage: true,
         },
       },
     },
@@ -71,13 +77,13 @@ export const blockMaster: BlockMaster[] = [
     maxContentItems: 10,
     options: {
       autoplay: true,
-      backgroundBrightness: true,
-      backgroundColor: true,
-      backgroundDisplay: true,
-      backgroundPatternColor: true,
-      backgroundPatternName: true,
-      backgroundPatternSize: true,
-      backgroundWidth: true,
+      backgroundBrightnessPrimary: true,
+      backgroundColorPrimary: true,
+      backgroundDisplayPrimary: true,
+      backgroundPatternColorPrimary: true,
+      backgroundPatternNamePrimary: true,
+      backgroundPatternSizePrimary: true,
+      backgroundWidthPrimary: true,
       columns: true,
       columnsMobile: true,
       height: true,
@@ -85,9 +91,12 @@ export const blockMaster: BlockMaster[] = [
       itemAlign: true,
       itemAlignMobile: true,
       itemBackgroundColorsPrimary: true,
-      itemBackgroundColorsSecondary: true,
-      itemBackgroundDisplaysSecondary: true,
+      itemBackgroundDisplaysPrimary: true,
       itemBorderColors: true,
+      itemGap: true,
+      itemGapMobile: true,
+      itemShortTextFontWeights: true,
+      itemShortTextFontWeightsMobile: true,
       itemBorderDisplays: true,
       itemBorderRadius: true,
       itemBorderSizes: true,
@@ -104,7 +113,6 @@ export const blockMaster: BlockMaster[] = [
       itemButtonLinksSecondary: true,
       itemButtonsPrimary: true,
       itemButtonsSecondary: true,
-      itemColorsSecondary: true,
       itemImagePositions: true,
       itemImagePositionsMobile: true,
       itemJustify: true,
@@ -119,15 +127,29 @@ export const blockMaster: BlockMaster[] = [
       itemTitles: true,
       itemTitleSizes: true,
       itemTitleSizesMobile: true,
+      itemMarginBottom: true,
+      itemMarginBottomMobile: true,
+      itemMarginLeft: true,
+      itemMarginLeftMobile: true,
+      itemMarginRight: true,
+      itemMarginRightMobile: true,
+      itemMarginTop: true,
+      itemMarginTopMobile: true,
+      itemPaddingTopMobile: true,
+      itemPaddingBottom: true,
+      itemPaddingBottomMobile: true,
+      itemPaddingLeft: true,
+      itemPaddingLeftMobile: true,
+      itemPaddingRight: true,
+      itemPaddingRightMobile: true,
+      itemPaddingTop: true,
       margin: true,
       padding: true,
       speed: true,
       width: true,
     },
     content: {
-      include: {
-        image: true,
-      },
+      image: true,
     },
   },
   {
@@ -136,17 +158,18 @@ export const blockMaster: BlockMaster[] = [
     icon: "IoGrid",
     maxContentItems: 6,
     options: {
-      backgroundBrightness: true,
-      backgroundColor: true,
-      backgroundPatternColor: true,
-      backgroundPatternName: true,
-      backgroundPatternSize: true,
-      backgroundWidth: true,
+      backgroundBrightnessPrimary: true,
+      backgroundColorPrimary: true,
+      backgroundPatternColorPrimary: true,
+      backgroundPatternNamePrimary: true,
+      backgroundPatternSizePrimary: true,
+      backgroundWidthPrimary: true,
       borderDisplay: true,
       borderRadius: true,
       columns: true,
       columnsMobile: true,
       itemBackgroundColorsPrimary: true,
+      itemBackgroundColorsSecondary: true,
       itemBorderColors: true,
       itemBorderDisplays: true,
       itemBorderRadius: true,
@@ -158,27 +181,55 @@ export const blockMaster: BlockMaster[] = [
       itemTitles: true,
       margin: true,
       padding: true,
+      itemAlign: true,
+      itemAlignMobile: true,
+      itemJustify: true,
+      itemJustifyMobile: true,
+      itemMarginBottom: true,
+      itemMarginBottomMobile: true,
+      itemMarginLeft: true,
+      itemMarginLeftMobile: true,
+      itemMarginRight: true,
+      itemMarginRightMobile: true,
+      itemMarginTop: true,
+      itemMarginTopMobile: true,
+      itemPaddingTopMobile: true,
+      itemPaddingBottom: true,
+      itemPaddingBottomMobile: true,
+      itemPaddingLeft: true,
+      itemPaddingLeftMobile: true,
+      itemPaddingRight: true,
+      itemPaddingRightMobile: true,
+      itemPaddingTop: true,
+      itemTitleFontWeights: true,
+      itemTitleSizes: true,
+      itemTitleFontWeightsMobile: true,
+      itemTitleSizesMobile: true,
+      itemShortTextColors: true,
+      itemShortTextFontWeights: true,
+      itemShortTextSizes: true,
+      itemShortTextFontWeightsMobile: true,
+      itemShortTextSizesMobile: true,
+      itemShortText: true,
+      itemGap: true,
+      itemGapMobile: true,
     },
     addOns: ["icon"],
     content: {
-      include: {
-        image: true,
-        promotion: {
-          include: {
-            tileBlockContent: true,
-            tileImage: true,
-          },
+      image: true,
+      promotion: {
+        include: {
+          tileImage: true,
         },
-        campaign: {
-          include: {
-            tileBlockContent: true,
-            tileImage: true,
-          },
+      },
+      campaign: {
+        include: {
+          tileImage: true,
         },
-        brand: {
-          include: {
-            image: true,
-          },
+      },
+      brand: {
+        include: {
+          image: true,
         },
       },
     },
@@ -190,7 +241,7 @@ export const blockMaster: BlockMaster[] = [
     maxContentItems: 1,
     options: {
       backgroundBrightnessSecondary: true,
-      backgroundColor: true,
+      backgroundColorPrimary: true,
       backgroundColorSecondary: true,
       backgroundPatternColorSecondary: true,
       backgroundPatternNameSecondary: true,
@@ -213,15 +264,13 @@ export const blockMaster: BlockMaster[] = [
       titleSizeMobile: true,
     },
     content: {
-      include: {
-        product: {
-          include: {
-            variants: true,
-            heroImage: true,
-            brand: {
-              include: {
-                image: true,
-              },
+      product: {
+        include: {
+          variants: true,
+          heroImage: true,
+          brand: {
+            include: {
+              image: true,
             },
           },
         },
@@ -253,11 +302,9 @@ export const blockMaster: BlockMaster[] = [
       titleSize: true,
     },
     content: {
-      include: {
-        store: {
-          include: {
-            address: true,
-          },
+      store: {
+        include: {
+          address: true,
         },
       },
     },
@@ -267,12 +314,13 @@ export const blockMaster: BlockMaster[] = [
     component: TextBlock,
     icon: "IoText",
     options: {
-      backgroundColor: true,
-      backgroundWidth: true,
+      backgroundColorPrimary: true,
+      backgroundWidthPrimary: true,
       margin: true,
       size: true,
     },
-    content: true,
+    addOns: ["richText"],
+    content: null,
   },
   {
     name: "product",
@@ -285,11 +333,9 @@ export const blockMaster: BlockMaster[] = [
       sortOrder: true,
     },
     content: {
-      include: {
-        brand: true,
-        productCategory: true,
-        productSubCategory: true,
-      },
+      brand: true,
+      productCategory: true,
+      productSubCategory: true,
     },
   },
   {
@@ -303,28 +349,47 @@ export const blockMaster: BlockMaster[] = [
       sortOrder: true,
     },
     content: {
-      include: {
-        articleCategory: true,
-      },
+      articleCategory: true,
     },
   },
 ];
 
-export const activeContentTypes = {
-  product: true,
-  productCategory: true,
-  articleCategory: true,
-  brand: true,
-  image: true,
-  campaign: true,
-  promotion: true,
-  productSubCategory: true,
-  store: true,
+export const buildBlocksContentQuery = (
+  blocks: { id: number; name: string }[],
+): object => {
+  const query = {
+    include: {} as { [key: string]: boolean | object },
+  };
+
+  for (let i = 0; i < blocks.length; i++) {
+    const blockMasterBlockContent = (blockMaster.find(
+      (blockMasterBlock) => blockMasterBlock.name === blocks[i].name,
+    )?.content || {}) as { [key: string]: boolean | object };
+
+    for (const contentType in blockMasterBlockContent) {
+      const contentTypeValue = blockMasterBlockContent[contentType];
+
+      if (typeof query.include[contentType] === "boolean") {
+        // If it's a boolean, replace the existing value
+        query.include[contentType] = contentTypeValue as boolean;
+      } else if (typeof query.include[contentType] === "object") {
+        // If it's an object, merge the existing object with a new property
+        query.include[contentType] = {
+          ...(query.include[contentType] as object),
+          ...(contentTypeValue as object),
+        };
+      } else {
+        // If it doesn't exist, create a new property
+        query.include[contentType] = contentTypeValue;
+      }
+    }
+  }
+
+  return query;
 };
 
-// returns an array of content types a block accepts, built from the blockmaster object
 export const getBlockContentTypes = (
-  blockName: BlockName
+  blockName: BlockName,
 ): BlockContentType[] => {
   const block = blockMaster.find((b) => b.name === blockName);
 
@@ -332,26 +397,12 @@ export const getBlockContentTypes = (
     return [];
   }
 
-  if (blockName === "text") {
-    return ["richText"];
-  }
-
   const contentTypes: string[] = [];
 
-  const processContent = (content: any, parentName = "") => {
-    for (const key in content) {
-      if (key === "include" && typeof content[key] === "object") {
-        for (const subKey in content[key]) {
-          contentTypes.push(subKey);
-        }
-      } else if (typeof content[key] === "object") {
-        processContent(content[key], parentName);
-      }
-    }
-  };
-
   if (block.content) {
-    processContent(block.content);
+    for (const key in block.content) {
+      contentTypes.push(key);
+    }
   }
 
   if (block.addOns) {

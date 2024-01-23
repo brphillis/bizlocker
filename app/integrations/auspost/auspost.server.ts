@@ -38,7 +38,9 @@ export const getAusPostServices = async ({
   }
 
   const serviceTypesJSON = await response.json();
-  return (serviceTypesJSON as any).services.service as AusPostDeliveryOption[];
+  // @ts-expect-error:nested JSON obj dissection
+  return (serviceTypesJSON as unknown).services
+    .service as AusPostDeliveryOption[];
 };
 
 export const calculateDeliveryPrice = async ({

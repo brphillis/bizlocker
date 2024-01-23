@@ -94,37 +94,37 @@ export const loader = async ({ request, params }: ActionFunctionArgs) => {
 
   switch (contentType) {
     case "articleCategory":
-      return await articleCategoryUpsertLoader(request, params);
+      return await articleCategoryUpsertLoader(request);
     case "brand":
-      return await brandUpsertLoader(request, params);
+      return await brandUpsertLoader(request);
     case "campaign":
-      return await campaignUpsertLoader(request, params);
+      return await campaignUpsertLoader(request);
     case "department":
-      return await departmentUpsertLoader(request, params);
+      return await departmentUpsertLoader(request);
     case "image":
-      return await imageUpsertLoader(request, params);
+      return await imageUpsertLoader(request);
     case "order":
-      return await orderUpsertLoader(request, params);
+      return await orderUpsertLoader(request);
     case "product":
-      return await productUpsertLoader(request, params);
+      return await productUpsertLoader(request);
     case "productCategory":
-      return await productCategoryUpsertLoader(request, params);
+      return await productCategoryUpsertLoader(request);
     case "productSubCategory":
-      return await productSubCategoryUpsertLoader(request, params);
+      return await productSubCategoryUpsertLoader(request);
     case "promotion":
-      return await promotionUpsertLoader(request, params);
+      return await promotionUpsertLoader(request);
     case "siteSettings":
-      return await siteSettingsUpsertLoader(request, params);
+      return await siteSettingsUpsertLoader();
     case "staff":
-      return await staffUpsertLoader(request, params);
+      return await staffUpsertLoader(request);
     case "stockTransfer":
-      return await stockTransferUpsertLoader(request, params);
+      return await stockTransferUpsertLoader(request);
     case "store":
-      return await storeUpsertLoader(request, params);
+      return await storeUpsertLoader(request);
     case "team":
-      return await teamUpsertLoader(request, params);
+      return await teamUpsertLoader(request);
     case "user":
-      return await userUpsertLoader(request, params);
+      return await userUpsertLoader(request);
   }
 };
 
@@ -139,37 +139,37 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
   switch (contentType) {
     case "articleCategory":
-      return await articleCategoryUpsertAction(request, params);
+      return await articleCategoryUpsertAction(request);
     case "brand":
-      return await brandUpsertAction(request, params);
+      return await brandUpsertAction(request);
     case "campaign":
       return await campaignUpsertAction(request, params);
     case "department":
-      return await departmentUpsertAction(request, params);
+      return await departmentUpsertAction(request);
     case "image":
-      return await imageUpsertAction(request, params);
+      return await imageUpsertAction(request);
     case "order":
-      return await orderUpsertAction(request, params);
+      return await orderUpsertAction(request);
     case "product":
-      return await productUpsertAction(request, params);
+      return await productUpsertAction(request);
     case "productCategory":
-      return await productCategoryUpsertAction(request, params);
+      return await productCategoryUpsertAction(request);
     case "productSubCategory":
-      return await productSubCategoryUpsertAction(request, params);
+      return await productSubCategoryUpsertAction(request);
     case "promotion":
-      return await promotionUpsertAction(request, params);
+      return await promotionUpsertAction(request);
     case "siteSettings":
-      return await siteSettingsUpsertAction(request, params);
+      return await siteSettingsUpsertAction(request);
     case "staff":
-      return await staffUpsertAction(request, params);
+      return await staffUpsertAction(request);
     case "stockTransfer":
-      return await stockTransferUpsertAction(request, params);
+      return await stockTransferUpsertAction(request);
     case "store":
-      return await storeUpsertAction(request, params);
+      return await storeUpsertAction(request);
     case "team":
-      return await teamUpsertAction(request, params);
+      return await teamUpsertAction(request);
     case "user":
-      return await userUpsertAction(request, params);
+      return await userUpsertAction(request);
   }
 };
 

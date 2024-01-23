@@ -13,6 +13,7 @@ const MobileMenuFooter = ({ user }: Props) => {
   return (
     <div className="absolute bottom-0 left-0 right-0 w-full px-0">
       <div className="flex flex-row items-center justify-between border-t border-white/25 px-3 py-4">
+        {/* eslint-disable */}
         <label
           htmlFor="my-drawer-3"
           className="text-xs font-bold text-brand-white/75"
@@ -39,6 +40,8 @@ const MobileMenuFooter = ({ user }: Props) => {
             Login
           </label>
         )}
+
+        {/* eslint-enable */}
       </div>
     </div>
   );

@@ -1,4 +1,3 @@
-import type { Params } from "@remix-run/react";
 import { validateForm } from "~/utility/validate";
 import type { SiteSettings } from "@prisma/client";
 import type { PageNotification } from "~/hooks/PageNotification";
@@ -6,10 +5,7 @@ import { getSiteSettings, updateSiteSettings } from "~/models/siteSettings";
 
 const validateOptions = {};
 
-export const siteSettingsUpsertLoader = async (
-  request: Request,
-  params: Params<string>,
-) => {
+export const siteSettingsUpsertLoader = async () => {
   const siteSettings = await getSiteSettings();
 
   if (!siteSettings) {
@@ -22,10 +18,7 @@ export const siteSettingsUpsertLoader = async (
   return { siteSettings };
 };
 
-export const siteSettingsUpsertAction = async (
-  request: Request,
-  params: Params<string>,
-) => {
+export const siteSettingsUpsertAction = async (request: Request) => {
   let notification: PageNotification;
 
   const { formEntries, formErrors } = validateForm(
@@ -45,7 +38,7 @@ export const siteSettingsUpsertAction = async (
   } = formEntries;
 
   switch (formEntries._action) {
-    case "upsert":
+    case "upsert": {
       if (formErrors) {
         return { serverValidationErrors: formErrors };
       }
@@ -69,5 +62,6 @@ export const siteSettingsUpsertAction = async (
       };
 
       return { notification };
+    }
   }
 };

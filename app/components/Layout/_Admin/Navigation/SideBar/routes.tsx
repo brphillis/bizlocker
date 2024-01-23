@@ -18,6 +18,10 @@ export const adminNavBarRoutes: NavigationRouteItem[] = [
         link: "/admin/search/team",
       },
       {
+        name: "Departments",
+        link: "/admin/search/department",
+      },
+      {
         name: "Orders",
         link: "/admin/search/order",
       },
@@ -80,10 +84,6 @@ export const adminNavBarRoutes: NavigationRouteItem[] = [
       {
         name: "Products",
         link: "/admin/search/product",
-      },
-      {
-        name: "Departments",
-        link: "/admin/search/department",
       },
       {
         name: "Categories",

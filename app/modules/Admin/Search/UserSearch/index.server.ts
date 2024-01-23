@@ -1,11 +1,7 @@
-import type { Params } from "@remix-run/react";
 import { json } from "@remix-run/node";
-import { searchUsers } from "~/models/users.server";
+import { searchUsers } from "~/models/Users/index.server";
 
-export const userSearchLoader = async (
-  request: Request,
-  params: Params<string>,
-) => {
+export const userSearchLoader = async (request: Request) => {
   const url = new URL(request.url);
 
   const searchQuery = {

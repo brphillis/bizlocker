@@ -1,11 +1,7 @@
-import type { Params } from "@remix-run/react";
 import { json } from "@remix-run/node";
-import { searchWebPages } from "~/models/webPages.server";
+import { searchWebPages } from "~/models/WebPages/index.server";
 
-export const pageSearchLoader = async (
-  request: Request,
-  params: Params<string>,
-) => {
+export const pageSearchLoader = async (request: Request) => {
   const url = new URL(request.url);
 
   const { webPages, totalPages } = await searchWebPages(undefined, url);

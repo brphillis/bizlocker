@@ -1,10 +1,10 @@
 import { Form, Outlet, useLoaderData, useNavigate } from "@remix-run/react";
 import DarkOverlay from "~/components/Layout/Overlays/DarkOverlay";
 import BasicTitleBar from "~/components/Layout/TitleBars/BasicTitleBar";
-import { type StockLevelWithDetails } from "~/models/stock.server";
 import BasicButton from "~/components/Buttons/BasicButton";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
-import type { productStockLoader } from "./index.server";
+import { productStockLoader } from "./index.server";
+import { StockLevelWithDetails } from "~/models/Stock/types";
 
 const ProductStock = () => {
   const { stock } = useLoaderData<typeof productStockLoader>();

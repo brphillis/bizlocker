@@ -1,7 +1,7 @@
-import type { ArticleWithContent } from "~/models/articles.server";
-import type { ArticleCategory } from "@prisma/client";
-import { IoArrowForward } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+import { ArticleCategory } from "@prisma/client";
+import { IoArrowForward } from "react-icons/io5";
+import { ArticleWithContent } from "~/models/Articles/types";
 
 type Props = {
   article: ArticleWithContent;
@@ -13,7 +13,8 @@ const ArticleCard = ({ article, hasDescription }: Props) => {
   const image = article?.thumbnail?.href;
 
   return (
-    <div
+    <button
+      type="button"
       className="group relative flex h-[248px] w-full cursor-pointer flex-col max-sm:h-[232px]"
       onClick={() => navigate(`/article/${article.title}`)}
     >
@@ -64,7 +65,7 @@ const ArticleCard = ({ article, hasDescription }: Props) => {
           </p>
         </div>
       )}
-    </div>
+    </button>
   );
 };
 

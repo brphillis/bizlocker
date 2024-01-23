@@ -1,17 +1,17 @@
-import type { ArticleCategory, BlockOptions } from "@prisma/client";
-import type { BlockContentWithDetails } from "~/models/blocks.server";
+import { ArticleCategory, BlockOptions } from "@prisma/client";
 import ArticleGrid from "~/components/Grids/ArticleGrid";
-import type { ArticleWithContent } from "~/models/articles.server";
+import { ArticleWithContent } from "~/models/Articles/types";
+import { BlockContentSorted } from "~/models/Blocks/types";
 
 type Props = {
-  content: BlockContentWithDetails;
+  content: BlockContentSorted[];
   options: BlockOptions[];
 };
 
 const ArticleBlock = ({ content, options: optionsArray }: Props) => {
   const options = optionsArray[0];
-  const articles = content?.article as ArticleWithContent[];
-  const articleCategory = content?.articleCategory?.[0] as ArticleCategory;
+  const articles = content.map((e) => e.article) as ArticleWithContent[];
+  const articleCategory = content[0]?.articleCategory as ArticleCategory;
 
   const determineSortPhrase = (sortBy: SortBy) => {
     if (sortBy && sortBy === "createdAt") {

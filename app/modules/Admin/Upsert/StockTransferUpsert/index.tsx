@@ -35,7 +35,7 @@ const StockTransferUpsert = ({ offRouteModule }: Props) => {
     (useActionData() as ActionReturnTypes) || {};
 
   const navigate = useNavigate();
-  let submit = useSubmit();
+  const submit = useSubmit();
   const [searchParams] = useSearchParams();
   const contentId = searchParams.get("contentId");
   const { contentType } = useParams();
@@ -81,155 +81,152 @@ const StockTransferUpsert = ({ offRouteModule }: Props) => {
 
   return (
     <DarkOverlay>
-      <WindowContainer
-        title="Stock Transfer"
-        children={
-          <Form
-            method="POST"
-            onSubmit={handleSubmit}
-            className="scrollbar-hide relative w-[500px] max-w-full overflow-y-auto"
-          >
-            <input
-              hidden
-              readOnly
-              name="toStoreId"
-              value={stockTransferRequest.toStoreId}
-            />
+      <WindowContainer title="Stock Transfer">
+        <Form
+          method="POST"
+          onSubmit={handleSubmit}
+          className="scrollbar-hide relative w-[500px] max-w-full overflow-y-auto"
+        >
+          <input
+            hidden
+            readOnly
+            name="toStoreId"
+            value={stockTransferRequest.toStoreId}
+          />
 
-            <input
-              hidden
-              readOnly
-              name="quantity"
-              value={stockTransferRequest.quantity}
-            />
+          <input
+            hidden
+            readOnly
+            name="quantity"
+            value={stockTransferRequest.quantity}
+          />
 
-            <div className="flex flex-col gap-3">
-              <div className="flex justify-center rounded-lg bg-base-100 py-6">
-                <OrderStatusSteps
-                  status={stockTransferRequest?.status}
-                  type="approvalStatus"
-                />
-              </div>
-
-              {stockTransferRequest?.status === "created" && (
-                <button
-                  className="btn btn-primary mx-auto mt-3 block w-max"
-                  type="submit"
-                  name="_action"
-                  value="approve"
-                >
-                  Approve
-                </button>
-              )}
-
-              {stockTransferRequest?.status !== "created" &&
-                stockTransferRequest?.status !== "complete" &&
-                stockTransferRequest?.status !== "cancelled" && (
-                  <BasicSelect
-                    label="Status"
-                    name="status"
-                    placeholder="Select a Status"
-                    customWidth="w-full"
-                    selections={statusList?.map((status: string) => ({
-                      id: status,
-                      name: capitalizeFirst(status),
-                    }))}
-                    defaultValue={stockTransferRequest.status}
-                  />
-                )}
-
-              <BasicInput
-                name="sku"
-                label="SKU"
-                placeholder="SKU"
-                type="text"
-                customWidth="w-full"
-                disabled={true}
-                defaultValue={
-                  stockTransferRequest?.productVariant?.sku || undefined
-                }
-                validationErrors={
-                  serverValidationErrors || clientValidationErrors
-                }
-              />
-
-              <BasicSelect
-                label="From Store"
-                name="fromStore"
-                placeholder="Select a Store"
-                customWidth="w-full"
-                selections={stores as unknown as SelectValue[]}
-                disabled={true}
-                defaultValue={stockTransferRequest.fromStoreId.toString()}
-              />
-
-              <BasicSelect
-                label="To Store"
-                name="toStore"
-                placeholder="Select a Store"
-                customWidth="w-full"
-                selections={stores as unknown as SelectValue[]}
-                disabled={true}
-                defaultValue={stockTransferRequest.toStoreId.toString()}
-              />
-
-              <BasicInput
-                name="quantity"
-                label="Quantity"
-                placeholder="Quantity"
-                type="number"
-                customWidth="w-full"
-                disabled={true}
-                defaultValue={stockTransferRequest?.quantity || undefined}
-                validationErrors={
-                  serverValidationErrors || clientValidationErrors
-                }
-              />
-
-              <BasicInput
-                name="trackingNumber"
-                label="Tracking Number"
-                placeholder="Tracking number"
-                type="text"
-                customWidth="w-full"
-                disabled={true}
-                defaultValue={stockTransferRequest?.trackingNumber || undefined}
-                validationErrors={
-                  serverValidationErrors || clientValidationErrors
-                }
-              />
-
-              <BasicInput
-                name="createdBy"
-                label="Created By"
-                placeholder="Created By"
-                type="text"
-                customWidth="w-full"
-                disabled={true}
-                defaultValue={stockTransferRequest?.createdBy || undefined}
-                validationErrors={
-                  serverValidationErrors || clientValidationErrors
-                }
+          <div className="flex flex-col gap-3">
+            <div className="flex justify-center rounded-lg bg-base-100 py-6">
+              <OrderStatusSteps
+                status={stockTransferRequest?.status}
+                type="approvalStatus"
               />
             </div>
 
-            {permissionError && (
-              <div className="mt-3 w-full pt-3 text-center text-sm text-error">
-                {permissionError}
-              </div>
+            {stockTransferRequest?.status === "created" && (
+              <button
+                className="btn btn-primary mx-auto mt-3 block w-max"
+                type="submit"
+                name="_action"
+                value="approve"
+              >
+                Approve
+              </button>
             )}
 
-            <BackSubmitButtons
-              loading={loading}
-              setLoading={setLoading}
-              hideSubmit={
-                stockTransferRequest?.status == "complete" ||
-                stockTransferRequest?.status == "cancelled"
+            {stockTransferRequest?.status !== "created" &&
+              stockTransferRequest?.status !== "complete" &&
+              stockTransferRequest?.status !== "cancelled" && (
+                <BasicSelect
+                  label="Status"
+                  name="status"
+                  placeholder="Select a Status"
+                  extendContainerStyle="w-full"
+                  selections={statusList?.map((status: string) => ({
+                    id: status,
+                    name: capitalizeFirst(status),
+                  }))}
+                  defaultValue={stockTransferRequest.status}
+                />
+              )}
+
+            <BasicInput
+              name="sku"
+              label="SKU"
+              placeholder="SKU"
+              type="text"
+              extendContainerStyle="w-full"
+              disabled={true}
+              defaultValue={
+                stockTransferRequest?.productVariant?.sku || undefined
+              }
+              validationErrors={
+                serverValidationErrors || clientValidationErrors
               }
             />
-          </Form>
-        }
-      />
+
+            <BasicSelect
+              label="From Store"
+              name="fromStore"
+              placeholder="Select a Store"
+              extendContainerStyle="w-full"
+              selections={stores as unknown as SelectValue[]}
+              disabled={true}
+              defaultValue={stockTransferRequest.fromStoreId.toString()}
+            />
+
+            <BasicSelect
+              label="To Store"
+              name="toStore"
+              placeholder="Select a Store"
+              extendContainerStyle="w-full"
+              selections={stores as unknown as SelectValue[]}
+              disabled={true}
+              defaultValue={stockTransferRequest.toStoreId.toString()}
+            />
+
+            <BasicInput
+              name="quantity"
+              label="Quantity"
+              placeholder="Quantity"
+              type="number"
+              extendContainerStyle="w-full"
+              disabled={true}
+              defaultValue={stockTransferRequest?.quantity || undefined}
+              validationErrors={
+                serverValidationErrors || clientValidationErrors
+              }
+            />
+
+            <BasicInput
+              name="trackingNumber"
+              label="Tracking Number"
+              placeholder="Tracking number"
+              type="text"
+              extendContainerStyle="w-full"
+              disabled={true}
+              defaultValue={stockTransferRequest?.trackingNumber || undefined}
+              validationErrors={
+                serverValidationErrors || clientValidationErrors
+              }
+            />
+
+            <BasicInput
+              name="createdBy"
+              label="Created By"
+              placeholder="Created By"
+              type="text"
+              extendContainerStyle="w-full"
+              disabled={true}
+              defaultValue={stockTransferRequest?.createdBy || undefined}
+              validationErrors={
+                serverValidationErrors || clientValidationErrors
+              }
+            />
+          </div>
+
+          {permissionError && (
+            <div className="mt-3 w-full pt-3 text-center text-sm text-error">
+              {permissionError}
+            </div>
+          )}
+
+          <BackSubmitButtons
+            loading={loading}
+            setLoading={setLoading}
+            hideSubmit={
+              stockTransferRequest?.status == "complete" ||
+              stockTransferRequest?.status == "cancelled"
+            }
+          />
+        </Form>
+      </WindowContainer>
     </DarkOverlay>
   );
 };

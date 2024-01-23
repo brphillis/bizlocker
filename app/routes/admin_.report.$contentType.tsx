@@ -16,7 +16,7 @@ export const loader = async ({ request, params }: ActionFunctionArgs) => {
 
   switch (contentType) {
     case "sales":
-      return await salesReportLoader(request, params);
+      return await salesReportLoader();
   }
 };
 

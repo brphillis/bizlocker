@@ -1,11 +1,7 @@
-import type { Params } from "@remix-run/react";
-import { searchOrders } from "~/models/orders.server";
+import { searchOrders } from "~/models/Orders/index.server";
 import { json } from "@remix-run/node";
 
-export const orderSearchLoader = async (
-  request: Request,
-  params: Params<string>,
-) => {
+export const orderSearchLoader = async (request: Request) => {
   const url = new URL(request.url);
 
   const searchQuery = {

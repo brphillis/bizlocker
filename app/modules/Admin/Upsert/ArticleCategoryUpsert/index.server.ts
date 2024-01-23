@@ -1,23 +1,19 @@
 import { json } from "@remix-run/node";
-import type { Params } from "@remix-run/react";
 import { validateForm } from "~/utility/validate";
-import type { PageNotification } from "~/hooks/PageNotification";
+import { PageNotification } from "~/hooks/PageNotification";
 import {
   deleteArticleCategory,
   getArticleCategory,
-  type ArticleCategoryWithDetails,
   upsertArticleCategory,
-} from "~/models/articleCategories.server";
+} from "~/models/ArticleCategories/index.server";
+import { ArticleCategoryWithDetails } from "~/models/ArticleCategories/types";
 const validateOptions = {
   name: true,
 };
 
-export const articleCategoryUpsertLoader = async (
-  request: Request,
-  params: Params<string>,
-) => {
-  let { searchParams } = new URL(request.url);
-  let id = searchParams.get("contentId");
+export const articleCategoryUpsertLoader = async (request: Request) => {
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get("contentId");
 
   if (!id) {
     throw new Response(null, {
@@ -41,15 +37,12 @@ export const articleCategoryUpsertLoader = async (
   return json({ articleCategory });
 };
 
-export const articleCategoryUpsertAction = async (
-  request: Request,
-  params: Params<string>,
-) => {
+export const articleCategoryUpsertAction = async (request: Request) => {
   let notification: PageNotification;
 
-  let { searchParams } = new URL(request.url);
+  const { searchParams } = new URL(request.url);
   const contentId = searchParams.get("contentId");
-  let id = contentId === "add" || !contentId ? undefined : contentId;
+  const id = contentId === "add" || !contentId ? undefined : contentId;
 
   const { formEntries, formErrors } = validateForm(
     await request.formData(),

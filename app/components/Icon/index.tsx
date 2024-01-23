@@ -9,6 +9,7 @@ type IconProps = {
 };
 
 const Icon = ({ iconName, size, extendStyle, color }: IconProps) => {
+  // eslint-disable-next-line
   let IconComponent = IconsIO5[iconName] as IconType;
   if (color) {
     return IconComponent ? (

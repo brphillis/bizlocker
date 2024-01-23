@@ -38,8 +38,8 @@ export function ErrorBoundary() {
   const response = useRouteError();
   const navigate = useNavigate();
 
-  const errorCode = (response as any).status;
-  const message = (response as any).statusText;
+  const errorCode = (response as HttpError).status;
+  const message = (response as HttpError).statusText;
 
   return (
     <html lang="en" className="h-full min-h-screen">

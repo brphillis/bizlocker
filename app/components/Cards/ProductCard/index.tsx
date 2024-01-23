@@ -1,11 +1,11 @@
-import type { ProductWithDetails } from "~/models/products.server";
-import { useNavigate, useNavigation, useSubmit } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { IoCart } from "react-icons/io5";
-import { Toast } from "~/components/Notifications/Toast";
 import Spinner from "~/components/Spinner";
-import { getVariantUnitPrice } from "~/helpers/numberHelpers";
 import BasicImage from "~/components/Client/BasicImage";
+import { Toast } from "~/components/Notifications/Toast";
+import { ProductWithDetails } from "~/models/Products/types";
+import { getVariantUnitPrice } from "~/helpers/numberHelpers";
+import { useNavigate, useNavigation, useSubmit } from "@remix-run/react";
 
 const ProductCard = (product: ProductWithDetails) => {
   const submit = useSubmit();

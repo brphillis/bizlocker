@@ -47,7 +47,7 @@ const UserUpsert = ({ offRouteModule }: Props) => {
     (useActionData() as ActionReturnTypes) || {};
 
   const navigate = useNavigate();
-  let submit = useSubmit();
+  const submit = useSubmit();
   const [searchParams] = useSearchParams();
   const contentId = searchParams.get("contentId");
   const { contentType } = useParams();
@@ -101,157 +101,154 @@ const UserUpsert = ({ offRouteModule }: Props) => {
         title="User"
         isActive={user?.isActive}
         hasMode={true}
-        children={
-          <Form
-            method="POST"
-            onSubmit={handleSubmit}
-            className="scrollbar-hide relative w-[600px] max-w-full overflow-y-auto"
-          >
-            <div className="form-control gap-3">
-              <UploadAvatar avatar={user?.avatar} />
+      >
+        <Form
+          method="POST"
+          onSubmit={handleSubmit}
+          className="scrollbar-hide relative w-[600px] max-w-full overflow-y-auto"
+        >
+          <div className="form-control gap-3">
+            <UploadAvatar avatar={user?.avatar} />
 
-              <div className="flex flex-row flex-wrap justify-center gap-3">
-                <BasicInput
-                  name="email"
-                  label="Email Address"
-                  placeholder="Email Address"
-                  type="text"
-                  customWidth="w-full"
-                  defaultValue={user?.email || undefined}
-                  validationErrors={
-                    serverValidationErrors || clientValidationErrors
-                  }
-                />
+            <div className="flex flex-row flex-wrap justify-center gap-3">
+              <BasicInput
+                name="email"
+                label="Email Address"
+                placeholder="Email Address"
+                type="text"
+                extendContainerStyle="w-full"
+                defaultValue={user?.email || undefined}
+                validationErrors={
+                  serverValidationErrors || clientValidationErrors
+                }
+              />
 
-                <BasicInput
-                  name="firstName"
-                  label="First Name"
-                  placeholder="First Name"
-                  type="text"
-                  customWidth="w-full"
-                  defaultValue={user?.userDetails?.firstName || undefined}
-                  validationErrors={
-                    serverValidationErrors || clientValidationErrors
-                  }
-                />
+              <BasicInput
+                name="firstName"
+                label="First Name"
+                placeholder="First Name"
+                type="text"
+                extendContainerStyle="w-full"
+                defaultValue={user?.userDetails?.firstName || undefined}
+                validationErrors={
+                  serverValidationErrors || clientValidationErrors
+                }
+              />
 
-                <BasicInput
-                  name="lastName"
-                  label="Last Name"
-                  placeholder="Last Name"
-                  type="text"
-                  customWidth="w-full"
-                  defaultValue={user?.userDetails?.lastName || undefined}
-                  validationErrors={
-                    serverValidationErrors || clientValidationErrors
-                  }
-                />
+              <BasicInput
+                name="lastName"
+                label="Last Name"
+                placeholder="Last Name"
+                type="text"
+                extendContainerStyle="w-full"
+                defaultValue={user?.userDetails?.lastName || undefined}
+                validationErrors={
+                  serverValidationErrors || clientValidationErrors
+                }
+              />
 
-                <PhoneInput
-                  name="phoneNumber"
-                  label="Phone Number"
-                  placeholder="Phone Number"
-                  type="text"
-                  customWidth="w-full"
-                  defaultValue={user?.userDetails?.phoneNumber || undefined}
-                  validationErrors={
-                    serverValidationErrors || clientValidationErrors
-                  }
-                />
+              <PhoneInput
+                name="phoneNumber"
+                label="Phone Number"
+                placeholder="Phone Number"
+                type="text"
+                extendContainerStyle="w-full"
+                defaultValue={user?.userDetails?.phoneNumber || undefined}
+                validationErrors={
+                  serverValidationErrors || clientValidationErrors
+                }
+              />
 
-                <BasicInput
-                  name="dateofbirth"
-                  label="Date of Birth"
-                  placeholder="Date of Birth"
-                  type="date"
-                  customWidth="w-full"
-                  defaultValue={formatDateForFormField(
-                    user?.userDetails?.dateOfBirth,
-                  )}
-                  validationErrors={
-                    serverValidationErrors || clientValidationErrors
-                  }
-                />
+              <BasicInput
+                name="dateofbirth"
+                label="Date of Birth"
+                placeholder="Date of Birth"
+                type="date"
+                extendContainerStyle="w-full"
+                defaultValue={formatDateForFormField(
+                  user?.userDetails?.dateOfBirth,
+                )}
+                validationErrors={
+                  serverValidationErrors || clientValidationErrors
+                }
+              />
 
-                <BasicInput
-                  name="addressLine1"
-                  label="Address Line 1"
-                  placeholder="Address Line 1"
-                  type="text"
-                  customWidth="w-full"
-                  defaultValue={user?.address?.addressLine1 || undefined}
-                  validationErrors={
-                    serverValidationErrors || clientValidationErrors
-                  }
-                />
+              <BasicInput
+                name="addressLine1"
+                label="Address Line 1"
+                placeholder="Address Line 1"
+                type="text"
+                extendContainerStyle="w-full"
+                defaultValue={user?.address?.addressLine1 || undefined}
+                validationErrors={
+                  serverValidationErrors || clientValidationErrors
+                }
+              />
 
-                <BasicInput
-                  name="addressLine2"
-                  label="Address Line 2"
-                  placeholder="Address Line 2"
-                  type="text"
-                  customWidth="w-full"
-                  defaultValue={user?.address?.addressLine2 || undefined}
-                  validationErrors={
-                    serverValidationErrors || clientValidationErrors
-                  }
-                />
+              <BasicInput
+                name="addressLine2"
+                label="Address Line 2"
+                placeholder="Address Line 2"
+                type="text"
+                extendContainerStyle="w-full"
+                defaultValue={user?.address?.addressLine2 || undefined}
+                validationErrors={
+                  serverValidationErrors || clientValidationErrors
+                }
+              />
 
-                <BasicInput
-                  name="suburb"
-                  label="Suburb"
-                  placeholder="Suburb"
-                  type="text"
-                  customWidth="w-full"
-                  defaultValue={user?.address?.suburb || undefined}
-                  validationErrors={
-                    serverValidationErrors || clientValidationErrors
-                  }
-                />
+              <BasicInput
+                name="suburb"
+                label="Suburb"
+                placeholder="Suburb"
+                type="text"
+                extendContainerStyle="w-full"
+                defaultValue={user?.address?.suburb || undefined}
+                validationErrors={
+                  serverValidationErrors || clientValidationErrors
+                }
+              />
 
-                <BasicInput
-                  name="postcode"
-                  label="PostCode"
-                  placeholder="PostCode"
-                  type="text"
-                  customWidth="w-full"
-                  defaultValue={user?.address?.postcode || undefined}
-                  validationErrors={
-                    serverValidationErrors || clientValidationErrors
-                  }
-                />
+              <BasicInput
+                name="postcode"
+                label="PostCode"
+                placeholder="PostCode"
+                type="text"
+                extendContainerStyle="w-full"
+                defaultValue={user?.address?.postcode || undefined}
+                validationErrors={
+                  serverValidationErrors || clientValidationErrors
+                }
+              />
 
-                <BasicInput
-                  name="state"
-                  label="State"
-                  placeholder="State"
-                  type="text"
-                  customWidth="w-full"
-                  defaultValue={user?.address?.state || undefined}
-                  validationErrors={
-                    serverValidationErrors || clientValidationErrors
-                  }
-                />
+              <BasicInput
+                name="state"
+                label="State"
+                placeholder="State"
+                type="text"
+                extendContainerStyle="w-full"
+                defaultValue={user?.address?.state || undefined}
+                validationErrors={
+                  serverValidationErrors || clientValidationErrors
+                }
+              />
 
-                <SelectCountry
-                  defaultValue={user?.address?.country}
-                  validationErrors={
-                    serverValidationErrors || clientValidationErrors
-                  }
-                  extendStyle="!w-full"
-                />
-              </div>
+              <SelectCountry
+                defaultValue={user?.address?.country}
+                validationErrors={
+                  serverValidationErrors || clientValidationErrors
+                }
+                extendStyle="!w-full"
+              />
             </div>
-            <BackSubmitButtons
-              loading={loading}
-              setLoading={setLoading}
-              validationErrors={
-                serverValidationErrors || clientValidationErrors
-              }
-            />
-          </Form>
-        }
-      />
+          </div>
+          <BackSubmitButtons
+            loading={loading}
+            setLoading={setLoading}
+            validationErrors={serverValidationErrors || clientValidationErrors}
+          />
+        </Form>
+      </WindowContainer>
     </DarkOverlay>
   );
 };

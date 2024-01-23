@@ -1,11 +1,7 @@
-import type { Params } from "@remix-run/react";
 import { json } from "@remix-run/server-runtime";
-import { searchBrands } from "~/models/brands.server";
+import { searchBrands } from "~/models/Brands/index.server";
 
-export const brandSearchLoader = async (
-  request: Request,
-  params: Params<string>,
-) => {
+export const brandSearchLoader = async (request: Request) => {
   const url = new URL(request.url);
 
   const { brands, totalPages } = await searchBrands(undefined, url);

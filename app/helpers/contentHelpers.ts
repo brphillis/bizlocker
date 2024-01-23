@@ -1,75 +1,54 @@
-import type { BlockContentWithDetails } from "~/models/blocks.server";
-import type { BrandWithContent } from "~/models/brands.server";
-import type { CampaignWithContent } from "~/models/campaigns.server";
-import type { PromotionWithContent } from "~/models/promotions.server";
-import type { BlockContentType, BlockName } from "~/utility/blockMaster/types";
-import type { Brand, Campaign, Image, Promotion } from "@prisma/client";
+import { Image } from "@prisma/client";
+import { BlockName } from "~/utility/blockMaster/types";
+import { BrandWithContent } from "~/models/Brands/types";
+import { CampaignWithContent } from "~/models/Campaigns/types";
 import { blockMaster } from "~/utility/blockMaster/blockMaster";
+import { PromotionWithContent } from "~/models/Promotions/types";
+import {
+  BlockContentSorted,
+  BlockContentWithDetails,
+} from "~/models/Blocks/types";
 
-export const determineContentType = (
-  content: BlockContentWithDetails
-): BlockContentType | undefined => {
+export const getContentType = (
+  content: BlockContentSorted,
+): string | undefined => {
   if (content) {
-    for (const key in content) {
-      if (
-        content.hasOwnProperty(key) &&
-        typeof content[key as keyof BlockContentWithDetails] === "object" &&
-        content[key as keyof BlockContentWithDetails] !== null // Check for null or undefined
-      ) {
-        // Ensure that the value is an object before calling Object.keys
-        const nestedObject = content[
-          key as keyof BlockContentWithDetails
-        ] as Record<string, any>;
-
-        if (Object.keys(nestedObject).length > 0) {
-          return key as BlockContentType;
-        }
-      }
+    const key = Object.keys(content)[0];
+    if (key) {
+      return key;
+    } else {
+      return undefined;
     }
+  } else {
+    return undefined;
   }
-  return undefined;
 };
 
-export const concatBlockContent = (
-  content: BlockContentWithDetails
-): BlockContentWithDetails[] => {
-  const joinedContent: any = [];
+export const sortBlockContent = (
+  content: BlockContentWithDetails,
+): { [key: string]: unknown }[] => {
+  const sortedContent: { [key: string]: unknown }[] = [];
 
-  if ((content?.image as Image[])?.length > 0) {
-    (content?.image as Image[])?.forEach((e: any) =>
-      joinedContent.push({ image: e })
-    );
-  }
-  if ((content?.promotion as Promotion[])?.length > 0) {
-    (content?.promotion as Promotion[]).forEach((e: any) =>
-      joinedContent.push({ promotion: e })
-    );
-  }
-  if ((content?.campaign as Campaign[])?.length > 0) {
-    (content?.campaign as Campaign[])?.forEach((e: any) =>
-      joinedContent.push({ campaign: e })
-    );
-  }
-  if ((content?.brand as Brand[])?.length > 0) {
-    (content?.brand as Brand[])?.forEach((e: any) =>
-      joinedContent.push({ brand: e })
-    );
-  }
-  if ((content?.icon as string[])?.length > 0) {
-    (content?.icon as string[])?.forEach((e: any) =>
-      joinedContent.push({ icon: e })
-    );
-  }
+  Object.keys(content).forEach((key) => {
+    const items = content[key as keyof BlockContentWithDetails];
+    if (items && Array.isArray(items) && items.length > 0) {
+      items.forEach((item: unknown) => {
+        const sortedItem: { [key: string]: unknown } = {};
+        sortedItem[key] = item;
+        sortedContent.push(sortedItem);
+      });
+    }
+  });
 
-  return joinedContent;
+  return sortedContent;
 };
 
 export const buildImageFromBlockContent = (
-  contentData: any,
+  contentData: BlockContentSorted,
   tileOrBanner?: "tileImage" | "bannerImage",
-  itemLink?: string
+  itemLink?: string,
 ) => {
-  const contentType = determineContentType(contentData);
+  const contentType = getContentType(contentData);
 
   let name: string = "tileImage";
   let link: string = " ";
@@ -111,7 +90,7 @@ export const blockHasMaxContentItems = (blockName: BlockName): boolean => {
 
 //useful for checking if a content item has connections
 export const hasNonEmptyArrayObjectOrIdKey = (
-  obj: Record<string, any> | null | undefined
+  obj: Record<string, unknown> | null | undefined | unknown[],
 ): boolean => {
   obj = obj ?? {};
 
@@ -120,12 +99,14 @@ export const hasNonEmptyArrayObjectOrIdKey = (
   const hasNonEmptyObject =
     typeof obj === "object" && obj !== null && Object.keys(obj).length > 0;
 
-  const hasIdKeyNotNull = Object.keys(obj).some(
-    (key) =>
+  const hasIdKeyNotNull = Object.keys(obj).some((key) => {
+    const value = Array.isArray(obj) ? null : obj?.[key];
+    return (
       key.toLowerCase().includes("id") &&
       key.toLowerCase() !== "id" &&
-      obj?.[key] !== null
-  );
+      value !== null
+    );
+  });
 
   return hasNonEmptyArray || hasNonEmptyObject || hasIdKeyNotNull;
 };

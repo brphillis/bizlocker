@@ -11,63 +11,46 @@ type Props = {
 
 const ImageBanner = ({ options, imageSrc, imageLink, imageAlt }: Props) => {
   const navigate = useNavigate();
-  const {
-    backgroundColorSecondary,
-    borderColor,
-    borderRadius,
-    borderSize,
-    size,
-  } = options || {};
+
+  const { borderColor, borderRadius, borderSize, size } = options || {};
+
+  const smallStyle =
+    "h-[146px] w-full max-w-[1280px] overflow-hidden max-xl:h-[124px] max-lg:h-[100px] max-md:h-[88px]";
+
+  const mediumStyle =
+    "h-[219px] w-full max-w-[1280px] max-xl:h-[186px] max-lg:h-[125px] max-md:h-[132px]";
+
+  const largeStyle =
+    "h-[292px] w-[1400px] max-w-[1280px] max-xl:h-[248px] max-lg:h-[224px] max-md:h-[196px]";
+
+  const nativeStyle = `max-xl:h-[248px] max-lg:h-[224px] max-md:h-[148px]`;
+
+  let currentStyle = smallStyle;
+
+  switch (size) {
+    case "small":
+      currentStyle = smallStyle;
+      break;
+    case "medium":
+      currentStyle = mediumStyle;
+      break;
+
+    case "large":
+      currentStyle = largeStyle;
+      break;
+    case "native":
+      currentStyle = nativeStyle;
+      break;
+  }
 
   return (
-    <>
-      {size === "small" && (
-        <BasicImage
-          onClick={() => imageLink && navigate(imageLink)}
-          src={imageSrc}
-          alt={imageAlt}
-          extendStyle={`relative mx-auto block h-[146px] w-full max-w-[1280px] overflow-hidden object-cover max-xl:h-[124px] max-lg:h-[100px] max-md:h-[88px]
-          ${borderSize} ${borderColor} ${borderRadius}
-          ${backgroundColorSecondary ? "h-[170px] py-3" : " "}
-          ${imageLink ? "cursor-pointer" : " "}`}
-        />
-      )}
-
-      {(!size || size === "medium") && (
-        <BasicImage
-          onClick={() => imageLink && navigate(imageLink)}
-          src={imageSrc}
-          alt={imageAlt}
-          extendStyle={`relative mx-auto block h-[219px] w-full max-w-[1280px] object-cover max-xl:h-[186px] max-lg:h-[125px] max-md:h-[132px]
-        ${borderSize} ${borderColor} ${borderRadius}
-        ${backgroundColorSecondary ? "h-[243px] py-3" : " "}
-        ${imageLink ? "cursor-pointer" : " "}`}
-        />
-      )}
-
-      {size === "large" && (
-        <BasicImage
-          onClick={() => imageLink && navigate(imageLink)}
-          src={imageSrc}
-          alt={imageAlt}
-          extendStyle={`relative h-[292px] w-[1400px] max-w-[1280px] object-cover max-xl:h-[248px] max-lg:h-[224px] max-md:h-[196px] 
-        ${borderSize} ${borderColor} ${borderRadius}
-        ${imageLink ? "cursor-pointer" : " "}`}
-        />
-      )}
-
-      {size === "native" && (
-        <BasicImage
-          onClick={() => imageLink && navigate(imageLink)}
-          src={imageSrc}
-          alt={imageAlt}
-          extendStyle={`relative object-cover shadow-md max-xl:h-[248px] max-lg:h-[224px] max-md:h-[148px] 
-          ${borderSize} ${borderColor} ${borderRadius}
-          ${backgroundColorSecondary ? "h-[272px] py-3" : " "}
-          ${imageLink ? "cursor-pointer" : " "}`}
-        />
-      )}
-    </>
+    <BasicImage
+      onClick={() => imageLink && navigate(imageLink)}
+      src={imageSrc}
+      alt={imageAlt}
+      extendStyle={`relative mx-auto object-cover block ${currentStyle} ${borderSize} ${borderColor} ${borderRadius} 
+        ${imageLink ? "cursor-pointer" : ""}`}
+    />
   );
 };
 

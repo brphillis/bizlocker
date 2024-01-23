@@ -1,17 +1,16 @@
-import type { BlockContentWithDetails } from "~/models/blocks.server";
-import type { BlockOptions } from "@prisma/client";
+import { BlockOptions } from "@prisma/client";
+import { BlockContentSorted } from "~/models/Blocks/types";
+import { getThemeColorValueByName } from "~/utility/colors";
 import PatternBackground from "~/components/Layout/Backgrounds/PatternBackground";
 import {
   buildImageFromBlockContent,
-  concatBlockContent,
-  determineContentType,
+  getContentType,
 } from "~/helpers/contentHelpers";
-import ContentTile from "./ContentTile";
 import IconTile from "./IconTile";
-import { getThemeColorValueByName } from "~/utility/colors";
+import ContentTile from "./ContentTile";
 
 type Props = {
-  content: BlockContentWithDetails;
+  content: BlockContentSorted[];
   options: BlockOptions[];
 };
 
@@ -19,20 +18,15 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
   const options = ArrayOptions[0];
 
   const {
-    backgroundBrightness,
-    backgroundColor,
-    backgroundPatternColor,
-    backgroundPatternName,
-    backgroundPatternSize,
-    backgroundWidth,
+    backgroundBrightnessPrimary,
+    backgroundColorPrimary,
+    backgroundPatternColorPrimary,
+    backgroundPatternNamePrimary,
+    backgroundPatternSizePrimary,
+    backgroundWidthPrimary,
     columns,
     columnsMobile,
-    itemBackgroundColorsPrimary,
-    itemColors,
-    itemFilters,
     itemLinks,
-    itemTitleColors,
-    itemTitles,
     margin,
     padding,
     itemBorderDisplays,
@@ -41,12 +35,22 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
     itemBorderSizes,
   } = options || {};
 
-  const joinedContent = concatBlockContent(content);
   const colsMobile = `max-md:!grid-cols-${columnsMobile}`;
 
   return (
     <div
-      className={`relative grid h-max place-items-center gap-6 py-3 max-md:gap-3 max-md:px-3 ${margin} ${padding} 
+      className={`relative grid h-max place-items-center gap-6 max-md:gap-3 max-md:px-3 
+      ${!columns || (columns && columns <= 3) ? "py-6" : "py-3"}
+      ${
+        backgroundWidthPrimary !== "w-screen"
+          ? backgroundColorPrimary
+            ? columns && columns <= 3
+              ? "px-6"
+              : "py-3"
+            : ""
+          : ""
+      }
+      ${margin} ${padding} 
       ${colsMobile || "max-md:!grid-cols-2"}`}
       style={{
         gridTemplateColumns: columns
@@ -55,18 +59,16 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
       }}
     >
       <PatternBackground
-        name={backgroundPatternName as BackgroundPatternName}
-        backgroundColor={getThemeColorValueByName(backgroundColor)}
-        patternColor={getThemeColorValueByName(backgroundPatternColor)}
-        patternSize={backgroundPatternSize || 32}
-        screenWidth={backgroundWidth === "w-screen" ? true : false}
-        brightness={backgroundBrightness || undefined}
+        name={backgroundPatternNamePrimary as BackgroundPatternName}
+        backgroundColor={getThemeColorValueByName(backgroundColorPrimary)}
+        patternColor={getThemeColorValueByName(backgroundPatternColorPrimary)}
+        patternSize={backgroundPatternSizePrimary || 32}
+        screenWidth={backgroundWidthPrimary === "w-screen" ? true : false}
+        brightness={backgroundBrightnessPrimary || undefined}
       />
 
-      {joinedContent?.map((contentData: any, i: number) => {
-        const contentType = determineContentType(
-          contentData as BlockContentWithDetails,
-        );
+      {content?.map((contentData: BlockContentSorted, i: number) => {
+        const contentType = getContentType(contentData);
 
         const { name, link, imageSrc } =
           buildImageFromBlockContent(contentData, "tileImage", itemLinks[i]) ||
@@ -78,36 +80,19 @@ const TileBlock = ({ content, options: ArrayOptions }: Props) => {
             className={`relative flex aspect-square cursor-pointer items-center justify-center transition duration-300 ease-in-out hover:scale-[1.01] 
             ${itemBorderDisplays[i]} ${itemBorderRadius[i]} 
             ${itemBorderSizes[i]} ${itemBorderColors[i]} ${itemBorderColors[i]}
-            ${
-              joinedContent.length % 2 !== 0 ? "max-sm:last:col-span-full" : ""
-            }`}
+            ${content.length % 2 !== 0 ? "max-sm:last:col-span-full" : ""}`}
           >
             {contentType === "icon" && (
-              <IconTile
-                borderRadius={itemBorderRadius[i]}
-                filter={itemFilters[i]}
-                imageSrc={imageSrc}
-                index={i}
-                title={itemTitles[i]}
-                joinedContent={joinedContent}
-                link={itemLinks[i]}
-                name={name}
-                itemColor={itemColors[i]}
-                itemTitleColor={itemTitleColors[i]}
-                itemBackgroundColor={itemBackgroundColorsPrimary[i]}
-              />
+              <IconTile content={content} index={i} blockOptions={options} />
             )}
 
             {contentType !== "icon" && (
               <ContentTile
-                borderRadius={itemBorderRadius[i]}
-                filter={itemFilters[i]}
+                index={i}
+                blockOptions={options}
                 imageSrc={imageSrc}
-                itemBackgroundColor={itemBackgroundColorsPrimary[i]}
-                joinedContent={joinedContent}
-                link={link}
-                name={name}
-                contentType={contentType}
+                imageLink={link}
+                imageName={name}
               />
             )}
           </div>

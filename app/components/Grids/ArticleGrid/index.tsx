@@ -1,6 +1,6 @@
-import type { ArticleWithContent } from "~/models/articles.server";
-import ArticleCard from "../../Cards/ArticleCard";
 import React from "react";
+import { ArticleWithContent } from "~/models/Articles/types";
+import ArticleCard from "../../Cards/ArticleCard";
 
 type Props = {
   articles: ArticleWithContent[];

@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import type { DepartmentWithDetails } from "~/models/departments.server";
-import type { ProductCategoryWithDetails } from "~/models/productCategories.server";
-import type { User } from "@prisma/client";
-import MobileMenuDropdown from "./MobileMenuDropdown";
+import { User } from "@prisma/client";
+import { DepartmentWithDetails } from "~/models/Departments/types";
+import { ProductCategoryWithDetails } from "~/models/ProductCategories/types";
 import MobileMenuFooter from "./MobileMenuFooter";
+import MobileMenuDropdown from "./MobileMenuDropdown";
 
 type Props = {
   departments: DepartmentWithDetails[];
@@ -13,16 +13,18 @@ type Props = {
 
 const MobileNavigation = ({ departments, productCategories, user }: Props) => {
   const [selectedDepartment, setSelectedDepartment] = useState<number>(
-    departments?.[0].id
+    departments?.[0].id,
   );
 
   const matchingProductCategories = productCategories.filter(
-    (e: ProductCategoryWithDetails) => e.departmentId === selectedDepartment
+    (e: ProductCategoryWithDetails) => e.departmentId === selectedDepartment,
   );
 
   return (
     <div className="drawer-side">
+      {/* eslint-disable */}
       <label htmlFor="my-drawer-3" className="drawer-overlay"></label>
+      {/* eslint-enable */}
       <ul className="z-100 menu relative !h-[100dvh] w-64 bg-brand-black p-4 text-brand-white">
         <div className="mx-auto mb-1 block">
           <h1 className="cursor-pointer select-none text-3xl font-bold tracking-widest text-white">
@@ -46,7 +48,7 @@ const MobileNavigation = ({ departments, productCategories, user }: Props) => {
                   </option>
                 );
               } else return null;
-            }
+            },
           )}
         </select>
 
@@ -69,7 +71,7 @@ const MobileNavigation = ({ departments, productCategories, user }: Props) => {
                   </React.Fragment>
                 );
               } else return null;
-            }
+            },
           )}
         </div>
 

@@ -71,3 +71,27 @@ type BasicSearchArgs = {
 type TransformToOptionalBooleans<T> = {
   [K in keyof T]?: boolean;
 };
+
+type MetaType = {
+  title: string;
+  name: string;
+  content: string;
+  description: string;
+  product: {
+    name: string;
+  };
+  promotion: {
+    name: string;
+    metaDescription: string;
+  };
+};
+
+interface CatchError {
+  message: string;
+  code: string;
+}
+
+interface HttpError {
+  status: string;
+  statusText: string;
+}

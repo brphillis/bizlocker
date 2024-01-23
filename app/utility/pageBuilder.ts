@@ -1,17 +1,17 @@
 import type { BlockOptions } from "@prisma/client";
 import type { BlockContentType, BlockName } from "./blockMaster/types";
-import { searchCampaigns } from "~/models/campaigns.server";
-import { searchImages } from "~/models/images.server";
-import { searchProducts } from "~/models/products.server";
-import { searchPromotions } from "~/models/promotions.server";
+import { searchCampaigns } from "~/models/Campaigns/index.server";
+import { searchImages } from "~/models/Images/index.server";
+import { searchProducts } from "~/models/Products/index.server";
+import { searchPromotions } from "~/models/Promotions/index.server";
 import {
   type BlockMaster,
   blockMaster,
   getBlockContentTypes,
 } from "./blockMaster/blockMaster";
-import { searchBrands } from "~/models/brands.server";
+import { searchBrands } from "~/models/Brands/index.server";
 import { searchIcons } from "./icons";
-import { searchStores } from "~/models/stores.server";
+import { searchStores } from "~/models/Stores/index.server";
 
 export type PageType = "homePage" | "webPage" | "article" | "previewPage";
 
@@ -22,19 +22,19 @@ export interface NewBlockData {
   blockName: BlockName;
   itemIndex: number;
   contentType: BlockContentType;
-  contentData: any;
+  contentData: object;
 }
 
 // Prisma include to include all pagetypes with all blocks
 // eg = include: includeAllPageTypesWithBlocks()
 export const includeAllPageTypes = (excludedPages?: PageType[]) => {
-  // @ts-ignore
-  const pageTypesObject: Record<
+  const pageTypesObject = {} as Record<
     PageType,
     { include: { blocks: { include: Record<string, boolean> } } }
-  > = {};
+  >;
 
   pageTypes.forEach((type) => {
+    // Explicitly assert the type of 'type' as PageType
     pageTypesObject[type as PageType] = {
       include: {
         blocks: {
@@ -46,7 +46,8 @@ export const includeAllPageTypes = (excludedPages?: PageType[]) => {
 
   if (excludedPages) {
     excludedPages.forEach((excludedPage) => {
-      delete pageTypesObject[excludedPage];
+      // Explicitly assert the type of 'excludedPage' as PageType
+      delete pageTypesObject[excludedPage as PageType];
     });
   }
 
@@ -54,9 +55,11 @@ export const includeAllPageTypes = (excludedPages?: PageType[]) => {
 };
 
 // Checks if block has connection to a page
-export const blockHasPageConnection = (blockToCheck: any): boolean => {
+// prettier-ignore
+export const blockHasPageConnection = (blockToCheck: unknown): boolean => {
   return pageTypes.some(
-    (type) => !blockToCheck?.[type] || blockToCheck[type].length > 0
+     // @ts-expect-error: checking block for populated pagetypes
+    (type) => !blockToCheck?.[type] || (blockToCheck[type] && blockToCheck[type].length > 0),
   );
 };
 
@@ -65,20 +68,20 @@ export const getFormBlockOptions = (form: {
   [k: string]: FormDataEntryValue;
 }): BlockOptions => {
   const {
-    backgroundBrightness,
-    backgroundBrightnessSecondary,
-    backgroundColor,
+    backgroundBrightnessPrimary,
+    backgroundColorPrimary,
+    backgroundDisplayPrimary,
+    backgroundPatternColorPrimary,
+    backgroundPatternNamePrimary,
+    backgroundPatternOpacityPrimary,
+    backgroundPatternSizePrimary,
+    backgroundWidthPrimary,
     backgroundColorSecondary,
-    backgroundDisplay,
-    backgroundPatternColor,
+    backgroundBrightnessSecondary,
     backgroundPatternColorSecondary,
-    backgroundPatternName,
     backgroundPatternNameSecondary,
-    backgroundPatternOpacity,
     backgroundPatternOpacitySecondary,
-    backgroundPatternSize,
     backgroundPatternSizeSecondary,
-    backgroundWidth,
     backgroundWidthSecondary,
     borderColor,
     borderDisplay,
@@ -149,6 +152,10 @@ export const getFormBlockOptions = (form: {
     itemAlign,
     itemJustify,
     itemAlignMobile,
+    shortTextSize,
+    shortTextSizeMobile,
+    shortTextFontWeight,
+    shortTextFontWeightMobile,
     itemJustifyMobile,
     buttonLabelPrimary,
     buttonLabelColorPrimary,
@@ -185,33 +192,57 @@ export const getFormBlockOptions = (form: {
     itemBackgroundPatternSizesPrimary,
     itemBackgroundBrightnessesPrimary,
     itemBackgroundPatternOpacitiesPrimary,
+    itemGapMobile,
+    itemMarginTop,
+    itemMarginTopMobile,
+    itemMarginRight,
+    itemMarginRightMobile,
+    itemMarginBottom,
+    itemMarginBottomMobile,
+    itemMarginLeft,
+    itemMarginLeftMobile,
+    itemPaddingTop,
+    itemPaddingTopMobile,
+    itemPaddingRight,
+    itemPaddingRightMobile,
+    itemPaddingBottom,
+    itemPaddingBottomMobile,
+    itemPaddingLeft,
+    itemPaddingLeftMobile,
+    itemShortTextFontWeights,
+    itemShortTextFontWeightsMobile,
+    itemGap,
   } = form;
 
   const blockOptions = {
     speed: speed ? Number(speed) : undefined,
     autoplay: Number(autoplay) === 1 ? true : undefined,
-    backgroundBrightness: backgroundBrightness
-      ? parseFloat(backgroundBrightness as string)
+    backgroundBrightnessPrimary: backgroundBrightnessPrimary
+      ? parseFloat(backgroundBrightnessPrimary as string)
       : undefined,
     backgroundBrightnessSecondary: backgroundBrightnessSecondary
       ? parseFloat(backgroundBrightnessSecondary as string)
       : undefined,
-    backgroundColor: backgroundColor ? (backgroundColor as string) : undefined,
-    backgroundDisplay: backgroundDisplay
-      ? (backgroundDisplay as string)
+    backgroundColorPrimary: backgroundColorPrimary
+      ? (backgroundColorPrimary as string)
       : undefined,
-    backgroundWidth: backgroundWidth ? (backgroundWidth as string) : undefined,
-    backgroundPatternName: backgroundPatternName
-      ? (backgroundPatternName as string)
+    backgroundDisplayPrimary: backgroundDisplayPrimary
+      ? (backgroundDisplayPrimary as string)
       : undefined,
-    backgroundPatternColor: backgroundPatternColor
-      ? (backgroundPatternColor as string)
+    backgroundWidthPrimary: backgroundWidthPrimary
+      ? (backgroundWidthPrimary as string)
       : undefined,
-    backgroundPatternOpacity: backgroundPatternOpacity
-      ? parseFloat(backgroundPatternOpacity as string)
+    backgroundPatternNamePrimary: backgroundPatternNamePrimary
+      ? (backgroundPatternNamePrimary as string)
       : undefined,
-    backgroundPatternSize: backgroundPatternSize
-      ? parseInt(backgroundPatternSize as string)
+    backgroundPatternColorPrimary: backgroundPatternColorPrimary
+      ? (backgroundPatternColorPrimary as string)
+      : undefined,
+    backgroundPatternOpacityPrimary: backgroundPatternOpacityPrimary
+      ? parseFloat(backgroundPatternOpacityPrimary as string)
+      : undefined,
+    backgroundPatternSizePrimary: backgroundPatternSizePrimary
+      ? parseInt(backgroundPatternSizePrimary as string)
       : undefined,
     backgroundColorSecondary: backgroundColorSecondary
       ? (backgroundColorSecondary as string)
@@ -244,7 +275,65 @@ export const getFormBlockOptions = (form: {
     flipX: flipX ? (flipX as string) : undefined,
     height: height ? (height as string) : undefined,
     heightMobile: heightMobile ? (heightMobile as string) : undefined,
+    itemPaddingLeftMobile: itemPaddingLeftMobile
+      ? JSON.parse(itemPaddingLeftMobile as string)
+      : undefined,
+    itemPaddingLeft: itemPaddingLeft
+      ? JSON.parse(itemPaddingLeft as string)
+      : undefined,
+    itemPaddingBottomMobile: itemPaddingBottomMobile
+      ? JSON.parse(itemPaddingBottomMobile as string)
+      : undefined,
+    itemPaddingBottom: itemPaddingBottom
+      ? JSON.parse(itemPaddingBottom as string)
+      : undefined,
+    itemPaddingRightMobile: itemPaddingRightMobile
+      ? JSON.parse(itemPaddingRightMobile as string)
+      : undefined,
+    itemPaddingRight: itemPaddingRight
+      ? JSON.parse(itemPaddingRight as string)
+      : undefined,
+    itemPaddingTopMobile: itemPaddingTopMobile
+      ? JSON.parse(itemPaddingTopMobile as string)
+      : undefined,
+    itemPaddingTop: itemPaddingTop
+      ? JSON.parse(itemPaddingTop as string)
+      : undefined,
+    itemMarginLeftMobile: itemMarginLeftMobile
+      ? JSON.parse(itemMarginLeftMobile as string)
+      : undefined,
+    itemMarginLeft: itemMarginLeft
+      ? JSON.parse(itemMarginLeft as string)
+      : undefined,
+    itemMarginBottomMobile: itemMarginBottomMobile
+      ? JSON.parse(itemMarginBottomMobile as string)
+      : undefined,
+    itemMarginBottom: itemMarginBottom
+      ? JSON.parse(itemMarginBottom as string)
+      : undefined,
+    itemMarginRightMobile: itemMarginRightMobile
+      ? JSON.parse(itemMarginRightMobile as string)
+      : undefined,
+    itemMarginRight: itemMarginRight
+      ? JSON.parse(itemMarginRight as string)
+      : undefined,
+    itemMarginTop: itemMarginTop
+      ? JSON.parse(itemMarginTop as string)
+      : undefined,
+    itemMarginTopMobile: itemMarginTopMobile
+      ? JSON.parse(itemMarginTopMobile as string)
+      : undefined,
     itemLinks: itemLinks ? JSON.parse(itemLinks as string) : undefined,
+    itemShortTextFontWeights: itemShortTextFontWeights
+      ? JSON.parse(itemShortTextFontWeights as string)
+      : undefined,
+    itemShortTextFontWeightsMobile: itemShortTextFontWeightsMobile
+      ? JSON.parse(itemShortTextFontWeightsMobile as string)
+      : undefined,
+    itemGap: itemGap ? JSON.parse(itemGap as string) : undefined,
+    itemGapMobile: itemGapMobile
+      ? JSON.parse(itemGapMobile as string)
+      : undefined,
     itemTitles: itemTitles ? JSON.parse(itemTitles as string) : undefined,
     itemTitleSizes: itemTitleSizes
       ? JSON.parse(itemTitleSizes as string)
@@ -420,7 +509,16 @@ export const getFormBlockOptions = (form: {
     itemBackgroundPatternOpacitiesPrimary: itemBackgroundPatternOpacitiesPrimary
       ? JSON.parse(itemBackgroundPatternOpacitiesPrimary as string)
       : undefined,
-
+    shortTextSize: shortTextSize ? (shortTextSize as string) : undefined,
+    shortTextSizeMobile: shortTextSizeMobile
+      ? (shortTextSizeMobile as string)
+      : undefined,
+    shortTextFontWeight: shortTextFontWeight
+      ? (shortTextFontWeight as string)
+      : undefined,
+    shortTextFontWeightMobile: shortTextFontWeightMobile
+      ? (shortTextFontWeightMobile as string)
+      : undefined,
     rows: rows ? parseInt(rows as string) : undefined,
     shortText: shortText ? (shortText as string) : undefined,
     shortTextColor: shortTextColor ? (shortTextColor as string) : undefined,
@@ -486,9 +584,11 @@ export const buildNewBlockData = (
   blockName: BlockName,
   form: {
     [k: string]: FormDataEntryValue;
-  }
+  },
 ) => {
-  let newData: any = {};
+  const newData:
+    | { [key in BlockContentType]: string[] | undefined }
+    | Partial<Record<BlockContentType, string[]>> = {};
 
   // we go through the blockmaster object getting the relevant data
   blockMaster.map(({ name, maxContentItems }: BlockMaster) => {
@@ -501,7 +601,7 @@ export const buildNewBlockData = (
       // in newData we set the keys recieved from getBlockContentTypes
       blockContentTypes?.map(
         (contentTypeName) =>
-          (newData[contentTypeName] = hasMultipleContent ? [] : undefined)
+          (newData[contentTypeName] = hasMultipleContent ? [] : undefined),
       );
 
       let { contentSelection } = form;
@@ -511,15 +611,17 @@ export const buildNewBlockData = (
       // we then assign the data to each key
       (contentSelection as unknown as ContentSelection[]).forEach(
         ({ type, contentId }: ContentSelection) => {
-          blockContentTypes?.map((contentName: any) => {
+          blockContentTypes?.map((contentName: string) => {
             if (type === contentName && hasMultipleContent) {
+              // @ts-expect-error: content name will be blocks content type from blockmaster ie: Product,Promotion etc
               newData[contentName] = [...newData[contentName], contentId];
             } else if (type === contentName && !hasMultipleContent) {
+              // @ts-expect-error: content name will be blocks content type from blockmaster ie: Product,Promotion etc
               newData[contentName] = contentId;
             }
             return null;
           });
-        }
+        },
       );
     }
     return null;
@@ -531,7 +633,7 @@ export const buildNewBlockData = (
 // returns content data that a user searches for in the pagebuilder
 export const searchContentData = async (
   contentType: BlockContentType,
-  name?: string
+  name?: string,
 ) => {
   const formData = new FormData();
   if (name) {
@@ -544,49 +646,49 @@ export const searchContentData = async (
   let searchResults;
 
   switch (contentType) {
-    case "promotion":
+    case "promotion": {
       const { promotions } = await searchPromotions(
-        Object.fromEntries(formData)
+        Object.fromEntries(formData),
       );
       searchResults = promotions;
-
       return searchResults;
+    }
 
-    case "campaign":
+    case "campaign": {
       const { campaigns } = await searchCampaigns(Object.fromEntries(formData));
       searchResults = campaigns;
-
       return searchResults;
+    }
 
-    case "image":
+    case "image": {
       const { images } = await searchImages(Object.fromEntries(formData));
       searchResults = images;
-
       return searchResults;
+    }
 
-    case "product":
+    case "product": {
       const { products } = await searchProducts(Object.fromEntries(formData));
       searchResults = products;
-
       return searchResults;
+    }
 
-    case "brand":
+    case "brand": {
       const { brands } = await searchBrands(Object.fromEntries(formData));
       searchResults = brands;
-
       return searchResults;
+    }
 
-    case "store":
+    case "store": {
       const { stores } = await searchStores(Object.fromEntries(formData));
       searchResults = stores;
-
       return searchResults;
+    }
 
-    case "icon":
+    case "icon": {
       const icons = await searchIcons(Object.fromEntries(formData));
       searchResults = icons;
-
       return searchResults;
+    }
 
     default:
       return searchResults;

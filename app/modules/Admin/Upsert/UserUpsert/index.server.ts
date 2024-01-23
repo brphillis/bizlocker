@@ -1,13 +1,8 @@
 import { json } from "@remix-run/node";
-import type { Image } from "@prisma/client";
-import type { Params } from "@remix-run/react";
+import { Image } from "@prisma/client";
 import { validateForm } from "~/utility/validate";
-import type { PageNotification } from "~/hooks/PageNotification";
-import {
-  getUser,
-  type UserWithDetails,
-  upsertUser,
-} from "~/models/users.server";
+import { UserWithDetails } from "~/models/Users/types";
+import { getUser, upsertUser } from "~/models/Users/index.server";
 
 const validateOptions = {
   email: true,
@@ -22,12 +17,9 @@ const validateOptions = {
   country: true,
 };
 
-export const userUpsertLoader = async (
-  request: Request,
-  params: Params<string>,
-) => {
-  let { searchParams } = new URL(request.url);
-  let id = searchParams.get("contentId");
+export const userUpsertLoader = async (request: Request) => {
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get("contentId");
 
   if (!id) {
     throw new Response(null, {
@@ -48,15 +40,10 @@ export const userUpsertLoader = async (
   return json({ user });
 };
 
-export const userUpsertAction = async (
-  request: Request,
-  params: Params<string>,
-) => {
-  let notification: PageNotification;
-
-  let { searchParams } = new URL(request.url);
+export const userUpsertAction = async (request: Request) => {
+  const { searchParams } = new URL(request.url);
   const contentId = searchParams.get("contentId");
-  let id = contentId === "add" || !contentId ? undefined : contentId;
+  const id = contentId === "add" || !contentId ? undefined : contentId;
 
   const { formEntries, formErrors } = validateForm(
     await request.formData(),
@@ -102,7 +89,7 @@ export const userUpsertAction = async (
 
   await upsertUser(updateData);
 
-  notification = {
+  const notification = {
     type: "success",
     message: `User ${id === "add" ? "Added" : "Updated"}.`,
   };

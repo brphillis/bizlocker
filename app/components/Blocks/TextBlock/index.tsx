@@ -1,18 +1,19 @@
-import type { BlockContentWithDetails } from "~/models/blocks.server";
-import type { BlockOptions } from "@prisma/client";
-import { parseOptions } from "~/utility/parseOptions";
 import parse from "html-react-parser";
+import { BlockOptions } from "@prisma/client";
+import { parseOptions } from "~/utility/parseOptions";
+import { BlockContentSorted } from "~/models/Blocks/types";
 import { getThemeColorValueByName } from "~/utility/colors";
 
 type Props = {
-  content: BlockContentWithDetails;
+  content: BlockContentSorted[];
   options: BlockOptions[];
 };
 
 const TextBlock = ({ content, options: ArrayOptions }: Props) => {
-  const { richText } = content || {};
+  const { richText } = content[0] || {};
   const options = ArrayOptions && ArrayOptions[0];
-  const { backgroundColor, backgroundWidth, margin, size } = options || {};
+  const { backgroundColorPrimary, backgroundWidthPrimary, margin, size } =
+    options || {};
 
   let blockSize;
 
@@ -32,19 +33,19 @@ const TextBlock = ({ content, options: ArrayOptions }: Props) => {
         <div
           className={`!max-md:px-3 relative max-w-full py-3 max-xl:w-full ${blockSize} ${margin}`}
           style={{
-            paddingTop: backgroundColor ? "3rem" : "unset",
-            paddingBottom: backgroundColor ? "3rem" : "unset",
-            paddingLeft: backgroundColor ? "1.5rem" : "unset",
-            paddingRight: backgroundColor ? "1.5rem" : "unset",
+            paddingTop: backgroundColorPrimary ? "3rem" : "unset",
+            paddingBottom: backgroundColorPrimary ? "3rem" : "unset",
+            paddingLeft: backgroundColorPrimary ? "1.5rem" : "unset",
+            paddingRight: backgroundColorPrimary ? "1.5rem" : "unset",
           }}
         >
           <div
             className="absolute left-[50%] top-0 z-0 h-full w-screen translate-x-[-50%]"
             style={{
-              backgroundColor: backgroundColor
-                ? getThemeColorValueByName(backgroundColor)
+              backgroundColor: backgroundColorPrimary
+                ? getThemeColorValueByName(backgroundColorPrimary)
                 : "",
-              width: backgroundWidth ? backgroundWidth : "unset",
+              width: backgroundWidthPrimary ? backgroundWidthPrimary : "unset",
             }}
           ></div>
           {parse(richText, parseOptions)}

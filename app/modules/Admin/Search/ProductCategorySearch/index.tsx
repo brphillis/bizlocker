@@ -1,8 +1,10 @@
 import Pagination from "~/components/Pagination";
+import { ProductCategory } from "@prisma/client";
+import BasicTable from "~/components/Tables/BasicTable";
 import CategorySort from "~/components/Sorting/CategorySort";
+import AdminContentSearch from "~/components/Search/AdminContentSearch";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/Wrappers/AdminPageWrapper";
-import { type ProductCategory } from "~/models/productCategories.server";
 import {
   Form,
   Outlet,
@@ -10,9 +12,7 @@ import {
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
-import BasicTable from "~/components/Tables/BasicTable";
-import AdminContentSearch from "~/components/Search/AdminContentSearch";
-import type { productCategorySearchLoader } from "./index.server";
+import { productCategorySearchLoader } from "./index.server";
 
 const ProductCategorySearch = () => {
   const { productCategories, totalPages, productSubCategories, departments } =

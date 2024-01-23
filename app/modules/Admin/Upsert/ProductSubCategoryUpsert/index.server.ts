@@ -1,30 +1,28 @@
 import { json } from "@remix-run/node";
-import type { Image } from "@prisma/client";
-import { getProductCategories } from "~/models/productCategories.server";
+import { Image } from "@prisma/client";
+import { validateForm } from "~/utility/validate";
+import { PageNotification } from "~/hooks/PageNotification";
+import { getProductCategories } from "~/models/ProductCategories/index.server";
+import {
+  NewProductSubCategory,
+  ProductSubCategoryWithDetails,
+} from "~/models/ProductSubCategories/types";
 import {
   deleteProductSubCategory,
   getProductSubCategory,
-  type NewProductSubCategory,
-  type ProductSubCategoryWithDetails,
   upsertProductSubCategory,
-} from "~/models/productSubCategories.server";
-import type { Params } from "@remix-run/react";
-import { validateForm } from "~/utility/validate";
-import type { PageNotification } from "~/hooks/PageNotification";
+} from "~/models/ProductSubCategories/index.server";
 
 const validateOptions = {
   name: true,
   index: true,
 };
 
-export const productSubCategoryUpsertLoader = async (
-  request: Request,
-  params: Params<string>,
-) => {
+export const productSubCategoryUpsertLoader = async (request: Request) => {
   const productCategories = await getProductCategories();
 
-  let { searchParams } = new URL(request.url);
-  let id = searchParams.get("contentId");
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get("contentId");
 
   if (!id) {
     throw new Response(null, {
@@ -48,15 +46,12 @@ export const productSubCategoryUpsertLoader = async (
   return json({ productSubCategory, productCategories });
 };
 
-export const productSubCategoryUpsertAction = async (
-  request: Request,
-  params: Params<string>,
-) => {
+export const productSubCategoryUpsertAction = async (request: Request) => {
   let notification: PageNotification;
 
-  let { searchParams } = new URL(request.url);
+  const { searchParams } = new URL(request.url);
   const contentId = searchParams.get("contentId");
-  let id = contentId === "add" || !contentId ? undefined : contentId;
+  const id = contentId === "add" || !contentId ? undefined : contentId;
 
   const { formEntries, formErrors } = validateForm(
     await request.formData(),
@@ -67,7 +62,7 @@ export const productSubCategoryUpsertAction = async (
     formEntries;
 
   switch (formEntries._action) {
-    case "upsert":
+    case "upsert": {
       if (formErrors) {
         return { serverValidationErrors: formErrors };
       }
@@ -94,8 +89,9 @@ export const productSubCategoryUpsertAction = async (
       };
 
       return json({ success: true, notification });
+    }
 
-    case "delete":
+    case "delete": {
       await deleteProductSubCategory(id as string);
 
       notification = {
@@ -104,5 +100,6 @@ export const productSubCategoryUpsertAction = async (
       };
 
       return json({ success: true, notification });
+    }
   }
 };

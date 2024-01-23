@@ -8,7 +8,6 @@ type Props = {
   inputBackgroundColor?: string;
   inputOnClick: () => void;
   tooltip?: string;
-  customWidth?: string;
   extendStyle?: string;
 };
 
@@ -17,13 +16,12 @@ const ColorPickerInput = ({
   inputBackgroundColor,
   inputOnClick,
   tooltip,
-  customWidth,
   extendStyle,
 }: Props) => {
   return (
     <div
-      className={`group form-control relative max-md:w-full max-md:items-center max-md:px-3
-      ${extendStyle} ${customWidth ? customWidth : "w-[215px]"}`}
+      className={`group form-control relative max-md:items-center w-[215px] max-md:w-full
+      ${extendStyle}`}
     >
       {tooltip && <ToolTip tip={tooltip} />}
       <label className="label self-start">
@@ -32,7 +30,8 @@ const ColorPickerInput = ({
         </span>
       </label>
 
-      <div
+      <button
+        type="button"
         className={`relative h-[42px] w-full cursor-pointer border-[1px] border-brand-white/25 ${
           inputBackgroundColor
             ? returnOtherColorPrefix(inputBackgroundColor, "bg-")
@@ -45,7 +44,7 @@ const ColorPickerInput = ({
         <div className="absolute right-3 top-[50%] translate-y-[-50%] opacity-50 group-hover:scale-[1.15]">
           <IoWaterOutline />
         </div>
-      </div>
+      </button>
     </div>
   );
 };

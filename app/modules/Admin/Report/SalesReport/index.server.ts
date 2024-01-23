@@ -1,10 +1,6 @@
-import type { Params } from "@remix-run/react";
 import { getSalesToday } from "~/models/saleReports.server";
 
-export const salesReportLoader = async (
-  request: Request,
-  params: Params<string>,
-) => {
+export const salesReportLoader = async () => {
   const {
     totalSalesToday,
     totalSalesYesterday,

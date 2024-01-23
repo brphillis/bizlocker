@@ -44,13 +44,14 @@ const AccountMenuDesktop = () => {
           <IoChevronForward />
         </NavLink>
 
-        <div
+        <button
+          type="button"
           className="my-1 flex cursor-pointer items-center justify-between rounded-sm p-3 hover:bg-base-300"
           onClick={() => submit(null, { method: "post", action: "/logout" })}
         >
           <div>Log Out</div>
           <IoLogOutOutline size={16} />
-        </div>
+        </button>
       </ul>
     </div>
   );

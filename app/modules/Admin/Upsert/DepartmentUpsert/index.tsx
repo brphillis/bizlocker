@@ -24,7 +24,6 @@ import type { departmentUpsertLoader } from "./index.server";
 
 const validateOptions = {
   name: true,
-  department: true,
   index: true,
 };
 
@@ -40,7 +39,7 @@ const DepartmentUpsert = ({ offRouteModule }: Props) => {
     (useActionData() as ActionReturnTypes) || {};
 
   const navigate = useNavigate();
-  let submit = useSubmit();
+  const submit = useSubmit();
   const [searchParams] = useSearchParams();
   const contentId = searchParams.get("contentId");
   const { contentType } = useParams();
@@ -87,70 +86,63 @@ const DepartmentUpsert = ({ offRouteModule }: Props) => {
         hasMode={true}
         isActive={department?.isActive}
         title="Department"
-        children={
-          <Form
-            method="POST"
-            onSubmit={handleSubmit}
-            className="scrollbar-hide relative w-[500px] max-w-full overflow-y-auto"
-          >
-            <BasicInput
-              label="Name"
-              type="text"
-              name="name"
-              placeholder="Name"
-              customWidth="w-full"
-              defaultValue={department?.name || ""}
-              validationErrors={
-                serverValidationErrors || clientValidationErrors
-              }
+      >
+        <Form
+          method="POST"
+          onSubmit={handleSubmit}
+          className="scrollbar-hide relative w-[500px] max-w-full overflow-y-auto"
+        >
+          <BasicInput
+            label="Name"
+            type="text"
+            name="name"
+            placeholder="Name"
+            extendContainerStyle="w-full"
+            defaultValue={department?.name || ""}
+            validationErrors={serverValidationErrors || clientValidationErrors}
+          />
+
+          <BasicInput
+            label="Index"
+            type="number"
+            name="index"
+            placeholder="Index"
+            extendContainerStyle="w-full"
+            defaultValue={department?.index || 0}
+            validationErrors={serverValidationErrors || clientValidationErrors}
+          />
+
+          <div className="form-control w-full">
+            <div className="label text-sm">In Navigation</div>
+            <select
+              name="displayInNavigation"
+              className="select w-full text-brand-black/75"
+              defaultValue={department?.displayInNavigation ? "true" : ""}
+            >
+              <option value="true">Yes</option>
+              <option value="">No</option>
+            </select>
+          </div>
+
+          {productCategories && (
+            <BasicMultiSelect
+              name="productCategories"
+              label="Categories"
+              extendContainerStyle="w-full"
+              selections={productCategories.filter(
+                (e) => !e.departmentId || e.departmentId === department.id,
+              )}
+              defaultValues={department?.productCategories}
             />
+          )}
 
-            <BasicInput
-              label="Index"
-              type="number"
-              name="index"
-              placeholder="Index"
-              customWidth="w-full"
-              defaultValue={department?.index || 0}
-              validationErrors={
-                serverValidationErrors || clientValidationErrors
-              }
-            />
-
-            <div className="form-control w-full">
-              <label className="label text-sm">In Navigation</label>
-              <select
-                name="displayInNavigation"
-                className="select w-full text-brand-black/75"
-                defaultValue={department?.displayInNavigation ? "true" : ""}
-              >
-                <option value="true">Yes</option>
-                <option value="">No</option>
-              </select>
-            </div>
-
-            {productCategories && (
-              <BasicMultiSelect
-                name="productCategories"
-                label="Categories"
-                customWidth="w-full"
-                selections={productCategories.filter(
-                  (e) => !e.departmentId || e.departmentId === department.id,
-                )}
-                defaultValues={department?.productCategories}
-              />
-            )}
-
-            <BackSubmitButtons
-              loading={loading}
-              setLoading={setLoading}
-              validationErrors={
-                serverValidationErrors || clientValidationErrors
-              }
-            />
-          </Form>
-        }
-      />
+          <BackSubmitButtons
+            loading={loading}
+            setLoading={setLoading}
+            validationErrors={serverValidationErrors || clientValidationErrors}
+          />
+        </Form>
+      </WindowContainer>
     </DarkOverlay>
   );
 };

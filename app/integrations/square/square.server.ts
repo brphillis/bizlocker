@@ -1,11 +1,11 @@
 import { Client, Environment } from "square";
 import { randomUUID } from "crypto";
-import type { CartItemWithDetails } from "~/models/cart.server";
 import type {
   CreatePaymentLinkRequest,
   CreatePaymentLinkResponse,
   OrderLineItem,
 } from "square";
+import { CartItemWithDetails } from "~/models/Cart/types";
 
 export const squareClient = new Client({
   environment: Environment.Sandbox, // Use Environment.Production when you're ready to go live
@@ -15,7 +15,7 @@ export const squareClient = new Client({
 export const squareLocationId = "LB9PSX20NJ5X8";
 
 export const CartItemsToSquareApiLineItems = (
-  cartItems: CartItemWithDetails[]
+  cartItems: CartItemWithDetails[],
 ): OrderLineItem[] => {
   return cartItems.map((item: CartItemWithDetails) => {
     const lineItem: OrderLineItem = {
@@ -25,7 +25,7 @@ export const CartItemsToSquareApiLineItems = (
         amount: BigInt(
           item?.variant?.isOnSale
             ? Math.round(item.variant.salePrice! * 100)
-            : Math.round(item.variant!.price * 100)
+            : Math.round(item.variant!.price * 100),
         ),
         currency: "AUD",
       },
@@ -36,7 +36,7 @@ export const CartItemsToSquareApiLineItems = (
 };
 
 export const createSquarePaymentLink = async (
-  cartItems: CartItemWithDetails[]
+  cartItems: CartItemWithDetails[],
 ): Promise<{
   createPaymentLinkResponse: CreatePaymentLinkResponse;
   confirmCode: string;
@@ -46,14 +46,14 @@ export const createSquarePaymentLink = async (
   const confirmCode = randomUUID();
 
   // Create the Square API order request object
-  let orderRequest: CreatePaymentLinkRequest = {
+  const orderRequest: CreatePaymentLinkRequest = {
     idempotencyKey: randomUUID(),
     order: {
       locationId: squareLocationId,
       lineItems: squareLineItems,
     },
     checkoutOptions: {
-      redirectUrl: `${process.env.SITE_URL}/order/payment-confirm/${confirmCode}`,
+      redirectUrl: `${process.env.SITE_URL}/payment-confirm/${confirmCode}`,
       askForShippingAddress: false,
       acceptedPaymentMethods: {
         applePay: true,
@@ -62,9 +62,8 @@ export const createSquarePaymentLink = async (
     },
   };
 
-  const { result } = (await squareClient.checkoutApi.createPaymentLink(
-    orderRequest
-  )) as any;
+  const { result } =
+    await squareClient.checkoutApi.createPaymentLink(orderRequest);
 
   const createPaymentLinkResponse = result;
 

@@ -8,10 +8,10 @@ type Props = {
   type: "text" | "number" | "date";
   name: string;
   placeholder: string;
-  defaultValue?: any;
+  defaultValue?: string;
   validationErrors?: ValidationErrors;
   extendStyle?: string;
-  customWidth?: string;
+  extendContainerStyle?: string;
   labelStyle?: string;
   onChange?: (value: string | React.ChangeEvent<HTMLSelectElement>) => void;
 };
@@ -21,7 +21,7 @@ type PhoneNumber = {
   dialnumber: string;
 };
 
-const BasicInput = ({
+const PhoneInput = ({
   label,
   type,
   name,
@@ -29,7 +29,7 @@ const BasicInput = ({
   defaultValue,
   validationErrors,
   extendStyle,
-  customWidth,
+  extendContainerStyle,
   labelStyle,
 }: Props) => {
   const [phoneNumber, setPhoneNumber] = useState<PhoneNumber>({
@@ -53,9 +53,7 @@ const BasicInput = ({
 
   return (
     <div
-      className={`form-control relative max-md:w-full ${
-        customWidth ? customWidth : "w-[215px]"
-      }`}
+      className={`form-control relative max-md:w-full w-[215px] ${extendContainerStyle}`}
     >
       <input
         type="hidden"
@@ -97,7 +95,7 @@ const BasicInput = ({
           type={type}
           placeholder={placeholder}
           className={`input w-full text-brand-black/75 ${
-            validationErrors?.hasOwnProperty(name)
+            validationErrors && name in validationErrors
               ? "input-error border !outline-none"
               : ""
           } ${extendStyle}`}
@@ -105,11 +103,12 @@ const BasicInput = ({
           onChange={(e) => updateDialNumber(e.target.value)}
         />
       </div>
-      {validationErrors?.hasOwnProperty(name) && (
+
+      {validationErrors && name in validationErrors && (
         <ToolTip tip={validationErrors[name]} iconColor="text-error" />
       )}
     </div>
   );
 };
 
-export default BasicInput;
+export default PhoneInput;

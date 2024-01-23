@@ -38,7 +38,7 @@ const ProductSubCategoryUpsert = ({ offRouteModule }: Props) => {
     (useActionData() as ActionReturnTypes) || {};
 
   const navigate = useNavigate();
-  let submit = useSubmit();
+  const submit = useSubmit();
   const [searchParams] = useSearchParams();
   const contentId = searchParams.get("contentId");
   const { contentType } = useParams();
@@ -84,76 +84,73 @@ const ProductSubCategoryUpsert = ({ offRouteModule }: Props) => {
         hasIsActive={true}
         isActive={productSubCategory?.isActive}
         title="Category"
-        children={
-          <Form
-            method="POST"
-            onSubmit={handleSubmit}
-            className="scrollbar-hide relative w-[500px] max-w-full overflow-y-auto"
-          >
-            <div className="form-control  gap-3">
-              <BasicInput
-                label="Name"
-                type="text"
-                name="name"
-                placeholder="Name"
-                customWidth="w-full"
-                defaultValue={productSubCategory?.name || ""}
-                validationErrors={
-                  serverValidationErrors || clientValidationErrors
-                }
-              />
-
-              <BasicInput
-                label="Index"
-                type="number"
-                name="index"
-                placeholder="Index"
-                customWidth="w-full"
-                defaultValue={productSubCategory?.index || 0}
-                validationErrors={
-                  serverValidationErrors || clientValidationErrors
-                }
-              />
-
-              <BasicSelect
-                name="displayInNavigation"
-                label="Display In Navigation"
-                selections={[
-                  { id: "yes", name: "Yes" },
-                  { id: "no", name: "No" },
-                ]}
-                placeholder="Display In Navigation"
-                customWidth="w-full"
-                defaultValue={
-                  productSubCategory?.displayInNavigation ? "yes" : "no"
-                }
-              />
-
-              <BasicSelect
-                name="productCategory"
-                label="Category"
-                selections={productCategories}
-                placeholder="Parent Category"
-                customWidth="w-full"
-                defaultValue={productSubCategory.productCategoryId?.toString()}
-              />
-
-              <UploadImage
-                defaultValue={productSubCategory?.image}
-                label={"Image"}
-              />
-            </div>
-
-            <BackSubmitButtons
-              loading={loading}
-              setLoading={setLoading}
+      >
+        <Form
+          method="POST"
+          onSubmit={handleSubmit}
+          className="scrollbar-hide relative w-[500px] max-w-full overflow-y-auto"
+        >
+          <div className="form-control  gap-3">
+            <BasicInput
+              label="Name"
+              type="text"
+              name="name"
+              placeholder="Name"
+              extendContainerStyle="w-full"
+              defaultValue={productSubCategory?.name || ""}
               validationErrors={
                 serverValidationErrors || clientValidationErrors
               }
             />
-          </Form>
-        }
-      />
+
+            <BasicInput
+              label="Index"
+              type="number"
+              name="index"
+              placeholder="Index"
+              extendContainerStyle="w-full"
+              defaultValue={productSubCategory?.index || 0}
+              validationErrors={
+                serverValidationErrors || clientValidationErrors
+              }
+            />
+
+            <BasicSelect
+              name="displayInNavigation"
+              label="Display In Navigation"
+              selections={[
+                { id: "yes", name: "Yes" },
+                { id: "no", name: "No" },
+              ]}
+              placeholder="Display In Navigation"
+              extendContainerStyle="w-full"
+              defaultValue={
+                productSubCategory?.displayInNavigation ? "yes" : "no"
+              }
+            />
+
+            <BasicSelect
+              name="productCategory"
+              label="Category"
+              selections={productCategories}
+              placeholder="Parent Category"
+              extendContainerStyle="w-full"
+              defaultValue={productSubCategory.productCategoryId?.toString()}
+            />
+
+            <UploadImage
+              defaultValue={productSubCategory?.image}
+              label={"Image"}
+            />
+          </div>
+
+          <BackSubmitButtons
+            loading={loading}
+            setLoading={setLoading}
+            validationErrors={serverValidationErrors || clientValidationErrors}
+          />
+        </Form>
+      </WindowContainer>
     </DarkOverlay>
   );
 };

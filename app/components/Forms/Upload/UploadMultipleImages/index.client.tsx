@@ -13,9 +13,9 @@ type ImageUploadSliderProps = {
 
 const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
   const [activeSlide, setActiveSlide] = useState(0);
-  const [images, setCurrentImages] = useState<
-    Image[] | NewImage[] | null | undefined
-  >(defaultImages);
+  const [images, setCurrentImages] = useState<Image[] | NewImage[] | null>(
+    defaultImages || null,
+  );
 
   const handleRemoveImage = (index: number) => {
     const updatedImages = [...(images || [])];
@@ -25,12 +25,15 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
 
   const handleAddImage = async (
     inputEvent: ChangeEvent<HTMLInputElement>,
-    index: number
+    index: number,
   ) => {
     const convertedImage = await ConvertToBase64Image(inputEvent);
+
     if (convertedImage) {
-      const updatedImages = [...(images || [])];
+      let updatedImages = images ? [...images] : [];
+
       updatedImages[index] = convertedImage;
+
       if (updatedImages[index]?.altText?.includes(".") || null) {
         const nameSelector = findFirstNotNullInputValue("name");
         const titleSelector = findFirstNotNullInputValue("title");
@@ -44,6 +47,10 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
           updatedImages[index].altText = altTextSelector.value + " " + index;
         }
       }
+
+      //sanitize array of empty objects
+      updatedImages = updatedImages.filter((e) => e !== undefined);
+
       setCurrentImages(updatedImages as Image[]);
     }
   };
@@ -125,6 +132,7 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
         })}
 
         {/*  ADD BUTTON */}
+        {/* eslint-disable-next-line */}
         <label
           className="trnasition-colors group flex h-20 w-20 cursor-pointer items-center justify-center border-[1px] border-primary bg-none duration-700 hover:border-none hover:bg-primary"
           htmlFor="UploadMultipleImages_NewImage"

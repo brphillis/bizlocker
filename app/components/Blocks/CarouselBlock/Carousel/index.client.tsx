@@ -1,6 +1,5 @@
 import { Suspense } from "react";
-import type { BlockOptions } from "@prisma/client";
-import type { BlockContentWithDetails } from "~/models/blocks.server";
+import { BlockOptions } from "@prisma/client";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { isDecimal } from "~/helpers/numberHelpers";
 import { getThemeColorValueByName } from "~/utility/colors";
@@ -8,23 +7,24 @@ import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import PatternBackground from "~/components/Layout/Backgrounds/PatternBackground";
 import { buildImageFromBlockContent } from "~/helpers/contentHelpers";
 import { IoChevronBackOutline, IoChevronForward } from "react-icons/io5";
+import { BlockContentSorted } from "~/models/Blocks/types";
 
 import Slide from "../Slide";
 
 type Props = {
-  joinedContent: BlockContentWithDetails[];
+  content: BlockContentSorted[];
   options: BlockOptions;
 };
 
-const Carousel = ({ joinedContent, options }: Props) => {
+const Carousel = ({ content, options }: Props) => {
   const {
-    backgroundBrightness,
-    backgroundColor,
-    backgroundDisplay,
-    backgroundPatternColor,
-    backgroundPatternName,
-    backgroundPatternSize,
-    backgroundWidth,
+    backgroundBrightnessPrimary,
+    backgroundColorPrimary,
+    backgroundDisplayPrimary,
+    backgroundPatternColorPrimary,
+    backgroundPatternNamePrimary,
+    backgroundPatternSizePrimary,
+    backgroundWidthPrimary,
     columns,
     columnsMobile,
     margin,
@@ -36,10 +36,12 @@ const Carousel = ({ joinedContent, options }: Props) => {
     autoplay,
   } = options || {};
 
-  const trueSlideLength = joinedContent.length;
+  const trueSlideLength = content.length;
 
   // we generate enough slides for the loop functionality
-  const generateSlidesForPartialViews = (arr: any[]): any[] => {
+  const generateSlidesForPartialViews = (
+    arr: BlockContentSorted[],
+  ): BlockContentSorted[] => {
     if (!Array.isArray(arr)) {
       throw new Error("Input is not an array");
     }
@@ -57,7 +59,7 @@ const Carousel = ({ joinedContent, options }: Props) => {
     } else return arr;
   };
 
-  let swiperModules = [Pagination, Navigation];
+  const swiperModules = [Pagination, Navigation];
 
   if (autoplay) {
     swiperModules.push(Autoplay);
@@ -83,21 +85,34 @@ const Carousel = ({ joinedContent, options }: Props) => {
   return (
     <div
       className={`relative shadow-md 
-      ${backgroundColor ? "py-6" : "p-0"} 
-      ${width ? width : "w-screen"}
-      ${margin} ${padding}
+      ${backgroundColorPrimary ? "py-6" : "p-0"} 
       ${
-        backgroundColor && backgroundWidth !== "w-screen" && "px-6 max-md:px-0"
+        backgroundColorPrimary && backgroundDisplayPrimary === "max-md:hidden"
+          ? "max-md:py-0"
+          : ""
+      }
+      ${
+        backgroundColorPrimary &&
+        backgroundDisplayPrimary === "max-md:block hidden"
+          ? "!py-0 max-md:!py-6"
+          : ""
+      }
+      ${width ? width : "w-screen"}
+      ${margin} ${backgroundColorPrimary ? padding : ""}
+      ${
+        backgroundColorPrimary &&
+        backgroundWidthPrimary !== "w-screen" &&
+        "px-6 max-md:px-0"
       }`}
     >
       <PatternBackground
-        name={backgroundPatternName as BackgroundPatternName}
-        backgroundColor={getThemeColorValueByName(backgroundColor)}
-        patternColor={getThemeColorValueByName(backgroundPatternColor)}
-        patternSize={backgroundPatternSize || 32}
-        screenWidth={backgroundWidth === "w-screen" ? true : false}
-        brightness={backgroundBrightness || undefined}
-        displayStyle={backgroundDisplay}
+        name={backgroundPatternNamePrimary as BackgroundPatternName}
+        backgroundColor={getThemeColorValueByName(backgroundColorPrimary)}
+        patternColor={getThemeColorValueByName(backgroundPatternColorPrimary)}
+        patternSize={backgroundPatternSizePrimary || 32}
+        screenWidth={backgroundWidthPrimary === "w-screen" ? true : false}
+        brightness={backgroundBrightnessPrimary || undefined}
+        displayStyle={backgroundDisplayPrimary}
       />
 
       <Suspense fallback={<div></div>}>
@@ -164,7 +179,7 @@ const Carousel = ({ joinedContent, options }: Props) => {
               },
             }}
             style={{
-              // @ts-ignore
+              // @ts-expect-error: CSS Variables from Swiper Libary Override
               "--swiper-pagination-color": "#FFFFFF",
               "--swiper-pagination-bullet-border-radius": "0px",
               "--swiper-pagination-bullet-inactive-color": "#999999",
@@ -185,8 +200,8 @@ const Carousel = ({ joinedContent, options }: Props) => {
               <IoChevronForward size={30} />
             </div>
 
-            {generateSlidesForPartialViews(joinedContent)?.map(
-              (contentData: any, i: number) => {
+            {generateSlidesForPartialViews(content)?.map(
+              (contentData: BlockContentSorted, i: number) => {
                 const index = i + 1 > trueSlideLength ? i - trueSlideLength : i;
 
                 const { name, imageSrc } =

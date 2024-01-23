@@ -1,0 +1,6 @@
+node_modules/
+app/db.server.ts
+public
+scripts
+theme
+build

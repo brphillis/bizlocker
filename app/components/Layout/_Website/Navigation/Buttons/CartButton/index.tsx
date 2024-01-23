@@ -1,15 +1,12 @@
-import type {
-  CartItemWithDetails,
-  CartWithDetails,
-} from "~/models/cart.server";
-import { IoCartOutline, IoClose } from "react-icons/io5";
 import { useEffect, useRef, useState } from "react";
 import { Form, useNavigate } from "react-router-dom";
-import CartAddSubtractButton from "./CartAddSubtractButton";
+import { IoCartOutline, IoClose } from "react-icons/io5";
+import { CartItemWithDetails, CartWithDetails } from "~/models/Cart/types";
 import {
   calculateCartTotal,
   getVariantUnitPrice,
 } from "~/helpers/numberHelpers";
+import CartAddSubtractButton from "./CartAddSubtractButton";
 
 const CartButton = ({ id: cartId, cartItems }: CartWithDetails) => {
   const navigate = useNavigate();
@@ -38,6 +35,7 @@ const CartButton = ({ id: cartId, cartItems }: CartWithDetails) => {
 
   return (
     <div className="dropdown dropdown-end relative">
+      {/* eslint-disable */}
       <label
         tabIndex={0}
         onClick={handleOpen}
@@ -55,7 +53,7 @@ const CartButton = ({ id: cartId, cartItems }: CartWithDetails) => {
       <div
         ref={cartModalRef}
         tabIndex={0}
-        className="dropdown-content z-50 mr-2 mt-4 w-max min-w-[300px] overflow-hidden rounded-md border-2 border-base-200/75 bg-base-100 shadow-xl"
+        className="dropdown-content z-50 mr-2 mt-4 max-md:mr-0 w-max min-w-[300px] overflow-hidden rounded-md border-2 border-base-200/75 bg-base-100 shadow-xl"
       >
         <IoClose
           onClick={handleClose}
@@ -87,7 +85,7 @@ const CartButton = ({ id: cartId, cartItems }: CartWithDetails) => {
                           className="h-20 w-20 cursor-pointer rounded-sm border border-base-300 object-cover"
                           onClick={() =>
                             navigate(
-                              `/product/${product?.name}?id=${product?.id}`
+                              `/product/${product?.name}?id=${product?.id}`,
                             )
                           }
                         />
@@ -105,7 +103,7 @@ const CartButton = ({ id: cartId, cartItems }: CartWithDetails) => {
                         className="cursor-pointer hover:font-semibold"
                         onClick={() =>
                           navigate(
-                            `/product/${product?.name}?id=${product?.id}`
+                            `/product/${product?.name}?id=${product?.id}`,
                           )
                         }
                       >
@@ -133,7 +131,7 @@ const CartButton = ({ id: cartId, cartItems }: CartWithDetails) => {
                       )}
                     </div>
                   );
-                }
+                },
               )}
             </div>
 
@@ -158,7 +156,7 @@ const CartButton = ({ id: cartId, cartItems }: CartWithDetails) => {
           </div>
         </Form>
       </div>
-      {/* CART MODAL */}
+      {/* eslint-enable */}
     </div>
   );
 };

@@ -1,11 +1,7 @@
-import type { Params } from "@remix-run/react";
 import { json } from "@remix-run/node";
-import { searchDepartments } from "~/models/departments.server";
+import { searchDepartments } from "~/models/Departments/index.server";
 
-export const departmentSearchLoader = async (
-  request: Request,
-  params: Params<string>,
-) => {
+export const departmentSearchLoader = async (request: Request) => {
   const url = new URL(request.url);
 
   const searchQuery = {

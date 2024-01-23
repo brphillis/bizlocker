@@ -3,7 +3,8 @@ import ToolTip from "~/components/Indicators/ToolTip";
 import type { ValidationErrors } from "~/utility/validate";
 
 type Props = {
-  customWidth?: string;
+  id?: string;
+  extendContainerStyle?: string;
   defaultValues?: SelectValue[] | null;
   extendStyle?: string;
   label: string;
@@ -11,10 +12,12 @@ type Props = {
   name: string;
   selections: SelectValue[];
   validationErrors?: ValidationErrors;
+  onChange?: (e: string[]) => void;
 };
 
 const BasicMultiSelect = ({
-  customWidth,
+  id,
+  extendContainerStyle,
   defaultValues,
   extendStyle,
   label,
@@ -22,24 +25,27 @@ const BasicMultiSelect = ({
   name,
   selections,
   validationErrors,
+  onChange,
 }: Props) => {
   const [selectedValues, setSelectedValues] = useState<string[] | undefined>(
-    defaultValues ? defaultValues?.map((e) => e?.id.toString()) : undefined
+    defaultValues ? defaultValues?.map((e) => e?.id.toString()) : undefined,
   );
 
   const handleOptionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedOptions = Array.from(
       e.target.selectedOptions,
-      (option: HTMLOptionElement) => option.value
+      (option: HTMLOptionElement) => option.value,
     );
     setSelectedValues(selectedOptions);
+
+    if (onChange) {
+      setSelectedValues(selectedOptions);
+    }
   };
 
   return (
     <div
-      className={`form-control relative max-md:w-full ${
-        customWidth ? customWidth : "w-[215px]"
-      }`}
+      className={`form-control relative max-md:w-full w-[215px] ${extendContainerStyle}`}
     >
       <label className="label">
         <span
@@ -54,7 +60,7 @@ const BasicMultiSelect = ({
       <select
         className={`select text-brand-black/75 ${extendStyle}
         ${
-          validationErrors?.hasOwnProperty(name)
+          validationErrors && name in validationErrors
             ? "select-error border !outline-none"
             : ""
         }
@@ -74,11 +80,12 @@ const BasicMultiSelect = ({
         ))}
       </select>
 
-      {validationErrors?.hasOwnProperty(name) && (
+      {validationErrors && name in validationErrors && (
         <ToolTip tip={validationErrors[name]} iconColor="text-error" />
       )}
 
       <input
+        id={id}
         hidden
         readOnly
         name={name}

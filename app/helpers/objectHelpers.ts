@@ -1,27 +1,28 @@
-type AnyObject = Record<string, any>;
+type AnyObject = Record<string, unknown>;
 
-export const isEmptyObject = (obj: AnyObject): boolean => {
+export const isEmptyObject = (obj: object): boolean => {
   return Object.keys(obj).length === 0;
 };
 
 export const hasTruePropertyStartingWith = (
   prefix: string,
-  obj: Record<string, any>
+  obj: Record<string, unknown>,
 ): boolean =>
   Object.entries(obj).some(
-    ([key, value]) => key.startsWith(prefix) && value === true
+    ([key, value]) => key.startsWith(prefix) && value === true,
   );
 
 export const searchObjectByKey = (
   obj: AnyObject,
-  key: string
-): any | undefined => {
-  if (obj.hasOwnProperty(key)) {
+  key: string,
+): unknown | undefined => {
+  if (key in obj) {
     return obj[key];
   }
 
   for (const objKey in obj) {
-    if (obj.hasOwnProperty(objKey) && typeof obj[objKey] === "object") {
+    if (objKey in obj && typeof obj[objKey] === "object") {
+      //@ts-expect-error:unknown expected
       const nestedResult = searchObjectByKey(obj[objKey], key);
       if (nestedResult !== undefined) {
         return nestedResult;
@@ -30,4 +31,32 @@ export const searchObjectByKey = (
   }
 
   return undefined;
+};
+
+export const sanitizeObject = (
+  obj: Record<string, unknown>,
+): Record<string, unknown> => {
+  const sanitizedObject: Record<string, unknown> = { ...obj };
+
+  for (const key in sanitizedObject) {
+    if (
+      Array.isArray(sanitizedObject[key]) &&
+      //@ts-expect-error:unknown expected
+      sanitizedObject[key].length === 0
+    ) {
+      delete sanitizedObject[key];
+    } else if (
+      typeof sanitizedObject[key] === "object" &&
+      sanitizedObject[key] !== null
+    ) {
+      //@ts-expect-error:unknown expected
+      sanitizedObject[key] = sanitizeObject(sanitizedObject[key]);
+      //@ts-expect-error:unknown expected
+      if (Object.keys(sanitizedObject[key]).length === 0) {
+        delete sanitizedObject[key];
+      }
+    }
+  }
+
+  return sanitizedObject;
 };

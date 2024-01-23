@@ -1,8 +1,8 @@
-import type {
+import { StockLevelWithDetails } from "~/models/Stock/types";
+import {
   ProductVariantWithDetails,
   ProductWithDetails,
-} from "~/models/products.server";
-import type { StockLevelWithDetails } from "~/models/stock.server";
+} from "~/models/Products/types";
 
 type TotalStock = {
   totalStock: number;
@@ -16,7 +16,7 @@ type StoreStock = {
 };
 
 export const getAvailableSizes = (
-  product: ProductWithDetails
+  product: ProductWithDetails,
 ): (string | undefined | null)[] => {
   const sizeSet = new Set();
   const sizes = [];
@@ -36,7 +36,7 @@ export const getAvailableSizes = (
 
 export const getAvailableColors = (
   product: ProductWithDetails,
-  size: string
+  size: string,
 ): (string | undefined | null)[] => {
   const colorSet = new Set();
   const colors = [];
@@ -55,11 +55,11 @@ export const getAvailableColors = (
 };
 
 export const calculateVariantStock = (
-  variant: ProductVariantWithDetails
+  variant: ProductVariantWithDetails,
 ): TotalStock => {
   const stockLevels: StockLevelWithDetails[] | null | undefined = variant.stock;
 
-  let totalStock: TotalStock = {
+  const totalStock: TotalStock = {
     totalStock: 0,
     storeStock: [],
   };
@@ -80,7 +80,7 @@ export const calculateVariantStock = (
 
       totalStock.totalStock += quantity;
       totalStock.storeStock.push(storeStock);
-    }
+    },
   );
 
   return totalStock;

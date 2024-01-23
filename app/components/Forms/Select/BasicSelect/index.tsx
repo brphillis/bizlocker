@@ -2,7 +2,7 @@ import type { ValidationErrors } from "~/utility/validate";
 import ToolTip from "~/components/Indicators/ToolTip";
 
 type Props = {
-  customWidth?: string;
+  extendContainerStyle?: string;
   defaultValue?: string | number | null;
   extendStyle?: string;
   disabled?: boolean;
@@ -17,7 +17,7 @@ type Props = {
 };
 
 const BasicSelect = ({
-  customWidth,
+  extendContainerStyle,
   defaultValue,
   disabled,
   extendStyle,
@@ -32,9 +32,7 @@ const BasicSelect = ({
 }: Props) => {
   return (
     <div
-      className={`form-control relative max-md:w-full ${
-        customWidth ? customWidth : "w-[215px]"
-      }`}
+      className={`form-control relative max-md:w-full w-[215px] ${extendContainerStyle}`}
     >
       <label className="label">
         <span
@@ -53,7 +51,7 @@ const BasicSelect = ({
         text-brand-black/75 disabled:!border-base-100/50 disabled:!bg-base-100/50 disabled:!text-brand-black/50
         ${extendStyle}
         ${
-          validationErrors?.hasOwnProperty(name)
+          validationErrors && name in validationErrors
             ? "select-error border !outline-none"
             : ""
         }
@@ -72,7 +70,7 @@ const BasicSelect = ({
           </option>
         ))}
       </select>
-      {validationErrors?.hasOwnProperty(name) && (
+      {validationErrors && name in validationErrors && (
         <ToolTip tip={validationErrors[name]} iconColor="text-error" />
       )}
     </div>

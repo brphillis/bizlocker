@@ -1,13 +1,9 @@
-import { getDepartments } from "~/models/departments.server";
-import { getProductSubCategories } from "~/models/productSubCategories.server";
+import { getDepartments } from "~/models/Departments/index.server";
+import { getProductSubCategories } from "~/models/ProductSubCategories/index.server";
 import { json } from "@remix-run/node";
-import type { Params } from "@remix-run/react";
-import { searchProductCategories } from "~/models/productCategories.server";
+import { searchProductCategories } from "~/models/ProductCategories/index.server";
 
-export const productCategorySearchLoader = async (
-  request: Request,
-  params: Params<string>,
-) => {
+export const productCategorySearchLoader = async (request: Request) => {
   const url = new URL(request.url);
 
   const { productCategories, totalPages } = await searchProductCategories(

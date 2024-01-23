@@ -4,9 +4,9 @@ sgMail.setApiKey(process.env.SENDGRID_KEY!);
 
 export const sendEmailVerificationEmail = async (
   recipient: string,
-  verificationCode: string
+  verificationCode: string,
 ) => {
-  const verificationLink = `${process.env.SITE_URL}/verify-account/${verificationCode}?email=${recipient}`;
+  const verificationLink = `${process.env.SITE_URL}/verify/${verificationCode}?email=${recipient}`;
 
   const template = Splash_Message_Button(
     recipient,
@@ -14,7 +14,7 @@ export const sendEmailVerificationEmail = async (
     "verifySplash.png",
     "Verify Account",
     verificationLink,
-    "Thankyou for joining Clutch, Please verify your account"
+    "Thankyou for joining Clutch, Please verify your account",
   );
 
   try {

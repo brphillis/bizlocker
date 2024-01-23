@@ -3,27 +3,29 @@ import ColorPickerInput from "./ColorPickerInput";
 import ColorPickerPopup from "./ColorPickerPopup";
 
 type Props = {
+  id?: string;
   label: string;
   formName: string;
   defaultValue?: string;
   tooltip?: string;
   type?: "bg" | "text" | "border" | "outline" | "decoration";
-  customWidth?: string;
   extendStyle?: string;
+  onChange?: (e: string) => void;
 };
 
 const ColorPicker = ({
+  id,
   label,
   formName,
   defaultValue,
   tooltip,
   type,
-  customWidth,
   extendStyle,
+  onChange,
 }: Props) => {
   const [editing, setEditing] = useState<boolean>(false);
   const [selectedValue, setSelectedValue] = useState<string | undefined>(
-    defaultValue
+    defaultValue,
   );
 
   return (
@@ -33,7 +35,6 @@ const ColorPicker = ({
         tooltip={tooltip}
         inputBackgroundColor={selectedValue}
         inputOnClick={() => setEditing(true)}
-        customWidth={customWidth}
         extendStyle={extendStyle}
       />
 
@@ -45,11 +46,21 @@ const ColorPicker = ({
           selectFunction={(selectedColor) => {
             setSelectedValue(selectedColor);
             setEditing(false);
+
+            if (onChange && selectedColor) {
+              onChange(selectedColor);
+            }
           }}
         />
       )}
 
-      <input hidden readOnly name={formName} value={selectedValue || ""} />
+      <input
+        id={id}
+        hidden
+        readOnly
+        name={formName}
+        value={selectedValue || ""}
+      />
     </>
   );
 };

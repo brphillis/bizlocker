@@ -1,18 +1,18 @@
-import type {
+import { useEffect, useState } from "react";
+import { Form, useSearchParams, useSubmit } from "react-router-dom";
+import { useLocation } from "@remix-run/react";
+import { BrandWithContent } from "~/models/Brands/types";
+import { IoRefreshOutline, IoSearch } from "react-icons/io5";
+import { DepartmentWithDetails } from "~/models/Departments/types";
+import { ProductCategoryWithDetails } from "~/models/ProductCategories/types";
+import {
   Brand,
   Department,
   ProductCategory,
   ProductSubCategory,
 } from "@prisma/client";
-import { useEffect, useState } from "react";
-import { IoRefreshOutline, IoSearch } from "react-icons/io5";
-import { Form, useSearchParams, useSubmit } from "react-router-dom";
-import SearchInput from "../Forms/Input/SearchInput";
-import { useLocation } from "@remix-run/react";
 import Spinner from "../Spinner";
-import type { ProductCategoryWithDetails } from "~/models/productCategories.server";
-import type { DepartmentWithDetails } from "~/models/departments.server";
-import type { BrandWithContent } from "~/models/brands.server";
+import SearchInput from "../Forms/Input/SearchInput";
 
 type Props = {
   departments: DepartmentWithDetails[] | null;
@@ -40,7 +40,7 @@ const SearchBar = ({ departments, productCategories, brands }: Props) => {
   useEffect(() => {
     if (searchedDepartment) {
       const departmentsCategories = productCategories?.filter(
-        (e) => e?.department?.name === searchedDepartment
+        (e) => e?.department?.name === searchedDepartment,
       );
 
       if (departmentsCategories) {
@@ -98,7 +98,7 @@ const SearchBar = ({ departments, productCategories, brands }: Props) => {
                 departments?.[e.target.selectedIndex - 1].productCategories
               ) {
                 setCategories(
-                  departments?.[e.target.selectedIndex - 1]?.productCategories
+                  departments?.[e.target.selectedIndex - 1]?.productCategories,
                 );
               }
               searchParams.delete("productCategory");
@@ -126,7 +126,7 @@ const SearchBar = ({ departments, productCategories, brands }: Props) => {
                 setSubCategories(null);
               } else {
                 const selectedCategory = productCategories?.find(
-                  (f: ProductCategory) => f.name === e.target.value
+                  (f: ProductCategory) => f.name === e.target.value,
                 );
                 if (selectedCategory?.productSubCategories) {
                   setSubCategories(selectedCategory?.productSubCategories);

@@ -1,26 +1,21 @@
 import { json } from "@remix-run/node";
-import type { Params } from "@remix-run/react";
+import { Image } from "@prisma/client";
 import { validateForm } from "~/utility/validate";
-import type { Image } from "~/models/images.server";
 import type { PageNotification } from "~/hooks/PageNotification";
+import { BrandWithContent, NewBrand } from "~/models/Brands/types";
 import {
   deleteBrand,
   getBrand,
-  type BrandWithContent,
-  type NewBrand,
   upsertBrand,
-} from "~/models/brands.server";
+} from "~/models/Brands/index.server";
 
 const validateOptions = {
   name: true,
 };
 
-export const brandUpsertLoader = async (
-  request: Request,
-  params: Params<string>,
-) => {
-  let { searchParams } = new URL(request.url);
-  let id = searchParams.get("contentId");
+export const brandUpsertLoader = async (request: Request) => {
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get("contentId");
 
   if (!id) {
     throw new Response(null, {
@@ -41,15 +36,12 @@ export const brandUpsertLoader = async (
   return json({ brand });
 };
 
-export const brandUpsertAction = async (
-  request: Request,
-  params: Params<string>,
-) => {
+export const brandUpsertAction = async (request: Request) => {
   let notification: PageNotification;
 
-  let { searchParams } = new URL(request.url);
+  const { searchParams } = new URL(request.url);
   const contentId = searchParams.get("contentId");
-  let id = contentId === "add" || !contentId ? undefined : contentId;
+  const id = contentId === "add" || !contentId ? undefined : contentId;
 
   const { formEntries, formErrors } = validateForm(
     await request.formData(),
@@ -59,7 +51,7 @@ export const brandUpsertAction = async (
   const { name, image, isActive } = formEntries;
 
   switch (formEntries._action) {
-    case "upsert":
+    case "upsert": {
       if (formErrors) {
         return { serverValidationErrors: formErrors };
       }
@@ -79,8 +71,9 @@ export const brandUpsertAction = async (
       };
 
       return { success: true, notification };
+    }
 
-    case "delete":
+    case "delete": {
       await deleteBrand(id as string);
 
       notification = {
@@ -89,5 +82,6 @@ export const brandUpsertAction = async (
       };
 
       return { success: true, notification };
+    }
   }
 };

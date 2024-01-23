@@ -1,9 +1,9 @@
 import Pagination from "~/components/Pagination";
 import BasicTable from "~/components/Tables/BasicTable";
+import { StaffWithDetails } from "~/models/Staff/types";
 import AdminContentSearch from "~/components/Search/AdminContentSearch";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/Wrappers/AdminPageWrapper";
-import { type StaffWithDetails } from "~/models/staff.server";
 import {
   Form,
   Outlet,
@@ -11,7 +11,7 @@ import {
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
-import type { staffSearchLoader } from "./index.server";
+import { staffSearchLoader } from "./index.server";
 
 const StaffSearch = () => {
   const { staff, totalPages } = useLoaderData<typeof staffSearchLoader>();

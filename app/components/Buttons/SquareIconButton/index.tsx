@@ -7,7 +7,7 @@ type Props = {
   iconName: keyof typeof IconsIO5;
   name?: string;
   onClick?: () => void;
-  size: "small" | "medium" | "large";
+  size: "xsmall" | "small" | "medium" | "large";
   type?: "button" | "submit" | "reset";
   value?: string;
 };
@@ -26,6 +26,13 @@ const SquareIconButton = ({
   let coloring: string = "";
 
   switch (size) {
+    case "xsmall":
+      sizing = {
+        style: "!h-[24px] !min-h-[24px] !w-[24px] !min-w-[24px]",
+        size: 14,
+      };
+      break;
+
     case "small":
       sizing = {
         style: "!h-[32px] !min-h-[32px] !w-[32px] !min-w-[32px]",

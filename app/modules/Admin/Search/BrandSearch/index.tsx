@@ -1,9 +1,9 @@
 import Pagination from "~/components/Pagination";
 import BasicTable from "~/components/Tables/BasicTable";
+import { BrandWithContent } from "~/models/Brands/types";
 import AdminContentSearch from "~/components/Search/AdminContentSearch";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/Wrappers/AdminPageWrapper";
-import { type BrandWithContent } from "~/models/brands.server";
 import {
   Form,
   Outlet,
@@ -11,7 +11,8 @@ import {
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
-import type { brandSearchLoader } from "./index.server";
+
+import { brandSearchLoader } from "./index.server";
 
 const BrandSearch = () => {
   const { brands, totalPages } = useLoaderData<typeof brandSearchLoader>();

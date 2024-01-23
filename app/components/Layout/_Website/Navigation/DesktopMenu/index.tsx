@@ -1,8 +1,8 @@
-import { useLocation, useNavigate, useSearchParams } from "@remix-run/react";
 import { useEffect, useState } from "react";
-import type { DepartmentWithDetails } from "~/models/departments.server";
-import type { ProductCategoryWithDetails } from "~/models/productCategories.server";
-import type { ProductSubCategoryWithDetails } from "~/models/productSubCategories.server";
+import { DepartmentWithDetails } from "~/models/Departments/types";
+import { useLocation, useNavigate, useSearchParams } from "@remix-run/react";
+import { ProductCategoryWithDetails } from "~/models/ProductCategories/types";
+import { ProductSubCategoryWithDetails } from "~/models/ProductSubCategories/types";
 
 type Props = {
   departments: DepartmentWithDetails[];
@@ -16,7 +16,7 @@ const DesktopMenu = ({ departments, productCategories }: Props) => {
   const [searchParams] = useSearchParams();
 
   const [selectedDepartment, setSelectedDepartment] = useState<number>(
-    departments?.[0].id
+    departments?.[0].id,
   );
 
   const [activeSubCategories, setActiveSubCategories] = useState<
@@ -25,14 +25,14 @@ const DesktopMenu = ({ departments, productCategories }: Props) => {
   >();
 
   const [growTimeoutId, setGrowTimeoutId] = useState<NodeJS.Timeout | null>(
-    null
+    null,
   );
   const [shrinkTimeoutId, setShrinkTimeoutId] = useState<NodeJS.Timeout | null>(
-    null
+    null,
   );
 
   const matchingProductCategories = productCategories.filter(
-    (e: ProductCategoryWithDetails) => e.departmentId === selectedDepartment
+    (e: ProductCategoryWithDetails) => e.departmentId === selectedDepartment,
   );
 
   const [height, setHeight] = useState<number>(0);
@@ -127,7 +127,7 @@ const DesktopMenu = ({ departments, productCategories }: Props) => {
   useEffect(() => {
     const departmentNameFromURL = searchParams.get("department");
     const userSelectedDepartment = departments.find(
-      (e) => e.name === departmentNameFromURL
+      (e) => e.name === departmentNameFromURL,
     );
     if (userSelectedDepartment) {
       setSelectedDepartment(userSelectedDepartment.id);
@@ -154,7 +154,7 @@ const DesktopMenu = ({ departments, productCategories }: Props) => {
                       </option>
                     );
                   } else return null;
-                }
+                },
               )}
             </select>
           </div>
@@ -167,6 +167,9 @@ const DesktopMenu = ({ departments, productCategories }: Props) => {
               productSubCategories,
             }: ProductCategoryWithDetails) => {
               if (displayInNavigation) {
+                {
+                  /* eslint-disable */
+                }
                 return (
                   <li
                     key={"menu_productCategory_" + id + name}
@@ -177,7 +180,7 @@ const DesktopMenu = ({ departments, productCategories }: Props) => {
                   }`}
                     onClick={() => {
                       const department = departments.find(
-                        (e) => e.id === selectedDepartment
+                        (e) => e.id === selectedDepartment,
                       )?.name;
                       navigate({
                         pathname: "/products",
@@ -197,8 +200,11 @@ const DesktopMenu = ({ departments, productCategories }: Props) => {
                     {name.toUpperCase()}
                   </li>
                 );
+                {
+                  /* eslint-enable */
+                }
               } else return null;
-            }
+            },
           )}
         </ul>
       </div>
@@ -218,13 +224,16 @@ const DesktopMenu = ({ departments, productCategories }: Props) => {
                 displayInNavigation,
               }: ProductSubCategoryWithDetails) => {
                 if (displayInNavigation) {
+                  {
+                    /* eslint-disable */
+                  }
                   return (
                     <li
                       key={"menu_productSubCategory_" + id}
                       className="flex h-full cursor-pointer items-center justify-center border-primary-content/0 px-3 py-1 text-sm font-semibold tracking-wide text-brand-white hover:bg-primary-content/10"
                       onClick={() => {
                         const department = departments.find(
-                          (e) => e.id === selectedDepartment
+                          (e) => e.id === selectedDepartment,
                         )?.name;
                         navigate({
                           pathname: "/products",
@@ -235,8 +244,11 @@ const DesktopMenu = ({ departments, productCategories }: Props) => {
                       {name.toUpperCase()}
                     </li>
                   );
+                  {
+                    /* eslint-enable */
+                  }
                 } else return null;
-              }
+              },
             )}
           </ul>
         </div>

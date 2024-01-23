@@ -1,9 +1,8 @@
-import { type StaffWithDetails } from "~/models/staff.server";
-import { type NotificationWithContent } from "~/models/notifications.server";
-import { IoPersonOutline, IoSettingsOutline } from "react-icons/io5";
+import { StaffWithDetails } from "~/models/Staff/types";
 import LogoutButton from "~/components/Buttons/LogoutButton";
+import { IoPersonOutline, IoSettingsOutline } from "react-icons/io5";
+import { NotificationWithContent } from "~/models/Notifications/types";
 import UserNotifications from "~/components/Notifications/UserNotifications";
-
 type Props = {
   staffMember: StaffWithDetails | null;
   userNotifications: NotificationWithContent[] | null;

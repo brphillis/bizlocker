@@ -1,9 +1,9 @@
 import Pagination from "~/components/Pagination";
 import BasicTable from "~/components/Tables/BasicTable";
+import { StoreWithDetails } from "~/models/Stores/types";
 import AdminContentSearch from "~/components/Search/AdminContentSearch";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/Wrappers/AdminPageWrapper";
-import { type StoreWithDetails } from "~/models/stores.server";
 import {
   Form,
   Outlet,
@@ -11,8 +11,8 @@ import {
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
-import type { storeSearchLoader } from "./index.server";
 
+import { storeSearchLoader } from "./index.server";
 const StoreSearch = () => {
   const { stores, totalPages } = useLoaderData<typeof storeSearchLoader>();
 

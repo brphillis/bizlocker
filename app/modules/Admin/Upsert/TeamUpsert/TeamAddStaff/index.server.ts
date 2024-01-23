@@ -1,8 +1,8 @@
 import { json } from "@remix-run/node";
 import type { Params } from "@remix-run/react";
-import { getStores } from "~/models/stores.server";
-import { searchStaff } from "~/models/staff.server";
-import { addTeamMemberToTeam } from "~/models/teams.server";
+import { getStores } from "~/models/Stores/index.server";
+import { searchStaff } from "~/models/Staff/index.server";
+import { addTeamMemberToTeam } from "~/models/Teams/index.server";
 import type { PageNotification } from "~/hooks/PageNotification";
 
 export const teamAddStaffLoader = async (
@@ -36,15 +36,12 @@ export const teamAddStaffLoader = async (
   return json({ staff, totalPages, stores, teamId });
 };
 
-export const teamAddStaffAction = async (
-  request: Request,
-  params: Params<string>,
-) => {
+export const teamAddStaffAction = async (request: Request) => {
   const form = Object.fromEntries(await request.formData());
   let notification: PageNotification;
 
   switch (form._action) {
-    case "addUser":
+    case "addUser": {
       const { staffId, teamId } = form;
 
       try {
@@ -62,5 +59,6 @@ export const teamAddStaffAction = async (
         };
         return json({ success: false, notification });
       }
+    }
   }
 };

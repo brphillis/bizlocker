@@ -1,26 +1,23 @@
-import type { BlockContentWithDetails } from "~/models/blocks.server";
-import type { BlockOptions } from "@prisma/client";
+import { BlockOptions } from "@prisma/client";
 import { ClientOnly } from "~/components/Client/ClientOnly";
-import { concatBlockContent } from "~/helpers/contentHelpers";
 import Carousel from "./Carousel/index.client";
 import SEOCardSkeleton from "~/components/Client/Skeletons/SEOCardSkeleton";
+import { BlockContentSorted } from "~/models/Blocks/types";
 
 type Props = {
-  content: BlockContentWithDetails;
+  content: BlockContentSorted[];
   options: BlockOptions[];
 };
 
 const CarouselBlock = ({ content, options: ArrayOptions }: Props) => {
-  const joinedContent = concatBlockContent(content);
-
   const {
     height,
     heightMobile,
     width,
     margin,
     padding,
-    backgroundColor,
-    backgroundDisplay,
+    backgroundColorPrimary,
+    backgroundDisplayPrimary,
     itemTitles,
   } = ArrayOptions?.[0] || {};
 
@@ -32,14 +29,16 @@ const CarouselBlock = ({ content, options: ArrayOptions }: Props) => {
           ${height ? height : "h-[540px]"} 
           ${heightMobile ? heightMobile : "max-md:h-max"} 
           ${width ? width : "w-screen"}
-          ${backgroundColor && backgroundDisplay && "my-6 max-md:my-0"}`}
+          ${
+            backgroundColorPrimary &&
+            backgroundDisplayPrimary &&
+            "my-6 max-md:my-0"
+          }`}
           SEOWords={itemTitles}
         />
       }
     >
-      {() => (
-        <Carousel options={ArrayOptions?.[0]} joinedContent={joinedContent} />
-      )}
+      {() => <Carousel options={ArrayOptions?.[0]} content={content} />}
     </ClientOnly>
   );
 };

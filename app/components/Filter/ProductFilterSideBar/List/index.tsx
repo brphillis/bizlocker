@@ -13,6 +13,7 @@ const List = ({ label, listValues, searchParam }: Props) => {
 
   return (
     <li>
+      {/* eslint-disable-next-line */}
       <details onClick={(e) => searchedValue && e.preventDefault()}>
         <summary className="mx-2 rounded-none font-semibold text-brand-black">
           {label}
@@ -20,8 +21,9 @@ const List = ({ label, listValues, searchParam }: Props) => {
         <div className="mb-1 max-h-[300px] overflow-y-auto">
           {listValues?.map((value: string) => {
             return (
-              <div
+              <button
                 key={searchParam + "_sideFilter_" + value}
+                type="button"
                 className="ml-3 flex cursor-pointer items-center gap-2 py-1 pt-3"
                 onClick={() => {
                   const selectedValue = searchedValue;
@@ -44,7 +46,7 @@ const List = ({ label, listValues, searchParam }: Props) => {
                   readOnly
                 />
                 <p>{value}</p>
-              </div>
+              </button>
             );
           })}
         </div>

@@ -1,21 +1,22 @@
 import { useNavigate } from "@remix-run/react";
+import { BlockOptions, Product } from "@prisma/client";
+import { getContentType } from "~/helpers/contentHelpers";
+import { BlockContentSorted } from "~/models/Blocks/types";
 import { getThemeColorValueByName } from "~/utility/colors";
-import type { BlockContentWithDetails } from "~/models/blocks.server";
-import type { BlockOptions, Product } from "@prisma/client";
 import PatternBackground from "~/components/Layout/Backgrounds/PatternBackground";
-import { determineContentType } from "~/helpers/contentHelpers";
-import type {
+import {
   ProductVariantWithDetails,
   ProductWithDetails,
-} from "~/models/products.server";
+} from "~/models/Products/types";
+
 type Props = {
-  content: BlockContentWithDetails;
+  content: BlockContentSorted[];
   options: BlockOptions[];
 };
 
-const HeroBlock = ({ content, options: optionsArray }: Props) => {
+const HeroBlock = ({ content, options: options }: Props) => {
   const navigate = useNavigate();
-  const options = optionsArray[0];
+
   const {
     title,
     titleColor,
@@ -25,7 +26,7 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
     titleFontWeightMobile,
     shortText,
     shortTextColor,
-    backgroundColor,
+    backgroundColorPrimary,
     margin,
     flipX,
     backgroundColorSecondary,
@@ -40,12 +41,12 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
     padding,
     linkPrimary,
     linkSecondary,
-  } = options || {};
+  } = options[0] || {};
 
-  const product = content.product?.[0] as ProductWithDetails;
+  const product = content[0]?.product as ProductWithDetails;
   const productImage = product.heroImage?.href;
 
-  const contentType = determineContentType(content);
+  const contentType = getContentType(content[0]);
 
   const getProductLowestPrice = (
     product: ProductWithDetails,
@@ -94,7 +95,7 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
         ${borderDisplay} ${borderRadius} ${flipX} ${borderSize} ${borderColor}`}
       >
         <div
-          className={`container relative mx-auto flex px-20 py-12 max-xl:px-16 max-lg:px-12 max-md:px-3 max-md:py-6 ${backgroundColor}`}
+          className={`container relative mx-auto flex px-20 py-12 max-xl:px-16 max-lg:px-12 max-md:px-3 max-md:py-6 ${backgroundColorPrimary}`}
         >
           <div className="relative mr-16 flex w-[60%] flex-col gap-[20%] max-md:w-4/5 max-md:justify-between max-md:gap-16 max-sm:mr-0">
             <div>
@@ -123,12 +124,13 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
               </p>
               <div className={`mt-8 flex ${flipX}`}>
                 {(contentType === "product" || linkPrimary) && (
-                  <div
+                  <button
+                    type="button"
                     onClick={() =>
                       navigate(
                         contentType === "product"
                           ? `/product/SlackSki%20Jacket?id=${
-                              (content.product?.[0] as Product).id
+                              (content[0]?.product as Product).id
                             }`
                           : (linkPrimary as string),
                       )
@@ -136,15 +138,16 @@ const HeroBlock = ({ content, options: optionsArray }: Props) => {
                     className="text-md mr-4 cursor-pointer rounded-sm border-2 border-transparent bg-primary px-4 py-2 uppercase text-white hover:bg-primary"
                   >
                     Buy Now
-                  </div>
+                  </button>
                 )}
                 {linkSecondary && (
-                  <div
+                  <button
+                    type="button"
                     className="text-md cursor-pointer rounded-sm border-2 border-primary bg-transparent px-4 py-2 uppercase text-primary hover:bg-primary hover:text-white dark:text-white"
                     onClick={() => navigate(linkSecondary as string)}
                   >
                     Read more
-                  </div>
+                  </button>
                 )}
               </div>
             </div>

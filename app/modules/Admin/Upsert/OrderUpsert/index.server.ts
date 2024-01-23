@@ -1,17 +1,13 @@
-import type { Params } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import type { PageNotification } from "~/hooks/PageNotification";
 import {
   getOrder,
   updateOrderShippingDetails,
   updateOrderStatus,
-} from "~/models/orders.server";
-export const orderUpsertLoader = async (
-  request: Request,
-  params: Params<string>,
-) => {
-  let { searchParams } = new URL(request.url);
-  let id = searchParams.get("contentId") || undefined;
+} from "~/models/Orders/index.server";
+export const orderUpsertLoader = async (request: Request) => {
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get("contentId") || undefined;
 
   if (!id) {
     throw new Response(null, {
@@ -20,7 +16,7 @@ export const orderUpsertLoader = async (
     });
   }
 
-  let order = await getOrder(id);
+  const order = await getOrder(id);
 
   if (!order) {
     throw new Response(null, {
@@ -32,17 +28,14 @@ export const orderUpsertLoader = async (
   return json({ order });
 };
 
-export const orderUpsertAction = async (
-  request: Request,
-  params: Params<string>,
-) => {
+export const orderUpsertAction = async (request: Request) => {
   let notification: PageNotification;
 
   const form = Object.fromEntries(await request.formData());
   const { orderId } = form;
 
   switch (form._action) {
-    case "updateStatus":
+    case "updateStatus": {
       const { status } = form;
       await updateOrderStatus(orderId as string, status as OrderStatus);
 
@@ -52,8 +45,9 @@ export const orderUpsertAction = async (
       };
 
       return { notification };
+    }
 
-    case "updateShipping":
+    case "updateShipping": {
       const {
         firstName,
         lastName,
@@ -85,5 +79,6 @@ export const orderUpsertAction = async (
       };
 
       return { notification };
+    }
   }
 };

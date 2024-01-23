@@ -1,25 +1,20 @@
 import { json } from "@remix-run/node";
-import type { Params } from "@remix-run/react";
 import { validateForm } from "~/utility/validate";
-import type { PageNotification } from "~/hooks/PageNotification";
+import { PageNotification } from "~/hooks/PageNotification";
+import { getDepartments } from "~/models/Departments/index.server";
+import { DepartmentWithDetails } from "~/models/Departments/types";
+import { ArticleCategoryWithDetails } from "~/models/ArticleCategories/types";
 import {
-  getDepartments,
-  type DepartmentWithDetails,
-} from "~/models/departments.server";
-import {
-  getArticleCategories,
-  type ArticleCategoryWithDetails,
-} from "~/models/articleCategories.server";
-import {
-  getProductSubCategories,
-  type ProductSubCategoryWithDetails,
-} from "~/models/productSubCategories.server";
+  NewProductCategory,
+  ProductCategoryWithDetails,
+} from "~/models/ProductCategories/types";
+import { getArticleCategories } from "~/models/ArticleCategories/index.server";
+import { ProductSubCategoryWithDetails } from "~/models/ProductSubCategories/types";
+import { getProductSubCategories } from "~/models/ProductSubCategories/index.server";
 import {
   getProductCategory,
-  type NewProductCategory,
-  type ProductCategoryWithDetails,
   upsertProductCategory,
-} from "~/models/productCategories.server";
+} from "~/models/ProductCategories/index.server";
 
 const validateOptions = {
   name: true,
@@ -27,12 +22,9 @@ const validateOptions = {
   index: true,
 };
 
-export const productCategoryUpsertLoader = async (
-  request: Request,
-  params: Params<string>,
-) => {
-  let { searchParams } = new URL(request.url);
-  let id = searchParams.get("contentId");
+export const productCategoryUpsertLoader = async (request: Request) => {
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get("contentId");
 
   const departments = await getDepartments();
   const productSubCategories = await getProductSubCategories();
@@ -65,15 +57,12 @@ export const productCategoryUpsertLoader = async (
   });
 };
 
-export const productCategoryUpsertAction = async (
-  request: Request,
-  params: Params<string>,
-) => {
+export const productCategoryUpsertAction = async (request: Request) => {
   let notification: PageNotification;
 
-  let { searchParams } = new URL(request.url);
+  const { searchParams } = new URL(request.url);
   const contentId = searchParams.get("contentId");
-  let id = contentId === "add" || !contentId ? undefined : contentId;
+  const id = contentId === "add" || !contentId ? undefined : contentId;
 
   const { formEntries, formErrors } = validateForm(
     await request.formData(),
@@ -91,7 +80,7 @@ export const productCategoryUpsertAction = async (
   } = formEntries;
 
   switch (formEntries._action) {
-    case "upsert":
+    case "upsert": {
       if (formErrors) {
         return json({ serverValidationErrors: formErrors });
       }
@@ -117,5 +106,6 @@ export const productCategoryUpsertAction = async (
       };
 
       return json({ success: true, notification });
+    }
   }
 };

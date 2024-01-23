@@ -48,65 +48,104 @@ export const loader = async ({ request, params }: ActionFunctionArgs) => {
 
   switch (contentType) {
     case "article":
-      return await articleSearchLoader(request, params);
+      return await articleSearchLoader(request);
     case "articleCategory":
-      return await articleCategorySearchLoader(request, params);
+      return await articleCategorySearchLoader(request);
     case "brand":
-      return await brandSearchLoader(request, params);
+      return await brandSearchLoader(request);
     case "campaign":
-      return await campaignSearchLoader(request, params);
+      return await campaignSearchLoader(request);
     case "department":
-      return await departmentSearchLoader(request, params);
+      return await departmentSearchLoader(request);
     case "image":
-      return await imageSearchLoader(request, params);
+      return await imageSearchLoader(request);
     case "order":
-      return await orderSearchLoader(request, params);
+      return await orderSearchLoader(request);
     case "page":
-      return await pageSearchLoader(request, params);
+      return await pageSearchLoader(request);
     case "product":
-      return await productSearchLoader(request, params);
+      return await productSearchLoader(request);
     case "productCategory":
-      return await productCategorySearchLoader(request, params);
+      return await productCategorySearchLoader(request);
     case "productSubCategory":
-      return await productSubCategorySearchLoader(request, params);
+      return await productSubCategorySearchLoader(request);
     case "promotion":
-      return await promotionSearchLoader(request, params);
+      return await promotionSearchLoader(request);
     case "team":
-      return await teamSearchLoader(request, params);
+      return await teamSearchLoader(request);
     case "staff":
-      return await staffSearchLoader(request, params);
+      return await staffSearchLoader(request);
     case "stockTransfer":
-      return await stockTransferSearchLoader(request, params);
+      return await stockTransferSearchLoader(request);
     case "store":
-      return await storeSearchLoader(request, params);
+      return await storeSearchLoader(request);
     case "user":
-      return await userSearchLoader(request, params);
+      return await userSearchLoader(request);
   }
 };
 
 const SearchContent = () => {
   const { contentType } = useParams();
-  return (
-    <>
-      {contentType === "article" && <ArticleSearch />}
-      {contentType === "articleCategory" && <ArticleCategorySearch />}
-      {contentType === "brand" && <BrandSearch />}
-      {contentType === "campaign" && <CampaignSearch />}
-      {contentType === "department" && <DepartmentSearch />}
-      {contentType === "image" && <ImageSearch />}
-      {contentType === "order" && <OrderSearch />}
-      {contentType === "page" && <PageSearch />}
-      {contentType === "product" && <ProductSearch />}
-      {contentType === "productCategory" && <ProductCategorySearch />}
-      {contentType === "productSubCategory" && <ProductSubCategorySearch />}
-      {contentType === "promotion" && <PromotionSearch />}
-      {contentType === "staff" && <StaffSearch />}
-      {contentType === "stockTransfer" && <StockTransferSearch />}
-      {contentType === "store" && <StoreSearch />}
-      {contentType === "team" && <TeamSearch />}
-      {contentType === "user" && <UserSearch />}
-    </>
-  );
+  let searchComponent;
+
+  switch (contentType) {
+    case "article":
+      searchComponent = <ArticleSearch />;
+      break;
+    case "articleCategory":
+      searchComponent = <ArticleCategorySearch />;
+      break;
+    case "brand":
+      searchComponent = <BrandSearch />;
+      break;
+    case "campaign":
+      searchComponent = <CampaignSearch />;
+      break;
+    case "department":
+      searchComponent = <DepartmentSearch />;
+      break;
+    case "image":
+      searchComponent = <ImageSearch />;
+      break;
+    case "order":
+      searchComponent = <OrderSearch />;
+      break;
+    case "page":
+      searchComponent = <PageSearch />;
+      break;
+    case "product":
+      searchComponent = <ProductSearch />;
+      break;
+    case "productCategory":
+      searchComponent = <ProductCategorySearch />;
+      break;
+    case "productSubCategory":
+      searchComponent = <ProductSubCategorySearch />;
+      break;
+    case "promotion":
+      searchComponent = <PromotionSearch />;
+      break;
+    case "staff":
+      searchComponent = <StaffSearch />;
+      break;
+    case "stockTransfer":
+      searchComponent = <StockTransferSearch />;
+      break;
+    case "store":
+      searchComponent = <StoreSearch />;
+      break;
+    case "team":
+      searchComponent = <TeamSearch />;
+      break;
+    case "user":
+      searchComponent = <UserSearch />;
+      break;
+    default:
+      searchComponent = null;
+      break;
+  }
+
+  return <>{searchComponent}</>;
 };
 
 export default SearchContent;

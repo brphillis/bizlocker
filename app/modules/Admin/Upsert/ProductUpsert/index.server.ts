@@ -1,20 +1,19 @@
 import { json } from "@remix-run/node";
-import type { Params } from "@remix-run/react";
+import { Image, Staff } from "@prisma/client";
 import { validateForm } from "~/utility/validate";
-import { getBrands } from "~/models/brands.server";
-import type { Image, Staff } from "@prisma/client";
-import { getPromotions } from "~/models/promotions.server";
+import { getBrands } from "~/models/Brands/index.server";
 import { getAvailableColors } from "~/models/enums.server";
-import type { PageNotification } from "~/hooks/PageNotification";
+import { PageNotification } from "~/hooks/PageNotification";
+import { getPromotions } from "~/models/Promotions/index.server";
+import { NewProduct, ProductWithDetails } from "~/models/Products/types";
 import { getUserDataFromSession, STAFF_SESSION_KEY } from "~/session.server";
-import { getProductSubCategories } from "~/models/productSubCategories.server";
+import { getProductSubCategories } from "~/models/ProductSubCategories/index.server";
 import {
   deleteProduct,
   getProduct,
-  type NewProduct,
-  type ProductWithDetails,
   upsertProduct,
-} from "~/models/products.server";
+} from "~/models/Products/index.server";
+
 const validateOptions = {
   name: true,
   productSubCategories: true,
@@ -24,20 +23,24 @@ const validateOptions = {
   brand: true,
 };
 
-export const productUpsertLoader = async (
-  request: Request,
-  params: Params<string>,
-) => {
+export const productUpsertLoader = async (request: Request) => {
   const { storeId } =
     ((await getUserDataFromSession(request, STAFF_SESSION_KEY)) as Staff) || {};
+
+  if (!storeId) {
+    throw new Response(null, {
+      status: 505,
+      statusText: "You Must Be Assigned to a Store",
+    });
+  }
 
   const productSubCategories = await getProductSubCategories();
   const brands = await getBrands();
   const promotions = await getPromotions();
   const availableColors = await getAvailableColors();
 
-  let { searchParams } = new URL(request.url);
-  let id = searchParams.get("contentId");
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get("contentId");
 
   if (!id) {
     throw new Response(null, {
@@ -66,15 +69,12 @@ export const productUpsertLoader = async (
   });
 };
 
-export const productUpsertAction = async (
-  request: Request,
-  params: Params<string>,
-) => {
+export const productUpsertAction = async (request: Request) => {
   let notification: PageNotification;
 
-  let { searchParams } = new URL(request.url);
+  const { searchParams } = new URL(request.url);
   const contentId = searchParams.get("contentId");
-  let id = contentId === "add" || !contentId ? undefined : contentId;
+  const id = contentId === "add" || !contentId ? undefined : contentId;
 
   const { formEntries, formErrors } = validateForm(
     await request.formData(),
@@ -103,7 +103,7 @@ export const productUpsertAction = async (
   }
 
   switch (formEntries._action) {
-    case "upsert":
+    case "upsert": {
       if (formErrors) {
         return { serverValidationErrors: formErrors };
       }
@@ -137,8 +137,9 @@ export const productUpsertAction = async (
       };
 
       return { success: true, notification };
+    }
 
-    case "delete":
+    case "delete": {
       await deleteProduct(id as string);
 
       notification = {
@@ -147,5 +148,6 @@ export const productUpsertAction = async (
       };
 
       return { success: true };
+    }
   }
 };

@@ -1,13 +1,9 @@
-import type { Params } from "@remix-run/react";
-import { getBrands } from "~/models/brands.server";
-import { getProductSubCategories } from "~/models/productSubCategories.server";
+import { getBrands } from "~/models/Brands/index.server";
+import { getProductSubCategories } from "~/models/ProductSubCategories/index.server";
 import { json } from "@remix-run/node";
-import { searchProducts } from "~/models/products.server";
+import { searchProducts } from "~/models/Products/index.server";
 
-export const productSearchLoader = async (
-  request: Request,
-  params: Params<string>,
-) => {
+export const productSearchLoader = async (request: Request) => {
   const url = new URL(request.url);
 
   const { products, totalPages } = await searchProducts(undefined, url);

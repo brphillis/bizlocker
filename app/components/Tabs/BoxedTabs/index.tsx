@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
 
+//do not place spaces in tab names
+
 type Props = {
   tabNames: string[];
   activeTab: string;
   setActiveTab: (tab: string) => void;
   dynamicTabNames?: boolean;
+  extendStyle?: string;
 };
 
 const BoxedTabs = (props: Props) => {
@@ -21,7 +24,7 @@ const BoxedTabs = (props: Props) => {
       setActiveTab(props.tabNames[0]);
     }
 
-    let tabsToSet = [""];
+    const tabsToSet = [""];
 
     props?.tabNames.forEach((name) => {
       const tabContent = document?.querySelector(`[data-tabname=${name}]`);
@@ -36,18 +39,19 @@ const BoxedTabs = (props: Props) => {
     });
 
     setTabsWithErrors(tabsToSet);
-    console.log("TABS", tabsToSet);
   }, [props.tabNames, props.dynamicTabNames]);
 
   return (
     <div
       id="BoxTabContainer"
       role="tablist"
-      className="tabs-boxed tabs w-full rounded-none !p-0"
+      className={`tabs-boxed tabs w-full rounded-none !p-0 ${props?.extendStyle}`}
     >
       {props.tabNames?.map((tabName: string) => {
-        let containsError = tabsWithErrors?.find((e) => e === tabName);
-
+        const containsError = tabsWithErrors?.find((e) => e === tabName);
+        {
+          /* eslint-disable */
+        }
         return (
           <div
             key={"boxTab_" + tabName}
@@ -63,6 +67,9 @@ const BoxedTabs = (props: Props) => {
             {capitalizeFirst(tabName)}
           </div>
         );
+        {
+          /* eslint-enable */
+        }
       })}
     </div>
   );

@@ -36,7 +36,7 @@ const ArticleCategoryUpsert = ({ offRouteModule }: Props) => {
     (useActionData() as ActionReturnTypes) || {};
 
   const navigate = useNavigate();
-  let submit = useSubmit();
+  const submit = useSubmit();
   const [searchParams] = useSearchParams();
   const contentId = searchParams.get("contentId");
   const { contentType } = useParams();
@@ -83,34 +83,29 @@ const ArticleCategoryUpsert = ({ offRouteModule }: Props) => {
         hasMode={true}
         isActive={articleCategory?.isActive}
         title="Category"
-        children={
-          <Form
-            method="POST"
-            onSubmit={handleSubmit}
-            className="scrollbar-hide relative w-[500px] max-w-full overflow-y-auto"
-          >
-            <BasicInput
-              label="Name"
-              name="name"
-              type="text"
-              placeholder="Name"
-              customWidth="w-full"
-              defaultValue={articleCategory?.name || undefined}
-              validationErrors={
-                serverValidationErrors || clientValidationErrors
-              }
-            />
+      >
+        <Form
+          method="POST"
+          onSubmit={handleSubmit}
+          className="scrollbar-hide relative w-[500px] max-w-full overflow-y-auto"
+        >
+          <BasicInput
+            label="Name"
+            name="name"
+            type="text"
+            placeholder="Name"
+            extendContainerStyle="w-full"
+            defaultValue={articleCategory?.name || undefined}
+            validationErrors={serverValidationErrors || clientValidationErrors}
+          />
 
-            <BackSubmitButtons
-              loading={loading}
-              setLoading={setLoading}
-              validationErrors={
-                serverValidationErrors || clientValidationErrors
-              }
-            />
-          </Form>
-        }
-      />
+          <BackSubmitButtons
+            loading={loading}
+            setLoading={setLoading}
+            validationErrors={serverValidationErrors || clientValidationErrors}
+          />
+        </Form>
+      </WindowContainer>
     </DarkOverlay>
   );
 };

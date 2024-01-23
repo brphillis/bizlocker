@@ -1,5 +1,5 @@
 import { type LoaderFunctionArgs, json } from "@remix-run/node";
-import { searchArticles } from "~/models/articles.server";
+import { searchArticles } from "~/models/Articles/index.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);

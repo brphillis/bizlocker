@@ -49,7 +49,7 @@ const ProductStockTransfer = () => {
               type="text"
               name="productName"
               placeholder="Product Name"
-              customWidth="w-full"
+              extendContainerStyle="w-full"
               disabled={true}
               defaultValue={variant.product?.name}
             />
@@ -60,7 +60,7 @@ const ProductStockTransfer = () => {
               disabled={true}
               name="variantName"
               placeholder="Variant Name"
-              customWidth="w-full"
+              extendContainerStyle="w-full"
               defaultValue={variant.name}
             />
             <input readOnly hidden value={variant.id} name="variantId" />
@@ -72,7 +72,7 @@ const ProductStockTransfer = () => {
               placeholder="From Store"
               defaultValue={fromStoreId}
               disabled={true}
-              customWidth="w-full"
+              extendContainerStyle="w-full"
             />
             <input readOnly hidden value={fromStoreId} name="fromStoreId" />
 
@@ -82,7 +82,7 @@ const ProductStockTransfer = () => {
               name="fromStoreStockDisabled"
               placeholder="From Store Stock"
               disabled={true}
-              customWidth="w-full"
+              extendContainerStyle="w-full"
               value={
                 variant.stock?.find((e) => e.storeId === Number(fromStoreId))
                   ?.quantity
@@ -104,7 +104,7 @@ const ProductStockTransfer = () => {
               name="toStoreIdDisabled"
               placeholder="To Store"
               defaultValue={userStoreId}
-              customWidth="w-full"
+              extendContainerStyle="w-full"
               disabled={true}
             />
             <input
@@ -119,7 +119,7 @@ const ProductStockTransfer = () => {
               type="number"
               name="toStoreStock"
               placeholder="To Store Stock"
-              customWidth="w-full"
+              extendContainerStyle="w-full"
               defaultValue={0}
             />
           </div>

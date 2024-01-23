@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import Spinner from "~/components/Spinner";
 import SearchBar from "~/components/SearchBar";
-import { getCart } from "~/models/cart.server";
-import { getBrands } from "~/models/brands.server";
+import { getCart } from "~/models/Cart/index.server";
+import { getBrands } from "~/models/Brands/index.server";
 import Footer from "~/components/Layout/_Website/Footer";
 import DarkOverlay from "~/components/Layout/Overlays/DarkOverlay";
 import { getUserDataFromSession } from "~/session.server";
-import { getDepartments } from "~/models/departments.server";
-import { getProductCategories } from "~/models/productCategories.server";
+import { getDepartments } from "~/models/Departments/index.server";
+import { getProductCategories } from "~/models/ProductCategories/index.server";
 import {
   json,
   type MetaFunction,
@@ -33,7 +33,7 @@ import "sweetalert2/dist/sweetalert2.css";
 import type { User } from "@prisma/client";
 import CountDown from "~/components/Indicators/Countdown";
 
-export const meta: MetaFunction = ({ data }) => {
+export const meta: MetaFunction = () => {
   return [
     { title: "CLUTCH Clothing" },
     {
@@ -45,7 +45,7 @@ export const meta: MetaFunction = ({ data }) => {
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const user = (await getUserDataFromSession(request)) as User | null;
-  let cart = await getCart(request);
+  const cart = await getCart(request);
 
   const departments = await getDepartments();
   const brands = await getBrands();
@@ -71,7 +71,7 @@ const App = () => {
   return (
     <div className="drawer" data-theme="brand-light">
       <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
-      <div className="drawer-content relative flex min-h-[calc(100vh-60px)] flex-col items-center justify-start overflow-x-hidden">
+      <div className="drawer-content relative flex min-h-[calc(100dvh-60px)] flex-col items-center justify-start overflow-x-hidden">
         <div
           id="NavigationBar"
           className="navbar relative !min-h-[60px] w-full justify-center bg-brand-black !py-0"
@@ -84,14 +84,15 @@ const App = () => {
               searchState={searchActive}
             />
 
-            <div
+            <button
+              type="button"
               className="absolute left-16 flex h-[60px] flex-row items-center gap-4 px-2 font-bold lg:relative lg:left-0"
               onClick={() => navigate("/home")}
             >
               <h1 className="cursor-pointer select-none text-xl font-bold tracking-widest text-brand-white">
                 CLUTCH.
               </h1>
-            </div>
+            </button>
 
             <DesktopMenu
               departments={departments}
@@ -118,12 +119,13 @@ const App = () => {
         {!(
           location.pathname.includes("/login") ||
           location.pathname.includes("/register") ||
-          location.pathname.includes("/forgot-password") ||
+          location.pathname.includes("/password-recovery") ||
+          location.pathname.includes("/verify") ||
           location.pathname.includes("/account")
         ) && (
           <div className="navbar relative z-0 flex !min-h-[50px] w-full select-none items-center justify-center gap-6 bg-brand-white !py-0 text-sm font-bold text-brand-black/80 shadow-md">
-            <div className="max-md:text-xs">CHRISTMAS SALES END SOON!</div>
-            <CountDown targetDate={new Date("2024-01-01T00:00:00")} />
+            <div className="max-md:text-xs">SEASON SALE ENDS SOON!</div>
+            <CountDown targetDate={new Date("2024-03-03T00:00:00")} />
           </div>
         )}
 

@@ -11,6 +11,9 @@ const MobileMenuItem = ({
   productSubCategoryName,
 }: Props) => {
   const navigate = useNavigate();
+  {
+    /* eslint-disable */
+  }
   return (
     <label
       htmlFor="my-drawer-3"
@@ -31,6 +34,9 @@ const MobileMenuItem = ({
       <IoChevronForward />
     </label>
   );
+  {
+    /* eslint-enable */
+  }
 };
 
 export default MobileMenuItem;

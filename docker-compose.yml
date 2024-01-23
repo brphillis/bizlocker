@@ -1,13 +1,41 @@
 version: "3.7"
+
 services:
   postgres:
-    image: postgres:latest
-    restart: always
+    image: postgres:15
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=postgres
+      - POSTGRES_USER=testing
+      - POSTGRES_PASSWORD=testing
+      - POSTGRES_DB=testing
     ports:
       - "5432:5432"
-    volumes:
-      - ./postgres-data:/var/lib/postgresql/data
+    networks:
+      - clutch_network
+    restart: always
+
+  bizlocker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=${DATABASE_URL_PROD}
+      - SITE_URL=${SITE_URL_PROD}
+      - SESSION_SECRET=${SESSION_SECRET}
+      - PORT=${PORT}
+      - JWT_ACCESS_SECRET=${JWT_ACCESS_SECRET}
+      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}
+      - AWS_ACCESS=${AWS_ACCESS}
+      - AWS_SECRET=${AWS_SECRET}
+      - SQUARE_ACCESS=${SQUARE_ACCESS}
+      - SENDGRID_KEY=${SENDGRID_KEY}
+      - AUSPOST_ACCESS=${AUSPOST_ACCESS}
+    networks:
+      - clutch_network
+
+networks:
+  clutch_network:
+    driver: bridge
