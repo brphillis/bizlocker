@@ -4,7 +4,7 @@ import { prisma } from "~/db.server";
 import { createUserSession } from "~/session.server";
 import { ValidationErrors } from "~/utility/validate";
 import { TypedResponse } from "@remix-run/server-runtime";
-import { GoogleAuthResponse } from "~/components/Auth/LoginGoogle/types";
+import { GoogleAuthResponse } from "~/integrations/authentication/google/types";
 import { UserLoginResponse } from "./types";
 
 export const verifyLogin = async (

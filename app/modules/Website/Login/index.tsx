@@ -1,4 +1,4 @@
-import LoginGoogle from "~/components/Auth/LoginGoogle";
+import LoginGoogle from "~/integrations/authentication/google";
 import BasicButton from "~/components/Buttons/BasicButton";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import type { ActionReturnTypes } from "~/utility/actionTypes";
