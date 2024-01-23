@@ -1,7 +1,7 @@
-import type { BlockContentSorted } from "~/models/blocks.server";
-import type { BlockOptions } from "@prisma/client";
-import { parseOptions } from "~/utility/parseOptions";
 import parse from "html-react-parser";
+import { BlockOptions } from "@prisma/client";
+import { parseOptions } from "~/utility/parseOptions";
+import { BlockContentSorted } from "~/models/Blocks/types";
 import { getThemeColorValueByName } from "~/utility/colors";
 
 type Props = {

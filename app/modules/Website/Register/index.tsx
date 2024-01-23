@@ -3,7 +3,7 @@ import type { ActionReturnTypes } from "~/utility/actionTypes";
 import AuthContainer from "~/components/Layout/Containers/AuthContainer";
 import { ActionAlert } from "~/components/Notifications/Alerts";
 import AuthPageWrapper from "~/components/Layout/Wrappers/AuthPageWrapper";
-import { NavLink, useActionData, useNavigate } from "@remix-run/react";
+import { useActionData, useNavigate } from "@remix-run/react";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import PasswordValidationErrors from "~/components/Forms/Validation/PasswordValidationErrors";
 import ValidationErrorsList from "~/components/Forms/Validation/ValidationErrorsList";

@@ -1,16 +1,16 @@
 import { useRef } from "react";
+import { BlockOptions } from "@prisma/client";
 import Map from "~/components/Map/index.client";
+import { BlockContentSorted } from "~/models/Blocks/types";
+import { MapFunctions } from "~/components/Map/types";
+import { ClientOnly } from "~/components/Client/ClientOnly";
+import { getCountryFromISO3166 } from "~/utility/countryList";
+import { IoCall, IoLocationSharp, IoPrint } from "react-icons/io5";
 import {
   getThemeColorValueByName,
   returnOtherColorPrefix,
 } from "~/utility/colors";
-import type { BlockOptions } from "@prisma/client";
-import type { BlockContentSorted } from "~/models/blocks.server";
-import type { MapFunctions } from "~/components/Map/types";
-import { ClientOnly } from "~/components/Client/ClientOnly";
-import { getCountryFromISO3166 } from "~/utility/countryList";
-import type { StoreWithDetails } from "~/models/stores.server";
-import { IoCall, IoLocationSharp, IoPrint } from "react-icons/io5";
+import { StoreWithDetails } from "~/models/Stores/types";
 
 type Props = {
   content: BlockContentSorted[];
@@ -104,8 +104,9 @@ const MapBlock = ({ content, options: optionsArray }: Props) => {
               longitude,
             } = address || {};
             return (
-              <div
+              <button
                 key={"mapBlock_card_" + index}
+                type="button"
                 className={`relative z-0 flex cursor-pointer flex-col justify-center overflow-hidden bg-gray-50 ${itemBorderDisplays[index]} ${borderRadius}`}
                 onClick={() =>
                   latitude &&
@@ -182,7 +183,7 @@ const MapBlock = ({ content, options: optionsArray }: Props) => {
                     </div>
                   </div>
                 </div>
-              </div>
+              </button>
             );
           },
         )}

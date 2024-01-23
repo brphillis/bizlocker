@@ -1,12 +1,12 @@
 import { useState } from "react";
-import type { BlockContentWithDetails } from "~/models/blocks.server";
+import { BlockContentWithDetails } from "~/models/Blocks/types";
+import { BlockContentType, BlockName } from "~/utility/blockMaster/types";
 import RichTextInput from "~/components/Forms/Input/RichTextInput/index.client";
-import type { BlockName, BlockContentType } from "~/utility/blockMaster/types";
 
 type Props = {
   selectedBlock: BlockName | undefined;
   selectedItems: ContentSelection[];
-  setSelectedItems: Function;
+  setSelectedItems: (items: ContentSelection[]) => void;
   defaultValue: BlockContentWithDetails;
 };
 
@@ -22,7 +22,8 @@ const TextBlockContentModule = ({
     type: BlockContentType = "richText",
     contentId: string,
   ) => {
-    setSelectedItems((prevSelectedItems: any) => {
+    // @ts-expect-error: expected typeshift
+    setSelectedItems((prevSelectedItems: ContentSelection[]) => {
       if (!Array.isArray(prevSelectedItems)) {
         prevSelectedItems = [];
       }

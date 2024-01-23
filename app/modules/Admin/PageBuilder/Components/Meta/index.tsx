@@ -1,19 +1,18 @@
-import { useSearchParams, useSubmit } from "@remix-run/react";
-import BasicInput from "~/components/Forms/Input/BasicInput";
-import BasicMultiSelect from "~/components/Forms/Select/BasicMultiSelect";
-import UploadImage from "~/components/Forms/Upload/UploadImage";
-import type { Page } from "~/models/pageBuilder.server";
-import type { PageType } from "~/utility/pageBuilder";
-import ColorPicker from "~/components/Forms/ColorPicker";
-import IsActiveToggle from "~/components/Forms/Toggle/IsActiveToggle";
+import { PageType } from "~/utility/pageBuilder";
+import { Page } from "~/models/PageBuilder/types";
 import BasicTextArea from "~/components/Forms/TextArea";
+import ColorPicker from "~/components/Forms/ColorPicker";
 import BasicButton from "~/components/Buttons/BasicButton";
+import BasicInput from "~/components/Forms/Input/BasicInput";
+import { useSearchParams, useSubmit } from "@remix-run/react";
+import UploadImage from "~/components/Forms/Upload/UploadImage";
+import IsActiveToggle from "~/components/Forms/Toggle/IsActiveToggle";
+import BasicMultiSelect from "~/components/Forms/Select/BasicMultiSelect";
 
 type Props = {
   currentVersion: Page | null;
   pageType: PageType;
   metaValidationError: string[];
-  colors: string[];
   articleCategories: SelectValue[];
 };
 
@@ -110,7 +109,7 @@ const Meta = ({
           <BasicMultiSelect
             id="PageArticleCategories"
             extendContainerStyle="w-[320px]"
-            defaultValues={(currentVersion as any)?.articleCategories}
+            defaultValues={currentVersion?.articleCategories}
             label="Categories"
             labelStyle="text-brand-white"
             name="articleCategories"
@@ -130,9 +129,9 @@ const Meta = ({
         <div className="w-full flex justify-center">
           {pageType !== "homePage" && (
             <div className="form-control w-full max-w-xs mb-3">
-              <label className="label">
+              <div className="label">
                 <span className="label-text text-brand-white">Thumbnail</span>
-              </label>
+              </div>
               <div className="max-w-[500px]">
                 <UploadImage
                   id="PageThumbnail"

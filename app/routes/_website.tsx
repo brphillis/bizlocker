@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import Spinner from "~/components/Spinner";
 import SearchBar from "~/components/SearchBar";
-import { getCart } from "~/models/cart.server";
-import { getBrands } from "~/models/brands.server";
+import { getCart } from "~/models/Cart/index.server";
+import { getBrands } from "~/models/Brands/index.server";
 import Footer from "~/components/Layout/_Website/Footer";
 import DarkOverlay from "~/components/Layout/Overlays/DarkOverlay";
 import { getUserDataFromSession } from "~/session.server";
-import { getDepartments } from "~/models/departments.server";
-import { getProductCategories } from "~/models/productCategories.server";
+import { getDepartments } from "~/models/Departments/index.server";
+import { getProductCategories } from "~/models/ProductCategories/index.server";
 import {
   json,
   type MetaFunction,
@@ -33,7 +33,7 @@ import "sweetalert2/dist/sweetalert2.css";
 import type { User } from "@prisma/client";
 import CountDown from "~/components/Indicators/Countdown";
 
-export const meta: MetaFunction = ({ data }) => {
+export const meta: MetaFunction = () => {
   return [
     { title: "CLUTCH Clothing" },
     {
@@ -45,7 +45,7 @@ export const meta: MetaFunction = ({ data }) => {
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const user = (await getUserDataFromSession(request)) as User | null;
-  let cart = await getCart(request);
+  const cart = await getCart(request);
 
   const departments = await getDepartments();
   const brands = await getBrands();
@@ -84,14 +84,15 @@ const App = () => {
               searchState={searchActive}
             />
 
-            <div
+            <button
+              type="button"
               className="absolute left-16 flex h-[60px] flex-row items-center gap-4 px-2 font-bold lg:relative lg:left-0"
               onClick={() => navigate("/home")}
             >
               <h1 className="cursor-pointer select-none text-xl font-bold tracking-widest text-brand-white">
                 CLUTCH.
               </h1>
-            </div>
+            </button>
 
             <DesktopMenu
               departments={departments}

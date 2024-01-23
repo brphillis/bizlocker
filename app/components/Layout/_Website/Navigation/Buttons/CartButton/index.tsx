@@ -1,15 +1,12 @@
-import type {
-  CartItemWithDetails,
-  CartWithDetails,
-} from "~/models/cart.server";
-import { IoCartOutline, IoClose } from "react-icons/io5";
 import { useEffect, useRef, useState } from "react";
 import { Form, useNavigate } from "react-router-dom";
-import CartAddSubtractButton from "./CartAddSubtractButton";
+import { IoCartOutline, IoClose } from "react-icons/io5";
+import { CartItemWithDetails, CartWithDetails } from "~/models/Cart/types";
 import {
   calculateCartTotal,
   getVariantUnitPrice,
 } from "~/helpers/numberHelpers";
+import CartAddSubtractButton from "./CartAddSubtractButton";
 
 const CartButton = ({ id: cartId, cartItems }: CartWithDetails) => {
   const navigate = useNavigate();
@@ -38,6 +35,7 @@ const CartButton = ({ id: cartId, cartItems }: CartWithDetails) => {
 
   return (
     <div className="dropdown dropdown-end relative">
+      {/* eslint-disable */}
       <label
         tabIndex={0}
         onClick={handleOpen}
@@ -158,7 +156,7 @@ const CartButton = ({ id: cartId, cartItems }: CartWithDetails) => {
           </div>
         </Form>
       </div>
-      {/* CART MODAL */}
+      {/* eslint-enable */}
     </div>
   );
 };

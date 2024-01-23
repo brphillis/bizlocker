@@ -1,9 +1,9 @@
 import Pagination from "~/components/Pagination";
+import { UserWithDetails } from "~/models/Users/types";
 import BasicTable from "~/components/Tables/BasicTable";
 import AdminContentSearch from "~/components/Search/AdminContentSearch";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/Wrappers/AdminPageWrapper";
-import { type UserWithDetails } from "~/models/users.server";
 import {
   Form,
   Outlet,
@@ -11,8 +11,8 @@ import {
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
-import type { userSearchLoader } from "./index.server";
 
+import { userSearchLoader } from "./index.server";
 const UserSearch = () => {
   const { users, totalPages } = useLoaderData<typeof userSearchLoader>();
 

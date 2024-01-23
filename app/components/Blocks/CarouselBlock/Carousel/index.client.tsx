@@ -1,6 +1,5 @@
 import { Suspense } from "react";
-import type { BlockOptions } from "@prisma/client";
-import type { BlockContentSorted } from "~/models/blocks.server";
+import { BlockOptions } from "@prisma/client";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { isDecimal } from "~/helpers/numberHelpers";
 import { getThemeColorValueByName } from "~/utility/colors";
@@ -8,6 +7,7 @@ import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import PatternBackground from "~/components/Layout/Backgrounds/PatternBackground";
 import { buildImageFromBlockContent } from "~/helpers/contentHelpers";
 import { IoChevronBackOutline, IoChevronForward } from "react-icons/io5";
+import { BlockContentSorted } from "~/models/Blocks/types";
 
 import Slide from "../Slide";
 
@@ -39,7 +39,9 @@ const Carousel = ({ content, options }: Props) => {
   const trueSlideLength = content.length;
 
   // we generate enough slides for the loop functionality
-  const generateSlidesForPartialViews = (arr: any[]): any[] => {
+  const generateSlidesForPartialViews = (
+    arr: BlockContentSorted[],
+  ): BlockContentSorted[] => {
     if (!Array.isArray(arr)) {
       throw new Error("Input is not an array");
     }
@@ -57,7 +59,7 @@ const Carousel = ({ content, options }: Props) => {
     } else return arr;
   };
 
-  let swiperModules = [Pagination, Navigation];
+  const swiperModules = [Pagination, Navigation];
 
   if (autoplay) {
     swiperModules.push(Autoplay);
@@ -177,7 +179,7 @@ const Carousel = ({ content, options }: Props) => {
               },
             }}
             style={{
-              // @ts-ignore
+              // @ts-expect-error: CSS Variables from Swiper Libary Override
               "--swiper-pagination-color": "#FFFFFF",
               "--swiper-pagination-bullet-border-radius": "0px",
               "--swiper-pagination-bullet-inactive-color": "#999999",

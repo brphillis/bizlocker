@@ -1,5 +1,3 @@
-import type { ValidationErrors } from "~/utility/validate";
-
 type Props = {
   extendStyle?: string;
 };

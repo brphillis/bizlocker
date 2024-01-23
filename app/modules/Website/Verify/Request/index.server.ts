@@ -1,15 +1,14 @@
-import { Params } from "@remix-run/react";
-import { verifyLogin } from "~/models/auth/login.server";
+import { verifyLogin } from "~/models/_Auth/login.server";
 import { json, type MetaFunction } from "@remix-run/node";
 import {
   ValidationErrors,
   isValidEmail,
   isValidPassword,
 } from "~/utility/validate";
-import { requestNewVerifyEmail } from "~/models/auth/verification.server";
+import { requestNewVerifyEmail } from "~/models/Verification/index.server";
 import { isEmptyObject } from "~/helpers/objectHelpers";
 
-export const meta: MetaFunction = ({ data }) => {
+export const meta: MetaFunction = () => {
   return [
     { title: "CLUTCH | Verification" },
     {
@@ -19,10 +18,7 @@ export const meta: MetaFunction = ({ data }) => {
   ];
 };
 
-export const verifyRequestAction = async (
-  request: Request,
-  params: Params<string>,
-) => {
+export const verifyRequestAction = async (request: Request) => {
   const form = Object.fromEntries(await request.formData());
   const { email, password } = form;
   const validationErrors: ValidationErrors = {};
@@ -57,9 +53,9 @@ export const verifyRequestAction = async (
 
       return json({ validationErrors });
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     const validationErrors: ValidationErrors = {};
-    validationErrors.error = error.message;
+    validationErrors.error = (error as CatchError).message;
 
     return json({ validationErrors });
   }

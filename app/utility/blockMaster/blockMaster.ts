@@ -13,10 +13,12 @@ export type BlockMasterOptions = TransformToOptionalBooleans<BlockOptions>;
 
 export interface BlockMaster {
   name: string;
+  // we can expect any component
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   component: React.ComponentType<any>;
   icon: string;
   options: BlockMasterOptions;
-  content: Object;
+  content: object | null;
   addOns?: string[];
   contentRequired?: boolean;
   maxContentItems?: number;
@@ -318,7 +320,7 @@ export const blockMaster: BlockMaster[] = [
       size: true,
     },
     addOns: ["richText"],
-    content: false,
+    content: null,
   },
   {
     name: "product",
@@ -354,8 +356,8 @@ export const blockMaster: BlockMaster[] = [
 
 export const buildBlocksContentQuery = (
   blocks: { id: number; name: string }[],
-): Object => {
-  let query = {
+): object => {
+  const query = {
     include: {} as { [key: string]: boolean | object },
   };
 
@@ -364,7 +366,7 @@ export const buildBlocksContentQuery = (
       (blockMasterBlock) => blockMasterBlock.name === blocks[i].name,
     )?.content || {}) as { [key: string]: boolean | object };
 
-    for (let contentType in blockMasterBlockContent) {
+    for (const contentType in blockMasterBlockContent) {
       const contentTypeValue = blockMasterBlockContent[contentType];
 
       if (typeof query.include[contentType] === "boolean") {

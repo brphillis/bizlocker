@@ -29,13 +29,24 @@ const ImageSearch = () => {
         <div className="flex w-full flex-wrap justify-center gap-6 overflow-x-auto py-3 max-lg:gap-3">
           {images?.map(({ id, href, altText }: Image) => {
             return (
-              <img
+              <div
+                role="button"
                 key={id}
-                src={href ?? ""}
-                alt={altText ?? "placeholder"}
-                className=" h-52 w-52 cursor-pointer object-cover transition-all duration-300 hover:scale-105 max-lg:h-44 max-lg:w-44"
+                tabIndex={0}
+                className="h-52 w-52 cursor-pointer hover:scale-105 max-lg:h-44 max-lg:w-44 transition-all duration-300"
                 onClick={() => navigate(`/admin/upsert/image?contentId=${id}`)}
-              />
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    navigate(`/admin/upsert/image?contentId=${id}`);
+                  }
+                }}
+              >
+                <img
+                  src={href ?? ""}
+                  alt={altText ?? "placeholder"}
+                  className="w-full h-full object-cover"
+                />
+              </div>
             );
           })}
         </div>

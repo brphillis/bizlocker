@@ -23,6 +23,7 @@ const AccountButton = (user: User) => {
 
   return (
     <div className="dropdown dropdown-end relative">
+      {/* eslint-disable */}
       <label
         tabIndex={1}
         onClick={handleOpen}
@@ -69,7 +70,7 @@ const AccountButton = (user: User) => {
           Logout
         </div>
       </div>
-      {/* ACCOUNT MENU */}
+      {/* eslint-enable */}
     </div>
   );
 };

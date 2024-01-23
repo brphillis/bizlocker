@@ -1,17 +1,14 @@
-import { Params } from "@remix-run/react";
-import { addToCart } from "~/models/cart.server";
-import { getBrands } from "~/models/brands.server";
+import { addToCart } from "~/models/Cart/index.server";
+import { getBrands } from "~/models/Brands/index.server";
 import { json, type MetaFunction } from "@remix-run/node";
-import { searchProducts } from "~/models/products.server";
+import { searchProducts } from "~/models/Products/index.server";
 import { getAvailableColors } from "~/models/enums.server";
-import { getDepartments } from "~/models/departments.server";
-import type { PromotionWithContent } from "~/models/promotions.server";
-import { getProductCategories } from "~/models/productCategories.server";
-import { getProductSubCategories } from "~/models/productSubCategories.server";
-import {
-  getRandomCampaignOrPromotion,
-  type CampaignWithContent,
-} from "~/models/campaigns.server";
+import { getDepartments } from "~/models/Departments/index.server";
+import { getProductCategories } from "~/models/ProductCategories/index.server";
+import { getProductSubCategories } from "~/models/ProductSubCategories/index.server";
+import { getRandomCampaignOrPromotion } from "~/models/Campaigns/index.server";
+import { CampaignWithContent } from "~/models/Campaigns/types";
+import { PromotionWithContent } from "~/models/Promotions/types";
 
 export const meta: MetaFunction<typeof productsLoader> = ({ location }) => {
   const queries = location.search.replace("?", "&").split("&");
@@ -40,10 +37,7 @@ export const meta: MetaFunction<typeof productsLoader> = ({ location }) => {
   ];
 };
 
-export const productsLoader = async (
-  request: Request,
-  params: Params<string>,
-) => {
+export const productsLoader = async (request: Request) => {
   const url = new URL(request.url);
   const { products, totalPages } = await searchProducts(undefined, url, true);
   const departments = await getDepartments();
@@ -75,10 +69,7 @@ export const productsLoader = async (
   });
 };
 
-export const productsAction = async (
-  request: Request,
-  params: Params<string>,
-) => {
+export const productsAction = async (request: Request) => {
   const form = Object.fromEntries(await request.formData());
   const { variantId, quantity } = form;
 

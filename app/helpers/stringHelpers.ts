@@ -4,7 +4,7 @@ export const includesWords = (
 ): boolean => {
   let bool = false;
 
-  for (var word of includesWords) {
+  for (const word of includesWords) {
     if (testWord.includes(word)) {
       bool = true;
     }

@@ -1,11 +1,7 @@
-import type { Params } from "@remix-run/react";
 import { json } from "@remix-run/node";
-import { searchTeams } from "~/models/teams.server";
+import { searchTeams } from "~/models/Teams/index.server";
 
-export const teamSearchLoader = async (
-  request: Request,
-  params: Params<string>,
-) => {
+export const teamSearchLoader = async (request: Request) => {
   const url = new URL(request.url);
 
   const { teams, totalPages } = await searchTeams(undefined, url);

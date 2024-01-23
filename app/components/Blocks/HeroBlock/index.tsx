@@ -1,13 +1,14 @@
 import { useNavigate } from "@remix-run/react";
-import { getThemeColorValueByName } from "~/utility/colors";
-import type { BlockContentSorted } from "~/models/blocks.server";
-import type { BlockOptions, Product } from "@prisma/client";
-import PatternBackground from "~/components/Layout/Backgrounds/PatternBackground";
+import { BlockOptions, Product } from "@prisma/client";
 import { getContentType } from "~/helpers/contentHelpers";
-import type {
+import { BlockContentSorted } from "~/models/Blocks/types";
+import { getThemeColorValueByName } from "~/utility/colors";
+import PatternBackground from "~/components/Layout/Backgrounds/PatternBackground";
+import {
   ProductVariantWithDetails,
   ProductWithDetails,
-} from "~/models/products.server";
+} from "~/models/Products/types";
+
 type Props = {
   content: BlockContentSorted[];
   options: BlockOptions[];
@@ -123,7 +124,8 @@ const HeroBlock = ({ content, options: options }: Props) => {
               </p>
               <div className={`mt-8 flex ${flipX}`}>
                 {(contentType === "product" || linkPrimary) && (
-                  <div
+                  <button
+                    type="button"
                     onClick={() =>
                       navigate(
                         contentType === "product"
@@ -136,15 +138,16 @@ const HeroBlock = ({ content, options: options }: Props) => {
                     className="text-md mr-4 cursor-pointer rounded-sm border-2 border-transparent bg-primary px-4 py-2 uppercase text-white hover:bg-primary"
                   >
                     Buy Now
-                  </div>
+                  </button>
                 )}
                 {linkSecondary && (
-                  <div
+                  <button
+                    type="button"
                     className="text-md cursor-pointer rounded-sm border-2 border-primary bg-transparent px-4 py-2 uppercase text-primary hover:bg-primary hover:text-white dark:text-white"
                     onClick={() => navigate(linkSecondary as string)}
                   >
                     Read more
-                  </div>
+                  </button>
                 )}
               </div>
             </div>

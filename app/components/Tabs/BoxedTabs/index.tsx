@@ -24,7 +24,7 @@ const BoxedTabs = (props: Props) => {
       setActiveTab(props.tabNames[0]);
     }
 
-    let tabsToSet = [""];
+    const tabsToSet = [""];
 
     props?.tabNames.forEach((name) => {
       const tabContent = document?.querySelector(`[data-tabname=${name}]`);
@@ -48,8 +48,10 @@ const BoxedTabs = (props: Props) => {
       className={`tabs-boxed tabs w-full rounded-none !p-0 ${props?.extendStyle}`}
     >
       {props.tabNames?.map((tabName: string) => {
-        let containsError = tabsWithErrors?.find((e) => e === tabName);
-
+        const containsError = tabsWithErrors?.find((e) => e === tabName);
+        {
+          /* eslint-disable */
+        }
         return (
           <div
             key={"boxTab_" + tabName}
@@ -65,6 +67,9 @@ const BoxedTabs = (props: Props) => {
             {capitalizeFirst(tabName)}
           </div>
         );
+        {
+          /* eslint-enable */
+        }
       })}
     </div>
   );

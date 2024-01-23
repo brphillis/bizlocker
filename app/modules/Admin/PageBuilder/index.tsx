@@ -1,22 +1,22 @@
 import { useEffect, useState } from "react";
-import { Form, Outlet, useActionData, useLoaderData } from "@remix-run/react";
+import { Page } from "~/models/PageBuilder/types";
 import useNotification from "~/hooks/PageNotification";
-import type { ActionReturnTypes } from "~/utility/actionTypes";
+import { BlockName } from "~/utility/blockMaster/types";
+import { BlockWithContent } from "~/models/Blocks/types";
+import { ActionReturnTypes } from "~/utility/actionTypes";
+import { getThemeColorValueByName } from "~/utility/colors";
 import AdminPageWrapper from "~/components/Layout/Wrappers/AdminPageWrapper";
-import { type BlockWithContent, type Page } from "~/models/pageBuilder.server";
-import type { BlockName } from "~/utility/blockMaster/types";
-import type { pageBuilderLoader } from "./index.server";
+import { Form, Outlet, useActionData, useLoaderData } from "@remix-run/react";
+import PatternBackground from "~/components/Layout/Backgrounds/PatternBackground";
 import PanelPage from "./Components/PanelPage";
 import PanelBlock from "./Components/PanelBlock";
-import PatternBackground from "~/components/Layout/Backgrounds/PatternBackground";
-import { getThemeColorValueByName } from "~/utility/colors";
+import { pageBuilderLoader } from "./index.server";
 
 export const PageBuilderModule = () => {
   const {
     articleCategories,
     blocks,
     brands,
-    colors,
     currentPreviewPage,
     publishedPage,
     pageType,
@@ -96,7 +96,6 @@ export const PageBuilderModule = () => {
           >
             <PanelPage
               articleCategories={articleCategories}
-              colors={colors}
               currentBlocks={currentBlocks}
               loading={loading}
               metaValidationError={metaValidationError}
@@ -117,7 +116,6 @@ export const PageBuilderModule = () => {
               <PanelBlock
                 articleCategories={articleCategories}
                 brands={brands}
-                colors={colors}
                 currentBlocks={currentBlocks}
                 editingIndex={editingIndex}
                 loading={loading}

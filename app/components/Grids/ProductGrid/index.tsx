@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import type { ProductWithDetails } from "~/models/products.server";
-import ProductCard from "../../Cards/ProductCard";
-import Pagination from "~/components/Pagination";
 import { IoShirtSharp } from "react-icons/io5";
 import { useNavigate } from "@remix-run/react";
+import Pagination from "~/components/Pagination";
+import { ProductWithDetails } from "~/models/Products/types";
+import ProductCard from "../../Cards/ProductCard";
 
 type Props = {
   products: ProductWithDetails[];
@@ -57,7 +57,8 @@ const ProductGrid = ({
         ))}
 
         {enablePlaceHolder && showPlaceHolder && (
-          <div
+          <button
+            type="button"
             className="group flex w-full flex-col overflow-hidden bg-brand-white"
             onClick={() =>
               navigate({
@@ -76,7 +77,7 @@ const ProductGrid = ({
                 </p>
               </div>
             </div>
-          </div>
+          </button>
         )}
       </div>
       {totalPages && <Pagination totalPages={totalPages} />}

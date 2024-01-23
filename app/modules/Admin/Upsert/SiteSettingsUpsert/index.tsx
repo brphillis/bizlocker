@@ -78,105 +78,102 @@ const SiteSettingsUpsert = () => {
             extendStyle="bg-base-200"
             extendTitleBarStyle="!bg-base-500"
             hideClose={true}
-            children={
+          >
+            <div className="relative flex flex-row items-end gap-6 max-md:gap-3">
+              <BasicSelect
+                name="navigationStyle"
+                label="Navigation Style"
+                selections={[
+                  { id: "productBasic", name: "Product Basic" },
+                  { id: "productMegaMenu", name: "Product MegaMenu" },
+                ]}
+                placeholder="Navigation Style"
+                defaultValue={navigationStyle}
+              />
+
+              <BasicSelect
+                name="spinnerStyle"
+                label="Loading Spinner Style"
+                selections={[
+                  { id: "circle", name: "Circle" },
+                  { id: "shirt", name: "Shirt" },
+                ]}
+                placeholder="Spinner Style"
+                defaultValue={spinnerStyle}
+              />
+            </div>
+          </WindowContainer>
+
+          <WindowContainer
+            title="Announcement"
+            extendStyle="bg-base-200"
+            extendTitleBarStyle="!bg-base-500"
+            hideClose={true}
+          >
+            <div className="relative flex flex-col items-start gap-3">
               <div className="relative flex flex-row items-end gap-6 max-md:gap-3">
-                <BasicSelect
-                  name="navigationStyle"
-                  label="Navigation Style"
-                  selections={[
-                    { id: "productBasic", name: "Product Basic" },
-                    { id: "productMegaMenu", name: "Product MegaMenu" },
-                  ]}
-                  placeholder="Navigation Style"
-                  defaultValue={navigationStyle}
+                <BasicInput
+                  name="announcementMessage"
+                  label="Announcement Message"
+                  placeholder="Announcement Message"
+                  type="text"
+                  defaultValue={announcementMessage}
                 />
 
-                <BasicSelect
-                  name="spinnerStyle"
-                  label="Loading Spinner Style"
-                  selections={[
-                    { id: "circle", name: "Circle" },
-                    { id: "shirt", name: "Shirt" },
-                  ]}
-                  placeholder="Spinner Style"
-                  defaultValue={spinnerStyle}
+                <BasicInput
+                  name="announcementEndsAt"
+                  label="Announcement End"
+                  placeholder="Announcement End"
+                  type="date"
+                  defaultValue={announcementEndsAt}
                 />
               </div>
-            }
-          />
+
+              <div className="relative flex flex-col items-start">
+                <BasicToggle
+                  label="Announcement Active"
+                  name="announcementIsActive"
+                  size="sm"
+                  defaultValue={announcementIsActive}
+                />
+
+                <BasicToggle
+                  label="Countdown Active"
+                  name="countdownIsActive"
+                  size="sm"
+                  defaultValue={countdownIsActive || false}
+                />
+              </div>
+            </div>
+          </WindowContainer>
 
           <WindowContainer
             title="Announcement"
             extendStyle="bg-base-200"
             extendTitleBarStyle="!bg-base-500"
             hideClose={true}
-            children={
-              <div className="relative flex flex-col items-start gap-3">
-                <div className="relative flex flex-row items-end gap-6 max-md:gap-3">
-                  <BasicInput
-                    name="announcementMessage"
-                    label="Announcement Message"
-                    placeholder="Announcement Message"
-                    type="text"
-                    defaultValue={announcementMessage}
-                  />
-
-                  <BasicInput
-                    name="announcementEndsAt"
-                    label="Announcement End"
-                    placeholder="Announcement End"
-                    type="date"
-                    defaultValue={announcementEndsAt}
-                  />
-                </div>
-
-                <div className="relative flex flex-col items-start">
-                  <BasicToggle
-                    label="Announcement Active"
-                    name="announcementIsActive"
-                    size="sm"
-                    defaultValue={announcementIsActive}
-                  />
-
-                  <BasicToggle
-                    label="Countdown Active"
-                    name="countdownIsActive"
-                    size="sm"
-                    defaultValue={countdownIsActive || false}
-                  />
-                </div>
+          >
+            <div className="relative flex flex-col items-start gap-3">
+              <div className="relative flex flex-row items-end gap-6 max-md:gap-3">
+                <BasicInput
+                  name="maintenanceMessage"
+                  label="Maintenance Message"
+                  placeholder="Maintenance Message"
+                  type="text"
+                  defaultValue={maintenanceMessage}
+                />
               </div>
-            }
-          />
 
-          <WindowContainer
-            title="Announcement"
-            extendStyle="bg-base-200"
-            extendTitleBarStyle="!bg-base-500"
-            hideClose={true}
-            children={
-              <div className="relative flex flex-col items-start gap-3">
-                <div className="relative flex flex-row items-end gap-6 max-md:gap-3">
-                  <BasicInput
-                    name="maintenanceMessage"
-                    label="Maintenance Message"
-                    placeholder="Maintenance Message"
-                    type="text"
-                    defaultValue={maintenanceMessage}
-                  />
-                </div>
-
-                <div className="relative flex flex-col items-start">
-                  <BasicToggle
-                    label="Under Maintenance"
-                    name="isUnderMaintenance"
-                    size="sm"
-                    defaultValue={isUnderMaintenance || false}
-                  />
-                </div>
+              <div className="relative flex flex-col items-start">
+                <BasicToggle
+                  label="Under Maintenance"
+                  name="isUnderMaintenance"
+                  size="sm"
+                  defaultValue={isUnderMaintenance || false}
+                />
               </div>
-            }
-          />
+            </div>
+          </WindowContainer>
         </div>
 
         <BackSubmitButtons

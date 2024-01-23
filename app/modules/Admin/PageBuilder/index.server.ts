@@ -1,27 +1,29 @@
-import type { Params } from "@remix-run/react";
+import { Params } from "@remix-run/react";
 import { json, redirect } from "@remix-run/node";
-import { getBrands } from "~/models/brands.server";
-import { getBlocks } from "~/models/blocks.server";
+import { Page } from "~/models/PageBuilder/types";
+import { getBrands } from "~/models/Brands/index.server";
+import { getBlocks } from "~/models/Blocks/index.server";
 import { sortPreviewPages } from "~/helpers/sortHelpers";
-import { getAvailableColors } from "~/models/enums.server";
-import type { BlockOptions, PreviewPage } from "@prisma/client";
+import { BlockWithContent } from "~/models/Blocks/types";
+import { BlockOptions, PreviewPage } from "@prisma/client";
+import { BlockContentType } from "~/utility/blockMaster/types";
 import { type PageNotification } from "~/hooks/PageNotification";
-import type { BlockContentType } from "~/utility/blockMaster/types";
-import { getProductCategories } from "~/models/productCategories.server";
-import { getArticleCategories } from "~/models/articleCategories.server";
-import { getProductSubCategories } from "~/models/productSubCategories.server";
+import { capitalizeFirstLetterOfWordInString } from "~/helpers/stringHelpers";
+import { getProductCategories } from "~/models/ProductCategories/index.server";
+import { getArticleCategories } from "~/models/ArticleCategories/index.server";
+import { getProductSubCategories } from "~/models/ProductSubCategories/index.server";
 import {
   addPreviewPage,
   deletePage,
   deletePreviewPage,
   getPreviewPage,
-} from "~/models/previewPage";
+} from "~/models/PreviewPage/index.server";
 import {
   getBlockUpdateValues,
   getFormBlockOptions,
+  NewBlockData,
+  PageType,
   searchContentData,
-  type NewBlockData,
-  type PageType,
 } from "~/utility/pageBuilder";
 import {
   changeBlockOrder,
@@ -29,12 +31,9 @@ import {
   getPageByPageType,
   publishPage,
   revertPreviewChanges,
-  type BlockWithContent,
-  type Page,
   updateBlock,
   upsertPageMeta,
-} from "~/models/pageBuilder.server";
-import { capitalizeFirstLetterOfWordInString } from "~/helpers/stringHelpers";
+} from "~/models/PageBuilder/index.server";
 
 export const pageBuilderLoader = async (
   request: Request,
@@ -44,9 +43,8 @@ export const pageBuilderLoader = async (
   const productSubCategories = await getProductSubCategories();
   const articleCategories = await getArticleCategories();
   const brands = await getBrands();
-  const colors = await getAvailableColors();
 
-  const pageType = params?.pagetype?.replace(/p/g, "P");
+  const pageType = params?.pagetype?.replace(/p/g, "P") as PageType;
 
   const url = new URL(request.url);
   const id = url.searchParams.get("id") || undefined;
@@ -54,7 +52,7 @@ export const pageBuilderLoader = async (
   let publishedPage = {} as Page;
 
   if (id !== "add") {
-    publishedPage = await getPageByPageType(pageType as PageType, id);
+    publishedPage = await getPageByPageType(pageType, id);
   }
 
   let previewPages: PreviewPage[] | null | undefined = null;
@@ -79,7 +77,6 @@ export const pageBuilderLoader = async (
     articleCategories,
     blocks,
     brands,
-    colors,
     currentPreviewPage,
     publishedPage,
     pageType,
@@ -123,19 +120,20 @@ export const pageBuilderAction = async (
   const blockOptions: BlockOptions = getFormBlockOptions(form);
 
   switch (form._action) {
-    case "search":
+    case "search": {
       const searchResults = await searchContentData(
         contentType as BlockContentType,
         (name as string) || undefined,
       );
 
-      actionPreview = await getPreviewPage(previewPageId as string);
-      actionBlocks = await getBlocks(actionPreview as any);
+      actionPreview = (await getPreviewPage(previewPageId as string)) as Page;
+      actionBlocks = await getBlocks(actionPreview);
 
       return json({ searchResults, actionPreview, actionBlocks });
+    }
 
-    case "updateMeta":
-      let metaValidationError: string[] = [];
+    case "updateMeta": {
+      const metaValidationError: string[] = [];
 
       if (!title) {
         metaValidationError.push("Title is Required");
@@ -172,8 +170,8 @@ export const pageBuilderAction = async (
       if (!previewPageId) {
         return redirect(`/admin/pagebuilder/${pageType}?id=${newId}`);
       } else {
-        actionPreview = await getPreviewPage(previewPageId as string);
-        actionBlocks = await getBlocks(actionPreview as any);
+        actionPreview = (await getPreviewPage(previewPageId as string)) as Page;
+        actionBlocks = await getBlocks(actionPreview);
 
         return json({
           metaUpdateSuccess: newId,
@@ -182,8 +180,9 @@ export const pageBuilderAction = async (
           actionBlocks,
         });
       }
+    }
 
-    case "addpreview":
+    case "addpreview": {
       const addPreviewSuccess = await addPreviewPage(
         pageType as PageType,
         pageId as string,
@@ -195,8 +194,9 @@ export const pageBuilderAction = async (
       };
 
       return { addPreviewSuccess, notification };
+    }
 
-    case "deletepreview":
+    case "deletepreview": {
       const deletePreviewSuccess = await deletePreviewPage(
         previewPageId as string,
       );
@@ -207,16 +207,19 @@ export const pageBuilderAction = async (
       };
 
       return json({ deletePreviewSuccess, notification });
+    }
 
-    case "deletepage":
+    case "deletepage": {
       await deletePage(pageId as string, pageType as PageType);
 
       if (pageType === "article") return redirect("/admin/articles");
       if (pageType === "webPage") return redirect("/admin/pages");
+      return null;
+    }
 
-    case "changecurrentpreview":
-      actionPreview = await getPreviewPage(pageId as string);
-      actionBlocks = await getBlocks(actionPreview as any);
+    case "changecurrentpreview": {
+      actionPreview = (await getPreviewPage(pageId as string)) as Page;
+      actionBlocks = await getBlocks(actionPreview);
 
       if (actionPreview && actionBlocks) {
         notification = {
@@ -228,8 +231,9 @@ export const pageBuilderAction = async (
       } else {
         return json({ previewChangeError: true });
       }
+    }
 
-    case "update":
+    case "update": {
       const newBlockData = getBlockUpdateValues(form);
 
       const updateSuccess = await updateBlock(
@@ -239,8 +243,8 @@ export const pageBuilderAction = async (
         blockOptions,
         blockLabel as string,
       );
-      actionPreview = await getPreviewPage(previewPageId as string);
-      actionBlocks = await getBlocks(actionPreview as any);
+      actionPreview = (await getPreviewPage(previewPageId as string)) as Page;
+      actionBlocks = await getBlocks(actionPreview);
 
       notification = {
         type: "success",
@@ -248,8 +252,9 @@ export const pageBuilderAction = async (
       };
 
       return json({ updateSuccess, actionPreview, actionBlocks, notification });
+    }
 
-    case "publish":
+    case "publish": {
       const publishSuccess = await publishPage(
         pageType as PageType,
         previewPageId as string,
@@ -257,8 +262,8 @@ export const pageBuilderAction = async (
         request,
       );
 
-      actionPreview = await getPreviewPage(previewPageId as string);
-      actionBlocks = await getBlocks(actionPreview as any);
+      actionPreview = (await getPreviewPage(previewPageId as string)) as Page;
+      actionBlocks = await getBlocks(actionPreview);
 
       notification = {
         type: "success",
@@ -271,16 +276,17 @@ export const pageBuilderAction = async (
         publishSuccess,
         notification,
       });
+    }
 
-    case "revert":
+    case "revert": {
       const revertSuccess = await revertPreviewChanges(
         pageType as PageType,
         previewPageId as string,
         pageId as string,
       );
 
-      actionPreview = await getPreviewPage(previewPageId as string);
-      actionBlocks = await getBlocks(actionPreview as any);
+      actionPreview = (await getPreviewPage(previewPageId as string)) as Page;
+      actionBlocks = await getBlocks(actionPreview);
 
       notification = {
         type: "warning",
@@ -288,8 +294,9 @@ export const pageBuilderAction = async (
       };
 
       return json({ actionPreview, actionBlocks, revertSuccess, notification });
+    }
 
-    case "rearrange":
+    case "rearrange": {
       const { direction } = form;
 
       await changeBlockOrder(
@@ -300,14 +307,15 @@ export const pageBuilderAction = async (
       );
 
       actionPreview = await getPreviewPage(previewPageId as string);
-      actionBlocks = await getBlocks(actionPreview as any);
+      actionBlocks = await getBlocks(actionPreview as Page);
 
       return json({ actionPreview, actionBlocks });
+    }
 
-    case "delete":
+    case "delete": {
       await disconnectBlock(blockId as string, previewPageId as string);
-      actionPreview = await getPreviewPage(previewPageId as string);
-      actionBlocks = await getBlocks(actionPreview as any);
+      actionPreview = (await getPreviewPage(previewPageId as string)) as Page;
+      actionBlocks = await getBlocks(actionPreview);
 
       notification = {
         type: "success",
@@ -315,6 +323,7 @@ export const pageBuilderAction = async (
       };
 
       return json({ actionPreview, actionBlocks, notification });
+    }
 
     default:
       return null;

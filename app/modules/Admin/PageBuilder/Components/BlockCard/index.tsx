@@ -28,7 +28,8 @@ const BlockCard = ({
       index === 0 && "border-t border-t-brand-white/25"
     }`}
     >
-      <div
+      <button
+        type="button"
         className="flex items-center gap-3 text-brand-white"
         onClick={() => {
           onClick(index);
@@ -41,7 +42,7 @@ const BlockCard = ({
           <BlockIcon blockName={name} size={18} extendStyle={"mt-[1px]"} />
           <p className="font-bold text-sm">{capitalizeFirst(label || name)}</p>
         </div>
-      </div>
+      </button>
 
       {/* BUTTONS */}
       <div className="flex h-full flex-row items-center justify-start gap-3">

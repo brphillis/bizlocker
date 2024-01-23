@@ -74,16 +74,21 @@ const ContentTile = ({
         )}
       />
 
-      <img
-        className={`object-fit h-full w-full ${itemFilters[index]}`}
+      <button
+        type="button"
+        className="h-full w-full"
         onClick={() =>
           itemLinks[index]
             ? navigate(itemLinks[index])
             : imageLink && navigate(imageLink)
         }
-        src={imageSrc}
-        alt={imageName}
-      />
+      >
+        <img
+          className={`object-fit h-full w-full ${itemFilters[index]}`}
+          src={imageSrc}
+          alt={imageName}
+        />
+      </button>
 
       {/* TEXT CONTAINER */}
       <div

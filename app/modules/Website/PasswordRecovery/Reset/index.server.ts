@@ -1,9 +1,9 @@
 import { Params } from "@remix-run/react";
 import { isEmptyObject } from "~/helpers/objectHelpers";
 import { json, type MetaFunction } from "@remix-run/node";
-import { resetUserPassword } from "~/models/auth/register.server";
+import { resetUserPassword } from "~/models/_Auth/register.server";
 import { isValidPassword, ValidationErrors } from "~/utility/validate";
-import { verifyPasswordReset } from "~/models/auth/verification.server";
+import { verifyPasswordReset } from "~/models/Verification/index.server";
 
 export const meta: MetaFunction = () => {
   return [
@@ -78,9 +78,9 @@ export const passwordRecoveryResetAction = async (
       validationErrors.authorized = "Not Authorized.";
       return { validationErrors };
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     const validationErrors: ValidationErrors = {};
-    validationErrors.error = error.message;
+    validationErrors.error = (error as CatchError).message;
 
     return json({ validationErrors });
   }

@@ -1,6 +1,9 @@
-import type { Image, Product } from "@prisma/client";
-import type { BlockWithContent, Page } from "~/models/pageBuilder.server";
-import { type BlockContentWithDetails } from "~/models/blocks.server";
+import { Image, Product } from "@prisma/client";
+import { Page } from "~/models/PageBuilder/types";
+import {
+  BlockContentWithDetails,
+  BlockWithContent,
+} from "~/models/Blocks/types";
 import { isArrayofStrings } from "./arrayHelpers";
 import { getBlockContentTypes } from "../utility/blockMaster/blockMaster";
 
@@ -14,7 +17,7 @@ export const getBlockDefaultValues = (
   // Were using the PRODUCT type as a generic type
   blockContentTypes.map((contentName: keyof BlockContentWithDetails) => {
     if (
-      !block.content[contentName] ||
+      !block.content?.[contentName] ||
       (Array.isArray(block.content[contentName]) &&
         (block.content[contentName] as Product[])?.length === 0)
     ) {
@@ -69,21 +72,23 @@ export const sortBlocks = ({
   blocks,
   blockOrder,
 }: Page): BlockWithContent[] => {
-  let sortedBlocks = blocks.sort((a, b) => {
-    // Find the index of each object's ID in the string array
-    const indexA = blockOrder.indexOf(a?.id);
-    const indexB = blockOrder.indexOf(b?.id);
+  const sortedBlocks = blocks?.sort(
+    (a: BlockWithContent, b: BlockWithContent) => {
+      // Find the index of each object's ID in the string array
+      const indexA = blockOrder.indexOf(a?.id);
+      const indexB = blockOrder.indexOf(b?.id);
 
-    // Compare the indices to determine the sorting order
-    if (indexA === -1) {
-      return 1; // Move objects with IDs not in the string array to the end
-    }
-    if (indexB === -1) {
-      return -1; // Move objects with IDs not in the string array to the end
-    }
+      // Compare the indices to determine the sorting order
+      if (indexA === -1) {
+        return 1; // Move objects with IDs not in the string array to the end
+      }
+      if (indexB === -1) {
+        return -1; // Move objects with IDs not in the string array to the end
+      }
 
-    return indexA - indexB; // Compare the indices for sorting
-  });
+      return indexA - indexB; // Compare the indices for sorting
+    },
+  );
 
-  return sortedBlocks;
+  return sortedBlocks!;
 };

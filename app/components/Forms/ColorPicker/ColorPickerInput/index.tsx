@@ -30,7 +30,8 @@ const ColorPickerInput = ({
         </span>
       </label>
 
-      <div
+      <button
+        type="button"
         className={`relative h-[42px] w-full cursor-pointer border-[1px] border-brand-white/25 ${
           inputBackgroundColor
             ? returnOtherColorPrefix(inputBackgroundColor, "bg-")
@@ -43,7 +44,7 @@ const ColorPickerInput = ({
         <div className="absolute right-3 top-[50%] translate-y-[-50%] opacity-50 group-hover:scale-[1.15]">
           <IoWaterOutline />
         </div>
-      </div>
+      </button>
     </div>
   );
 };

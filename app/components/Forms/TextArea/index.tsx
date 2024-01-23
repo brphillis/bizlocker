@@ -3,7 +3,7 @@ import ToolTip from "~/components/Indicators/ToolTip";
 
 type Props = {
   extendContainerStyle?: string;
-  defaultValue?: any;
+  defaultValue?: string;
   disabled?: boolean;
   id?: string;
   label: string;
@@ -52,7 +52,7 @@ const BasicTextArea = ({
         className={`textarea w-full rounded-sm text-brand-black/75
         disabled:!border-base-100/25 disabled:!bg-base-100/25 disabled:!text-brand-black/50
         ${
-          validationErrors?.hasOwnProperty(name)
+          validationErrors && name in validationErrors
             ? "textarea-error border !outline-none"
             : ""
         } ${extendStyle}`}
@@ -63,7 +63,7 @@ const BasicTextArea = ({
           }
         }}
       />
-      {validationErrors?.hasOwnProperty(name) && (
+      {validationErrors && name in validationErrors && (
         <ToolTip tip={validationErrors[name]} iconColor="text-error" />
       )}
     </div>

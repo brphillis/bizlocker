@@ -52,7 +52,7 @@ const ProductFilterSideBar = ({
     const mediaQuery = window.matchMedia("(min-width: 1280px)");
 
     const handleResize = (
-      event: MediaQueryListEvent | MediaQueryListEventInit
+      event: MediaQueryListEvent | MediaQueryListEventInit,
     ) => {
       setMenuIsExpanded(event.matches as boolean);
     };
@@ -72,12 +72,12 @@ const ProductFilterSideBar = ({
   useEffect(() => {
     const filterProductCategories = () => {
       const departmentId = departments?.find(
-        (e) => e.name === searchedDepartment
+        (e) => e.name === searchedDepartment,
       )?.id;
 
       if (departmentId && productCategories) {
         const filteredCats = productCategories.filter(
-          (e) => e.departmentId === departmentId
+          (e) => e.departmentId === departmentId,
         );
         setFilteredProductCategories(filteredCats);
       } else {
@@ -87,12 +87,12 @@ const ProductFilterSideBar = ({
 
     const filterProductSubCategories = () => {
       const productCategoryId = productCategories?.find(
-        (e) => e.name === searchedProductCategory
+        (e) => e.name === searchedProductCategory,
       )?.id;
 
       if (productCategoryId && productSubCategories) {
         const filteredCats = productSubCategories.filter(
-          (e) => e.productCategoryId === productCategoryId
+          (e) => e.productCategoryId === productCategoryId,
         );
         setFilteredProductSubCategories(filteredCats);
       } else {
@@ -114,14 +114,15 @@ const ProductFilterSideBar = ({
   return (
     <>
       {!menuIsExpanded && (
-        <div
+        <button
+          type="button"
           className="mx-3 w-full bg-base-200/50 px-3 py-3 text-center md:w-[720px] lg:w-[968px]"
           onClick={() => setMenuIsExpanded(true)}
         >
           <div className="flex items-center justify-center gap-3 text-sm font-semibold text-brand-black">
             <p>FILTERS</p> <IoChevronDown />
           </div>
-        </div>
+        </button>
       )}
       {menuIsExpanded && (
         <ul className="menu collapse mx-3 w-full rounded-none bg-base-200/50 px-3 xl:mx-0 xl:block xl:w-96">

@@ -17,9 +17,9 @@ const StyleOptions = ({ defaultValues, selectedBlockOptions }: Props) => {
       <div className="flex gap-3 flex-wrap items-start justify-start w-full px-3 pb-6 max-md:pb-3">
         {selectedBlockOptions?.style && (
           <div className="form-control max-sm:items-center">
-            <label className="label max-sm:ml-3 max-sm:!self-start">
+            <div className="label max-sm:ml-3 max-sm:!self-start">
               <span className="label-text text-brand-white">Style</span>
-            </label>
+            </div>
             <select
               name="style"
               className=" select w-[95vw] max-w-full text-brand-black/75 sm:w-[215px]"

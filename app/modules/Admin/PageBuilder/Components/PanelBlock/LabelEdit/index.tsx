@@ -1,9 +1,9 @@
 import { useState } from "react";
-import BasicInput from "~/components/Forms/Input/BasicInput";
-import { BlockWithContent } from "~/models/pageBuilder.server";
-import { BlockName } from "~/utility/blockMaster/types";
 import Icon from "~/components/Icon";
+import { BlockName } from "~/utility/blockMaster/types";
+import { BlockWithContent } from "~/models/Blocks/types";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
+import BasicInput from "~/components/Forms/Input/BasicInput";
 
 type Props = {
   currentBlocks: BlockWithContent[] | null;
@@ -31,7 +31,8 @@ const LabelEdit = ({ currentBlocks, selectedBlock, editingIndex }: Props) => {
             extendStyle="!max-h-[32px] !min-h-[32px] !text-sm"
           />
 
-          <div
+          <button
+            type="button"
             className="bg-primary h-[32px] w-[32px] p-[6px] !rounded-sm cursor-pointer"
             onClick={() => {
               const updatedLabelValue = (
@@ -53,7 +54,7 @@ const LabelEdit = ({ currentBlocks, selectedBlock, editingIndex }: Props) => {
               color="#FFFFFFBF"
               extendStyle="h-full w-full"
             />
-          </div>
+          </button>
         </div>
       )}
 
@@ -64,12 +65,13 @@ const LabelEdit = ({ currentBlocks, selectedBlock, editingIndex }: Props) => {
               ? capitalizeFirst(blockLabel)
               : selectedBlock && capitalizeFirst(selectedBlock)}
           </div>
-          <div
+          <button
+            type="button"
             className="absolute right-[-24px] cursor-pointer"
             onClick={() => setEditingBlockLabel(true)}
           >
             <Icon iconName="IoPencil" size={12} color="#FFFFFFBF" />
-          </div>
+          </button>
         </div>
       )}
       <input readOnly hidden name="blockLabel" value={blockLabel} />

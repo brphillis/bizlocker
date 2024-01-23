@@ -17,11 +17,11 @@ const SelectCountry = ({
     <div
       className={`form-control relative max-sm:w-[95vw] sm:w-[215px] ${extendStyle}`}
     >
-      <label className="label text-sm">Country</label>
+      <div className="label text-sm">Country</div>
       <select
         name="country"
         className={`select w-full ${
-          validationErrors?.hasOwnProperty("country")
+          validationErrors && "country" in validationErrors
             ? "select-error border !outline-none"
             : ""
         }`}
@@ -36,7 +36,7 @@ const SelectCountry = ({
         })}
       </select>
 
-      {validationErrors?.hasOwnProperty("country") && (
+      {validationErrors && "country" in validationErrors && (
         <ToolTip tip={validationErrors["country"]} iconColor="text-error" />
       )}
     </div>

@@ -1,10 +1,7 @@
-import { Link } from "@remix-run/react";
+import BasicButton from "~/components/Buttons/BasicButton";
 import OrderStatusSteps from "~/components/Indicators/OrderStatusSteps";
+import { OrderItemWithDetails, OrderWithDetails } from "~/models/Orders/types";
 import ShippingDetailsCollapse from "~/components/Forms/Misc/ShippingDetailsCollapse";
-import type {
-  OrderWithDetails,
-  OrderItemWithDetails,
-} from "~/models/orders.server";
 
 type Props = {
   order: OrderWithDetails;
@@ -28,13 +25,10 @@ const ViewOrder = ({ order }: Props) => {
         )}
 
         {order && order?.status === "created" && (
-          <Link
-            to={order.paymentUrl}
-            target="_blank"
-            className="btn btn-primary"
-          >
-            Pay Now
-          </Link>
+          <BasicButton
+            label="Pay Now"
+            onClick={() => window.open(order.paymentUrl, "_blank")}
+          />
         )}
       </div>
 

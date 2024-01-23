@@ -1,5 +1,4 @@
 import Pagination from "~/components/Pagination";
-import { type OrderWithDetails } from "~/models/orders.server";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/Wrappers/AdminPageWrapper";
 import {
@@ -11,7 +10,8 @@ import {
 } from "@remix-run/react";
 import BasicTable from "~/components/Tables/BasicTable";
 import AdminContentSearch from "~/components/Search/AdminContentSearch";
-import type { orderSearchLoader } from "./index.server";
+import { orderSearchLoader } from "./index.server";
+import { OrderWithDetails } from "~/models/Orders/types";
 
 const OrderSearch = () => {
   const { orders, totalPages } = useLoaderData<typeof orderSearchLoader>();

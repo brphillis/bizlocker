@@ -1,8 +1,8 @@
 import { Params } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/node";
-import { confirmPayment } from "~/models/orders.server";
+import { confirmPayment } from "~/models/Orders/index.server";
 
-export const meta: MetaFunction = ({ data }: any) => {
+export const meta: MetaFunction = () => {
   return [
     { title: "CLUTCH | Confirm Payment" },
     {

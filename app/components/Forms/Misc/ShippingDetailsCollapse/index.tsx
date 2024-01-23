@@ -1,4 +1,4 @@
-import type { OrderWithDetails } from "~/models/orders.server";
+import { OrderWithDetails } from "~/models/Orders/types";
 import BasicInput from "../../Input/BasicInput";
 
 type Props = { order: OrderWithDetails };

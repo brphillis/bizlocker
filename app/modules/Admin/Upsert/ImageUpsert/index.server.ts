@@ -1,26 +1,22 @@
 import { json } from "@remix-run/node";
-import type { Image } from "@prisma/client";
-import type { Params } from "@remix-run/react";
+import { Image } from "@prisma/client";
 import { validateForm } from "~/utility/validate";
-import type { PageNotification } from "~/hooks/PageNotification";
+import { ImageWithDetails } from "~/models/Images/types";
+import { PageNotification } from "~/hooks/PageNotification";
 import {
   deleteImage,
   getImage,
-  type ImageWithDetails,
   upsertImage,
-} from "~/models/images.server";
+} from "~/models/Images/index.server";
 
 const validateOptions = {
   image: true,
   altText: true,
 };
 
-export const imageUpsertLoader = async (
-  request: Request,
-  params: Params<string>,
-) => {
-  let { searchParams } = new URL(request.url);
-  let id = searchParams.get("contentId");
+export const imageUpsertLoader = async (request: Request) => {
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get("contentId");
 
   if (!id) {
     throw new Response(null, {
@@ -41,15 +37,12 @@ export const imageUpsertLoader = async (
   return json({ image });
 };
 
-export const imageUpsertAction = async (
-  request: Request,
-  params: Params<string>,
-) => {
+export const imageUpsertAction = async (request: Request) => {
   let notification: PageNotification;
 
-  let { searchParams } = new URL(request.url);
+  const { searchParams } = new URL(request.url);
   const contentId = searchParams.get("contentId");
-  let id = contentId === "add" || !contentId ? undefined : contentId;
+  const id = contentId === "add" || !contentId ? undefined : contentId;
 
   const { formEntries, formErrors } = validateForm(
     await request.formData(),
@@ -59,7 +52,7 @@ export const imageUpsertAction = async (
   const { image, altText } = formEntries;
 
   switch (formEntries._action) {
-    case "upsert":
+    case "upsert": {
       if (formErrors) {
         return json({ serverValidationErrors: formErrors });
       }
@@ -76,8 +69,9 @@ export const imageUpsertAction = async (
       };
 
       return json({ success: true, notification });
+    }
 
-    case "delete":
+    case "delete": {
       await deleteImage(id as string);
 
       notification = {
@@ -86,5 +80,6 @@ export const imageUpsertAction = async (
       };
 
       return json({ success: true, notification });
+    }
   }
 };

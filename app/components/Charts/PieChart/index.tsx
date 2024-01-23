@@ -25,11 +25,11 @@ const PieReChart = ({ data }: Props) => {
             index,
           }) => {
             const RADIAN = Math.PI / 180;
-            // eslint-disable-next-line
+
             const radius = 25 + innerRadius + (outerRadius - innerRadius);
-            // eslint-disable-next-line
+
             const x = cx + radius * Math.cos(-midAngle * RADIAN);
-            // eslint-disable-next-line
+
             const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
             return (

@@ -1,6 +1,5 @@
-import { Params } from "@remix-run/react";
 import { ValidationErrors, isValidEmail } from "~/utility/validate";
-import { initiatePasswordReset } from "~/models/auth/verification.server";
+import { initiatePasswordReset } from "~/models/Verification/index.server";
 import { json, type MetaFunction } from "@remix-run/node";
 import { isEmptyObject } from "~/helpers/objectHelpers";
 
@@ -14,10 +13,7 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export const passwordRecoveryRequestAction = async (
-  request: Request,
-  params: Params<string>,
-) => {
+export const passwordRecoveryRequestAction = async (request: Request) => {
   const form = Object.fromEntries(await request.formData());
   const { email } = form;
 
@@ -41,9 +37,9 @@ export const passwordRecoveryRequestAction = async (
     }
 
     return json({ success });
-  } catch (error: any) {
+  } catch (error: unknown) {
     const validationErrors: ValidationErrors = {};
-    validationErrors.error = error.message;
+    validationErrors.error = (error as CatchError).message;
 
     return json({ validationErrors });
   }

@@ -1,23 +1,19 @@
 import { json } from "@remix-run/node";
-import type { Params } from "@remix-run/react";
 import { validateForm } from "~/utility/validate";
-import { getStores } from "~/models/stores.server";
+import { getStores } from "~/models/Stores/index.server";
 import { getApprovalStatusList } from "~/models/enums.server";
 import {
   approveStockTransfer,
   getStockTransfer,
-  type StockTransferRequestWithDetails,
   updateStockTransfer,
-} from "~/models/stock.server";
+} from "~/models/Stock/index.server";
+import { StockTransferRequestWithDetails } from "~/models/Stock/types";
 
 const validateOptions = {};
 
-export const stockTransferUpsertLoader = async (
-  request: Request,
-  params: Params<string>,
-) => {
-  let { searchParams } = new URL(request.url);
-  let id = searchParams.get("contentId");
+export const stockTransferUpsertLoader = async (request: Request) => {
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get("contentId");
 
   if (!id) {
     throw new Response(null, {
@@ -44,12 +40,9 @@ export const stockTransferUpsertLoader = async (
   return json({ stockTransferRequest, stores, statusList });
 };
 
-export const stockTransferUpsertAction = async (
-  request: Request,
-  params: Params<string>,
-) => {
-  let { searchParams } = new URL(request.url);
-  let id = searchParams.get("contentId");
+export const stockTransferUpsertAction = async (request: Request) => {
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get("contentId");
 
   const { formEntries, formErrors } = validateForm(
     await request.formData(),
@@ -63,7 +56,7 @@ export const stockTransferUpsertAction = async (
   const { toStoreId, status, quantity } = formEntries;
 
   switch (formEntries._action) {
-    case "approve":
+    case "approve": {
       const { permissionError: approvePermissionError } =
         await approveStockTransfer(request, id as string, toStoreId as string);
       if (approvePermissionError) {
@@ -76,8 +69,9 @@ export const stockTransferUpsertAction = async (
             message: "Stock Transfer Approved.",
           },
         };
+    }
 
-    case "upsert":
+    case "upsert": {
       const { permissionError: updatePermissionError, notification } =
         await updateStockTransfer(
           request,
@@ -103,5 +97,6 @@ export const stockTransferUpsertAction = async (
           });
         }
       }
+    }
   }
 };

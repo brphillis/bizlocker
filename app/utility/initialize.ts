@@ -43,8 +43,8 @@ const createInitialDeveloper = async () => {
 
       console.log("Initial admin created");
     }
-  } catch (error: any) {
-    if (error.code === "P2002") {
+  } catch (error: unknown) {
+    if ((error as CatchError).code === "P2002") {
       console.log("Initial developer already created, skipping creation.");
     } else {
       console.error("Failed to create initial developer:", error);
@@ -66,7 +66,7 @@ const createHomePage = async () => {
 
     if (connectedPreviewPage) {
       console.log(
-        "Home page already exists and is connected to a preview page. Skipping seed creation."
+        "Home page already exists and is connected to a preview page. Skipping seed creation.",
       );
     } else {
       // Create a new preview page and connect it to the existing homepage
@@ -100,7 +100,7 @@ const createHomePage = async () => {
     });
 
     console.log(
-      "Created a new homepage and connected it to a new preview page."
+      "Created a new homepage and connected it to a new preview page.",
     );
   }
 };

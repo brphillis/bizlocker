@@ -1,8 +1,8 @@
-import type { BlockContentSorted } from "~/models/blocks.server";
-import type { BlockOptions } from "@prisma/client";
+import { BlockOptions } from "@prisma/client";
 import { ClientOnly } from "~/components/Client/ClientOnly";
 import Carousel from "./Carousel/index.client";
 import SEOCardSkeleton from "~/components/Client/Skeletons/SEOCardSkeleton";
+import { BlockContentSorted } from "~/models/Blocks/types";
 
 type Props = {
   content: BlockContentSorted[];

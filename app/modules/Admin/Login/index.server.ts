@@ -1,8 +1,6 @@
 import { json } from "@remix-run/node";
-import { Params } from "@remix-run/react";
 import { createStaffSession } from "~/session.server";
-import { safeRedirect } from "~/helpers/navigateHelpers";
-import { verifyStaffLogin } from "~/models/auth/staffLogin";
+import { verifyStaffLogin } from "~/models/_Auth/staffLogin";
 import {
   ValidationErrors,
   isValidEmail,
@@ -10,10 +8,7 @@ import {
 } from "~/utility/validate";
 import { isEmptyObject } from "~/helpers/objectHelpers";
 
-export const adminLoginAction = async (
-  request: Request,
-  params: Params<string>,
-) => {
+export const adminLoginAction = async (request: Request) => {
   const form = Object.fromEntries(await request.formData());
   const { email, password, remember } = form;
 

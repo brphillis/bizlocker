@@ -36,7 +36,8 @@ const ProductSort = ({ totalCount }: Props) => {
         </select>
 
         {sortAsc && (
-          <div
+          <button
+            type="button"
             className="flex h-[24px] cursor-pointer select-none items-center gap-1 border border-brand-black/20 bg-base-100 fill-current px-3"
             onClick={() => {
               if (sortAsc) {
@@ -56,10 +57,11 @@ const ProductSort = ({ totalCount }: Props) => {
           >
             <IoTrendingUp size={20} />
             <p className="text-xs">Asc</p>
-          </div>
+          </button>
         )}
         {!sortAsc && (
-          <div
+          <button
+            type="button"
             className="flex h-[24px] cursor-pointer select-none items-center gap-1 border border-brand-black/20 bg-base-100 fill-current px-3"
             onClick={() => {
               if (!sortAsc) {
@@ -79,7 +81,7 @@ const ProductSort = ({ totalCount }: Props) => {
           >
             <IoTrendingDown size={20} />
             <p className="text-xs">Desc</p>
-          </div>
+          </button>
         )}
       </div>
     </div>

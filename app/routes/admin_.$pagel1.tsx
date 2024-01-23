@@ -5,12 +5,12 @@ import { adminLoginAction } from "~/modules/Admin/Login/index.server";
 import { adminHomeLoader } from "~/modules/Admin/Home/index.server";
 import AdminHome from "~/modules/Admin/Home";
 
-export const loader = async ({ request, params }: ActionFunctionArgs) => {
+export const loader = async ({ params }: ActionFunctionArgs) => {
   const page = params?.pagel1;
 
   switch (page) {
     case "home":
-      return await adminHomeLoader(request, params);
+      return await adminHomeLoader();
     default:
       return null;
   }
@@ -21,14 +21,14 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
   switch (page) {
     case "login":
-      return await adminLoginAction(request, params);
+      return await adminLoginAction(request);
   }
 };
 
 const PageL1 = () => {
   const { pagel1 } = useParams();
   let activeModule;
-  let useOutlet = true;
+  const useOutlet = true;
 
   switch (pagel1) {
     case "home":

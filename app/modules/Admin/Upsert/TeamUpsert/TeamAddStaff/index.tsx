@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
 import { IoAdd } from "react-icons/io5";
 import Pagination from "~/components/Pagination";
-import DarkOverlay from "~/components/Layout/Overlays/DarkOverlay";
+import useNotification from "~/hooks/PageNotification";
+import { StaffWithDetails } from "~/models/Staff/types";
+import { ActionReturnTypes } from "~/utility/actionTypes";
 import BasicInput from "~/components/Forms/Input/BasicInput";
-import BasicTitleBar from "~/components/Layout/TitleBars/BasicTitleBar";
-import type { ActionReturnTypes } from "~/utility/actionTypes";
 import { placeholderAvatar } from "~/utility/placeholderAvatar";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import { ActionAlert } from "~/components/Notifications/Alerts";
+import DarkOverlay from "~/components/Layout/Overlays/DarkOverlay";
+import BasicTitleBar from "~/components/Layout/TitleBars/BasicTitleBar";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
-import { type StaffWithDetails } from "~/models/staff.server";
-import useNotification from "~/hooks/PageNotification";
 import {
   Form,
   Outlet,
@@ -19,7 +19,7 @@ import {
   useNavigate,
   useSubmit,
 } from "@remix-run/react";
-import type { teamAddStaffLoader } from "./index.server";
+import { teamAddStaffLoader } from "./index.server";
 
 const TeamAddStaff = () => {
   const { staff, totalPages, stores, teamId } =

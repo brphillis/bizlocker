@@ -1,7 +1,7 @@
-import type { ArticleCategory, BlockOptions } from "@prisma/client";
+import { ArticleCategory, BlockOptions } from "@prisma/client";
 import ArticleGrid from "~/components/Grids/ArticleGrid";
-import type { ArticleWithContent } from "~/models/articles.server";
-import { BlockContentSorted } from "~/models/blocks.server";
+import { ArticleWithContent } from "~/models/Articles/types";
+import { BlockContentSorted } from "~/models/Blocks/types";
 
 type Props = {
   content: BlockContentSorted[];

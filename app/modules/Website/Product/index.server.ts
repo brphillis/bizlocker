@@ -1,24 +1,22 @@
-import { Params } from "@remix-run/react";
 import { json, type MetaFunction } from "@remix-run/node";
-import { getProduct, searchProducts } from "~/models/products.server";
-import { getBrand } from "~/models/brands.server";
+import { getProduct, searchProducts } from "~/models/Products/index.server";
+import { getBrand } from "~/models/Brands/index.server";
 
-export const meta: MetaFunction<typeof productLoader> = ({ data }: any) => {
+export const meta: MetaFunction<typeof productLoader> = ({ data }) => {
+  const loaderData = data as MetaType;
+
   return [
     {
-      title: `CLUTCH | ${data?.product.name}`,
+      title: `CLUTCH | ${loaderData?.product.name}`,
     },
     {
-      name: `CLUTCH | ${data?.product.name}`,
-      description: `${data?.product.name} available now at CLUTCH, with store locations all over Australia we can provide next day shipping of our top quality ${data?.product.name} straight to your door.`,
+      name: `CLUTCH | ${loaderData?.product.name}`,
+      description: `${loaderData?.product.name} available now at CLUTCH, with store locations all over Australia we can provide next day shipping of our top quality ${loaderData?.product.name} straight to your door.`,
     },
   ];
 };
 
-export const productLoader = async (
-  request: Request,
-  params: Params<string>,
-) => {
+export const productLoader = async (request: Request) => {
   const url = new URL(request.url);
   const productId = url.searchParams.get("id");
 

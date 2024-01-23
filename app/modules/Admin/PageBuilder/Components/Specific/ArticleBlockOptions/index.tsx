@@ -1,11 +1,11 @@
-import type { ArticleCategory } from "@prisma/client";
-import type { BlockContentWithDetails } from "~/models/blocks.server";
+import { ArticleCategory } from "@prisma/client";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
-import type { BlockContentType, BlockName } from "~/utility/blockMaster/types";
+import { BlockContentWithDetails } from "~/models/Blocks/types";
+import { BlockContentType, BlockName } from "~/utility/blockMaster/types";
 
 type Props = {
-  selectedBlock: BlockName | undefined;
-  setSelectedItems: Function;
+  selectedBlock?: BlockName;
+  setSelectedItems: (items: ContentSelection[]) => void;
   articleCategories: ArticleCategory[];
   defaultValues: BlockContentWithDetails;
 };
@@ -17,11 +17,12 @@ const ArticleBlockOptions = ({
   articleCategories,
 }: Props) => {
   const selectItem = (type: BlockContentType, contentId: number) => {
-    setSelectedItems((prevSelectedItems: any) => {
-      if (!Array.isArray(prevSelectedItems)) {
-        prevSelectedItems = [];
-      }
-      return [...prevSelectedItems, { type, contentId }];
+    // @ts-expect-error: expected typeshift
+    setSelectedItems((prevSelectedItems: ContentSelection[]) => {
+      const itemsArray: ContentSelection[] = Array.isArray(prevSelectedItems)
+        ? (prevSelectedItems as ContentSelection[])
+        : [];
+      return [...itemsArray, { type, contentId }];
     });
   };
 

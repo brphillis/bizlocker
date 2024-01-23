@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
-import type { ValidationErrors } from "~/utility/validate";
 import { useNavigate } from "@remix-run/react";
 import { validateForm } from "~/utility/validate";
-import type { Color, Order, Product, StockLevel } from "@prisma/client";
+import BoxedTabs from "~/components/Tabs/BoxedTabs";
+import TabContent from "~/components/Tabs/TabContent";
+import BasicTable from "~/components/Tables/BasicTable";
 import { Toast } from "~/components/Notifications/Toast";
-import type {
+import type { ValidationErrors } from "~/utility/validate";
+import BasicInput from "~/components/Forms/Input/BasicInput";
+import BasicToggle from "~/components/Forms/Toggle/BasicToggle";
+import BasicSelect from "~/components/Forms/Select/BasicSelect";
+import type { Color, Order, Product, StockLevel } from "@prisma/client";
+import {
   ProductVariantWithDetails,
   ProductWithDetails,
-} from "~/models/products.server";
-import BoxedTabs from "~/components/Tabs/BoxedTabs";
-import BasicToggle from "~/components/Forms/Toggle/BasicToggle";
-import BasicTable from "~/components/Tables/BasicTable";
-import BasicInput from "~/components/Forms/Input/BasicInput";
-import BasicSelect from "~/components/Forms/Select/BasicSelect";
-import TabContent from "~/components/Tabs/TabContent";
+} from "~/models/Products/types";
 
 type Props = {
   storeId: number | null;
@@ -46,7 +46,7 @@ const ProductVariantUpsert = ({ storeId, product, availableColors }: Props) => {
   const navigate = useNavigate();
 
   const [activeVariant, setActiveVariant] = useState<
-    ProductVariantWithDetails | NewProductVariant | {}
+    ProductVariantWithDetails | NewProductVariant | object
   >();
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>();
   const [variants, setVariants] = useState<
@@ -65,9 +65,14 @@ const ProductVariantUpsert = ({ storeId, product, availableColors }: Props) => {
   const handleAddVariant = () => {
     const form = new FormData();
 
-    for (const key in activeVariant) {
-      if (activeVariant.hasOwnProperty(key)) {
-        form.append(key, (activeVariant as any)[key]);
+    if (typeof activeVariant === "object" && activeVariant !== null) {
+      for (const key in activeVariant) {
+        if (Object.prototype.hasOwnProperty.call(activeVariant, key)) {
+          form.append(
+            key,
+            (activeVariant as Record<string, unknown>)[key] as string,
+          );
+        }
       }
     }
 
@@ -86,14 +91,15 @@ const ProductVariantUpsert = ({ storeId, product, availableColors }: Props) => {
 
     if (activeVariant) {
       let updatedActiveVariant = activeVariant;
-      if (!activeVariant.hasOwnProperty("isActive")) {
+
+      if (!("isActive" in activeVariant)) {
         updatedActiveVariant = {
           ...activeVariant,
           isActive: true,
         };
       }
 
-      if (!activeVariant.hasOwnProperty("name")) {
+      if (!("name" in activeVariant)) {
         updatedActiveVariant = {
           ...activeVariant,
           name: "BASE",
@@ -226,344 +232,329 @@ const ProductVariantUpsert = ({ storeId, product, availableColors }: Props) => {
             setActiveTab={handleTabChange}
           />
 
-          <TabContent
-            tab="basic"
-            activeTab={activeTab}
-            extendStyle="gap-3"
-            children={
-              <>
+          <TabContent tab="basic" activeTab={activeTab} extendStyle="gap-3">
+            <>
+              <BasicInput
+                name="name"
+                label="Variant Name"
+                placeholder="Name"
+                extendContainerStyle="w-full"
+                type="text"
+                defaultValue={
+                  (activeVariant as ProductVariantWithDetails)?.name || "BASE"
+                }
+                onChange={(e) => {
+                  setActiveVariant({
+                    ...activeVariant,
+                    name: e !== "" ? (e as string) : "BASE",
+                  });
+                }}
+                validationErrors={validationErrors}
+              />
+
+              <BasicSelect
+                id="VariantColor"
+                name="color"
+                label="Color"
+                placeholder="Color"
+                extendContainerStyle="w-full"
+                selections={availableColors.map((e) => {
+                  return { id: e, name: e };
+                })}
+                defaultValue={
+                  (activeVariant as ProductVariantWithDetails)?.color || ""
+                }
+                onChange={(e) =>
+                  setActiveVariant({
+                    ...activeVariant,
+                    color: e,
+                  })
+                }
+              />
+
+              <BasicInput
+                id="VariantSize"
+                name="size"
+                label="Size"
+                placeholder="Size"
+                extendContainerStyle="w-full"
+                type="text"
+                defaultValue={
+                  (activeVariant as ProductVariantWithDetails)?.size || ""
+                }
+                onChange={(e) => {
+                  setActiveVariant({
+                    ...activeVariant,
+                    size: e as string,
+                  });
+                }}
+                validationErrors={validationErrors}
+              />
+
+              <div className="flex w-full items-end justify-center gap-3 justify-self-start max-md:px-0">
                 <BasicInput
-                  name="name"
-                  label="Variant Name"
-                  placeholder="Name"
-                  extendContainerStyle="w-full"
+                  id="VariantSKU"
+                  name="sku"
+                  label="SKU"
+                  placeholder="SKU"
                   type="text"
+                  extendContainerStyle="!w-full !max-w-full"
+                  // disabled={upsertState === "edit" ? true : false}
+
                   defaultValue={
-                    (activeVariant as ProductVariantWithDetails)?.name || "BASE"
+                    (activeVariant as ProductVariantWithDetails)?.sku || ""
                   }
                   onChange={(e) => {
                     setActiveVariant({
                       ...activeVariant,
-                      name: e !== "" ? (e as string) : "BASE",
+                      sku: e as string,
                     });
                   }}
                   validationErrors={validationErrors}
                 />
 
-                <BasicSelect
-                  id="VariantColor"
-                  name="color"
-                  label="Color"
-                  placeholder="Color"
-                  extendContainerStyle="w-full"
-                  selections={availableColors.map((e) => {
-                    return { id: e, name: e };
-                  })}
-                  defaultValue={
-                    (activeVariant as ProductVariantWithDetails)?.color || ""
-                  }
-                  onChange={(e) =>
-                    setActiveVariant({
-                      ...activeVariant,
-                      color: e,
-                    })
-                  }
-                />
+                <button
+                  type="button"
+                  onClick={generateSku}
+                  //   disabled={upsertState === "edit" ? true : false}
+                  className="btn btn-primary flex !h-[41px] !min-h-[41px] w-[103px] items-center justify-center !rounded-sm sm:!ml-0"
+                >
+                  Generate
+                </button>
+              </div>
 
+              <div className="flex w-full items-end justify-center gap-3 justify-self-start max-md:px-0">
                 <BasicInput
-                  id="VariantSize"
-                  name="size"
-                  label="Size"
-                  placeholder="Size"
-                  extendContainerStyle="w-full"
-                  type="text"
-                  defaultValue={
-                    (activeVariant as ProductVariantWithDetails)?.size || ""
-                  }
-                  onChange={(e) => {
-                    setActiveVariant({
-                      ...activeVariant,
-                      size: e as string,
-                    });
-                  }}
-                  validationErrors={validationErrors}
-                />
-
-                <div className="flex w-full items-end justify-center gap-3 justify-self-start max-md:px-0">
-                  <BasicInput
-                    id="VariantSKU"
-                    name="sku"
-                    label="SKU"
-                    placeholder="SKU"
-                    type="text"
-                    extendContainerStyle="!w-full !max-w-full"
-                    // disabled={upsertState === "edit" ? true : false}
-
-                    defaultValue={
-                      (activeVariant as ProductVariantWithDetails)?.sku || ""
-                    }
-                    onChange={(e) => {
-                      setActiveVariant({
-                        ...activeVariant,
-                        sku: e as string,
-                      });
-                    }}
-                    validationErrors={validationErrors}
-                  />
-
-                  <button
-                    type="button"
-                    onClick={generateSku}
-                    //   disabled={upsertState === "edit" ? true : false}
-                    className="btn btn-primary flex !h-[41px] !min-h-[41px] w-[103px] items-center justify-center !rounded-sm sm:!ml-0"
-                  >
-                    Generate
-                  </button>
-                </div>
-
-                <div className="flex w-full items-end justify-center gap-3 justify-self-start max-md:px-0">
-                  <BasicInput
-                    name="remainingStock"
-                    label="Remaining Stock"
-                    placeholder="Remaining Stock"
-                    type="number"
-                    extendContainerStyle="!w-full !max-w-full"
-                    defaultValue={
-                      (activeVariant as ProductVariantWithDetails)?.stock || ""
-                    }
-                    onChange={(e) => {
-                      setActiveVariant({
-                        ...activeVariant,
-                        stock: parseFloat(e as string),
-                      });
-                    }}
-                    validationErrors={validationErrors}
-                  />
-
-                  <button
-                    type="button"
-                    className="btn btn-primary flex !h-[41px] !min-h-[41px] w-[103px] items-center justify-center !rounded-sm sm:!ml-0"
-                    onClick={() =>
-                      navigate(
-                        `/admin/upsert/product/productStock?contentId=${(
-                          activeVariant as ProductVariantWithDetails
-                        )?.id}`,
-                      )
-                    }
-                  >
-                    See Stock
-                  </button>
-                </div>
-
-                <div className="mt-3">
-                  <BasicToggle
-                    label="Active"
-                    defaultValue={
-                      activeVariant.hasOwnProperty("isActive")
-                        ? (activeVariant as ProductVariantWithDetails)?.isActive
-                        : true
-                    }
-                    onChange={(e) => {
-                      setActiveVariant({
-                        ...activeVariant,
-                        isActive: e.target.checked,
-                      });
-                    }}
-                  />
-                </div>
-              </>
-            }
-          />
-
-          <TabContent
-            tab="price"
-            activeTab={activeTab}
-            extendStyle="gap-3"
-            children={
-              <>
-                <BasicInput
-                  name="price"
-                  label="Price"
-                  placeholder="Price"
-                  extendContainerStyle="w-full"
+                  name="remainingStock"
+                  label="Remaining Stock"
+                  placeholder="Remaining Stock"
                   type="number"
-                  decimals={2}
+                  extendContainerStyle="!w-full !max-w-full"
                   defaultValue={
-                    (activeVariant as ProductVariantWithDetails)?.price || ""
+                    (activeVariant as ProductVariantWithDetails)?.stock || ""
                   }
                   onChange={(e) => {
                     setActiveVariant({
                       ...activeVariant,
-                      price: Number(e as string),
+                      stock: parseFloat(e as string),
                     });
                   }}
                   validationErrors={validationErrors}
                 />
 
-                <BasicInput
-                  name="salePrice"
-                  label="Sale Price"
-                  placeholder="Sale Price"
-                  extendContainerStyle="w-full"
-                  type="number"
-                  decimals={2}
+                <button
+                  type="button"
+                  className="btn btn-primary flex !h-[41px] !min-h-[41px] w-[103px] items-center justify-center !rounded-sm sm:!ml-0"
+                  onClick={() =>
+                    navigate(
+                      `/admin/upsert/product/productStock?contentId=${(
+                        activeVariant as ProductVariantWithDetails
+                      )?.id}`,
+                    )
+                  }
+                >
+                  See Stock
+                </button>
+              </div>
+
+              <div className="mt-3">
+                <BasicToggle
+                  label="Active"
                   defaultValue={
-                    (activeVariant as NewProductVariant)?.salePrice || ""
+                    "isActive" in activeVariant
+                      ? (activeVariant as ProductVariantWithDetails)?.isActive
+                      : true
                   }
                   onChange={(e) => {
                     setActiveVariant({
                       ...activeVariant,
-                      salePrice: Number(e as string),
+                      isActive: e.target.checked,
                     });
                   }}
-                  validationErrors={validationErrors}
                 />
+              </div>
+            </>
+          </TabContent>
 
-                <div className="mt-3">
-                  <BasicToggle
-                    label="On Sale"
-                    defaultValue={
-                      (activeVariant as ProductVariantWithDetails)?.isOnSale
+          <TabContent tab="price" activeTab={activeTab} extendStyle="gap-3">
+            <>
+              <BasicInput
+                name="price"
+                label="Price"
+                placeholder="Price"
+                extendContainerStyle="w-full"
+                type="number"
+                decimals={2}
+                defaultValue={
+                  (activeVariant as ProductVariantWithDetails)?.price || ""
+                }
+                onChange={(e) => {
+                  setActiveVariant({
+                    ...activeVariant,
+                    price: Number(e as string),
+                  });
+                }}
+                validationErrors={validationErrors}
+              />
+
+              <BasicInput
+                name="salePrice"
+                label="Sale Price"
+                placeholder="Sale Price"
+                extendContainerStyle="w-full"
+                type="number"
+                decimals={2}
+                defaultValue={
+                  (activeVariant as NewProductVariant)?.salePrice || ""
+                }
+                onChange={(e) => {
+                  setActiveVariant({
+                    ...activeVariant,
+                    salePrice: Number(e as string),
+                  });
+                }}
+                validationErrors={validationErrors}
+              />
+
+              <div className="mt-3">
+                <BasicToggle
+                  label="On Sale"
+                  defaultValue={
+                    (activeVariant as ProductVariantWithDetails)?.isOnSale
+                  }
+                  onChange={(e) => {
+                    const isChecked = e.target.checked;
+                    if (isChecked) {
+                      setActiveVariant((prevVariant) => ({
+                        ...prevVariant,
+                        isOnSale: true,
+                        isPromoted: false,
+                      }));
+                    } else {
+                      setActiveVariant((prevVariant) => ({
+                        ...prevVariant,
+                        isOnSale: false,
+                      }));
                     }
-                    onChange={(e) => {
-                      const isChecked = e.target.checked;
-                      if (isChecked) {
-                        setActiveVariant((prevVariant) => ({
-                          ...prevVariant,
-                          isOnSale: true,
-                          isPromoted: false,
-                        }));
-                      } else {
-                        setActiveVariant((prevVariant) => ({
-                          ...prevVariant,
-                          isOnSale: false,
-                        }));
-                      }
-                    }}
-                  />
-
-                  <BasicToggle
-                    label="On Promo"
-                    defaultValue={
-                      (activeVariant as ProductVariantWithDetails)?.isPromoted
-                    }
-                    onChange={(e) => {
-                      const isChecked = e.target.checked;
-                      if (isChecked) {
-                        setActiveVariant((prevVariant) => ({
-                          ...prevVariant,
-                          isPromoted: true,
-                          isOnSale: false,
-                        }));
-                      } else {
-                        setActiveVariant((prevVariant) => ({
-                          ...prevVariant,
-                          isPromoted: false,
-                        }));
-                      }
-                    }}
-                  />
-                </div>
-              </>
-            }
-          />
-
-          <TabContent
-            tab="shipping"
-            activeTab={activeTab}
-            extendStyle="gap-3"
-            children={
-              <>
-                <BasicInput
-                  name="length"
-                  label="Length (cm)"
-                  placeholder="Length"
-                  extendContainerStyle="w-full"
-                  type="number"
-                  defaultValue={
-                    (activeVariant as ProductVariantWithDetails)?.length || ""
-                  }
-                  onChange={(e) => {
-                    setActiveVariant({
-                      ...activeVariant,
-                      length: parseInt(e as string),
-                    });
                   }}
-                  validationErrors={validationErrors}
-                />
-
-                <BasicInput
-                  name="width"
-                  label="Width (cm)"
-                  placeholder="Width"
-                  extendContainerStyle="w-full"
-                  type="number"
-                  defaultValue={
-                    (activeVariant as ProductVariantWithDetails)?.width || ""
-                  }
-                  onChange={(e) => {
-                    setActiveVariant({
-                      ...activeVariant,
-                      width: parseInt(e as string),
-                    });
-                  }}
-                  validationErrors={validationErrors}
-                />
-
-                <BasicInput
-                  name="height"
-                  label="Height (cm)"
-                  placeholder="Height"
-                  extendContainerStyle="w-full"
-                  type="number"
-                  defaultValue={
-                    (activeVariant as ProductVariantWithDetails)?.height || ""
-                  }
-                  onChange={(e) => {
-                    setActiveVariant({
-                      ...activeVariant,
-                      height: parseFloat(e as string),
-                    });
-                  }}
-                  validationErrors={validationErrors}
-                />
-
-                <BasicInput
-                  name="weight"
-                  label="Weight (kg)"
-                  placeholder="Weight"
-                  extendContainerStyle="w-full"
-                  type="number"
-                  decimals={2}
-                  defaultValue={
-                    (activeVariant as ProductVariantWithDetails)?.weight || ""
-                  }
-                  onChange={(e) => {
-                    setActiveVariant({
-                      ...activeVariant,
-                      weight: parseFloat(e as string),
-                    });
-                  }}
-                  validationErrors={validationErrors}
                 />
 
                 <BasicToggle
-                  label="Is Fragile"
+                  label="On Promo"
                   defaultValue={
-                    activeVariant.hasOwnProperty("isFragile")
-                      ? (activeVariant as ProductVariantWithDetails)?.isFragile
-                      : false
+                    (activeVariant as ProductVariantWithDetails)?.isPromoted
                   }
                   onChange={(e) => {
-                    setActiveVariant({
-                      ...activeVariant,
-                      isFragile: e.target.checked,
-                    });
+                    const isChecked = e.target.checked;
+                    if (isChecked) {
+                      setActiveVariant((prevVariant) => ({
+                        ...prevVariant,
+                        isPromoted: true,
+                        isOnSale: false,
+                      }));
+                    } else {
+                      setActiveVariant((prevVariant) => ({
+                        ...prevVariant,
+                        isPromoted: false,
+                      }));
+                    }
                   }}
                 />
-              </>
-            }
-          />
+              </div>
+            </>
+          </TabContent>
+
+          <TabContent tab="shipping" activeTab={activeTab} extendStyle="gap-3">
+            <>
+              <BasicInput
+                name="length"
+                label="Length (cm)"
+                placeholder="Length"
+                extendContainerStyle="w-full"
+                type="number"
+                defaultValue={
+                  (activeVariant as ProductVariantWithDetails)?.length || ""
+                }
+                onChange={(e) => {
+                  setActiveVariant({
+                    ...activeVariant,
+                    length: parseInt(e as string),
+                  });
+                }}
+                validationErrors={validationErrors}
+              />
+
+              <BasicInput
+                name="width"
+                label="Width (cm)"
+                placeholder="Width"
+                extendContainerStyle="w-full"
+                type="number"
+                defaultValue={
+                  (activeVariant as ProductVariantWithDetails)?.width || ""
+                }
+                onChange={(e) => {
+                  setActiveVariant({
+                    ...activeVariant,
+                    width: parseInt(e as string),
+                  });
+                }}
+                validationErrors={validationErrors}
+              />
+
+              <BasicInput
+                name="height"
+                label="Height (cm)"
+                placeholder="Height"
+                extendContainerStyle="w-full"
+                type="number"
+                defaultValue={
+                  (activeVariant as ProductVariantWithDetails)?.height || ""
+                }
+                onChange={(e) => {
+                  setActiveVariant({
+                    ...activeVariant,
+                    height: parseFloat(e as string),
+                  });
+                }}
+                validationErrors={validationErrors}
+              />
+
+              <BasicInput
+                name="weight"
+                label="Weight (kg)"
+                placeholder="Weight"
+                extendContainerStyle="w-full"
+                type="number"
+                decimals={2}
+                defaultValue={
+                  (activeVariant as ProductVariantWithDetails)?.weight || ""
+                }
+                onChange={(e) => {
+                  setActiveVariant({
+                    ...activeVariant,
+                    weight: parseFloat(e as string),
+                  });
+                }}
+                validationErrors={validationErrors}
+              />
+
+              <BasicToggle
+                label="Is Fragile"
+                defaultValue={
+                  "isFragile" in activeVariant
+                    ? (activeVariant as ProductVariantWithDetails)?.isFragile
+                    : false
+                }
+                onChange={(e) => {
+                  setActiveVariant({
+                    ...activeVariant,
+                    isFragile: e.target.checked,
+                  });
+                }}
+              />
+            </>
+          </TabContent>
 
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             {/* <button

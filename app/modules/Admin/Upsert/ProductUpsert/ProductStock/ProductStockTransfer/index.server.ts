@@ -1,32 +1,19 @@
-import { tokenAuth } from "~/auth.server";
-import type { Staff } from "@prisma/client";
-import type { Params } from "@remix-run/react";
-import { json, redirect } from "@remix-run/node";
-import { getStores } from "~/models/stores.server";
-import { getProductVariant } from "~/models/products.server";
-import type { PageNotification } from "~/hooks/PageNotification";
+import { Staff } from "@prisma/client";
+import { json } from "@remix-run/node";
+import { getStores } from "~/models/Stores/index.server";
+import { PageNotification } from "~/hooks/PageNotification";
+import { NewStockTransferRequest } from "~/models/Stock/types";
+import { getProductVariant } from "~/models/Products/index.server";
+import { createStockTransferRequest } from "~/models/Stock/index.server";
 import { getUserDataFromSession, STAFF_SESSION_KEY } from "~/session.server";
-import {
-  createStockTransferRequest,
-  type NewStockTransferRequest,
-} from "~/models/stock.server";
 
-export const productStockTransferLoader = async (
-  request: Request,
-  params: Params<string>,
-) => {
-  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
-
-  if (!authenticated.valid) {
-    return redirect("/admin/login");
-  }
-
+export const productStockTransferLoader = async (request: Request) => {
   const { storeId: userStoreId } =
     ((await getUserDataFromSession(request, STAFF_SESSION_KEY)) as Staff) || {};
 
-  let { searchParams } = new URL(request.url);
-  let variantId = searchParams.get("contentId");
-  let fromStoreId = searchParams.get("fromStore");
+  const { searchParams } = new URL(request.url);
+  const variantId = searchParams.get("contentId");
+  const fromStoreId = searchParams.get("fromStore");
 
   if (!variantId) {
     throw new Response(null, {
@@ -61,22 +48,14 @@ export const productStockTransferLoader = async (
   });
 };
 
-export const productStockTransferAction = async (
-  request: Request,
-  params: Params<string>,
-) => {
-  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
-  if (!authenticated.valid) {
-    return redirect("/admin/login");
-  }
-
+export const productStockTransferAction = async (request: Request) => {
   const form = Object.fromEntries(await request.formData());
   const { variantId, fromStoreId, toStoreId, fromStoreStock, toStoreStock } =
     form;
 
   let notification: PageNotification;
 
-  let validationErrors: string[] = [];
+  const validationErrors: string[] = [];
 
   if (
     !fromStoreStock ||
@@ -96,7 +75,7 @@ export const productStockTransferAction = async (
   }
 
   switch (form._action) {
-    case "upsert":
+    case "upsert": {
       const { email } =
         ((await getUserDataFromSession(request, STAFF_SESSION_KEY)) as Staff) ||
         {};
@@ -117,6 +96,7 @@ export const productStockTransferAction = async (
       };
 
       return { success: true, notification };
+    }
   }
 
   return { success: false };

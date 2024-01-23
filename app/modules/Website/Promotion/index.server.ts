@@ -1,20 +1,22 @@
 import { Params } from "@remix-run/react";
-import { addToCart } from "~/models/cart.server";
-import { getBrands } from "~/models/brands.server";
-import { searchProducts } from "~/models/products.server";
-import { getPromotion } from "~/models/promotions.server";
+import { addToCart } from "~/models/Cart/index.server";
+import { getBrands } from "~/models/Brands/index.server";
+import { searchProducts } from "~/models/Products/index.server";
+import { getPromotion } from "~/models/Promotions/index.server";
 import { getAvailableColors } from "~/models/enums.server";
-import { getDepartments } from "~/models/departments.server";
+import { getDepartments } from "~/models/Departments/index.server";
 import { json, redirect, type MetaFunction } from "@remix-run/node";
-import { getProductCategories } from "~/models/productCategories.server";
-import { getProductSubCategories } from "~/models/productSubCategories.server";
+import { getProductCategories } from "~/models/ProductCategories/index.server";
+import { getProductSubCategories } from "~/models/ProductSubCategories/index.server";
 
-export const meta: MetaFunction<typeof promotionLoader> = ({ data }: any) => {
+export const meta: MetaFunction<typeof promotionLoader> = ({ data }) => {
+  const loaderData = data as MetaType;
+
   return [
-    { title: data?.promotion.name },
+    { title: loaderData?.promotion.name },
     {
-      name: data?.promotion.name,
-      content: data?.promotion.metaDescription,
+      name: loaderData?.promotion.name,
+      content: loaderData?.promotion.metaDescription,
     },
   ];
 };
@@ -61,10 +63,7 @@ export const promotionLoader = async (
   });
 };
 
-export const promotionAction = async (
-  request: Request,
-  params: Params<string>,
-) => {
+export const promotionAction = async (request: Request) => {
   const form = Object.fromEntries(await request.formData());
   const { variantId, quantity } = form;
   switch (form._action) {

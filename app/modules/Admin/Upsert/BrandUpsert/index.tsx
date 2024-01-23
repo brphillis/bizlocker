@@ -35,7 +35,7 @@ const BrandUpsert = ({ offRouteModule }: Props) => {
     (useActionData() as ActionReturnTypes) || {};
 
   const navigate = useNavigate();
-  let submit = useSubmit();
+  const submit = useSubmit();
   const [searchParams] = useSearchParams();
   const contentId = searchParams.get("contentId");
   const { contentType } = useParams();
@@ -82,37 +82,34 @@ const BrandUpsert = ({ offRouteModule }: Props) => {
         hasMode={true}
         isActive={brand?.isActive}
         title="Brand"
-        children={
-          <Form
-            method="POST"
-            onSubmit={handleSubmit}
-            className="scrollbar-hide relative w-[500px] max-w-full overflow-y-auto"
-          >
-            <div className="flex flex-col gap-6">
-              <BasicInput
-                name="name"
-                label="Name"
-                placeholder="Name"
-                type="text"
-                extendContainerStyle="w-full"
-                defaultValue={brand?.name || undefined}
-                validationErrors={
-                  serverValidationErrors || clientValidationErrors
-                }
-              />
-
-              <UploadImage defaultValue={brand?.image} />
-            </div>
-            <BackSubmitButtons
-              loading={loading}
-              setLoading={setLoading}
+      >
+        <Form
+          method="POST"
+          onSubmit={handleSubmit}
+          className="scrollbar-hide relative w-[500px] max-w-full overflow-y-auto"
+        >
+          <div className="flex flex-col gap-6">
+            <BasicInput
+              name="name"
+              label="Name"
+              placeholder="Name"
+              type="text"
+              extendContainerStyle="w-full"
+              defaultValue={brand?.name || undefined}
               validationErrors={
                 serverValidationErrors || clientValidationErrors
               }
             />
-          </Form>
-        }
-      />
+
+            <UploadImage defaultValue={brand?.image} />
+          </div>
+          <BackSubmitButtons
+            loading={loading}
+            setLoading={setLoading}
+            validationErrors={serverValidationErrors || clientValidationErrors}
+          />
+        </Form>
+      </WindowContainer>
     </DarkOverlay>
   );
 };

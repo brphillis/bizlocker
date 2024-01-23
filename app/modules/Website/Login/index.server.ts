@@ -1,4 +1,3 @@
-import { Params } from "@remix-run/react";
 import { createUserSession } from "~/session.server";
 import { json, type MetaFunction } from "@remix-run/node";
 import {
@@ -6,10 +5,10 @@ import {
   isValidEmail,
   isValidPassword,
 } from "~/utility/validate";
-import { googleLogin, verifyLogin } from "~/models/auth/login.server";
+import { googleLogin, verifyLogin } from "~/models/_Auth/login.server";
 import { isEmptyObject } from "~/helpers/objectHelpers";
 
-export const meta: MetaFunction = ({ data }) => {
+export const meta: MetaFunction = () => {
   return [
     { title: "CLUTCH | Login" },
     {
@@ -19,11 +18,11 @@ export const meta: MetaFunction = ({ data }) => {
   ];
 };
 
-export const loginAction = async (request: Request, params: Params<string>) => {
+export const loginAction = async (request: Request) => {
   const form = Object.fromEntries(await request.formData());
 
   switch (form._action) {
-    case "login":
+    case "login": {
       const { email, password, remember } = form;
       const validationErrors: ValidationErrors = {};
 
@@ -60,17 +59,19 @@ export const loginAction = async (request: Request, params: Params<string>) => {
           };
           return json({ validationErrors });
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
         const validationErrors: ValidationErrors = {};
-        validationErrors.error = error.message;
+        validationErrors.error = (error as CatchError).message;
 
         return json({ validationErrors });
       }
+    }
 
-    case "googleLogin":
+    case "googleLogin": {
       const { credential } = form;
       if (credential) {
-        return await googleLogin(request, credential);
+        return await googleLogin(request, credential as string);
       }
+    }
   }
 };

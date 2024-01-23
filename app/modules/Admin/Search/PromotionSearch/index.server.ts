@@ -1,11 +1,7 @@
-import type { Params } from "@remix-run/react";
 import { json } from "@remix-run/node";
-import { searchPromotions } from "~/models/promotions.server";
+import { searchPromotions } from "~/models/Promotions/index.server";
 
-export const promotionSearchLoader = async (
-  request: Request,
-  params: Params<string>,
-) => {
+export const promotionSearchLoader = async (request: Request) => {
   const url = new URL(request.url);
 
   const { promotions, totalPages } = await searchPromotions(undefined, url);

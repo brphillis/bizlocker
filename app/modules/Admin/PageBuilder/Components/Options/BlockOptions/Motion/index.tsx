@@ -20,7 +20,7 @@ const MotionOptions = ({ defaultValues, selectedBlockOptions }: Props) => {
           valueName="Autoplay"
           formName="autoplay"
           blockMasterOption={selectedBlockOptions?.autoplay}
-          defaultValue={defaultValues?.autoplay}
+          defaultValue={defaultValues?.autoplay ? "true" : undefined}
           selections={yesNoSelectValues}
         />
 

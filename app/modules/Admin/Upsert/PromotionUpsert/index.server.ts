@@ -1,15 +1,13 @@
 import { json } from "@remix-run/node";
-import type { Image } from "@prisma/client";
-import type { Params } from "@remix-run/react";
+import { Image } from "@prisma/client";
 import { validateForm } from "~/utility/validate";
-import { getDepartments } from "~/models/departments.server";
-import type { PageNotification } from "~/hooks/PageNotification";
+import { PageNotification } from "~/hooks/PageNotification";
+import { getDepartments } from "~/models/Departments/index.server";
+import { NewPromotion, PromotionWithContent } from "~/models/Promotions/types";
 import {
   getPromotion,
-  type NewPromotion,
-  type PromotionWithContent,
   upsertPromotion,
-} from "~/models/promotions.server";
+} from "~/models/Promotions/index.server";
 
 const validateOptions = {
   name: true,
@@ -19,14 +17,11 @@ const validateOptions = {
   tileImage: true,
 };
 
-export const promotionUpsertLoader = async (
-  request: Request,
-  params: Params<string>,
-) => {
+export const promotionUpsertLoader = async (request: Request) => {
   const departments = await getDepartments();
 
-  let { searchParams } = new URL(request.url);
-  let id = searchParams.get("contentId");
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get("contentId");
 
   if (!id) {
     throw new Response(null, {
@@ -48,13 +43,10 @@ export const promotionUpsertLoader = async (
   return json({ promotion, departments });
 };
 
-export const promotionUpsertAction = async (
-  request: Request,
-  params: Params<string>,
-) => {
-  let { searchParams } = new URL(request.url);
+export const promotionUpsertAction = async (request: Request) => {
+  const { searchParams } = new URL(request.url);
   const contentId = searchParams.get("contentId");
-  let id = contentId === "add" || !contentId ? undefined : contentId;
+  const id = contentId === "add" || !contentId ? undefined : contentId;
 
   const { formEntries, formErrors } = validateForm(
     await request.formData(),
@@ -76,7 +68,7 @@ export const promotionUpsertAction = async (
   let notification: PageNotification;
 
   switch (formEntries._action) {
-    case "upsert":
+    case "upsert": {
       if (formErrors) {
         return json({ serverValidationErrors: formErrors });
       }
@@ -106,13 +98,15 @@ export const promotionUpsertAction = async (
       };
 
       return json({ success: true, notification });
+    }
 
-    case "delete":
+    case "delete": {
       notification = {
         type: "warning",
         message: "Promotion Deleted",
       };
 
       return json({ success: true, notification });
+    }
   }
 };

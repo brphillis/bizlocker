@@ -1,21 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { useSearchParams, useSubmit } from "@remix-run/react";
+import { PreviewPage } from "@prisma/client";
 import { IoTrashSharp } from "react-icons/io5";
-import type { PreviewPage } from "@prisma/client";
+import { PageType } from "~/utility/pageBuilder";
 import BoxedTabs from "~/components/Tabs/BoxedTabs";
 import TabContent from "~/components/Tabs/TabContent";
-import type { PageType } from "~/utility/pageBuilder";
-import type { BlockName } from "~/utility/blockMaster/types";
+import { BlockName } from "~/utility/blockMaster/types";
+import { useSearchParams, useSubmit } from "@remix-run/react";
 import { getBlockDefaultValues } from "~/helpers/blockHelpers";
-import type { BlockWithContent, Page } from "~/models/pageBuilder.server";
-
 import Meta from "../Meta";
 import BlockCard from "../BlockCard";
 import VersionControl from "../VersionControl";
+import { BlockWithContent } from "~/models/Blocks/types";
+import { Page } from "~/models/PageBuilder/types";
 
 type Props = {
   articleCategories: SelectValue[];
-  colors: string[];
   currentBlocks: BlockWithContent[] | null;
   loading: boolean;
   metaValidationError: string[];
@@ -34,7 +33,6 @@ type Props = {
 
 const PanelPage = ({
   articleCategories,
-  colors,
   currentBlocks,
   loading,
   metaValidationError,
@@ -88,7 +86,7 @@ const PanelPage = ({
 
   const handleChangeBlockOrder = (index: number, direction: "up" | "down") => {
     if (previewPage) {
-      const blockIds = JSON.stringify(previewPage?.blocks.map((e) => e.id));
+      const blockIds = JSON.stringify(previewPage?.blocks?.map((e) => e.id));
       const formData = new FormData();
 
       formData.set("_action", "rearrange");
@@ -130,99 +128,90 @@ const PanelPage = ({
         setActiveTab={setActiveTab}
       />
 
-      <TabContent
-        activeTab={activeTab}
-        tab="blocks"
-        children={
-          <div className="h-[calc(100vh-55px)] max-w-full overflow-x-hidden">
-            <div className="h-[calc(100%-165px)] flex flex-col items-center gap-0 overflow-y-scroll scrollbar-hide">
-              <div className="text-brand-white py-3 select-none">
-                {previewPage?.title ? previewPage.title : "Add Page"}
-              </div>
+      <TabContent activeTab={activeTab} tab="blocks">
+        <div className="h-[calc(100vh-55px)] max-w-full overflow-x-hidden">
+          <div className="h-[calc(100%-165px)] flex flex-col items-center gap-0 overflow-y-scroll scrollbar-hide">
+            <div className="text-brand-white py-3 select-none">
+              {previewPage?.title ? previewPage.title : "Add Page"}
+            </div>
 
-              {currentBlocks?.map(
-                ({ id, name, label }: BlockWithContent, i) => {
-                  return (
-                    <React.Fragment key={"BlockCard_" + i}>
-                      <BlockCard
-                        blockCount={currentBlocks.length}
-                        index={i}
-                        label={label}
-                        name={name}
-                        onClick={() => editBlock(i)}
-                        onChangeOrder={(dir) => handleChangeBlockOrder(i, dir)}
-                        onDelete={() => disconnectBlock(id.toString(), name)}
-                      />
-                    </React.Fragment>
-                  );
-                },
-              )}
+            {currentBlocks?.map(({ id, name, label }: BlockWithContent, i) => {
+              return (
+                <React.Fragment key={"BlockCard_" + i}>
+                  <BlockCard
+                    blockCount={currentBlocks.length}
+                    index={i}
+                    label={label || undefined}
+                    name={name}
+                    onClick={() => editBlock(i)}
+                    onChangeOrder={(dir) => handleChangeBlockOrder(i, dir)}
+                    onDelete={() => disconnectBlock(id.toString(), name)}
+                  />
+                </React.Fragment>
+              );
+            })}
 
-              <div
-                className={`max-w-full flex items-center justify-center w-full h-[49px] cursor-pointer border-b border-b-brand-white/50 px-3 
+            <button
+              type="button"
+              className={`max-w-full flex items-center justify-center w-full h-[49px] cursor-pointer border-b border-b-brand-white/50 px-3 
                  py-3 transition duration-300 ease-in-out hover:scale-[1.01] hover:text-brand-white text-brand-white/50
                  ${
                    (!currentBlocks ||
                      (currentBlocks && currentBlocks.length === 0)) &&
                    "border-t border-t-brand-white/50"
                  }`}
-                onClick={() => {
-                  currentBlocks && setEditingIndex(currentBlocks.length);
-                  setEditingContent(true);
-                }}
-              >
-                <div>Add Block +</div>
-              </div>
+              onClick={() => {
+                currentBlocks && setEditingIndex(currentBlocks.length);
+                setEditingContent(true);
+              }}
+            >
+              <div>Add Block +</div>
+            </button>
+          </div>
+
+          {publishedPage?.previewPage && (
+            <div className="absolute bottom-0 left-[50%] translate-x-[-50%] w-full">
+              <VersionControl
+                currentVersion={previewPage}
+                loading={loading}
+                pageType={pageType as PageType}
+                previewPages={previewPages}
+                publishedPage={publishedPage}
+                setLoading={setLoading}
+                updateSuccess={publishSuccess || revertSuccess}
+              />
             </div>
+          )}
+        </div>
+      </TabContent>
 
-            {publishedPage?.previewPage && (
-              <div className="absolute bottom-0 left-[50%] translate-x-[-50%] w-full">
-                <VersionControl
-                  currentVersion={previewPage}
-                  loading={loading}
-                  pageType={pageType as PageType}
-                  previewPages={previewPages}
-                  publishedPage={publishedPage as Page}
-                  setLoading={setLoading}
-                  updateSuccess={publishSuccess || revertSuccess}
-                />
-              </div>
-            )}
-          </div>
-        }
-      />
+      <TabContent activeTab={activeTab} tab="settings">
+        <div
+          className={`relative flex flex-col ${
+            pageType !== "homePage" && "pt-3"
+          }`}
+        >
+          <Meta
+            key={previewPage?.id}
+            articleCategories={articleCategories!}
+            currentVersion={previewPage}
+            metaValidationError={metaValidationError}
+            pageType={pageType as PageType}
+          />
 
-      <TabContent
-        activeTab={activeTab}
-        tab="settings"
-        children={
-          <div
-            className={`relative flex flex-col ${
-              pageType !== "homePage" && "pt-3"
-            }`}
-          >
-            <Meta
-              key={previewPage?.id}
-              articleCategories={articleCategories!}
-              colors={colors}
-              currentVersion={previewPage}
-              metaValidationError={metaValidationError}
-              pageType={pageType as PageType}
-            />
-
-            {pageType !== "homePage" && id !== "add" && (
-              <div className="absolute top-[5px] right-[5px]">
-                <div
-                  className="text-brand-white bg-error p-[5px] text-[10px] rounded-sm"
-                  onClick={handleDeletePage}
-                >
-                  <IoTrashSharp />
-                </div>
-              </div>
-            )}
-          </div>
-        }
-      />
+          {pageType !== "homePage" && id !== "add" && (
+            <div className="absolute top-[5px] right-[5px]">
+              <button
+                type="button"
+                className="text-brand-white bg-error p-[5px] text-[10px] rounded-sm"
+                onClick={handleDeletePage}
+              >
+                <IoTrashSharp />
+              </button>
+            </div>
+          )}
+        </div>
+      </TabContent>
     </div>
   );
 };

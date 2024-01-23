@@ -42,11 +42,11 @@ export const loader = async ({ request, params }: ActionFunctionArgs) => {
   if (parentPageName === "account") {
     switch (page) {
       case "address":
-        return await accountAddressLoader(request, params);
+        return await accountAddressLoader(request);
       case "orders":
-        return await accountOrdersLoader(request, params);
+        return await accountOrdersLoader(request);
       case "profile":
-        return await accountProfileLoader(request, params);
+        return await accountProfileLoader(request);
     }
   }
   if (parentPageName === "article") {
@@ -59,7 +59,7 @@ export const loader = async ({ request, params }: ActionFunctionArgs) => {
     return await paymentConfirmLoader(request, params);
   }
   if (parentPageName === "product") {
-    return await productLoader(request, params);
+    return await productLoader(request);
   }
   if (parentPageName === "promotion") {
     return await promotionLoader(request, params);
@@ -76,23 +76,23 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   if (parentPageName === "account") {
     switch (page) {
       case "address":
-        return await accountAddressAction(request, params);
+        return await accountAddressAction(request);
       case "profile":
-        return await accountProfileAction(request, params);
+        return await accountProfileAction(request);
     }
   }
   if (parentPageName === "verify" && page === "request") {
-    return await verifyRequestAction(request, params);
+    return await verifyRequestAction(request);
   }
   if (parentPageName === "password-recovery") {
     if (page === "request") {
-      return await passwordRecoveryRequestAction(request, params);
+      return await passwordRecoveryRequestAction(request);
     } else {
       return await passwordRecoveryResetAction(request, params);
     }
   }
   if (parentPageName === "promotion") {
-    return await promotionAction(request, params);
+    return await promotionAction(request);
   }
 };
 

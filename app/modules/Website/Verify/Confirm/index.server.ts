@@ -1,8 +1,8 @@
 import { Params } from "@remix-run/react";
 import { json, type MetaFunction } from "@remix-run/node";
-import { verifyUserAccount } from "~/models/auth/verification.server";
+import { verifyUserAccount } from "~/models/Verification/index.server";
 
-export const meta: MetaFunction = ({ data }) => {
+export const meta: MetaFunction = () => {
   return [
     { title: "CLUTCH | Verification" },
     {

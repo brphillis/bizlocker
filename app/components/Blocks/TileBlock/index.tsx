@@ -1,9 +1,6 @@
-import type { BlockOptions } from "@prisma/client";
+import { BlockOptions } from "@prisma/client";
+import { BlockContentSorted } from "~/models/Blocks/types";
 import { getThemeColorValueByName } from "~/utility/colors";
-import type {
-  BlockContentWithDetails,
-  BlockContentSorted,
-} from "~/models/blocks.server";
 import PatternBackground from "~/components/Layout/Backgrounds/PatternBackground";
 import {
   buildImageFromBlockContent,

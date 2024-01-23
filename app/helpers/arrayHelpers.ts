@@ -1,4 +1,6 @@
-export const findUniqueStringsInArrays = (...arrays: string[][]): string[] => {
+export const findUniqueStringsInArrays = (
+  ...arrays: (string[] | undefined)[]
+): string[] => {
   // Create a map to count the occurrences of each string
   const stringCounts = new Map<string, number>();
 
@@ -18,7 +20,7 @@ export const findUniqueStringsInArrays = (...arrays: string[][]): string[] => {
   return uniqueStrings;
 };
 
-export const isArrayofStrings = (value: any): value is string[] => {
+export const isArrayofStrings = (value: unknown): value is string[] => {
   if (!Array.isArray(value)) {
     return false;
   }
@@ -26,7 +28,7 @@ export const isArrayofStrings = (value: any): value is string[] => {
   return value.every((item) => typeof item === "string");
 };
 
-export const isArrayofNumbers = (value: any): value is number[] => {
+export const isArrayofNumbers = (value: unknown): value is number[] => {
   if (!Array.isArray(value)) {
     return false;
   }

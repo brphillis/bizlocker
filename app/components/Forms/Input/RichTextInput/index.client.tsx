@@ -32,7 +32,7 @@ const RichTextInput = ({
     }
   };
 
-  var tools = [
+  const tools = [
     ["bold", "italic", "underline", "strike"],
     [{ header: "1" }, { header: "2" }],
     ["size"],
@@ -99,14 +99,14 @@ const RichTextInput = ({
             defaultValue={richText.toString() || ""}
             onChange={handleEditorChange}
             className={`bg-brand-white py-0 ${extendStyle} ${
-              name && validationErrors?.hasOwnProperty(name)
+              validationErrors && name && name in validationErrors
                 ? "border border-[oklch(var(--er))]"
                 : ""
             }`}
           />
         </div>
 
-        {name && validationErrors?.hasOwnProperty(name) && (
+        {validationErrors && name && name in validationErrors && (
           <ToolTip tip={validationErrors[name]} iconColor="text-error" />
         )}
 

@@ -1,8 +1,8 @@
-import type { Image } from "@prisma/client";
+import { Image } from "@prisma/client";
 import { useState } from "react";
 import { IoIosCloseCircle } from "react-icons/io";
 import { ConvertToBase64Image, type NewImage } from "~/helpers/fileHelpers";
-import type { ProductWithDetails } from "~/models/products.server";
+import { ProductWithDetails } from "~/models/Products/types";
 
 type Props = {
   valueToChange: ProductWithDetails;

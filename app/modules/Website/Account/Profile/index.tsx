@@ -65,9 +65,9 @@ const AccountProfile = () => {
         />
 
         <div className="form-control w-full">
-          <label className="label">
+          <div className="label">
             <span className="label-text">Email</span>
-          </label>
+          </div>
           <input
             disabled
             name="emailAddress"

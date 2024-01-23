@@ -17,7 +17,7 @@ const AdminLogin = () => {
     if (user) {
       submit(null, { method: "post", action: "/logout" });
     }
-  }, [user]);
+  }, [user, submit]);
 
   return (
     <AuthPageWrapper>

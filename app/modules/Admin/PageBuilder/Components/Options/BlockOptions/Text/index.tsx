@@ -1,6 +1,5 @@
 import type { BlockOptions } from "@prisma/client";
 import type { BlockMasterOptions } from "~/utility/blockMaster/blockMaster";
-import type { BlockName } from "~/utility/blockMaster/types";
 import BlockInput from "../_FieldComponents/BlockInput";
 import BlockColorInput from "../_FieldComponents/BlockColorInput";
 import {
@@ -12,17 +11,11 @@ import {
 import BlockSelectInput from "../_FieldComponents/BlockSelectInput";
 
 type Props = {
-  colors: string[];
-  selectedBlock?: BlockName;
   defaultValues?: BlockOptions;
   selectedBlockOptions?: BlockMasterOptions;
 };
 
-const TextOptions = ({
-  selectedBlock,
-  defaultValues,
-  selectedBlockOptions,
-}: Props) => {
+const TextOptions = ({ defaultValues, selectedBlockOptions }: Props) => {
   return (
     <details className="collapse collapse-plus !hidden !max-w-[100vw] max-md:!w-[100dvw] !rounded-sm bg-brand-white/20 [&:has(div>div)]:!grid">
       <summary className="collapse-Text text-xl font-medium text-brand-white">

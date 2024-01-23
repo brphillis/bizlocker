@@ -11,7 +11,8 @@ const Toggle = ({ label, searchParam, isActive }: Props) => {
   const submit = useSubmit();
 
   return (
-    <div
+    <button
+      type="button"
       className="flex cursor-pointer justify-between"
       onClick={() => {
         if (isActive) {
@@ -32,7 +33,7 @@ const Toggle = ({ label, searchParam, isActive }: Props) => {
         checked={isActive ? true : false}
         readOnly
       />
-    </div>
+    </button>
   );
 };
 

@@ -23,7 +23,7 @@ const IsActiveToggle = ({
   const [searchParams] = useSearchParams();
   const contentId = searchParams.get("contentId") || searchParams.get("id");
 
-  let mode = contentId === "add" ? "add" : "edit";
+  const mode = contentId === "add" ? "add" : "edit";
 
   const handleActiveStatus = (mode: string): boolean => {
     if (mode === "add") {

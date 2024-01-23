@@ -1,11 +1,11 @@
 import { Client, Environment } from "square";
 import { randomUUID } from "crypto";
-import type { CartItemWithDetails } from "~/models/cart.server";
 import type {
   CreatePaymentLinkRequest,
   CreatePaymentLinkResponse,
   OrderLineItem,
 } from "square";
+import { CartItemWithDetails } from "~/models/Cart/types";
 
 export const squareClient = new Client({
   environment: Environment.Sandbox, // Use Environment.Production when you're ready to go live
@@ -46,7 +46,7 @@ export const createSquarePaymentLink = async (
   const confirmCode = randomUUID();
 
   // Create the Square API order request object
-  let orderRequest: CreatePaymentLinkRequest = {
+  const orderRequest: CreatePaymentLinkRequest = {
     idempotencyKey: randomUUID(),
     order: {
       locationId: squareLocationId,
@@ -62,9 +62,8 @@ export const createSquarePaymentLink = async (
     },
   };
 
-  const { result } = (await squareClient.checkoutApi.createPaymentLink(
-    orderRequest,
-  )) as any;
+  const { result } =
+    await squareClient.checkoutApi.createPaymentLink(orderRequest);
 
   const createPaymentLinkResponse = result;
 

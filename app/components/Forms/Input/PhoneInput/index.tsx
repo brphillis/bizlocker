@@ -8,7 +8,7 @@ type Props = {
   type: "text" | "number" | "date";
   name: string;
   placeholder: string;
-  defaultValue?: any;
+  defaultValue?: string;
   validationErrors?: ValidationErrors;
   extendStyle?: string;
   extendContainerStyle?: string;
@@ -95,7 +95,7 @@ const PhoneInput = ({
           type={type}
           placeholder={placeholder}
           className={`input w-full text-brand-black/75 ${
-            validationErrors?.hasOwnProperty(name)
+            validationErrors && name in validationErrors
               ? "input-error border !outline-none"
               : ""
           } ${extendStyle}`}
@@ -103,7 +103,8 @@ const PhoneInput = ({
           onChange={(e) => updateDialNumber(e.target.value)}
         />
       </div>
-      {validationErrors?.hasOwnProperty(name) && (
+
+      {validationErrors && name in validationErrors && (
         <ToolTip tip={validationErrors[name]} iconColor="text-error" />
       )}
     </div>

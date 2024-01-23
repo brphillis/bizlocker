@@ -6,7 +6,7 @@ import { useNavigate } from "@remix-run/react";
 
 type Props = {
   selectedItems: ContentSelection[];
-  setSelectedItems: Function;
+  setSelectedItems: React.Dispatch<React.SetStateAction<ContentSelection[]>>;
   selectedBlock: BlockName | undefined;
 };
 

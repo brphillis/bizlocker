@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from "react";
+import { Page } from "~/models/PageBuilder/types";
 import BoxedTabs from "~/components/Tabs/BoxedTabs";
 import { blockMaster } from "~/utility/blockMaster/blockMaster";
 import { blockHasMaxContentItems } from "~/helpers/contentHelpers";
-import type { BlockContentWithDetails } from "~/models/blocks.server";
-import type { Brand, Campaign, Image, Promotion } from "@prisma/client";
-import type { BlockWithContent, Page } from "~/models/pageBuilder.server";
+import { Brand, Campaign, Image, Promotion } from "@prisma/client";
+import { BlockContentType, BlockName } from "~/utility/blockMaster/types";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
-import type { BlockContentType, BlockName } from "~/utility/blockMaster/types";
-import type { ProductCategoryWithDetails } from "~/models/productCategories.server";
-import type { ArticleCategoryWithDetails } from "~/models/articleCategories.server";
-import type { ProductSubCategoryWithDetails } from "~/models/productSubCategories.server";
+import { ArticleCategoryWithDetails } from "~/models/ArticleCategories/types";
+import { ProductCategoryWithDetails } from "~/models/ProductCategories/types";
+import {
+  BlockContentWithDetails,
+  BlockWithContent,
+} from "~/models/Blocks/types";
+import { ProductSubCategoryWithDetails } from "~/models/ProductSubCategories/types";
+import LabelEdit from "./LabelEdit";
 import OptionsModule from "../Options";
 import BlockSelect from "../BlockSelect";
 import ResultsTable from "../Content/ResultsTable";
@@ -19,12 +23,10 @@ import SelectedContent from "../Content/SelectedContent";
 import TextBlockContentModule from "../Content/TextBlockContent";
 import ProductBlockOptions from "../Specific/ProductBlockOptions";
 import ArticleBlockOptions from "../Specific/ArticleBlockOptions";
-import LabelEdit from "./LabelEdit";
 
 type Props = {
   articleCategories: ArticleCategoryWithDetails[];
   brands: Brand[] | null;
-  colors: string[];
   currentBlocks: BlockWithContent[] | null;
   editingIndex: number;
   loading: boolean;
@@ -32,7 +34,7 @@ type Props = {
   productCategories: ProductCategoryWithDetails[];
   productSubCategories: ProductSubCategoryWithDetails[];
   reset: () => void;
-  searchResults: any;
+  searchResults: unknown;
   selectedBlock: BlockName | undefined;
   selectedItems: ContentSelection[];
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -43,7 +45,6 @@ type Props = {
 const PanelBlock = ({
   articleCategories,
   brands,
-  colors,
   currentBlocks,
   editingIndex,
   loading,
@@ -150,7 +151,6 @@ const PanelBlock = ({
           />
 
           <ResultsImages
-            selectedBlock={selectedBlock}
             selectedItems={selectedItems}
             setSelectedItems={handleLimitedItemSelect}
             searchResults={searchResults as Image[]}
@@ -166,9 +166,8 @@ const PanelBlock = ({
 
         <OptionsModule
           selectedBlock={selectedBlock}
-          defaultValues={currentBlocks?.[editingIndex]?.blockOptions[0]}
+          defaultValues={currentBlocks?.[editingIndex]?.blockOptions?.[0]}
           selectedItems={selectedItems}
-          colors={colors}
           activeTab={activeTab}
         />
 

@@ -1,8 +1,6 @@
-import { Params } from "@remix-run/react";
-import { getBlocks } from "~/models/blocks.server";
-import { getPreviewPage } from "~/models/previewPage";
+import { getBlocks } from "~/models/Blocks/index.server";
+import { getPreviewPage } from "~/models/PreviewPage/index.server";
 import { json, redirect, type MetaFunction } from "@remix-run/node";
-
 export const meta: MetaFunction = () => {
   return [
     { title: "Page Preview" },
@@ -13,10 +11,7 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export const previewLoader = async (
-  request: Request,
-  params: Params<string>,
-) => {
+export const previewLoader = async (request: Request) => {
   const url = new URL(request.url);
   const pageId = url.searchParams.get("id") || undefined;
 
@@ -25,7 +20,7 @@ export const previewLoader = async (
     let backgroundColor, blocks;
 
     if (webPage) {
-      blocks = await getBlocks(webPage as any, true);
+      blocks = await getBlocks(webPage, true);
 
       backgroundColor = webPage?.backgroundColor;
     }

@@ -4,7 +4,7 @@ import ToolTip from "~/components/Indicators/ToolTip";
 type Props = {
   extendContainerStyle?: string;
   decimals?: number;
-  defaultValue?: any;
+  defaultValue?: unknown;
   disabled?: boolean;
   id?: string;
   label?: string;
@@ -64,14 +64,16 @@ const BasicInput = ({
         className={`input w-full text-brand-black/75
         disabled:!border-base-100/25 disabled:!bg-base-100/25 disabled:!text-brand-black/50
         ${
-          validationErrors?.hasOwnProperty(name)
+          validationErrors && name in validationErrors
             ? "input-error border !outline-none"
             : ""
         } ${extendStyle}`}
         defaultValue={
           decimals
-            ? parseFloat(defaultValue).toFixed(decimals)
-            : defaultValue || undefined
+            ? typeof defaultValue === "string"
+              ? parseFloat(defaultValue).toFixed(decimals)
+              : undefined
+            : (defaultValue as string | number | readonly string[] | undefined)
         }
         onChange={(e) => {
           if (onChange) {
@@ -83,7 +85,7 @@ const BasicInput = ({
           }
         }}
       />
-      {validationErrors?.hasOwnProperty(name) && (
+      {validationErrors && name in validationErrors && (
         <ToolTip
           tip={validationErrors[name]}
           iconColor="text-error"

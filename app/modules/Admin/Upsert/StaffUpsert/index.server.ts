@@ -1,16 +1,11 @@
 import { json } from "@remix-run/node";
-import type { Params } from "@remix-run/react";
+import { Image, Staff } from "@prisma/client";
 import { validateForm } from "~/utility/validate";
-import { getStores } from "~/models/stores.server";
-import type { Image, Staff } from "@prisma/client";
+import { StaffWithDetails } from "~/models/Staff/types";
+import { getStores } from "~/models/Stores/index.server";
 import { getAvailableRoles } from "~/models/enums.server";
-import type { PageNotification } from "~/hooks/PageNotification";
+import { getStaff, upsertStaff } from "~/models/Staff/index.server";
 import { getUserDataFromSession, STAFF_SESSION_KEY } from "~/session.server";
-import {
-  getStaff,
-  type StaffWithDetails,
-  upsertStaff,
-} from "~/models/staff.server";
 
 const validateOptions = {
   email: true,
@@ -26,18 +21,15 @@ const validateOptions = {
   password: false,
 };
 
-export const staffUpsertLoader = async (
-  request: Request,
-  params: Params<string>,
-) => {
+export const staffUpsertLoader = async (request: Request) => {
   const { role } =
     ((await getUserDataFromSession(request, STAFF_SESSION_KEY)) as Staff) || {};
 
   const roles = await getAvailableRoles();
   const stores = await getStores();
 
-  let { searchParams } = new URL(request.url);
-  let id = searchParams.get("contentId");
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get("contentId");
 
   if (!id) {
     throw new Response(null, {
@@ -59,15 +51,10 @@ export const staffUpsertLoader = async (
   return json({ staffMember, roles, stores, role });
 };
 
-export const staffUpsertAction = async (
-  request: Request,
-  params: Params<string>,
-) => {
-  let notification: PageNotification;
-
-  let { searchParams } = new URL(request.url);
+export const staffUpsertAction = async (request: Request) => {
+  const { searchParams } = new URL(request.url);
   const contentId = searchParams.get("contentId");
-  let id = contentId === "add" || !contentId ? undefined : contentId;
+  const id = contentId === "add" || !contentId ? undefined : contentId;
 
   const { formEntries, formErrors } = validateForm(
     await request.formData(),
@@ -112,7 +99,7 @@ export const staffUpsertAction = async (
     country: country as string,
     isActive: isActive ? true : false,
     avatar: avatar ? (JSON.parse(avatar?.toString()) as Image) : undefined,
-    role: role as string,
+    role: role as Role,
     jobTitle: jobTitle as string,
     store: store as string,
     id: id as string,
@@ -128,7 +115,7 @@ export const staffUpsertAction = async (
     permissionError = err;
   }
 
-  notification = {
+  const notification = {
     type: "success",
     message: `User ${id === "add" ? "Added" : "Updated"}.`,
   };

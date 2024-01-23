@@ -262,7 +262,7 @@ export const validationMaster: FormConfig = {
         return "Variants are Required";
       }
       if (value) {
-        let parsedVal = JSON.parse(value);
+        const parsedVal = JSON.parse(value);
 
         if (isEmptyObject(parsedVal)) {
           return "Variants are Required";

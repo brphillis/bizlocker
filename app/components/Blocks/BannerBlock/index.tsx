@@ -1,11 +1,11 @@
-import type { BlockOptions } from "@prisma/client";
-import type { BlockContentSorted } from "~/models/blocks.server";
+import { BlockOptions } from "@prisma/client";
+import { BlockContentSorted } from "~/models/Blocks/types";
 import {
   buildImageFromBlockContent,
   getContentType,
 } from "~/helpers/contentHelpers";
-import ImageBanner from "./ImageBanner";
 import TextBanner from "./TextBanner";
+import ImageBanner from "./ImageBanner";
 
 type Props = {
   content: BlockContentSorted[];

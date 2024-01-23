@@ -1,6 +1,6 @@
 import Pagination from "~/components/Pagination";
+import { TeamWithStaff } from "~/models/Teams/types";
 import BasicTable from "~/components/Tables/BasicTable";
-import { type TeamWithStaff } from "~/models/teams.server";
 import AdminContentSearch from "~/components/Search/AdminContentSearch";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/Wrappers/AdminPageWrapper";
@@ -11,7 +11,8 @@ import {
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
-import type { teamSearchLoader } from "./index.server";
+
+import { teamSearchLoader } from "./index.server";
 
 const TeamSearch = () => {
   const { teams, totalPages } = useLoaderData<typeof teamSearchLoader>();

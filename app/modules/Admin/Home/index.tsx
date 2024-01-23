@@ -35,30 +35,43 @@ const AdminHome = () => {
 
           <div className="flex flex-row flex-wrap items-center justify-center gap-3">
             <div className="flex flex-row gap-x-3">
-              <div
+              <button
                 className="flex h-28 w-28 cursor-pointer flex-col items-center justify-center gap-3 rounded-sm bg-primary p-3"
                 onClick={() => navigate("/home")}
+                type="button"
               >
                 <IoGlobeOutline size={36} />
                 <p className="font-semibold">Website</p>
-              </div>
+              </button>
 
-              <div className="flex h-28 w-28 cursor-pointer flex-col items-center justify-center gap-3 rounded-sm bg-primary p-3">
+              <button
+                className="flex h-28 w-28 cursor-pointer flex-col items-center justify-center gap-3 rounded-sm bg-primary p-3"
+                onClick={() => navigate("/home")}
+                type="button"
+              >
                 <IoPersonOutline size={36} />
                 <p className="font-semibold">Profile</p>
-              </div>
+              </button>
             </div>
 
             <div className="flex flex-row gap-x-3">
-              <div className="flex h-28 w-28 cursor-pointer flex-col items-center justify-center gap-3 rounded-sm bg-primary p-3">
+              <button
+                className="flex h-28 w-28 cursor-pointer flex-col items-center justify-center gap-3 rounded-sm bg-primary p-3"
+                onClick={() => navigate("/home")}
+                type="button"
+              >
                 <IoDocumentTextOutline size={36} />
                 <p className="font-semibold">Docs</p>
-              </div>
+              </button>
 
-              <div className="flex h-28 w-28 cursor-pointer flex-col items-center justify-center gap-3 rounded-sm bg-primary p-3">
+              <button
+                className="flex h-28 w-28 cursor-pointer flex-col items-center justify-center gap-3 rounded-sm bg-primary p-3"
+                onClick={() => navigate("/home")}
+                type="button"
+              >
                 <IoCallOutline size={36} />
                 <p className="font-semibold">Support</p>
-              </div>
+              </button>
             </div>
           </div>
 

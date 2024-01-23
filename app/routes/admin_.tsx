@@ -7,17 +7,17 @@ import { useEffect } from "react";
 import { STAFF_SESSION_KEY, getUserDataFromSession } from "~/session.server";
 import { useLoaderData, useLocation, useNavigate } from "@remix-run/react";
 import AdminSideBar from "~/components/Layout/_Admin/Navigation/SideBar";
-import { type StaffWithDetails } from "~/models/staff.server";
 import {
   getStaffNotifications,
   getStoreNotifications,
-} from "~/models/notifications.server";
+} from "~/models/Notifications/index.server";
 
 import "../../node_modules/swiper/swiper.min.css";
 import "../../node_modules/swiper/modules/navigation.min.css";
 import "sweetalert2/dist/sweetalert2.css";
+import { StaffWithDetails } from "~/models/Staff/types";
 
-export const meta: MetaFunction = ({ data }) => {
+export const meta: MetaFunction = () => {
   return [
     { title: "CLUTCH | Admin Portal" },
     {
@@ -30,10 +30,10 @@ export const meta: MetaFunction = ({ data }) => {
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const staffMember = (await getUserDataFromSession(
     request,
-    STAFF_SESSION_KEY
+    STAFF_SESSION_KEY,
   )) as StaffWithDetails;
 
-  let userNotifications = [];
+  const userNotifications = [];
 
   const storeNotifications =
     staffMember?.storeId &&
@@ -44,7 +44,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   }
 
   const staffNotifications = await getStaffNotifications(
-    staffMember?.id.toString()
+    staffMember?.id.toString(),
   );
 
   if (staffNotifications) {

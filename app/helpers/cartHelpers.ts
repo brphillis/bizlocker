@@ -1,9 +1,9 @@
-import type { CartWithDetails } from "~/models/cart.server";
-import type { Address } from "@prisma/client";
-import type { AusPostDeliveryOption } from "~/integrations/auspost/types";
-import { getShippingServices_Integration } from "~/integrations/_master/shipping";
-import { fetchLatLong } from "~/models/location.server";
 import { prisma } from "~/db.server";
+import { Address } from "@prisma/client";
+import { CartWithDetails } from "~/models/Cart/types";
+import { fetchLatLong } from "~/models/Location/index.server";
+import { AusPostDeliveryOption } from "~/integrations/auspost/types";
+import { getShippingServices_Integration } from "~/integrations/_master/shipping";
 import { findClosestPostcode } from "./locationHelpers";
 
 type CartDimensions = {
@@ -16,13 +16,13 @@ type CartDimensions = {
 
 export const getCartDeliveryOptions = async (
   cart: CartWithDetails,
-  postCode: number
+  postCode: number,
 ): Promise<AusPostDeliveryOption[]> => {
   const cartDimensions = getCartDimensions(cart);
 
   const shippingCoords = await fetchLatLong(postCode.toString());
 
-  const variantStoreIds: any = [];
+  const variantStoreIds: number[] = [];
 
   if (!cart.cartItems) {
     throw new Error("No Items In Cart");
@@ -48,7 +48,7 @@ export const getCartDeliveryOptions = async (
     closestPostCode = findClosestPostcode(
       shippingCoords?.lat,
       shippingCoords?.long,
-      stockedStores as Address[]
+      stockedStores as Address[],
     );
   }
 
@@ -61,18 +61,17 @@ export const getCartDeliveryOptions = async (
     to_postcode: postCode.toString(),
   };
 
-  const postageServices = await getShippingServices_Integration(
-    postageServicesArgs
-  );
+  const postageServices =
+    await getShippingServices_Integration(postageServicesArgs);
 
   const filteredPostageServices = postageServices
     .filter(
       (e: AusPostDeliveryOption) =>
-        e.code === "AUS_PARCEL_EXPRESS" || e.code === "AUS_PARCEL_REGULAR"
+        e.code === "AUS_PARCEL_EXPRESS" || e.code === "AUS_PARCEL_REGULAR",
     )
     .sort(
       (a: AusPostDeliveryOption, b: AusPostDeliveryOption) =>
-        parseFloat(a.price) - parseFloat(b.price)
+        parseFloat(a.price) - parseFloat(b.price),
     );
 
   return filteredPostageServices;

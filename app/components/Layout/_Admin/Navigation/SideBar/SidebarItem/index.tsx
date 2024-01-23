@@ -5,6 +5,7 @@ import type * as IconsIO5 from "react-icons/io5";
 const SidebarItem = ({ icon, link, name }: NavigationRouteItem) => {
   const navigate = useNavigate();
   return (
+    // eslint-disable-next-line
     <div
       onClick={() => link && navigate(link)}
       className="flex h-[60px] w-full cursor-pointer items-center gap-3 pl-4"

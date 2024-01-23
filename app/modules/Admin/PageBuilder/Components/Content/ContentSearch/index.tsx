@@ -13,7 +13,9 @@ type Props = {
   selectedBlock: BlockName | undefined;
   previewPage: PreviewPage;
   contentType: BlockContentType | undefined;
-  setContentType: Function;
+  setContentType: React.Dispatch<
+    React.SetStateAction<BlockContentType | undefined>
+  >;
 };
 
 const ContentSearch = ({
@@ -57,16 +59,14 @@ const ContentSearch = ({
         <div className="relative hidden w-full flex-wrap justify-start max-md:justify-center gap-3 rounded-sm bg-brand-white/20 px-4 pb-4 pt-2 max-md:px-2 [&:has(div)]:flex">
           <div className="flex flex-wrap items-end justify-start gap-3 max-md:justify-end">
             <div className="form-control w-[215px] text-brand-black max-md:w-full">
-              <label className="label text-sm text-brand-white">
-                Content Type
-              </label>
+              <div className="label text-sm text-brand-white">Content Type</div>
               <select
                 id="PageBuilderContentSearchSelect"
                 name="contentType"
                 className="select w-full"
                 onChange={(e) => {
                   handleSearchSubmit(e.target.value, undefined);
-                  setContentType(e.target.value);
+                  setContentType(e.target.value as BlockContentType);
                 }}
               >
                 <option value="">Select Content Type</option>

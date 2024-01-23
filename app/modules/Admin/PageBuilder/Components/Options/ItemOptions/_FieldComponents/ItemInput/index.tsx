@@ -8,7 +8,6 @@ type Props = {
   max?: string;
   selectedItems: ContentSelection[];
   title: string;
-  tooltip?: string;
   type?: "string" | "number";
   valueName: string;
 };
@@ -20,7 +19,6 @@ const ItemInput = ({
   max,
   selectedItems,
   title,
-  tooltip,
   type = "string",
   valueName,
 }: Props) => {

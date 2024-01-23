@@ -1,6 +1,6 @@
-import type { ProductVariant, Promotion } from "@prisma/client";
-import type { CartItemWithDetails } from "~/models/cart.server";
-import type { ProductWithDetails } from "~/models/products.server";
+import { ProductVariant, Promotion } from "@prisma/client";
+import { CartItemWithDetails } from "~/models/Cart/types";
+import { ProductWithDetails } from "~/models/Products/types";
 
 export const isDecimal = (number: number): boolean => {
   return number % 1 !== 0;
@@ -18,7 +18,7 @@ export const getRandomOneOrTwo = (): number => {
 
 export const calculateDiscountPercentage = (
   price: number,
-  salePrice: number
+  salePrice: number,
 ): number => {
   if (
     !price ||
@@ -34,7 +34,7 @@ export const calculateDiscountPercentage = (
 
 export const calculatePercentageChange = (
   currentValue: number,
-  previousValue: number
+  previousValue: number,
 ): number => {
   const change = currentValue - previousValue;
   const percentageChange = (change / previousValue) * 100;
@@ -43,7 +43,7 @@ export const calculatePercentageChange = (
 
 export const minusPercentage = (
   initialNumber: number,
-  minusPercentage: number
+  minusPercentage: number,
 ): number => {
   if (
     typeof initialNumber !== "number" ||
@@ -61,7 +61,7 @@ export const minusPercentage = (
 };
 
 export const calculateCartTotal = (
-  cartItems: CartItemWithDetails[]
+  cartItems: CartItemWithDetails[],
 ): number => {
   let total = 0;
 
@@ -78,7 +78,7 @@ export const calculateCartTotal = (
           if (discountPercentage) {
             variantTotalPrice = minusPercentage(
               variantTotalPrice,
-              discountPercentage
+              discountPercentage,
             );
           }
 
@@ -95,7 +95,7 @@ export const calculateCartTotal = (
 export const getVariantUnitPrice = (
   variant: ProductVariant,
   product?: ProductWithDetails,
-  promotion?: Promotion | null
+  promotion?: Promotion | null,
 ): string => {
   const { isOnSale, salePrice, price, isPromoted } = variant;
 

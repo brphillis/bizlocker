@@ -9,6 +9,7 @@ type Props = {
 const SidebarDropdownChild = ({ link, name }: Props) => {
   const navigate = useNavigate();
   return (
+    // eslint-disable-next-line
     <li onClick={() => link && navigate(link)}>
       <label htmlFor="my-drawer-2" className="hover:text-white">
         {capitalizeFirst(name)}

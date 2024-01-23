@@ -1,16 +1,18 @@
 import { json, redirect } from "@remix-run/node";
 import { Params } from "@remix-run/react";
-import { getBlocks } from "~/models/blocks.server";
+import { getBlocks } from "~/models/Blocks/index.server";
 import { type MetaFunction } from "@remix-run/react";
-import { getWebPage } from "~/models/webPages.server";
+import { getWebPage } from "~/models/WebPages/index.server";
 import { capitalizeWords } from "~/helpers/stringHelpers";
 
-export const meta: MetaFunction<typeof webPageLoader> = ({ data }: any) => {
+export const meta: MetaFunction<typeof webPageLoader> = ({ data }) => {
+  const loaderData = data as MetaType;
+
   return [
-    { title: data?.title },
+    { title: loaderData?.title },
     {
-      name: data?.title,
-      content: data?.description,
+      name: loaderData?.title,
+      content: loaderData?.description,
     },
   ];
 };
@@ -37,7 +39,7 @@ export const webPageLoader = async (
   let title, description, backgroundColor, blocks;
 
   if (webPage) {
-    blocks = await getBlocks(webPage as any, true);
+    blocks = await getBlocks(webPage, true);
     title = capitalizeWords(webPage.title);
     description = capitalizeWords(webPage.description);
     backgroundColor = webPage.backgroundColor;

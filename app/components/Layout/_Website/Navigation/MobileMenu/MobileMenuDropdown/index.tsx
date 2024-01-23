@@ -1,6 +1,6 @@
 import React from "react";
-import type { ProductSubCategoryWithDetails } from "~/models/productSubCategories.server";
 import MobileMenuItem from "./MobileMenuItem";
+import { ProductSubCategoryWithDetails } from "~/models/ProductSubCategories/types";
 
 type Props = {
   id: number;
@@ -23,7 +23,7 @@ const MobileMenuDropdown = ({ name, productSubCategories }: Props) => {
                 name: productSubCategoryName,
                 displayInNavigation: displaySubCategory,
               }: ProductSubCategoryWithDetails,
-              i: number
+              i: number,
             ) => {
               if (displaySubCategory) {
                 return (
@@ -35,7 +35,7 @@ const MobileMenuDropdown = ({ name, productSubCategories }: Props) => {
                   </React.Fragment>
                 );
               } else return null;
-            }
+            },
           )}
         </div>
       </div>

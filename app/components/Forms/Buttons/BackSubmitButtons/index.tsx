@@ -4,7 +4,7 @@ import { useState } from "react";
 
 type Props = {
   loading?: boolean;
-  setLoading?: Function;
+  setLoading?: (bool: boolean) => void;
   value?: string;
   divider?: boolean;
   backFunction?: () => void;

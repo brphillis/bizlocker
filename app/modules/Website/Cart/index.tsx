@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import BasicImage from "~/components/Client/BasicImage";
+import { CartItemWithDetails } from "~/models/Cart/types";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import PhoneInput from "~/components/Forms/Input/PhoneInput";
-import type { ActionReturnTypes } from "~/utility/actionTypes";
-import { type CartItemWithDetails } from "~/models/cart.server";
+import { ActionReturnTypes } from "~/utility/actionTypes";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import { cartLoader } from "~/modules/Website/Cart/index.server";
 import PageWrapper from "~/components/Layout/Wrappers/PageWrapper";

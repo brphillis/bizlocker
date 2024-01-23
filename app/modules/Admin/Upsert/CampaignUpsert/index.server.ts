@@ -1,19 +1,15 @@
 import { tokenAuth } from "~/auth.server";
-import type { Image } from "@prisma/client";
-import type { Params } from "@remix-run/react";
+import { Image } from "@prisma/client";
+import { Params } from "@remix-run/react";
 import { json, redirect } from "@remix-run/node";
 import { validateForm } from "~/utility/validate";
-import { getBrands } from "~/models/brands.server";
+import { getBrands } from "~/models/Brands/index.server";
 import { STAFF_SESSION_KEY } from "~/session.server";
-import { getDepartments } from "~/models/departments.server";
-import type { PageNotification } from "~/hooks/PageNotification";
-import { getProductSubCategories } from "~/models/productSubCategories.server";
-import {
-  getCampaign,
-  type CampaignWithContent,
-  type NewCampaign,
-  upsertCampaign,
-} from "~/models/campaigns.server";
+import { getDepartments } from "~/models/Departments/index.server";
+import { PageNotification } from "~/hooks/PageNotification";
+import { getProductSubCategories } from "~/models/ProductSubCategories/index.server";
+import { getCampaign, upsertCampaign } from "~/models/Campaigns/index.server";
+import { CampaignWithContent, NewCampaign } from "~/models/Campaigns/types";
 
 const validateOptions = {
   name: true,
@@ -26,12 +22,9 @@ const validateOptions = {
   tileImage: true,
 };
 
-export const campaignUpsertLoader = async (
-  request: Request,
-  params: Params<string>,
-) => {
-  let { searchParams } = new URL(request.url);
-  let id = searchParams.get("contentId");
+export const campaignUpsertLoader = async (request: Request) => {
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get("contentId");
 
   if (!id) {
     throw new Response(null, {
@@ -97,7 +90,7 @@ export const campaignUpsertAction = async (
   let notification: PageNotification;
 
   switch (formEntries._action) {
-    case "upsert":
+    case "upsert": {
       if (formErrors) {
         return json({ serverValidationErrors: formErrors });
       }
@@ -133,13 +126,15 @@ export const campaignUpsertAction = async (
       };
 
       return json({ success: true, notification });
+    }
 
-    case "delete":
+    case "delete": {
       notification = {
         type: "warning",
         message: "Campaign Deleted",
       };
 
       return json({ success: true, notification });
+    }
   }
 };

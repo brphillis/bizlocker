@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import parse from "html-react-parser";
+import { Image } from "@prisma/client";
 import Spinner from "~/components/Spinner";
-import type { Image } from "~/models/images.server";
 import { parseOptions } from "~/utility/parseOptions";
 import { generateProductColor } from "~/utility/colors";
 import BasicImage from "~/components/Client/BasicImage";
@@ -17,9 +17,9 @@ import {
   useSubmit,
 } from "@remix-run/react";
 import {
-  type ProductVariantWithDetails,
-  type ProductWithDetails,
-} from "~/models/products.server";
+  ProductVariantWithDetails,
+  ProductWithDetails,
+} from "~/models/Products/types";
 import {
   calculateVariantStock,
   getAvailableColors,

@@ -1,12 +1,11 @@
 import type { Image } from "@prisma/client";
 import { IoAdd, IoEllipsisVertical } from "react-icons/io5";
 import BasicImage from "~/components/Client/BasicImage";
-import type { BlockContentType, BlockName } from "~/utility/blockMaster/types";
+import type { BlockContentType } from "~/utility/blockMaster/types";
 
 type Props = {
-  selectedBlock: BlockName | undefined;
   selectedItems: ContentSelection[];
-  setSelectedItems: Function;
+  setSelectedItems: (items: ContentSelection[]) => void;
   searchResults: Image[];
   contentType: BlockContentType | undefined;
 };
@@ -14,7 +13,6 @@ type Props = {
 const ResultsImages = ({
   selectedItems,
   setSelectedItems,
-  selectedBlock,
   searchResults,
   contentType,
 }: Props) => {
@@ -26,7 +24,7 @@ const ResultsImages = ({
     let displayBool = true;
 
     searchResults.forEach((e) => {
-      if (!e.hasOwnProperty("href")) {
+      if (!("href" in e)) {
         displayBool = false;
       }
     });
@@ -37,15 +35,18 @@ const ResultsImages = ({
   const selectItems = (
     type: BlockContentType,
     contentId: number,
-    name: string
+    name: string,
   ) => {
     const itemExists = selectedItems.some(
       (item) =>
-        item.type === type && item.contentId === contentId && item.name === name
+        item.type === type &&
+        item.contentId === contentId &&
+        item.name === name,
     );
 
     if (!itemExists) {
-      setSelectedItems((prevSelectedItems: any) => {
+      // @ts-expect-error: expected typeshift
+      setSelectedItems((prevSelectedItems: ContentSelection[]) => {
         if (!Array.isArray(prevSelectedItems)) {
           prevSelectedItems = [];
         }
@@ -75,7 +76,8 @@ const ResultsImages = ({
                         />
                       )}
 
-                      <div
+                      <button
+                        type="button"
                         className="absolute bottom-3 right-3 flex h-6 w-6 cursor-pointer select-none items-center justify-center rounded-full bg-primary text-brand-white transition hover:bg-primary-dark"
                         onClick={() => {
                           const imageId = searchResults[index].id;
@@ -85,14 +87,17 @@ const ResultsImages = ({
                         }}
                       >
                         <IoAdd size={12} />
-                      </div>
+                      </button>
 
-                      <button className="absolute bottom-3 left-3 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-primary text-brand-white transition hover:bg-primary-dark">
+                      <button
+                        type="button"
+                        className="absolute bottom-3 left-3 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-primary text-brand-white transition hover:bg-primary-dark"
+                      >
                         <IoEllipsisVertical size={12} />
                       </button>
                     </div>
                   );
-                }
+                },
               )}
             </div>
           )}

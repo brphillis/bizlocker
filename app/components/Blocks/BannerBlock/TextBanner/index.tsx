@@ -64,7 +64,8 @@ const TextBanner = ({ options, imageLink }: Props) => {
   }
 
   return (
-    <div
+    <button
+      type="button"
       onClick={() => imageLink && navigate(imageLink)}
       className={`relative mx-auto flex max-w-full select-none items-center justify-center 
       ${currentStyle} ${borderSize} ${borderColor} ${borderRadius}`}
@@ -104,7 +105,7 @@ const TextBanner = ({ options, imageLink }: Props) => {
           {shortText}
         </h2>
       </div>
-    </div>
+    </button>
   );
 };
 

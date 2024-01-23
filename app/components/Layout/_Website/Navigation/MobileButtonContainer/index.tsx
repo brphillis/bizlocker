@@ -21,13 +21,14 @@ const MobileButtonContainer = ({
 
   return (
     <div className="flex h-[60px] items-center lg:hidden">
+      {/* eslint-disable */}
       <label
         htmlFor="my-drawer-3"
         className="btn btn-square btn-ghost text-brand-white/50"
       >
         <IoMenu size={26} />
       </label>
-
+      {/* eslint-enable */}
       <div className="absolute right-3 flex items-center gap-6">
         {user && !location.pathname.includes("/account") && (
           <AccountButton {...user} />

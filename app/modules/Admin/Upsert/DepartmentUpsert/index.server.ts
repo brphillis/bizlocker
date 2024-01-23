@@ -1,26 +1,24 @@
 import { json } from "@remix-run/node";
-import type { Params } from "@remix-run/react";
 import { validateForm } from "~/utility/validate";
-import type { PageNotification } from "~/hooks/PageNotification";
-import { getProductCategories } from "~/models/productCategories.server";
+import { PageNotification } from "~/hooks/PageNotification";
+import { getProductCategories } from "~/models/ProductCategories/index.server";
+import {
+  DepartmentWithDetails,
+  NewDepartment,
+} from "~/models/Departments/types";
 import {
   getDepartment,
-  type DepartmentWithDetails,
-  type NewDepartment,
   upsertDepartment,
-} from "~/models/departments.server";
+} from "~/models/Departments/index.server";
 
 const validateOptions = {
   name: true,
   index: true,
 };
 
-export const departmentUpsertLoader = async (
-  request: Request,
-  params: Params<string>,
-) => {
-  let { searchParams } = new URL(request.url);
-  let id = searchParams.get("contentId");
+export const departmentUpsertLoader = async (request: Request) => {
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get("contentId");
 
   if (!id) {
     throw new Response(null, {
@@ -44,15 +42,12 @@ export const departmentUpsertLoader = async (
   return json({ department, productCategories });
 };
 
-export const departmentUpsertAction = async (
-  request: Request,
-  params: Params<string>,
-) => {
+export const departmentUpsertAction = async (request: Request) => {
   let notification: PageNotification;
 
-  let { searchParams } = new URL(request.url);
+  const { searchParams } = new URL(request.url);
   const contentId = searchParams.get("contentId");
-  let id = contentId === "add" || !contentId ? undefined : contentId;
+  const id = contentId === "add" || !contentId ? undefined : contentId;
 
   const { formEntries, formErrors } = validateForm(
     await request.formData(),
@@ -63,7 +58,7 @@ export const departmentUpsertAction = async (
     formEntries;
 
   switch (formEntries._action) {
-    case "upsert":
+    case "upsert": {
       if (formErrors) {
         return { serverValidationErrors: formErrors };
       }
@@ -85,5 +80,6 @@ export const departmentUpsertAction = async (
       };
 
       return json({ success: true, notification });
+    }
   }
 };

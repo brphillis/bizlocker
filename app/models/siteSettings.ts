@@ -13,7 +13,7 @@ export const getSiteSettings = async (): Promise<SiteSettings | null> => {
 };
 
 export const updateSiteSettings = async (
-  siteSettings: Partial<SiteSettings>
+  siteSettings: Partial<SiteSettings>,
 ) => {
   const existingSettings = await prisma.siteSettings.findFirst({});
 

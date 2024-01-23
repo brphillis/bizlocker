@@ -1,7 +1,6 @@
-import { Params } from "@remix-run/react";
 import { isEmptyObject } from "~/helpers/objectHelpers";
 import { json, type MetaFunction } from "@remix-run/node";
-import { registerUser } from "~/models/auth/register.server";
+import { registerUser } from "~/models/_Auth/register.server";
 import {
   isValidEmail,
   isValidPassword,
@@ -18,10 +17,7 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export const registerAction = async (
-  request: Request,
-  params: Params<string>,
-) => {
+export const registerAction = async (request: Request) => {
   const form = Object.fromEntries(await request.formData());
   const { email, password, confirmPassword } = form;
   const validationErrors: ValidationErrors = {};
@@ -46,9 +42,9 @@ export const registerAction = async (
   try {
     const { success } = await registerUser(email as string, password as string);
     return json({ success });
-  } catch (error: any) {
+  } catch (error: unknown) {
     const validationErrors: ValidationErrors = {};
-    validationErrors.error = error.message;
+    validationErrors.error = (error as CatchError).message;
 
     return json({ validationErrors });
   }

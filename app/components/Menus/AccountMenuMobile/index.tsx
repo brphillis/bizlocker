@@ -60,7 +60,8 @@ const AccountMenuMobile = () => {
               <IoChevronForward />
             </NavLink>
 
-            <div
+            <button
+              type="button"
               className="my-1 flex cursor-pointer items-center justify-between rounded-md p-3 hover:bg-brand-white/10"
               onClick={() =>
                 submit(null, { method: "POST", action: "/logout" })
@@ -68,7 +69,7 @@ const AccountMenuMobile = () => {
             >
               <div>Log Out</div>
               <IoLogOutOutline size={16} />
-            </div>
+            </button>
           </ul>
         </div>
       </div>

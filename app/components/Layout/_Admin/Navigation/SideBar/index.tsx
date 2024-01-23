@@ -1,14 +1,14 @@
 import React from "react";
-import type { StaffWithDetails } from "~/models/staff.server";
-import type { NotificationWithContent } from "~/models/notifications.server";
-import { Outlet, useNavigate } from "@remix-run/react";
 import { IoMenu } from "react-icons/io5";
+import { Outlet, useNavigate } from "@remix-run/react";
+import { isEmptyObject } from "~/helpers/objectHelpers";
+import { StaffWithDetails } from "~/models/Staff/types";
+import { NotificationWithContent } from "~/models/Notifications/types";
+import LoadingOverlay from "~/components/Layout/Overlays/LoadingOverlay";
+import SidebarItem from "./SidebarItem";
+import SidebarFooter from "./SidebarFooter";
 import { adminNavBarRoutes } from "./routes";
 import SidebarDropdown from "./SidebarDropdown";
-import SidebarItem from "./SidebarItem";
-import LoadingOverlay from "~/components/Layout/Overlays/LoadingOverlay";
-import SidebarFooter from "./SidebarFooter";
-import { isEmptyObject } from "~/helpers/objectHelpers";
 
 type Props = {
   staffMember: StaffWithDetails | null;
@@ -25,6 +25,7 @@ const AdminSideBar = ({ staffMember, userNotifications }: Props) => {
     >
       <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content relative flex min-h-[calc(100dvh-60px)] flex-col items-center justify-start overflow-x-hidden">
+        {/* eslint-disable */}
         <div className="flex h-[60px] w-full flex-row items-center gap-6 self-start justify-self-start bg-brand-black px-1 py-3 lg:hidden">
           <label
             htmlFor="my-drawer-2"
@@ -32,6 +33,7 @@ const AdminSideBar = ({ staffMember, userNotifications }: Props) => {
           >
             <IoMenu size={26} />
           </label>
+
           <h1
             className="select-none text-center text-2xl font-bold tracking-wide text-white/90"
             onClick={() => navigate("/admin/home")}
@@ -39,7 +41,6 @@ const AdminSideBar = ({ staffMember, userNotifications }: Props) => {
             CLUTCH.
           </h1>
         </div>
-
         <LoadingOverlay />
 
         <Outlet />
@@ -59,7 +60,7 @@ const AdminSideBar = ({ staffMember, userNotifications }: Props) => {
               Welcome, {staffMember?.email}
             </p>
             <div className="divider w-full" />
-
+            {/* eslint-enable */}
             <div className="scrollbar-hide max-h-[calc(100vh-212px)] overflow-y-auto">
               {adminNavBarRoutes.map(
                 (
@@ -77,9 +78,10 @@ const AdminSideBar = ({ staffMember, userNotifications }: Props) => {
                         <SidebarDropdown
                           icon={icon}
                           name={name}
-                          children={children}
                           isFirstDropdown={isFirstDropdown}
-                        />
+                        >
+                          {children}
+                        </SidebarDropdown>
                       </React.Fragment>
                     );
                   } else {

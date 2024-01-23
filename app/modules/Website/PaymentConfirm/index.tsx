@@ -1,6 +1,6 @@
 import { useLoaderData } from "@remix-run/react";
 import { IoCheckmarkCircle } from "react-icons/io5";
-import { type OrderItemWithDetails } from "~/models/orders.server";
+import { OrderItemWithDetails } from "~/models/Orders/types";
 import PageWrapper from "~/components/Layout/Wrappers/PageWrapper";
 import { paymentConfirmLoader } from "~/modules/Website/PaymentConfirm/index.server";
 

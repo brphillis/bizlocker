@@ -1,17 +1,17 @@
 import type { BlockOptions } from "@prisma/client";
 import type { BlockContentType, BlockName } from "./blockMaster/types";
-import { searchCampaigns } from "~/models/campaigns.server";
-import { searchImages } from "~/models/images.server";
-import { searchProducts } from "~/models/products.server";
-import { searchPromotions } from "~/models/promotions.server";
+import { searchCampaigns } from "~/models/Campaigns/index.server";
+import { searchImages } from "~/models/Images/index.server";
+import { searchProducts } from "~/models/Products/index.server";
+import { searchPromotions } from "~/models/Promotions/index.server";
 import {
   type BlockMaster,
   blockMaster,
   getBlockContentTypes,
 } from "./blockMaster/blockMaster";
-import { searchBrands } from "~/models/brands.server";
+import { searchBrands } from "~/models/Brands/index.server";
 import { searchIcons } from "./icons";
-import { searchStores } from "~/models/stores.server";
+import { searchStores } from "~/models/Stores/index.server";
 
 export type PageType = "homePage" | "webPage" | "article" | "previewPage";
 
@@ -22,19 +22,19 @@ export interface NewBlockData {
   blockName: BlockName;
   itemIndex: number;
   contentType: BlockContentType;
-  contentData: any;
+  contentData: object;
 }
 
 // Prisma include to include all pagetypes with all blocks
 // eg = include: includeAllPageTypesWithBlocks()
 export const includeAllPageTypes = (excludedPages?: PageType[]) => {
-  // @ts-ignore
-  const pageTypesObject: Record<
+  const pageTypesObject = {} as Record<
     PageType,
     { include: { blocks: { include: Record<string, boolean> } } }
-  > = {};
+  >;
 
   pageTypes.forEach((type) => {
+    // Explicitly assert the type of 'type' as PageType
     pageTypesObject[type as PageType] = {
       include: {
         blocks: {
@@ -46,7 +46,8 @@ export const includeAllPageTypes = (excludedPages?: PageType[]) => {
 
   if (excludedPages) {
     excludedPages.forEach((excludedPage) => {
-      delete pageTypesObject[excludedPage];
+      // Explicitly assert the type of 'excludedPage' as PageType
+      delete pageTypesObject[excludedPage as PageType];
     });
   }
 
@@ -54,9 +55,11 @@ export const includeAllPageTypes = (excludedPages?: PageType[]) => {
 };
 
 // Checks if block has connection to a page
-export const blockHasPageConnection = (blockToCheck: any): boolean => {
+// prettier-ignore
+export const blockHasPageConnection = (blockToCheck: unknown): boolean => {
   return pageTypes.some(
-    (type) => !blockToCheck?.[type] || blockToCheck[type].length > 0,
+     // @ts-expect-error: checking block for populated pagetypes
+    (type) => !blockToCheck?.[type] || (blockToCheck[type] && blockToCheck[type].length > 0),
   );
 };
 
@@ -583,7 +586,9 @@ export const buildNewBlockData = (
     [k: string]: FormDataEntryValue;
   },
 ) => {
-  let newData: any = {};
+  const newData:
+    | { [key in BlockContentType]: string[] | undefined }
+    | Partial<Record<BlockContentType, string[]>> = {};
 
   // we go through the blockmaster object getting the relevant data
   blockMaster.map(({ name, maxContentItems }: BlockMaster) => {
@@ -606,10 +611,12 @@ export const buildNewBlockData = (
       // we then assign the data to each key
       (contentSelection as unknown as ContentSelection[]).forEach(
         ({ type, contentId }: ContentSelection) => {
-          blockContentTypes?.map((contentName: any) => {
+          blockContentTypes?.map((contentName: string) => {
             if (type === contentName && hasMultipleContent) {
+              // @ts-expect-error: content name will be blocks content type from blockmaster ie: Product,Promotion etc
               newData[contentName] = [...newData[contentName], contentId];
             } else if (type === contentName && !hasMultipleContent) {
+              // @ts-expect-error: content name will be blocks content type from blockmaster ie: Product,Promotion etc
               newData[contentName] = contentId;
             }
             return null;
@@ -639,49 +646,49 @@ export const searchContentData = async (
   let searchResults;
 
   switch (contentType) {
-    case "promotion":
+    case "promotion": {
       const { promotions } = await searchPromotions(
         Object.fromEntries(formData),
       );
       searchResults = promotions;
-
       return searchResults;
+    }
 
-    case "campaign":
+    case "campaign": {
       const { campaigns } = await searchCampaigns(Object.fromEntries(formData));
       searchResults = campaigns;
-
       return searchResults;
+    }
 
-    case "image":
+    case "image": {
       const { images } = await searchImages(Object.fromEntries(formData));
       searchResults = images;
-
       return searchResults;
+    }
 
-    case "product":
+    case "product": {
       const { products } = await searchProducts(Object.fromEntries(formData));
       searchResults = products;
-
       return searchResults;
+    }
 
-    case "brand":
+    case "brand": {
       const { brands } = await searchBrands(Object.fromEntries(formData));
       searchResults = brands;
-
       return searchResults;
+    }
 
-    case "store":
+    case "store": {
       const { stores } = await searchStores(Object.fromEntries(formData));
       searchResults = stores;
-
       return searchResults;
+    }
 
-    case "icon":
+    case "icon": {
       const icons = await searchIcons(Object.fromEntries(formData));
       searchResults = icons;
-
       return searchResults;
+    }
 
     default:
       return searchResults;

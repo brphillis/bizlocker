@@ -45,7 +45,8 @@ const ColorPalette = ({
         className="scrollbar-hide flex max-h-[220px] flex-row flex-wrap items-center justify-center gap-3 overflow-scroll py-3"
       >
         {includeDeselectColor && (
-          <div
+          <button
+            type="button"
             className="flex h-6 w-6 cursor-pointer items-center justify-center rounded-full border-[1px] border-brand-white/25 bg-transparent text-brand-white hover:scale-[1.1]"
             onClick={() => {
               handleColorSelect(undefined);
@@ -57,7 +58,7 @@ const ColorPalette = ({
             <div className="text-brand-white/50">
               <IoClose />
             </div>
-          </div>
+          </button>
         )}
 
         {colors.map((colorVal: string, index: number) => {
@@ -68,8 +69,9 @@ const ColorPalette = ({
               !includesWords(colorVal.toLocaleLowerCase(), excludeColorWords))
           ) {
             return (
-              <div
+              <button
                 key={"colorPickerPopupSelection_" + index}
+                type="button"
                 className={`h-6 w-6 cursor-pointer rounded-full border-[1px] border-brand-white/25 hover:scale-[1.1] 
                   ${"bg-" + colorVal}`}
                 onClick={() => {
@@ -78,7 +80,7 @@ const ColorPalette = ({
                 onMouseEnter={() => {
                   setHoverColor(colorVal);
                 }}
-              ></div>
+              ></button>
             );
           } else return null;
         })}
@@ -86,19 +88,21 @@ const ColorPalette = ({
 
       {enableScrolling && (
         <>
-          <div
+          <button
+            type="button"
             className="absolute -right-4 top-3 cursor-pointer text-brand-white/50 hover:text-brand-white"
             onClick={handleScrollUp}
           >
             <IoArrowUpOutline size={12} />
-          </div>
+          </button>
 
-          <div
+          <button
+            type="button"
             className="absolute -bottom-4 -right-4 cursor-pointer text-brand-white/50 hover:text-brand-white"
             onClick={handleScrollDown}
           >
             <IoArrowDownOutline size={12} />
-          </div>
+          </button>
         </>
       )}
     </div>

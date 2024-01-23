@@ -9,10 +9,10 @@ import type { BlockName } from "~/utility/blockMaster/types";
 import BlockIcon from "./BlockIcon";
 
 type Props = {
-  setSelectedBlock: Function;
+  setSelectedBlock: React.Dispatch<React.SetStateAction<BlockName | undefined>>;
   selectedBlock: BlockName | undefined;
   selectedItems: ContentSelection[];
-  setSelectedItems: Function;
+  setSelectedItems: React.Dispatch<React.SetStateAction<ContentSelection[]>>;
 };
 
 const BlockSelect = ({
@@ -43,7 +43,8 @@ const BlockSelect = ({
       {blockMaster.map(({ name }: BlockMaster, i: number) => {
         return (
           <React.Fragment key={"BlockSelectionTiles_" + i}>
-            <div
+            <button
+              type="button"
               onClick={() => handleSelectBlock(name as BlockName)}
               className={`flex h-24 w-24 cursor-pointer flex-col items-center gap-3 rounded-sm border border-brand-white/50 p-3 transition-all duration-300 ease-in-out hover:scale-[1.05]
            ${selectedBlock === name ? "scale-[1.05] border-primary" : ""}`}
@@ -57,7 +58,7 @@ const BlockSelect = ({
               <p className="text-md text-brand-white/75">
                 {capitalizeFirst(name)}
               </p>
-            </div>
+            </button>
             <input type="hidden" name="blockName" value={selectedBlock || ""} />
           </React.Fragment>
         );

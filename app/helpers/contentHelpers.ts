@@ -1,14 +1,13 @@
-import type {
-  BlockContentWithDetails,
-  BlockContentSorted,
-} from "~/models/blocks.server";
-import type { BrandWithContent } from "~/models/brands.server";
-import type { CampaignWithContent } from "~/models/campaigns.server";
-import type { PromotionWithContent } from "~/models/promotions.server";
-import type { BlockName } from "~/utility/blockMaster/types";
-import type { Image } from "@prisma/client";
+import { Image } from "@prisma/client";
+import { BlockName } from "~/utility/blockMaster/types";
+import { BrandWithContent } from "~/models/Brands/types";
+import { CampaignWithContent } from "~/models/Campaigns/types";
 import { blockMaster } from "~/utility/blockMaster/blockMaster";
-import { sanitizeArray } from "./arrayHelpers";
+import { PromotionWithContent } from "~/models/Promotions/types";
+import {
+  BlockContentSorted,
+  BlockContentWithDetails,
+} from "~/models/Blocks/types";
 
 export const getContentType = (
   content: BlockContentSorted,
@@ -27,14 +26,14 @@ export const getContentType = (
 
 export const sortBlockContent = (
   content: BlockContentWithDetails,
-): { [key: string]: any }[] => {
-  let sortedContent: { [key: string]: any }[] = [];
+): { [key: string]: unknown }[] => {
+  const sortedContent: { [key: string]: unknown }[] = [];
 
   Object.keys(content).forEach((key) => {
     const items = content[key as keyof BlockContentWithDetails];
     if (items && Array.isArray(items) && items.length > 0) {
-      items.forEach((item: any) => {
-        const sortedItem: { [key: string]: any } = {};
+      items.forEach((item: unknown) => {
+        const sortedItem: { [key: string]: unknown } = {};
         sortedItem[key] = item;
         sortedContent.push(sortedItem);
       });
@@ -91,7 +90,7 @@ export const blockHasMaxContentItems = (blockName: BlockName): boolean => {
 
 //useful for checking if a content item has connections
 export const hasNonEmptyArrayObjectOrIdKey = (
-  obj: Record<string, any> | null | undefined | any[],
+  obj: Record<string, unknown> | null | undefined | unknown[],
 ): boolean => {
   obj = obj ?? {};
 

@@ -1,14 +1,15 @@
 import { Params } from "@remix-run/react";
-import { getBlocks } from "~/models/blocks.server";
-import { getArticle } from "~/models/articles.server";
+import { getBlocks } from "~/models/Blocks/index.server";
+import { getArticle } from "~/models/Articles/index.server";
 import { json, type MetaFunction } from "@remix-run/node";
 
-export const meta: MetaFunction<typeof articleLoader> = ({ data }: any) => {
+export const meta: MetaFunction<typeof articleLoader> = ({ data }) => {
+  const loaderData = data as MetaType;
   return [
-    { title: data?.title },
+    { title: loaderData?.title },
     {
-      name: data?.title,
-      content: data?.description,
+      name: loaderData?.title,
+      content: loaderData?.description,
     },
   ];
 };
@@ -30,7 +31,7 @@ export const articleLoader = async (
   let title, description, backgroundColor, blocks;
 
   if (article) {
-    blocks = await getBlocks(article as any, true);
+    blocks = await getBlocks(article, true);
     title = article.title;
     description = article.description;
     backgroundColor = article.backgroundColor;

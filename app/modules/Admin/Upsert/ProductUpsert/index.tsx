@@ -57,7 +57,7 @@ const UpsertProduct = ({ offRouteModule }: Props) => {
     (useActionData() as ActionReturnTypes) || {};
 
   const navigate = useNavigate();
-  let submit = useSubmit();
+  const submit = useSubmit();
   const [searchParams] = useSearchParams();
   const contentId = searchParams.get("contentId");
   const { contentType } = useParams();
@@ -117,162 +117,145 @@ const UpsertProduct = ({ offRouteModule }: Props) => {
           setActiveTab={handleTabChange}
           tabNames={tabNames}
           title="Product"
-          children={
-            <Form
-              method="POST"
-              onSubmit={handleSubmit}
-              className="scrollbar-hide relative w-[640px] max-w-full overflow-y-auto"
-            >
-              <TabContent
-                tab="general"
-                activeTab={activeTab}
-                children={
-                  <>
-                    <div className="form-control gap-3">
-                      <BasicInput
-                        id="ProductName"
-                        label="Name"
-                        type="text"
-                        name="name"
-                        placeholder="Name"
-                        extendContainerStyle="w-full"
-                        defaultValue={product?.name}
-                        validationErrors={
-                          clientValidationErrors || serverValidationErrors
-                        }
-                      />
-
-                      <BasicSelect
-                        name="brand"
-                        label="Brand"
-                        placeholder="Select Brand"
-                        extendContainerStyle="w-full"
-                        selections={brands}
-                        defaultValue={product?.brandId?.toString() || "1"}
-                        validationErrors={
-                          clientValidationErrors || serverValidationErrors
-                        }
-                      />
-
-                      <SelectGender
-                        defaultValue={product?.gender}
-                        label="Product is Gendered?"
-                        extendContainerStyle="w-full"
-                      />
-
-                      <BasicSelect
-                        name="promotion"
-                        label="Promotion"
-                        placeholder="Select Promotion"
-                        extendContainerStyle="w-full"
-                        selections={promotions}
-                        defaultValue={product?.promotionId?.toString()}
-                      />
-
-                      <BasicMultiSelect
-                        name="productSubCategories"
-                        label="Categories"
-                        extendContainerStyle="w-full"
-                        extendStyle="!h-[150px]"
-                        selections={productSubCategories}
-                        defaultValues={product?.productSubCategories}
-                        validationErrors={
-                          clientValidationErrors || serverValidationErrors
-                        }
-                      />
-                    </div>
-
-                    <ClientOnly fallback={<div id="skeleton" />}>
-                      {() => (
-                        <RichTextInput
-                          label="Description"
-                          labelStyle="!text-brand-black"
-                          name="description"
-                          value={richText || product?.description}
-                          onChange={setRichText}
-                          extendStyle="mb-6 h-[200px] pb-3"
-                          validationErrors={
-                            clientValidationErrors || serverValidationErrors
-                          }
-                        />
-                      )}
-                    </ClientOnly>
-                  </>
-                }
-              />
-
-              <TabContent
-                tab="images"
-                activeTab={activeTab}
-                children={
-                  <>
-                    <TabValidationErrors
-                      formName="images"
-                      clientValidationErrors={clientValidationErrors}
-                      serverValidationErrors={serverValidationErrors}
-                    />
-
-                    <ClientOnly fallback={<div id="skeleton" />}>
-                      {() => (
-                        <UploadMultipleImages defaultImages={product?.images} />
-                      )}
-                    </ClientOnly>
-
-                    <div className="divider w-full pt-4" />
-
-                    <UploadHeroImage valueToChange={product} />
-                  </>
-                }
-              />
-
-              <TabContent
-                tab="variants"
-                activeTab={activeTab}
-                children={
-                  <>
-                    <TabValidationErrors
-                      formName="variants"
-                      clientValidationErrors={clientValidationErrors}
-                      serverValidationErrors={serverValidationErrors}
-                    />
-
-                    <ProductVariantUpsert
-                      storeId={storeId}
-                      product={product}
-                      availableColors={availableColors}
-                    />
-                  </>
-                }
-              />
-
-              <TabContent
-                tab="other"
-                activeTab={activeTab}
-                children={
+        >
+          <Form
+            method="POST"
+            onSubmit={handleSubmit}
+            className="scrollbar-hide relative w-[640px] max-w-full overflow-y-auto"
+          >
+            <TabContent tab="general" activeTab={activeTab}>
+              <>
+                <div className="form-control gap-3">
                   <BasicInput
-                    label="Dropship URL"
+                    id="ProductName"
+                    label="Name"
                     type="text"
-                    name="infoURL"
-                    placeholder="Info URL"
+                    name="name"
+                    placeholder="Name"
                     extendContainerStyle="w-full"
-                    defaultValue={product?.infoURL}
+                    defaultValue={product?.name}
                     validationErrors={
                       clientValidationErrors || serverValidationErrors
                     }
                   />
-                }
-              />
 
-              <BackSubmitButtons
-                loading={loading}
-                setLoading={setLoading}
+                  <BasicSelect
+                    name="brand"
+                    label="Brand"
+                    placeholder="Select Brand"
+                    extendContainerStyle="w-full"
+                    selections={brands}
+                    defaultValue={product?.brandId?.toString() || "1"}
+                    validationErrors={
+                      clientValidationErrors || serverValidationErrors
+                    }
+                  />
+
+                  <SelectGender
+                    defaultValue={product?.gender}
+                    label="Product is Gendered?"
+                    extendContainerStyle="w-full"
+                  />
+
+                  <BasicSelect
+                    name="promotion"
+                    label="Promotion"
+                    placeholder="Select Promotion"
+                    extendContainerStyle="w-full"
+                    selections={promotions}
+                    defaultValue={product?.promotionId?.toString()}
+                  />
+
+                  <BasicMultiSelect
+                    name="productSubCategories"
+                    label="Categories"
+                    extendContainerStyle="w-full"
+                    extendStyle="!h-[150px]"
+                    selections={productSubCategories}
+                    defaultValues={product?.productSubCategories}
+                    validationErrors={
+                      clientValidationErrors || serverValidationErrors
+                    }
+                  />
+                </div>
+
+                <ClientOnly fallback={<div id="skeleton" />}>
+                  {() => (
+                    <RichTextInput
+                      label="Description"
+                      labelStyle="!text-brand-black"
+                      name="description"
+                      value={richText || product?.description}
+                      onChange={setRichText}
+                      extendStyle="mb-6 h-[200px] pb-3"
+                      validationErrors={
+                        clientValidationErrors || serverValidationErrors
+                      }
+                    />
+                  )}
+                </ClientOnly>
+              </>
+            </TabContent>
+
+            <TabContent tab="images" activeTab={activeTab}>
+              <>
+                <TabValidationErrors
+                  formName="images"
+                  clientValidationErrors={clientValidationErrors}
+                  serverValidationErrors={serverValidationErrors}
+                />
+
+                <ClientOnly fallback={<div id="skeleton" />}>
+                  {() => (
+                    <UploadMultipleImages defaultImages={product?.images} />
+                  )}
+                </ClientOnly>
+
+                <div className="divider w-full pt-4" />
+
+                <UploadHeroImage valueToChange={product} />
+              </>
+            </TabContent>
+
+            <TabContent tab="variants" activeTab={activeTab}>
+              <>
+                <TabValidationErrors
+                  formName="variants"
+                  clientValidationErrors={clientValidationErrors}
+                  serverValidationErrors={serverValidationErrors}
+                />
+
+                <ProductVariantUpsert
+                  storeId={storeId}
+                  product={product}
+                  availableColors={availableColors}
+                />
+              </>
+            </TabContent>
+
+            <TabContent tab="other" activeTab={activeTab}>
+              <BasicInput
+                label="Dropship URL"
+                type="text"
+                name="infoURL"
+                placeholder="Info URL"
+                extendContainerStyle="w-full"
+                defaultValue={product?.infoURL}
                 validationErrors={
-                  serverValidationErrors || clientValidationErrors
+                  clientValidationErrors || serverValidationErrors
                 }
               />
-            </Form>
-          }
-        />
+            </TabContent>
+
+            <BackSubmitButtons
+              loading={loading}
+              setLoading={setLoading}
+              validationErrors={
+                serverValidationErrors || clientValidationErrors
+              }
+            />
+          </Form>
+        </WindowContainer>
       </DarkOverlay>
       <Outlet />
     </>

@@ -16,7 +16,7 @@ const TabValidationErrors = ({
 }: Props) => {
   return (
     <>
-      {(clientValidationErrors?.hasOwnProperty(formName) && (
+      {(clientValidationErrors && formName in clientValidationErrors && (
         <ToolTip
           tip={clientValidationErrors[formName]}
           iconColor="text-error"
@@ -24,7 +24,7 @@ const TabValidationErrors = ({
           direction="left"
         />
       )) ||
-        (serverValidationErrors?.hasOwnProperty(formName) && (
+        (serverValidationErrors && formName in serverValidationErrors && (
           <ToolTip
             tip={serverValidationErrors[formName]}
             iconColor="text-error"

@@ -1,4 +1,4 @@
-import { type ChangeEvent, Suspense, useState, useEffect } from "react";
+import { type ChangeEvent, Suspense, useState } from "react";
 import type { Image } from "@prisma/client";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
@@ -132,6 +132,7 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
         })}
 
         {/*  ADD BUTTON */}
+        {/* eslint-disable-next-line */}
         <label
           className="trnasition-colors group flex h-20 w-20 cursor-pointer items-center justify-center border-[1px] border-primary bg-none duration-700 hover:border-none hover:bg-primary"
           htmlFor="UploadMultipleImages_NewImage"

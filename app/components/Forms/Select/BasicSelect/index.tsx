@@ -51,7 +51,7 @@ const BasicSelect = ({
         text-brand-black/75 disabled:!border-base-100/50 disabled:!bg-base-100/50 disabled:!text-brand-black/50
         ${extendStyle}
         ${
-          validationErrors?.hasOwnProperty(name)
+          validationErrors && name in validationErrors
             ? "select-error border !outline-none"
             : ""
         }
@@ -70,7 +70,7 @@ const BasicSelect = ({
           </option>
         ))}
       </select>
-      {validationErrors?.hasOwnProperty(name) && (
+      {validationErrors && name in validationErrors && (
         <ToolTip tip={validationErrors[name]} iconColor="text-error" />
       )}
     </div>

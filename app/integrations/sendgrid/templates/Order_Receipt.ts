@@ -1,7 +1,4 @@
-import type {
-  OrderItemWithDetails,
-  OrderWithDetails,
-} from "~/models/orders.server";
+import { OrderItemWithDetails, OrderWithDetails } from "~/models/Orders/types";
 import { staticPathImageToBase64 } from "../sendgrid.server";
 
 export const Order_Receipt = (
@@ -9,7 +6,6 @@ export const Order_Receipt = (
   order: OrderWithDetails,
   subject: string,
   message: string,
-  footerMessage: string
 ) => {
   const { items } = order || {};
 
@@ -542,9 +538,8 @@ export const Order_Receipt = (
                                             data-metadata="&lt;!--(figmeta)eyJmaWxlS2V5IjoiMnk1YTR0OTU5aGt5MmdGR2JvazREOSIsInBhc3RlSUQiOjE0NTI2MzE5OTgsImRhdGFUeXBlIjoic2NlbmUifQo=(/figmeta)--&gt;"
                                             style="line-height: 22px;"></span><span
                                             style="line-height: 22px;"></span><span
-                                            style="line-height: 22px;">${
-                                              variant?.product?.name
-                                            }</span>
+                                            style="line-height: 22px;">${variant
+                                              ?.product?.name}</span>
                                     </h1>
 
                                 </td>
@@ -592,7 +587,7 @@ export const Order_Receipt = (
                                             style="line-height: 22px;"></span><span
                                             style="line-height: 22px;"></span><span
                                             style="line-height: 22px;">$${unitPrice.toFixed(
-                                              2
+                                              2,
                                             )}</span>
                                     </h1>
 
@@ -638,7 +633,7 @@ export const Order_Receipt = (
 </div>
 </div>
 `;
-                       }
+                       },
                      )
                      .join("")}
 
@@ -828,9 +823,7 @@ export const Order_Receipt = (
                                                                         style="line-height: 18.2px;">
                                                                         ${firstName} ${lastName}
                                                                         <br />
-                                                                        ${
-                                                                          address?.addressLine1
-                                                                        }
+                                                                        ${address?.addressLine1}
                                                                         <br />
                                                                         ${
                                                                           address?.addressLine2
@@ -838,15 +831,9 @@ export const Order_Receipt = (
                                                                               `<br />`
                                                                             : ""
                                                                         }
-                                                                        ${
-                                                                          address?.suburb
-                                                                        } ${
-      address?.state
-    } ${address?.postcode}  
+                                                                        ${address?.suburb} ${address?.state} ${address?.postcode}  
                                                                         <br />
-                                                                       ${
-                                                                         address?.country
-                                                                       }
+                                                                       ${address?.country}
                                                                         </span></p>
                                                             </div>
 

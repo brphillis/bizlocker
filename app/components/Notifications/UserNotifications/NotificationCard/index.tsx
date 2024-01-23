@@ -1,8 +1,8 @@
-import type { NotificationWithContent } from "~/models/notifications.server";
-import { formatDate } from "~/helpers/dateHelpers";
 import parse from "html-react-parser";
+import { formatDate } from "~/helpers/dateHelpers";
 import { parseOptions } from "~/utility/parseOptions";
 import { IoClose, IoPerson, IoStorefront } from "react-icons/io5";
+import { NotificationWithContent } from "~/models/Notifications/types";
 
 type Props = {
   notification: NotificationWithContent;

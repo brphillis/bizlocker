@@ -1,16 +1,16 @@
-import { Params } from "@remix-run/react";
-import type { Address } from "@prisma/client";
+import { Address } from "@prisma/client";
 import { validateForm } from "~/utility/validate";
-import { createOrder } from "~/models/orders.server";
-import { getUserAddress } from "~/models/userAddress";
-import { getUserDetails } from "~/models/userDetails";
+import { getCart } from "~/models/Cart/index.server";
+import { CartWithDetails } from "~/models/Cart/types";
 import { getUserDataFromSession } from "~/session.server";
 import { json, type MetaFunction } from "@remix-run/node";
-import type { NewAddress } from "~/helpers/addressHelpers";
+import { createOrder } from "~/models/Orders/index.server";
+import { NewAddress } from "~/helpers/addressHelpers";
+import { getUserAddress } from "~/models/Address/index.server";
 import { getCartDeliveryOptions } from "~/helpers/cartHelpers";
-import { getCart, type CartWithDetails } from "~/models/cart.server";
+import { getUserDetails } from "~/models/UserDetails/index.server";
 
-export const meta: MetaFunction<typeof cartLoader> = ({ data }) => {
+export const meta: MetaFunction<typeof cartLoader> = () => {
   return [
     { title: "CLUTCH | Your Cart" },
     {
@@ -20,11 +20,11 @@ export const meta: MetaFunction<typeof cartLoader> = ({ data }) => {
   ];
 };
 
-export const cartLoader = async (request: Request, params: Params<string>) => {
-  let cart, user, userAddress, loaderShippingOptions, userDetails;
+export const cartLoader = async (request: Request) => {
+  const cart = await getCart(request);
+  const user = await getUserDataFromSession(request);
 
-  cart = await getCart(request);
-  user = await getUserDataFromSession(request);
+  let userAddress, loaderShippingOptions, userDetails;
 
   if (user) {
     userAddress = await getUserAddress(user.id.toString());
@@ -41,7 +41,7 @@ export const cartLoader = async (request: Request, params: Params<string>) => {
   return json({ cart, user, userAddress, userDetails, loaderShippingOptions });
 };
 
-export const cartAction = async (request: Request, params: Params<string>) => {
+export const cartAction = async (request: Request) => {
   const validate = {
     firstName: true,
     lastName: true,
@@ -61,7 +61,7 @@ export const cartAction = async (request: Request, params: Params<string>) => {
   );
 
   switch (formEntries._action) {
-    case "placeOrder":
+    case "placeOrder": {
       if (formErrors) {
         return json({ validationErrors: formErrors });
       }
@@ -106,8 +106,8 @@ export const cartAction = async (request: Request, params: Params<string>) => {
         rememberInformation ? true : false,
       );
       return createdOrder;
-
-    case "getShipping":
+    }
+    case "getShipping": {
       const cart = await getCart(request);
       const { postCode } = formEntries;
 
@@ -118,5 +118,6 @@ export const cartAction = async (request: Request, params: Params<string>) => {
         );
         return json({ actionShippingOptions });
       } else return null;
+    }
   }
 };

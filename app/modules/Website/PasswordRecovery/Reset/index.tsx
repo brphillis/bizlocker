@@ -45,11 +45,11 @@ const PasswordRecoveryReset = () => {
             <p className="mb-3 select-none text-center text-sm">{email}</p>
 
             <div className="form-control">
-              <label className="label">
+              <div className="label">
                 <span className="label-text text-brand-white">
                   New Password
                 </span>
-              </label>
+              </div>
               <input
                 name="password"
                 type="password"
@@ -59,11 +59,11 @@ const PasswordRecoveryReset = () => {
             </div>
 
             <div className="form-control">
-              <label className="label">
+              <div className="label">
                 <span className="label-text text-brand-white">
                   Confirm New Password
                 </span>
-              </label>
+              </div>
               <input
                 name="confirmPassword"
                 type="password"

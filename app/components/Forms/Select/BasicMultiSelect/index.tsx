@@ -60,7 +60,7 @@ const BasicMultiSelect = ({
       <select
         className={`select text-brand-black/75 ${extendStyle}
         ${
-          validationErrors?.hasOwnProperty(name)
+          validationErrors && name in validationErrors
             ? "select-error border !outline-none"
             : ""
         }
@@ -80,7 +80,7 @@ const BasicMultiSelect = ({
         ))}
       </select>
 
-      {validationErrors?.hasOwnProperty(name) && (
+      {validationErrors && name in validationErrors && (
         <ToolTip tip={validationErrors[name]} iconColor="text-error" />
       )}
 

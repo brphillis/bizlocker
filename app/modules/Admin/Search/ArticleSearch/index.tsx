@@ -1,18 +1,18 @@
 import Pagination from "~/components/Pagination";
-import type { ArticleCategory } from "@prisma/client";
+import { ArticleCategory } from "@prisma/client";
 import BasicTable from "~/components/Tables/BasicTable";
 import BasicInput from "~/components/Forms/Input/BasicInput";
+import { ArticleWithContent } from "~/models/Articles/types";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/Wrappers/AdminPageWrapper";
-import { type ArticleWithContent } from "~/models/articles.server";
 import {
   Form,
   useLoaderData,
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
-import type { articleSearchLoader } from "./index.server";
+import { articleSearchLoader } from "./index.server";
 
 const ArticleSearch = () => {
   const navigate = useNavigate();

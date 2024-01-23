@@ -25,7 +25,11 @@ const BasicImage = ({ src, alt, onClick, extendStyle, hoverEffect }: Props) => {
   }, [src]);
 
   return (
-    <div className={`relative h-full w-full`}>
+    <button
+      type="button"
+      onClick={() => onClick && onClick()}
+      className={`relative h-full w-full`}
+    >
       <img
         className={` 
             ${loading ? "hidden" : "block"}
@@ -34,7 +38,6 @@ const BasicImage = ({ src, alt, onClick, extendStyle, hoverEffect }: Props) => {
             `}
         src={src}
         alt={alt}
-        onClick={() => onClick && onClick()}
       />
       {loading && (
         <div
@@ -43,7 +46,7 @@ const BasicImage = ({ src, alt, onClick, extendStyle, hoverEffect }: Props) => {
           <p>{alt}</p>
         </div>
       )}
-    </div>
+    </button>
   );
 };
 

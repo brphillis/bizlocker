@@ -1,18 +1,14 @@
 import { formatDate } from "~/helpers/dateHelpers";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
-import { Form, useLoaderData, useNavigate } from "@remix-run/react";
+import { Form, useLoaderData } from "@remix-run/react";
 import { accountOrdersLoader } from "~/modules/Website/Account/Orders/index.server";
-import {
-  type OrderItemWithDetails,
-  type OrderWithDetails,
-} from "~/models/orders.server";
 import { useState } from "react";
 import ViewOrder from "./ViewOrder";
 import BasicButton from "~/components/Buttons/BasicButton";
+import { OrderItemWithDetails, OrderWithDetails } from "~/models/Orders/types";
 
 const AccountOrders = () => {
   const orders = useLoaderData<typeof accountOrdersLoader>();
-  const navigate = useNavigate();
   const [currentOrder, setCurrentOrder] = useState<OrderWithDetails>();
 
   return (

@@ -7,7 +7,9 @@ import {
   DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
 import { Readable } from "node:stream";
-import getStream from "../../../../node_modules/get-stream/source";
+import getStream, {
+  AnyStream,
+} from "../../../../node_modules/get-stream/source";
 import {
   base64toBufferedBinary,
   getImageTypeFromBase64,
@@ -28,18 +30,22 @@ export const s3Client = new S3Client({
 export const handleS3Upload = async (image: Image, secureLink?: boolean) => {
   // if we are already passing an image object to this function we just want to return existing link
   // as we are iterating through an array of images in which some arent updated
+  if (!image.href) {
+    throw new Error("invalid image, no href. function: handleS3Upload");
+  }
+
   if (image.href?.includes("https")) {
     return image.href;
   }
 
-  const binaryData = base64toBufferedBinary(image?.href);
+  const binaryData = base64toBufferedBinary(image.href);
   const fileType = getImageTypeFromBase64(image.href!);
 
   const contentRepoLink = await uploadFileToS3(
     image?.altText || "image",
     binaryData,
     fileType,
-    secureLink
+    secureLink,
   );
   return contentRepoLink;
 };
@@ -48,7 +54,7 @@ export const uploadFileToS3 = async (
   altText: string,
   fileData: Buffer,
   fileType: string,
-  secureImage?: boolean
+  secureImage?: boolean,
 ): Promise<string> => {
   try {
     const key = randomUUID() + "-" + altText;
@@ -68,7 +74,7 @@ export const uploadFileToS3 = async (
           Bucket: bucketName,
           Key: key,
           ACL: "public-read",
-        })
+        }),
       );
     }
 
@@ -84,10 +90,15 @@ export const uploadFileToS3 = async (
 export const handleS3Update = async (
   existingImage: Image,
   newImage: Image,
-  secureLink?: boolean
+  secureLink?: boolean,
 ) => {
   // if we are already passing an image object to this function we just want to return existing link
   // as we are iterating through an array of images in which some arent updated
+
+  if (!newImage.href) {
+    throw new Error("invalid image, no href. function: handleS3Upate");
+  }
+
   if (newImage.href?.includes("https")) {
     return newImage.href;
   }
@@ -100,7 +111,7 @@ export const handleS3Update = async (
       existingImage.href,
       binaryData,
       fileType,
-      secureLink
+      secureLink,
     );
     return contentRepoLink;
   }
@@ -110,7 +121,7 @@ export const updateS3File = async (
   href: string,
   fileData: Buffer,
   fileType: string,
-  secureImage?: boolean
+  secureImage?: boolean,
 ): Promise<string> => {
   try {
     const key = href?.split("/").pop();
@@ -130,7 +141,7 @@ export const updateS3File = async (
           Bucket: bucketName,
           Key: key,
           ACL: "public-read",
-        })
+        }),
       );
     }
 
@@ -150,7 +161,7 @@ export const removeS3Image = async (imageURL: string) => {
     new DeleteObjectCommand({
       Bucket: bucketName,
       Key: key,
-    })
+    }),
   );
 };
 
@@ -167,7 +178,7 @@ export const fetchDataFromS3 = async (objectKey: string) => {
   let content_buffer: string | null = null;
 
   if (file_stream instanceof Readable) {
-    content_buffer = await getStream(file_stream as any);
+    content_buffer = await getStream(file_stream as AnyStream);
     return content_buffer;
   } else {
     throw new Error("Unknown object stream type.");

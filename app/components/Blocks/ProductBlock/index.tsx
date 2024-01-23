@@ -1,8 +1,7 @@
-import type { BlockOptions, Product } from "@prisma/client";
-import ProductGrid from "~/components/Grids/ProductGrid";
 import Spinner from "~/components/Spinner";
-import type { BlockContentSorted } from "~/models/blocks.server";
-
+import { BlockOptions, Product } from "@prisma/client";
+import ProductGrid from "~/components/Grids/ProductGrid";
+import { BlockContentSorted } from "~/models/Blocks/types";
 type Props = {
   content: BlockContentSorted[];
   options: BlockOptions[];

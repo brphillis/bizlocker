@@ -1,16 +1,15 @@
+import { User } from "@prisma/client";
 import { tokenAuth } from "~/auth.server";
-import { Params } from "@remix-run/react";
-import type, { User } from "@prisma/client";
 import { validateForm } from "~/utility/validate";
 import { getUserDataFromSession } from "~/session.server";
+import { NewUserDetails } from "~/models/UserDetails/types";
 import { json, redirect, type MetaFunction } from "@remix-run/node";
 import {
   getUserDetails,
-  type NewUserDetails,
   upsertUserDetails,
-} from "~/models/userDetails";
+} from "~/models/UserDetails/index.server";
 
-export const meta: MetaFunction<typeof accountProfileLoader> = ({ data }) => {
+export const meta: MetaFunction<typeof accountProfileLoader> = () => {
   return [
     { title: "CLUTCH | Your Profile" },
     {
@@ -20,10 +19,7 @@ export const meta: MetaFunction<typeof accountProfileLoader> = ({ data }) => {
   ];
 };
 
-export const accountProfileLoader = async (
-  request: Request,
-  params: Params<string>,
-) => {
+export const accountProfileLoader = async (request: Request) => {
   const authenticated = await tokenAuth(request);
   if (!authenticated.valid) {
     return redirect("/login");
@@ -34,10 +30,7 @@ export const accountProfileLoader = async (
   return json({ userDetails, email });
 };
 
-export const accountProfileAction = async (
-  request: Request,
-  params: Params<string>,
-) => {
+export const accountProfileAction = async (request: Request) => {
   const authenticated = await tokenAuth(request);
   if (!authenticated.valid) {
     return redirect("/login");

@@ -1,11 +1,13 @@
-import { Params } from "@remix-run/react";
 import type { User } from "@prisma/client";
 import { validateForm } from "~/utility/validate";
 import { getUserDataFromSession } from "~/session.server";
 import { json, type MetaFunction } from "@remix-run/node";
-import { getUserAddress, upsertUserAddress } from "~/models/userAddress";
+import {
+  getUserAddress,
+  upsertUserAddress,
+} from "~/models/Address/index.server";
 
-export const meta: MetaFunction<typeof accountAddressLoader> = ({ data }) => {
+export const meta: MetaFunction<typeof accountAddressLoader> = () => {
   return [
     { title: "CLUTCH | Your Account" },
     {
@@ -15,20 +17,14 @@ export const meta: MetaFunction<typeof accountAddressLoader> = ({ data }) => {
   ];
 };
 
-export const accountAddressLoader = async (
-  request: Request,
-  params: Params<string>,
-) => {
+export const accountAddressLoader = async (request: Request) => {
   const { id } = ((await getUserDataFromSession(request)) as User) || {};
   const userAddress = await getUserAddress(id.toString());
 
   return json({ userAddress });
 };
 
-export const accountAddressAction = async (
-  request: Request,
-  params: Params<string>,
-) => {
+export const accountAddressAction = async (request: Request) => {
   const { id } = ((await getUserDataFromSession(request)) as User) || {};
 
   const validate = {

@@ -1,11 +1,11 @@
-import type { Page } from "~/models/pageBuilder.server";
-import type { PreviewPage } from "@prisma/client";
+import { useEffect } from "react";
+import { PreviewPage } from "@prisma/client";
 import { useSubmit } from "@remix-run/react";
-import { useEffect, useState } from "react";
+import { PageType } from "~/utility/pageBuilder";
+import { Page } from "~/models/PageBuilder/types";
+import BasicButton from "~/components/Buttons/BasicButton";
 import SquareIconButton from "~/components/Buttons/SquareIconButton";
 import { formatDate, isMostRecentDate } from "~/helpers/dateHelpers";
-import type { PageType } from "~/utility/pageBuilder";
-import BasicButton from "~/components/Buttons/BasicButton";
 
 type Props = {
   currentVersion: Page | null;
@@ -90,7 +90,7 @@ const VersionControl = ({
       const versionSelector = document.querySelector(
         "#VersionSelector",
       ) as HTMLSelectElement;
-      for (var i = 0; i < versionSelector.options.length; i++) {
+      for (let i = 0; i < versionSelector.options.length; i++) {
         if (versionSelector.options[i].text.includes("Current")) {
           versionSelector.value = versionSelector.options[i].value;
           break;
@@ -101,7 +101,7 @@ const VersionControl = ({
 
   useEffect(() => {
     setLoading(false);
-  }, []);
+  }, [updateSuccess, currentVersion, setLoading]);
 
   return (
     <div
@@ -131,7 +131,8 @@ const VersionControl = ({
             {previewPages
               ?.slice()
               .sort(
-                (a: any, b: any) => (b.publishedAt || 0) - (a.publishedAt || 0),
+                (a: PreviewPage, b: PreviewPage) =>
+                  (Number(b.publishedAt) || 0) - (Number(a.publishedAt) || 0),
               )
               .map((previewPageData: PreviewPage, i: number) => {
                 const { id, publishedAt } = previewPageData;

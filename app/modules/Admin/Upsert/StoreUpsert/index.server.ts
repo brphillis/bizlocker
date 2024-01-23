@@ -1,13 +1,7 @@
 import { json } from "@remix-run/node";
-import type { Params } from "@remix-run/react";
 import { validateForm } from "~/utility/validate";
-import type { PageNotification } from "~/hooks/PageNotification";
-import {
-  getStore,
-  type NewStore,
-  type StoreWithDetails,
-  upsertStore,
-} from "~/models/stores.server";
+import { NewStore, StoreWithDetails } from "~/models/Stores/types";
+import { getStore, upsertStore } from "~/models/Stores/index.server";
 
 const validateOptions = {
   name: true,
@@ -21,12 +15,9 @@ const validateOptions = {
   longitude: true,
 };
 
-export const storeUpsertLoader = async (
-  request: Request,
-  params: Params<string>,
-) => {
-  let { searchParams } = new URL(request.url);
-  let id = searchParams.get("contentId");
+export const storeUpsertLoader = async (request: Request) => {
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get("contentId");
 
   if (!id) {
     throw new Response(null, {
@@ -47,15 +38,10 @@ export const storeUpsertLoader = async (
   return json({ store });
 };
 
-export const storeUpsertAction = async (
-  request: Request,
-  params: Params<string>,
-) => {
-  let notification: PageNotification;
-
-  let { searchParams } = new URL(request.url);
+export const storeUpsertAction = async (request: Request) => {
+  const { searchParams } = new URL(request.url);
   const contentId = searchParams.get("contentId");
-  let id = contentId === "add" || !contentId ? undefined : contentId;
+  const id = contentId === "add" || !contentId ? undefined : contentId;
 
   const { formEntries, formErrors } = validateForm(
     await request.formData(),
@@ -103,7 +89,7 @@ export const storeUpsertAction = async (
 
   await upsertStore(updateData);
 
-  notification = {
+  const notification = {
     type: "success",
     message: `Store ${id === "add" ? "Added" : "Updated"}.`,
   };

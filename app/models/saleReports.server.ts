@@ -127,11 +127,11 @@ export const getSalesToday = async (): Promise<{
               sales +
               variant.orderItems.reduce(
                 (quantity, orderItem) => quantity + orderItem.quantity,
-                0
+                0,
               ),
-            0
+            0,
           ),
-        0
+        0,
       ),
     }))
     .sort((a, b) => b.totalSales - a.totalSales)
@@ -148,11 +148,11 @@ export const getSalesToday = async (): Promise<{
               sales +
               variant.orderItems.reduce(
                 (quantity, orderItem) => quantity + orderItem.quantity,
-                0
+                0,
               ),
-            0
+            0,
           ),
-        0
+        0,
       ),
     }))
     .sort((a, b) => b.totalSales - a.totalSales)

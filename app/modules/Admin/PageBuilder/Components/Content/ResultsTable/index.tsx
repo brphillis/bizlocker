@@ -11,7 +11,7 @@ import ContentCard from "../SelectedContent/ContentCard";
 import { useNavigate } from "@remix-run/react";
 
 type Props = {
-  setSelectedItems: Function;
+  setSelectedItems: (items: ContentSelection[]) => void;
   searchResults: Campaign[] | Promotion[] | Product[] | Brand[];
   contentType: BlockContentType | undefined;
   selectedItems: ContentSelection[];
@@ -38,7 +38,8 @@ const ResultsTable = ({
     );
 
     if (!itemExists) {
-      setSelectedItems((prevSelectedItems: any) => {
+      // @ts-expect-error: expected typeshift
+      setSelectedItems((prevSelectedItems: ContentSelection[]) => {
         if (!Array.isArray(prevSelectedItems)) {
           prevSelectedItems = [];
         }
@@ -55,7 +56,7 @@ const ResultsTable = ({
     let displayBool = true;
 
     searchResults.forEach((e) => {
-      if (e.hasOwnProperty("href")) {
+      if (!Object.prototype.hasOwnProperty.call(e, "href")) {
         displayBool = false;
       }
     });

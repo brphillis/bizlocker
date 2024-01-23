@@ -19,7 +19,6 @@ import ColorOptions from "./BlockOptions/Colors";
 
 type Props = {
   selectedItems: ContentSelection[];
-  colors: string[];
   selectedBlock?: BlockName;
   defaultValues?: BlockOptions;
   activeTab: string;
@@ -29,7 +28,6 @@ const OptionsModule = ({
   selectedBlock,
   defaultValues,
   selectedItems,
-  colors,
   activeTab,
 }: Props) => {
   const selectedBlockOptions = blockMaster.find((e) => e.name === selectedBlock)
@@ -50,8 +48,6 @@ const OptionsModule = ({
             />
 
             <TextOptions
-              selectedBlock={selectedBlock}
-              colors={colors}
               defaultValues={defaultValues}
               selectedBlockOptions={selectedBlockOptions}
             />

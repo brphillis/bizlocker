@@ -1,7 +1,6 @@
-import { Params } from "@remix-run/react";
 import { redirect, type MetaFunction } from "@remix-run/node";
 
-export const meta: MetaFunction<typeof accountLoader> = ({ data }) => {
+export const meta: MetaFunction<typeof accountLoader> = () => {
   return [
     { title: "CLUTCH | Your Account" },
     {
@@ -11,10 +10,7 @@ export const meta: MetaFunction<typeof accountLoader> = ({ data }) => {
   ];
 };
 
-export const accountLoader = async (
-  request: Request,
-  params: Params<string>,
-) => {
+export const accountLoader = async (request: Request) => {
   const url = new URL(request.url);
   const isAccountPage = url.pathname === "/account";
 
