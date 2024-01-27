@@ -79,7 +79,7 @@ export const upsertCampaign = async (
   );
 
   if (!id) {
-    // Create a new campaign
+    // CREATE
 
     const repoLinkTile = await uploadImage_Integration(parsedTile);
     const repoLinkBanner = await uploadImage_Integration(parsedBanner);
@@ -119,7 +119,8 @@ export const upsertCampaign = async (
 
     return { createdCampaign, updatedCampaign: null };
   } else {
-    // Update an existing campaign
+    // UPDATE
+
     const existingCampaign = await prisma.campaign.findUnique({
       where: { id: parseInt(id) },
       include: {
@@ -191,7 +192,7 @@ export const upsertCampaign = async (
     if (gender !== "") {
       data.targetGender = gender as Gender;
     } else {
-      data.targetGender = null; // Disconnect the old gender by setting it to null
+      data.targetGender = null;
     }
 
     const updatedCampaign = await prisma.campaign.update({

@@ -25,7 +25,7 @@ const OutlineButton = ({
       type={type ? type : "button"}
       className={`
       inline-flex h-[3rem] min-h-[3rem] cursor-pointer items-center justify-center border-[2px] !bg-transparent pl-[1rem] pr-[1rem] text-center font-semibold shadow-sm
-       ${currentEffect} ${extendStyle}`}
+       ${currentEffect} ${extendStyle ? extendStyle : "text-brand-white"}`}
       onClick={() => onClick()}
     >
       {label}

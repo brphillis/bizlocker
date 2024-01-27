@@ -9,7 +9,7 @@ import ItemSelectInput from "../_FieldComponents/ItemSelectInput";
 import ItemColorInput from "../_FieldComponents/ItemColorInput";
 
 type Props = {
-  selectedItems: ContentSelection[];
+  selectedItems: PageBuilderContentSelection[];
   defaultValues?: BlockOptions;
   selectedBlockOptions: BlockMasterOptions | undefined;
 };

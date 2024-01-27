@@ -27,3 +27,8 @@ export type PromotionUpsertQuery = Prisma.Args<
   typeof prisma.promotion,
   "upsert"
 >["update"];
+
+export type BlockContentCreateQuery = Prisma.Args<
+  typeof prisma.blockContent,
+  "create"
+>["data"];

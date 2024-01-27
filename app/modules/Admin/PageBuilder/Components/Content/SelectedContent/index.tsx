@@ -1,17 +1,31 @@
 import React from "react";
-import type { BlockName } from "~/utility/blockMaster/types";
+import { BlockName } from "~/utility/blockMaster/types";
 import { blockMaster } from "~/utility/blockMaster/blockMaster";
 import ContentCard from "./ContentCard";
 import { useNavigate } from "@remix-run/react";
+import { swapContentArrayElements } from "~/helpers/arrayHelpers";
+import { BlockOptions } from "@prisma/client";
+import { BlockWithContent } from "~/models/Blocks/types";
 
 type Props = {
-  selectedItems: ContentSelection[];
-  setSelectedItems: React.Dispatch<React.SetStateAction<ContentSelection[]>>;
+  currentBlocks: BlockWithContent[] | null;
+  editingIndex: number;
+  selectedItems: PageBuilderContentSelection[];
+  setCurrentBlocks: React.Dispatch<
+    React.SetStateAction<BlockWithContent[] | null>
+  >;
+  setSelectedItems: React.Dispatch<
+    React.SetStateAction<PageBuilderContentSelection[]>
+  >;
   selectedBlock: BlockName | undefined;
+  currentBlockOptions?: BlockOptions;
 };
 
 const SelectedContent = ({
+  currentBlocks,
+  editingIndex,
   selectedItems,
+  setCurrentBlocks,
   setSelectedItems,
   selectedBlock,
 }: Props) => {
@@ -21,6 +35,51 @@ const SelectedContent = ({
     blockMaster.find((e) => selectedBlock === e.name)?.maxContentItems || 1;
 
   const selectedItemsTotal = selectedItems?.length;
+
+  const handleMoveItem = (index: number, direction: "up" | "down") => {
+    const blocks = currentBlocks;
+
+    const currentEditingOptions =
+      currentBlocks?.[editingIndex]?.blockOptions?.[0];
+
+    if (currentBlocks && currentEditingOptions) {
+      for (const optionKey in currentEditingOptions) {
+        let optionValue =
+          currentEditingOptions[optionKey as keyof BlockOptions];
+
+        if (Array.isArray(optionValue)) {
+          optionValue = swapContentArrayElements(
+            optionValue as string[],
+            direction === "up" ? index - 1 : index + 1,
+            index,
+          );
+
+          const keyToEdit =
+            blocks?.[editingIndex]?.blockOptions?.[0]?.[
+              optionKey as keyof BlockOptions
+            ];
+
+          if (keyToEdit) {
+            (blocks![editingIndex]!.blockOptions![0]![
+              optionKey as keyof BlockOptions
+            ] as string[]) = optionValue;
+          }
+        }
+      }
+    }
+
+    setCurrentBlocks(blocks);
+
+    const swappedItemsArray = swapContentArrayElements(
+      selectedItems,
+      direction === "up" ? index - 1 : index + 1,
+      index,
+    );
+
+    if (swappedItemsArray) {
+      setSelectedItems(swappedItemsArray as PageBuilderContentSelection[]);
+    }
+  };
 
   return (
     <>
@@ -37,7 +96,7 @@ const SelectedContent = ({
           <div className="flex flex-col gap-3">
             {selectedItems &&
               selectedItems.length > 0 &&
-              selectedItems?.map((data: ContentSelection, index) => {
+              selectedItems?.map((data: PageBuilderContentSelection, index) => {
                 const { name, type, contentId } = data || {};
 
                 return (
@@ -52,6 +111,16 @@ const SelectedContent = ({
                         setSelectedItems(
                           selectedItems.filter((_, i) => i !== index),
                         )
+                      }
+                      onChangeOrderUp={
+                        index > 0
+                          ? () => handleMoveItem(index, "up")
+                          : undefined
+                      }
+                      onChangeOrderDown={
+                        index < selectedItems.length - 1
+                          ? () => handleMoveItem(index, "down")
+                          : undefined
                       }
                     />
                   </React.Fragment>

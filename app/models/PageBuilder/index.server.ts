@@ -201,7 +201,7 @@ const updateOrCreateBlockOptions = async (
   blockId: string,
   blockOptions: BlockOptions,
 ): Promise<BlockOptions> => {
-  // we set unndefined keys to null so the enum values can be removed/disconnected
+  // we set undefined keys to null so the enum values can be removed/disconnected
   const sanitizedBlockOptions: BlockOptions = { ...blockOptions };
   for (const key in sanitizedBlockOptions) {
     if (
@@ -243,7 +243,7 @@ export const updateBlock = async (
   blockOptions?: BlockOptions,
   blockLabel?: string,
 ): Promise<number | Page> => {
-  const { blockName, itemIndex, contentData } = blockData;
+  const { blockName, blockContentOrder, itemIndex, contentData } = blockData;
 
   const previewPage = (await prisma.previewPage.findUnique({
     where: { id: parseInt(previewPageId) },
@@ -288,6 +288,7 @@ export const updateBlock = async (
       name: blockName,
       icon: blockMaster.find((e) => e.name === blockName)?.icon || "",
       label: blockLabel,
+      contentOrder: blockContentOrder,
     },
   });
 
@@ -303,7 +304,6 @@ export const updateBlock = async (
     // Populate the updates object based on the provided values
     for (const field in contentData) {
       if (field in contentData) {
-        //@ts-expect-error:dynamic fields
         const value = contentData[field as keyof BlockContent];
 
         if (
@@ -324,7 +324,7 @@ export const updateBlock = async (
             updates[field as keyof BlockContent] = {
               connect: value.map((item) => ({ id: parseInt(item as string) })),
             };
-          } else if (value && !isNaN(parseInt(value))) {
+          } else if (value && !isNaN(parseInt(value as string))) {
             // If it's not an array, use 'connect' to connect a single record
             updates[field as keyof BlockContent] = {
               connect: { id: parseInt(value as string) },
@@ -343,7 +343,6 @@ export const updateBlock = async (
     await prisma.block.update({
       where: {
         id: newBlock.id,
-        label: blockLabel,
       },
       data: {
         content: {
@@ -351,6 +350,8 @@ export const updateBlock = async (
         },
         name: blockName,
         icon: blockMaster.find((e) => e.name === blockName)?.icon || "",
+        label: blockLabel,
+        contentOrder: blockContentOrder,
       },
     });
 

@@ -12,7 +12,14 @@ export const getProductCategories = async (): Promise<
 > => {
   return prisma.productCategory.findMany({
     include: {
-      productSubCategories: true,
+      productSubCategories: {
+        include: {
+          image: true,
+          maleImage: true,
+          femaleImage: true,
+          kidImage: true,
+        },
+      },
       articleCategories: true,
       department: true,
     },

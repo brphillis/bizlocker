@@ -49,6 +49,7 @@ export const loader = async ({ request, params }: ActionFunctionArgs) => {
         return await accountProfileLoader(request);
     }
   }
+
   if (parentPageName === "article") {
     return await articleLoader(request, params);
   }

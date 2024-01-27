@@ -79,7 +79,9 @@ const ContentContainer = ({ index, blockOptions }: Props) => {
         />
 
         <div
-          className={`flex flex-col items-center ${itemGap[index]} ${itemGapMobile[index]}`}
+          className={`flex flex-col items-center ${
+            itemGap[index] ? itemGap[index] : "gap-3"
+          } ${itemGapMobile[index]}`}
         >
           {itemTitles[index] && (
             <div

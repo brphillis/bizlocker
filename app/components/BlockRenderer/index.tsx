@@ -10,7 +10,7 @@ type Props = {
 const BlockRenderer = ({ blocks }: Props) => {
   return (
     <>
-      {blocks?.map(({ name, content, blockOptions }, i) => {
+      {blocks?.map(({ name, contentOrder, content, blockOptions }, i) => {
         const blockConfig = blockMaster?.find((e) => e.name === name);
         if (!blockConfig) {
           return null;
@@ -20,7 +20,7 @@ const BlockRenderer = ({ blocks }: Props) => {
           <React.Fragment key={`${name}Block_${i}`}>
             {content && (
               <Component
-                content={sortBlockContent(content)}
+                content={sortBlockContent(contentOrder, content)}
                 options={blockOptions}
               />
             )}

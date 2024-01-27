@@ -1,7 +1,10 @@
 import { validateForm } from "~/utility/validate";
 import type { SiteSettings } from "@prisma/client";
 import type { PageNotification } from "~/hooks/PageNotification";
-import { getSiteSettings, updateSiteSettings } from "~/models/siteSettings";
+import {
+  getSiteSettings,
+  updateSiteSettings,
+} from "~/models/SiteSettings/index.server";
 
 const validateOptions = {};
 

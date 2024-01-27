@@ -8,6 +8,7 @@ import {
   BlockContentSorted,
   BlockContentWithDetails,
 } from "~/models/Blocks/types";
+import { returnSortedBlockContent } from "./blockHelpers";
 
 export const getContentType = (
   content: BlockContentSorted,
@@ -25,20 +26,33 @@ export const getContentType = (
 };
 
 export const sortBlockContent = (
+  contentOrder: string[],
   content: BlockContentWithDetails,
-): { [key: string]: unknown }[] => {
-  const sortedContent: { [key: string]: unknown }[] = [];
+): RenderBlockContent[] => {
+  // Organize BlockContent for Block Renderer / FE Dev Readability
+  const organizedContent: RenderBlockContent[] = [];
 
   Object.keys(content).forEach((key) => {
     const items = content[key as keyof BlockContentWithDetails];
     if (items && Array.isArray(items) && items.length > 0) {
       items.forEach((item: unknown) => {
-        const sortedItem: { [key: string]: unknown } = {};
+        const sortedItem: RenderBlockContent = {};
         sortedItem[key] = item;
-        sortedContent.push(sortedItem);
+        organizedContent.push(sortedItem);
       });
     }
   });
+
+  if (!contentOrder || (contentOrder && contentOrder.length === 0)) {
+    return organizedContent;
+  }
+
+  // Sort Block Content in order of BlockContentOrder
+  const sortedContent = returnSortedBlockContent(
+    organizedContent,
+    contentOrder,
+    "blockrenderer",
+  );
 
   return sortedContent;
 };

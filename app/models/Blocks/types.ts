@@ -44,6 +44,13 @@ export interface BlockContentWithDetails extends BlockContent {
   store?: StoreWithDetails[] | null;
 }
 
+type ConvertValuesToNumberOrString<T> = {
+  [K in keyof T]: number | string | Gender[] | undefined;
+};
+
+export type NewBlockContent =
+  ConvertValuesToNumberOrString<BlockContentWithDetails>;
+
 type Unarray<T> = T extends (infer U)[] ? U : T;
 
 type UnarrayProperties<T> = {

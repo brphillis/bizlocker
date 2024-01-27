@@ -1,5 +1,5 @@
 import { json } from "@remix-run/node";
-import { Image } from "@prisma/client";
+import { Gender, Image } from "@prisma/client";
 import { validateForm } from "~/utility/validate";
 import { PageNotification } from "~/hooks/PageNotification";
 import { getProductCategories } from "~/models/ProductCategories/index.server";
@@ -58,8 +58,18 @@ export const productSubCategoryUpsertAction = async (request: Request) => {
     validateOptions,
   );
 
-  const { name, productCategory, index, displayInNavigation, isActive, image } =
-    formEntries;
+  const {
+    name,
+    productCategory,
+    index,
+    displayInNavigation,
+    isActive,
+    image,
+    maleImage,
+    femaleImage,
+    kidImage,
+    gender,
+  } = formEntries;
 
   switch (formEntries._action) {
     case "upsert": {
@@ -71,9 +81,25 @@ export const productSubCategoryUpsertAction = async (request: Request) => {
         ? (JSON.parse(image?.toString()) as Image)
         : undefined;
 
+      const parsedMaleImage = maleImage
+        ? (JSON.parse(maleImage?.toString()) as Image)
+        : undefined;
+
+      const parsedFemaleImage = femaleImage
+        ? (JSON.parse(femaleImage?.toString()) as Image)
+        : undefined;
+
+      const parsedKidImage = kidImage
+        ? (JSON.parse(kidImage?.toString()) as Image)
+        : undefined;
+
       const categoryData: NewProductSubCategory = {
         name: name as string,
         image: parsedImage,
+        maleImage: parsedMaleImage,
+        femaleImage: parsedFemaleImage,
+        kidImage: parsedKidImage,
+        gender: gender as Gender,
         productCategory: productCategory as string,
         index: parseInt(index as string),
         displayInNavigation: displayInNavigation ? true : false,

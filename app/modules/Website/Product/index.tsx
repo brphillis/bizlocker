@@ -148,9 +148,9 @@ const Product = () => {
 
   return (
     <PageWrapper>
-      <div className="mx-auto cursor-auto px-3 pt-3 max-xl:px-0 max-xl:pt-0">
+      <div className="mx-auto cursor-auto pt-3 max-xl:pt-0">
         <div className="mx-auto flex justify-center max-xl:flex-wrap">
-          <div className="flex h-[740px] gap-3 max-xl:h-max max-xl:flex-col max-xl:gap-6">
+          <div className="flex h-[740px] gap-3 max-xl:h-max max-xl:flex-col">
             <div className="max-xl:w-screen max-xl:h-max w-[150px] max-xl:px-3 gap-3 scrollbar-hide flex h-full flex-col justify-start overflow-auto max-xl:order-2 max-xl:flex-row">
               {images?.map(({ id, href }: Image, i: number) => {
                 if (href) {
@@ -311,43 +311,43 @@ const Product = () => {
               </div>
             </div>
             <div className="my-3 w-full border-b border-brand-black/20" />
-            <div className="py-3 leading-relaxed">
+            <div className="pt-3 max-md:pb-3 leading-relaxed">
               {description && parse(description, parseOptions)}
-            </div>
 
-            <div className="my-3 w-full border-b border-brand-black/20" />
+              <div className="my-3 w-full border-b border-brand-black/20 pt-3" />
 
-            <div className="leading-relaxed">
-              <div>
-                <b>Return Policy</b>
-              </div>
-              <div className="mt-1 max-w-full px-3 text-sm sm:px-0">
-                <span className="font-semibold">Clutch.</span> returns all non
-                promotion & sale items free of charge.
-              </div>
-              <Link
-                to="/return-policy"
-                className="max-w-full px-3 text-sm text-primary hover:underline sm:px-0"
-              >
-                Read more about our return policy.
-              </Link>
-            </div>
-
-            <div className="my-3 w-full border-b border-brand-black/20" />
-
-            {hasSizes && (
-              <div className="leading-relaxed">
+              <div className="leading-relaxed max-md:px-3">
                 <div>
-                  <b>Size Guide</b>
+                  <b>Return Policy</b>
+                </div>
+                <div className="mt-1 max-w-full px-3 text-sm sm:px-0">
+                  <span className="font-semibold">Clutch.</span> returns all non
+                  promotion & sale items free of charge.
                 </div>
                 <Link
-                  to="/size-guide"
+                  to="/return-policy"
                   className="max-w-full px-3 text-sm text-primary hover:underline sm:px-0"
                 >
-                  Check out the size guide.
+                  Read more about our return policy.
                 </Link>
               </div>
-            )}
+
+              <div className="my-3 w-full border-b border-brand-black/20" />
+
+              {hasSizes && (
+                <div className="leading-relaxed max-md:px-3">
+                  <div>
+                    <b>Size Guide</b>
+                  </div>
+                  <Link
+                    to="/size-guide"
+                    className="max-w-full px-3 text-sm text-primary hover:underline sm:px-0"
+                  >
+                    Check out the size guide.
+                  </Link>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

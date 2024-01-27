@@ -6,7 +6,7 @@ import { Brand, ProductCategory, ProductSubCategory } from "@prisma/client";
 
 type Props = {
   selectedBlock: BlockName | undefined;
-  setSelectedItems: (items: ContentSelection[]) => void;
+  setSelectedItems: (items: PageBuilderContentSelection[]) => void;
   productCategories: ProductCategory[];
   productSubCategories: ProductSubCategory[];
   brands: Brand[] | null;
@@ -23,7 +23,7 @@ const ProductBlockOptions = ({
 }: Props) => {
   const selectItem = (type: BlockContentType, contentId: number | string) => {
     // @ts-expect-error: expected typeshift
-    setSelectedItems((prevSelectedItems: ContentSelection[]) => {
+    setSelectedItems((prevSelectedItems: PageBuilderContentSelection[]) => {
       if (!Array.isArray(prevSelectedItems)) {
         prevSelectedItems = [];
       } else {

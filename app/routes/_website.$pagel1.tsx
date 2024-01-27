@@ -89,11 +89,26 @@ const PageL1 = () => {
     case "login":
       activeModule = <Login />;
       break;
+    case "password-recovery":
+      activeModule = null;
+      break;
+    case "payment-confirm":
+      activeModule = null;
+      break;
+    case "product":
+      activeModule = null;
+      break;
     case "products":
       activeModule = <Products />;
       break;
+    case "promotion":
+      activeModule = null;
+      break;
     case "register":
       activeModule = <Register />;
+      break;
+    case "verify":
+      activeModule = null;
       break;
     default:
       activeModule = <WebPage />;

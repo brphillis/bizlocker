@@ -2,6 +2,7 @@ import { prisma } from "~/db.server";
 import { Image } from "@prisma/client";
 import {
   deleteImage_Integration,
+  updateImage_Integration,
   uploadImage_Integration,
 } from "~/integrations/_master/storage";
 import { ImageWithDetails } from "./types";
@@ -188,4 +189,44 @@ export const searchImages = async (
   const totalPages = Math.ceil(totalImages / perPage);
 
   return { images, totalPages };
+};
+
+export const buildImageUpdateQuery = async (
+  image?: Image | null,
+  existingImage?: Image | null,
+) => {
+  const uploadFunction = uploadImage_Integration;
+  const updateFunction = updateImage_Integration;
+
+  let imageData = {};
+
+  if (image && existingImage) {
+    const repoLink = await updateFunction(existingImage as Image, image);
+
+    imageData = {
+      update: {
+        href: repoLink,
+        altText: image.altText,
+      },
+    };
+  }
+
+  if (image && !existingImage) {
+    const repoLink = await uploadFunction(image);
+
+    imageData = {
+      create: {
+        href: repoLink,
+        altText: image.altText,
+      },
+    };
+  }
+
+  if (!image && existingImage) {
+    imageData = {
+      delete: true,
+    };
+  }
+
+  return imageData;
 };

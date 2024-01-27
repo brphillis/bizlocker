@@ -23,12 +23,14 @@ type NavigationRouteItem = {
   children?: NavigationRouteItem[];
 };
 
+type RenderBlockContent = { [key: string]: unknown };
+
 type SelectValue = {
   id: string | number;
   name: string;
 };
 
-type ContentSelection = {
+type PageBuilderContentSelection = {
   type: BlockContentType;
   name: string;
   contentId: number | string;

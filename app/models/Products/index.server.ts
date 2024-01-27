@@ -521,7 +521,7 @@ export const searchProducts = async (
     url?.searchParams.get("productSubCategory") ||
     "";
   const brand = formData?.brand || url?.searchParams.get("brand") || "";
-  const gender = formData?.gender || url?.searchParams.get("gender") || "";
+  let gender = formData?.gender || url?.searchParams.get("gender") || "";
   const color = formData?.color || url?.searchParams.get("color") || "";
   const isActive =
     formData?.isActive || url?.searchParams.get("isActive") || "";
@@ -554,6 +554,16 @@ export const searchProducts = async (
 
   // Construct a filter based on the search parameters provided
   const filter: { [key: string]: unknown } = {};
+
+  if (gender && gender.toString().toLocaleLowerCase() === ("mens" || "men")) {
+    gender = "MALE";
+  }
+  if (
+    gender &&
+    gender.toString().toLocaleLowerCase() === ("womans" || "woman" || "ladies")
+  ) {
+    gender = "FEMALE";
+  }
 
   if (name) {
     filter.name = {

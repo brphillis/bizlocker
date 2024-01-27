@@ -5,7 +5,7 @@ import { searchProducts } from "~/models/Products/index.server";
 import { getPromotion } from "~/models/Promotions/index.server";
 import { getAvailableColors } from "~/models/enums.server";
 import { getDepartments } from "~/models/Departments/index.server";
-import { json, redirect, type MetaFunction } from "@remix-run/node";
+import { json, type MetaFunction } from "@remix-run/node";
 import { getProductCategories } from "~/models/ProductCategories/index.server";
 import { getProductSubCategories } from "~/models/ProductSubCategories/index.server";
 
@@ -26,10 +26,14 @@ export const promotionLoader = async (
   params: Params<string>,
 ) => {
   const url = new URL(request.url);
+
   const promotion = await getPromotion(undefined, params.pagel2);
 
-  if (!promotion) {
-    return redirect(request?.referrer);
+  if (!promotion || (promotion && !promotion.isActive)) {
+    throw new Response(null, {
+      status: 404,
+      statusText: "Page Not Found",
+    });
   }
 
   const formData = new FormData();
@@ -40,10 +44,6 @@ export const promotionLoader = async (
     url,
     true,
   );
-
-  if (!promotion?.isActive) {
-    return redirect(request?.referrer);
-  }
 
   const departments = await getDepartments();
   const productCategories = await getProductCategories();

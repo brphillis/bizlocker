@@ -3,7 +3,6 @@ import { getFormData } from "~/helpers/formHelpers";
 import DarkOverlay from "~/components/Layout/Overlays/DarkOverlay";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import type { ActionReturnTypes } from "~/utility/actionTypes";
-import UploadImage from "~/components/Forms/Upload/UploadImage";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
 import { type ValidationErrors, validateForm } from "~/utility/validate";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
@@ -21,6 +20,9 @@ import WindowContainer, {
   handleWindowedFormData,
 } from "~/components/Layout/Containers/WindowContainer";
 import type { productSubCategoryUpsertLoader } from "./index.server";
+import TabContent from "~/components/Tabs/TabContent";
+import UploadImageCollapse from "~/components/Forms/Upload/UploadImageCollapse";
+import SelectGender from "~/components/Forms/Select/SelectGender";
 
 const validateOptions = {
   name: true,
@@ -47,6 +49,13 @@ const ProductSubCategoryUpsert = ({ offRouteModule }: Props) => {
   const [clientValidationErrors, setClientValidationErrors] =
     useState<ValidationErrors>();
   const [loading, setLoading] = useState<boolean>(false);
+
+  const tabNames = ["general", "images"];
+  const [activeTab, setActiveTab] = useState<string | undefined>(tabNames?.[0]);
+
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+  };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     let form = getFormData(event);
@@ -84,13 +93,16 @@ const ProductSubCategoryUpsert = ({ offRouteModule }: Props) => {
         hasIsActive={true}
         isActive={productSubCategory?.isActive}
         title="Category"
+        setActiveTab={handleTabChange}
+        tabNames={tabNames}
+        activeTab={activeTab}
       >
         <Form
           method="POST"
           onSubmit={handleSubmit}
-          className="scrollbar-hide relative w-[500px] max-w-full overflow-y-auto"
+          className="scrollbar-hide relative w-[600px] max-w-full overflow-y-auto"
         >
-          <div className="form-control  gap-3">
+          <TabContent tab="general" activeTab={activeTab} extendStyle="gap-3">
             <BasicInput
               label="Name"
               type="text"
@@ -138,11 +150,42 @@ const ProductSubCategoryUpsert = ({ offRouteModule }: Props) => {
               defaultValue={productSubCategory.productCategoryId?.toString()}
             />
 
-            <UploadImage
-              defaultValue={productSubCategory?.image}
-              label={"Image"}
+            <SelectGender
+              defaultValue={productSubCategory?.gender}
+              label="Gender"
+              extendContainerStyle="w-full"
             />
-          </div>
+          </TabContent>
+
+          <TabContent tab="images" activeTab={activeTab} extendStyle="gap-3">
+            <UploadImageCollapse
+              name="image"
+              label="Tile Image"
+              tooltip="Optimal Square Image"
+              defaultValue={productSubCategory?.image}
+            />
+
+            <UploadImageCollapse
+              name="maleImage"
+              label="Male Image"
+              tooltip="Optimal Square Image"
+              defaultValue={productSubCategory?.maleImage}
+            />
+
+            <UploadImageCollapse
+              name="femaleImage"
+              label="Female Image"
+              tooltip="Optimal Square Image"
+              defaultValue={productSubCategory?.femaleImage}
+            />
+
+            <UploadImageCollapse
+              name="kidImage"
+              label="Kid Image"
+              tooltip="Optimal Square Image"
+              defaultValue={productSubCategory?.kidImage}
+            />
+          </TabContent>
 
           <BackSubmitButtons
             loading={loading}

@@ -23,12 +23,15 @@ type Props = {
   previewPages?: PreviewPage[] | null;
   publishedPage: Page | null;
   publishSuccess: boolean;
+  reset: () => void;
   revertSuccess: boolean;
   setEditingContent: React.Dispatch<React.SetStateAction<boolean>>;
   setEditingIndex: React.Dispatch<React.SetStateAction<number>>;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setSelectedBlock: React.Dispatch<React.SetStateAction<BlockName | undefined>>;
-  setSelectedItems: React.Dispatch<React.SetStateAction<ContentSelection[]>>;
+  setSelectedItems: React.Dispatch<
+    React.SetStateAction<PageBuilderContentSelection[]>
+  >;
 };
 
 const PanelPage = ({
@@ -41,6 +44,7 @@ const PanelPage = ({
   previewPages,
   publishedPage,
   publishSuccess,
+  reset,
   revertSuccess,
   setEditingContent,
   setEditingIndex,
@@ -58,11 +62,14 @@ const PanelPage = ({
   const [activeTab, setActiveTab] = useState<string>(tabNames?.[0]);
 
   const editBlock = (i: number) => {
+    reset();
     setEditingContent(true);
     setEditingIndex(i);
 
     if (currentBlocks) {
-      setSelectedItems(getBlockDefaultValues(currentBlocks[i]));
+      const defaultValues = getBlockDefaultValues(currentBlocks[i]);
+
+      setSelectedItems(defaultValues);
       setSelectedBlock(currentBlocks[i].name);
     }
   };

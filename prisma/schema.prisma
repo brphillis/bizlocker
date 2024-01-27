@@ -94,6 +94,7 @@ model Block {
   id           Int            @id @default(autoincrement())
   name         String
   blockOptions BlockOptions[] @relation("BlockToBlockOptions")
+  contentOrder String[]
   content      BlockContent?  @relation("BlockContentToBlock")
   icon         String
   label        String?
@@ -495,29 +496,35 @@ model OrderItem {
 }
 
 model Image {
-  id                   Int                 @id @default(autoincrement())
-  href                 String?
-  altText              String?
-  article              Article?            @relation("ArticleImage", fields: [articleId], references: [id])
-  articleId            Int?                @unique
-  blockContent         BlockContent[]      @relation("BlockContentToImages")
-  brand                Brand?              @relation("BrandImage", fields: [brandId], references: [id])
-  brandId              Int?                @unique
-  campaignBanner       Campaign[]          @relation("BannerImageToCampaign")
-  campaignTile         Campaign[]          @relation("TileImageToCampaign")
-  product              Product?            @relation(fields: [productId], references: [id])
-  productHero          Product[]           @relation("ProductHeroToProduct")
-  productId            Int?
-  productSubCategory   ProductSubCategory? @relation("ProductSubCategoryImage", fields: [productSubCategoryId], references: [id])
-  productSubCategoryId Int?                @unique
-  promotionBanner      Promotion[]         @relation("BannerImageToPromotion")
-  promotionTile        Promotion[]         @relation("TileImageToPromotion")
-  user                 User?               @relation("AvatarImage", fields: [userId], references: [id])
-  userId               Int?                @unique
-  staff                Staff?              @relation("StaffAvatarImage", fields: [staffId], references: [id])
-  staffId              Int?                @unique
-  webPage              WebPage?            @relation("WebPageImage", fields: [webPageId], references: [id])
-  webPageId            Int?                @unique
+  id                              Int                 @id @default(autoincrement())
+  href                            String?
+  altText                         String?
+  article                         Article?            @relation("ArticleImage", fields: [articleId], references: [id])
+  articleId                       Int?                @unique
+  blockContent                    BlockContent[]      @relation("BlockContentToImages")
+  brand                           Brand?              @relation("BrandImage", fields: [brandId], references: [id])
+  brandId                         Int?                @unique
+  campaignBanner                  Campaign[]          @relation("BannerImageToCampaign")
+  campaignTile                    Campaign[]          @relation("TileImageToCampaign")
+  product                         Product?            @relation(fields: [productId], references: [id])
+  productHero                     Product[]           @relation("ProductHeroToProduct")
+  productId                       Int?
+  productSubCategory              ProductSubCategory? @relation("ProductSubCategoryImage", fields: [productSubCategoryId], references: [id])
+  productSubCategoryId            Int?                @unique
+  productSubCategoryMaleImage     ProductSubCategory? @relation("ProductSubCategoryMaleImage", fields: [productSubCategoryMaleImageId], references: [id])
+  productSubCategoryMaleImageId   Int?                @unique
+  productSubCategoryFemaleImage   ProductSubCategory? @relation("ProductSubCategoryFemaleImage", fields: [productSubCategoryFemaleImageId], references: [id])
+  productSubCategoryFemaleImageId Int?                @unique
+  productSubCategoryKidImage      ProductSubCategory? @relation("ProductSubCategoryKidImage", fields: [productSubCategoryKidImageId], references: [id])
+  productSubCategoryKidImageId    Int?                @unique
+  promotionBanner                 Promotion[]         @relation("BannerImageToPromotion")
+  promotionTile                   Promotion[]         @relation("TileImageToPromotion")
+  user                            User?               @relation("AvatarImage", fields: [userId], references: [id])
+  userId                          Int?                @unique
+  staff                           Staff?              @relation("StaffAvatarImage", fields: [staffId], references: [id])
+  staffId                         Int?                @unique
+  webPage                         WebPage?            @relation("WebPageImage", fields: [webPageId], references: [id])
+  webPageId                       Int?                @unique
 
   previewPage   PreviewPage? @relation("PreviewPageImage", fields: [previewPageId], references: [id])
   previewPageId Int?         @unique
@@ -583,6 +590,13 @@ model ProductSubCategory {
   productCategory     ProductCategory? @relation("ProductCategoryToProductSubCategory", fields: [productCategoryId], references: [id])
   products            Product[]        @relation("ProductSubCategoryToProduct")
   productCategoryId   Int?
+  gender              Gender           @default(UNISEX)
+  maleImage           Image?           @relation("ProductSubCategoryMaleImage")
+  maleImageId         Int?
+  femaleImage         Image?           @relation("ProductSubCategoryFemaleImage")
+  femaleImageId       Int?
+  kidImage            Image?           @relation("ProductSubCategoryKidImage")
+  kidImageId          Int?
 
   createdAt String?
   updatedAt String?

@@ -49,7 +49,9 @@ export const PageBuilderModule = () => {
   const [selectedBlock, setSelectedBlock] = useState<BlockName | undefined>();
   const [editingContent, setEditingContent] = useState<boolean>(false);
   const [editingIndex, setEditingIndex] = useState<number>(1);
-  const [selectedItems, setSelectedItems] = useState<ContentSelection[]>([]);
+  const [selectedItems, setSelectedItems] = useState<
+    PageBuilderContentSelection[]
+  >([]);
   const [loading, setLoading] = useState<boolean>(false);
 
   const reset = () => {
@@ -104,6 +106,7 @@ export const PageBuilderModule = () => {
               previewPages={previewPages}
               publishedPage={publishedPage}
               publishSuccess={publishSuccess}
+              reset={reset}
               revertSuccess={revertSuccess}
               setEditingContent={setEditingContent}
               setEditingIndex={setEditingIndex}
@@ -129,6 +132,7 @@ export const PageBuilderModule = () => {
                 setLoading={setLoading}
                 setSelectedBlock={setSelectedBlock}
                 setSelectedItems={setSelectedItems}
+                setCurrentBlocks={setCurrentBlocks}
               />
             )}
 

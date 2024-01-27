@@ -11,10 +11,10 @@ import ContentCard from "../SelectedContent/ContentCard";
 import { useNavigate } from "@remix-run/react";
 
 type Props = {
-  setSelectedItems: (items: ContentSelection[]) => void;
+  setSelectedItems: (items: PageBuilderContentSelection[]) => void;
   searchResults: Campaign[] | Promotion[] | Product[] | Brand[];
   contentType: BlockContentType | undefined;
-  selectedItems: ContentSelection[];
+  selectedItems: PageBuilderContentSelection[];
 };
 
 const ResultsTable = ({
@@ -39,7 +39,7 @@ const ResultsTable = ({
 
     if (!itemExists) {
       // @ts-expect-error: expected typeshift
-      setSelectedItems((prevSelectedItems: ContentSelection[]) => {
+      setSelectedItems((prevSelectedItems: PageBuilderContentSelection[]) => {
         if (!Array.isArray(prevSelectedItems)) {
           prevSelectedItems = [];
         }
@@ -56,7 +56,7 @@ const ResultsTable = ({
     let displayBool = true;
 
     searchResults.forEach((e) => {
-      if (!Object.prototype.hasOwnProperty.call(e, "href")) {
+      if (Object.prototype.hasOwnProperty.call(e, "href")) {
         displayBool = false;
       }
     });

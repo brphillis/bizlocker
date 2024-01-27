@@ -18,7 +18,7 @@ import ButtonOptions from "./BlockOptions/Buttons";
 import ColorOptions from "./BlockOptions/Colors";
 
 type Props = {
-  selectedItems: ContentSelection[];
+  selectedItems: PageBuilderContentSelection[];
   selectedBlock?: BlockName;
   defaultValues?: BlockOptions;
   activeTab: string;
@@ -116,7 +116,7 @@ const OptionsModule = ({
           </div>
 
           <div
-            className={`flex flex-wrap gap-6 ${
+            className={`flex flex-wrap gap-3 ${
               activeTab !== "items" && "hidden"
             }`}
           >

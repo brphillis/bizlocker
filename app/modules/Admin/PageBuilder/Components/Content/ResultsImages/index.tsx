@@ -4,8 +4,8 @@ import BasicImage from "~/components/Client/BasicImage";
 import type { BlockContentType } from "~/utility/blockMaster/types";
 
 type Props = {
-  selectedItems: ContentSelection[];
-  setSelectedItems: (items: ContentSelection[]) => void;
+  selectedItems: PageBuilderContentSelection[];
+  setSelectedItems: (items: PageBuilderContentSelection[]) => void;
   searchResults: Image[];
   contentType: BlockContentType | undefined;
 };
@@ -46,7 +46,7 @@ const ResultsImages = ({
 
     if (!itemExists) {
       // @ts-expect-error: expected typeshift
-      setSelectedItems((prevSelectedItems: ContentSelection[]) => {
+      setSelectedItems((prevSelectedItems: PageBuilderContentSelection[]) => {
         if (!Array.isArray(prevSelectedItems)) {
           prevSelectedItems = [];
         }

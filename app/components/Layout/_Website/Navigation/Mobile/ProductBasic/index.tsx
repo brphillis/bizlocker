@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { User } from "@prisma/client";
 import { DepartmentWithDetails } from "~/models/Departments/types";
 import { ProductCategoryWithDetails } from "~/models/ProductCategories/types";
-import MobileMenuFooter from "./MobileMenuFooter";
-import MobileMenuDropdown from "./MobileMenuDropdown";
+import MenuFooter from "./MenuFooter";
+import MenuDropdown from "./MenuDropdown";
 
 type Props = {
   departments: DepartmentWithDetails[];
@@ -11,7 +11,7 @@ type Props = {
   user: User | null;
 };
 
-const MobileNavigation = ({ departments, productCategories, user }: Props) => {
+const ProductBasic = ({ departments, productCategories, user }: Props) => {
   const [selectedDepartment, setSelectedDepartment] = useState<number>(
     departments?.[0].id,
   );
@@ -23,7 +23,10 @@ const MobileNavigation = ({ departments, productCategories, user }: Props) => {
   return (
     <div className="drawer-side">
       {/* eslint-disable */}
-      <label htmlFor="my-drawer-3" className="drawer-overlay"></label>
+      <label
+        htmlFor="mobile-navigation-state"
+        className="drawer-overlay"
+      ></label>
       {/* eslint-enable */}
       <ul className="z-100 menu relative !h-[100dvh] w-64 bg-brand-black p-4 text-brand-white">
         <div className="mx-auto mb-1 block">
@@ -63,7 +66,7 @@ const MobileNavigation = ({ departments, productCategories, user }: Props) => {
               if (displayInNavigation) {
                 return (
                   <React.Fragment key={"mobileMenu_Dropdown_" + id}>
-                    <MobileMenuDropdown
+                    <MenuDropdown
                       id={id}
                       name={name}
                       productSubCategories={productSubCategories}
@@ -75,10 +78,10 @@ const MobileNavigation = ({ departments, productCategories, user }: Props) => {
           )}
         </div>
 
-        <MobileMenuFooter user={user} />
+        <MenuFooter user={user} />
       </ul>
     </div>
   );
 };
 
-export default MobileNavigation;
+export default ProductBasic;
