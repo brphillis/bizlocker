@@ -31,6 +31,8 @@ import HamburgerContainer from "~/components/Layout/_Website/Navigation/Mobile/_
 import ProductMegaMenu from "~/components/Layout/_Website/Navigation/Desktop/ProductMegaMenu";
 import { GetRandomActivePromotions } from "~/models/Promotions/index.server";
 import ProductBasic from "~/components/Layout/_Website/Navigation/Mobile/ProductBasic";
+import PatternBackground from "~/components/Layout/Backgrounds/PatternBackground";
+import { getThemeColorValueByName } from "~/utility/colors";
 
 export const meta: MetaFunction = () => {
   return [
@@ -88,7 +90,7 @@ const App = () => {
         type="checkbox"
         className="drawer-toggle"
       />
-      <div className="drawer-content relative flex min-h-[calc(100dvh-60px)] flex-col items-center justify-start">
+      <div className="drawer-content relative flex min-h-[calc(100dvh-60px)] flex-col items-center justify-start max-w-screen overflow-x-hidden">
         <div
           id="NavigationBar"
           className="navbar relative !min-h-[60px] w-full justify-center bg-brand-black !py-0"
@@ -139,8 +141,19 @@ const App = () => {
           location.pathname.includes("/verify") ||
           location.pathname.includes("/account")
         ) && (
-          <div className="navbar relative z-0 flex !min-h-[50px] w-full select-none items-center justify-center gap-6 bg-brand-white !py-0 text-sm font-bold text-brand-black/80 shadow-md">
-            <div className="max-md:text-xs">SEASON SALE ENDS SOON!</div>
+          <div className="navbar relative z-0 flex !min-h-[50px] w-full select-none items-center justify-center gap-6 bg-brand-black/95 !py-0 text-sm font-bold text-brand-white shadow-md">
+            <PatternBackground
+              name="isometric"
+              backgroundColor={getThemeColorValueByName("brand-white")}
+              patternColor={getThemeColorValueByName("brand-black")}
+              patternOpacity={0.1}
+              patternSize={32}
+              brightness={0.5}
+            />
+
+            <div className="relative max-md:text-xs">
+              SEASON SALE ENDS SOON!
+            </div>
             <CountDown targetDate={new Date("2024-03-03T00:00:00")} />
           </div>
         )}

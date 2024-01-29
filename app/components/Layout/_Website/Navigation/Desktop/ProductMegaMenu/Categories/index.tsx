@@ -74,7 +74,6 @@ const Categories = ({
                 className="text-brand-white font-bold cursor-pointer px-3 pb-6"
                 onMouseEnter={() => {
                   setActiveCategory(productCategories[index]);
-                  console.log(productCategories[index]);
                 }}
                 onClick={() => {
                   navigate({

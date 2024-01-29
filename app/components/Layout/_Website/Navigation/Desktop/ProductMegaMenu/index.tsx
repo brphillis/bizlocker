@@ -10,6 +10,8 @@ import Footer from "./Footer";
 import Categories from "./Categories";
 import TileImages from "./TileImages";
 import Navbar from "./Navbar";
+import PatternBackground from "~/components/Layout/Backgrounds/PatternBackground";
+import { getThemeColorValueByName } from "~/utility/colors";
 
 type Props = {
   cart: Cart | null;
@@ -62,12 +64,31 @@ const ProductMegaMenu = ({
 
       <div
         className={`absolute z-50 mt-[60px] pb-6 max-xl:hidden
-        bg-brand-black border-2 border-t-0 border-brand-white/5 transition-all duration-500 mb-3 w-full
+        bg-brand-black border-2 border-t-0 transition-all duration-500 mb-3 w-full
+
+        ${activeMenu === "womans" ? "border-brand-pink" : ""}
+        ${activeMenu === "mens" ? "border-brand-blue" : ""}
+        ${activeMenu === "kids" ? "border-violet-500" : ""}
+        ${activeMenu === "sale" ? "border-red-500" : ""}
+
         ${activeMenu ? "!opacity-1 h-max visible" : "opacity-0 h-0 invisible"}`}
         onMouseLeave={() => setActiveMenu(undefined)}
       >
         {activeMenu && (
-          <div className="text-brand-white font-bold mb-6 bg-brand-white/5 py-3 px-12">{`SHOP IN ${activeMenu?.toLocaleUpperCase()}`}</div>
+          <div
+            className={`relative text-brand-white font-bold mb-6 py-[13px] px-12`}
+          >
+            <PatternBackground
+              name="isometric"
+              backgroundColor={getThemeColorValueByName("brand-white")}
+              patternColor={getThemeColorValueByName("brand-black")}
+              patternOpacity={0.1}
+              patternSize={32}
+              brightness={0.2}
+            />
+
+            <div className="relative tracking-wide">{`SHOP IN ${activeMenu?.toLocaleUpperCase()}`}</div>
+          </div>
         )}
 
         <div className="flex justify-between w-full gap-6 px-12">

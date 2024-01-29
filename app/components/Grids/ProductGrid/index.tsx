@@ -10,6 +10,7 @@ type Props = {
   totalPages?: number;
   cols?: number;
   enablePlaceHolder?: boolean;
+  extendStyle?: string;
 };
 
 const ProductGrid = ({
@@ -17,6 +18,7 @@ const ProductGrid = ({
   totalPages,
   cols,
   enablePlaceHolder,
+  extendStyle,
 }: Props) => {
   const navigate = useNavigate();
   const [showPlaceHolder, setShowPlaceHolder] = useState<boolean>(false);
@@ -41,14 +43,14 @@ const ProductGrid = ({
   }, [products.length]);
 
   return (
-    <div className="w-full">
+    <div className={`w-full px-0 max-lg:px-3 ${extendStyle}`}>
       <div
         style={{
           gridTemplateColumns: cols
             ? `repeat(${cols}, minmax(0, 1fr))`
             : "repeat(4, minmax(0, 1fr))",
         }}
-        className="relative grid justify-items-center gap-3 gap-y-3 px-3 max-lg:!grid-cols-4 max-md:!grid-cols-3 max-sm:!grid-cols-2 md:gap-6 md:gap-y-6 xl:px-0"
+        className="relative grid justify-items-center gap-3 max-md:gap-y-3 max-lg:!grid-cols-4 max-md:!grid-cols-3 max-sm:!grid-cols-2 md:gap-6 gap-y-6"
       >
         {products?.map((product, i: number) => (
           <React.Fragment key={"productCard_" + product?.id + i}>

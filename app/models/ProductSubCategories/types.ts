@@ -11,7 +11,7 @@ import { ImageWithDetails } from "../Images/types";
 
 export interface ProductSubCategoryWithDetails extends ProductSubCategory {
   campaigns?: CampaignWithContent[] | null;
-  image?: ImageWithDetails | null;
+  tileImage?: ImageWithDetails | null;
   blockContent?: BlockContent | null;
   productCategory?: ProductCategoryWithDetails | null;
   products?: ProductWithDetails[] | null;
@@ -23,7 +23,7 @@ export interface ProductSubCategoryWithDetails extends ProductSubCategory {
 
 export type NewProductSubCategory = {
   name: string;
-  image?: Image;
+  tileImage?: Image;
   maleImage?: Image;
   femaleImage?: Image;
   kidImage?: Image;

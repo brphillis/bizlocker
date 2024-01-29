@@ -509,8 +509,8 @@ model Image {
   product                         Product?            @relation(fields: [productId], references: [id])
   productHero                     Product[]           @relation("ProductHeroToProduct")
   productId                       Int?
-  productSubCategory              ProductSubCategory? @relation("ProductSubCategoryImage", fields: [productSubCategoryId], references: [id])
-  productSubCategoryId            Int?                @unique
+  productSubCategoryTileImage     ProductSubCategory? @relation("ProductSubCategoryTileImage", fields: [productSubCategoryTileImageId], references: [id])
+  productSubCategoryTileImageId   Int?                @unique
   productSubCategoryMaleImage     ProductSubCategory? @relation("ProductSubCategoryMaleImage", fields: [productSubCategoryMaleImageId], references: [id])
   productSubCategoryMaleImageId   Int?                @unique
   productSubCategoryFemaleImage   ProductSubCategory? @relation("ProductSubCategoryFemaleImage", fields: [productSubCategoryFemaleImageId], references: [id])
@@ -523,6 +523,7 @@ model Image {
   userId                          Int?                @unique
   staff                           Staff?              @relation("StaffAvatarImage", fields: [staffId], references: [id])
   staffId                         Int?                @unique
+  tags                            String[]
   webPage                         WebPage?            @relation("WebPageImage", fields: [webPageId], references: [id])
   webPageId                       Int?                @unique
 
@@ -581,8 +582,8 @@ model ProductSubCategory {
   id                  Int              @id @default(autoincrement())
   campaigns           Campaign[]       @relation("ProductSubCategoryToCampaign")
   displayInNavigation Boolean          @default(true)
-  image               Image?           @relation("ProductSubCategoryImage")
-  imageId             Int?
+  tileImage           Image?           @relation("ProductSubCategoryTileImage")
+  tileImageId         Int?
   index               Int              @default(0)
   isActive            Boolean          @default(true)
   name                String           @unique

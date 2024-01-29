@@ -148,10 +148,10 @@ const CartButton = ({ id: cartId, cartItems }: CartWithDetails) => {
           <div className="absolute bottom-0 left-1/2 my-3 flex w-full translate-x-[-50%] flex-col gap-1 px-3">
             <button
               type="button"
-              className="lg btn-md relative bottom-[-1px] rounded-sm bg-primary pr-4 font-bold tracking-wide !text-white hover:bg-primary-dark"
+              className="w-full ml-auto text-center tracking-wider border-0 bg-brand-green hover:scale-[1.01] transition-all duration-300 ease-in-out font-bold px-3 py-3 rounded-full text-white disabled:opacity-50 max-sm:order-2"
               onClick={() => navigate(`/cart`)}
             >
-              Buy Now
+              BUY NOW
             </button>
           </div>
         </Form>

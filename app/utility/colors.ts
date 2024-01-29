@@ -1,5 +1,5 @@
-import { colorPrefixList } from "../../theme/themeColorPrefixList.js";
-import { themeColors } from "../../theme/theme.js";
+import { colorPrefixList } from "../../theme/themeColorPrefixList.mjs";
+import { themeColors } from "../../theme/theme.mjs";
 import { searchObjectByKey } from "~/helpers/objectHelpers";
 
 export const getThemeColorNames = (): string[] => {
@@ -44,6 +44,10 @@ export const returnOtherColorPrefix = (
   newPrefix: "bg-" | "text-" | "border-" | "outline-" | "decoration-",
 ): string => {
   let formattedString = initialString;
+
+  if (formattedString.includes("/")) {
+    formattedString = formattedString.split("/")[0];
+  }
 
   if (initialString.startsWith(newPrefix)) {
     return initialString;

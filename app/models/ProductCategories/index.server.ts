@@ -14,7 +14,7 @@ export const getProductCategories = async (): Promise<
     include: {
       productSubCategories: {
         include: {
-          image: true,
+          tileImage: true,
           maleImage: true,
           femaleImage: true,
           kidImage: true,

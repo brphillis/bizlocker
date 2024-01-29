@@ -159,10 +159,10 @@ const ProductSubCategoryUpsert = ({ offRouteModule }: Props) => {
 
           <TabContent tab="images" activeTab={activeTab} extendStyle="gap-3">
             <UploadImageCollapse
-              name="image"
+              name="tileImage"
               label="Tile Image"
               tooltip="Optimal Square Image"
-              defaultValue={productSubCategory?.image}
+              defaultValue={productSubCategory?.tileImage}
             />
 
             <UploadImageCollapse

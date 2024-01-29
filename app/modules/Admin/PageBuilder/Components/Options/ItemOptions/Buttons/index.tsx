@@ -35,7 +35,7 @@ const Buttons = ({
         />
 
         {Object.keys(selectedBlockOptions || {}).some(
-          (key) => key.startsWith("itemBackground") && key.endsWith("Primary"),
+          (key) => key.startsWith("itemButton") && key.endsWith("Primary"),
         ) && (
           <>
             <Divider color="white" />
@@ -107,8 +107,7 @@ const Buttons = ({
         />
 
         {Object.keys(selectedBlockOptions || {}).some(
-          (key) =>
-            key.startsWith("itemBackground") && key.endsWith("Secondary"),
+          (key) => key.startsWith("itemButton") && key.endsWith("Secondary"),
         ) && (
           <>
             <Divider color="white" />

@@ -9,6 +9,7 @@ import {
   BlockContentWithDetails,
 } from "~/models/Blocks/types";
 import { returnSortedBlockContent } from "./blockHelpers";
+import { ProductSubCategoryWithDetails } from "~/models/ProductSubCategories/types";
 
 export const getContentType = (
   content: BlockContentSorted,
@@ -78,6 +79,12 @@ export const buildImageFromBlockContent = (
     name = campaign?.name || name;
     link = `/campaign/${name}`;
     imageSrc = campaign?.[tileOrBanner]?.href || imageSrc;
+  } else if (contentType === "productSubCategory" && tileOrBanner) {
+    const subCategory =
+      contentData?.productSubCategory as ProductSubCategoryWithDetails;
+    name = subCategory?.name || name;
+    link = `/products?productSubCategory=${name}`;
+    imageSrc = subCategory?.tileImage?.href || imageSrc;
   } else if (contentType === "brand") {
     const brand = contentData?.brand as BrandWithContent;
     name = brand?.name || name;

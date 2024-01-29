@@ -1,5 +1,5 @@
 import type { Config } from "tailwindcss";
-import { themeColors } from "./theme/theme.js";
+import { themeColors } from "./theme/theme.mjs";
 
 export default {
   content: ["./app/**/*.{js,jsx,ts,tsx}"],

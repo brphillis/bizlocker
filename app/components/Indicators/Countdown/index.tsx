@@ -18,7 +18,7 @@ const CountDown = ({
 
     const days = Math.floor(difference / (1000 * 60 * 60 * 24));
     const hours = Math.floor(
-      (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+      (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
     );
     const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((difference % (1000 * 60)) / 1000);
@@ -40,13 +40,13 @@ const CountDown = ({
     return { "--value": number } as React.CSSProperties;
   };
 
-  const tickerBgColor = tickerBackgroundColor || "bg-brand-black/75";
+  const tickerBgColor = tickerBackgroundColor || "bg-brand-black";
   const tickerTxtColor = tickerTextColor || "text-brand-white";
 
   return (
     <ClientOnly
       fallback={
-        <div className="flex select-none items-center gap-1 text-center">
+        <div className="relative flex select-none items-center gap-1 text-center">
           <div className="skeleton h-[32px] w-[42px] !rounded-sm"></div>
           <div className="skeleton h-[32px] w-[42px] !rounded-sm"></div>
           <div className="skeleton h-[32px] w-[42px] !rounded-sm"></div>
@@ -56,7 +56,7 @@ const CountDown = ({
     >
       {() => (
         <>
-          <div className="flex select-none items-center gap-1 text-center">
+          <div className="relative flex select-none items-center gap-1 text-center">
             <div
               className={`flex items-center gap-1 rounded-sm p-2 ${tickerBgColor} ${tickerTxtColor}`}
             >

@@ -31,7 +31,7 @@ export const getProductSubCategory = async (
       id: parseInt(id),
     },
     include: {
-      image: true,
+      tileImage: true,
       maleImage: true,
       femaleImage: true,
       kidImage: true,
@@ -52,14 +52,14 @@ export const upsertProductSubCategory = async (
     displayInNavigation,
     isActive,
     name,
-    image,
+    tileImage,
     maleImage,
     femaleImage,
     kidImage,
     gender,
   } = categoryData;
 
-  if (!id && image) {
+  if (!id && tileImage) {
     const buildImageCreateQuery = async (image?: Image | null) => {
       if (image) {
         const repoLink = await uploadImage_Integration(image);
@@ -84,7 +84,7 @@ export const upsertProductSubCategory = async (
         displayInNavigation,
         isActive,
         gender: gender || undefined,
-        image: await buildImageCreateQuery(image),
+        tileImage: await buildImageCreateQuery(tileImage),
         maleImage: maleImageCreateQuery,
         femaleImage: await buildImageCreateQuery(femaleImage),
         kidImage: await buildImageCreateQuery(kidImage),
@@ -105,7 +105,7 @@ export const upsertProductSubCategory = async (
         id: parseInt(id),
       },
       include: {
-        image: true,
+        tileImage: true,
         maleImage: true,
         femaleImage: true,
         kidImage: true,
@@ -131,7 +131,10 @@ export const upsertProductSubCategory = async (
         displayInNavigation,
         isActive,
         gender: gender || undefined,
-        image: await buildImageUpdateQuery(image, productSubCategory?.image),
+        tileImage: await buildImageUpdateQuery(
+          tileImage,
+          productSubCategory?.tileImage,
+        ),
         maleImage: maleImageUpdateQuery,
         femaleImage: await buildImageUpdateQuery(
           femaleImage,
@@ -150,7 +153,7 @@ export const upsertProductSubCategory = async (
           : undefined,
       },
       include: {
-        image: true,
+        tileImage: true,
       },
     });
 

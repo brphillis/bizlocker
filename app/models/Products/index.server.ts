@@ -166,6 +166,7 @@ export const upsertProduct = async (
             create: images.map((image: Image, i: number) => ({
               href: repoLinksProduct[i],
               altText: image.altText,
+              tags: image.tags,
             })),
           }
         : undefined,
@@ -263,31 +264,39 @@ export const upsertProduct = async (
             id: existingImage.id,
             href: repoLinksProduct[i],
             altText: image.altText,
+            tags: image.tags,
           });
         } else {
           createImages.push({
             href: repoLinksProduct[i],
             altText: image.altText,
+            tags: image.tags,
           });
         }
       }
     }
 
     if (createImages.length > 0) {
-      updateData.images.create = createImages.map(({ href, altText }) => ({
-        href,
-        altText,
-      }));
+      updateData.images.create = createImages.map(
+        ({ href, altText, tags }) => ({
+          href,
+          altText,
+          tags,
+        }),
+      );
     }
 
     if (updateImages.length > 0) {
-      updateData.images.update = updateImages.map(({ id, href, altText }) => ({
-        where: { id },
-        data: {
-          href,
-          altText,
-        },
-      }));
+      updateData.images.update = updateImages.map(
+        ({ id, href, altText, tags }) => ({
+          where: { id },
+          data: {
+            href,
+            altText,
+            tags,
+          },
+        }),
+      );
     }
 
     updateData.heroImage = {};

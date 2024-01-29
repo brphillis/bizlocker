@@ -33,11 +33,25 @@ const Footer = ({ activeMenu }: Props) => {
       <div className="flex gap-3">
         <BasicButton
           label="Promo Items"
+          extendStyle={`
+          border-none text-brand-white
+          ${activeMenu === "womans" ? "bg-brand-pink" : ""}
+          ${activeMenu === "mens" ? "bg-brand-blue" : ""}
+          ${activeMenu === "kids" ? "bg-violet-500" : ""}
+          ${activeMenu === "sale" ? "bg-red-500" : ""}
+          `}
           onClick={() => navigate(returnQueryString("promo"))}
         />
 
         <BasicButton
           label="On Sale"
+          extendStyle={`
+          border-none text-brand-white
+          ${activeMenu === "womans" ? "bg-brand-pink" : ""}
+          ${activeMenu === "mens" ? "bg-brand-blue" : ""}
+          ${activeMenu === "kids" ? "bg-violet-500" : ""}
+          ${activeMenu === "sale" ? "bg-red-500" : ""}
+          `}
           onClick={() => navigate(returnQueryString("sale"))}
         />
       </div>

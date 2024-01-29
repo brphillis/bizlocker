@@ -117,6 +117,7 @@ export const PageBuilderModule = () => {
 
             {editingContent && previewPage && (
               <PanelBlock
+                key={editingIndex}
                 articleCategories={articleCategories}
                 brands={brands}
                 currentBlocks={currentBlocks}

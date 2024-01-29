@@ -64,7 +64,7 @@ export const productSubCategoryUpsertAction = async (request: Request) => {
     index,
     displayInNavigation,
     isActive,
-    image,
+    tileImage,
     maleImage,
     femaleImage,
     kidImage,
@@ -77,8 +77,8 @@ export const productSubCategoryUpsertAction = async (request: Request) => {
         return { serverValidationErrors: formErrors };
       }
 
-      const parsedImage = image
-        ? (JSON.parse(image?.toString()) as Image)
+      const parsedTileImage = tileImage
+        ? (JSON.parse(tileImage?.toString()) as Image)
         : undefined;
 
       const parsedMaleImage = maleImage
@@ -95,7 +95,7 @@ export const productSubCategoryUpsertAction = async (request: Request) => {
 
       const categoryData: NewProductSubCategory = {
         name: name as string,
-        image: parsedImage,
+        tileImage: parsedTileImage,
         maleImage: parsedMaleImage,
         femaleImage: parsedFemaleImage,
         kidImage: parsedKidImage,

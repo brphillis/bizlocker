@@ -39,7 +39,7 @@ const PageWrapper = ({
           ? getThemeColorValueByName(backgroundColor)
           : getThemeColorValueByName("brand-white"),
       }}
-      className={`mb-[-1px] flex w-full flex-col items-center justify-center pb-3 pt-6 max-md:pt-3 lg:pb-12 ${
+      className={`mb-[-1px] flex w-full flex-col items-center justify-center pt-6 max-md:pt-3 ${
         noTopPadding && "!pt-0"
       }`}
     >

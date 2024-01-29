@@ -13,6 +13,8 @@ import { searchBrands } from "~/models/Brands/index.server";
 import { searchIcons } from "./icons";
 import { searchStores } from "~/models/Stores/index.server";
 import { NewBlockContent } from "~/models/Blocks/types";
+import { searchProductSubCategories } from "~/models/ProductSubCategories/index.server";
+import { searchProductCategories } from "~/models/ProductCategories/index.server";
 
 export type PageType = "homePage" | "webPage" | "article" | "previewPage";
 
@@ -689,6 +691,22 @@ export const searchContentData = async (
     case "product": {
       const { products } = await searchProducts(Object.fromEntries(formData));
       searchResults = products;
+      return searchResults;
+    }
+
+    case "productCategory": {
+      const { productCategories } = await searchProductCategories(
+        Object.fromEntries(formData),
+      );
+      searchResults = productCategories;
+      return searchResults;
+    }
+
+    case "productSubCategory": {
+      const { productSubCategories } = await searchProductSubCategories(
+        Object.fromEntries(formData),
+      );
+      searchResults = productSubCategories;
       return searchResults;
     }
 
