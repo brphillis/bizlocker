@@ -3,7 +3,7 @@ import type { BlockMasterOptions } from "~/utility/blockMaster/types";
 import ItemColorInput from "../_FieldComponents/ItemColorInput";
 
 type Props = {
-  selectedItems: ContentSelection[];
+  selectedItems: PageBuilderContentSelection[];
   defaultValues?: BlockOptions;
   selectedBlockOptions: BlockMasterOptions | undefined;
 };

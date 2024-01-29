@@ -1,11 +1,9 @@
 import { prisma } from "~/db.server";
 import { getOrderBy } from "~/helpers/sortHelpers";
 import { Image, ProductSubCategory } from "@prisma/client";
-import {
-  updateImage_Integration,
-  uploadImage_Integration,
-} from "~/integrations/_master/storage";
+import { uploadImage_Integration } from "~/integrations/_master/storage";
 import { NewProductSubCategory, ProductSubCategoryWithDetails } from "./types";
+import { buildImageUpdateQuery } from "../Images/index.server";
 
 export const getProductSubCategories = async (): Promise<
   ProductSubCategoryWithDetails[]
@@ -33,7 +31,10 @@ export const getProductSubCategory = async (
       id: parseInt(id),
     },
     include: {
-      image: true,
+      tileImage: true,
+      maleImage: true,
+      femaleImage: true,
+      kidImage: true,
     },
   });
 };
@@ -51,41 +52,42 @@ export const upsertProductSubCategory = async (
     displayInNavigation,
     isActive,
     name,
-    image,
+    tileImage,
+    maleImage,
+    femaleImage,
+    kidImage,
+    gender,
   } = categoryData;
 
-  if (!id && image) {
-    const repoLink = await uploadImage_Integration(image);
-    const createdProductSubCategory = await prisma.productSubCategory.create({
-      data: {
-        name: name,
-        index,
-        displayInNavigation,
-        isActive,
-        image: {
-          create: {
-            href: repoLink,
-            altText: image.altText,
-          },
-        },
-        productCategory: productCategory
-          ? {
-              connect: {
-                id: parseInt(productCategory),
-              },
-            }
-          : undefined,
-      },
-    });
+  if (!id && tileImage) {
+    const buildImageCreateQuery = async (image?: Image | null) => {
+      if (image) {
+        const repoLink = await uploadImage_Integration(image);
 
-    return { createdProductSubCategory, updatedProductSubCategory: null };
-  } else if (!id && !image) {
+        if (repoLink) {
+          return {
+            create: {
+              href: repoLink,
+              altText: image?.altText,
+            },
+          };
+        } else return undefined;
+      } else return undefined;
+    };
+
+    const maleImageCreateQuery = await buildImageCreateQuery(maleImage);
+
     const createdProductSubCategory = await prisma.productSubCategory.create({
       data: {
         name: name,
         index,
         displayInNavigation,
         isActive,
+        gender: gender || undefined,
+        tileImage: await buildImageCreateQuery(tileImage),
+        maleImage: maleImageCreateQuery,
+        femaleImage: await buildImageCreateQuery(femaleImage),
+        kidImage: await buildImageCreateQuery(kidImage),
         productCategory: productCategory
           ? {
               connect: {
@@ -103,7 +105,10 @@ export const upsertProductSubCategory = async (
         id: parseInt(id),
       },
       include: {
-        image: true,
+        tileImage: true,
+        maleImage: true,
+        femaleImage: true,
+        kidImage: true,
       },
     });
 
@@ -111,36 +116,10 @@ export const upsertProductSubCategory = async (
       throw new Error("Category not found");
     }
 
-    let imageData = {};
-
-    if (image && productSubCategory.image) {
-      const repoLink = await updateImage_Integration(
-        productSubCategory.image as Image,
-        image,
-      );
-
-      imageData = {
-        update: {
-          url: repoLink,
-          altText: image.altText,
-        },
-      };
-    }
-    if (image && !productSubCategory.image) {
-      const repoLink = await uploadImage_Integration(image);
-
-      imageData = {
-        create: {
-          url: repoLink,
-          altText: image.altText,
-        },
-      };
-    }
-    if (!image && productSubCategory.image) {
-      imageData = {
-        delete: true,
-      };
-    }
+    const maleImageUpdateQuery = await buildImageUpdateQuery(
+      maleImage,
+      productSubCategory?.maleImage,
+    );
 
     const updatedProductSubCategory = await prisma.productSubCategory.update({
       where: {
@@ -151,7 +130,20 @@ export const upsertProductSubCategory = async (
         index,
         displayInNavigation,
         isActive,
-        image: imageData,
+        gender: gender || undefined,
+        tileImage: await buildImageUpdateQuery(
+          tileImage,
+          productSubCategory?.tileImage,
+        ),
+        maleImage: maleImageUpdateQuery,
+        femaleImage: await buildImageUpdateQuery(
+          femaleImage,
+          productSubCategory?.femaleImage,
+        ),
+        kidImage: await buildImageUpdateQuery(
+          kidImage,
+          productSubCategory?.kidImage,
+        ),
         productCategory: productCategory
           ? {
               connect: {
@@ -161,7 +153,7 @@ export const upsertProductSubCategory = async (
           : undefined,
       },
       include: {
-        image: true,
+        tileImage: true,
       },
     });
 

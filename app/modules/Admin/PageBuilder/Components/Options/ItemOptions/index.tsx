@@ -12,7 +12,7 @@ import Titles from "./Titles";
 import PaddingAndPadding from "./MarginAndPadding";
 
 type Props = {
-  selectedItems: ContentSelection[];
+  selectedItems: PageBuilderContentSelection[];
   defaultValues?: BlockOptions;
   selectedBlockOptions: BlockMasterOptions | undefined;
 };

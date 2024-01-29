@@ -53,7 +53,10 @@ export const getPromotion = async (
   if (name) {
     return prisma.promotion.findFirst({
       where: {
-        name: name,
+        name: {
+          equals: name,
+          mode: "insensitive",
+        },
       },
       include: {
         bannerImage: true,
@@ -288,4 +291,36 @@ export const searchPromotions = async (
   } catch (error) {
     throw new Error("Error Searching Promotions");
   }
+};
+
+export const GetRandomActivePromotions = async (
+  count: number,
+  includeTile?: boolean,
+  includeBanner?: boolean,
+): Promise<PromotionWithContent[]> => {
+  const randomPromotions = await prisma.promotion.findMany({
+    where: {
+      isActive: true,
+    },
+    include: {
+      tileImage: includeTile,
+      bannerImage: includeBanner,
+    },
+  });
+
+  // Shuffle the array of promotions to get random order
+  const shuffledPromotions = shuffleArray(randomPromotions);
+
+  // Return the specified count of random promotions
+  return shuffledPromotions.slice(0, count) as PromotionWithContent[];
+};
+
+// Function to shuffle an array
+const shuffleArray = <T>(array: T[]): T[] => {
+  const shuffled = array.slice();
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
 };

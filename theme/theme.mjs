@@ -1,4 +1,4 @@
-import { tailwindColors } from "./tailwindColors.js";
+import { tailwindColors } from "./tailwindColors.mjs";
 
 //prettier-ignore
 export const themeColors ={
@@ -17,11 +17,12 @@ export const themeColors ={
     "brand-white": "#F0F0F0",
     "brand-red": "#FF6B6B",
     "brand-blue": "#3B82F6",
+    "brand-light-blue": "#A9DDD6",
     "brand-green": "#44AF69",
     "brand-yellow": "#F7C548",
     "brand-orange": "#FFA500",
     "brand-purple": "#694873",
-    "brand-pink": "#F7567C",
+    "brand-pink": "#DB7F8E",
     "brand-gray": "#808080",
     "brand-brown" : "#A98743",
     "brand-silver": "#D7D9D7",

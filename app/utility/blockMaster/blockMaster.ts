@@ -170,6 +170,7 @@ export const blockMaster: BlockMaster[] = [
       columnsMobile: true,
       itemBackgroundColorsPrimary: true,
       itemBackgroundColorsSecondary: true,
+      itemBackgroundWidthsSecondary: true,
       itemBorderColors: true,
       itemBorderDisplays: true,
       itemBorderRadius: true,
@@ -181,6 +182,11 @@ export const blockMaster: BlockMaster[] = [
       itemTitles: true,
       margin: true,
       padding: true,
+      title: true,
+      titleColor: true,
+      titleFontWeight: true,
+      titleSize: true,
+      titleAlign: true,
       itemAlign: true,
       itemAlignMobile: true,
       itemJustify: true,
@@ -217,9 +223,9 @@ export const blockMaster: BlockMaster[] = [
     addOns: ["icon"],
     content: {
       image: true,
-      promotion: {
+      brand: {
         include: {
-          tileImage: true,
+          image: true,
         },
       },
       campaign: {
@@ -227,9 +233,14 @@ export const blockMaster: BlockMaster[] = [
           tileImage: true,
         },
       },
-      brand: {
+      productSubCategory: {
         include: {
-          image: true,
+          tileImage: true,
+        },
+      },
+      promotion: {
+        include: {
+          tileImage: true,
         },
       },
     },
@@ -331,6 +342,10 @@ export const blockMaster: BlockMaster[] = [
       count: true,
       sortBy: true,
       sortOrder: true,
+      titleColor: true,
+      titleAlign: true,
+      titleFontWeight: true,
+      titleSize: true,
     },
     content: {
       brand: true,

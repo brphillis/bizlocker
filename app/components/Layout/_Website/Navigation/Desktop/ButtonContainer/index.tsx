@@ -1,9 +1,8 @@
 import type { Cart, User } from "@prisma/client";
-import { useLocation } from "@remix-run/react";
-import { IoSearchOutline } from "react-icons/io5";
-import LoginButton from "~/components/Buttons/LoginButton";
-import CartButton from "../Buttons/CartButton";
-import AccountButton from "../Buttons/AccountButton";
+import { useLocation, useNavigate } from "@remix-run/react";
+import { IoPersonOutline, IoSearchOutline } from "react-icons/io5";
+import CartButton from "../../Buttons/CartButton";
+import AccountButton from "../../Buttons/AccountButton";
 
 type Props = {
   user: User | null;
@@ -12,18 +11,18 @@ type Props = {
   searchState: boolean | null;
 };
 
-const DesktopButtonContainer = ({
+const ButtonContainer = ({
   user,
   cart,
   setSearchState,
   searchState,
 }: Props) => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   return (
     <>
-      <div className="grow"></div>
-      <div className="hidden h-[60px] items-center gap-6 lg:flex">
+      <div className="flex h-[60px] items-center gap-6 max-xl:hidden px-6 max-md:px-3">
         {user && !location.pathname.includes("/account") && (
           <AccountButton {...user} />
         )}
@@ -35,10 +34,16 @@ const DesktopButtonContainer = ({
           className="cursor-pointer !text-brand-white"
         />
 
-        {!user && <LoginButton />}
+        {!user && (
+          <IoPersonOutline
+            size={24}
+            onClick={() => navigate("/login")}
+            className="cursor-pointer text-brand-white"
+          />
+        )}
       </div>
     </>
   );
 };
 
-export default DesktopButtonContainer;
+export default ButtonContainer;

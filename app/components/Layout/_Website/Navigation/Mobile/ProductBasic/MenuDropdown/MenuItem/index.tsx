@@ -6,17 +6,14 @@ type Props = {
   productSubCategoryName: string;
 };
 
-const MobileMenuItem = ({
-  productCategoryName,
-  productSubCategoryName,
-}: Props) => {
+const MenuItem = ({ productCategoryName, productSubCategoryName }: Props) => {
   const navigate = useNavigate();
   {
     /* eslint-disable */
   }
   return (
     <label
-      htmlFor="my-drawer-3"
+      htmlFor="mobile-navigation-state"
       className="flex items-center justify-between py-3"
       onClick={() =>
         navigate({
@@ -26,7 +23,7 @@ const MobileMenuItem = ({
       }
     >
       <label
-        htmlFor="my-drawer-3"
+        htmlFor="mobile-navigation-state"
         className="pl-3 text-sm font-normal text-brand-white/90"
       >
         {productSubCategoryName}
@@ -39,4 +36,4 @@ const MobileMenuItem = ({
   }
 };
 
-export default MobileMenuItem;
+export default MenuItem;

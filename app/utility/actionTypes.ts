@@ -4,6 +4,7 @@ import { User } from "@prisma/client";
 import { PageNotification } from "~/hooks/PageNotification";
 import { Page } from "~/models/PageBuilder/types";
 import { BlockWithContent } from "~/models/Blocks/types";
+import { PromotionWithContent } from "~/models/Promotions/types";
 
 export interface ActionReturnTypes {
   validationErrors: ValidationErrors;
@@ -21,4 +22,5 @@ export interface ActionReturnTypes {
   actionPreview: Page;
   actionBlocks: BlockWithContent[];
   user: User;
+  navigationPromotions: PromotionWithContent[];
 }

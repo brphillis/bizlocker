@@ -3,12 +3,10 @@ import { validateForm } from "~/utility/validate";
 import { PageNotification } from "~/hooks/PageNotification";
 import { getDepartments } from "~/models/Departments/index.server";
 import { DepartmentWithDetails } from "~/models/Departments/types";
-import { ArticleCategoryWithDetails } from "~/models/ArticleCategories/types";
 import {
   NewProductCategory,
   ProductCategoryWithDetails,
 } from "~/models/ProductCategories/types";
-import { getArticleCategories } from "~/models/ArticleCategories/index.server";
 import { ProductSubCategoryWithDetails } from "~/models/ProductSubCategories/types";
 import { getProductSubCategories } from "~/models/ProductSubCategories/index.server";
 import {
@@ -28,15 +26,14 @@ export const productCategoryUpsertLoader = async (request: Request) => {
 
   const departments = await getDepartments();
   const productSubCategories = await getProductSubCategories();
-  const articleCategories = await getArticleCategories();
 
   if (id === "add") {
     const productCategory = {};
-    return json({ productCategory } as {
+
+    return json({ productCategory, departments } as {
       productCategory: ProductCategoryWithDetails;
       departments: DepartmentWithDetails[];
       productSubCategories: ProductSubCategoryWithDetails[];
-      articleCategories: ArticleCategoryWithDetails[];
     });
   }
 
@@ -53,7 +50,6 @@ export const productCategoryUpsertLoader = async (request: Request) => {
     productCategory,
     departments,
     productSubCategories,
-    articleCategories,
   });
 };
 

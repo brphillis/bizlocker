@@ -5,7 +5,7 @@ type Props = {
   blockMasterOption?: boolean;
   defaultValues?: string[];
   formName: string;
-  selectedItems: ContentSelection[];
+  selectedItems: PageBuilderContentSelection[];
   selections: Array<SelectValue> | null;
   title: string;
   valueName: string;
@@ -25,7 +25,7 @@ const ItemSelectInput = ({
   );
 
   return (
-    <details className="collapse collapse-plus !hidden !max-w-full !rounded-sm bg-brand-white/20 [&:has(div>div)]:!grid max-md:pb-3">
+    <details className="collapse collapse-plus !hidden !max-w-full !rounded-sm bg-brand-white/20 [&:has(div>div)]:!grid max-md:px-3">
       <summary className="collapse-title text-xl font-medium text-brand-white">
         {title}
       </summary>

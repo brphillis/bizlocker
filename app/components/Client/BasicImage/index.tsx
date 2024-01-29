@@ -25,13 +25,15 @@ const BasicImage = ({ src, alt, onClick, extendStyle, hoverEffect }: Props) => {
   }, [src]);
 
   return (
-    <button
-      type="button"
+    <div
+      role="button"
+      tabIndex={0}
       onClick={() => onClick && onClick()}
+      onKeyDown={() => onClick && onClick()}
       className={`relative h-full w-full`}
     >
       <img
-        className={` 
+        className={`h-full w-full object-cover
             ${loading ? "hidden" : "block"}
             ${extendStyle ? extendStyle : ""}
             ${hoverEffect ? "hover:scale-[1.025]" : ""}
@@ -41,12 +43,12 @@ const BasicImage = ({ src, alt, onClick, extendStyle, hoverEffect }: Props) => {
       />
       {loading && (
         <div
-          className={`skeleton flex !h-full !w-full items-center justify-center text-brand-white/10 ${extendStyle}`}
+          className={`skeleton flex !h-full !w-full items-center justify-center text-brand-white/10 !rounded-none ${extendStyle}`}
         >
           <p>{alt}</p>
         </div>
       )}
-    </button>
+    </div>
   );
 };
 

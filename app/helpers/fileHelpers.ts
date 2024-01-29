@@ -4,6 +4,7 @@ export type NewImage = {
   href: string;
   repoLink: string;
   altText: string;
+  tags?: string[];
 };
 
 export const ConvertToBase64Image = async (

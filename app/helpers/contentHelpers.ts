@@ -8,6 +8,8 @@ import {
   BlockContentSorted,
   BlockContentWithDetails,
 } from "~/models/Blocks/types";
+import { returnSortedBlockContent } from "./blockHelpers";
+import { ProductSubCategoryWithDetails } from "~/models/ProductSubCategories/types";
 
 export const getContentType = (
   content: BlockContentSorted,
@@ -25,20 +27,33 @@ export const getContentType = (
 };
 
 export const sortBlockContent = (
+  contentOrder: string[],
   content: BlockContentWithDetails,
-): { [key: string]: unknown }[] => {
-  const sortedContent: { [key: string]: unknown }[] = [];
+): RenderBlockContent[] => {
+  // Organize BlockContent for Block Renderer / FE Dev Readability
+  const organizedContent: RenderBlockContent[] = [];
 
   Object.keys(content).forEach((key) => {
     const items = content[key as keyof BlockContentWithDetails];
     if (items && Array.isArray(items) && items.length > 0) {
       items.forEach((item: unknown) => {
-        const sortedItem: { [key: string]: unknown } = {};
+        const sortedItem: RenderBlockContent = {};
         sortedItem[key] = item;
-        sortedContent.push(sortedItem);
+        organizedContent.push(sortedItem);
       });
     }
   });
+
+  if (!contentOrder || (contentOrder && contentOrder.length === 0)) {
+    return organizedContent;
+  }
+
+  // Sort Block Content in order of BlockContentOrder
+  const sortedContent = returnSortedBlockContent(
+    organizedContent,
+    contentOrder,
+    "blockrenderer",
+  );
 
   return sortedContent;
 };
@@ -64,6 +79,12 @@ export const buildImageFromBlockContent = (
     name = campaign?.name || name;
     link = `/campaign/${name}`;
     imageSrc = campaign?.[tileOrBanner]?.href || imageSrc;
+  } else if (contentType === "productSubCategory" && tileOrBanner) {
+    const subCategory =
+      contentData?.productSubCategory as ProductSubCategoryWithDetails;
+    name = subCategory?.name || name;
+    link = `/products?productSubCategory=${name}`;
+    imageSrc = subCategory?.tileImage?.href || imageSrc;
   } else if (contentType === "brand") {
     const brand = contentData?.brand as BrandWithContent;
     name = brand?.name || name;

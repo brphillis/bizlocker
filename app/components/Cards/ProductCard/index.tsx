@@ -53,7 +53,8 @@ const ProductCard = (product: ProductWithDetails) => {
   return (
     <>
       <div className="group flex w-full flex-col overflow-hidden bg-brand-white">
-        <div className="relative flex h-60 w-full max-w-full cursor-pointer overflow-hidden shadow-sm sm:h-72">
+        {/* IMAGE */}
+        <div className="relative flex max-sm:h-60 max-md:h-[300px] w-full max-w-full cursor-pointer overflow-hidden shadow-sm h-72">
           {displayImage && (
             <BasicImage
               extendStyle="absolute right-0 top-0 h-full w-full transform object-cover"
@@ -85,13 +86,16 @@ const ProductCard = (product: ProductWithDetails) => {
             <IoHeart size={18} />
           </button> */}
             <button
-              className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-black text-brand-white transition hover:bg-gray-700"
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-black text-brand-white transition hover:bg-gray-700 border border-white/25"
               onClick={handleAddToCart}
             >
               <IoCart size={18} />
             </button>
           </div>
         </div>
+
+        {/* INFO BELOW */}
+
         <div className="mt-2 text-left">
           {brand && brand.name.toLowerCase() !== "none" && (
             <h5 className="font-semibold tracking-tight text-gray-500">

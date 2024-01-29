@@ -1,6 +1,6 @@
 import React from "react";
-import MobileMenuItem from "./MobileMenuItem";
 import { ProductSubCategoryWithDetails } from "~/models/ProductSubCategories/types";
+import MenuItem from "./MenuItem";
 
 type Props = {
   id: number;
@@ -8,7 +8,7 @@ type Props = {
   productSubCategories?: ProductSubCategoryWithDetails[] | null;
 };
 
-const MobileMenuDropdown = ({ name, productSubCategories }: Props) => {
+const MenuDropdown = ({ name, productSubCategories }: Props) => {
   return (
     <li className="cursor-pointer border-b-2 border-primary-content/0 px-3 text-sm font-bold tracking-wide !opacity-100">
       <div className="collapse !visible w-full !auto-cols-auto !gap-0 !p-0">
@@ -28,7 +28,7 @@ const MobileMenuDropdown = ({ name, productSubCategories }: Props) => {
               if (displaySubCategory) {
                 return (
                   <React.Fragment key={"mobileMenu_dropdownItem_" + name + i}>
-                    <MobileMenuItem
+                    <MenuItem
                       productCategoryName={name}
                       productSubCategoryName={productSubCategoryName}
                     />
@@ -43,4 +43,4 @@ const MobileMenuDropdown = ({ name, productSubCategories }: Props) => {
   );
 };
 
-export default MobileMenuDropdown;
+export default MenuDropdown;

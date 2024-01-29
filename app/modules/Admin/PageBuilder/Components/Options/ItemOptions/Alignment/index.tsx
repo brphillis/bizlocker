@@ -13,7 +13,7 @@ import {
 import ItemSelectInput from "../_FieldComponents/ItemSelectInput";
 
 type Props = {
-  selectedItems: ContentSelection[];
+  selectedItems: PageBuilderContentSelection[];
   defaultValues?: BlockOptions;
   selectedBlockOptions: BlockMasterOptions | undefined;
 };

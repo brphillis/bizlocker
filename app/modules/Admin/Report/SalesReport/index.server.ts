@@ -1,4 +1,4 @@
-import { getSalesToday } from "~/models/saleReports.server";
+import { getSalesToday } from "~/models/SalesReports/index.server";
 
 export const salesReportLoader = async () => {
   const {

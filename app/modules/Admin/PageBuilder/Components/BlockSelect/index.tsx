@@ -11,8 +11,10 @@ import BlockIcon from "./BlockIcon";
 type Props = {
   setSelectedBlock: React.Dispatch<React.SetStateAction<BlockName | undefined>>;
   selectedBlock: BlockName | undefined;
-  selectedItems: ContentSelection[];
-  setSelectedItems: React.Dispatch<React.SetStateAction<ContentSelection[]>>;
+  selectedItems: PageBuilderContentSelection[];
+  setSelectedItems: React.Dispatch<
+    React.SetStateAction<PageBuilderContentSelection[]>
+  >;
 };
 
 const BlockSelect = ({

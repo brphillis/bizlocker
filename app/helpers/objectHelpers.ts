@@ -60,3 +60,12 @@ export const sanitizeObject = (
 
   return sanitizedObject;
 };
+
+export const objectToNumber = (obj: object): number => {
+  const jsonString = JSON.stringify(obj);
+  const hash = jsonString.split("").reduce((acc, char) => {
+    acc = (acc << 5) - acc + char.charCodeAt(0);
+    return acc & acc; // Ensure it's a 32-bit signed integer
+  }, 0);
+  return hash;
+};

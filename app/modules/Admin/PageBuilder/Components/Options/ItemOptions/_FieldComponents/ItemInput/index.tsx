@@ -6,7 +6,7 @@ type Props = {
   defaultValues?: string[] | number[];
   formName: string;
   max?: string;
-  selectedItems: ContentSelection[];
+  selectedItems: PageBuilderContentSelection[];
   title: string;
   type?: "string" | "number";
   valueName: string;
@@ -27,7 +27,7 @@ const ItemInput = ({
   );
 
   return (
-    <details className="collapse collapse-plus !hidden !max-w-full !rounded-sm bg-brand-white/20 [&:has(div>div)]:!grid max-md:pb-3">
+    <details className="collapse collapse-plus !hidden !max-w-full !rounded-sm bg-brand-white/20 [&:has(div>div)]:!grid max-md:px-3">
       <summary className="collapse-title text-xl font-medium text-brand-white">
         {title}
       </summary>

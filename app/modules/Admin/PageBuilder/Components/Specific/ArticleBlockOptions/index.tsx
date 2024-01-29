@@ -5,7 +5,7 @@ import { BlockContentType, BlockName } from "~/utility/blockMaster/types";
 
 type Props = {
   selectedBlock?: BlockName;
-  setSelectedItems: (items: ContentSelection[]) => void;
+  setSelectedItems: (items: PageBuilderContentSelection[]) => void;
   articleCategories: ArticleCategory[];
   defaultValues: BlockContentWithDetails;
 };
@@ -18,9 +18,11 @@ const ArticleBlockOptions = ({
 }: Props) => {
   const selectItem = (type: BlockContentType, contentId: number) => {
     // @ts-expect-error: expected typeshift
-    setSelectedItems((prevSelectedItems: ContentSelection[]) => {
-      const itemsArray: ContentSelection[] = Array.isArray(prevSelectedItems)
-        ? (prevSelectedItems as ContentSelection[])
+    setSelectedItems((prevSelectedItems: PageBuilderContentSelection[]) => {
+      const itemsArray: PageBuilderContentSelection[] = Array.isArray(
+        prevSelectedItems,
+      )
+        ? (prevSelectedItems as PageBuilderContentSelection[])
         : [];
       return [...itemsArray, { type, contentId }];
     });

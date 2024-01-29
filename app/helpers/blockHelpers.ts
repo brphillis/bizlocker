@@ -10,9 +10,9 @@ import { getBlockContentTypes } from "../utility/blockMaster/blockMaster";
 // Returns the default content selection values for a block (example:selected Products)
 export const getBlockDefaultValues = (
   block: BlockWithContent,
-): ContentSelection[] => {
+): PageBuilderContentSelection[] => {
   const blockContentTypes = getBlockContentTypes(block.name);
-  const defaultValues: ContentSelection[] = [];
+  const defaultValues: PageBuilderContentSelection[] = [];
 
   // Were using the PRODUCT type as a generic type
   blockContentTypes.map((contentName: keyof BlockContentWithDetails) => {
@@ -64,7 +64,16 @@ export const getBlockDefaultValues = (
     return true;
   });
 
-  return defaultValues.filter((notNull) => notNull) as ContentSelection[];
+  if (block.contentOrder && block.contentOrder.length > 0) {
+    // Sort Block Content in order of BlockContentOrder
+    const sortedBlockValues = returnSortedBlockContent(
+      defaultValues,
+      block.contentOrder,
+      "pagebuilder",
+    );
+
+    return sortedBlockValues as PageBuilderContentSelection[];
+  } else return defaultValues;
 };
 
 // sorts page blocks by the pages blockOrder array
@@ -91,4 +100,55 @@ export const sortBlocks = ({
   );
 
   return sortedBlocks!;
+};
+
+export const returnSortedBlockContent = (
+  unsortedContent: RenderBlockContent[] | PageBuilderContentSelection[],
+  contentOrder: string[],
+  format: "pagebuilder" | "blockrenderer",
+): RenderBlockContent[] | PageBuilderContentSelection[] => {
+  const blockRendererContent: RenderBlockContent[] = [];
+  const pageBuilderContent: PageBuilderContentSelection[] = [];
+
+  const extractContent = (contentOrderString: string) => {
+    const [contentType, contentId] = contentOrderString.split("_");
+
+    return unsortedContent.find(
+      (content) =>
+        content[contentType] &&
+        (
+          content[
+            contentType as keyof BlockContentWithDetails
+          ] as BlockContentWithDetails
+        ).id === Number(contentId),
+    );
+  };
+
+  if (format === "blockrenderer") {
+    contentOrder.forEach((contentOrderString: string) => {
+      const contentToPush = extractContent(contentOrderString);
+
+      if (contentToPush) {
+        blockRendererContent.push(contentToPush);
+      }
+    });
+  }
+
+  if (format === "pagebuilder") {
+    contentOrder.forEach((contentOrderString: string) => {
+      const valueToOrder = unsortedContent
+        .filter((notNull) => notNull)
+        .find(
+          (val) =>
+            val.type === contentOrderString.split("_")[0] &&
+            contentOrderString.split("_")[1] == val.contentId,
+        );
+
+      if (valueToOrder) {
+        pageBuilderContent.push(valueToOrder as PageBuilderContentSelection);
+      }
+    });
+  }
+
+  return format === "blockrenderer" ? blockRendererContent : pageBuilderContent;
 };

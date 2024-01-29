@@ -6,6 +6,7 @@ import { ConvertToBase64Image, type NewImage } from "~/helpers/fileHelpers";
 import { IoClose } from "react-icons/io5";
 import { findFirstNotNullInputValue } from "~/helpers/formHelpers";
 import Icon from "~/components/Icon";
+import BasicInput from "../../Input/BasicInput";
 
 type ImageUploadSliderProps = {
   defaultImages?: Image[] | null;
@@ -13,6 +14,7 @@ type ImageUploadSliderProps = {
 
 const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
   const [activeSlide, setActiveSlide] = useState(0);
+  const [editingTags, setEditingTags] = useState<boolean>();
   const [images, setCurrentImages] = useState<Image[] | NewImage[] | null>(
     defaultImages || null,
   );
@@ -63,7 +65,10 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
       {images && images?.some((image) => image) ? (
         <Swiper
           modules={[Navigation]}
-          onSlideChange={(swiper) => setActiveSlide(swiper.activeIndex)}
+          onSlideChange={(swiper) => {
+            setEditingTags(false);
+            setActiveSlide(swiper.activeIndex);
+          }}
           className="mx-auto mt-6 block h-max w-full"
           spaceBetween={12}
           slidesPerView={1}
@@ -98,8 +103,70 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
         </Swiper>
       ) : null}
 
+      {/* TAG HANDLER */}
+      <div className="w-full flex justify-center">
+        {editingTags && (
+          <div className="flex gap-1 items-start py-1 mt-3">
+            <BasicInput
+              id="2923717102_ImageTagsChangeInput"
+              name="tagsInput"
+              type="text"
+              placeholder="Tags ( seperated by space )"
+              labelStyle="text-brand-white"
+              extendContainerStyle="pl-3 w-[215px] pb-3"
+              extendStyle="!max-h-[32px] !min-h-[32px] !text-sm"
+              defaultValue={images?.[activeSlide]?.tags?.join(" ")}
+            />
+
+            <button
+              type="button"
+              className="bg-primary h-[32px] w-[32px] p-[6px] !rounded-sm cursor-pointer"
+              onClick={() => {
+                const tagsInputValue = (
+                  document?.getElementById(
+                    "2923717102_ImageTagsChangeInput",
+                  ) as HTMLInputElement
+                )?.value;
+
+                const newTags = tagsInputValue.split(" ");
+
+                const cloneImages = images;
+
+                if (cloneImages) {
+                  cloneImages[activeSlide].tags = newTags;
+
+                  if (newTags) {
+                    setCurrentImages(cloneImages);
+                  }
+                  setEditingTags(false);
+                }
+              }}
+            >
+              <Icon
+                iconName="IoCheckmark"
+                size={8}
+                color="#FFFFFFBF"
+                extendStyle="h-full w-full"
+              />
+            </button>
+          </div>
+        )}
+
+        {!editingTags && (
+          <button
+            type="button"
+            className="block mx-auto my-3 bg-primary text-brand-white px-3 py-1 text-xs rounded-sm cursor-pointer"
+            onClick={() => {
+              setEditingTags(true);
+            }}
+          >
+            Edit Tags
+          </button>
+        )}
+      </div>
+
       {/* BOTTOM IMAGES */}
-      <div className="mt-6 flex flex-wrap justify-center gap-3">
+      <div className="flex flex-wrap justify-center gap-3">
         {images?.map(({ href, altText }: Image | NewImage, i: number) => {
           return (
             <label

@@ -2,13 +2,15 @@ import Spinner from "~/components/Spinner";
 import { BlockOptions, Product } from "@prisma/client";
 import ProductGrid from "~/components/Grids/ProductGrid";
 import { BlockContentSorted } from "~/models/Blocks/types";
+import Title from "../_BlockComponents/Title";
+import Container from "../_BlockComponents/Container";
 type Props = {
   content: BlockContentSorted[];
   options: BlockOptions[];
 };
 
-const ProductBlock = ({ content, options: optionsArray }: Props) => {
-  const options = optionsArray[0];
+const ProductBlock = ({ content, options }: Props) => {
+  const { sortBy, columns } = options[0] || {};
 
   const products = content
     .map((e) => e.product as Product)
@@ -26,7 +28,7 @@ const ProductBlock = ({ content, options: optionsArray }: Props) => {
       productCategory?.name &&
       brand?.name.toLowerCase() === "none"
     ) {
-      return "Shop by Newest";
+      return "SHOP BY NEWEST";
     }
 
     if (
@@ -39,10 +41,10 @@ const ProductBlock = ({ content, options: optionsArray }: Props) => {
     }
 
     if (sortBy === "createdAt") {
-      return "Shop New In  ";
+      return "SHOP NEW IN ";
     }
     if (sortBy === "totalSold") {
-      return "Shop Best In  ";
+      return "SHOP BEST IN ";
     } else return null;
   };
 
@@ -67,47 +69,51 @@ const ProductBlock = ({ content, options: optionsArray }: Props) => {
     }
     if (gender) {
       if (gender === "FEMALE") {
-        return "Womans";
+        return "WOMANS";
       }
       if (gender === "MALE") {
-        return "Mens";
+        return "MENS";
       }
       if (gender === "KIDS") {
-        return "Kids";
+        return "KIDS";
       }
       if (gender === "UNISEX") {
-        return "All Ranges";
+        return "ALL RANGES";
       }
 
       return productCategory?.name;
     }
   };
 
-  const columns = options?.columns ? options?.columns : undefined;
+  const currentTitle =
+    (sortBy ? determineSortPhrase(sortBy) : null) +
+    (determineDisplayedFilter() || "OUR RANGE");
 
   return (
-    <>
-      <p className="select-none self-start pl-3 text-xl font-bold md:pl-1">
-        {options?.sortBy ? determineSortPhrase(options?.sortBy) : null}
-        <span className="text-2xl">
-          {determineDisplayedFilter() || "Our Range"}
-        </span>
-      </p>
+    <Container options={options[0]}>
+      <>
+        {currentTitle && (
+          <Title blockOptions={options[0]} otherTitle={currentTitle} />
+        )}
+      </>
 
       {products && (
         <ProductGrid
           products={products}
-          cols={columns}
+          cols={columns || undefined}
           enablePlaceHolder={true}
+          extendStyle="!px-0"
         />
       )}
 
-      {!products && (
-        <div className="flex w-full items-center justify-center">
-          <Spinner mode="circle" />
-        </div>
-      )}
-    </>
+      <>
+        {!products && (
+          <div className="flex w-full items-center justify-center">
+            <Spinner mode="circle" />
+          </div>
+        )}
+      </>
+    </Container>
   );
 };
 

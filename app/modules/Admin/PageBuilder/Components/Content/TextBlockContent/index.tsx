@@ -5,8 +5,8 @@ import RichTextInput from "~/components/Forms/Input/RichTextInput/index.client";
 
 type Props = {
   selectedBlock: BlockName | undefined;
-  selectedItems: ContentSelection[];
-  setSelectedItems: (items: ContentSelection[]) => void;
+  selectedItems: PageBuilderContentSelection[];
+  setSelectedItems: (items: PageBuilderContentSelection[]) => void;
   defaultValue: BlockContentWithDetails;
 };
 
@@ -23,7 +23,7 @@ const TextBlockContentModule = ({
     contentId: string,
   ) => {
     // @ts-expect-error: expected typeshift
-    setSelectedItems((prevSelectedItems: ContentSelection[]) => {
+    setSelectedItems((prevSelectedItems: PageBuilderContentSelection[]) => {
       if (!Array.isArray(prevSelectedItems)) {
         prevSelectedItems = [];
       }

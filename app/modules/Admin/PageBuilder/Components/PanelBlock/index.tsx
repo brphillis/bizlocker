@@ -23,6 +23,7 @@ import SelectedContent from "../Content/SelectedContent";
 import TextBlockContentModule from "../Content/TextBlockContent";
 import ProductBlockOptions from "../Specific/ProductBlockOptions";
 import ArticleBlockOptions from "../Specific/ArticleBlockOptions";
+import { objectToNumber } from "~/helpers/objectHelpers";
 
 type Props = {
   articleCategories: ArticleCategoryWithDetails[];
@@ -36,10 +37,15 @@ type Props = {
   reset: () => void;
   searchResults: unknown;
   selectedBlock: BlockName | undefined;
-  selectedItems: ContentSelection[];
+  selectedItems: PageBuilderContentSelection[];
+  setCurrentBlocks: React.Dispatch<
+    React.SetStateAction<BlockWithContent[] | null>
+  >;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setSelectedBlock: React.Dispatch<React.SetStateAction<BlockName | undefined>>;
-  setSelectedItems: React.Dispatch<React.SetStateAction<ContentSelection[]>>;
+  setSelectedItems: React.Dispatch<
+    React.SetStateAction<PageBuilderContentSelection[]>
+  >;
 };
 
 const PanelBlock = ({
@@ -55,6 +61,7 @@ const PanelBlock = ({
   searchResults,
   selectedBlock,
   selectedItems,
+  setCurrentBlocks,
   setLoading,
   setSelectedBlock,
   setSelectedItems,
@@ -68,7 +75,7 @@ const PanelBlock = ({
     setActiveTab(tab);
   };
 
-  const handleLimitedItemSelect = (items: ContentSelection[]) => {
+  const handleLimitedItemSelect = (items: PageBuilderContentSelection[]) => {
     //check to see if we are at the content limit for the block before adding content
     const selectedBlocksContentLimit = blockMaster.find(
       (e) => selectedBlock === e.name,
@@ -160,11 +167,15 @@ const PanelBlock = ({
           <SelectedContent
             selectedBlock={selectedBlock}
             selectedItems={selectedItems}
+            currentBlocks={currentBlocks}
+            setCurrentBlocks={setCurrentBlocks}
             setSelectedItems={setSelectedItems}
+            editingIndex={editingIndex}
           />
         </div>
 
         <OptionsModule
+          key={objectToNumber(selectedItems)}
           selectedBlock={selectedBlock}
           defaultValues={currentBlocks?.[editingIndex]?.blockOptions?.[0]}
           selectedItems={selectedItems}
@@ -208,7 +219,7 @@ const PanelBlock = ({
 
         {selectedItems && (
           <input
-            name="contentSelection"
+            name="PageBuilderContentSelection"
             value={JSON.stringify(selectedItems)}
             hidden
             readOnly

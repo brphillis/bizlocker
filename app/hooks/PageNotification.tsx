@@ -6,7 +6,7 @@ export type PageNotification = {
   type: ToastType;
 };
 
-const useNotification = (notification: PageNotification) => {
+const useNotification = (notification?: PageNotification) => {
   useEffect(() => {
     if (notification) {
       Toast(notification.type, 2500, notification.message);

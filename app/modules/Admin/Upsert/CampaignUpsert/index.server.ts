@@ -1,10 +1,8 @@
-import { tokenAuth } from "~/auth.server";
 import { Image } from "@prisma/client";
 import { Params } from "@remix-run/react";
-import { json, redirect } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import { validateForm } from "~/utility/validate";
 import { getBrands } from "~/models/Brands/index.server";
-import { STAFF_SESSION_KEY } from "~/session.server";
 import { getDepartments } from "~/models/Departments/index.server";
 import { PageNotification } from "~/hooks/PageNotification";
 import { getProductSubCategories } from "~/models/ProductSubCategories/index.server";
@@ -61,12 +59,6 @@ export const campaignUpsertAction = async (
   request: Request,
   params: Params<string>,
 ) => {
-  const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
-
-  if (!authenticated.valid) {
-    return redirect("/login");
-  }
-
   const id = params.id === "add" ? undefined : params.id;
 
   const { formEntries, formErrors } = validateForm(

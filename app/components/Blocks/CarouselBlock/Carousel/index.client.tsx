@@ -84,7 +84,7 @@ const Carousel = ({ content, options }: Props) => {
 
   return (
     <div
-      className={`relative shadow-md 
+      className={`relative shadow-md
       ${backgroundColorPrimary ? "py-6" : "p-0"} 
       ${
         backgroundColorPrimary && backgroundDisplayPrimary === "max-md:hidden"

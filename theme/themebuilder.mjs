@@ -1,5 +1,5 @@
-import colorPrefixList from "./themeColorPrefixList.js";
-import themeColors from "./theme";
+import { colorPrefixList } from "./themeColorPrefixList.mjs";
+import { themeColors } from "./theme.mjs";
 import * as fs from "fs";
 import * as path from "path";
 

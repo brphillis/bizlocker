@@ -49,7 +49,7 @@ const ImageUpsert = ({ offRouteModule }: Props) => {
     campaignBanner,
     campaignTile,
     brandId,
-    productSubCategoryId,
+    productSubCategoryTileImageId,
     articleId,
     productId,
   } = image || {};
@@ -246,7 +246,7 @@ const ImageUpsert = ({ offRouteModule }: Props) => {
                     </td>
                   </tr>
                 )}
-                {productSubCategoryId && (
+                {productSubCategoryTileImageId && (
                   <tr className="hover cursor-pointer">
                     <td className="w-4/5">Product Category Image</td>
                     <td className="w-1/5">
@@ -255,7 +255,7 @@ const ImageUpsert = ({ offRouteModule }: Props) => {
                         className="ml-2"
                         onClick={() =>
                           navigate(
-                            `/admin/product-categories/${productSubCategoryId}`,
+                            `/admin/product-categories/${productSubCategoryTileImageId}`,
                           )
                         }
                       >

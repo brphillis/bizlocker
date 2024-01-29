@@ -1,5 +1,5 @@
-import type { BlockOptions } from "@prisma/client";
-import type { BlockContentType, BlockName } from "./blockMaster/types";
+import { BlockOptions } from "@prisma/client";
+import { BlockContentType, BlockName } from "./blockMaster/types";
 import { searchCampaigns } from "~/models/Campaigns/index.server";
 import { searchImages } from "~/models/Images/index.server";
 import { searchProducts } from "~/models/Products/index.server";
@@ -12,6 +12,9 @@ import {
 import { searchBrands } from "~/models/Brands/index.server";
 import { searchIcons } from "./icons";
 import { searchStores } from "~/models/Stores/index.server";
+import { NewBlockContent } from "~/models/Blocks/types";
+import { searchProductSubCategories } from "~/models/ProductSubCategories/index.server";
+import { searchProductCategories } from "~/models/ProductCategories/index.server";
 
 export type PageType = "homePage" | "webPage" | "article" | "previewPage";
 
@@ -22,7 +25,8 @@ export interface NewBlockData {
   blockName: BlockName;
   itemIndex: number;
   contentType: BlockContentType;
-  contentData: object;
+  contentData: NewBlockContent;
+  blockContentOrder: string[];
 }
 
 // Prisma include to include all pagetypes with all blocks
@@ -567,15 +571,19 @@ export const getBlockUpdateValues = (form: {
 }): NewBlockData => {
   const { previewPageId, blockName, itemIndex, contentType } = form;
 
-  const parsedObjectData = buildNewBlockData(blockName as BlockName, form);
+  const { newContentData, blockContentOrder } = buildNewBlockData(
+    blockName as BlockName,
+    form,
+  );
 
-  const blockUpdateValues = {
+  const blockUpdateValues: NewBlockData = {
     previewPageId: parseInt(previewPageId as string),
     blockName: blockName as BlockName,
     itemIndex: parseInt(itemIndex as string),
     contentType: contentType as BlockContentType,
-    contentData: parsedObjectData,
-  } as NewBlockData;
+    contentData: newContentData as NewBlockContent,
+    blockContentOrder: blockContentOrder,
+  };
 
   return blockUpdateValues;
 };
@@ -585,10 +593,12 @@ export const buildNewBlockData = (
   form: {
     [k: string]: FormDataEntryValue;
   },
-) => {
+): { newContentData: NewBlockContent; blockContentOrder: string[] } => {
   const newData:
     | { [key in BlockContentType]: string[] | undefined }
     | Partial<Record<BlockContentType, string[]>> = {};
+
+  const blockContentOrder: string[] = [];
 
   // we go through the blockmaster object getting the relevant data
   blockMaster.map(({ name, maxContentItems }: BlockMaster) => {
@@ -604,30 +614,42 @@ export const buildNewBlockData = (
           (newData[contentTypeName] = hasMultipleContent ? [] : undefined),
       );
 
-      let { contentSelection } = form;
+      const { PageBuilderContentSelection } = form;
 
-      contentSelection = JSON.parse(contentSelection as string);
+      const parsedPageBuilderContentSelection = JSON.parse(
+        PageBuilderContentSelection as string,
+      );
 
-      // we then assign the data to each key
-      (contentSelection as unknown as ContentSelection[]).forEach(
-        ({ type, contentId }: ContentSelection) => {
-          blockContentTypes?.map((contentName: string) => {
-            if (type === contentName && hasMultipleContent) {
-              // @ts-expect-error: content name will be blocks content type from blockmaster ie: Product,Promotion etc
-              newData[contentName] = [...newData[contentName], contentId];
-            } else if (type === contentName && !hasMultipleContent) {
-              // @ts-expect-error: content name will be blocks content type from blockmaster ie: Product,Promotion etc
-              newData[contentName] = contentId;
-            }
-            return null;
-          });
+      // creating an array of string for block content order ["image_id", "promotion_id"]
+      parsedPageBuilderContentSelection.forEach(
+        (p: PageBuilderContentSelection) => {
+          blockContentOrder.push(p.type + "_" + p.contentId);
         },
       );
+
+      // we then assign the data to each key
+      (
+        parsedPageBuilderContentSelection as unknown as PageBuilderContentSelection[]
+      ).forEach(({ type, contentId }: PageBuilderContentSelection) => {
+        blockContentTypes?.map((contentName: string) => {
+          if (type === contentName && hasMultipleContent) {
+            // @ts-expect-error: content name will be blocks content type from blockmaster ie: Product,Promotion etc
+            newData[contentName] = [...newData[contentName], contentId];
+          } else if (type === contentName && !hasMultipleContent) {
+            // @ts-expect-error: content name will be blocks content type from blockmaster ie: Product,Promotion etc
+            newData[contentName] = contentId;
+          }
+          return null;
+        });
+      });
     }
+
     return null;
   });
 
-  return newData;
+  const newContentData = newData as NewBlockContent;
+
+  return { newContentData, blockContentOrder };
 };
 
 // returns content data that a user searches for in the pagebuilder
@@ -669,6 +691,22 @@ export const searchContentData = async (
     case "product": {
       const { products } = await searchProducts(Object.fromEntries(formData));
       searchResults = products;
+      return searchResults;
+    }
+
+    case "productCategory": {
+      const { productCategories } = await searchProductCategories(
+        Object.fromEntries(formData),
+      );
+      searchResults = productCategories;
+      return searchResults;
+    }
+
+    case "productSubCategory": {
+      const { productSubCategories } = await searchProductSubCategories(
+        Object.fromEntries(formData),
+      );
+      searchResults = productSubCategories;
       return searchResults;
     }
 

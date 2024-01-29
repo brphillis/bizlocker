@@ -1,8 +1,8 @@
 import type { Cart, User } from "@prisma/client";
-import { IoMenu, IoSearchOutline } from "react-icons/io5";
-import AccountButton from "../Buttons/AccountButton";
-import CartButton from "../Buttons/CartButton";
-import { useLocation } from "@remix-run/react";
+import { IoMenu, IoPersonOutline, IoSearchOutline } from "react-icons/io5";
+import AccountButton from "../../Buttons/AccountButton";
+import CartButton from "../../Buttons/CartButton";
+import { useLocation, useNavigate } from "@remix-run/react";
 
 type Props = {
   setSearchState: (state: boolean) => void;
@@ -11,19 +11,20 @@ type Props = {
   cart?: Cart | null;
 };
 
-const MobileButtonContainer = ({
+const HamburgerContainer = ({
   user,
   cart,
   setSearchState,
   searchState,
 }: Props) => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   return (
-    <div className="flex h-[60px] items-center lg:hidden">
+    <div className="max-xl:flex h-[60px] items-center hidden">
       {/* eslint-disable */}
       <label
-        htmlFor="my-drawer-3"
+        htmlFor="mobile-navigation-state"
         className="btn btn-square btn-ghost text-brand-white/50"
       >
         <IoMenu size={26} />
@@ -33,6 +34,15 @@ const MobileButtonContainer = ({
         {user && !location.pathname.includes("/account") && (
           <AccountButton {...user} />
         )}
+
+        {!user && (
+          <IoPersonOutline
+            size={24}
+            onClick={() => navigate("/login")}
+            className="cursor-pointer text-brand-white"
+          />
+        )}
+
         {cart && location.pathname !== "/cart" && <CartButton {...cart} />}
 
         <IoSearchOutline
@@ -45,4 +55,4 @@ const MobileButtonContainer = ({
   );
 };
 
-export default MobileButtonContainer;
+export default HamburgerContainer;

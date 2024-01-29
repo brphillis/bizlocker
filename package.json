@@ -4,7 +4,7 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "update-theme": "node ./theme/themebuilder.js",
+    "update-theme": "node ./theme/themebuilder.mjs",
     "dev": "node ./server.mjs",
     "build": "remix vite:build",
     "start": "cross-env NODE_ENV=production node ./server.mjs",

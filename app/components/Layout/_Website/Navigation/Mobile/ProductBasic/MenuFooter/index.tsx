@@ -6,7 +6,7 @@ type Props = {
   user: User | null;
 };
 
-const MobileMenuFooter = ({ user }: Props) => {
+const MenuFooter = ({ user }: Props) => {
   const navigate = useNavigate();
   const submit = useSubmit();
 
@@ -15,7 +15,7 @@ const MobileMenuFooter = ({ user }: Props) => {
       <div className="flex flex-row items-center justify-between border-t border-white/25 px-3 py-4">
         {/* eslint-disable */}
         <label
-          htmlFor="my-drawer-3"
+          htmlFor="mobile-navigation-state"
           className="text-xs font-bold text-brand-white/75"
           onClick={() => navigate("terms-conditions")}
         >
@@ -24,7 +24,7 @@ const MobileMenuFooter = ({ user }: Props) => {
 
         {user && (
           <label
-            htmlFor="my-drawer-3"
+            htmlFor="mobile-navigation-state"
             onClick={() => submit(null, { method: "post", action: "/logout" })}
           >
             <IoLogOutOutline size={20} />
@@ -33,7 +33,7 @@ const MobileMenuFooter = ({ user }: Props) => {
 
         {!user && (
           <label
-            htmlFor="my-drawer-3"
+            htmlFor="mobile-navigation-state"
             className="flex items-center rounded-sm bg-primary px-3 py-2 text-sm tracking-wide text-brand-white"
             onClick={() => navigate("login")}
           >
@@ -47,4 +47,4 @@ const MobileMenuFooter = ({ user }: Props) => {
   );
 };
 
-export default MobileMenuFooter;
+export default MenuFooter;

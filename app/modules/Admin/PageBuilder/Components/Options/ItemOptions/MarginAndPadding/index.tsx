@@ -22,7 +22,7 @@ import {
 import Divider from "~/components/Filter/ProductFilterSideBar/Divider";
 
 type Props = {
-  selectedItems: ContentSelection[];
+  selectedItems: PageBuilderContentSelection[];
   defaultValues?: BlockOptions;
   selectedBlockOptions: BlockMasterOptions | undefined;
 };

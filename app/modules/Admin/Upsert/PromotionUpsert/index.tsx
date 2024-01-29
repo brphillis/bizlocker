@@ -242,11 +242,13 @@ const PromotionUpsert = ({ offRouteModule }: Props) => {
                   })}
                 </tbody>
               </table>
-              <input
-                type="hidden"
-                name="products"
-                value={JSON.stringify(products.map((e) => e.id)) || ""}
-              />
+              {products && (
+                <input
+                  type="hidden"
+                  name="products"
+                  value={JSON.stringify(products.map((e) => e.id)) || ""}
+                />
+              )}
             </div>
           </TabContent>
 
