@@ -5,9 +5,14 @@ import { getThemeColorValueByName } from "~/utility/colors";
 type Props = {
   blockOptions: BlockOptions;
   index: number;
+  position?: "relative" | "absolute";
 };
 
-const TextContainer = ({ blockOptions, index }: Props) => {
+const TextContainer = ({
+  blockOptions,
+  index,
+  position = "absolute",
+}: Props) => {
   const {
     itemAlign,
     itemAlignMobile,
@@ -49,7 +54,7 @@ const TextContainer = ({ blockOptions, index }: Props) => {
 
   return (
     <div
-      className={`absolute flex w-full h-full top-0
+      className={`${position} flex w-full h-full top-0
     ${itemAlign?.[index]} ${itemAlignMobile[index]} ${itemJustify[index]} ${itemJustifyMobile[index]}`}
     >
       <div

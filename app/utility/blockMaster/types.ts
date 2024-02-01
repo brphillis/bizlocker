@@ -13,7 +13,6 @@ export type BlockName =
 export type BlockContentType =
   | "campaign"
   | "promotion"
-  | "emptyItem"
   | "image"
   | "product"
   | "productCategory"
@@ -24,6 +23,7 @@ export type BlockContentType =
   | "richText"
   | "gender"
   | "icon"
-  | "store";
+  | "store"
+  | "other";
 
 export type BlockMasterOptions = TransformToOptionalBooleans<BlockOptions>;

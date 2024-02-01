@@ -91,7 +91,8 @@ export const upsertProduct = async (
   const {
     name,
     description,
-    infoURL,
+    dropshipURL,
+    dropshipSKU,
     productSubCategories,
     gender,
     isActive,
@@ -138,7 +139,8 @@ export const upsertProduct = async (
   const data: ProductUpsertQuery = {
     name,
     description,
-    infoURL,
+    dropshipURL,
+    dropshipSKU,
     gender: gender as Gender,
     isActive,
     discountPercentageHigh,
@@ -642,7 +644,7 @@ export const searchProducts = async (
         },
       });
 
-      filter.productCategories = {
+      filter.productSubCategories = {
         some: {
           id: {
             in: productSubCategories.map((category) => category.id),

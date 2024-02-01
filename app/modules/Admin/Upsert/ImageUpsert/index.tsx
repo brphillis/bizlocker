@@ -48,7 +48,7 @@ const ImageUpsert = ({ offRouteModule }: Props) => {
     promotionTile,
     campaignBanner,
     campaignTile,
-    brandId,
+    brandHeroImageId,
     productSubCategoryTileImageId,
     articleId,
     productId,
@@ -232,14 +232,16 @@ const ImageUpsert = ({ offRouteModule }: Props) => {
                     })}
                   </>
                 )}
-                {brandId && (
+                {brandHeroImageId && (
                   <tr className="hover cursor-pointer">
                     <td className="w-4/5">Brand Image</td>
                     <td className="w-1/5">
                       <button
                         type="button"
                         className="ml-2"
-                        onClick={() => navigate(`/admin/brands/${brandId}`)}
+                        onClick={() =>
+                          navigate(`/admin/brands/${brandHeroImageId}`)
+                        }
                       >
                         <IoCaretForwardCircleSharp size={18} />
                       </button>

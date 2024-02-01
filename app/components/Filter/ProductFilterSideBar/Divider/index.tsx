@@ -11,9 +11,7 @@ const Divider = ({ extendStyle, color }: Props) => {
       currentColor = "border-brand-white/5";
   }
 
-  return (
-    <div className={`my-3 w-full border-b-2 ${currentColor} ${extendStyle}`} />
-  );
+  return <div className={`w-full border-b-2 ${currentColor} ${extendStyle}`} />;
 };
 
 export default Divider;

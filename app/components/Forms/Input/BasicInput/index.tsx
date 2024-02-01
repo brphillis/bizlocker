@@ -72,7 +72,7 @@ const BasicInput = ({
           decimals
             ? typeof defaultValue === "string"
               ? parseFloat(defaultValue).toFixed(decimals)
-              : undefined
+              : (defaultValue as number)
             : (defaultValue as string | number | readonly string[] | undefined)
         }
         onChange={(e) => {

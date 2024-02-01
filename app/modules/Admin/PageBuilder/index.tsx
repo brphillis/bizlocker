@@ -16,13 +16,10 @@ export const PageBuilderModule = () => {
   const {
     articleCategories,
     blocks,
-    brands,
     currentPreviewPage,
     publishedPage,
     pageType,
     previewPages,
-    productCategories,
-    productSubCategories,
   } = useLoaderData<typeof pageBuilderLoader>();
 
   const {
@@ -118,14 +115,10 @@ export const PageBuilderModule = () => {
             {editingContent && previewPage && (
               <PanelBlock
                 key={editingIndex}
-                articleCategories={articleCategories}
-                brands={brands}
                 currentBlocks={currentBlocks}
                 editingIndex={editingIndex}
                 loading={loading}
                 previewPage={previewPage}
-                productCategories={productCategories}
-                productSubCategories={productSubCategories}
                 reset={reset}
                 searchResults={searchResults}
                 selectedBlock={selectedBlock}

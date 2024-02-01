@@ -11,7 +11,11 @@ type Props = {
   user: User | null;
 };
 
-const ProductBasic = ({ departments, productCategories, user }: Props) => {
+const ProductBasicMobile = ({
+  departments,
+  productCategories,
+  user,
+}: Props) => {
   const [selectedDepartment, setSelectedDepartment] = useState<number>(
     departments?.[0].id,
   );
@@ -84,4 +88,4 @@ const ProductBasic = ({ departments, productCategories, user }: Props) => {
   );
 };
 
-export default ProductBasic;
+export default ProductBasicMobile;

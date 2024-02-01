@@ -188,3 +188,26 @@ const createEcommerceSeedData = async () => {
     await prisma.$disconnect();
   }
 };
+
+export const deleteAllProductData = async () => {
+  try {
+    // Step 1: Delete all ProductVariants
+    await prisma.productVariant.deleteMany({});
+
+    // Step 2: Delete all Products
+    await prisma.product.deleteMany({});
+
+    // Step 3: Delete all Images linked to Products
+    await prisma.image.deleteMany({
+      where: {
+        productId: { not: null }, // Assuming your Image has a productId field linking it to a Product
+      },
+    });
+
+    console.log("Deletion successful");
+  } catch (error) {
+    console.error("Error deleting data:", error);
+  } finally {
+    await prisma.$disconnect();
+  }
+};

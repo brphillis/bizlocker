@@ -4,6 +4,7 @@ import { useNavigate } from "@remix-run/react";
 import Pagination from "~/components/Pagination";
 import { ProductWithDetails } from "~/models/Products/types";
 import ProductCard from "../../Cards/ProductCard";
+import Divider from "~/components/Filter/ProductFilterSideBar/Divider";
 
 type Props = {
   products: ProductWithDetails[];
@@ -69,7 +70,7 @@ const ProductGrid = ({
               })
             }
           >
-            <div className="relative flex h-60 w-full max-w-full cursor-pointer items-center justify-center overflow-hidden bg-gradient-to-tr from-brand-black/25 to-brand-white/50 sm:h-72">
+            <div className="relative flex max-sm:h-60 max-md:h-[300px] h-72  w-full max-w-full cursor-pointer items-center justify-center overflow-hidden bg-gradient-to-tr from-brand-black/25 to-brand-white/50">
               <div className="flex flex-col items-center justify-center gap-3">
                 <div className="rounded-full bg-brand-black/50 p-2">
                   <IoShirtSharp size={22} className="text-brand-white" />
@@ -82,7 +83,13 @@ const ProductGrid = ({
           </button>
         )}
       </div>
-      {totalPages && <Pagination totalPages={totalPages} />}
+
+      {totalPages && totalPages > 1 && (
+        <>
+          <Divider color="black" extendStyle="pt-6 mb-0" />
+          <Pagination totalPages={totalPages} />
+        </>
+      )}
     </div>
   );
 };

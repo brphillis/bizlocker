@@ -164,6 +164,7 @@ const ProductVariantUpsert = ({ storeId, product, availableColors }: Props) => {
 
     if (variants) {
       Toast("info", 3000, "Data Prefilled.");
+
       setActiveVariant({
         price: variants?.[0]?.price,
         salePrice: variants?.[0]?.salePrice,
@@ -197,6 +198,10 @@ const ProductVariantUpsert = ({ storeId, product, availableColors }: Props) => {
 
     if (name) {
       generatedSKU += name.split(" ")[0].toUpperCase();
+
+      if (name.split(" ")[1]) {
+        generatedSKU += name.split(" ")[1].toUpperCase();
+      }
     }
     if (color) {
       generatedSKU += color.toUpperCase();

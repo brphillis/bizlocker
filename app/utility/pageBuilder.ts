@@ -728,6 +728,10 @@ export const searchContentData = async (
       return searchResults;
     }
 
+    case "other": {
+      return [{ id: "blank", name: "blank item" }];
+    }
+
     default:
       return searchResults;
   }

@@ -125,13 +125,11 @@ const ProductFilterSideBar = ({
         </button>
       )}
       {menuIsExpanded && (
-        <ul className="menu collapse mx-3 w-full rounded-none bg-base-200/50 px-3 xl:mx-0 xl:block xl:w-96">
-          <div className="collapse-title px-3 py-3 xl:hidden">
-            <div className="text-md flex h-[10px] items-center justify-center gap-3 pb-1 font-semibold text-brand-black">
-              <p>FILTERS</p> <IoChevronUp />
-            </div>
-            <div className="my-2 w-full border-b-2 border-brand-black/5" />
+        <ul className="menu collapse max-xl:mx-3 max-xl:w-full rounded-none !px-0 bg-base-200/50 mx-0 block w-96 shadow-sm">
+          <div className="collapse-title !min-h-[30px] !px-0 !pt-0 !mt-0 !pb-0 xl:hidden text-md flex items-center justify-center !mb-0 gap-3 font-semibold text-brand-black">
+            <p>FILTERS</p> <IoChevronUp />
           </div>
+
           <input
             className="absolute top-0 block xl:hidden"
             type="checkbox"

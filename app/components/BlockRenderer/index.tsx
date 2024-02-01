@@ -16,6 +16,7 @@ const BlockRenderer = ({ blocks }: Props) => {
           return null;
         }
         const Component = blockConfig?.component;
+
         return (
           <React.Fragment key={`${name}Block_${i}`}>
             {content && (

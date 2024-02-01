@@ -21,6 +21,10 @@ import WindowContainer, {
 import useNotification from "~/hooks/PageNotification";
 import type { ActionReturnTypes } from "~/utility/actionTypes";
 import type { siteSettingsUpsertLoader } from "./index.server";
+import {
+  navigationDesktopSelectValues,
+  navigationMobileSelectValues,
+} from "./values";
 
 const validateOptions = {};
 
@@ -29,7 +33,8 @@ const SiteSettingsUpsert = () => {
   const { notification } = (useActionData() as ActionReturnTypes) || {};
 
   const {
-    navigationStyle,
+    navigationStyleDesktop,
+    navigationStyleMobile,
     spinnerStyle,
     announcementMessage,
     announcementIsActive,
@@ -81,14 +86,19 @@ const SiteSettingsUpsert = () => {
           >
             <div className="relative flex flex-row items-end gap-6 max-md:gap-3">
               <BasicSelect
-                name="navigationStyle"
-                label="Navigation Style"
-                selections={[
-                  { id: "productBasic", name: "Product Basic" },
-                  { id: "productMegaMenu", name: "Product MegaMenu" },
-                ]}
-                placeholder="Navigation Style"
-                defaultValue={navigationStyle}
+                name="navigationStyleDesktop"
+                label="Navigation Style Desktop"
+                selections={navigationDesktopSelectValues}
+                placeholder="Navigation Style Desktop"
+                defaultValue={navigationStyleDesktop}
+              />
+
+              <BasicSelect
+                name="navigationStyleMobile"
+                label="Navigation Style Mobile"
+                selections={navigationMobileSelectValues}
+                placeholder="Navigation Style Mobile"
+                defaultValue={navigationStyleMobile}
               />
 
               <BasicSelect

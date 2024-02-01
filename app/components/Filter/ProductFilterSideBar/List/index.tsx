@@ -15,10 +15,10 @@ const List = ({ label, listValues, searchParam }: Props) => {
     <li>
       {/* eslint-disable-next-line */}
       <details onClick={(e) => searchedValue && e.preventDefault()}>
-        <summary className="mx-2 rounded-none font-semibold text-brand-black">
+        <summary className="rounded-none font-semibold text-brand-black">
           {label}
         </summary>
-        <div className="mb-1 max-h-[300px] overflow-y-auto">
+        <div className="pb-3 max-h-[300px] overflow-y-auto">
           {listValues?.map((value: string) => {
             return (
               <button

@@ -59,7 +59,7 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <div className="text-center">Upload Images</div>
+      <div className="text-center pb-3">Upload Images</div>
 
       {/* // FOCUSED IMAGE */}
       {images && images?.some((image) => image) ? (
@@ -69,7 +69,7 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
             setEditingTags(false);
             setActiveSlide(swiper.activeIndex);
           }}
-          className="mx-auto mt-6 block h-max w-full"
+          className="mx-auto block h-max w-full"
           spaceBetween={12}
           slidesPerView={1}
           centeredSlides={true}
@@ -103,67 +103,69 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
         </Swiper>
       ) : null}
 
-      {/* TAG HANDLER */}
-      <div className="w-full flex justify-center">
-        {editingTags && (
-          <div className="flex gap-1 items-start py-1 mt-3">
-            <BasicInput
-              id="2923717102_ImageTagsChangeInput"
-              name="tagsInput"
-              type="text"
-              placeholder="Tags ( seperated by space )"
-              labelStyle="text-brand-white"
-              extendContainerStyle="pl-3 w-[215px] pb-3"
-              extendStyle="!max-h-[32px] !min-h-[32px] !text-sm"
-              defaultValue={images?.[activeSlide]?.tags?.join(" ")}
-            />
+      {/* tag editing */}
+      {images && images.length > 0 && (
+        <div className="w-full flex justify-center">
+          {editingTags && (
+            <div className="flex gap-1 items-start mt-3 mb-2">
+              <BasicInput
+                id="2923717102_ImageTagsChangeInput"
+                name="tagsInput"
+                type="text"
+                placeholder="Tags ( seperated by space )"
+                labelStyle="text-brand-white"
+                extendContainerStyle="pl-3 w-[215px] pb-3"
+                extendStyle="!max-h-[32px] !min-h-[32px] !text-sm"
+                defaultValue={images?.[activeSlide]?.tags?.join(" ")}
+              />
 
+              <button
+                type="button"
+                className="bg-primary h-[32px] w-[32px] p-[6px] !rounded-sm cursor-pointer"
+                onClick={() => {
+                  const tagsInputValue = (
+                    document?.getElementById(
+                      "2923717102_ImageTagsChangeInput",
+                    ) as HTMLInputElement
+                  )?.value;
+
+                  const newTags = tagsInputValue.split(" ");
+
+                  const cloneImages = images;
+
+                  if (cloneImages) {
+                    cloneImages[activeSlide].tags = newTags;
+
+                    if (newTags) {
+                      setCurrentImages(cloneImages);
+                    }
+                    setEditingTags(false);
+                  }
+                }}
+              >
+                <Icon
+                  iconName="IoCheckmark"
+                  size={8}
+                  color="#FFFFFFBF"
+                  extendStyle="h-full w-full"
+                />
+              </button>
+            </div>
+          )}
+
+          {!editingTags && (
             <button
               type="button"
-              className="bg-primary h-[32px] w-[32px] p-[6px] !rounded-sm cursor-pointer"
+              className="block mx-auto mt-3 mb-4 bg-primary text-brand-white px-3 py-1 text-xs rounded-sm cursor-pointer"
               onClick={() => {
-                const tagsInputValue = (
-                  document?.getElementById(
-                    "2923717102_ImageTagsChangeInput",
-                  ) as HTMLInputElement
-                )?.value;
-
-                const newTags = tagsInputValue.split(" ");
-
-                const cloneImages = images;
-
-                if (cloneImages) {
-                  cloneImages[activeSlide].tags = newTags;
-
-                  if (newTags) {
-                    setCurrentImages(cloneImages);
-                  }
-                  setEditingTags(false);
-                }
+                setEditingTags(true);
               }}
             >
-              <Icon
-                iconName="IoCheckmark"
-                size={8}
-                color="#FFFFFFBF"
-                extendStyle="h-full w-full"
-              />
+              Edit Tags
             </button>
-          </div>
-        )}
-
-        {!editingTags && (
-          <button
-            type="button"
-            className="block mx-auto my-3 bg-primary text-brand-white px-3 py-1 text-xs rounded-sm cursor-pointer"
-            onClick={() => {
-              setEditingTags(true);
-            }}
-          >
-            Edit Tags
-          </button>
-        )}
-      </div>
+          )}
+        </div>
+      )}
 
       {/* BOTTOM IMAGES */}
       <div className="flex flex-wrap justify-center gap-3">

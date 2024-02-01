@@ -37,7 +37,7 @@ const ResultsTable = ({
         item.name === name,
     );
 
-    if (!itemExists) {
+    if (!itemExists || type === ("other" || "icon")) {
       // @ts-expect-error: expected typeshift
       setSelectedItems((prevSelectedItems: PageBuilderContentSelection[]) => {
         if (!Array.isArray(prevSelectedItems)) {

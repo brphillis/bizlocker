@@ -27,8 +27,8 @@ const Footer = () => {
 
         <div className="text-brand-white">
           <span className="footer-title">Company</span>
-          <Link className="link-hover link" to="/our-locations">
-            Our Locations
+          <Link className="link-hover link" to="/faq">
+            FAQ
           </Link>
           <Link className="link-hover link" to="/about-us">
             About us

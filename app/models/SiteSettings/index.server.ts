@@ -3,9 +3,9 @@ import { prisma } from "~/db.server";
 export type { Brand } from "@prisma/client";
 
 export const getSiteSettings = async (): Promise<SiteSettings | null> => {
-  let existingSiteSettings = await prisma.siteSettings.findFirst();
+  let existingSiteSettings = await prisma.siteSettings.findFirst({});
 
-  if (existingSiteSettings) {
+  if (!existingSiteSettings) {
     existingSiteSettings = await prisma.siteSettings.create({});
   }
 
@@ -18,8 +18,12 @@ export const updateSiteSettings = async (
   const existingSettings = await prisma.siteSettings.findFirst({});
 
   if (existingSettings) {
-    await prisma.siteSettings.update({
+    return await prisma.siteSettings.update({
       where: { id: existingSettings.id },
+      data: { ...siteSettings },
+    });
+  } else {
+    return await prisma.siteSettings.create({
       data: { ...siteSettings },
     });
   }

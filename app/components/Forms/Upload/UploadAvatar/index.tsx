@@ -9,7 +9,7 @@ type Props = {
 
 const UploadAvatar = ({ avatar }: Props) => {
   const [image, setImage] = useState<NewImage | Image | undefined>(
-    avatar || undefined
+    avatar || undefined,
   );
 
   return (
@@ -40,7 +40,7 @@ const UploadAvatar = ({ avatar }: Props) => {
           value={JSON.stringify(image) || ""}
         />
       </div>
-      <div className="divider mt-0 w-full" />
+      <div className="divider mt-0 mb-0 w-full" />
     </>
   );
 };

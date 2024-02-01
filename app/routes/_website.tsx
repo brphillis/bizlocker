@@ -30,9 +30,11 @@ import CountDown from "~/components/Indicators/Countdown";
 import HamburgerContainer from "~/components/Layout/_Website/Navigation/Mobile/_HamburgerContainer";
 import ProductMegaMenu from "~/components/Layout/_Website/Navigation/Desktop/ProductMegaMenu";
 import { GetRandomActivePromotions } from "~/models/Promotions/index.server";
-import ProductBasic from "~/components/Layout/_Website/Navigation/Mobile/ProductBasic";
+import ProductBasic from "~/components/Layout/_Website/Navigation/Desktop/ProductBasic";
 import PatternBackground from "~/components/Layout/Backgrounds/PatternBackground";
 import { getThemeColorValueByName } from "~/utility/colors";
+import { getSiteSettings } from "~/models/SiteSettings/index.server";
+import ProductBasicMobile from "~/components/Layout/_Website/Navigation/Mobile/ProductBasicMobile";
 
 export const meta: MetaFunction = () => {
   return [
@@ -51,6 +53,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const departments = await getDepartments();
   const brands = await getBrands();
   const productCategories = await getProductCategories();
+  const siteSettings = await getSiteSettings();
 
   const navigationPromotions = await GetRandomActivePromotions(2, true);
 
@@ -61,6 +64,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     productCategories,
     brands,
     navigationPromotions,
+    siteSettings,
   });
 };
 
@@ -75,7 +79,10 @@ const App = () => {
     brands,
     productCategories,
     navigationPromotions,
+    siteSettings,
   } = useLoaderData<typeof loader>();
+
+  const { navigationStyleDesktop } = siteSettings || {};
 
   const [searchActive, setSearchActive] = useState<boolean | null>(false);
 
@@ -105,24 +112,28 @@ const App = () => {
             />
 
             {/* DESKTOP NAVIGATION */}
-            {/* <ProductBasicDesktopNavigation
-              departments={departments}
-              productCategories={productCategories}
-              user={user}
-              cart={cart}
-              searchState={searchActive}
-              setSearchState={setSearchActive}
-            /> */}
 
-            <ProductMegaMenu
-              departments={departments}
-              productCategories={productCategories}
-              randomPromotions={navigationPromotions}
-              user={user}
-              cart={cart}
-              searchState={searchActive}
-              setSearchState={setSearchActive}
-            />
+            {navigationStyleDesktop === "productBasic" && (
+              <ProductBasic
+                departments={departments}
+                productCategories={productCategories}
+                user={user}
+                cart={cart}
+                searchState={searchActive}
+                setSearchState={setSearchActive}
+              />
+            )}
+
+            {navigationStyleDesktop === "productMegaMenu" && (
+              <ProductMegaMenu
+                productCategories={productCategories}
+                randomPromotions={navigationPromotions}
+                user={user}
+                cart={cart}
+                searchState={searchActive}
+                setSearchState={setSearchActive}
+              />
+            )}
           </div>
         </div>
 
@@ -170,7 +181,7 @@ const App = () => {
       </div>
 
       {/* MOBILE DRAWER */}
-      <ProductBasic
+      <ProductBasicMobile
         departments={departments}
         productCategories={productCategories}
         user={user}

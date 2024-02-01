@@ -48,7 +48,7 @@ export const brandUpsertAction = async (request: Request) => {
     validateOptions,
   );
 
-  const { name, image, isActive } = formEntries;
+  const { name, heroImage, isActive } = formEntries;
 
   switch (formEntries._action) {
     case "upsert": {
@@ -59,7 +59,9 @@ export const brandUpsertAction = async (request: Request) => {
       const updateData: NewBrand = {
         id: (id as string) || undefined,
         name: name as string,
-        image: image ? (JSON.parse(image?.toString()) as Image) : undefined,
+        heroImage: heroImage
+          ? (JSON.parse(heroImage?.toString()) as Image)
+          : undefined,
         isActive: id ? (isActive ? true : false) : false,
       };
 

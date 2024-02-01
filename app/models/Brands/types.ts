@@ -4,7 +4,7 @@ import { ProductWithDetails } from "../Products/types";
 
 export interface BrandWithContent extends Brand {
   campaigns?: CampaignWithContent[] | null;
-  image?: Image | null;
+  heroImage?: Image | null;
   blockContent?: BlockContent[] | null;
   products?: ProductWithDetails[] | null;
 }
@@ -12,6 +12,6 @@ export interface BrandWithContent extends Brand {
 export interface NewBrand {
   id?: string;
   name: string;
-  image?: Image;
+  heroImage?: Image;
   isActive: boolean;
 }

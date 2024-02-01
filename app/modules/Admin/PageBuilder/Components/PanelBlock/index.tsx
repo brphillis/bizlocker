@@ -6,13 +6,10 @@ import { blockHasMaxContentItems } from "~/helpers/contentHelpers";
 import { Brand, Campaign, Image, Promotion } from "@prisma/client";
 import { BlockContentType, BlockName } from "~/utility/blockMaster/types";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
-import { ArticleCategoryWithDetails } from "~/models/ArticleCategories/types";
-import { ProductCategoryWithDetails } from "~/models/ProductCategories/types";
 import {
   BlockContentWithDetails,
   BlockWithContent,
 } from "~/models/Blocks/types";
-import { ProductSubCategoryWithDetails } from "~/models/ProductSubCategories/types";
 import LabelEdit from "./LabelEdit";
 import OptionsModule from "../Options";
 import BlockSelect from "../BlockSelect";
@@ -21,19 +18,13 @@ import ContentSearch from "../Content/ContentSearch";
 import ResultsImages from "../Content/ResultsImages";
 import SelectedContent from "../Content/SelectedContent";
 import TextBlockContentModule from "../Content/TextBlockContent";
-import ProductBlockOptions from "../Specific/ProductBlockOptions";
-import ArticleBlockOptions from "../Specific/ArticleBlockOptions";
 import { objectToNumber } from "~/helpers/objectHelpers";
 
 type Props = {
-  articleCategories: ArticleCategoryWithDetails[];
-  brands: Brand[] | null;
   currentBlocks: BlockWithContent[] | null;
   editingIndex: number;
   loading: boolean;
   previewPage: Page;
-  productCategories: ProductCategoryWithDetails[];
-  productSubCategories: ProductSubCategoryWithDetails[];
   reset: () => void;
   searchResults: unknown;
   selectedBlock: BlockName | undefined;
@@ -49,14 +40,10 @@ type Props = {
 };
 
 const PanelBlock = ({
-  articleCategories,
-  brands,
   currentBlocks,
   editingIndex,
   loading,
   previewPage,
-  productCategories,
-  productSubCategories,
   reset,
   searchResults,
   selectedBlock,
@@ -181,30 +168,6 @@ const PanelBlock = ({
           selectedItems={selectedItems}
           activeTab={activeTab}
         />
-
-        {selectedBlock === "product" && (
-          <ProductBlockOptions
-            selectedBlock={selectedBlock}
-            setSelectedItems={setSelectedItems}
-            productCategories={productCategories}
-            productSubCategories={productSubCategories}
-            brands={brands}
-            defaultValues={
-              currentBlocks?.[editingIndex]?.content as BlockContentWithDetails
-            }
-          />
-        )}
-
-        {selectedBlock === "article" && (
-          <ArticleBlockOptions
-            selectedBlock={selectedBlock}
-            setSelectedItems={setSelectedItems}
-            articleCategories={articleCategories}
-            defaultValues={
-              currentBlocks?.[editingIndex]?.content as BlockContentWithDetails
-            }
-          />
-        )}
 
         {selectedBlock === "text" && (
           <TextBlockContentModule

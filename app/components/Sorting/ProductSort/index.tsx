@@ -15,7 +15,11 @@ const ProductSort = ({ totalCount }: Props) => {
 
   return (
     <div className="mb-3 flex max-w-full items-center justify-between gap-3 px-3 text-brand-black/50">
-      <p className="text-sm">{totalCount} items found</p>
+      {totalCount ? (
+        <p className="text-sm">{totalCount} items found</p>
+      ) : (
+        <p className="text-sm">no items found.</p>
+      )}
       <div className="flex gap-3">
         <select
           className="select select-xs !h-[24px] !min-h-[24px] w-28 border border-brand-black/20 bg-base-100"

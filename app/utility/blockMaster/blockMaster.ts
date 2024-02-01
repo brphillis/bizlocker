@@ -24,6 +24,8 @@ export interface BlockMaster {
   maxContentItems?: number;
 }
 
+export const blockContentAddOns = ["icon", "other"];
+
 export const blockMaster: BlockMaster[] = [
   {
     name: "banner",
@@ -220,12 +222,12 @@ export const blockMaster: BlockMaster[] = [
       itemGap: true,
       itemGapMobile: true,
     },
-    addOns: ["icon"],
+    addOns: ["icon", "other"],
     content: {
       image: true,
       brand: {
         include: {
-          image: true,
+          heroImage: true,
         },
       },
       campaign: {
@@ -337,31 +339,30 @@ export const blockMaster: BlockMaster[] = [
     name: "product",
     component: ProductBlock,
     icon: "IoCart",
+    maxContentItems: 5,
     options: {
       columns: true,
-      count: true,
-      sortBy: true,
-      sortOrder: true,
+      title: true,
       titleColor: true,
       titleAlign: true,
       titleFontWeight: true,
       titleSize: true,
     },
     content: {
-      brand: true,
-      productCategory: true,
-      productSubCategory: true,
+      product: {
+        include: {
+          images: true,
+        },
+      },
     },
   },
   {
     name: "article",
     component: ArticleBlock,
     icon: "IoNewspaper",
+    maxContentItems: 3,
     options: {
       columns: true,
-      count: true,
-      sortBy: true,
-      sortOrder: true,
     },
     content: {
       articleCategory: true,

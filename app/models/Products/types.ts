@@ -41,7 +41,8 @@ export type NewProduct = {
   name: string;
   productSubCategories: string[];
   variants: ProductVariantWithDetails[];
-  infoURL: string;
+  dropshipURL: string;
+  dropshipSKU: string;
   description: string;
   gender: string;
   isActive: boolean;

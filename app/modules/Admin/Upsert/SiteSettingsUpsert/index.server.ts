@@ -30,7 +30,8 @@ export const siteSettingsUpsertAction = async (request: Request) => {
   );
 
   const {
-    navigationStyle,
+    navigationStyleDesktop,
+    navigationStyleMobile,
     spinnerStyle,
     announcementMessage,
     announcementIsActive,
@@ -47,7 +48,8 @@ export const siteSettingsUpsertAction = async (request: Request) => {
       }
 
       const updateData: Partial<SiteSettings> = {
-        navigationStyle: navigationStyle as string,
+        navigationStyleDesktop: navigationStyleDesktop as string,
+        navigationStyleMobile: navigationStyleMobile as string,
         spinnerStyle: spinnerStyle as string,
         announcementMessage: announcementMessage as string,
         announcementIsActive: announcementIsActive ? true : false,

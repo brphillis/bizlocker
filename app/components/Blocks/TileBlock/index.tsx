@@ -8,6 +8,7 @@ import IconTile from "./IconTile";
 import ContentTile from "./ContentTile";
 import Title from "../_BlockComponents/Title";
 import Container from "../_BlockComponents/Container";
+import TextTile from "./TextTile";
 
 type Props = {
   content: BlockContentSorted[];
@@ -53,8 +54,8 @@ const TileBlock = ({ content, options }: Props) => {
 
           return (
             <div
-              key={"tileImage_" + (name || i)}
-              className={`relative flex aspect-square cursor-pointer items-center justify-center transition duration-300 ease-in-out hover:scale-[1.01] 
+              key={"tileImage_" + name + "_" + i}
+              className={`relative w-full h-full flex cursor-pointer items-center justify-center transition duration-300 ease-in-out hover:scale-[1.01] 
               ${itemBorderDisplays[i]} ${itemBorderRadius[i]} 
               ${itemBorderSizes[i]} ${itemBorderColors[i]} ${
                 itemBorderColors[i]
@@ -69,7 +70,11 @@ const TileBlock = ({ content, options }: Props) => {
                 />
               )}
 
-              {contentType !== "icon" && (
+              {contentType === "other" && (
+                <TextTile index={i} blockOptions={options[0]} />
+              )}
+
+              {contentType !== "icon" && contentType !== "other" && (
                 <ContentTile
                   index={i}
                   blockOptions={options[0]}

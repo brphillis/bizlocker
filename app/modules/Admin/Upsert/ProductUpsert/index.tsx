@@ -237,10 +237,22 @@ const UpsertProduct = ({ offRouteModule }: Props) => {
               <BasicInput
                 label="Dropship URL"
                 type="text"
-                name="infoURL"
+                name="dropshipURL"
                 placeholder="Info URL"
                 extendContainerStyle="w-full"
-                defaultValue={product?.infoURL}
+                defaultValue={product?.dropshipURL}
+                validationErrors={
+                  clientValidationErrors || serverValidationErrors
+                }
+              />
+
+              <BasicInput
+                label="Dropship SKU"
+                type="text"
+                name="dropshipSKU"
+                placeholder="Dropship SKU"
+                extendContainerStyle="w-full"
+                defaultValue={product?.dropshipSKU}
                 validationErrors={
                   clientValidationErrors || serverValidationErrors
                 }

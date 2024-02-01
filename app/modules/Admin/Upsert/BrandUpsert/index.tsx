@@ -3,7 +3,6 @@ import { getFormData } from "~/helpers/formHelpers";
 import DarkOverlay from "~/components/Layout/Overlays/DarkOverlay";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import type { ActionReturnTypes } from "~/utility/actionTypes";
-import UploadImage from "~/components/Forms/Upload/UploadImage";
 import { type ValidationErrors, validateForm } from "~/utility/validate";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
 import useNotification from "~/hooks/PageNotification";
@@ -20,6 +19,8 @@ import WindowContainer, {
   handleWindowedFormData,
 } from "~/components/Layout/Containers/WindowContainer";
 import type { brandUpsertLoader } from "./index.server";
+import TabContent from "~/components/Tabs/TabContent";
+import UploadImageCollapse from "~/components/Forms/Upload/UploadImageCollapse";
 
 const validateOptions = {
   name: true,
@@ -44,6 +45,13 @@ const BrandUpsert = ({ offRouteModule }: Props) => {
   const [clientValidationErrors, setClientValidationErrors] =
     useState<ValidationErrors>();
   const [loading, setLoading] = useState<boolean>(false);
+
+  const tabNames = ["general", "images"];
+  const [activeTab, setActiveTab] = useState<string | undefined>(tabNames?.[0]);
+
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+  };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     let form = getFormData(event);
@@ -82,13 +90,16 @@ const BrandUpsert = ({ offRouteModule }: Props) => {
         hasMode={true}
         isActive={brand?.isActive}
         title="Brand"
+        setActiveTab={handleTabChange}
+        tabNames={tabNames}
+        activeTab={activeTab}
       >
         <Form
           method="POST"
           onSubmit={handleSubmit}
           className="scrollbar-hide relative w-[500px] max-w-full overflow-y-auto"
         >
-          <div className="flex flex-col gap-6">
+          <TabContent tab="general" activeTab={activeTab} extendStyle="gap-3">
             <BasicInput
               name="name"
               label="Name"
@@ -100,9 +111,17 @@ const BrandUpsert = ({ offRouteModule }: Props) => {
                 serverValidationErrors || clientValidationErrors
               }
             />
+          </TabContent>
 
-            <UploadImage defaultValue={brand?.image} />
-          </div>
+          <TabContent tab="images" activeTab={activeTab} extendStyle="gap-3">
+            <UploadImageCollapse
+              name="heroImage"
+              label="Hero Image"
+              tooltip="Optimal Transparent Background"
+              defaultValue={brand?.heroImage}
+            />
+          </TabContent>
+
           <BackSubmitButtons
             loading={loading}
             setLoading={setLoading}

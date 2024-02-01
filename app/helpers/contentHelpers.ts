@@ -89,7 +89,7 @@ export const buildImageFromBlockContent = (
     const brand = contentData?.brand as BrandWithContent;
     name = brand?.name || name;
     link = `/products?brand=${name}`;
-    imageSrc = brand?.image?.href || imageSrc;
+    imageSrc = brand?.heroImage?.href || imageSrc;
   } else if (contentType === "image") {
     imageSrc = (contentData?.image as Image)?.href || imageSrc;
     name = (contentData?.image as Image)?.altText || "";

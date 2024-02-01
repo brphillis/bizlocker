@@ -18,7 +18,7 @@ const CategorySort = ({ totalCount }: Props) => {
       {totalCount ? (
         <p className="text-sm">{totalCount} items found</p>
       ) : (
-        <div />
+        <p className="text-sm">no items found.</p>
       )}
       <div className="flex gap-3">
         <select
