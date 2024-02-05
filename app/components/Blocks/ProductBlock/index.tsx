@@ -10,7 +10,7 @@ type Props = {
 };
 
 const ProductBlock = ({ content, options }: Props) => {
-  const { title, columns } = options[0] || {};
+  const { title, columns, columnsMobile } = options[0] || {};
 
   const products = content
     .map((e) => e.product as Product)
@@ -23,7 +23,8 @@ const ProductBlock = ({ content, options }: Props) => {
       {products && (
         <ProductGrid
           products={products}
-          cols={columns || undefined}
+          columns={columns || undefined}
+          columnsMobile={columnsMobile || undefined}
           enablePlaceHolder={true}
           extendStyle="!px-0"
         />

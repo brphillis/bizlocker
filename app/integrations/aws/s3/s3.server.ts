@@ -5,6 +5,7 @@ import {
   GetObjectCommand,
   PutObjectAclCommand,
   DeleteObjectCommand,
+  ListObjectsV2Command,
 } from "@aws-sdk/client-s3";
 import { Readable } from "node:stream";
 import getStream, {
@@ -182,5 +183,23 @@ export const fetchDataFromS3 = async (objectKey: string) => {
     return content_buffer;
   } else {
     throw new Error("Unknown object stream type.");
+  }
+};
+
+export const getImageEntityTagsInBucket = async () => {
+  const params = {
+    Bucket: bucketName,
+  };
+
+  const objects = await s3Client.send(new ListObjectsV2Command(params));
+
+  if (objects.Contents) {
+    const objectUrls = objects.Contents.map((object) => {
+      return object?.ETag?.replace(/["']/g, "");
+    });
+
+    return objectUrls;
+  } else {
+    throw new Error("Unable to fetch object keys from S3 bucket.");
   }
 };

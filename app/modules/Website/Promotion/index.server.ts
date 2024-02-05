@@ -3,7 +3,6 @@ import { addToCart } from "~/models/Cart/index.server";
 import { getBrands } from "~/models/Brands/index.server";
 import { searchProducts } from "~/models/Products/index.server";
 import { getPromotion } from "~/models/Promotions/index.server";
-import { getAvailableColors } from "~/models/enums.server";
 import { getDepartments } from "~/models/Departments/index.server";
 import { json, type MetaFunction } from "@remix-run/node";
 import { getProductCategories } from "~/models/ProductCategories/index.server";
@@ -49,7 +48,6 @@ export const promotionLoader = async (
   const productCategories = await getProductCategories();
   const productSubCategories = await getProductSubCategories();
   const brands = await getBrands();
-  const colors = await getAvailableColors();
 
   return json({
     promotion,
@@ -59,7 +57,6 @@ export const promotionLoader = async (
     productCategories,
     productSubCategories,
     brands,
-    colors,
   });
 };
 

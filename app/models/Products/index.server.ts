@@ -12,6 +12,7 @@ import {
   ProductVariantWithDetails,
   ProductWithDetails,
 } from "./types";
+import { NewProductVariant } from "~/modules/Admin/Upsert/ProductUpsert/ProductVariantUpsert";
 
 export const getProducts = async (
   count?: string,
@@ -111,10 +112,10 @@ export const upsertProduct = async (
 
   // Compute the discountPercentageHigh and discountPercentageLow for the product from the variants
   const activeVariants = variants.filter(
-    (variant: ProductVariant) => variant.isActive,
+    (variant: NewProductVariant) => variant.isActive,
   );
-  const discountPercentages = activeVariants.map((variant: ProductVariant) =>
-    calculateDiscountPercentage(variant.price, variant.salePrice!),
+  const discountPercentages = activeVariants.map((variant: NewProductVariant) =>
+    calculateDiscountPercentage(variant.price!, variant.salePrice!),
   );
   const discountPercentageHigh =
     discountPercentages.length > 0 ? Math.max(...discountPercentages) : 0;
@@ -349,7 +350,7 @@ export const upsertProduct = async (
     updateData.variants = {
       //@ts-expect-error:exists on new product
       create: variants
-        .filter((variant: ProductVariant) => !variant.id)
+        .filter((variant: NewProductVariant) => !variant.id)
         .map((variant: Partial<ProductVariant>) => ({
           name: variant.name,
           sku: variant.sku,
@@ -382,7 +383,7 @@ export const upsertProduct = async (
           ...(variant.size && { size: variant.size }),
         })),
       updateMany: variants
-        .filter((variant: ProductVariant) => !!variant.id)
+        .filter((variant: NewProductVariant) => !!variant.id)
         .map((variant: Partial<ProductVariant>) => ({
           where: { id: variant.id },
           data: {
@@ -398,7 +399,6 @@ export const upsertProduct = async (
             width: variant.width,
             height: variant.height,
             weight: variant.weight && parseFloat(variant.weight.toString()),
-            //@ts-expect-error: check empty string
             ...(variant.color === undefined || variant.color === ""
               ? { color: null }
               : { color: variant.color }),
@@ -491,29 +491,59 @@ export const upsertProduct = async (
 };
 
 export const deleteProduct = async (id: string) => {
-  const product = await prisma.product.findUnique({
-    where: {
-      id: parseInt(id),
-    },
-  });
+  try {
+    const product = await prisma.product.findUnique({
+      where: {
+        id: parseInt(id),
+      },
+    });
 
-  if (!product) {
-    throw new Error("Product not found");
+    if (!product) {
+      throw new Error("Product not found");
+    }
+
+    // Step 1: Delete the stockLevels associated with product variants
+    const productVariants = await prisma.productVariant.findMany({
+      where: {
+        productId: parseInt(id),
+      },
+    });
+
+    const variantIds: number[] = productVariants.map((variant) => variant.id);
+
+    await prisma.stockLevel.deleteMany({
+      where: {
+        productVariantId: {
+          in: variantIds,
+        },
+      },
+    });
+
+    // Step 2: Delete the product variants
+    await prisma.productVariant.deleteMany({
+      where: {
+        productId: parseInt(id),
+      },
+    });
+
+    // Step 3: Delete the images linked to the product
+    await prisma.image.deleteMany({
+      where: {
+        productId: parseInt(id),
+      },
+    });
+
+    // Step 4: Delete the product
+    await prisma.product.delete({
+      where: {
+        id: parseInt(id),
+      },
+    });
+  } catch (error) {
+    console.error("Error deleting product:", error);
+  } finally {
+    await prisma.$disconnect();
   }
-
-  // Delete the variants
-  await prisma.productVariant.deleteMany({
-    where: {
-      productId: parseInt(id),
-    },
-  });
-
-  // Delete the product
-  return await prisma.product.deleteMany({
-    where: {
-      id: parseInt(id),
-    },
-  });
 };
 
 export const searchProducts = async (

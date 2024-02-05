@@ -20,7 +20,7 @@ export const previewLoader = async (request: Request) => {
     let backgroundColor, blocks;
 
     if (webPage) {
-      blocks = await getBlocks(webPage, true);
+      blocks = await getBlocks(webPage);
 
       backgroundColor = webPage?.backgroundColor;
     }

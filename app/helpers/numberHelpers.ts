@@ -60,6 +60,22 @@ export const minusPercentage = (
   return initialNumber - discountAmount;
 };
 
+export const addPercentage = (
+  initialNumber: number,
+  addPercentage: number,
+): number => {
+  if (typeof initialNumber !== "number" || typeof addPercentage !== "number") {
+    throw new Error("Price and percentage must be numbers.");
+  }
+
+  if (addPercentage < 0) {
+    throw new Error("Percentage cannot be negative.");
+  }
+
+  const increaseAmount: number = (initialNumber * addPercentage) / 100;
+  return initialNumber + increaseAmount;
+};
+
 export const calculateCartTotal = (
   cartItems: CartItemWithDetails[],
 ): number => {
@@ -97,7 +113,7 @@ export const getVariantUnitPrice = (
   product?: ProductWithDetails,
   promotion?: Promotion | null,
 ): string => {
-  const { isOnSale, salePrice, price, isPromoted } = variant;
+  const { isOnSale, salePrice, price, isPromoted } = variant || {};
 
   let unitPrice = isOnSale && salePrice ? salePrice : price;
 

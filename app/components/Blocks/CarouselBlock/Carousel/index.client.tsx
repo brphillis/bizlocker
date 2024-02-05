@@ -25,8 +25,8 @@ const Carousel = ({ content, options }: Props) => {
     backgroundPatternNamePrimary,
     backgroundPatternSizePrimary,
     backgroundWidthPrimary,
-    columns,
-    columnsMobile,
+    numberColumns,
+    numberColumnsMobile,
     margin,
     padding,
     height,
@@ -46,7 +46,11 @@ const Carousel = ({ content, options }: Props) => {
       throw new Error("Input is not an array");
     }
 
-    if (columns && isDecimal(columns) && arr.length < columns * 3) {
+    if (
+      numberColumns &&
+      isDecimal(numberColumns) &&
+      arr.length < numberColumns * 3
+    ) {
       const originalLength = arr.length;
       const newArray = new Array(originalLength * 2);
 
@@ -67,7 +71,11 @@ const Carousel = ({ content, options }: Props) => {
 
   // remove any extra pagination buttons created from generateSlidesForPartialViews and swiper
   const hideExtraPaginationButtons = () => {
-    if (columns && isDecimal(columns) && trueSlideLength < columns * 3) {
+    if (
+      numberColumns &&
+      isDecimal(numberColumns) &&
+      trueSlideLength < numberColumns * 3
+    ) {
       const paginationButtons = document.querySelectorAll(
         ".swiper-pagination-bullet",
       );
@@ -125,7 +133,7 @@ const Carousel = ({ content, options }: Props) => {
           <Swiper
             modules={swiperModules}
             className="relative h-full w-full"
-            slidesPerView={columns || 1}
+            slidesPerView={numberColumns || 1}
             spaceBetween={20}
             centeredSlides={true}
             loop={true}
@@ -172,10 +180,10 @@ const Carousel = ({ content, options }: Props) => {
             }}
             breakpoints={{
               768: {
-                slidesPerView: columns || 1,
+                slidesPerView: numberColumns || 1,
               },
               0: {
-                slidesPerView: columnsMobile || 1,
+                slidesPerView: numberColumnsMobile || 1,
               },
             }}
             style={{

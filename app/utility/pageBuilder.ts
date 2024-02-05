@@ -182,6 +182,8 @@ export const getFormBlockOptions = (form: {
     titleFontWeightMobile,
     speed,
     autoplay,
+    numberColumns,
+    numberColumnsMobile,
     itemBackgroundPatternNamesSecondary,
     itemBackgroundPatternColorsSecondary,
     itemBackgroundWidthsSecondary,
@@ -216,6 +218,8 @@ export const getFormBlockOptions = (form: {
     itemShortTextFontWeights,
     itemShortTextFontWeightsMobile,
     itemGap,
+    itemTitleShadows,
+    itemShortTextShadows,
   } = form;
 
   const blockOptions = {
@@ -271,10 +275,8 @@ export const getFormBlockOptions = (form: {
     borderRadius: borderRadius ? (borderRadius as string) : undefined,
     borderSize: borderSize ? (borderSize as string) : undefined,
     buttonAlign: buttonAlign ? (buttonAlign as string) : undefined,
-    columns: columns ? parseFloat(columns as string) : undefined,
-    columnsMobile: columnsMobile
-      ? parseFloat(columnsMobile as string)
-      : undefined,
+    columns: columns ? (columns as string) : undefined,
+    columnsMobile: columnsMobile ? (columnsMobile as string) : undefined,
     count: count ? parseInt(count as string) : undefined,
     flipX: flipX ? (flipX as string) : undefined,
     height: height ? (height as string) : undefined,
@@ -344,6 +346,12 @@ export const getFormBlockOptions = (form: {
       : undefined,
     itemTitleSizesMobile: itemTitleSizesMobile
       ? JSON.parse(itemTitleSizesMobile as string)
+      : undefined,
+    itemTitleShadows: itemTitleShadows
+      ? JSON.parse(itemTitleShadows as string)
+      : undefined,
+    itemShortTextShadows: itemShortTextShadows
+      ? JSON.parse(itemShortTextShadows as string)
       : undefined,
     itemTitleColors: itemTitleColors
       ? JSON.parse(itemTitleColors as string)
@@ -522,6 +530,12 @@ export const getFormBlockOptions = (form: {
       : undefined,
     shortTextFontWeightMobile: shortTextFontWeightMobile
       ? (shortTextFontWeightMobile as string)
+      : undefined,
+    numberColumns: numberColumns
+      ? parseFloat(numberColumns as string)
+      : undefined,
+    numberColumnsMobile: numberColumnsMobile
+      ? parseInt(numberColumnsMobile as string)
       : undefined,
     rows: rows ? parseInt(rows as string) : undefined,
     shortText: shortText ? (shortText as string) : undefined,

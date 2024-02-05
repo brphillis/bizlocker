@@ -36,6 +36,8 @@ import { stockTransferSearchLoader } from "~/modules/Admin/Search/StockTransferS
 import { storeSearchLoader } from "~/modules/Admin/Search/StoreSearch/index.server";
 import { teamSearchLoader } from "~/modules/Admin/Search/TeamSearch/index.server";
 import { userSearchLoader } from "~/modules/Admin/Search/UserSearch/index.server";
+import { dropshipSearchLoader } from "~/modules/Admin/Search/DropShipSearch/index.server";
+import DropshipSearch from "~/modules/Admin/Search/DropShipSearch";
 
 export const loader = async ({ request, params }: ActionFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
@@ -57,6 +59,8 @@ export const loader = async ({ request, params }: ActionFunctionArgs) => {
       return await campaignSearchLoader(request);
     case "department":
       return await departmentSearchLoader(request);
+    case "dropship":
+      return await dropshipSearchLoader(request);
     case "image":
       return await imageSearchLoader(request);
     case "order":
@@ -103,6 +107,9 @@ const SearchContent = () => {
       break;
     case "department":
       searchComponent = <DepartmentSearch />;
+      break;
+    case "dropship":
+      searchComponent = <DropshipSearch />;
       break;
     case "image":
       searchComponent = <ImageSearch />;

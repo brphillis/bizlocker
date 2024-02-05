@@ -8,8 +8,7 @@ import { Toast } from "~/components/Notifications/Toast";
 import type { ValidationErrors } from "~/utility/validate";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import BasicToggle from "~/components/Forms/Toggle/BasicToggle";
-import BasicSelect from "~/components/Forms/Select/BasicSelect";
-import type { Color, Order, Product, StockLevel } from "@prisma/client";
+import type { Order, Product, StockLevel } from "@prisma/client";
 import {
   ProductVariantWithDetails,
   ProductWithDetails,
@@ -18,10 +17,9 @@ import {
 type Props = {
   storeId: number | null;
   product: ProductWithDetails;
-  availableColors: string[];
 };
 
-type NewProductVariant = {
+export type NewProductVariant = {
   id?: number;
   name?: string;
   sku?: string;
@@ -31,7 +29,7 @@ type NewProductVariant = {
   isFragile?: boolean;
   stock?: number;
   product?: Product;
-  color?: Color;
+  color?: string;
   size?: string;
   length?: number;
   width?: number;
@@ -42,7 +40,7 @@ type NewProductVariant = {
   isPromoted?: boolean;
 };
 
-const ProductVariantUpsert = ({ storeId, product, availableColors }: Props) => {
+const ProductVariantUpsert = ({ storeId, product }: Props) => {
   const navigate = useNavigate();
 
   const [activeVariant, setActiveVariant] = useState<
@@ -257,7 +255,7 @@ const ProductVariantUpsert = ({ storeId, product, availableColors }: Props) => {
                 validationErrors={validationErrors}
               />
 
-              <BasicSelect
+              {/* <BasicSelect
                 id="VariantColor"
                 name="color"
                 label="Color"
@@ -275,7 +273,7 @@ const ProductVariantUpsert = ({ storeId, product, availableColors }: Props) => {
                     color: e,
                   })
                 }
-              />
+              /> */}
 
               <BasicInput
                 id="VariantSize"

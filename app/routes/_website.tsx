@@ -162,9 +162,7 @@ const App = () => {
               brightness={0.5}
             />
 
-            <div className="relative max-md:text-xs">
-              SEASON SALE ENDS SOON!
-            </div>
+            <div className="relative max-md:text-xs">DENIM SALE ENDS SOON!</div>
             <CountDown targetDate={new Date("2024-03-03T00:00:00")} />
           </div>
         )}

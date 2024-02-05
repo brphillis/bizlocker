@@ -1,9 +1,11 @@
 import { prisma } from "~/db.server";
 import { getOrderBy } from "~/helpers/sortHelpers";
-import { Image, ProductSubCategory } from "@prisma/client";
-import { uploadImage_Integration } from "~/integrations/_master/storage";
+import { ProductSubCategory } from "@prisma/client";
 import { NewProductSubCategory, ProductSubCategoryWithDetails } from "./types";
-import { buildImageUpdateQuery } from "../Images/index.server";
+import {
+  buildImageCreateQuery,
+  buildImageUpdateQuery,
+} from "../Images/index.server";
 
 export const getProductSubCategories = async (): Promise<
   ProductSubCategoryWithDetails[]
@@ -59,22 +61,7 @@ export const upsertProductSubCategory = async (
     gender,
   } = categoryData;
 
-  if (!id && tileImage) {
-    const buildImageCreateQuery = async (image?: Image | null) => {
-      if (image) {
-        const repoLink = await uploadImage_Integration(image);
-
-        if (repoLink) {
-          return {
-            create: {
-              href: repoLink,
-              altText: image?.altText,
-            },
-          };
-        } else return undefined;
-      } else return undefined;
-    };
-
+  if (!id) {
     const maleImageCreateQuery = await buildImageCreateQuery(maleImage);
 
     const createdProductSubCategory = await prisma.productSubCategory.create({
@@ -99,7 +86,7 @@ export const upsertProductSubCategory = async (
     });
 
     return { createdProductSubCategory, updatedProductSubCategory: null };
-  } else if (id) {
+  } else {
     const productSubCategory = await prisma.productSubCategory.findUnique({
       where: {
         id: parseInt(id),
@@ -158,7 +145,7 @@ export const upsertProductSubCategory = async (
     });
 
     return { updatedProductSubCategory, createdProductSubCategory: null };
-  } else throw new Error("No ID Provided");
+  }
 };
 
 export const deleteProductSubCategory = async (

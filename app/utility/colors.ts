@@ -93,12 +93,22 @@ export const generateProductColor = (
 ): string | null => {
   const lowerCaseColorName = colorName?.toLowerCase();
 
+  // Check for single-word color names
   if (themeColors[`brand-${lowerCaseColorName}` as keyof typeof themeColors]) {
     return `brand-${lowerCaseColorName}`;
-  } else {
-    console.error(`Color not found for ${colorName}`);
-    return null;
   }
+
+  // Check for two-word color names
+  const colorWords = lowerCaseColorName?.split(" ");
+  if (colorWords && colorWords.length === 2) {
+    const [firstWord, secondWord] = colorWords;
+    const twoWordColorName = `${firstWord}-${secondWord}`;
+    if (themeColors[`brand-${twoWordColorName}` as keyof typeof themeColors]) {
+      return `brand-${twoWordColorName}`;
+    }
+  }
+
+  return null;
 };
 
 export const getHexTransparencyCode = (percent: number): string => {

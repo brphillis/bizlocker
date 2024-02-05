@@ -1,5 +1,6 @@
 node_modules/
 app/db.server.ts
+server.mjs
 public
 scripts
 theme

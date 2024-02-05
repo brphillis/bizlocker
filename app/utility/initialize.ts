@@ -197,17 +197,46 @@ export const deleteAllProductData = async () => {
     // Step 2: Delete all Products
     await prisma.product.deleteMany({});
 
-    // Step 3: Delete all Images linked to Products
-    await prisma.image.deleteMany({
-      where: {
-        productId: { not: null }, // Assuming your Image has a productId field linking it to a Product
-      },
-    });
-
     console.log("Deletion successful");
   } catch (error) {
     console.error("Error deleting data:", error);
   } finally {
     await prisma.$disconnect();
+  }
+};
+
+export const deleteOrphanImages = async () => {
+  const orphanImages = await prisma.image.findMany({
+    where: {
+      AND: [
+        { articleId: null },
+        { brandHeroImageId: null },
+        { productId: null },
+        { productSubCategoryTileImageId: null },
+        { productSubCategoryMaleImageId: null },
+        { productSubCategoryFemaleImageId: null },
+        { productSubCategoryKidImageId: null },
+        { userId: null },
+        { staffId: null },
+        { webPageId: null },
+        { previewPageId: null },
+      ],
+    },
+  });
+
+  if (orphanImages.length > 0) {
+    const imageIds = orphanImages.map((image) => image.id);
+
+    await prisma.image.deleteMany({
+      where: {
+        id: {
+          in: imageIds,
+        },
+      },
+    });
+
+    console.log(`${orphanImages.length} orphan images deleted.`);
+  } else {
+    console.log("No orphan images found.");
   }
 };

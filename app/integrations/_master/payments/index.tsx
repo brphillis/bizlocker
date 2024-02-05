@@ -3,7 +3,7 @@ import type { CreatePaymentLinkResponse } from "square";
 import { createSquarePaymentLink } from "~/integrations/square/square.server";
 
 export const createPaymentLink_Integration = async (
-  cartItems: CartItem[]
+  cartItems: CartItem[],
 ): Promise<{
   createPaymentLinkResponse: CreatePaymentLinkResponse;
   confirmCode: string;

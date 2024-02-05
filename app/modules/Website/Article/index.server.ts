@@ -31,7 +31,7 @@ export const articleLoader = async (
   let title, description, backgroundColor, blocks;
 
   if (article) {
-    blocks = await getBlocks(article, true);
+    blocks = await getBlocks(article);
     title = article.title;
     description = article.description;
     backgroundColor = article.backgroundColor;

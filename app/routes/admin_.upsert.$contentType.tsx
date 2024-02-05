@@ -82,6 +82,16 @@ import {
   userUpsertLoader,
   userUpsertAction,
 } from "~/modules/Admin/Upsert/UserUpsert/index.server";
+import {
+  dropshipProductUpsertAction,
+  dropshipProductUpsertLoader,
+} from "~/modules/Admin/Upsert/DropshipProductUpsert/index.server";
+import DropshipProductUpsert from "~/modules/Admin/Upsert/DropshipProductUpsert";
+import {
+  taskUpsertLoader,
+  tasksUpsertAction,
+} from "~/modules/Admin/Upsert/TasksUpsert/index.server";
+import TasksUpsert from "~/modules/Admin/Upsert/TasksUpsert";
 
 export const loader = async ({ request, params }: ActionFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
@@ -101,6 +111,8 @@ export const loader = async ({ request, params }: ActionFunctionArgs) => {
       return await campaignUpsertLoader(request);
     case "department":
       return await departmentUpsertLoader(request);
+    case "dropshipProduct":
+      return await dropshipProductUpsertLoader(request);
     case "image":
       return await imageUpsertLoader(request);
     case "order":
@@ -121,6 +133,8 @@ export const loader = async ({ request, params }: ActionFunctionArgs) => {
       return await stockTransferUpsertLoader(request);
     case "store":
       return await storeUpsertLoader(request);
+    case "task":
+      return await taskUpsertLoader();
     case "team":
       return await teamUpsertLoader(request);
     case "user":
@@ -146,6 +160,8 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
       return await campaignUpsertAction(request, params);
     case "department":
       return await departmentUpsertAction(request);
+    case "dropshipProduct":
+      return await dropshipProductUpsertAction(request);
     case "image":
       return await imageUpsertAction(request);
     case "order":
@@ -166,6 +182,8 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
       return await stockTransferUpsertAction(request);
     case "store":
       return await storeUpsertAction(request);
+    case "task":
+      return await tasksUpsertAction(request);
     case "team":
       return await teamUpsertAction(request);
     case "user":
@@ -193,6 +211,9 @@ const UpsertContent = ({ offRouteModules }: Props) => {
       {contentType === "department" && (
         <DepartmentUpsert offRouteModule={offRouteModules} />
       )}
+      {contentType === "dropshipProduct" && (
+        <DropshipProductUpsert offRouteModule={offRouteModules} />
+      )}
       {contentType === "image" && (
         <ImageUpsert offRouteModule={offRouteModules} />
       )}
@@ -219,6 +240,7 @@ const UpsertContent = ({ offRouteModules }: Props) => {
       {contentType === "store" && (
         <StoreUpsert offRouteModule={offRouteModules} />
       )}
+      {contentType === "task" && <TasksUpsert />}
       {contentType === "team" && (
         <TeamUpsert offRouteModule={offRouteModules} />
       )}

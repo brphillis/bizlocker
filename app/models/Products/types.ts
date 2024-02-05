@@ -16,6 +16,7 @@ import {
   StockLevelWithDetails,
   StockTransferRequestWithDetails,
 } from "../Stock/types";
+import { NewProductVariant } from "~/modules/Admin/Upsert/ProductUpsert/ProductVariantUpsert";
 
 export interface ProductWithDetails extends Product {
   promotion?: PromotionWithContent | null;
@@ -40,16 +41,16 @@ export interface ProductVariantWithDetails extends ProductVariant {
 export type NewProduct = {
   name: string;
   productSubCategories: string[];
-  variants: ProductVariantWithDetails[];
+  variants: NewProductVariant[];
   dropshipURL: string;
   dropshipSKU: string;
   description: string;
   gender: string;
   isActive: boolean;
   images?: Image[] | null;
-  heroImage: Image | null;
-  brand: string;
-  promotion: string;
+  heroImage?: Image | null;
+  brand?: string;
+  promotion?: string;
   id?: string;
 };
 

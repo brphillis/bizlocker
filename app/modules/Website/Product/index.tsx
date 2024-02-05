@@ -258,7 +258,7 @@ const Product = () => {
             {/* colors and sizes */}
             <div>
               {(hasSizes || hasColors) && (
-                <div className="flex py-3 max-sm:justify-between">
+                <div className="flex py-3 max-sm:justify-between flex-wrap gap-6">
                   {hasSizes && (
                     <div className="mr-6 flex items-center">
                       <span className="mr-3">Size</span>
@@ -287,19 +287,22 @@ const Product = () => {
                   )}
 
                   {hasColors && (
-                    <div className="flex max-w-[205px] items-center justify-center">
-                      <span className="mr-3">Available in</span>
+                    <div className="flex max-w-full items-center justify-center">
+                      <span className="mr-3">Color</span>
 
                       {availableColors?.map((color, i) => {
                         if (color) {
                           return (
-                            <button
+                            <div
+                              tabIndex={0}
+                              role="button"
                               key={color + i}
-                              className={`ml-2 h-6 w-6 rounded-full border-2 border-gray-300 focus:outline-none 
+                              className={`ml-2 h-[20px] w-[20px] rounded-full border-2 border-gray-300 focus:outline-none 
                             ${selectedColor === color ? "animate-bounce" : ""}
                             ${"bg-" + generateProductColor(color)}`}
                               onClick={() => setSelectedColor(color)}
-                            ></button>
+                              onKeyDown={() => setSelectedColor(color)}
+                            />
                           );
                         } else return null;
                       })}

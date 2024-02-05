@@ -25,7 +25,9 @@ const AccountOrders = () => {
           <div className="max-h-[650px] w-full max-w-[98vw] overflow-x-auto">
             {orders?.length === 0 && (
               <>
-                <p>You have not made an order yet.</p>
+                <p className="w-full text-center text-brand-black/50">
+                  No orders.
+                </p>
               </>
             )}
 

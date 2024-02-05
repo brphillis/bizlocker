@@ -2,7 +2,6 @@ import { json } from "@remix-run/node";
 import { Image, Staff } from "@prisma/client";
 import { validateForm } from "~/utility/validate";
 import { getBrands } from "~/models/Brands/index.server";
-import { getAvailableColors } from "~/models/enums.server";
 import { PageNotification } from "~/hooks/PageNotification";
 import { getPromotions } from "~/models/Promotions/index.server";
 import { NewProduct, ProductWithDetails } from "~/models/Products/types";
@@ -37,7 +36,6 @@ export const productUpsertLoader = async (request: Request) => {
   const productSubCategories = await getProductSubCategories();
   const brands = await getBrands();
   const promotions = await getPromotions();
-  const availableColors = await getAvailableColors();
 
   const { searchParams } = new URL(request.url);
   const id = searchParams.get("contentId");
@@ -65,7 +63,6 @@ export const productUpsertLoader = async (request: Request) => {
     productSubCategories,
     brands,
     promotions,
-    availableColors,
   });
 };
 

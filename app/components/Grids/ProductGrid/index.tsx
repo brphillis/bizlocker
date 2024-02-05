@@ -7,19 +7,21 @@ import ProductCard from "../../Cards/ProductCard";
 import Divider from "~/components/Filter/ProductFilterSideBar/Divider";
 
 type Props = {
-  products: ProductWithDetails[];
-  totalPages?: number;
-  cols?: number;
+  columns?: string;
+  columnsMobile?: string;
   enablePlaceHolder?: boolean;
   extendStyle?: string;
+  products: ProductWithDetails[];
+  totalPages?: number;
 };
 
 const ProductGrid = ({
-  products,
-  totalPages,
-  cols,
+  columns,
+  columnsMobile,
   enablePlaceHolder,
   extendStyle,
+  products,
+  totalPages,
 }: Props) => {
   const navigate = useNavigate();
   const [showPlaceHolder, setShowPlaceHolder] = useState<boolean>(false);
@@ -46,12 +48,8 @@ const ProductGrid = ({
   return (
     <div className={`w-full px-0 max-lg:px-3 ${extendStyle}`}>
       <div
-        style={{
-          gridTemplateColumns: cols
-            ? `repeat(${cols}, minmax(0, 1fr))`
-            : "repeat(4, minmax(0, 1fr))",
-        }}
-        className="relative grid justify-items-center gap-3 max-md:gap-y-3 max-lg:!grid-cols-4 max-md:!grid-cols-3 max-sm:!grid-cols-2 md:gap-6 gap-y-6"
+        className={`relative grid justify-items-center gap-3 max-md:gap-y-3 max-lg:!grid-cols-4 max-md:!grid-cols-3 max-sm:!grid-cols-2 md:gap-6 gap-y-6 
+        ${columns || "grid-cols-4"} ${columnsMobile || "max-md:grid-cols-2"}`}
       >
         {products?.map((product, i: number) => (
           <React.Fragment key={"productCard_" + product?.id + i}>

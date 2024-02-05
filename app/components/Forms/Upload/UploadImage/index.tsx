@@ -47,7 +47,7 @@ const UploadImage = ({ id, defaultValue, name, label, onChange }: Props) => {
           name="imageUpload"
           type="file"
           accept="image/*"
-          className="file-input file-input-bordered w-full rounded-none bg-primary/50 text-brand-white"
+          className="file-input file-input-bordered w-full rounded-none bg-primary/50 text-brand-white max-w-[380px] block mx-auto"
           onChange={async (e) => {
             const convertedImage = await ConvertToBase64Image(e);
 

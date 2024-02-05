@@ -209,7 +209,7 @@ export const pageBuilderAction = async (
       return json({ deletePreviewSuccess, notification });
     }
 
-    case "deletepage": {
+    case "deletePage": {
       await deletePage(pageId as string, pageType as PageType);
 
       if (pageType === "article") return redirect("/admin/articles");

@@ -39,7 +39,7 @@ export const webPageLoader = async (
   let title, description, backgroundColor, blocks;
 
   if (webPage) {
-    blocks = await getBlocks(webPage, true);
+    blocks = await getBlocks(webPage);
     title = capitalizeWords(webPage.title);
     description = capitalizeWords(webPage.description);
     backgroundColor = webPage.backgroundColor;

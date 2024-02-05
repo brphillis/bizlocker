@@ -118,12 +118,14 @@ const Meta = ({
         )}
 
         {pageType !== "homePage" && (
-          <IsActiveToggle
-            id="PageIsActive"
-            isActive={currentVersion?.isActive}
-            labelStyle="text-brand-white"
-            size="sm"
-          />
+          <div className="w-full flex justify-start pl-3">
+            <IsActiveToggle
+              id="PageIsActive"
+              isActive={currentVersion?.isActive}
+              labelStyle="text-brand-white"
+              size="sm"
+            />
+          </div>
         )}
 
         <div className="w-full flex justify-center">

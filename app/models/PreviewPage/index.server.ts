@@ -89,6 +89,7 @@ export const deletePage = async (
   pageType: PageType,
 ): Promise<{ success: true }> => {
   // Disconnect any removed blocks from published
+
   const findPage = prisma[`${pageType}`].findUnique as (
     args: unknown,
   ) => unknown;

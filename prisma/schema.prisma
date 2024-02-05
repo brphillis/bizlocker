@@ -173,8 +173,10 @@ model BlockOptions {
   buttonSecondary                         String?
   colorPrimary                            String?
   colorSecondary                          String?
-  columns                                 Float?
-  columnsMobile                           Float?
+  columns                                 String?
+  columnsMobile                           String?
+  numberColumns                           Float?
+  numberColumnsMobile                     Float?
   count                                   Int?
   flipX                                   String?
   height                                  String?
@@ -236,6 +238,8 @@ model BlockOptions {
   itemTitleFontWeights                    String[]
   itemTitleFontWeightsMobile              String[]
   itemTitleSizes                          String[]
+  itemTitleShadows                        String[]
+  itemShortTextShadows                    String[]
   itemTitleSizesMobile                    String[]
   itemMarginTop                           String[]
   itemMarginTopMobile                     String[]
@@ -676,7 +680,7 @@ model Product {
 model ProductVariant {
   id                   Int                    @id @default(autoincrement())
   cartItems            CartItem[]
-  color                Color?
+  color                String?
   height               Int                    @default(0)
   isActive             Boolean                @default(true)
   isFragile            Boolean                @default(false)

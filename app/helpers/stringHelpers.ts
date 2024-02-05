@@ -66,3 +66,56 @@ export const capitalizeWords = (input?: string): string => {
     return result;
   } else return "";
 };
+
+export const returnCorrectGender = (genderName: string): string => {
+  const normalizedGender = genderName.toLowerCase();
+
+  switch (normalizedGender) {
+    case "male":
+    case "men":
+    case "man":
+    case "boys":
+    case "boy":
+      return "MALE";
+
+    case "female":
+    case "women":
+    case "woman":
+    case "girls":
+    case "girl":
+      return "FEMALE";
+
+    case "kids":
+    case "child":
+    case "children":
+    case "kid":
+      return "KIDS";
+
+    default:
+      return "UNISEX";
+  }
+};
+
+export const extractGuidFromUrl = (url: string): string | null => {
+  const uuidRegex =
+    /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/;
+  const match = url.match(uuidRegex);
+
+  return match ? match[0] : null;
+};
+
+export const filterWordsFromString = (sentence: string): string => {
+  // Use a regular expression to match words (letters only)
+  const wordRegex = /\b[A-Za-z]+\b/g;
+
+  // Match all words in the sentence
+  const words = sentence.match(wordRegex);
+
+  // If there are matched words, join them to form the filtered sentence
+  if (words) {
+    return words.join(" ");
+  } else {
+    // If no words are found, return an empty string or handle it as needed
+    return "";
+  }
+};

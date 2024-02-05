@@ -15,11 +15,11 @@ type Props = {
 };
 
 export const handleWindowedFormData = (
-  form: HTMLFormElement
+  form: HTMLFormElement,
 ): HTMLFormElement => {
   const openWindow = document.querySelectorAll("#OpenWindowContainer");
   const activeToggle = openWindow[openWindow.length - 1]?.querySelector(
-    "#TitlebarActiveToggle"
+    "#TitlebarActiveToggle",
   );
 
   if (activeToggle) {

@@ -48,10 +48,6 @@ export const adminNavBarRoutes: NavigationRouteItem[] = [
         name: "Article Categories",
         link: "/admin/search/articleCategory",
       },
-      {
-        name: "Site Settings",
-        link: "/admin/upsert/siteSettings",
-      },
     ],
   },
 
@@ -101,6 +97,10 @@ export const adminNavBarRoutes: NavigationRouteItem[] = [
         name: "Stock Transfers",
         link: "/admin/search/stockTransfer",
       },
+      {
+        name: "Dropship",
+        link: "/admin/search/dropship",
+      },
     ],
   },
 
@@ -138,6 +138,21 @@ export const adminNavBarRoutes: NavigationRouteItem[] = [
       {
         name: "Campaigns",
         link: "/admin/search/campaign",
+      },
+    ],
+  },
+
+  {
+    icon: "IoSettingsSharp",
+    name: "Configuration",
+    children: [
+      {
+        name: "Site Settings",
+        link: "/admin/upsert/siteSettings",
+      },
+      {
+        name: "Tasks",
+        link: "/admin/upsert/task",
       },
     ],
   },

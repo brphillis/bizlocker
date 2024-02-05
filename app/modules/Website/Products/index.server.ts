@@ -2,7 +2,6 @@ import { addToCart } from "~/models/Cart/index.server";
 import { getBrands } from "~/models/Brands/index.server";
 import { json, type MetaFunction } from "@remix-run/node";
 import { searchProducts } from "~/models/Products/index.server";
-import { getAvailableColors } from "~/models/enums.server";
 import { getDepartments } from "~/models/Departments/index.server";
 import { getProductCategories } from "~/models/ProductCategories/index.server";
 import { getProductSubCategories } from "~/models/ProductSubCategories/index.server";
@@ -44,7 +43,6 @@ export const productsLoader = async (request: Request) => {
   const productCategories = await getProductCategories();
   const productSubCategories = await getProductSubCategories();
   const brands = await getBrands();
-  const colors = await getAvailableColors();
 
   const productSubCategory = url.searchParams
     .get("productSubCategory")
@@ -64,7 +62,6 @@ export const productsLoader = async (request: Request) => {
     productCategories,
     productSubCategories,
     brands,
-    colors,
     url,
   });
 };

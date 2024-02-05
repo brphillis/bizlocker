@@ -7,6 +7,21 @@ import {
 } from "~/integrations/_master/storage";
 import { ImageWithDetails } from "./types";
 
+export const buildImageCreateQuery = async (image?: Image | null) => {
+  if (image) {
+    const repoLink = await uploadImage_Integration(image);
+
+    if (repoLink) {
+      return {
+        create: {
+          href: repoLink,
+          altText: image?.altText,
+        },
+      };
+    } else return undefined;
+  } else return undefined;
+};
+
 export function getImages(): Promise<Image[]> {
   return prisma.image.findMany();
 }

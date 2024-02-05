@@ -42,12 +42,14 @@ const TextContainer = ({
     itemShortTextColors,
     itemShortTextFontWeights,
     itemShortTextFontWeightsMobile,
+    itemShortTextShadows,
     itemShortTextSizes,
     itemShortTextSizesMobile,
     itemTitleColors,
     itemTitleFontWeights,
     itemTitleFontWeightsMobile,
     itemTitles,
+    itemTitleShadows,
     itemTitleSizes,
     itemTitleSizesMobile,
   } = blockOptions;
@@ -85,14 +87,14 @@ const TextContainer = ({
         />
 
         <div
-          className={`relative ${itemTitleColors[index]} ${itemTitleSizes[index]} ${itemTitleSizesMobile[index]} ${itemTitleFontWeights[index]} ${itemTitleFontWeightsMobile[index]}
+          className={`relative text-center select-none ${itemTitleColors[index]} ${itemTitleSizes[index]} ${itemTitleSizesMobile[index]} ${itemTitleFontWeights[index]} ${itemTitleFontWeightsMobile[index]} ${itemTitleShadows[index]}
       `}
         >
           {itemTitles[index]}
         </div>
 
         <div
-          className={`relative ${itemShortTextColors[index]} ${itemShortTextSizes[index]} ${itemShortTextSizesMobile[index]} ${itemShortTextFontWeights[index]} ${itemShortTextFontWeightsMobile[index]}
+          className={`relative text-center select-none ${itemShortTextColors[index]} ${itemShortTextSizes[index]} ${itemShortTextSizesMobile[index]} ${itemShortTextFontWeights[index]} ${itemShortTextFontWeightsMobile[index]} ${itemShortTextShadows[index]}
       `}
         >
           {itemShortText[index]}

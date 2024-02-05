@@ -10,9 +10,17 @@ import BasicInput from "../../Input/BasicInput";
 
 type ImageUploadSliderProps = {
   defaultImages?: Image[] | null;
+  viewOnly?: boolean;
+  hasRemove?: boolean;
+  hasTags?: boolean;
 };
 
-const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
+const UploadMultipleImages = ({
+  defaultImages,
+  viewOnly,
+  hasRemove,
+  hasTags,
+}: ImageUploadSliderProps) => {
   const [activeSlide, setActiveSlide] = useState(0);
   const [editingTags, setEditingTags] = useState<boolean>();
   const [images, setCurrentImages] = useState<Image[] | NewImage[] | null>(
@@ -59,7 +67,9 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <div className="text-center pb-3">Upload Images</div>
+      <div className="text-center pb-3">
+        {`${viewOnly ? "View" : "Upload"} Images`}
+      </div>
 
       {/* // FOCUSED IMAGE */}
       {images && images?.some((image) => image) ? (
@@ -80,15 +90,17 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
               return (
                 <SwiperSlide key={i}>
                   <div className="relative mx-auto block max-w-[200px] rounded-lg">
-                    <IoClose
-                      size={20}
-                      className="
+                    {(!viewOnly || hasRemove) && (
+                      <IoClose
+                        size={20}
+                        className="
                         absolute right-2 top-2
                         -mr-2 -mt-2 cursor-pointer
                         rounded-bl-md bg-primary p-[0.2rem] text-white
                       "
-                      onClick={() => handleRemoveImage(i)}
-                    />
+                        onClick={() => handleRemoveImage(i)}
+                      />
+                    )}
                     <img
                       src={href}
                       alt={altText || "image description placeholder"}
@@ -153,7 +165,7 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
             </div>
           )}
 
-          {!editingTags && (
+          {((!editingTags && !viewOnly) || (!editingTags && !hasTags)) && (
             <button
               type="button"
               className="block mx-auto mt-3 mb-4 bg-primary text-brand-white px-3 py-1 text-xs rounded-sm cursor-pointer"
@@ -173,8 +185,8 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
           return (
             <label
               key={"uploadMultipleImages_BottomImage_" + i}
-              htmlFor={`image${i + 1}`}
-              className={`h-20 w-20 cursor-pointer rounded-full
+              htmlFor={viewOnly ? `image${i + 1}` : undefined}
+              className={`h-20 w-20 cursor-pointer rounded-full select-none
                   ${
                     activeSlide === i &&
                     "scale-[1.1] transition-transform duration-300"
@@ -187,15 +199,17 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
                 className="h-full w-full object-cover"
               />
 
-              <input
-                type="file"
-                id={`image${i + 1}`}
-                accept="image/*"
-                className="file-input file-input-bordered hidden h-full w-full"
-                onChange={async (e) => {
-                  handleAddImage(e, i);
-                }}
-              />
+              {!viewOnly && (
+                <input
+                  type="file"
+                  id={`image${i + 1}`}
+                  accept="image/*"
+                  className="file-input file-input-bordered hidden h-full w-full"
+                  onChange={async (e) => {
+                    handleAddImage(e, i);
+                  }}
+                />
+              )}
             </label>
           );
         })}
@@ -203,7 +217,8 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
         {/*  ADD BUTTON */}
         {/* eslint-disable-next-line */}
         <label
-          className="trnasition-colors group flex h-20 w-20 cursor-pointer items-center justify-center border-[1px] border-primary bg-none duration-700 hover:border-none hover:bg-primary"
+          className={`transition-colors group h-20 w-20 cursor-pointer items-center justify-center border-[1px] border-primary bg-none duration-700 hover:border-none hover:bg-primary
+          ${viewOnly ? "hidden" : "flex"}`}
           htmlFor="UploadMultipleImages_NewImage"
         >
           <input

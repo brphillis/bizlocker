@@ -6,7 +6,7 @@ import { AusPostDeliveryOption } from "~/integrations/auspost/types";
 import { getShippingServices_Integration } from "~/integrations/_master/shipping";
 import { findClosestPostcode } from "./locationHelpers";
 
-type CartDimensions = {
+export type CartDimensions = {
   height: number;
   width: number;
   length: number;
