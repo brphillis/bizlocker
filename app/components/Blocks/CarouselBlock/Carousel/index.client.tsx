@@ -179,7 +179,7 @@ const Carousel = ({ content, options }: Props) => {
               pauseOnMouseEnter: true,
             }}
             breakpoints={{
-              768: {
+              769: {
                 slidesPerView: numberColumns || 1,
               },
               0: {

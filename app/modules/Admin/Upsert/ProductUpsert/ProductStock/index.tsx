@@ -7,7 +7,7 @@ import { productStockLoader } from "./index.server";
 import { StockLevelWithDetails } from "~/models/Stock/types";
 
 const ProductStock = () => {
-  const { stock } = useLoaderData<typeof productStockLoader>();
+  const { stock, storeId } = useLoaderData<typeof productStockLoader>();
 
   const navigate = useNavigate();
 
@@ -33,10 +33,16 @@ const ProductStock = () => {
               <tbody>
                 {stock?.map(
                   (
-                    { store, quantity }: StockLevelWithDetails,
+                    {
+                      store,
+                      storeId: currentStoreId,
+                      quantity,
+                      productVariant,
+                    }: StockLevelWithDetails,
                     index: number,
                   ) => {
-                    const { name, id } = store || {};
+                    const { name } = store || {};
+
                     return (
                       <tr key={"stockLevelTableRow_" + index}>
                         <th>{index + 1}</th>
@@ -46,9 +52,10 @@ const ProductStock = () => {
                           <BasicButton
                             label="Transfer"
                             type="button"
+                            disabled={storeId === currentStoreId}
                             onClick={() =>
                               navigate(
-                                `/admin/upsert/product/productStockTransfer?contentId=${id}&fromStore=${store?.id}`,
+                                `/admin/upsert/product/product-stock-transfer?contentId=${productVariant?.productId}&variantId=${productVariant?.id}&fromStore=${store?.id}`,
                               )
                             }
                           />

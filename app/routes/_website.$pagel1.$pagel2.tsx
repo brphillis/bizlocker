@@ -34,6 +34,7 @@ import {
   passwordRecoveryResetAction,
   passwordRecoveryResetLoader,
 } from "~/modules/Website/PasswordRecovery/Reset/index.server";
+import PaymentConfirm from "~/modules/Website/PaymentConfirm";
 
 export const loader = async ({ request, params }: ActionFunctionArgs) => {
   const page = params?.pagel2;
@@ -115,6 +116,9 @@ const PageL2 = () => {
       } else {
         activeModule = <PasswordRecoveryReset />;
       }
+      break;
+    case "payment-confirm":
+      activeModule = <PaymentConfirm />;
       break;
     case "promotion":
       activeModule = <Promotion />;

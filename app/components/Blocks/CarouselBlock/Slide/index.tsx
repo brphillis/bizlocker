@@ -32,7 +32,7 @@ const Slide = ({ index, blockOptions, image }: Props) => {
       <img
         src={image.src}
         alt={image.altText || "image description placeholder"}
-        className={`absolute h-full w-full select-none object-cover
+        className={`absolute select-none object-cover h-full w-full 
        ${itemImagePositions[index]} ${itemImagePositionsMobile[index]}`}
       />
 

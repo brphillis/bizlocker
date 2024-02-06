@@ -63,6 +63,7 @@ export const upsertPageMeta = async (
   thumbnail: Image,
   previewPageId?: string,
   articleCategories?: string[],
+  urlSegment?: string,
 ): Promise<number> => {
   let page;
   const refinedPageType =
@@ -85,6 +86,7 @@ export const upsertPageMeta = async (
       title,
       description,
       backgroundColor,
+      urlSegment,
       [pageType.replace(/p/g, "P")]: { connect: { id: newPageType.id } },
     };
 
@@ -139,6 +141,7 @@ export const upsertPageMeta = async (
       title,
       description,
       backgroundColor,
+      urlSegment,
     };
 
     // Check if thumbnail is provided
@@ -478,6 +481,7 @@ export const publishPage = async (
       },
       blockOrder: previewPage.blockOrder,
       title: previewPage?.title,
+      urlSegment: previewPage?.urlSegment,
       description: previewPage?.description,
       backgroundColor: previewPage?.backgroundColor,
     };

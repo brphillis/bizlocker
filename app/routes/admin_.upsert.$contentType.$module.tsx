@@ -27,9 +27,9 @@ export const loader = async ({ request, params }: ActionFunctionArgs) => {
   switch (module) {
     case "addStaff":
       return await teamAddStaffLoader(request, params);
-    case "productStock":
+    case "product-stock":
       return await productStockLoader(request);
-    case "productStockTransfer":
+    case "product-stock-transfer":
       return await productStockTransferLoader(request);
   }
 };
@@ -46,7 +46,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   switch (module) {
     case "addStaff":
       return await teamAddStaffAction(request);
-    case "productStockTransfer":
+    case "product-stock-transfer":
       return await productStockTransferAction(request);
   }
 };
@@ -59,10 +59,10 @@ const UpsertContent = () => {
     case "addStaff":
       moduleComponent = <TeamAddStaff />;
       break;
-    case "productStock":
+    case "product-stock":
       moduleComponent = <ProductStock />;
       break;
-    case "productStockTransfer":
+    case "product-stock-transfer":
       moduleComponent = <ProductStockTransfer />;
       break;
     default:

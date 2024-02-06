@@ -70,7 +70,14 @@ export const loginAction = async (request: Request) => {
     case "googleLogin": {
       const { credential } = form;
       if (credential) {
-        return await googleLogin(request, credential as string);
+        const { session, validationErrors } = await googleLogin(
+          request,
+          credential as string,
+        );
+
+        if (validationErrors) {
+          return { validationErrors };
+        } else return session;
       }
     }
   }

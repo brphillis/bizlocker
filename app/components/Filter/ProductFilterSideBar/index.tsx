@@ -38,7 +38,6 @@ const ProductFilterSideBar = ({
 
   const onSaleChecked = searchParams.get("onSale");
   const isPromotedChecked = searchParams.get("isPromoted");
-  const isNewOnly = searchParams.get("newOnly");
 
   const [menuIsExpanded, setMenuIsExpanded] = useState<boolean>(true);
 
@@ -184,7 +183,7 @@ const ProductFilterSideBar = ({
 
             <Divider />
 
-            <li>
+            <li className="pt-3">
               <Toggle
                 label="Sale Only"
                 isActive={onSaleChecked ? true : false}
@@ -195,13 +194,6 @@ const ProductFilterSideBar = ({
                 label="Promo Only"
                 isActive={isPromotedChecked ? true : false}
                 searchParam="isPromoted"
-              />
-
-              {/* TODO: IMPLEMENT NEW ONLY FILTER FUNCTIONALITY */}
-              <Toggle
-                label="New Only"
-                isActive={isNewOnly ? true : false}
-                searchParam="newOnly"
               />
             </li>
           </div>

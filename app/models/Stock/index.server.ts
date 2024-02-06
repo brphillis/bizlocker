@@ -18,6 +18,7 @@ export const getProductVariantStock = async (
     },
     include: {
       store: true,
+      productVariant: true,
     },
   });
 };

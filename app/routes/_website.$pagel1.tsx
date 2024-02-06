@@ -38,6 +38,8 @@ export const loader = async ({ request, params }: ActionFunctionArgs) => {
       return await logoutLoader();
     case "password-recovery":
       return null;
+    case "payment-confirm":
+      return null;
     case "product":
       return null;
     case "products":

@@ -1,5 +1,7 @@
-import { type MetaFunction, redirect } from "@remix-run/node";
+import { type MetaFunction } from "@remix-run/node";
 
 export const meta: MetaFunction = () => [{ title: "CLUTCH - clothing." }];
 
-export const loader = async () => redirect("/home");
+export const loader = async () => {
+  return null;
+};

@@ -350,9 +350,10 @@ const ProductVariantUpsert = ({ storeId, product }: Props) => {
                   className="btn btn-primary flex !h-[41px] !min-h-[41px] w-[103px] items-center justify-center !rounded-sm sm:!ml-0"
                   onClick={() =>
                     navigate(
-                      `/admin/upsert/product/productStock?contentId=${(
+                      `product-stock?contentId=${product.id}&stockId=${(
                         activeVariant as ProductVariantWithDetails
                       )?.id}`,
+                      { relative: "path" },
                     )
                   }
                 >

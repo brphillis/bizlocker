@@ -60,7 +60,7 @@ const ContentContainer = ({ index, blockOptions }: Props) => {
       }`}
     >
       <div
-        className={`relative z-10 h-max w-max max-w-full select-none flex-col items-center overflow-hidden p-6 font-semibold max-md:m-0 gap-3 ${
+        className={`relative z-10 h-max w-max max-w-full max-md:w-screen select-none flex-col items-center overflow-hidden p-6 font-semibold max-md:m-0 gap-3 ${
           hasCardContent ? "flex" : "hidden"
         } ${itemMarginTop[index]} ${itemMarginRight[index]} ${
           itemMarginBottom[index]
@@ -89,7 +89,7 @@ const ContentContainer = ({ index, blockOptions }: Props) => {
         >
           {itemTitles[index] && (
             <div
-              className={`relative select-none text-center !leading-[55px] max-md:max-w-[90%]
+              className={`relative select-none text-center !leading-[55px]
           ${itemTitleColors[index]} ${itemTitleSizes[index]} ${itemTitleSizesMobile[index]} 
           ${itemTitleFontWeights[index]} ${itemTitleFontWeightsMobile[index]} ${itemTitleShadows[index]}`}
             >
@@ -99,7 +99,7 @@ const ContentContainer = ({ index, blockOptions }: Props) => {
 
           {itemShortText[index] && (
             <div
-              className={`relative select-none text-center max-md:max-w-[90%] pb-3
+              className={`relative select-none text-center pb-3
            ${itemShortTextColors[index]} ${itemShortTextSizes[index]} ${itemShortTextSizesMobile[index]}
            ${itemShortTextFontWeights[index]} ${itemShortTextFontWeightsMobile[index]} ${itemShortTextShadows[index]}`}
             >

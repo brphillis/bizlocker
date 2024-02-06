@@ -29,6 +29,7 @@ model PreviewPage {
   blocks            Block[]           @relation("PreviewPageToBlocks")
   blockOrder        Int[]
   title             String            @default("Page Title")
+  urlSegment        String?
   description       String            @default("Page Description")
   backgroundColor   String?
   homePage          HomePage?         @relation("PreviewPageToHomePage", fields: [homePageId], references: [id])
@@ -68,6 +69,7 @@ model WebPage {
   isActive        Boolean       @default(true)
   thumbnail       Image?        @relation("WebPageImage")
   title           String        @unique
+  urlSegment      String?
   backgroundColor String?
   previewPage     PreviewPage[] @relation("PreviewPageToWebPage")
 
@@ -86,6 +88,7 @@ model Article {
   previewPage       PreviewPage[]     @relation("PreviewPageToArticle")
   thumbnail         Image?            @relation("ArticleImage")
   title             String            @unique
+  urlSegment        String?
 
   createdAt String?
   updatedAt String?

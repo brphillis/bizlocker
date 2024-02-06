@@ -15,6 +15,7 @@ import { searchStores } from "~/models/Stores/index.server";
 import { NewBlockContent } from "~/models/Blocks/types";
 import { searchProductSubCategories } from "~/models/ProductSubCategories/index.server";
 import { searchProductCategories } from "~/models/ProductCategories/index.server";
+import { returnBlockMaxContentItemCount } from "~/helpers/contentHelpers";
 
 export type PageType = "homePage" | "webPage" | "article" | "previewPage";
 
@@ -634,12 +635,17 @@ export const buildNewBlockData = (
         PageBuilderContentSelection as string,
       );
 
-      // creating an array of string for block content order ["image_id", "promotion_id"]
-      parsedPageBuilderContentSelection.forEach(
-        (p: PageBuilderContentSelection) => {
-          blockContentOrder.push(p.type + "_" + p.contentId);
-        },
-      );
+      if (
+        returnBlockMaxContentItemCount(blockName) &&
+        returnBlockMaxContentItemCount(blockName)! > 1
+      ) {
+        // creating an array of string for block content order ["image_id", "promotion_id"]
+        parsedPageBuilderContentSelection.forEach(
+          (p: PageBuilderContentSelection) => {
+            blockContentOrder.push(p.type + "_" + p.contentId);
+          },
+        );
+      }
 
       // we then assign the data to each key
       (

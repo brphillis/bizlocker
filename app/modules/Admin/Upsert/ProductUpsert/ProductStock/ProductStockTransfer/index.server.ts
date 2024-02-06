@@ -12,7 +12,7 @@ export const productStockTransferLoader = async (request: Request) => {
     ((await getUserDataFromSession(request, STAFF_SESSION_KEY)) as Staff) || {};
 
   const { searchParams } = new URL(request.url);
-  const variantId = searchParams.get("contentId");
+  const variantId = searchParams.get("variantId");
   const fromStoreId = searchParams.get("fromStore");
 
   if (!variantId) {

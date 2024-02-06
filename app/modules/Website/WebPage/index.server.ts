@@ -21,13 +21,13 @@ export const webPageLoader = async (
   request: Request,
   params: Params<string>,
 ) => {
-  const pageName = params.pagel1?.replace("-", " ");
+  const pageUrlSegment = params.pagel1;
 
-  if (pageName === "favicon.ico") {
+  if (pageUrlSegment === "favicon.ico") {
     return redirect("/");
   }
 
-  const webPage = await getWebPage(undefined, pageName);
+  const webPage = await getWebPage(undefined, pageUrlSegment);
 
   if (!webPage || (webPage && !webPage.isActive)) {
     throw new Response(null, {
@@ -50,6 +50,5 @@ export const webPageLoader = async (
     title,
     description,
     backgroundColor,
-    pageName,
   });
 };

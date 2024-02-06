@@ -16,6 +16,7 @@ export const meta: MetaFunction<typeof homeLoader> = ({ data }) => {
 
 export const homeLoader = async () => {
   const homePage = await getHomePage();
+
   let title, description, backgroundColor, blocks;
 
   if (homePage) {

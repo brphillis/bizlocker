@@ -36,6 +36,21 @@ const SelectedContent = ({
 
   const selectedItemsTotal = selectedItems?.length;
 
+  const moveToEndAtIndex = (arr: string[], indexToMove: number): string[] => {
+    if (indexToMove < 0 || indexToMove >= arr.length) {
+      // Index out of bounds, return the original array
+      return arr;
+    }
+
+    const newArr: string[] = [
+      ...arr.slice(0, indexToMove),
+      ...arr.slice(indexToMove + 1),
+      arr[indexToMove],
+    ];
+
+    return newArr;
+  };
+
   const handleMoveItem = (index: number, direction: "up" | "down") => {
     const blocks = currentBlocks;
 
@@ -81,6 +96,36 @@ const SelectedContent = ({
     }
   };
 
+  const handleDeleteItem = (index: number) => {
+    const blocks = currentBlocks;
+
+    const currentEditingOptions =
+      currentBlocks?.[editingIndex]?.blockOptions?.[0];
+
+    if (currentBlocks && currentEditingOptions) {
+      for (const optionKey in currentEditingOptions) {
+        if (
+          Array.isArray(
+            blocks?.[editingIndex]?.blockOptions?.[0]?.[
+              optionKey as keyof BlockOptions
+            ],
+          )
+        ) {
+          (blocks![editingIndex]!.blockOptions![0]![
+            optionKey as keyof BlockOptions
+          ] as string[]) = moveToEndAtIndex(
+            blocks![editingIndex]!.blockOptions![0]![
+              optionKey as keyof BlockOptions
+            ] as string[],
+            index,
+          );
+        }
+      }
+    }
+
+    setSelectedItems(selectedItems.filter((_, i) => i !== index));
+  };
+
   return (
     <>
       {selectedItems && selectedItems.length > 0 && (
@@ -107,11 +152,7 @@ const SelectedContent = ({
                       onNavigate={() => {
                         navigate(`${type}?contentId=${contentId}`);
                       }}
-                      onDelete={() =>
-                        setSelectedItems(
-                          selectedItems.filter((_, i) => i !== index),
-                        )
-                      }
+                      onDelete={() => handleDeleteItem(index)}
                       onChangeOrderUp={
                         index > 0
                           ? () => handleMoveItem(index, "up")

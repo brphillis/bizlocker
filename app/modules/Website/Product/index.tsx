@@ -118,9 +118,24 @@ const Product = () => {
 
   useEffect(() => {
     const matchingImage = images?.find((e) =>
-      e.tags.some(
-        (tag) => tag.toLowerCase() === selectedVariant?.color?.toLowerCase(),
-      ),
+      e.tags.some((tag) => {
+        const matchingFullColorName =
+          tag.toLowerCase() === selectedVariant?.color?.toLowerCase();
+
+        if (matchingFullColorName) {
+          return matchingFullColorName;
+        } else {
+          // check for a matching color variant ei: dark BLUE, light BLUE, army GREEN
+          if (Array.isArray(selectedVariant?.color?.split(" "))) {
+            if (
+              selectedVariant?.color?.split(" ")?.[1] &&
+              selectedVariant?.color?.split(" ")?.[1].toLowerCase() ===
+                tag.toLowerCase()
+            )
+              return true;
+          }
+        }
+      }),
     );
 
     if (matchingImage) {
