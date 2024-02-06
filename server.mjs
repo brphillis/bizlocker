@@ -1,8 +1,6 @@
 import { createRequestHandler } from "@remix-run/express";
 import { installGlobals } from "@remix-run/node";
 import express from "express";
-import * as fs from "fs";
-import https from "https";
 
 installGlobals();
 
@@ -42,6 +40,7 @@ app.all(
 );
 
 const port = 3000;
+app.listen(port, () => console.log("http://localhost:" + port));
 
 // if (process.env.NODE_ENV !== "production") {
 //   const httpsOptions = {
@@ -55,5 +54,3 @@ const port = 3000;
 // } else {
 //   app.listen(port, () => console.log("http://localhost:" + port));
 // }
-
-app.listen(port, () => console.log("http://localhost:" + port));

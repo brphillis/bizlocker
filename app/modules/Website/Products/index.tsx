@@ -15,7 +15,6 @@ const Products = () => {
     productCategories,
     productSubCategories,
     brands,
-    colors,
   } = useLoaderData<typeof productsLoader>();
 
   return (
@@ -42,7 +41,6 @@ const Products = () => {
             productCategories={productCategories}
             productSubCategories={productSubCategories}
             brands={brands}
-            colors={colors}
           />
 
           {products && products?.length > 0 && (

@@ -1,11 +1,11 @@
 # base node image
-FROM node:18 as base
+FROM node:18-alpine as base
 
 # set for base and all layer that inherit from it
 ENV NODE_ENV production
 
 # Install openssl for Prisma
-RUN apt-get update && apt-get install -y openssl procps
+RUN apk --no-cache add openssl procps
 
 # Install all node_modules, including dev dependencies
 FROM base as deps
@@ -46,8 +46,7 @@ WORKDIR /brockdev
 COPY --from=production-deps /brockdev/node_modules /brockdev/node_modules
 COPY --from=build /brockdev/node_modules/.prisma /brockdev/node_modules/.prisma
 
-COPY --from=build /brockdev/build/server /brockdev/build/server
-COPY --from=build /brockdev/build/client /brockdev/build/client
+COPY --from=build /brockdev/build /brockdev/build
 ADD . .
 
 CMD ["npm", "start"]

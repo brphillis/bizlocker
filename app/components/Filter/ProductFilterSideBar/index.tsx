@@ -16,7 +16,6 @@ type Props = {
   productCategories: ProductCategory[] | null;
   productSubCategories: ProductSubCategory[] | null;
   brands: Brand[] | null;
-  colors: string[];
 };
 
 const ProductFilterSideBar = ({
@@ -24,7 +23,6 @@ const ProductFilterSideBar = ({
   productCategories,
   productSubCategories,
   brands,
-  colors,
 }: Props) => {
   const [searchParams] = useSearchParams();
 
@@ -183,10 +181,6 @@ const ProductFilterSideBar = ({
                 searchParam="brand"
               />
             )}
-
-            <Divider />
-
-            <List label="Color" listValues={colors} searchParam="color" />
 
             <Divider />
 

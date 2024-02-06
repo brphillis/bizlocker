@@ -399,7 +399,7 @@ const Product = () => {
             </p>
             <ProductGrid
               products={similarProducts as ProductWithDetails[]}
-              cols={5}
+              columns="grid-cols-5"
               enablePlaceHolder={true}
             />
           </>
