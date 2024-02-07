@@ -255,25 +255,24 @@ const ProductVariantUpsert = ({ storeId, product }: Props) => {
                 validationErrors={validationErrors}
               />
 
-              {/* <BasicSelect
+              <BasicInput
                 id="VariantColor"
                 name="color"
                 label="Color"
                 placeholder="Color"
                 extendContainerStyle="w-full"
-                selections={availableColors.map((e) => {
-                  return { id: e, name: e };
-                })}
+                type="text"
                 defaultValue={
                   (activeVariant as ProductVariantWithDetails)?.color || ""
                 }
-                onChange={(e) =>
+                onChange={(e) => {
                   setActiveVariant({
                     ...activeVariant,
-                    color: e,
-                  })
-                }
-              /> */}
+                    color: e as string,
+                  });
+                }}
+                validationErrors={validationErrors}
+              />
 
               <BasicInput
                 id="VariantSize"

@@ -1,74 +1,30 @@
 import { useEffect, useState } from "react";
 import Spinner from "~/components/Spinner";
 import SearchBar from "~/components/SearchBar";
-import { getCart } from "~/models/Cart/index.server";
-import { getBrands } from "~/models/Brands/index.server";
 import Footer from "~/components/Layout/_Website/Footer";
+import CountDown from "~/components/Indicators/Countdown";
+import { getThemeColorValueByName } from "~/utility/colors";
 import DarkOverlay from "~/components/Layout/Overlays/DarkOverlay";
-import { getUserDataFromSession } from "~/session.server";
-import { getDepartments } from "~/models/Departments/index.server";
-import { getProductCategories } from "~/models/ProductCategories/index.server";
-import {
-  json,
-  type MetaFunction,
-  type LoaderFunctionArgs,
-} from "@remix-run/node";
+import PatternBackground from "~/components/Layout/Backgrounds/PatternBackground";
 import {
   Outlet,
   useLoaderData,
   useLocation,
   useNavigation,
 } from "@remix-run/react";
+import ProductBasic from "~/components/Layout/_Website/Navigation/Desktop/ProductBasic";
+import ProductMegaMenu from "~/components/Layout/_Website/Navigation/Desktop/ProductMegaMenu";
+import ProductBasicMobile from "~/components/Layout/_Website/Navigation/Mobile/ProductBasicMobile";
+import HamburgerContainer from "~/components/Layout/_Website/Navigation/Mobile/_HamburgerContainer";
+import { websiteRootLoader } from "./index.server";
 
-import "../../node_modules/swiper/swiper.min.css";
-import "../../node_modules/swiper/modules/navigation.min.css";
-import "../../node_modules/swiper/modules/pagination.min.css";
 import "sweetalert2/dist/sweetalert2.css";
 
-import { User } from "@prisma/client";
-import CountDown from "~/components/Indicators/Countdown";
-import HamburgerContainer from "~/components/Layout/_Website/Navigation/Mobile/_HamburgerContainer";
-import ProductMegaMenu from "~/components/Layout/_Website/Navigation/Desktop/ProductMegaMenu";
-import { GetRandomActivePromotions } from "~/models/Promotions/index.server";
-import ProductBasic from "~/components/Layout/_Website/Navigation/Desktop/ProductBasic";
-import PatternBackground from "~/components/Layout/Backgrounds/PatternBackground";
-import { getThemeColorValueByName } from "~/utility/colors";
-import { getSiteSettings } from "~/models/SiteSettings/index.server";
-import ProductBasicMobile from "~/components/Layout/_Website/Navigation/Mobile/ProductBasicMobile";
+import "../../../../node_modules/swiper/swiper.min.css";
+import "../../../../node_modules/swiper/modules/navigation.min.css";
+import "../../../../node_modules/swiper/modules/pagination.min.css";
 
-export const meta: MetaFunction = () => {
-  return [
-    { title: "CLUTCH Clothing" },
-    {
-      name: "CLUTCH Clothing",
-      content: "CLUTCH Clothing",
-    },
-  ];
-};
-
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const user = (await getUserDataFromSession(request)) as User | null;
-  const cart = await getCart(request);
-
-  const departments = await getDepartments();
-  const brands = await getBrands();
-  const productCategories = await getProductCategories();
-  const siteSettings = await getSiteSettings();
-
-  const navigationPromotions = await GetRandomActivePromotions(2, true);
-
-  return json({
-    user,
-    cart,
-    departments,
-    productCategories,
-    brands,
-    navigationPromotions,
-    siteSettings,
-  });
-};
-
-const App = () => {
+const WebsiteRoot = () => {
   const navigation = useNavigation();
   const location = useLocation();
 
@@ -80,7 +36,7 @@ const App = () => {
     productCategories,
     navigationPromotions,
     siteSettings,
-  } = useLoaderData<typeof loader>();
+  } = useLoaderData<typeof websiteRootLoader>();
 
   const { navigationStyleDesktop } = siteSettings || {};
 
@@ -188,4 +144,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default WebsiteRoot;

@@ -39,7 +39,7 @@ const DropshipSearch = () => {
         {products && products.length > 0 && (
           <BasicTable
             onRowClick={(itemId) =>
-              navigate(`/admin/upsert/dropshipProduct?contentId=${itemId}`)
+              navigate(`/admin/upsert/dropship-product?contentId=${itemId}`)
             }
             currentPage={currentPage}
             objectArray={products?.map((e: AliExpressHubSearch_Result) => ({

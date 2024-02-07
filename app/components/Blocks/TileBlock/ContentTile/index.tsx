@@ -3,6 +3,7 @@ import { useNavigate } from "@remix-run/react";
 import PatternBackground from "~/components/Layout/Backgrounds/PatternBackground";
 import { getThemeColorValueByName } from "~/utility/colors";
 import TextContainer from "../../_ItemComponents/TextContainer";
+import { getBucketImageSrc } from "~/integrations/_master/storage";
 
 type Props = {
   blockOptions: BlockOptions;
@@ -53,7 +54,7 @@ const ContentTile = ({
       <div className="h-full w-full">
         <img
           className={`relative object-fit h-full w-full ${itemFilters[index]}`}
-          src={imageSrc}
+          src={getBucketImageSrc(imageSrc)}
           alt={imageName}
         />
       </div>

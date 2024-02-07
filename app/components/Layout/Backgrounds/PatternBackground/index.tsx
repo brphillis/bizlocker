@@ -33,7 +33,7 @@ const PatternBackground = ({
       transform: "translateX(-50%)",
       top: 0,
       height: "100%",
-      width: screenWidth ? "100vw" : "100%",
+      width: screenWidth ? "100vw" : "101%",
       filter: brightness ? `brightness(${brightness})` : "unset",
     },
     isometric: {
@@ -63,7 +63,7 @@ const PatternBackground = ({
       transform: "translateX(-50%)",
       top: 0,
       height: "100%",
-      width: screenWidth ? "100vw" : "100%",
+      width: screenWidth ? "100vw" : "101%",
       filter: brightness ? `brightness(${brightness})` : "unset",
     },
   };
@@ -75,7 +75,7 @@ const PatternBackground = ({
     transform: "translateX(-50%)",
     top: 0,
     height: "100%",
-    width: screenWidth ? "100vw" : "100%",
+    width: screenWidth ? "100vw" : "101%",
     filter: brightness ? `brightness(${brightness})` : "unset",
   };
 

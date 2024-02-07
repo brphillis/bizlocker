@@ -2,6 +2,7 @@ import { Image } from "@prisma/client";
 import { useState } from "react";
 import { IoIosCloseCircle } from "react-icons/io";
 import { ConvertToBase64Image, type NewImage } from "~/helpers/fileHelpers";
+import { getBucketImageSrc } from "~/integrations/_master/storage";
 import { ProductWithDetails } from "~/models/Products/types";
 
 type Props = {
@@ -27,7 +28,7 @@ const UploadHeroImage = ({ valueToChange }: Props) => {
             <div className="relative mt-3 flex flex-col items-center">
               <div className="relative h-max w-max">
                 <img
-                  src={heroImage.href}
+                  src={getBucketImageSrc(heroImage.href)}
                   className="my-3 h-36 max-w-[280px] rounded-lg object-contain sm:max-w-[30rem]"
                   alt="brandImageEditor"
                 />

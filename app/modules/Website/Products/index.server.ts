@@ -5,9 +5,7 @@ import { searchProducts } from "~/models/Products/index.server";
 import { getDepartments } from "~/models/Departments/index.server";
 import { getProductCategories } from "~/models/ProductCategories/index.server";
 import { getProductSubCategories } from "~/models/ProductSubCategories/index.server";
-import { getRandomCampaignOrPromotion } from "~/models/Campaigns/index.server";
-import { CampaignWithContent } from "~/models/Campaigns/types";
-import { PromotionWithContent } from "~/models/Promotions/types";
+import { getRandomPromotionBanner } from "~/models/Promotions/index.server";
 
 export const meta: MetaFunction<typeof productsLoader> = ({ location }) => {
   const queries = location.search.replace("?", "&").split("&");
@@ -44,17 +42,9 @@ export const productsLoader = async (request: Request) => {
   const productSubCategories = await getProductSubCategories();
   const brands = await getBrands();
 
-  const productSubCategory = url.searchParams
-    .get("productSubCategory")
-    ?.toString();
-  const { campaign, promotion } =
-    ((await getRandomCampaignOrPromotion(productSubCategory)) as {
-      campaign: CampaignWithContent;
-      promotion: PromotionWithContent;
-    }) || {};
+  const promotion = await getRandomPromotionBanner();
 
   return json({
-    campaign,
     promotion,
     products,
     totalPages,

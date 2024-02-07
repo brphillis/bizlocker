@@ -13,7 +13,7 @@ import {
 import {
   updateImage_Integration,
   uploadImage_Integration,
-} from "~/integrations/_master/storage";
+} from "~/integrations/_master/storage/index.server";
 import {
   blockHasPageConnection,
   includeAllPageTypes,
@@ -141,8 +141,11 @@ export const upsertPageMeta = async (
       title,
       description,
       backgroundColor,
-      urlSegment,
     };
+
+    if (pageType !== "homePage") {
+      updateData.urlSegment = urlSegment;
+    }
 
     // Check if thumbnail is provided
     if (thumbnail) {
@@ -481,13 +484,14 @@ export const publishPage = async (
       },
       blockOrder: previewPage.blockOrder,
       title: previewPage?.title,
-      urlSegment: previewPage?.urlSegment,
       description: previewPage?.description,
       backgroundColor: previewPage?.backgroundColor,
     };
 
     if (pageType !== "homePage") {
       updateData.isActive = previewPage?.isActive;
+
+      updateData.urlSegment = previewPage?.urlSegment;
 
       updateData.thumbnail = previewPage?.thumbnail?.id
         ? {

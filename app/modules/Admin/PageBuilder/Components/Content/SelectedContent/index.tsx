@@ -67,7 +67,7 @@ const SelectedContent = ({
             optionValue as string[],
             direction === "up" ? index - 1 : index + 1,
             index,
-          );
+          ) as string[];
 
           const keyToEdit =
             blocks?.[editingIndex]?.blockOptions?.[0]?.[

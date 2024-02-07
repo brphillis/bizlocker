@@ -152,7 +152,7 @@ const ProductBasic = ({
       <button
         type="button"
         className="absolute left-16 flex h-[60px] flex-row items-center gap-4 px-2 font-bold lg:relative lg:left-0"
-        onClick={() => navigate("/home")}
+        onClick={() => navigate("/")}
       >
         <h1 className="cursor-pointer select-none text-xl font-bold tracking-widest text-brand-white">
           CLUTCH.

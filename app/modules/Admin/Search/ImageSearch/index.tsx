@@ -5,6 +5,7 @@ import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
 import AdminPageWrapper from "~/components/Layout/Wrappers/AdminPageWrapper";
 import { Form, Outlet, useLoaderData, useNavigate } from "@remix-run/react";
 import type { imageSearchLoader } from "./index.server";
+import { getBucketImageSrc } from "~/integrations/_master/storage";
 
 const ImageSearch = () => {
   const { images, totalPages } = useLoaderData<typeof imageSearchLoader>();
@@ -42,7 +43,7 @@ const ImageSearch = () => {
                 }}
               >
                 <img
-                  src={href ?? ""}
+                  src={(href && getBucketImageSrc(href)) ?? ""}
                   alt={altText ?? "placeholder"}
                   className="w-full h-full object-cover"
                 />

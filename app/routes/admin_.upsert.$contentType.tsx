@@ -103,7 +103,7 @@ export const loader = async ({ request, params }: ActionFunctionArgs) => {
   const contentType = params?.contentType;
 
   switch (contentType) {
-    case "articleCategory":
+    case "article-category":
       return await articleCategoryUpsertLoader(request);
     case "brand":
       return await brandUpsertLoader(request);
@@ -111,7 +111,7 @@ export const loader = async ({ request, params }: ActionFunctionArgs) => {
       return await campaignUpsertLoader(request);
     case "department":
       return await departmentUpsertLoader(request);
-    case "dropshipProduct":
+    case "dropship-product":
       return await dropshipProductUpsertLoader(request);
     case "image":
       return await imageUpsertLoader(request);
@@ -119,17 +119,17 @@ export const loader = async ({ request, params }: ActionFunctionArgs) => {
       return await orderUpsertLoader(request);
     case "product":
       return await productUpsertLoader(request);
-    case "productCategory":
+    case "product-category":
       return await productCategoryUpsertLoader(request);
-    case "productSubCategory":
+    case "product-subcategory":
       return await productSubCategoryUpsertLoader(request);
     case "promotion":
       return await promotionUpsertLoader(request);
-    case "siteSettings":
+    case "site-settings":
       return await siteSettingsUpsertLoader();
     case "staff":
       return await staffUpsertLoader(request);
-    case "stockTransfer":
+    case "stock-transfer":
       return await stockTransferUpsertLoader(request);
     case "store":
       return await storeUpsertLoader(request);
@@ -152,7 +152,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   const contentType = params?.contentType;
 
   switch (contentType) {
-    case "articleCategory":
+    case "article-category":
       return await articleCategoryUpsertAction(request);
     case "brand":
       return await brandUpsertAction(request);
@@ -160,7 +160,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
       return await campaignUpsertAction(request, params);
     case "department":
       return await departmentUpsertAction(request);
-    case "dropshipProduct":
+    case "dropship-product":
       return await dropshipProductUpsertAction(request);
     case "image":
       return await imageUpsertAction(request);
@@ -168,17 +168,17 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
       return await orderUpsertAction(request);
     case "product":
       return await productUpsertAction(request);
-    case "productCategory":
+    case "product-category":
       return await productCategoryUpsertAction(request);
-    case "productSubCategory":
+    case "product-subcategory":
       return await productSubCategoryUpsertAction(request);
     case "promotion":
       return await promotionUpsertAction(request);
-    case "siteSettings":
+    case "site-settings":
       return await siteSettingsUpsertAction(request);
     case "staff":
       return await staffUpsertAction(request);
-    case "stockTransfer":
+    case "stock-transfer":
       return await stockTransferUpsertAction(request);
     case "store":
       return await storeUpsertAction(request);
@@ -199,7 +199,7 @@ const UpsertContent = ({ offRouteModules }: Props) => {
   const { contentType } = useParams();
   return (
     <>
-      {contentType === "articleCategory" && (
+      {contentType === "article-category" && (
         <ArticleCategoryUpsert offRouteModule={offRouteModules} />
       )}
       {contentType === "brand" && (
@@ -211,7 +211,7 @@ const UpsertContent = ({ offRouteModules }: Props) => {
       {contentType === "department" && (
         <DepartmentUpsert offRouteModule={offRouteModules} />
       )}
-      {contentType === "dropshipProduct" && (
+      {contentType === "dropship-product" && (
         <DropshipProductUpsert offRouteModule={offRouteModules} />
       )}
       {contentType === "image" && (
@@ -221,20 +221,20 @@ const UpsertContent = ({ offRouteModules }: Props) => {
       {contentType === "product" && (
         <ProductUpsert offRouteModule={offRouteModules} />
       )}
-      {contentType === "productCategory" && (
+      {contentType === "product-category" && (
         <ProductCategoryUpsert offRouteModule={offRouteModules} />
       )}
-      {contentType === "productSubCategory" && (
+      {contentType === "product-subcategory" && (
         <ProductSubCategoryUpsert offRouteModule={offRouteModules} />
       )}
       {contentType === "promotion" && (
         <PromotionUpsert offRouteModule={offRouteModules} />
       )}
-      {contentType === "siteSettings" && <SiteSettingsUpsert />}
+      {contentType === "site-settings" && <SiteSettingsUpsert />}
       {contentType === "staff" && (
         <StaffUpsert offRouteModule={offRouteModules} />
       )}
-      {contentType === "stockTransfer" && (
+      {contentType === "stock-transfer" && (
         <StockTransferUpsert offRouteModule={offRouteModules} />
       )}
       {contentType === "store" && (

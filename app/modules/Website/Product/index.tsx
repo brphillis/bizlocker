@@ -313,8 +313,12 @@ const Product = () => {
                               role="button"
                               key={color + i}
                               className={`ml-2 h-[20px] w-[20px] rounded-full border-2 border-gray-300 focus:outline-none 
-                            ${selectedColor === color ? "animate-bounce" : ""}
-                            ${"bg-" + generateProductColor(color)}`}
+                              ${selectedColor === color ? "animate-bounce" : ""}
+                              ${
+                                generateProductColor(color)
+                                  ? "bg-" + generateProductColor(color)
+                                  : "bg-neutral-400"
+                              } `}
                               onClick={() => setSelectedColor(color)}
                               onKeyDown={() => setSelectedColor(color)}
                             />

@@ -42,6 +42,5 @@ export const articleLoader = async (
     description,
     backgroundColor,
     blocks,
-    articleName,
   });
 };

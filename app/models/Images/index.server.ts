@@ -4,7 +4,7 @@ import {
   deleteImage_Integration,
   updateImage_Integration,
   uploadImage_Integration,
-} from "~/integrations/_master/storage";
+} from "~/integrations/_master/storage/index.server";
 import { ImageWithDetails } from "./types";
 
 export const buildImageCreateQuery = async (image?: Image | null) => {

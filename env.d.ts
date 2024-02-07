@@ -1,6 +1,8 @@
 /// <reference types="vite/client" />
 /// <reference types="@remix-run/node" />
 
+type Dev_Environment = "production" | "development";
+
 type Role = "DEVELOPER" | "ADMIN" | "MANAGER" | "STAFF" | "EDITOR" | "USER";
 
 type SortBy = "createdAt" | "totalSold" | "price" | "name" | "title";

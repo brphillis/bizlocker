@@ -5,19 +5,15 @@ import {
   removeS3Image,
 } from "~/integrations/aws/s3/s3.server";
 
-export const uploadImage_Integration = async (
-  image: Image,
-  secureLink?: boolean
-) => {
-  return await handleS3Upload(image, secureLink);
+export const uploadImage_Integration = async (image: Image) => {
+  return await handleS3Upload(image);
 };
 
 export const updateImage_Integration = async (
   existingImage: Image,
   newImage: Image,
-  secureLink?: boolean
 ) => {
-  return await handleS3Update(existingImage, newImage, secureLink);
+  return await handleS3Update(existingImage, newImage);
 };
 
 export const deleteImage_Integration = async (imageURL: string) => {

@@ -3,7 +3,7 @@ import { Gender, Image, Product, Promotion } from "@prisma/client";
 import {
   updateImage_Integration,
   uploadImage_Integration,
-} from "~/integrations/_master/storage";
+} from "~/integrations/_master/storage/index.server";
 import {
   NewPromotion,
   PromotionUpsertQuery,
@@ -72,6 +72,25 @@ export const getPromotion = async (
     });
   } else return null;
 };
+
+export const getRandomPromotionBanner =
+  async (): Promise<PromotionWithContent | null> => {
+    const promotions = await prisma.promotion.findMany({
+      orderBy: {
+        updatedAt: "desc",
+      },
+      include: {
+        bannerImage: true,
+      },
+    });
+
+    if (promotions.length > 0) {
+      const randomIndex = Math.floor(Math.random() * promotions.length);
+      return promotions[randomIndex];
+    } else {
+      return null;
+    }
+  };
 
 export const upsertPromotion = async (
   updateData: NewPromotion,

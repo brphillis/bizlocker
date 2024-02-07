@@ -3,7 +3,7 @@ import { getRandomOneOrTwo } from "~/helpers/numberHelpers";
 import {
   updateImage_Integration,
   uploadImage_Integration,
-} from "~/integrations/_master/storage";
+} from "~/integrations/_master/storage/index.server";
 import {
   Brand,
   Campaign,

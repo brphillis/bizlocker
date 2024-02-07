@@ -51,7 +51,7 @@ export const loader = async ({ request, params }: ActionFunctionArgs) => {
   switch (contentType) {
     case "article":
       return await articleSearchLoader(request);
-    case "articleCategory":
+    case "article-category":
       return await articleCategorySearchLoader(request);
     case "brand":
       return await brandSearchLoader(request);
@@ -69,9 +69,9 @@ export const loader = async ({ request, params }: ActionFunctionArgs) => {
       return await pageSearchLoader(request);
     case "product":
       return await productSearchLoader(request);
-    case "productCategory":
+    case "product-category":
       return await productCategorySearchLoader(request);
-    case "productSubCategory":
+    case "product-subcategory":
       return await productSubCategorySearchLoader(request);
     case "promotion":
       return await promotionSearchLoader(request);
@@ -79,7 +79,7 @@ export const loader = async ({ request, params }: ActionFunctionArgs) => {
       return await teamSearchLoader(request);
     case "staff":
       return await staffSearchLoader(request);
-    case "stockTransfer":
+    case "stock-transfer":
       return await stockTransferSearchLoader(request);
     case "store":
       return await storeSearchLoader(request);
@@ -96,7 +96,7 @@ const SearchContent = () => {
     case "article":
       searchComponent = <ArticleSearch />;
       break;
-    case "articleCategory":
+    case "article-category":
       searchComponent = <ArticleCategorySearch />;
       break;
     case "brand":
@@ -123,10 +123,10 @@ const SearchContent = () => {
     case "product":
       searchComponent = <ProductSearch />;
       break;
-    case "productCategory":
+    case "product-category":
       searchComponent = <ProductCategorySearch />;
       break;
-    case "productSubCategory":
+    case "product-subcategory":
       searchComponent = <ProductSubCategorySearch />;
       break;
     case "promotion":
@@ -135,7 +135,7 @@ const SearchContent = () => {
     case "staff":
       searchComponent = <StaffSearch />;
       break;
-    case "stockTransfer":
+    case "stocktransfer":
       searchComponent = <StockTransferSearch />;
       break;
     case "store":

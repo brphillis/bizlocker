@@ -27,7 +27,7 @@ const ArticleCategorySearch = () => {
         <AdminPageHeader
           title="Manage Article Categories"
           buttonLabel="Add Category"
-          buttonLink="/admin/upsert/articleCategory?contentId=add"
+          buttonLink="/admin/upsert/article-category?contentId=add"
         />
 
         <AdminContentSearch name={true} />

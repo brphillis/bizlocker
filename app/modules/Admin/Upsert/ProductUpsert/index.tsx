@@ -238,11 +238,7 @@ const UpsertProduct = ({ offRouteModule }: Props) => {
 
                 <ClientOnly fallback={<div id="skeleton" />}>
                   {() => (
-                    <UploadMultipleImages
-                      defaultImages={product?.images}
-                      hasTags={true}
-                      hasRemove={true}
-                    />
+                    <UploadMultipleImages defaultImages={product?.images} />
                   )}
                 </ClientOnly>
 

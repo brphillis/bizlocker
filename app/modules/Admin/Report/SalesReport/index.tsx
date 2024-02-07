@@ -58,7 +58,12 @@ const SalesReporting = () => {
         <AdminPageHeader title="Sales Reports" />
 
         <div className="flex flex-col gap-3">
-          <WindowContainer title="Sales Today" extendStyle="bg-base-200">
+          <WindowContainer
+            title="Sales Today"
+            extendStyle="bg-base-200"
+            extendTitleBarStyle="!bg-base-500"
+            hideClose={true}
+          >
             <div className="stats rounded-none bg-base-200">
               <div className="stat place-items-center">
                 <div className="stat-title">Sales</div>
@@ -86,7 +91,12 @@ const SalesReporting = () => {
             </div>
           </WindowContainer>
 
-          <WindowContainer title="Charts" extendStyle="bg-base-200">
+          <WindowContainer
+            title="Charts"
+            extendStyle="bg-base-200"
+            extendTitleBarStyle="!bg-base-500"
+            hideClose={true}
+          >
             <div className="flex h-max w-full flex-row flex-wrap items-center justify-center">
               <div className="flex w-full flex-col items-center sm:w-1/2">
                 <h1 className="mb-3 text-xl font-bold">
@@ -110,7 +120,12 @@ const SalesReporting = () => {
             </div>
           </WindowContainer>
 
-          <WindowContainer title="Generate Reports" extendStyle="bg-base-200">
+          <WindowContainer
+            title="Generate Reports"
+            extendStyle="bg-base-200"
+            extendTitleBarStyle="!bg-base-500"
+            hideClose={true}
+          >
             <div>
               <BasicButton label="Generate PDF" />
             </div>

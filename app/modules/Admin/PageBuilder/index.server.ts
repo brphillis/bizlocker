@@ -165,7 +165,7 @@ export const pageBuilderAction = async (
         thumbnail ? JSON.parse(thumbnail as string) : undefined,
         previewPageId ? (previewPageId as string) : undefined,
         articleCategories ? JSON.parse(articleCategories as string) : undefined,
-        urlSegment as string,
+        urlSegment ? (urlSegment as string) : undefined,
       );
 
       notification = {

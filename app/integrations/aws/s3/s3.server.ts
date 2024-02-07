@@ -1,23 +1,28 @@
-import type { Image } from "@prisma/client";
-import {
-  S3Client,
-  PutObjectCommand,
-  GetObjectCommand,
-  PutObjectAclCommand,
-  DeleteObjectCommand,
-  ListObjectsV2Command,
-} from "@aws-sdk/client-s3";
+import { randomUUID } from "crypto";
 import { Readable } from "node:stream";
-import getStream, {
-  AnyStream,
-} from "../../../../node_modules/get-stream/source";
+import { Image } from "@prisma/client";
+import {
+  bucketName_dev,
+  bucketName_prod,
+} from "~/integrations/_master/storage";
 import {
   base64toBufferedBinary,
   getImageTypeFromBase64,
 } from "~/helpers/fileHelpers";
-import { randomUUID } from "crypto";
+import {
+  CopyObjectCommand,
+  DeleteObjectCommand,
+  GetObjectCommand,
+  ListObjectsV2Command,
+  PutObjectCommand,
+  S3Client,
+} from "@aws-sdk/client-s3";
+import getStream, {
+  AnyStream,
+} from "../../../../node_modules/get-stream/source";
 
-const bucketName = "clutchclothing";
+export const bucketName_currentEnv =
+  process.env.NODE_ENV === "production" ? bucketName_prod : bucketName_dev;
 
 export const s3Client = new S3Client({
   region: "ap-southeast-2",
@@ -28,7 +33,7 @@ export const s3Client = new S3Client({
 });
 
 // CREATE
-export const handleS3Upload = async (image: Image, secureLink?: boolean) => {
+export const handleS3Upload = async (image: Image) => {
   // if we are already passing an image object to this function we just want to return existing link
   // as we are iterating through an array of images in which some arent updated
   if (!image.href) {
@@ -46,7 +51,6 @@ export const handleS3Upload = async (image: Image, secureLink?: boolean) => {
     image?.altText || "image",
     binaryData,
     fileType,
-    secureLink,
   );
   return contentRepoLink;
 };
@@ -55,13 +59,12 @@ export const uploadFileToS3 = async (
   altText: string,
   fileData: Buffer,
   fileType: string,
-  secureImage?: boolean,
 ): Promise<string> => {
   try {
     const key = randomUUID() + "-" + altText;
 
     const params = {
-      Bucket: bucketName,
+      Bucket: bucketName_currentEnv,
       Key: key,
       Body: fileData,
       ContentType: fileType,
@@ -69,17 +72,7 @@ export const uploadFileToS3 = async (
 
     await s3Client.send(new PutObjectCommand(params));
 
-    if (!secureImage) {
-      await s3Client.send(
-        new PutObjectAclCommand({
-          Bucket: bucketName,
-          Key: key,
-          ACL: "public-read",
-        }),
-      );
-    }
-
-    const fileUrl = `https://${bucketName}.s3.ap-southeast-2.amazonaws.com/${key}`;
+    const fileUrl = `https://${bucketName_currentEnv}.s3.ap-southeast-2.amazonaws.com/${key}`;
     return fileUrl;
   } catch (error) {
     console.error("Error uploading file to S3:", error);
@@ -88,11 +81,7 @@ export const uploadFileToS3 = async (
 };
 
 // UPDATE
-export const handleS3Update = async (
-  existingImage: Image,
-  newImage: Image,
-  secureLink?: boolean,
-) => {
+export const handleS3Update = async (existingImage: Image, newImage: Image) => {
   // if we are already passing an image object to this function we just want to return existing link
   // as we are iterating through an array of images in which some arent updated
 
@@ -112,7 +101,6 @@ export const handleS3Update = async (
       existingImage.href,
       binaryData,
       fileType,
-      secureLink,
     );
     return contentRepoLink;
   }
@@ -122,13 +110,12 @@ export const updateS3File = async (
   href: string,
   fileData: Buffer,
   fileType: string,
-  secureImage?: boolean,
 ): Promise<string> => {
   try {
     const key = href?.split("/").pop();
 
     const params = {
-      Bucket: bucketName,
+      Bucket: bucketName_currentEnv,
       Key: key,
       Body: fileData,
       ContentType: fileType,
@@ -136,17 +123,7 @@ export const updateS3File = async (
 
     await s3Client.send(new PutObjectCommand(params));
 
-    if (!secureImage) {
-      await s3Client.send(
-        new PutObjectAclCommand({
-          Bucket: bucketName,
-          Key: key,
-          ACL: "public-read",
-        }),
-      );
-    }
-
-    const fileUrl = `https://${bucketName}.s3.ap-southeast-2.amazonaws.com/${key}`;
+    const fileUrl = `https://${bucketName_currentEnv}.s3.ap-southeast-2.amazonaws.com/${key}`;
     return fileUrl;
   } catch (error) {
     console.error("Error uploading file to S3:", error);
@@ -160,7 +137,7 @@ export const removeS3Image = async (imageURL: string) => {
 
   await s3Client.send(
     new DeleteObjectCommand({
-      Bucket: bucketName,
+      Bucket: bucketName_currentEnv,
       Key: key,
     }),
   );
@@ -169,7 +146,7 @@ export const removeS3Image = async (imageURL: string) => {
 // FETCH ITEM
 export const fetchDataFromS3 = async (objectKey: string) => {
   const params = {
-    Bucket: bucketName,
+    Bucket: bucketName_currentEnv,
     Key: objectKey,
   };
 
@@ -186,9 +163,10 @@ export const fetchDataFromS3 = async (objectKey: string) => {
   }
 };
 
+// GETS ALL IMAGE ENTITY TAGS FROM A BUCKET
 export const getImageEntityTagsInBucket = async () => {
   const params = {
-    Bucket: bucketName,
+    Bucket: bucketName_currentEnv,
   };
 
   const objects = await s3Client.send(new ListObjectsV2Command(params));
@@ -202,4 +180,41 @@ export const getImageEntityTagsInBucket = async () => {
   } else {
     throw new Error("Unable to fetch object keys from S3 bucket.");
   }
+};
+
+export const listObjectsInBucket = async (bucketName: string) => {
+  const params = {
+    Bucket: bucketName,
+  };
+  const response = await s3Client.send(new ListObjectsV2Command(params));
+  return response.Contents ?? [];
+};
+
+export const duplicateBucket = async (
+  sourceBucket: string,
+  destinationBucket: string,
+) => {
+  try {
+    const sourceObjects = await listObjectsInBucket(sourceBucket);
+    if (sourceObjects && sourceObjects.length > 0) {
+      for (const object of sourceObjects) {
+        const copyParams = {
+          Bucket: destinationBucket,
+          CopySource: `/${sourceBucket}/${object.Key}`,
+          Key: object.Key,
+        };
+        await s3Client.send(new CopyObjectCommand(copyParams));
+      }
+    } else {
+      throw new Error("Source bucket is empty or does not exist.");
+    }
+  } catch (error) {
+    console.error("Error duplicating bucket:", error);
+    throw error;
+  }
+};
+
+export const copyProdBucketToDev = async () => {
+  await duplicateBucket(bucketName_prod, bucketName_dev);
+  return true;
 };

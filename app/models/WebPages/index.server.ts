@@ -36,7 +36,7 @@ export const getWebPage = async (
   });
 
   if (!webPage) {
-    throw new Error(`No webPage Found`);
+    return null;
   }
 
   // get the webPage with appropriate content

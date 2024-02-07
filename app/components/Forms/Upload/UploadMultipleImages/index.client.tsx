@@ -7,20 +7,18 @@ import { IoClose } from "react-icons/io5";
 import { findFirstNotNullInputValue } from "~/helpers/formHelpers";
 import Icon from "~/components/Icon";
 import BasicInput from "../../Input/BasicInput";
+import { swapContentArrayElements } from "~/helpers/arrayHelpers";
+import IconButton from "~/components/Buttons/IconButton";
+import { getBucketImageSrc } from "~/integrations/_master/storage";
 
 type ImageUploadSliderProps = {
   defaultImages?: Image[] | null;
-  viewOnly?: boolean;
-  hasRemove?: boolean;
-  hasTags?: boolean;
+  disableRemove?: boolean;
+  disableTags?: boolean;
+  disableUpload?: boolean;
 };
 
-const UploadMultipleImages = ({
-  defaultImages,
-  viewOnly,
-  hasRemove,
-  hasTags,
-}: ImageUploadSliderProps) => {
+const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
   const [activeSlide, setActiveSlide] = useState(0);
   const [editingTags, setEditingTags] = useState<boolean>();
   const [images, setCurrentImages] = useState<Image[] | NewImage[] | null>(
@@ -65,11 +63,20 @@ const UploadMultipleImages = ({
     }
   };
 
+  const handleMoveImage = (dir: "up" | "down") => {
+    if (images) {
+      const newArr = swapContentArrayElements(
+        images as object[],
+        dir === "down" ? activeSlide - 1 : activeSlide + 1,
+        activeSlide,
+      );
+      setCurrentImages(newArr as Image[]);
+    }
+  };
+
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <div className="text-center pb-3">
-        {`${viewOnly ? "View" : "Upload"} Images`}
-      </div>
+      <div className="text-center">Upload Images</div>
 
       {/* // FOCUSED IMAGE */}
       {images && images?.some((image) => image) ? (
@@ -79,7 +86,7 @@ const UploadMultipleImages = ({
             setEditingTags(false);
             setActiveSlide(swiper.activeIndex);
           }}
-          className="mx-auto block h-max w-full"
+          className="mx-auto mt-6 block h-max w-full"
           spaceBetween={12}
           slidesPerView={1}
           centeredSlides={true}
@@ -90,19 +97,17 @@ const UploadMultipleImages = ({
               return (
                 <SwiperSlide key={i}>
                   <div className="relative mx-auto block max-w-[200px] rounded-lg">
-                    {(!viewOnly || hasRemove) && (
-                      <IoClose
-                        size={20}
-                        className="
+                    <IoClose
+                      size={20}
+                      className="
                         absolute right-2 top-2
                         -mr-2 -mt-2 cursor-pointer
                         rounded-bl-md bg-primary p-[0.2rem] text-white
                       "
-                        onClick={() => handleRemoveImage(i)}
-                      />
-                    )}
+                      onClick={() => handleRemoveImage(i)}
+                    />
                     <img
-                      src={href}
+                      src={getBucketImageSrc(href)}
                       alt={altText || "image description placeholder"}
                       className="h-full w-full select-none object-cover"
                     />
@@ -115,11 +120,11 @@ const UploadMultipleImages = ({
         </Swiper>
       ) : null}
 
-      {/* tag editing */}
+      {/* TAG HANDLER */}
       {images && images.length > 0 && (
-        <div className="w-full flex justify-center">
+        <div className="w-full flex justify-center gap-3 items-center mt-2 mb-3">
           {editingTags && (
-            <div className="flex gap-1 items-start mt-3 mb-2">
+            <div className="flex gap-1 items-start mt-3">
               <BasicInput
                 id="2923717102_ImageTagsChangeInput"
                 name="tagsInput"
@@ -165,16 +170,36 @@ const UploadMultipleImages = ({
             </div>
           )}
 
-          {((!editingTags && !viewOnly) || (!editingTags && !hasTags)) && (
-            <button
-              type="button"
-              className="block mx-auto mt-3 mb-4 bg-primary text-brand-white px-3 py-1 text-xs rounded-sm cursor-pointer"
-              onClick={() => {
-                setEditingTags(true);
-              }}
-            >
-              Edit Tags
-            </button>
+          {!editingTags && (
+            <>
+              {images && activeSlide < images?.length - 1 && (
+                <IconButton
+                  iconName="IoShuffle"
+                  size={12}
+                  extendStyle="absolute left-3 text-primary -scale-x-100"
+                  onClick={() => handleMoveImage("down")}
+                />
+              )}
+
+              <button
+                type="button"
+                className="block mx-auto my-3 bg-primary text-brand-white px-3 py-1 text-xs rounded-sm cursor-pointer"
+                onClick={() => {
+                  setEditingTags(true);
+                }}
+              >
+                Edit Tags
+              </button>
+
+              {images && activeSlide > 0 && (
+                <IconButton
+                  iconName="IoShuffle"
+                  size={12}
+                  extendStyle="absolute right-3 text-primary"
+                  onClick={() => handleMoveImage("up")}
+                />
+              )}
+            </>
           )}
         </div>
       )}
@@ -185,8 +210,8 @@ const UploadMultipleImages = ({
           return (
             <label
               key={"uploadMultipleImages_BottomImage_" + i}
-              htmlFor={viewOnly ? `image${i + 1}` : undefined}
-              className={`h-20 w-20 cursor-pointer rounded-full select-none
+              htmlFor={`image${i + 1}`}
+              className={`h-20 w-20 cursor-pointer rounded-full
                   ${
                     activeSlide === i &&
                     "scale-[1.1] transition-transform duration-300"
@@ -194,22 +219,20 @@ const UploadMultipleImages = ({
                   `}
             >
               <img
-                src={href || ""}
+                src={(href && getBucketImageSrc(href)) || ""}
                 alt={altText || "image description placeholder"}
                 className="h-full w-full object-cover"
               />
 
-              {!viewOnly && (
-                <input
-                  type="file"
-                  id={`image${i + 1}`}
-                  accept="image/*"
-                  className="file-input file-input-bordered hidden h-full w-full"
-                  onChange={async (e) => {
-                    handleAddImage(e, i);
-                  }}
-                />
-              )}
+              <input
+                type="file"
+                id={`image${i + 1}`}
+                accept="image/*"
+                className="file-input file-input-bordered hidden h-full w-full"
+                onChange={async (e) => {
+                  handleAddImage(e, i);
+                }}
+              />
             </label>
           );
         })}
@@ -217,8 +240,7 @@ const UploadMultipleImages = ({
         {/*  ADD BUTTON */}
         {/* eslint-disable-next-line */}
         <label
-          className={`transition-colors group h-20 w-20 cursor-pointer items-center justify-center border-[1px] border-primary bg-none duration-700 hover:border-none hover:bg-primary
-          ${viewOnly ? "hidden" : "flex"}`}
+          className="trnasition-colors group flex h-20 w-20 cursor-pointer items-center justify-center border-[1px] border-primary bg-none duration-700 hover:border-none hover:bg-primary"
           htmlFor="UploadMultipleImages_NewImage"
         >
           <input

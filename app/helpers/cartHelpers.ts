@@ -3,7 +3,7 @@ import { Address } from "@prisma/client";
 import { CartWithDetails } from "~/models/Cart/types";
 import { fetchLatLong } from "~/models/Location/index.server";
 import { AusPostDeliveryOption } from "~/integrations/auspost/types";
-import { getShippingServices_Integration } from "~/integrations/_master/shipping";
+import { getShippingServices_Integration } from "~/integrations/_master/shipping/index.server";
 import { findClosestPostcode } from "./locationHelpers";
 
 export type CartDimensions = {

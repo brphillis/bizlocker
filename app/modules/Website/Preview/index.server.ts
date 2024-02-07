@@ -26,5 +26,5 @@ export const previewLoader = async (request: Request) => {
     }
 
     return json({ blocks, backgroundColor });
-  } else return redirect("/admin/home");
+  } else return redirect("/admin");
 };

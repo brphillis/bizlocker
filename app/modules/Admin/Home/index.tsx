@@ -37,7 +37,7 @@ const AdminHome = () => {
             <div className="flex flex-row gap-x-3">
               <button
                 className="flex h-28 w-28 cursor-pointer flex-col items-center justify-center gap-3 rounded-sm bg-primary p-3"
-                onClick={() => navigate("/home")}
+                onClick={() => navigate("/")}
                 type="button"
               >
                 <IoGlobeOutline size={36} />
@@ -46,7 +46,7 @@ const AdminHome = () => {
 
               <button
                 className="flex h-28 w-28 cursor-pointer flex-col items-center justify-center gap-3 rounded-sm bg-primary p-3"
-                onClick={() => navigate("/home")}
+                onClick={() => navigate("/")}
                 type="button"
               >
                 <IoPersonOutline size={36} />
@@ -57,7 +57,7 @@ const AdminHome = () => {
             <div className="flex flex-row gap-x-3">
               <button
                 className="flex h-28 w-28 cursor-pointer flex-col items-center justify-center gap-3 rounded-sm bg-primary p-3"
-                onClick={() => navigate("/home")}
+                onClick={() => navigate("/")}
                 type="button"
               >
                 <IoDocumentTextOutline size={36} />
@@ -66,7 +66,7 @@ const AdminHome = () => {
 
               <button
                 className="flex h-28 w-28 cursor-pointer flex-col items-center justify-center gap-3 rounded-sm bg-primary p-3"
-                onClick={() => navigate("/home")}
+                onClick={() => navigate("/")}
                 type="button"
               >
                 <IoCallOutline size={36} />

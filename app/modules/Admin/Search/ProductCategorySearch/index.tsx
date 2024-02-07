@@ -32,7 +32,7 @@ const ProductCategorySearch = () => {
         <AdminPageHeader
           title="Manage Categories"
           buttonLabel="Add Categories"
-          buttonLink="/admin/upsert/productCategory?contentId=add"
+          buttonLink="/admin/upsert/product-category?contentId=add"
         />
 
         <AdminContentSearch

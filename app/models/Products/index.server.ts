@@ -1,7 +1,7 @@
 import { prisma } from "~/db.server";
 import { getOrderBy } from "~/helpers/sortHelpers";
 import { calculateDiscountPercentage } from "~/helpers/numberHelpers";
-import { uploadImage_Integration } from "~/integrations/_master/storage";
+import { uploadImage_Integration } from "~/integrations/_master/storage/index.server";
 import { Gender, Image, Product, ProductVariant, Staff } from "@prisma/client";
 import { getUserDataFromSession, STAFF_SESSION_KEY } from "~/session.server";
 import {
@@ -13,6 +13,7 @@ import {
   ProductWithDetails,
 } from "./types";
 import { NewProductVariant } from "~/modules/Admin/Upsert/ProductUpsert/ProductVariantUpsert";
+import { removeS3Image } from "~/integrations/aws/s3/s3.server";
 
 export const getProducts = async (
   count?: string,
@@ -255,27 +256,16 @@ export const upsertProduct = async (
     updateData.images = {};
 
     const createImages = [];
-    const updateImages = [];
 
     if (images) {
       for (let i = 0; i < images.length; i++) {
-        const existingImage = existingProduct?.images[i];
         const image = images?.[i];
 
-        if (existingImage) {
-          updateImages.push({
-            id: existingImage.id,
-            href: repoLinksProduct[i],
-            altText: image.altText,
-            tags: image.tags,
-          });
-        } else {
-          createImages.push({
-            href: repoLinksProduct[i],
-            altText: image.altText,
-            tags: image.tags,
-          });
-        }
+        createImages.push({
+          href: repoLinksProduct[i],
+          altText: image.altText,
+          tags: image.tags,
+        });
       }
     }
 
@@ -289,32 +279,8 @@ export const upsertProduct = async (
       );
     }
 
-    if (updateImages.length > 0) {
-      updateData.images.update = updateImages.map(
-        ({ id, href, altText, tags }) => ({
-          where: { id },
-          data: {
-            href,
-            altText,
-            tags,
-          },
-        }),
-      );
-    }
-
     updateData.heroImage = {};
 
-    if (existingProduct?.heroImage && heroImage) {
-      updateData.heroImage = {
-        update: {
-          where: { id: existingProduct.heroImage.id },
-          data: {
-            href: heroRepoLink,
-            altText: heroImage.altText,
-          },
-        },
-      };
-    }
     if (!existingProduct?.heroImage && heroImage) {
       updateData.heroImage = {
         create: {
@@ -328,7 +294,7 @@ export const upsertProduct = async (
       throw new Error("Product not found");
     }
 
-    // Disconnect existing connections
+    // disconnect existing connections
     await prisma.product.update({
       where: { id: parseInt(id) },
       data: {
@@ -343,8 +309,23 @@ export const upsertProduct = async (
         promotion: {
           disconnect: true,
         },
+        images:
+          existingProduct.images && existingProduct.images.length > 0
+            ? {
+                set: [],
+              }
+            : undefined,
       },
     });
+
+    // remove old images from bucket
+    if (existingProduct.images && existingProduct.images.length > 0) {
+      for (let i = 0; i < existingProduct.images.length; i++) {
+        if (existingProduct.images[i].href) {
+          await removeS3Image(existingProduct.images[i].href!);
+        }
+      }
+    }
 
     // Update the product
     updateData.variants = {

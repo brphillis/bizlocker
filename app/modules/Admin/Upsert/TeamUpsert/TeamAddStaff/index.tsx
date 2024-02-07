@@ -20,6 +20,7 @@ import {
   useSubmit,
 } from "@remix-run/react";
 import { teamAddStaffLoader } from "./index.server";
+import { getBucketImageSrc } from "~/integrations/_master/storage";
 
 const TeamAddStaff = () => {
   const { staff, totalPages, stores, teamId } =
@@ -129,7 +130,11 @@ const TeamAddStaff = () => {
                             <div className="avatar">
                               <div className="mask mask-circle h-12 w-12">
                                 <img
-                                  src={avatar?.href || placeholderAvatar.href}
+                                  src={
+                                    (avatar?.href &&
+                                      getBucketImageSrc(avatar?.href)) ||
+                                    placeholderAvatar.href
+                                  }
                                   alt="staff_avatar"
                                 />
                               </div>

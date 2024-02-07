@@ -44,7 +44,7 @@ const ProductMegaMenu = ({
       <button
         type="button"
         className="max-xl:absolute max-xl:left-12 flex h-[60px] flex-row items-center gap-4 px-6 max-md:px-3 font-bold relative left-0"
-        onClick={() => navigate("/home")}
+        onClick={() => navigate("/")}
       >
         <h1 className="cursor-pointer select-none text-xl font-bold tracking-widest text-brand-white">
           CLUTCH.

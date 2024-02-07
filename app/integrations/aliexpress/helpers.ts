@@ -18,7 +18,7 @@ const findAliExpressVariantSize = (
   sizeCode: string,
 ): string | undefined => {
   const sizeObjectArray = itemSearching.sku.props.find(
-    (e) => e.name === "Size",
+    (e) => e.name.includes("Size") || e.name.includes("Length"),
   );
 
   if (sizeObjectArray) {
@@ -36,8 +36,8 @@ const findAliExpressVariantColor = (
   itemSearching: AliExpressHubProduct_ResultItem,
   colorCode: string,
 ): string | undefined => {
-  const colorObjectArray = itemSearching.sku.props.find(
-    (e) => e.name === "Color",
+  const colorObjectArray = itemSearching.sku.props.find((e) =>
+    e.name.includes("Color"),
   );
 
   if (colorObjectArray) {

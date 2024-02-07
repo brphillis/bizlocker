@@ -3,7 +3,7 @@ import { Brand, Image } from "@prisma/client";
 import {
   updateImage_Integration,
   uploadImage_Integration,
-} from "~/integrations/_master/storage";
+} from "~/integrations/_master/storage/index.server";
 
 import { BrandWithContent, NewBrand } from "./types";
 export const getBrands = async (): Promise<Brand[] | null> => {

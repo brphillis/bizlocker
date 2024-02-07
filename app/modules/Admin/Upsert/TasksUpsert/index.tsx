@@ -65,7 +65,6 @@ const TasksUpsert = () => {
           >
             <div className="flex flex-col items-start gap-3">
               <div className="relative flex items-center gap-3">
-                <div className="text-sm">Clean S3 Bucket</div>
                 <SquareIconButton
                   iconName="IoPlay"
                   size="xsmall"
@@ -74,6 +73,19 @@ const TasksUpsert = () => {
                   value="cleanS3"
                   color="primary"
                 />
+                <div className="text-sm">Clean S3 Bucket</div>
+              </div>
+
+              <div className="relative flex items-center gap-3">
+                <SquareIconButton
+                  iconName="IoPlay"
+                  size="xsmall"
+                  type="submit"
+                  name="_action"
+                  value="prodToDevS3"
+                  color="primary"
+                />
+                <div className="text-sm">Copy Production Bucket</div>
               </div>
             </div>
           </WindowContainer>

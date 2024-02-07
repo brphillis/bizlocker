@@ -1,6 +1,7 @@
 import { validateForm } from "~/utility/validate";
 import type { PageNotification } from "~/hooks/PageNotification";
 import { cleanBucketTask } from "~/models/Tasks/index.server";
+import { copyProdBucketToDev } from "~/integrations/aws/s3/s3.server";
 
 const validateOptions = {};
 
@@ -27,6 +28,17 @@ export const tasksUpsertAction = async (request: Request) => {
       notification = {
         type: "success",
         message: "Clean S3 Bucket Task Complete",
+      };
+
+      return { notification };
+    }
+
+    case "prodToDevS3": {
+      await copyProdBucketToDev();
+
+      notification = {
+        type: "success",
+        message: "Production Bucket Copied To Dev",
       };
 
       return { notification };

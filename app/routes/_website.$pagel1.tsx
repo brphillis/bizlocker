@@ -1,9 +1,7 @@
 import Cart from "~/modules/Website/Cart";
-import Home from "~/modules/Website/Home";
 import Account from "~/modules/Website/Account";
 import Products from "~/modules/Website/Products";
 import { Outlet, useParams } from "@remix-run/react";
-import { homeLoader } from "~/modules/Website/Home/index.server";
 import { loginAction } from "~/modules/Website/Login/index.server";
 import { type ActionFunctionArgs } from "@remix-run/server-runtime";
 import { accountLoader } from "~/modules/Website/Account/index.server";
@@ -30,8 +28,6 @@ export const loader = async ({ request, params }: ActionFunctionArgs) => {
       return await accountLoader(request);
     case "cart":
       return await cartLoader(request);
-    case "home":
-      return await homeLoader();
     case "login":
       return null;
     case "logout":
@@ -85,8 +81,6 @@ const PageL1 = () => {
     case "cart":
       activeModule = <Cart />;
       break;
-    case "home":
-      activeModule = <Home />;
       break;
     case "login":
       activeModule = <Login />;

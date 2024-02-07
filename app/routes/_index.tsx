@@ -1,7 +1,12 @@
-import { type MetaFunction } from "@remix-run/node";
-
-export const meta: MetaFunction = () => [{ title: "CLUTCH - clothing." }];
+import { homeLoader } from "~/modules/Website/Home/index.server";
+import Home from "~/modules/Website/Home";
 
 export const loader = async () => {
-  return null;
+  return await homeLoader();
 };
+
+const App = () => {
+  return <Home />;
+};
+
+export default App;

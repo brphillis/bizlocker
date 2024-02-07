@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { getBucketImageSrc } from "~/integrations/_master/storage";
 
 type Props = {
   onClick?: () => void;
@@ -13,7 +14,7 @@ const BasicImage = ({ src, alt, onClick, extendStyle, hoverEffect }: Props) => {
 
   useEffect(() => {
     const image = new Image();
-    image.src = src;
+    image.src = getBucketImageSrc(src);
 
     image.onload = () => {
       setLoading(false);
@@ -38,7 +39,7 @@ const BasicImage = ({ src, alt, onClick, extendStyle, hoverEffect }: Props) => {
             ${extendStyle ? extendStyle : ""}
             ${hoverEffect ? "hover:scale-[1.025]" : ""}
             `}
-        src={src}
+        src={getBucketImageSrc(src)}
         alt={alt}
       />
       {loading && (
