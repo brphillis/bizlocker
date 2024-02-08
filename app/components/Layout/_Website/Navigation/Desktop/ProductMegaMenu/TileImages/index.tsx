@@ -114,9 +114,13 @@ const TileImages = ({
         />
       )}
 
-      {!categoryTileHref && <PromotionTile promotion={randomPromotions[0]} />}
+      {!categoryTileHref && randomPromotions?.[0] && (
+        <PromotionTile promotion={randomPromotions[0]} />
+      )}
 
-      <PromotionTile promotion={randomPromotions[1]} />
+      {randomPromotions?.[1] && (
+        <PromotionTile promotion={randomPromotions[1]} />
+      )}
     </div>
   );
 };

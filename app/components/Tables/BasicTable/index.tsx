@@ -8,6 +8,7 @@ type Props = {
   onRowClick?: (id: string | number, index: number, name: string) => void;
   size?: "xs" | "sm" | "md" | "lg";
   mobileSize?: "xs" | "sm" | "md" | "lg";
+  bodyStyleExtend?: string;
 };
 
 const BasicTable = ({
@@ -16,6 +17,7 @@ const BasicTable = ({
   onRowClick,
   size,
   mobileSize,
+  bodyStyleExtend,
 }: Props) => {
   const navigate = useNavigate();
 
@@ -69,7 +71,7 @@ const BasicTable = ({
             })}
           </tr>
         </thead>
-        <tbody>
+        <tbody className={bodyStyleExtend}>
           {/*  eslint-disable-next-line */}
           {objectArray?.map((obj: string | any, i) => {
             return (

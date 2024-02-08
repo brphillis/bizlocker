@@ -1,5 +1,5 @@
 import { createUserSession } from "~/session.server";
-import { json, type MetaFunction } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import {
   ValidationErrors,
   isValidEmail,
@@ -8,14 +8,14 @@ import {
 import { googleLogin, verifyLogin } from "~/models/_Auth/login.server";
 import { isEmptyObject } from "~/helpers/objectHelpers";
 
-export const meta: MetaFunction = () => {
-  return [
-    { title: "CLUTCH | Login" },
-    {
-      name: "CLUTCH | Login",
-      content: "CLUTCH | Login",
-    },
-  ];
+export const loginLoader = async () => {
+  const meta = {
+    title: "CLUTCH | Login",
+    description:
+      "Discover timeless style and effortless sophistication with Clutch Clothing Australia. Elevate your wardrobe with our curated collection of premium apparel, designed for the modern Australian lifestyle. Explore our range today and experience fashion that's as versatile as you are.",
+  };
+
+  return json({ meta });
 };
 
 export const loginAction = async (request: Request) => {
@@ -70,7 +70,14 @@ export const loginAction = async (request: Request) => {
     case "googleLogin": {
       const { credential } = form;
       if (credential) {
-        return await googleLogin(request, credential as string);
+        const { session, validationErrors } = await googleLogin(
+          request,
+          credential as string,
+        );
+
+        if (validationErrors) {
+          return { validationErrors };
+        } else return session;
       }
     }
   }

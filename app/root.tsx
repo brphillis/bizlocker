@@ -2,9 +2,9 @@ import {
   Links,
   LiveReload,
   Meta,
-  Outlet,
   Scripts,
   ScrollRestoration,
+  useLocation,
   useNavigate,
   useRouteError,
 } from "@remix-run/react";
@@ -14,18 +14,45 @@ import AuthContainer from "~/components/Layout/Containers/AuthContainer";
 import AuthPageWrapper from "~/components/Layout/Wrappers/AuthPageWrapper";
 
 import "./tailwind.css";
+import { LoaderFunctionArgs } from "@remix-run/server-runtime";
+import { websiteRootLoader } from "./modules/Website/_Root/index.server";
+import WebsiteRoot from "./modules/Website/_Root";
+import { adminRootLoader } from "./modules/Admin/_Root/index.server";
+import AdminRoot from "./modules/Admin/_Root";
+
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  const url = new URL(request.url);
+  const path = url.pathname;
+  const segments = path.split("/");
+  const firstSegment = segments[1];
+
+  switch (firstSegment) {
+    case "admin": {
+      return await adminRootLoader(request);
+    }
+
+    default: {
+      return await websiteRootLoader(request);
+    }
+  }
+};
 
 export default function Root() {
+  const location = useLocation();
+  const firstSegment = location.pathname.split("/")[1];
+
   return (
     <html lang="en" className="h-full min-h-screen">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <link rel="icon" type="image/x-icon" href="/app/assets/favicon.ico" />
         <Meta />
         <Links />
       </head>
       <body className="h-full min-h-screen">
-        <Outlet />
+        {firstSegment === "admin" ? <AdminRoot /> : <WebsiteRoot />}
+
         <ScrollRestoration />
         <LiveReload />
         <Scripts />

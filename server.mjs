@@ -41,3 +41,16 @@ app.all(
 
 const port = 3000;
 app.listen(port, () => console.log("http://localhost:" + port));
+
+// if (process.env.NODE_ENV !== "production") {
+//   const httpsOptions = {
+//     key: fs.readFileSync("./key.pem"),
+//     cert: fs.readFileSync("./certificate.pem"),
+//   };
+
+//   const server = https.createServer(httpsOptions, app);
+
+//   server.listen(port, () => console.log("http://localhost:" + port));
+// } else {
+//   app.listen(port, () => console.log("http://localhost:" + port));
+// }

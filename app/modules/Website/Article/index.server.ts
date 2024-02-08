@@ -1,18 +1,7 @@
 import { Params } from "@remix-run/react";
 import { getBlocks } from "~/models/Blocks/index.server";
 import { getArticle } from "~/models/Articles/index.server";
-import { json, type MetaFunction } from "@remix-run/node";
-
-export const meta: MetaFunction<typeof articleLoader> = ({ data }) => {
-  const loaderData = data as MetaType;
-  return [
-    { title: loaderData?.title },
-    {
-      name: loaderData?.title,
-      content: loaderData?.description,
-    },
-  ];
-};
+import { json } from "@remix-run/node";
 
 export const articleLoader = async (
   request: Request,
@@ -31,17 +20,22 @@ export const articleLoader = async (
   let title, description, backgroundColor, blocks;
 
   if (article) {
-    blocks = await getBlocks(article, true);
+    blocks = await getBlocks(article);
     title = article.title;
     description = article.description;
     backgroundColor = article.backgroundColor;
   }
 
+  const meta = {
+    title,
+    description,
+  };
+
   return json({
+    meta,
     title,
     description,
     backgroundColor,
     blocks,
-    articleName,
   });
 };

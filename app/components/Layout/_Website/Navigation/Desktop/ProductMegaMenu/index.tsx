@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Cart, User } from "@prisma/client";
 import { useNavigate } from "@remix-run/react";
 import { PromotionWithContent } from "~/models/Promotions/types";
-import { DepartmentWithDetails } from "~/models/Departments/types";
 import Divider from "~/components/Filter/ProductFilterSideBar/Divider";
 import { ProductCategoryWithDetails } from "~/models/ProductCategories/types";
 import { ProductSubCategoryWithDetails } from "~/models/ProductSubCategories/types";
@@ -15,7 +14,6 @@ import { getThemeColorValueByName } from "~/utility/colors";
 
 type Props = {
   cart: Cart | null;
-  departments: DepartmentWithDetails[];
   productCategories: ProductCategoryWithDetails[];
   randomPromotions: PromotionWithContent[];
   searchState: boolean | null;
@@ -26,7 +24,6 @@ type Props = {
 export type MegaMenuTypes = "mens" | "womans" | "kids" | "sale";
 
 const ProductMegaMenu = ({
-  // departments,
   cart,
   productCategories,
   randomPromotions,
@@ -47,7 +44,7 @@ const ProductMegaMenu = ({
       <button
         type="button"
         className="max-xl:absolute max-xl:left-12 flex h-[60px] flex-row items-center gap-4 px-6 max-md:px-3 font-bold relative left-0"
-        onClick={() => navigate("/home")}
+        onClick={() => navigate("/")}
       >
         <h1 className="cursor-pointer select-none text-xl font-bold tracking-widest text-brand-white">
           CLUTCH.
@@ -63,14 +60,12 @@ const ProductMegaMenu = ({
       />
 
       <div
-        className={`absolute z-50 mt-[60px] pb-6 max-xl:hidden
-        bg-brand-black border-2 border-t-0 transition-all duration-500 mb-3 w-full
-
+        className={`absolute z-50 mt-[60px] pb-6 max-xl:hidden left-[50%] translate-x-[-50%] shadow-md shadow-white/25
+        bg-brand-black border-2 border-t-0 transition-all duration-500 mb-3 w-[1340px] max-w-[100vw]
         ${activeMenu === "womans" ? "border-brand-pink" : ""}
         ${activeMenu === "mens" ? "border-brand-blue" : ""}
         ${activeMenu === "kids" ? "border-violet-500" : ""}
         ${activeMenu === "sale" ? "border-red-500" : ""}
-
         ${activeMenu ? "!opacity-1 h-max visible" : "opacity-0 h-0 invisible"}`}
         onMouseLeave={() => setActiveMenu(undefined)}
       >

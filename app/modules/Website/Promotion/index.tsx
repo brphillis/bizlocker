@@ -15,7 +15,6 @@ const Promotion = () => {
     productCategories,
     productSubCategories,
     brands,
-    colors,
   } = useLoaderData<typeof promotionLoader>();
 
   return (
@@ -42,7 +41,6 @@ const Promotion = () => {
             productCategories={productCategories}
             productSubCategories={productSubCategories}
             brands={brands}
-            colors={colors}
           />
           {products && products?.length > 0 && (
             <ProductGrid products={products} totalPages={totalPages} />

@@ -7,6 +7,7 @@ import {
   getVariantUnitPrice,
 } from "~/helpers/numberHelpers";
 import CartAddSubtractButton from "./CartAddSubtractButton";
+import { getBucketImageSrc } from "~/integrations/_master/storage";
 
 const CartButton = ({ id: cartId, cartItems }: CartWithDetails) => {
   const navigate = useNavigate();
@@ -81,7 +82,7 @@ const CartButton = ({ id: cartId, cartItems }: CartWithDetails) => {
                       {imageSrc && (
                         <img
                           alt={"cartItem_" + altText}
-                          src={imageSrc}
+                          src={getBucketImageSrc(imageSrc)}
                           className="h-20 w-20 cursor-pointer rounded-sm border border-base-300 object-cover"
                           onClick={() =>
                             navigate(

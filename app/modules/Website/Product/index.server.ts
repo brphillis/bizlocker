@@ -1,20 +1,6 @@
-import { json, type MetaFunction } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import { getProduct, searchProducts } from "~/models/Products/index.server";
 import { getBrand } from "~/models/Brands/index.server";
-
-export const meta: MetaFunction<typeof productLoader> = ({ data }) => {
-  const loaderData = data as MetaType;
-
-  return [
-    {
-      title: `CLUTCH | ${loaderData?.product.name}`,
-    },
-    {
-      name: `CLUTCH | ${loaderData?.product.name}`,
-      description: `${loaderData?.product.name} available now at CLUTCH, with store locations all over Australia we can provide next day shipping of our top quality ${loaderData?.product.name} straight to your door.`,
-    },
-  ];
-};
 
 export const productLoader = async (request: Request) => {
   const url = new URL(request.url);
@@ -64,5 +50,10 @@ export const productLoader = async (request: Request) => {
     true,
   );
 
-  return json({ product, brand, similarProducts });
+  const meta = {
+    title: `CLUTCH | ${product.name}`,
+    description: `${product.name} available now at CLUTCH, with store locations all over Australia we can provide next day shipping of our top quality ${product.name} straight to your door.`,
+  };
+
+  return json({ product, brand, similarProducts, meta });
 };

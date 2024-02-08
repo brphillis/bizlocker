@@ -5,25 +5,9 @@ import { sortBlocks } from "~/helpers/blockHelpers";
 import { BlockWithContent } from "./types";
 import { Page } from "../PageBuilder/types";
 
-export const getBlocks = async (
-  page: Page,
-  fetchNestedContent?: boolean,
-): Promise<BlockWithContent[]> => {
+export const getBlocks = async (page: Page): Promise<BlockWithContent[]> => {
   // Populate the page with the active block types
   const sortedBlocks = sortBlocks(page);
-
-  // Populate content in blocks that requires a search query
-  if (fetchNestedContent) {
-    for (let i = 0; i < sortedBlocks.length; i++) {
-      const block = sortedBlocks[i];
-      if (block.name === "product" && block.content) {
-        block.content.product = await fetchBlockProducts(block);
-      }
-      if (block.name === "article" && block.content) {
-        block.content.article = await fetchBlockArticles(block);
-      }
-    }
-  }
 
   return sortedBlocks;
 };
@@ -36,7 +20,7 @@ export const fetchBlockProducts = async (
   const productSubCategoryId = block.content?.productSubCategory?.[0]?.id;
   const gender = block.content?.gender?.[0];
 
-  const { count, sortBy, sortOrder } = block?.blockOptions?.[0] || {};
+  const { sortBy, sortOrder } = block?.blockOptions?.[0] || {};
 
   const formDataObject: { [key: string]: string } = {};
 
@@ -49,11 +33,11 @@ export const fetchBlockProducts = async (
     : "";
   formDataObject.brand = brandId ? brandId.toString() : "";
   formDataObject.gender = gender ? gender.toString() : "";
-  formDataObject.perPage = count ? count.toString() : "";
   formDataObject.sortBy = sortBy ? sortBy.toString() : "";
   formDataObject.sortOrder = sortOrder ? sortOrder.toString() : "";
 
   const { products } = await searchProducts(formDataObject);
+
   return products;
 };
 

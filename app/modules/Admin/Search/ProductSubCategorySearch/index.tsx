@@ -29,7 +29,7 @@ export default function ProductSubCategorySearch() {
         <AdminPageHeader
           title="Manage Sub Categories"
           buttonLabel="Add Sub Category"
-          buttonLink="/admin/upsert/productSubCategory?contentId=add"
+          buttonLink="/admin/upsert/product-subcategory?contentId=add"
         />
 
         <AdminContentSearch name={true} productCategories={productCategories} />

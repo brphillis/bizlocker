@@ -1,9 +1,7 @@
 import Cart from "~/modules/Website/Cart";
-import Home from "~/modules/Website/Home";
 import Account from "~/modules/Website/Account";
 import Products from "~/modules/Website/Products";
 import { Outlet, useParams } from "@remix-run/react";
-import { homeLoader } from "~/modules/Website/Home/index.server";
 import { loginAction } from "~/modules/Website/Login/index.server";
 import { type ActionFunctionArgs } from "@remix-run/server-runtime";
 import { accountLoader } from "~/modules/Website/Account/index.server";
@@ -21,6 +19,18 @@ import { webPageLoader } from "~/modules/Website/WebPage/index.server";
 import WebPage from "~/modules/Website/WebPage";
 import { Register } from "~/modules/Website/Register";
 import { Login } from "~/modules/Website/Login";
+import { MetaFunction } from "@remix-run/node";
+
+export const meta: MetaFunction = ({ data }) => {
+  const loaderMeta = (data as { meta: MetaType })?.meta;
+  return [
+    { title: loaderMeta?.title },
+    {
+      name: "description",
+      content: loaderMeta?.description,
+    },
+  ];
+};
 
 export const loader = async ({ request, params }: ActionFunctionArgs) => {
   const page = params?.pagel1;
@@ -30,13 +40,13 @@ export const loader = async ({ request, params }: ActionFunctionArgs) => {
       return await accountLoader(request);
     case "cart":
       return await cartLoader(request);
-    case "home":
-      return await homeLoader();
     case "login":
       return null;
     case "logout":
       return await logoutLoader();
     case "password-recovery":
+      return null;
+    case "payment-confirm":
       return null;
     case "product":
       return null;
@@ -83,8 +93,6 @@ const PageL1 = () => {
     case "cart":
       activeModule = <Cart />;
       break;
-    case "home":
-      activeModule = <Home />;
       break;
     case "login":
       activeModule = <Login />;

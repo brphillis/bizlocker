@@ -17,7 +17,7 @@ const MenuFooter = ({ user }: Props) => {
         <label
           htmlFor="mobile-navigation-state"
           className="text-xs font-bold text-brand-white/75"
-          onClick={() => navigate("terms-conditions")}
+          onClick={() => navigate("terms-and-conditions")}
         >
           Terms & Conditions
         </label>

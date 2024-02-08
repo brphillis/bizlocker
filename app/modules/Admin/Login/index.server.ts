@@ -36,7 +36,7 @@ export const adminLoginAction = async (request: Request) => {
       request,
       user: JSON.stringify(staff),
       remember: remember === "on" ? true : false,
-      redirectTo: "/admin/home",
+      redirectTo: "/admin",
     });
   } catch (error) {
     if (error instanceof Error) {

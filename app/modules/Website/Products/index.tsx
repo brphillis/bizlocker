@@ -8,14 +8,14 @@ import ProductFilterSideBar from "~/components/Filter/ProductFilterSideBar";
 
 const Products = () => {
   const {
-    promotion,
-    products,
-    totalPages,
+    brands,
+    count,
     departments,
     productCategories,
+    products,
     productSubCategories,
-    brands,
-    colors,
+    promotion,
+    totalPages,
   } = useLoaderData<typeof productsLoader>();
 
   return (
@@ -31,9 +31,7 @@ const Products = () => {
       </>
 
       <div className="w-[1280px] max-w-[100vw]">
-        <ProductSort
-          totalCount={(products && products?.length * totalPages) || 0}
-        />
+        <ProductSort totalCount={count} />
         <div className="my-3 w-full border-b border-brand-black/20" />
 
         <div className="flex w-full flex-wrap items-start justify-center gap-6 px-0 sm:w-full xl:flex-nowrap">
@@ -42,7 +40,6 @@ const Products = () => {
             productCategories={productCategories}
             productSubCategories={productSubCategories}
             brands={brands}
-            colors={colors}
           />
 
           {products && products?.length > 0 && (

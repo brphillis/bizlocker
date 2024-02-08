@@ -29,6 +29,9 @@ const Meta = ({
   const handleUpdateMeta = () => {
     const title = (document.querySelector("#PageMetaTitle") as HTMLInputElement)
       ?.value;
+    const urlSegment = (
+      document.querySelector("#PageUrlSegment") as HTMLInputElement
+    )?.value;
     const description = (
       document.querySelector("#PageMetaDescription") as HTMLInputElement
     )?.value;
@@ -49,6 +52,7 @@ const Meta = ({
     formData.set("_action", "updateMeta");
     formData.set("pageType", pageType);
     title && formData.set("title", title);
+    urlSegment && formData.set("urlSegment", urlSegment);
     description && formData.set("description", description);
     backgroundColor && formData.set("backgroundColor", backgroundColor);
     isActive && formData.set("isActive", isActive);
@@ -85,6 +89,19 @@ const Meta = ({
           type="text"
         />
 
+        {pageType !== "homePage" && (
+          <BasicInput
+            id="PageUrlSegment"
+            extendContainerStyle="w-[320px] max-md:w-full"
+            defaultValue={currentVersion?.urlSegment}
+            label="URL Segment"
+            labelStyle="text-brand-white"
+            name="urlSegment"
+            placeholder="url-segment"
+            type="text"
+          />
+        )}
+
         <ColorPicker
           id="PageBackgroundColor"
           extendStyle="w-[320px] max-md:w-full"
@@ -118,12 +135,14 @@ const Meta = ({
         )}
 
         {pageType !== "homePage" && (
-          <IsActiveToggle
-            id="PageIsActive"
-            isActive={currentVersion?.isActive}
-            labelStyle="text-brand-white"
-            size="sm"
-          />
+          <div className="w-full flex justify-start pl-3">
+            <IsActiveToggle
+              id="PageIsActive"
+              isActive={currentVersion?.isActive}
+              labelStyle="text-brand-white"
+              size="sm"
+            />
+          </div>
         )}
 
         <div className="w-full flex justify-center">

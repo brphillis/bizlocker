@@ -27,8 +27,8 @@ const Footer = () => {
 
         <div className="text-brand-white">
           <span className="footer-title">Company</span>
-          <Link className="link-hover link" to="/our-locations">
-            Our Locations
+          <Link className="link-hover link" to="/faq">
+            FAQ
           </Link>
           <Link className="link-hover link" to="/about-us">
             About us
@@ -36,14 +36,14 @@ const Footer = () => {
         </div>
         <div className="text-brand-white">
           <span className="footer-title">Legal</span>
-          <Link className="link-hover link" to="/terms-conditions">
-            Terms of use
+          <Link className="link-hover link" to="/terms-and-conditions">
+            Terms and Conditions
           </Link>
           <Link className="link-hover link" to="/privacy-policy">
             Privacy policy
           </Link>
-          <Link className="link-hover link" to="/cookie-policy">
-            Cookie policy
+          <Link className="link-hover link" to="/refund-policy">
+            Refund policy
           </Link>
         </div>
       </div>

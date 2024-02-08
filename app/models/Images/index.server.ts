@@ -4,8 +4,23 @@ import {
   deleteImage_Integration,
   updateImage_Integration,
   uploadImage_Integration,
-} from "~/integrations/_master/storage";
+} from "~/integrations/_master/storage/index.server";
 import { ImageWithDetails } from "./types";
+
+export const buildImageCreateQuery = async (image?: Image | null) => {
+  if (image) {
+    const repoLink = await uploadImage_Integration(image);
+
+    if (repoLink) {
+      return {
+        create: {
+          href: repoLink,
+          altText: image?.altText,
+        },
+      };
+    } else return undefined;
+  } else return undefined;
+};
 
 export function getImages(): Promise<Image[]> {
   return prisma.image.findMany();

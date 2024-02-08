@@ -38,15 +38,18 @@ export const getAvailableColors = (
   product: ProductWithDetails,
   size: string,
 ): (string | undefined | null)[] => {
-  const colorSet = new Set();
+  const colorSet = new Set<string | undefined | null>();
   const colors = [];
 
   if (product.variants) {
     for (const variant of product.variants) {
-      const color = variant.color;
-      if (!colorSet.has(color) && variant.size === size) {
-        colorSet.add(color);
-        colors.push(color);
+      if (variant && variant.color && variant.size === size) {
+        const color = variant.color;
+
+        if (!colorSet.has(color)) {
+          colorSet.add(color);
+          colors.push(color);
+        }
       }
     }
   }

@@ -9,6 +9,7 @@ import {
 import ItemInput from "../_FieldComponents/ItemInput";
 import ItemColorInput from "../_FieldComponents/ItemColorInput";
 import ItemSelectInput from "../_FieldComponents/ItemSelectInput";
+import { dropShadowSelectValues } from "../../Values/basic";
 
 type Props = {
   selectedItems: PageBuilderContentSelection[];
@@ -86,6 +87,16 @@ const Text = ({
           }
           defaultValues={defaultValues?.itemShortTextFontWeightsMobile}
           selections={mobilefontWeightSelectValues}
+        />
+
+        <ItemSelectInput
+          title="Shadows"
+          formName="itemShortTextShadows"
+          selectedItems={selectedItems}
+          valueName="Shadow"
+          blockMasterOption={selectedBlockOptions?.itemShortTextShadows}
+          defaultValues={defaultValues?.itemShortTextShadows}
+          selections={dropShadowSelectValues}
         />
       </div>
     </details>

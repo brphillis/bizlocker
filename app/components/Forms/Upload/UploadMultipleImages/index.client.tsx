@@ -7,9 +7,15 @@ import { IoClose } from "react-icons/io5";
 import { findFirstNotNullInputValue } from "~/helpers/formHelpers";
 import Icon from "~/components/Icon";
 import BasicInput from "../../Input/BasicInput";
+import { swapContentArrayElements } from "~/helpers/arrayHelpers";
+import IconButton from "~/components/Buttons/IconButton";
+import { getBucketImageSrc } from "~/integrations/_master/storage";
 
 type ImageUploadSliderProps = {
   defaultImages?: Image[] | null;
+  disableRemove?: boolean;
+  disableTags?: boolean;
+  disableUpload?: boolean;
 };
 
 const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
@@ -57,6 +63,17 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
     }
   };
 
+  const handleMoveImage = (dir: "up" | "down") => {
+    if (images) {
+      const newArr = swapContentArrayElements(
+        images as object[],
+        dir === "down" ? activeSlide - 1 : activeSlide + 1,
+        activeSlide,
+      );
+      setCurrentImages(newArr as Image[]);
+    }
+  };
+
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <div className="text-center">Upload Images</div>
@@ -90,7 +107,7 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
                       onClick={() => handleRemoveImage(i)}
                     />
                     <img
-                      src={href}
+                      src={getBucketImageSrc(href)}
                       alt={altText || "image description placeholder"}
                       className="h-full w-full select-none object-cover"
                     />
@@ -104,66 +121,88 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
       ) : null}
 
       {/* TAG HANDLER */}
-      <div className="w-full flex justify-center">
-        {editingTags && (
-          <div className="flex gap-1 items-start py-1 mt-3">
-            <BasicInput
-              id="2923717102_ImageTagsChangeInput"
-              name="tagsInput"
-              type="text"
-              placeholder="Tags ( seperated by space )"
-              labelStyle="text-brand-white"
-              extendContainerStyle="pl-3 w-[215px] pb-3"
-              extendStyle="!max-h-[32px] !min-h-[32px] !text-sm"
-              defaultValue={images?.[activeSlide]?.tags?.join(" ")}
-            />
-
-            <button
-              type="button"
-              className="bg-primary h-[32px] w-[32px] p-[6px] !rounded-sm cursor-pointer"
-              onClick={() => {
-                const tagsInputValue = (
-                  document?.getElementById(
-                    "2923717102_ImageTagsChangeInput",
-                  ) as HTMLInputElement
-                )?.value;
-
-                const newTags = tagsInputValue.split(" ");
-
-                const cloneImages = images;
-
-                if (cloneImages) {
-                  cloneImages[activeSlide].tags = newTags;
-
-                  if (newTags) {
-                    setCurrentImages(cloneImages);
-                  }
-                  setEditingTags(false);
-                }
-              }}
-            >
-              <Icon
-                iconName="IoCheckmark"
-                size={8}
-                color="#FFFFFFBF"
-                extendStyle="h-full w-full"
+      {images && images.length > 0 && (
+        <div className="w-full flex justify-center gap-3 items-center mt-2 mb-3">
+          {editingTags && (
+            <div className="flex gap-1 items-start mt-3">
+              <BasicInput
+                id="2923717102_ImageTagsChangeInput"
+                name="tagsInput"
+                type="text"
+                placeholder="Tags ( seperated by space )"
+                labelStyle="text-brand-white"
+                extendContainerStyle="pl-3 w-[215px] pb-3"
+                extendStyle="!max-h-[32px] !min-h-[32px] !text-sm"
+                defaultValue={images?.[activeSlide]?.tags?.join(" ")}
               />
-            </button>
-          </div>
-        )}
 
-        {!editingTags && (
-          <button
-            type="button"
-            className="block mx-auto my-3 bg-primary text-brand-white px-3 py-1 text-xs rounded-sm cursor-pointer"
-            onClick={() => {
-              setEditingTags(true);
-            }}
-          >
-            Edit Tags
-          </button>
-        )}
-      </div>
+              <button
+                type="button"
+                className="bg-primary h-[32px] w-[32px] p-[6px] !rounded-sm cursor-pointer"
+                onClick={() => {
+                  const tagsInputValue = (
+                    document?.getElementById(
+                      "2923717102_ImageTagsChangeInput",
+                    ) as HTMLInputElement
+                  )?.value;
+
+                  const newTags = tagsInputValue.split(" ");
+
+                  const cloneImages = images;
+
+                  if (cloneImages) {
+                    cloneImages[activeSlide].tags = newTags;
+
+                    if (newTags) {
+                      setCurrentImages(cloneImages);
+                    }
+                    setEditingTags(false);
+                  }
+                }}
+              >
+                <Icon
+                  iconName="IoCheckmark"
+                  size={8}
+                  color="#FFFFFFBF"
+                  extendStyle="h-full w-full"
+                />
+              </button>
+            </div>
+          )}
+
+          {!editingTags && (
+            <>
+              {images && activeSlide > 0 && (
+                <IconButton
+                  iconName="IoShuffle"
+                  size={12}
+                  extendStyle="absolute left-3 text-primary -scale-x-100"
+                  onClick={() => handleMoveImage("down")}
+                />
+              )}
+
+              <button
+                type="button"
+                className="block mx-auto my-3 bg-primary text-brand-white px-3 py-1 text-xs rounded-sm cursor-pointer"
+                onClick={() => {
+                  setEditingTags(true);
+                }}
+              >
+                Edit Tags
+              </button>
+
+              {images && activeSlide < images?.length - 1 && (
+                <IconButton
+                  iconName="IoShuffle"
+                  size={12}
+                  extendStyle="absolute right-3 text-primary"
+                  onClick={() => handleMoveImage("up")}
+                />
+              )}
+            </>
+          )}
+        </div>
+      )}
 
       {/* BOTTOM IMAGES */}
       <div className="flex flex-wrap justify-center gap-3">
@@ -180,7 +219,7 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
                   `}
             >
               <img
-                src={href || ""}
+                src={(href && getBucketImageSrc(href)) || ""}
                 alt={altText || "image description placeholder"}
                 className="h-full w-full object-cover"
               />

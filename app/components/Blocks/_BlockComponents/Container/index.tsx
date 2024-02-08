@@ -17,11 +17,12 @@ const Container = ({ children, options }: Props) => {
     backgroundWidthPrimary,
     margin,
     padding,
+    title,
   } = options || {};
 
   return (
     <div
-      className={`relative w-full max-md:px-3 h-max py-6
+      className={`relative w-full max-lg:px-3 h-max
         ${backgroundColorPrimary ? "py-6" : "py-3"}
         ${margin} ${padding} `}
     >
@@ -34,6 +35,8 @@ const Container = ({ children, options }: Props) => {
         brightness={backgroundBrightnessPrimary || undefined}
       />
       {children}
+
+      {title && backgroundColorPrimary && <div className="pb-3"></div>}
     </div>
   );
 };

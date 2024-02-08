@@ -56,7 +56,10 @@ export const verifyLogin = async (
 export const googleLogin = async (
   request: Request,
   credential: string,
-): Promise<undefined | TypedResponse<never>> => {
+): Promise<{
+  session?: TypedResponse<never>;
+  validationErrors?: ValidationErrors;
+}> => {
   const credentials = jwt.decode(credential) as GoogleAuthResponse;
 
   const user = await prisma.user.findUnique({
@@ -102,15 +105,21 @@ export const googleLogin = async (
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password: _, ...userWithoutPassword } = user;
 
-    return await createUserSession({
+    const session = await createUserSession({
       request,
       user: JSON.stringify(userWithoutPassword),
       remember: true,
       redirectTo: "/",
     });
+
+    return { session, validationErrors: undefined };
   } else if (user && !user.googleLogin) {
-    throw new Error("Email Already Exists Without Google Login");
-  } else if (!user) {
+    const validationErrors: ValidationErrors = {};
+
+    validationErrors.emailExists = "Email Exists Without Single Sign On.";
+
+    return { session: undefined, validationErrors };
+  } else {
     const user = await prisma.user.create({
       data: {
         email: credentials?.email,
@@ -123,11 +132,13 @@ export const googleLogin = async (
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password: _, ...userWithoutPassword } = user;
 
-    return await createUserSession({
+    const session = await createUserSession({
       request,
       user: JSON.stringify(userWithoutPassword),
       remember: true,
       redirectTo: "/",
     });
+
+    return { session, validationErrors: undefined };
   }
 };

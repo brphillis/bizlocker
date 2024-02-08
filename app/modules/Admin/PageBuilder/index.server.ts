@@ -101,17 +101,18 @@ export const pageBuilderAction = async (
     articleCategories,
     backgroundColor,
     blockId,
+    blockLabel,
+    blocks,
     contentType,
     description,
     index,
     isActive,
     name,
-    blocks,
     pageId,
     previewPageId,
     thumbnail,
     title,
-    blockLabel,
+    urlSegment,
   } = form;
 
   let actionPreview, actionBlocks;
@@ -139,6 +140,10 @@ export const pageBuilderAction = async (
         metaValidationError.push("Title is Required");
       }
 
+      if (!urlSegment && pageType !== "homePage") {
+        metaValidationError.push("URL Segment is Required");
+      }
+
       if (!description) {
         metaValidationError.push("Description is Required");
       }
@@ -160,6 +165,7 @@ export const pageBuilderAction = async (
         thumbnail ? JSON.parse(thumbnail as string) : undefined,
         previewPageId ? (previewPageId as string) : undefined,
         articleCategories ? JSON.parse(articleCategories as string) : undefined,
+        urlSegment ? (urlSegment as string) : undefined,
       );
 
       notification = {
@@ -209,7 +215,7 @@ export const pageBuilderAction = async (
       return json({ deletePreviewSuccess, notification });
     }
 
-    case "deletepage": {
+    case "deletePage": {
       await deletePage(pageId as string, pageType as PageType);
 
       if (pageType === "article") return redirect("/admin/articles");

@@ -8,8 +8,7 @@ import { Toast } from "~/components/Notifications/Toast";
 import type { ValidationErrors } from "~/utility/validate";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import BasicToggle from "~/components/Forms/Toggle/BasicToggle";
-import BasicSelect from "~/components/Forms/Select/BasicSelect";
-import type { Color, Order, Product, StockLevel } from "@prisma/client";
+import type { Order, Product, StockLevel } from "@prisma/client";
 import {
   ProductVariantWithDetails,
   ProductWithDetails,
@@ -18,10 +17,9 @@ import {
 type Props = {
   storeId: number | null;
   product: ProductWithDetails;
-  availableColors: string[];
 };
 
-type NewProductVariant = {
+export type NewProductVariant = {
   id?: number;
   name?: string;
   sku?: string;
@@ -31,7 +29,7 @@ type NewProductVariant = {
   isFragile?: boolean;
   stock?: number;
   product?: Product;
-  color?: Color;
+  color?: string;
   size?: string;
   length?: number;
   width?: number;
@@ -42,7 +40,7 @@ type NewProductVariant = {
   isPromoted?: boolean;
 };
 
-const ProductVariantUpsert = ({ storeId, product, availableColors }: Props) => {
+const ProductVariantUpsert = ({ storeId, product }: Props) => {
   const navigate = useNavigate();
 
   const [activeVariant, setActiveVariant] = useState<
@@ -164,6 +162,7 @@ const ProductVariantUpsert = ({ storeId, product, availableColors }: Props) => {
 
     if (variants) {
       Toast("info", 3000, "Data Prefilled.");
+
       setActiveVariant({
         price: variants?.[0]?.price,
         salePrice: variants?.[0]?.salePrice,
@@ -197,6 +196,10 @@ const ProductVariantUpsert = ({ storeId, product, availableColors }: Props) => {
 
     if (name) {
       generatedSKU += name.split(" ")[0].toUpperCase();
+
+      if (name.split(" ")[1]) {
+        generatedSKU += name.split(" ")[1].toUpperCase();
+      }
     }
     if (color) {
       generatedSKU += color.toUpperCase();
@@ -252,24 +255,23 @@ const ProductVariantUpsert = ({ storeId, product, availableColors }: Props) => {
                 validationErrors={validationErrors}
               />
 
-              <BasicSelect
+              <BasicInput
                 id="VariantColor"
                 name="color"
                 label="Color"
                 placeholder="Color"
                 extendContainerStyle="w-full"
-                selections={availableColors.map((e) => {
-                  return { id: e, name: e };
-                })}
+                type="text"
                 defaultValue={
                   (activeVariant as ProductVariantWithDetails)?.color || ""
                 }
-                onChange={(e) =>
+                onChange={(e) => {
                   setActiveVariant({
                     ...activeVariant,
-                    color: e,
-                  })
-                }
+                    color: e as string,
+                  });
+                }}
+                validationErrors={validationErrors}
               />
 
               <BasicInput
@@ -347,9 +349,10 @@ const ProductVariantUpsert = ({ storeId, product, availableColors }: Props) => {
                   className="btn btn-primary flex !h-[41px] !min-h-[41px] w-[103px] items-center justify-center !rounded-sm sm:!ml-0"
                   onClick={() =>
                     navigate(
-                      `/admin/upsert/product/productStock?contentId=${(
+                      `product-stock?contentId=${product.id}&stockId=${(
                         activeVariant as ProductVariantWithDetails
                       )?.id}`,
+                      { relative: "path" },
                     )
                   }
                 >

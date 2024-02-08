@@ -28,6 +28,7 @@ import {
 } from "@remix-run/react";
 
 import { teamUpsertLoader } from "./index.server";
+import { getBucketImageSrc } from "~/integrations/_master/storage";
 
 const validateOptions = {
   name: true,
@@ -167,7 +168,9 @@ const TeamUpsert = ({ offRouteModule }: Props) => {
                                   <div className="mask mask-circle h-12 w-12">
                                     <img
                                       src={
-                                        avatar?.href || placeholderAvatar.href
+                                        (avatar?.href &&
+                                          getBucketImageSrc(avatar?.href)) ||
+                                        placeholderAvatar.href
                                       }
                                       alt="staff_avatar"
                                     />

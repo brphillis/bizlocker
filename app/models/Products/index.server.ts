@@ -1,7 +1,7 @@
 import { prisma } from "~/db.server";
 import { getOrderBy } from "~/helpers/sortHelpers";
 import { calculateDiscountPercentage } from "~/helpers/numberHelpers";
-import { uploadImage_Integration } from "~/integrations/_master/storage";
+import { uploadImage_Integration } from "~/integrations/_master/storage/index.server";
 import { Gender, Image, Product, ProductVariant, Staff } from "@prisma/client";
 import { getUserDataFromSession, STAFF_SESSION_KEY } from "~/session.server";
 import {
@@ -12,6 +12,8 @@ import {
   ProductVariantWithDetails,
   ProductWithDetails,
 } from "./types";
+import { NewProductVariant } from "~/modules/Admin/Upsert/ProductUpsert/ProductVariantUpsert";
+import { removeS3Image } from "~/integrations/aws/s3/s3.server";
 
 export const getProducts = async (
   count?: string,
@@ -91,7 +93,8 @@ export const upsertProduct = async (
   const {
     name,
     description,
-    infoURL,
+    dropshipURL,
+    dropshipSKU,
     productSubCategories,
     gender,
     isActive,
@@ -110,10 +113,10 @@ export const upsertProduct = async (
 
   // Compute the discountPercentageHigh and discountPercentageLow for the product from the variants
   const activeVariants = variants.filter(
-    (variant: ProductVariant) => variant.isActive,
+    (variant: NewProductVariant) => variant.isActive,
   );
-  const discountPercentages = activeVariants.map((variant: ProductVariant) =>
-    calculateDiscountPercentage(variant.price, variant.salePrice!),
+  const discountPercentages = activeVariants.map((variant: NewProductVariant) =>
+    calculateDiscountPercentage(variant.price!, variant.salePrice!),
   );
   const discountPercentageHigh =
     discountPercentages.length > 0 ? Math.max(...discountPercentages) : 0;
@@ -138,7 +141,8 @@ export const upsertProduct = async (
   const data: ProductUpsertQuery = {
     name,
     description,
-    infoURL,
+    dropshipURL,
+    dropshipSKU,
     gender: gender as Gender,
     isActive,
     discountPercentageHigh,
@@ -252,27 +256,16 @@ export const upsertProduct = async (
     updateData.images = {};
 
     const createImages = [];
-    const updateImages = [];
 
     if (images) {
       for (let i = 0; i < images.length; i++) {
-        const existingImage = existingProduct?.images[i];
         const image = images?.[i];
 
-        if (existingImage) {
-          updateImages.push({
-            id: existingImage.id,
-            href: repoLinksProduct[i],
-            altText: image.altText,
-            tags: image.tags,
-          });
-        } else {
-          createImages.push({
-            href: repoLinksProduct[i],
-            altText: image.altText,
-            tags: image.tags,
-          });
-        }
+        createImages.push({
+          href: repoLinksProduct[i],
+          altText: image.altText,
+          tags: image.tags,
+        });
       }
     }
 
@@ -286,32 +279,8 @@ export const upsertProduct = async (
       );
     }
 
-    if (updateImages.length > 0) {
-      updateData.images.update = updateImages.map(
-        ({ id, href, altText, tags }) => ({
-          where: { id },
-          data: {
-            href,
-            altText,
-            tags,
-          },
-        }),
-      );
-    }
-
     updateData.heroImage = {};
 
-    if (existingProduct?.heroImage && heroImage) {
-      updateData.heroImage = {
-        update: {
-          where: { id: existingProduct.heroImage.id },
-          data: {
-            href: heroRepoLink,
-            altText: heroImage.altText,
-          },
-        },
-      };
-    }
     if (!existingProduct?.heroImage && heroImage) {
       updateData.heroImage = {
         create: {
@@ -325,7 +294,7 @@ export const upsertProduct = async (
       throw new Error("Product not found");
     }
 
-    // Disconnect existing connections
+    // disconnect existing connections
     await prisma.product.update({
       where: { id: parseInt(id) },
       data: {
@@ -340,14 +309,29 @@ export const upsertProduct = async (
         promotion: {
           disconnect: true,
         },
+        images:
+          existingProduct.images && existingProduct.images.length > 0
+            ? {
+                set: [],
+              }
+            : undefined,
       },
     });
+
+    // remove old images from bucket
+    if (existingProduct.images && existingProduct.images.length > 0) {
+      for (let i = 0; i < existingProduct.images.length; i++) {
+        if (existingProduct.images[i].href) {
+          await removeS3Image(existingProduct.images[i].href!);
+        }
+      }
+    }
 
     // Update the product
     updateData.variants = {
       //@ts-expect-error:exists on new product
       create: variants
-        .filter((variant: ProductVariant) => !variant.id)
+        .filter((variant: NewProductVariant) => !variant.id)
         .map((variant: Partial<ProductVariant>) => ({
           name: variant.name,
           sku: variant.sku,
@@ -380,7 +364,7 @@ export const upsertProduct = async (
           ...(variant.size && { size: variant.size }),
         })),
       updateMany: variants
-        .filter((variant: ProductVariant) => !!variant.id)
+        .filter((variant: NewProductVariant) => !!variant.id)
         .map((variant: Partial<ProductVariant>) => ({
           where: { id: variant.id },
           data: {
@@ -396,7 +380,6 @@ export const upsertProduct = async (
             width: variant.width,
             height: variant.height,
             weight: variant.weight && parseFloat(variant.weight.toString()),
-            //@ts-expect-error: check empty string
             ...(variant.color === undefined || variant.color === ""
               ? { color: null }
               : { color: variant.color }),
@@ -489,36 +472,70 @@ export const upsertProduct = async (
 };
 
 export const deleteProduct = async (id: string) => {
-  const product = await prisma.product.findUnique({
-    where: {
-      id: parseInt(id),
-    },
-  });
+  try {
+    const product = await prisma.product.findUnique({
+      where: {
+        id: parseInt(id),
+      },
+    });
 
-  if (!product) {
-    throw new Error("Product not found");
+    if (!product) {
+      throw new Error("Product not found");
+    }
+
+    // Step 1: Delete the stockLevels associated with product variants
+    const productVariants = await prisma.productVariant.findMany({
+      where: {
+        productId: parseInt(id),
+      },
+    });
+
+    const variantIds: number[] = productVariants.map((variant) => variant.id);
+
+    await prisma.stockLevel.deleteMany({
+      where: {
+        productVariantId: {
+          in: variantIds,
+        },
+      },
+    });
+
+    // Step 2: Delete the product variants
+    await prisma.productVariant.deleteMany({
+      where: {
+        productId: parseInt(id),
+      },
+    });
+
+    // Step 3: Delete the images linked to the product
+    await prisma.image.deleteMany({
+      where: {
+        productId: parseInt(id),
+      },
+    });
+
+    // Step 4: Delete the product
+    await prisma.product.delete({
+      where: {
+        id: parseInt(id),
+      },
+    });
+  } catch (error) {
+    console.error("Error deleting product:", error);
+  } finally {
+    await prisma.$disconnect();
   }
-
-  // Delete the variants
-  await prisma.productVariant.deleteMany({
-    where: {
-      productId: parseInt(id),
-    },
-  });
-
-  // Delete the product
-  return await prisma.product.deleteMany({
-    where: {
-      id: parseInt(id),
-    },
-  });
 };
 
 export const searchProducts = async (
   formData?: { [k: string]: FormDataEntryValue },
   url?: URL,
   activeOnly?: boolean,
-): Promise<{ products: Product[] | null; totalPages: number }> => {
+): Promise<{
+  products: Product[] | null;
+  totalPages: number;
+  count: number;
+}> => {
   const name =
     formData?.name || (url && url?.searchParams.get("name")?.toString()) || "";
   const department =
@@ -642,7 +659,7 @@ export const searchProducts = async (
         },
       });
 
-      filter.productCategories = {
+      filter.productSubCategories = {
         some: {
           id: {
             in: productSubCategories.map((category) => category.id),
@@ -762,7 +779,11 @@ export const searchProducts = async (
           },
         },
         images: true,
-        variants: true,
+        variants: {
+          orderBy: {
+            price: "asc",
+          },
+        },
         promotion: {
           select: {
             name: true,
@@ -786,8 +807,8 @@ export const searchProducts = async (
   if (sortBy === "price" && sortOrder) {
     products = fetchedProducts.sort((a, b) => {
       // Assume each product has at least one variant
-      const aPrice = a.variants[0].price;
-      const bPrice = b.variants[0].price;
+      const aPrice = a.variants?.[0].price;
+      const bPrice = b.variants?.[0].price;
 
       // If the price is the same, sort by totalSold
       if (aPrice === bPrice) {
@@ -803,6 +824,7 @@ export const searchProducts = async (
   }
 
   const totalPages = Math.ceil(totalProducts / (perPage || 1)) || 0;
+  const count = totalProducts;
 
-  return { products, totalPages };
+  return { products, totalPages, count };
 };

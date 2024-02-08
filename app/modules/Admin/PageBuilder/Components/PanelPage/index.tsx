@@ -5,13 +5,14 @@ import { PageType } from "~/utility/pageBuilder";
 import BoxedTabs from "~/components/Tabs/BoxedTabs";
 import TabContent from "~/components/Tabs/TabContent";
 import { BlockName } from "~/utility/blockMaster/types";
-import { useSearchParams, useSubmit } from "@remix-run/react";
+import { useNavigate, useSearchParams, useSubmit } from "@remix-run/react";
 import { getBlockDefaultValues } from "~/helpers/blockHelpers";
 import Meta from "../Meta";
 import BlockCard from "../BlockCard";
 import VersionControl from "../VersionControl";
 import { BlockWithContent } from "~/models/Blocks/types";
 import { Page } from "~/models/PageBuilder/types";
+import { ActionAlert } from "~/components/Notifications/Alerts";
 
 type Props = {
   articleCategories: SelectValue[];
@@ -53,6 +54,7 @@ const PanelPage = ({
   setSelectedItems,
 }: Props) => {
   const submit = useSubmit();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
 
@@ -109,14 +111,25 @@ const PanelPage = ({
   };
 
   const handleDeletePage = () => {
-    if (publishedPage) {
-      const formData = new FormData();
-      formData.set("_action", "deletePage");
-      formData.set("pageId", publishedPage?.id?.toString());
-      formData.set("pageType", pageType!);
-
-      submit(formData, { method: "POST" });
-    }
+    ActionAlert(
+      "Warning",
+      "Delete this Page?",
+      () => {
+        if (publishedPage) {
+          const formData = new FormData();
+          formData.set("_action", "deletePage");
+          formData.set("pageId", publishedPage?.id?.toString());
+          formData.set("pageType", pageType!);
+          submit(formData, { method: "POST" });
+          navigate("/admin/search/page");
+        }
+      },
+      () => {
+        setLoading(false);
+        return;
+      },
+      "warning",
+    );
   };
 
   useEffect(() => {

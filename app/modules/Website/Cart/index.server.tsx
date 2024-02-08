@@ -3,22 +3,12 @@ import { validateForm } from "~/utility/validate";
 import { getCart } from "~/models/Cart/index.server";
 import { CartWithDetails } from "~/models/Cart/types";
 import { getUserDataFromSession } from "~/session.server";
-import { json, type MetaFunction } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import { createOrder } from "~/models/Orders/index.server";
 import { NewAddress } from "~/helpers/addressHelpers";
 import { getUserAddress } from "~/models/Address/index.server";
 import { getCartDeliveryOptions } from "~/helpers/cartHelpers";
 import { getUserDetails } from "~/models/UserDetails/index.server";
-
-export const meta: MetaFunction<typeof cartLoader> = () => {
-  return [
-    { title: "CLUTCH | Your Cart" },
-    {
-      name: "CLUTCH | Your Cart",
-      content: "CLUTCH | Your Cart",
-    },
-  ];
-};
 
 export const cartLoader = async (request: Request) => {
   const cart = await getCart(request);
@@ -38,7 +28,20 @@ export const cartLoader = async (request: Request) => {
     );
   }
 
-  return json({ cart, user, userAddress, userDetails, loaderShippingOptions });
+  const meta = {
+    title: "CLUTCH | Cart",
+    description:
+      "Discover timeless style and effortless sophistication with Clutch Clothing Australia. Elevate your wardrobe with our curated collection of premium apparel, designed for the modern Australian lifestyle. Explore our range today and experience fashion that's as versatile as you are.",
+  };
+
+  return json({
+    meta,
+    cart,
+    user,
+    userAddress,
+    userDetails,
+    loaderShippingOptions,
+  });
 };
 
 export const cartAction = async (request: Request) => {

@@ -76,15 +76,8 @@ const ProductCard = (product: ProductWithDetails) => {
               PROMO
             </span>
           )}
-          {/* <div className="absolute bottom-0 mb-4 flex w-full justify-center space-x-4">
-          <div className="h-3 w-3 rounded-full border-2 border-brand-white bg-white"></div>
-          <div className="h-3 w-3 rounded-full border-2 border-brand-white bg-transparent"></div>
-          <div className="h-3 w-3 rounded-full border-2 border-brand-white bg-transparent"></div>
-        </div> */}
+
           <div className="absolute -bottom-2 right-0 mb-4 mr-2 space-y-2 transition-all duration-300 group-hover:right-0">
-            {/* <button className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-900 text-white transition hover:bg-gray-700">
-            <IoHeart size={18} />
-          </button> */}
             <button
               className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-black text-brand-white transition hover:bg-gray-700 border border-white/25"
               onClick={handleAddToCart}
@@ -97,7 +90,7 @@ const ProductCard = (product: ProductWithDetails) => {
         {/* INFO BELOW */}
 
         <div className="mt-2 text-left">
-          {brand && brand.name.toLowerCase() !== "none" && (
+          {brand && brand.name.toLowerCase() !== "generic" && (
             <h5 className="font-semibold tracking-tight text-gray-500">
               {brand.name}
             </h5>

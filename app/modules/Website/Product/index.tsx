@@ -33,7 +33,7 @@ const Product = () => {
   const submit = useSubmit();
 
   const { name, images, variants, description } = product;
-  const { name: brandName, image: brandImage } = brand || {};
+  const { name: brandName, heroImage: brandImage } = brand || {};
 
   const [selectedSize, setSelectedSize] = useState<string | undefined>(
     variants?.[0]?.size || undefined,
@@ -118,9 +118,24 @@ const Product = () => {
 
   useEffect(() => {
     const matchingImage = images?.find((e) =>
-      e.tags.some(
-        (tag) => tag.toLowerCase() === selectedVariant?.color?.toLowerCase(),
-      ),
+      e.tags.some((tag) => {
+        const matchingFullColorName =
+          tag.toLowerCase() === selectedVariant?.color?.toLowerCase();
+
+        if (matchingFullColorName) {
+          return matchingFullColorName;
+        } else {
+          // check for a matching color variant ei: dark BLUE, light BLUE, army GREEN
+          if (Array.isArray(selectedVariant?.color?.split(" "))) {
+            if (
+              selectedVariant?.color?.split(" ")?.[1] &&
+              selectedVariant?.color?.split(" ")?.[1].toLowerCase() ===
+                tag.toLowerCase()
+            )
+              return true;
+          }
+        }
+      }),
     );
 
     if (matchingImage) {
@@ -179,7 +194,7 @@ const Product = () => {
                 } else return null;
               })}
             </div>
-            <div className="relative mx-auto block h-full w-max max-w-[100vw] max-xl:order-1 max-xl:h-2/3">
+            <div className="relative mx-auto block h-full w-[555px] max-w-[100vw] max-xl:order-1 max-xl:h-2/3">
               {selectedImage?.href && (
                 <BasicImage
                   alt={name + "_focusedImage"}
@@ -198,8 +213,8 @@ const Product = () => {
             </div>
           </div>
 
-          <div className="w-full pl-12 max-xl:px-3 w-1/2 max-xl:w-full max-xl:py-3">
-            {/* NAME AND PRICE */}
+          <div className="w-[505px] max-w-full pl-12 max-xl:px-3 max-xl:w-full max-xl:py-3">
+            {/* name and price */}
             <div className="flex gap-3 flex-col items-start">
               <div>
                 <h1 className="mb-1 text-3xl font-medium text-gray-900">
@@ -207,7 +222,7 @@ const Product = () => {
                 </h1>
 
                 <div className="flex gap-6">
-                  {brandName?.toLowerCase() !== "none" && (
+                  {brandName?.toLowerCase() !== "generic" && (
                     <h2 className="ml-1 text-sm tracking-widest text-gray-500">
                       {brandName}
                     </h2>
@@ -255,10 +270,10 @@ const Product = () => {
 
             <div className="my-3 w-full border-b border-brand-black/20" />
 
-            {/* COLORS AND SIzES */}
+            {/* colors and sizes */}
             <div>
               {(hasSizes || hasColors) && (
-                <div className="flex py-3 max-sm:justify-between">
+                <div className="flex py-3 max-sm:justify-between flex-wrap gap-6">
                   {hasSizes && (
                     <div className="mr-6 flex items-center">
                       <span className="mr-3">Size</span>
@@ -287,19 +302,26 @@ const Product = () => {
                   )}
 
                   {hasColors && (
-                    <div className="flex max-w-[205px] items-center justify-center">
-                      <span className="mr-3">Available in</span>
+                    <div className="flex max-w-full items-center justify-center">
+                      <span className="mr-3">Color</span>
 
                       {availableColors?.map((color, i) => {
                         if (color) {
                           return (
-                            <button
+                            <div
+                              tabIndex={0}
+                              role="button"
                               key={color + i}
-                              className={`ml-2 h-6 w-6 rounded-full border-2 border-gray-300 focus:outline-none 
-                            ${selectedColor === color ? "animate-bounce" : ""}
-                            ${"bg-" + generateProductColor(color)}`}
+                              className={`ml-2 h-[20px] w-[20px] rounded-full border-2 border-gray-300 focus:outline-none 
+                              ${selectedColor === color ? "animate-bounce" : ""}
+                              ${
+                                generateProductColor(color)
+                                  ? "bg-" + generateProductColor(color)
+                                  : "bg-neutral-400"
+                              } `}
                               onClick={() => setSelectedColor(color)}
-                            ></button>
+                              onKeyDown={() => setSelectedColor(color)}
+                            />
                           );
                         } else return null;
                       })}
@@ -311,7 +333,7 @@ const Product = () => {
 
             <div className="my-3 w-full border-b border-brand-black/20" />
 
-            {/* DESCRIPTION */}
+            {/* cart buttons */}
             <div className="max-xl:py-3 flex justify-between max-md:flex-col max-xl:items-center w-full max-xl:justify-center max-xl:gap-3">
               <button
                 disabled={
@@ -336,46 +358,51 @@ const Product = () => {
 
             <div className="my-3 w-full border-b border-brand-black/20" />
 
-            <div>
-              <div className="pt-3 max-md:pb-3 leading-relaxed">
+            {/* description */}
+
+            <div className="pt-1 max-md:pb-3 leading-relaxed">
+              <h3 className="font-bold pb-3 max-md:pl-3">Description</h3>
+              <div className="pl-[1px]">
                 {description && parse(description, parseOptions)}
+              </div>
+            </div>
 
-                <div className="my-3 w-full border-b border-brand-black/20" />
+            <div className="my-3 w-full border-b border-brand-black/20" />
 
+            <div className="pt-1 max-md:pb-3 leading-relaxed">
+              <div className="leading-relaxed max-md:px-3">
+                <div>
+                  <b>Return Policy</b>
+                </div>
+                <div className="mt-1 max-w-full text-sm">
+                  <span className="font-semibold">Clutch.</span> returns all non
+                  promotion & sale items free of charge.
+                </div>
+                <Link
+                  to="/return-policy"
+                  className="max-w-full text-sm text-primary hover:underline"
+                >
+                  Read more about our return policy.
+                </Link>
+              </div>
+
+              <div className="my-3 w-full border-b border-brand-black/20" />
+
+              {hasSizes && (
                 <div className="leading-relaxed max-md:px-3">
                   <div>
-                    <b>Return Policy</b>
-                  </div>
-                  <div className="mt-1 max-w-full text-sm">
-                    <span className="font-semibold">Clutch.</span> returns all
-                    non promotion & sale items free of charge.
+                    <b>Size Guide</b>
                   </div>
                   <Link
-                    to="/return-policy"
+                    to="/size-guide"
                     className="max-w-full text-sm text-primary hover:underline"
                   >
-                    Read more about our return policy.
+                    Check out the size guide.
                   </Link>
                 </div>
+              )}
 
-                <div className="my-3 w-full border-b border-brand-black/20" />
-
-                {hasSizes && (
-                  <div className="leading-relaxed max-md:px-3">
-                    <div>
-                      <b>Size Guide</b>
-                    </div>
-                    <Link
-                      to="/size-guide"
-                      className="max-w-full text-sm text-primary hover:underline"
-                    >
-                      Check out the size guide.
-                    </Link>
-                  </div>
-                )}
-
-                <div className="my-3 w-full border-b border-brand-black/20" />
-              </div>
+              <div className="my-3 w-full border-b border-brand-black/20" />
             </div>
           </div>
         </div>
@@ -389,7 +416,7 @@ const Product = () => {
             </p>
             <ProductGrid
               products={similarProducts as ProductWithDetails[]}
-              cols={5}
+              columns="grid-cols-5"
               enablePlaceHolder={true}
             />
           </>

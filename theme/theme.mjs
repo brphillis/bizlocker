@@ -18,6 +18,7 @@ export const themeColors ={
     "brand-red": "#FF6B6B",
     "brand-blue": "#3B82F6",
     "brand-light-blue": "#A9DDD6",
+    "brand-navy-blue" : "#000080",
     "brand-green": "#44AF69",
     "brand-yellow": "#F7C548",
     "brand-orange": "#FFA500",
@@ -34,5 +35,8 @@ export const themeColors ={
     "brand-olive": "#808000",
     "brand-aqua" : "#00FFFF",
     "brand-indigo" : "#4B0082",
+    "brand-khaki" : "#c3b091",
+    "brand-burgundy" : "#800020",
+    "brand-apricot" : "#fbceb1",
     ...tailwindColors
   }

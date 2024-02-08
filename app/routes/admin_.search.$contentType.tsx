@@ -36,6 +36,19 @@ import { stockTransferSearchLoader } from "~/modules/Admin/Search/StockTransferS
 import { storeSearchLoader } from "~/modules/Admin/Search/StoreSearch/index.server";
 import { teamSearchLoader } from "~/modules/Admin/Search/TeamSearch/index.server";
 import { userSearchLoader } from "~/modules/Admin/Search/UserSearch/index.server";
+import { dropshipSearchLoader } from "~/modules/Admin/Search/DropShipSearch/index.server";
+import DropshipSearch from "~/modules/Admin/Search/DropShipSearch";
+import { MetaFunction } from "@remix-run/node";
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: "CLUTCH | Admin Portal" },
+    {
+      name: "description",
+      content: "Clutch Clothing Administration Portal",
+    },
+  ];
+};
 
 export const loader = async ({ request, params }: ActionFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
@@ -49,7 +62,7 @@ export const loader = async ({ request, params }: ActionFunctionArgs) => {
   switch (contentType) {
     case "article":
       return await articleSearchLoader(request);
-    case "articleCategory":
+    case "article-category":
       return await articleCategorySearchLoader(request);
     case "brand":
       return await brandSearchLoader(request);
@@ -57,6 +70,8 @@ export const loader = async ({ request, params }: ActionFunctionArgs) => {
       return await campaignSearchLoader(request);
     case "department":
       return await departmentSearchLoader(request);
+    case "dropship":
+      return await dropshipSearchLoader(request);
     case "image":
       return await imageSearchLoader(request);
     case "order":
@@ -65,9 +80,9 @@ export const loader = async ({ request, params }: ActionFunctionArgs) => {
       return await pageSearchLoader(request);
     case "product":
       return await productSearchLoader(request);
-    case "productCategory":
+    case "product-category":
       return await productCategorySearchLoader(request);
-    case "productSubCategory":
+    case "product-subcategory":
       return await productSubCategorySearchLoader(request);
     case "promotion":
       return await promotionSearchLoader(request);
@@ -75,7 +90,7 @@ export const loader = async ({ request, params }: ActionFunctionArgs) => {
       return await teamSearchLoader(request);
     case "staff":
       return await staffSearchLoader(request);
-    case "stockTransfer":
+    case "stock-transfer":
       return await stockTransferSearchLoader(request);
     case "store":
       return await storeSearchLoader(request);
@@ -92,7 +107,7 @@ const SearchContent = () => {
     case "article":
       searchComponent = <ArticleSearch />;
       break;
-    case "articleCategory":
+    case "article-category":
       searchComponent = <ArticleCategorySearch />;
       break;
     case "brand":
@@ -103,6 +118,9 @@ const SearchContent = () => {
       break;
     case "department":
       searchComponent = <DepartmentSearch />;
+      break;
+    case "dropship":
+      searchComponent = <DropshipSearch />;
       break;
     case "image":
       searchComponent = <ImageSearch />;
@@ -116,10 +134,10 @@ const SearchContent = () => {
     case "product":
       searchComponent = <ProductSearch />;
       break;
-    case "productCategory":
+    case "product-category":
       searchComponent = <ProductCategorySearch />;
       break;
-    case "productSubCategory":
+    case "product-subcategory":
       searchComponent = <ProductSubCategorySearch />;
       break;
     case "promotion":
@@ -128,7 +146,7 @@ const SearchContent = () => {
     case "staff":
       searchComponent = <StaffSearch />;
       break;
-    case "stockTransfer":
+    case "stocktransfer":
       searchComponent = <StockTransferSearch />;
       break;
     case "store":

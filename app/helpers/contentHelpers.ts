@@ -35,6 +35,13 @@ export const sortBlockContent = (
 
   Object.keys(content).forEach((key) => {
     const items = content[key as keyof BlockContentWithDetails];
+
+    if (key === "richText") {
+      const sortedItem: RenderBlockContent = {};
+      sortedItem.richText = items;
+      organizedContent.push(sortedItem);
+    }
+
     if (items && Array.isArray(items) && items.length > 0) {
       items.forEach((item: unknown) => {
         const sortedItem: RenderBlockContent = {};
@@ -44,7 +51,11 @@ export const sortBlockContent = (
     }
   });
 
-  if (!contentOrder || (contentOrder && contentOrder.length === 0)) {
+  if (
+    !contentOrder ||
+    (contentOrder && contentOrder.length === 0) ||
+    (organizedContent && organizedContent.length <= 1)
+  ) {
     return organizedContent;
   }
 
@@ -89,7 +100,7 @@ export const buildImageFromBlockContent = (
     const brand = contentData?.brand as BrandWithContent;
     name = brand?.name || name;
     link = `/products?brand=${name}`;
-    imageSrc = brand?.image?.href || imageSrc;
+    imageSrc = brand?.heroImage?.href || imageSrc;
   } else if (contentType === "image") {
     imageSrc = (contentData?.image as Image)?.href || imageSrc;
     name = (contentData?.image as Image)?.altText || "";
@@ -107,6 +118,12 @@ export const blockHasMaxContentItems = (blockName: BlockName): boolean => {
   if (blockDetails && blockDetails.maxContentItems) {
     return true;
   } else return false;
+};
+
+export const returnBlockMaxContentItemCount = (
+  blockName: BlockName,
+): number | undefined => {
+  return blockMaster.find((e) => blockName === e.name)?.maxContentItems;
 };
 
 //useful for checking if a content item has connections

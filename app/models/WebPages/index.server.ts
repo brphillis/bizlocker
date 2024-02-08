@@ -10,20 +10,20 @@ import { BlockWithContent } from "../Blocks/types";
 
 export const getWebPage = async (
   id?: string,
-  title?: string,
+  urlSegment?: string,
 ): Promise<Page | null> => {
   let whereClause;
 
   if (id) {
     whereClause = { id: parseInt(id) };
-  } else if (title) {
-    whereClause = { title: title };
+  } else if (urlSegment) {
+    whereClause = { urlSegment: urlSegment };
   } else {
     throw new Error("Either id or name must be specified");
   }
 
   // get the webPage
-  const webPage = await prisma.webPage.findUnique({
+  const webPage = await prisma.webPage.findFirst({
     where: whereClause,
     include: {
       blocks: {
@@ -36,7 +36,7 @@ export const getWebPage = async (
   });
 
   if (!webPage) {
-    throw new Error(`No webPage Found`);
+    return null;
   }
 
   // get the webPage with appropriate content
@@ -45,7 +45,7 @@ export const getWebPage = async (
 
   if (webPage.blocks) {
     // get the homepage
-    const webPageWithContent = (await prisma.webPage.findUnique({
+    const webPageWithContent = (await prisma.webPage.findFirst({
       where: whereClause,
       include: {
         blocks: {

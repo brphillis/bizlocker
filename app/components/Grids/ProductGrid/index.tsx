@@ -4,21 +4,24 @@ import { useNavigate } from "@remix-run/react";
 import Pagination from "~/components/Pagination";
 import { ProductWithDetails } from "~/models/Products/types";
 import ProductCard from "../../Cards/ProductCard";
+import Divider from "~/components/Filter/ProductFilterSideBar/Divider";
 
 type Props = {
-  products: ProductWithDetails[];
-  totalPages?: number;
-  cols?: number;
+  columns?: string;
+  columnsMobile?: string;
   enablePlaceHolder?: boolean;
   extendStyle?: string;
+  products: ProductWithDetails[];
+  totalPages?: number;
 };
 
 const ProductGrid = ({
-  products,
-  totalPages,
-  cols,
+  columns,
+  columnsMobile,
   enablePlaceHolder,
   extendStyle,
+  products,
+  totalPages,
 }: Props) => {
   const navigate = useNavigate();
   const [showPlaceHolder, setShowPlaceHolder] = useState<boolean>(false);
@@ -45,12 +48,8 @@ const ProductGrid = ({
   return (
     <div className={`w-full px-0 max-lg:px-3 ${extendStyle}`}>
       <div
-        style={{
-          gridTemplateColumns: cols
-            ? `repeat(${cols}, minmax(0, 1fr))`
-            : "repeat(4, minmax(0, 1fr))",
-        }}
-        className="relative grid justify-items-center gap-3 max-md:gap-y-3 max-lg:!grid-cols-4 max-md:!grid-cols-3 max-sm:!grid-cols-2 md:gap-6 gap-y-6"
+        className={`relative grid justify-items-center gap-3 max-md:gap-y-3 max-lg:!grid-cols-4 max-md:!grid-cols-3 max-sm:!grid-cols-2 md:gap-6 gap-y-6 
+        ${columns || "grid-cols-4"} ${columnsMobile || "max-md:grid-cols-2"}`}
       >
         {products?.map((product, i: number) => (
           <React.Fragment key={"productCard_" + product?.id + i}>
@@ -69,7 +68,7 @@ const ProductGrid = ({
               })
             }
           >
-            <div className="relative flex h-60 w-full max-w-full cursor-pointer items-center justify-center overflow-hidden bg-gradient-to-tr from-brand-black/25 to-brand-white/50 sm:h-72">
+            <div className="relative flex max-sm:h-60 max-md:h-[300px] h-72  w-full max-w-full cursor-pointer items-center justify-center overflow-hidden bg-gradient-to-tr from-brand-black/25 to-brand-white/50">
               <div className="flex flex-col items-center justify-center gap-3">
                 <div className="rounded-full bg-brand-black/50 p-2">
                   <IoShirtSharp size={22} className="text-brand-white" />
@@ -82,7 +81,13 @@ const ProductGrid = ({
           </button>
         )}
       </div>
-      {totalPages && <Pagination totalPages={totalPages} />}
+
+      {totalPages && totalPages > 1 && (
+        <>
+          <Divider color="black" extendStyle="pt-6 mb-0" />
+          <Pagination totalPages={totalPages} />
+        </>
+      )}
     </div>
   );
 };

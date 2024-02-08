@@ -5,9 +5,14 @@ import { getThemeColorValueByName } from "~/utility/colors";
 type Props = {
   blockOptions: BlockOptions;
   index: number;
+  position?: "relative" | "absolute";
 };
 
-const TextContainer = ({ blockOptions, index }: Props) => {
+const TextContainer = ({
+  blockOptions,
+  index,
+  position = "absolute",
+}: Props) => {
   const {
     itemAlign,
     itemAlignMobile,
@@ -37,19 +42,21 @@ const TextContainer = ({ blockOptions, index }: Props) => {
     itemShortTextColors,
     itemShortTextFontWeights,
     itemShortTextFontWeightsMobile,
+    itemShortTextShadows,
     itemShortTextSizes,
     itemShortTextSizesMobile,
     itemTitleColors,
     itemTitleFontWeights,
     itemTitleFontWeightsMobile,
     itemTitles,
+    itemTitleShadows,
     itemTitleSizes,
     itemTitleSizesMobile,
   } = blockOptions;
 
   return (
     <div
-      className={`absolute flex w-full h-full top-0
+      className={`${position} flex w-full h-full top-0
     ${itemAlign?.[index]} ${itemAlignMobile[index]} ${itemJustify[index]} ${itemJustifyMobile[index]}`}
     >
       <div
@@ -80,14 +87,14 @@ const TextContainer = ({ blockOptions, index }: Props) => {
         />
 
         <div
-          className={`relative ${itemTitleColors[index]} ${itemTitleSizes[index]} ${itemTitleSizesMobile[index]} ${itemTitleFontWeights[index]} ${itemTitleFontWeightsMobile[index]}
+          className={`relative text-center select-none ${itemTitleColors[index]} ${itemTitleSizes[index]} ${itemTitleSizesMobile[index]} ${itemTitleFontWeights[index]} ${itemTitleFontWeightsMobile[index]} ${itemTitleShadows[index]}
       `}
         >
           {itemTitles[index]}
         </div>
 
         <div
-          className={`relative ${itemShortTextColors[index]} ${itemShortTextSizes[index]} ${itemShortTextSizesMobile[index]} ${itemShortTextFontWeights[index]} ${itemShortTextFontWeightsMobile[index]}
+          className={`relative text-center select-none ${itemShortTextColors[index]} ${itemShortTextSizes[index]} ${itemShortTextSizesMobile[index]} ${itemShortTextFontWeights[index]} ${itemShortTextFontWeightsMobile[index]} ${itemShortTextShadows[index]}
       `}
         >
           {itemShortText[index]}

@@ -77,6 +77,17 @@ import {
   userUpsertAction,
   userUpsertLoader,
 } from "~/modules/Admin/Upsert/UserUpsert/index.server";
+import { MetaFunction } from "@remix-run/node";
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: "CLUTCH | Admin Portal" },
+    {
+      name: "description",
+      content: "Clutch Clothing Administration Portal",
+    },
+  ];
+};
 
 export const loader = async ({ request, params }: ActionFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
@@ -88,7 +99,7 @@ export const loader = async ({ request, params }: ActionFunctionArgs) => {
   const contentType = params?.contentType;
 
   switch (contentType) {
-    case "articleCategory":
+    case "article-category":
       return await articleCategoryUpsertLoader(request);
     case "brand":
       return await brandUpsertLoader(request);
@@ -102,15 +113,15 @@ export const loader = async ({ request, params }: ActionFunctionArgs) => {
       return await orderUpsertLoader(request);
     case "product":
       return await productUpsertLoader(request);
-    case "productCategory":
+    case "product-category":
       return await productCategoryUpsertLoader(request);
-    case "productSubCategory":
+    case "product-subcategory":
       return await productSubCategoryUpsertLoader(request);
     case "promotion":
       return await promotionUpsertLoader(request);
     case "staff":
       return await staffUpsertLoader(request);
-    case "stockTransfer":
+    case "stock-transfer":
       return await stockTransferUpsertLoader(request);
     case "store":
       return await storeUpsertLoader(request);
@@ -131,7 +142,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   const contentType = params?.contentType;
 
   switch (contentType) {
-    case "articleCategory":
+    case "article-category":
       return await articleCategoryUpsertAction(request);
     case "brand":
       return await brandUpsertAction(request);
@@ -145,15 +156,15 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
       return await orderUpsertAction(request);
     case "product":
       return await productUpsertAction(request);
-    case "productCategory":
+    case "product-category":
       return await productCategoryUpsertAction(request);
-    case "productSubCategory":
+    case "product-subcategory":
       return await productSubCategoryUpsertAction(request);
     case "promotion":
       return await promotionUpsertAction(request);
     case "staff":
       return await staffUpsertAction(request);
-    case "stockTransfer":
+    case "stock-transfer":
       return await stockTransferUpsertAction(request);
     case "store":
       return await storeUpsertAction(request);
@@ -172,7 +183,7 @@ const UpsertContent = ({ offRouteModules = true }: Props) => {
   const { contentType } = useParams();
   return (
     <>
-      {contentType === "articleCategory" && (
+      {contentType === "article-category" && (
         <ArticleCategoryUpsert offRouteModule={offRouteModules} />
       )}
       {contentType === "brand" && (
@@ -191,10 +202,10 @@ const UpsertContent = ({ offRouteModules = true }: Props) => {
       {contentType === "product" && (
         <ProductUpsert offRouteModule={offRouteModules} />
       )}
-      {contentType === "productCategory" && (
+      {contentType === "product-category" && (
         <ProductCategoryUpsert offRouteModule={offRouteModules} />
       )}
-      {contentType === "productSubCategory" && (
+      {contentType === "product-subcategory" && (
         <ProductSubCategoryUpsert offRouteModule={offRouteModules} />
       )}
       {contentType === "promotion" && (
@@ -203,7 +214,7 @@ const UpsertContent = ({ offRouteModules = true }: Props) => {
       {contentType === "staff" && (
         <StaffUpsert offRouteModule={offRouteModules} />
       )}
-      {contentType === "stockTransfer" && (
+      {contentType === "stocktransfer" && (
         <StockTransferUpsert offRouteModule={offRouteModules} />
       )}
       {contentType === "store" && (

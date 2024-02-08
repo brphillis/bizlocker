@@ -1,22 +1,22 @@
 export const swapContentArrayElements = <T>(
-  array: (T | string)[],
+  array: (T | object | string)[],
   index1: number,
   index2: number,
-): (T | string)[] => {
+): (T | string | object)[] => {
   // Create a new array to avoid modifying the original array in place
   const newArray = [...array];
 
   // Check if index1 is within the bounds of the array
   if (index1 >= 0 && index1 < newArray.length) {
     // Swap the elements at index1 and index2
-    const temp: T | string = newArray[index1];
+    const temp: T | string | object = newArray[index1];
     newArray[index1] = index2 < newArray.length ? newArray[index2] : "";
     newArray[index2] = temp;
   } else if (index1 >= 0 && index2 < newArray.length) {
     // If index1 is out of bounds, create index1 as an empty string
     newArray[index1] = "";
     // Swap the elements at index1 and index2
-    const temp: T | string = newArray[index1];
+    const temp: T | string | object = newArray[index1];
     newArray[index1] = newArray[index2];
     newArray[index2] = temp;
   }

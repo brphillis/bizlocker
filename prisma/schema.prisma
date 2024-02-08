@@ -9,15 +9,16 @@ datasource db {
 }
 
 model SiteSettings {
-  id                   Int      @id @default(autoincrement())
-  navigationStyle      String   @default("productBasic")
-  spinnerStyle         String   @default("shirt")
-  announcementMessage  String?
-  announcementIsActive Boolean  @default(false)
-  announcementEndsAt   String?
-  countdownIsActive    Boolean? @default(false)
-  maintenanceMessage   String?
-  isUnderMaintenance   Boolean? @default(false)
+  id                     Int      @id @default(autoincrement())
+  navigationStyleDesktop String   @default("productBasic")
+  navigationStyleMobile  String   @default("productBasic")
+  spinnerStyle           String   @default("shirt")
+  announcementMessage    String?
+  announcementIsActive   Boolean  @default(false)
+  announcementEndsAt     String?
+  countdownIsActive      Boolean? @default(false)
+  maintenanceMessage     String?
+  isUnderMaintenance     Boolean? @default(false)
 
   createdAt String?
   updatedAt String?
@@ -28,6 +29,7 @@ model PreviewPage {
   blocks            Block[]           @relation("PreviewPageToBlocks")
   blockOrder        Int[]
   title             String            @default("Page Title")
+  urlSegment        String?
   description       String            @default("Page Description")
   backgroundColor   String?
   homePage          HomePage?         @relation("PreviewPageToHomePage", fields: [homePageId], references: [id])
@@ -67,6 +69,7 @@ model WebPage {
   isActive        Boolean       @default(true)
   thumbnail       Image?        @relation("WebPageImage")
   title           String        @unique
+  urlSegment      String?
   backgroundColor String?
   previewPage     PreviewPage[] @relation("PreviewPageToWebPage")
 
@@ -85,6 +88,7 @@ model Article {
   previewPage       PreviewPage[]     @relation("PreviewPageToArticle")
   thumbnail         Image?            @relation("ArticleImage")
   title             String            @unique
+  urlSegment        String?
 
   createdAt String?
   updatedAt String?
@@ -117,7 +121,7 @@ model BlockContent {
   blockId            Int?                 @unique
   brand              Brand[]              @relation("BlockContentToBrands")
   campaign           Campaign[]           @relation("BlockContentToCampaigns")
-  emptyItem          String[]
+  other              String[]
   icon               String[]
   image              Image[]              @relation("BlockContentToImages")
   product            Product[]            @relation("BlockContentToProducts")
@@ -172,8 +176,10 @@ model BlockOptions {
   buttonSecondary                         String?
   colorPrimary                            String?
   colorSecondary                          String?
-  columns                                 Float?
-  columnsMobile                           Float?
+  columns                                 String?
+  columnsMobile                           String?
+  numberColumns                           Float?
+  numberColumnsMobile                     Float?
   count                                   Int?
   flipX                                   String?
   height                                  String?
@@ -235,6 +241,8 @@ model BlockOptions {
   itemTitleFontWeights                    String[]
   itemTitleFontWeightsMobile              String[]
   itemTitleSizes                          String[]
+  itemTitleShadows                        String[]
+  itemShortTextShadows                    String[]
   itemTitleSizesMobile                    String[]
   itemMarginTop                           String[]
   itemMarginTopMobile                     String[]
@@ -502,8 +510,8 @@ model Image {
   article                         Article?            @relation("ArticleImage", fields: [articleId], references: [id])
   articleId                       Int?                @unique
   blockContent                    BlockContent[]      @relation("BlockContentToImages")
-  brand                           Brand?              @relation("BrandImage", fields: [brandId], references: [id])
-  brandId                         Int?                @unique
+  brandHeroImage                  Brand?              @relation("BrandHeroImage", fields: [brandHeroImageId], references: [id])
+  brandHeroImageId                Int?                @unique
   campaignBanner                  Campaign[]          @relation("BannerImageToCampaign")
   campaignTile                    Campaign[]          @relation("TileImageToCampaign")
   product                         Product?            @relation(fields: [productId], references: [id])
@@ -658,7 +666,8 @@ model Product {
   heroImage              Image?               @relation("ProductHeroToProduct", fields: [heroImageId], references: [id])
   heroImageId            Int?                 @unique
   images                 Image[]
-  infoURL                String?
+  dropshipURL            String?
+  dropshipSKU            String?
   isActive               Boolean              @default(true)
   name                   String
   productSubCategories   ProductSubCategory[] @relation("ProductSubCategoryToProduct")
@@ -674,7 +683,7 @@ model Product {
 model ProductVariant {
   id                   Int                    @id @default(autoincrement())
   cartItems            CartItem[]
-  color                Color?
+  color                String?
   height               Int                    @default(0)
   isActive             Boolean                @default(true)
   isFragile            Boolean                @default(false)
@@ -735,8 +744,8 @@ model StockTransferRequest {
 model Brand {
   id           Int            @id @unique @default(autoincrement())
   campaigns    Campaign[]     @relation("BrandToCampaign")
-  image        Image?         @relation("BrandImage")
-  imageId      Int?
+  heroImage    Image?         @relation("BrandHeroImage")
+  heroImageId  Int?
   isActive     Boolean        @default(true)
   name         String         @unique
   blockContent BlockContent[] @relation("BlockContentToBrands")

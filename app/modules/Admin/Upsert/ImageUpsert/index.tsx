@@ -3,7 +3,7 @@ import type { ActionReturnTypes } from "~/utility/actionTypes";
 import { type FormEvent, useEffect, useState } from "react";
 import { type ValidationErrors, validateForm } from "~/utility/validate";
 import DarkOverlay from "~/components/Layout/Overlays/DarkOverlay";
-import { IoCaretForwardCircleSharp } from "react-icons/io5";
+import { IoCaretForwardCircleSharp, IoTrashSharp } from "react-icons/io5";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import UploadImage from "~/components/Forms/Upload/UploadImage";
 import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
@@ -48,7 +48,7 @@ const ImageUpsert = ({ offRouteModule }: Props) => {
     promotionTile,
     campaignBanner,
     campaignTile,
-    brandId,
+    brandHeroImageId,
     productSubCategoryTileImageId,
     articleId,
     productId,
@@ -62,15 +62,8 @@ const ImageUpsert = ({ offRouteModule }: Props) => {
   );
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    const form = getFormData(event);
     event.preventDefault();
-
-    const { formErrors } = validateForm(new FormData(form), validateOptions);
-    if (formErrors) {
-      setClientValidationErrors(formErrors);
-      setLoading(false);
-      return;
-    }
+    const form = getFormData(event);
 
     const submitFunction = () => {
       submit(form, {
@@ -78,22 +71,51 @@ const ImageUpsert = ({ offRouteModule }: Props) => {
         action: `/admin/upsert/image?contentId=${contentId}`,
         navigate: offRouteModule ? false : true,
       });
+
+      if (offRouteModule) {
+        navigate(-1);
+      }
     };
 
-    if (hasConnection) {
+    const { formErrors, formEntries } = validateForm(
+      new FormData(form),
+      validateOptions,
+    );
+
+    if (formErrors) {
+      setClientValidationErrors(formErrors);
+      setLoading(false);
+      return;
+    }
+
+    if (formEntries._action === "delete") {
       ActionAlert(
-        "Resource Has Connections",
-        "Update this resource?",
-        () => submitFunction(),
-        () => setLoading(false),
+        "Warning",
+        "Delete this Image?",
+        () => {
+          submitFunction();
+          if (offRouteModule) {
+            navigate(-1);
+          }
+        },
+        () => {
+          setLoading(false);
+          return;
+        },
         "warning",
       );
     } else {
-      submitFunction();
-    }
-
-    if (offRouteModule) {
-      navigate(-1);
+      if (hasConnection) {
+        ActionAlert(
+          "Resource Has Connections",
+          "Update this resource?",
+          () => submitFunction(),
+          () => setLoading(false),
+          "warning",
+        );
+      } else {
+        submitFunction();
+      }
     }
   };
 
@@ -111,6 +133,15 @@ const ImageUpsert = ({ offRouteModule }: Props) => {
           onSubmit={handleSubmit}
           className="scrollbar-hide relative w-[500px] max-w-full overflow-y-auto"
         >
+          <button
+            type="submit"
+            name="_action"
+            value="delete"
+            className="absolute z-50 top-0 right-0 text-white bg-error rounded-full p-1 text-sm"
+          >
+            <IoTrashSharp />
+          </button>
+
           <div className="form-control w-full items-center gap-3">
             <UploadImage defaultValue={image} />
 
@@ -232,14 +263,16 @@ const ImageUpsert = ({ offRouteModule }: Props) => {
                     })}
                   </>
                 )}
-                {brandId && (
+                {brandHeroImageId && (
                   <tr className="hover cursor-pointer">
                     <td className="w-4/5">Brand Image</td>
                     <td className="w-1/5">
                       <button
                         type="button"
                         className="ml-2"
-                        onClick={() => navigate(`/admin/brands/${brandId}`)}
+                        onClick={() =>
+                          navigate(`/admin/brands/${brandHeroImageId}`)
+                        }
                       >
                         <IoCaretForwardCircleSharp size={18} />
                       </button>

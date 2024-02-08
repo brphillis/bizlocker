@@ -1,5 +1,6 @@
 import type { BlockOptions } from "@prisma/client";
 import ContentContainer from "./ContentContainer";
+import { getBucketImageSrc } from "~/integrations/_master/storage";
 
 type Props = {
   index: number;
@@ -30,9 +31,9 @@ const Slide = ({ index, blockOptions, image }: Props) => {
    `}
     >
       <img
-        src={image.src}
+        src={getBucketImageSrc(image.src)}
         alt={image.altText || "image description placeholder"}
-        className={`absolute h-full w-full select-none object-cover
+        className={`absolute select-none object-cover h-full w-full 
        ${itemImagePositions[index]} ${itemImagePositionsMobile[index]}`}
       />
 

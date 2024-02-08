@@ -5,7 +5,7 @@ import { getUserDataFromSession, STAFF_SESSION_KEY } from "~/session.server";
 
 export const productStockLoader = async (request: Request) => {
   const { searchParams } = new URL(request.url);
-  const id = searchParams.get("contentId");
+  const id = searchParams.get("stockId");
 
   if (!id) {
     throw new Response(null, {

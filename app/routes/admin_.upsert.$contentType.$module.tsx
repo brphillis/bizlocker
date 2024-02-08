@@ -14,6 +14,17 @@ import {
   productStockTransferAction,
   productStockTransferLoader,
 } from "~/modules/Admin/Upsert/ProductUpsert/ProductStock/ProductStockTransfer/index.server";
+import { MetaFunction } from "@remix-run/node";
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: "CLUTCH | Admin Portal" },
+    {
+      name: "description",
+      content: "Clutch Clothing Administration Portal",
+    },
+  ];
+};
 
 export const loader = async ({ request, params }: ActionFunctionArgs) => {
   const authenticated = await tokenAuth(request, STAFF_SESSION_KEY);
@@ -25,11 +36,11 @@ export const loader = async ({ request, params }: ActionFunctionArgs) => {
   const module = params?.module;
 
   switch (module) {
-    case "addStaff":
+    case "add-staff":
       return await teamAddStaffLoader(request, params);
-    case "productStock":
+    case "product-stock":
       return await productStockLoader(request);
-    case "productStockTransfer":
+    case "product-stock-transfer":
       return await productStockTransferLoader(request);
   }
 };
@@ -44,9 +55,9 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   const module = params?.module;
 
   switch (module) {
-    case "addStaff":
+    case "add-staff":
       return await teamAddStaffAction(request);
-    case "productStockTransfer":
+    case "product-stock-transfer":
       return await productStockTransferAction(request);
   }
 };
@@ -56,13 +67,13 @@ const UpsertContent = () => {
   let moduleComponent;
 
   switch (module) {
-    case "addStaff":
+    case "add-staff":
       moduleComponent = <TeamAddStaff />;
       break;
-    case "productStock":
+    case "product-stock":
       moduleComponent = <ProductStock />;
       break;
-    case "productStockTransfer":
+    case "product-stock-transfer":
       moduleComponent = <ProductStockTransfer />;
       break;
     default:

@@ -1,6 +1,8 @@
 /// <reference types="vite/client" />
 /// <reference types="@remix-run/node" />
 
+type Dev_Environment = "production" | "development";
+
 type Role = "DEVELOPER" | "ADMIN" | "MANAGER" | "STAFF" | "EDITOR" | "USER";
 
 type SortBy = "createdAt" | "totalSold" | "price" | "name" | "title";
@@ -79,13 +81,6 @@ type MetaType = {
   name: string;
   content: string;
   description: string;
-  product: {
-    name: string;
-  };
-  promotion: {
-    name: string;
-    metaDescription: string;
-  };
 };
 
 interface CatchError {

@@ -30,6 +30,8 @@ import WindowContainer, {
 import TabValidationErrors from "~/components/Forms/Validation/TabValidationErrors";
 import TabContent from "~/components/Tabs/TabContent";
 import type { productUpsertLoader } from "./index.server";
+import { IoTrashSharp } from "react-icons/io5";
+import { ActionAlert } from "~/components/Notifications/Alerts";
 
 const validateOptions = {
   name: true,
@@ -45,14 +47,8 @@ type Props = {
 };
 
 const UpsertProduct = ({ offRouteModule }: Props) => {
-  const {
-    storeId,
-    product,
-    productSubCategories,
-    brands,
-    promotions,
-    availableColors,
-  } = useLoaderData<typeof productUpsertLoader>();
+  const { storeId, product, productSubCategories, brands, promotions } =
+    useLoaderData<typeof productUpsertLoader>();
   const { serverValidationErrors, success, notification } =
     (useActionData() as ActionReturnTypes) || {};
 
@@ -81,22 +77,48 @@ const UpsertProduct = ({ offRouteModule }: Props) => {
 
     form = handleWindowedFormData(form);
 
-    const { formErrors } = validateForm(new FormData(form), validateOptions);
+    const { formErrors, formEntries } = validateForm(
+      new FormData(form),
+      validateOptions,
+    );
 
-    if (formErrors) {
-      setClientValidationErrors(formErrors);
-      setLoading(false);
-      return;
-    }
+    if (formEntries._action === "delete") {
+      ActionAlert(
+        "Warning",
+        "Delete this Product?",
+        () => {
+          submit(form, {
+            method: "POST",
+            action: `/admin/upsert/${contentType}?contentId=${contentId}`,
+            navigate: offRouteModule ? false : true,
+          });
 
-    submit(form, {
-      method: "POST",
-      action: `/admin/upsert/${contentType}?contentId=${contentId}`,
-      navigate: offRouteModule ? false : true,
-    });
+          if (offRouteModule) {
+            navigate(-1);
+          }
+        },
+        () => {
+          setLoading(false);
+          return;
+        },
+        "warning",
+      );
+    } else {
+      if (formErrors) {
+        setClientValidationErrors(formErrors);
+        setLoading(false);
+        return;
+      }
 
-    if (offRouteModule) {
-      navigate(-1);
+      submit(form, {
+        method: "POST",
+        action: `/admin/upsert/${contentType}?contentId=${contentId}`,
+        navigate: offRouteModule ? false : true,
+      });
+
+      if (offRouteModule) {
+        navigate(-1);
+      }
     }
   };
 
@@ -125,6 +147,15 @@ const UpsertProduct = ({ offRouteModule }: Props) => {
           >
             <TabContent tab="general" activeTab={activeTab}>
               <>
+                <button
+                  type="submit"
+                  name="_action"
+                  value="delete"
+                  className="absolute z-50 top-0 right-0 text-white bg-error rounded-full p-1 text-sm"
+                >
+                  <IoTrashSharp />
+                </button>
+
                 <div className="form-control gap-3">
                   <BasicInput
                     id="ProductName"
@@ -224,12 +255,9 @@ const UpsertProduct = ({ offRouteModule }: Props) => {
                   clientValidationErrors={clientValidationErrors}
                   serverValidationErrors={serverValidationErrors}
                 />
-
-                <ProductVariantUpsert
-                  storeId={storeId}
-                  product={product}
-                  availableColors={availableColors}
-                />
+                {product.variants && product.variants.length > 0 && (
+                  <ProductVariantUpsert storeId={storeId} product={product} />
+                )}
               </>
             </TabContent>
 
@@ -237,10 +265,22 @@ const UpsertProduct = ({ offRouteModule }: Props) => {
               <BasicInput
                 label="Dropship URL"
                 type="text"
-                name="infoURL"
+                name="dropshipURL"
                 placeholder="Info URL"
                 extendContainerStyle="w-full"
-                defaultValue={product?.infoURL}
+                defaultValue={product?.dropshipURL}
+                validationErrors={
+                  clientValidationErrors || serverValidationErrors
+                }
+              />
+
+              <BasicInput
+                label="Dropship SKU"
+                type="text"
+                name="dropshipSKU"
+                placeholder="Dropship SKU"
+                extendContainerStyle="w-full"
+                defaultValue={product?.dropshipSKU}
                 validationErrors={
                   clientValidationErrors || serverValidationErrors
                 }

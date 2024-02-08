@@ -5,7 +5,10 @@ import {
   BlockWithContent,
 } from "~/models/Blocks/types";
 import { isArrayofStrings } from "./arrayHelpers";
-import { getBlockContentTypes } from "../utility/blockMaster/blockMaster";
+import {
+  blockContentAddOns,
+  getBlockContentTypes,
+} from "../utility/blockMaster/blockMaster";
 
 // Returns the default content selection values for a block (example:selected Products)
 export const getBlockDefaultValues = (
@@ -110,26 +113,35 @@ export const returnSortedBlockContent = (
   const blockRendererContent: RenderBlockContent[] = [];
   const pageBuilderContent: PageBuilderContentSelection[] = [];
 
-  const extractContent = (contentOrderString: string) => {
+  const extractOrderedContent = (contentOrderString: string) => {
     const [contentType, contentId] = contentOrderString.split("_");
 
-    return unsortedContent.find(
-      (content) =>
-        content[contentType] &&
-        (
-          content[
-            contentType as keyof BlockContentWithDetails
-          ] as BlockContentWithDetails
-        ).id === Number(contentId),
-    );
+    const foundContent =
+      unsortedContent.find(
+        (content) =>
+          content[contentType] &&
+          (
+            content[
+              contentType as keyof BlockContentWithDetails
+            ] as BlockContentWithDetails
+          ).id === Number(contentId),
+      ) ||
+      (blockContentAddOns.includes(contentType) &&
+        unsortedContent.find(
+          (content) =>
+            Object.keys(content)[0] === contentType &&
+            content[contentType as keyof BlockContentWithDetails] === contentId,
+        ));
+
+    return foundContent;
   };
 
   if (format === "blockrenderer") {
     contentOrder.forEach((contentOrderString: string) => {
-      const contentToPush = extractContent(contentOrderString);
+      const orderedContent = extractOrderedContent(contentOrderString);
 
-      if (contentToPush) {
-        blockRendererContent.push(contentToPush);
+      if (orderedContent) {
+        blockRendererContent.push(orderedContent);
       }
     });
   }

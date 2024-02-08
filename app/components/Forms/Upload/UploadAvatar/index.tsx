@@ -1,6 +1,7 @@
 import type { Image } from "@prisma/client";
 import { useState } from "react";
 import { ConvertToBase64Image, type NewImage } from "~/helpers/fileHelpers";
+import { getBucketImageSrc } from "~/integrations/_master/storage";
 import { placeholderAvatar } from "~/utility/placeholderAvatar";
 
 type Props = {
@@ -9,7 +10,7 @@ type Props = {
 
 const UploadAvatar = ({ avatar }: Props) => {
   const [image, setImage] = useState<NewImage | Image | undefined>(
-    avatar || undefined
+    avatar || undefined,
   );
 
   return (
@@ -18,7 +19,11 @@ const UploadAvatar = ({ avatar }: Props) => {
         <div className="avatar">
           <div className="w-24 rounded-full ring ring-primary ring-offset-2 ring-offset-base-100 sm:w-32">
             <img
-              src={image?.href || placeholderAvatar?.href || undefined}
+              src={
+                (image?.href && getBucketImageSrc(image?.href)) ||
+                placeholderAvatar?.href ||
+                undefined
+              }
               alt="user_avatar"
             />
           </div>
@@ -40,7 +45,7 @@ const UploadAvatar = ({ avatar }: Props) => {
           value={JSON.stringify(image) || ""}
         />
       </div>
-      <div className="divider mt-0 w-full" />
+      <div className="divider mt-0 mb-0 w-full" />
     </>
   );
 };

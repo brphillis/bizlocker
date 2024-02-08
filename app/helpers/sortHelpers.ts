@@ -3,12 +3,20 @@ import type { PreviewPage } from "@prisma/client";
 export const getOrderBy = (
   sortBy?: string,
   sortOrder?: SortOrder,
-  type?: "product"
+  type?: "product",
 ): { [key: string]: SortOrder } => {
   let sortedBy = sortBy;
 
+  //CASE PRODUCT - POPULARITY
   if (sortBy === "popular" && type === "product") {
     sortedBy = "totalSold";
+  }
+
+  //CASE PRODUCT - PRICE
+  // handle price sorting after fetching as prices are based on variants
+  // set to arbitrary value to prevent errors
+  if (sortBy === "price") {
+    sortedBy = "name";
   }
 
   if (sortedBy && sortOrder) {
@@ -18,7 +26,7 @@ export const getOrderBy = (
 };
 
 export const sortPreviewPages = (
-  previewPages: PreviewPage[]
+  previewPages: PreviewPage[],
 ): PreviewPage[] => {
   return previewPages.slice().sort((a, b) => {
     if (!a.publishedAt && !b.publishedAt) return 0; // Both dates are undefined, maintain the order

@@ -13,7 +13,7 @@ import {
 import {
   updateImage_Integration,
   uploadImage_Integration,
-} from "~/integrations/_master/storage";
+} from "~/integrations/_master/storage/index.server";
 import {
   blockHasPageConnection,
   includeAllPageTypes,
@@ -63,6 +63,7 @@ export const upsertPageMeta = async (
   thumbnail: Image,
   previewPageId?: string,
   articleCategories?: string[],
+  urlSegment?: string,
 ): Promise<number> => {
   let page;
   const refinedPageType =
@@ -85,6 +86,7 @@ export const upsertPageMeta = async (
       title,
       description,
       backgroundColor,
+      urlSegment,
       [pageType.replace(/p/g, "P")]: { connect: { id: newPageType.id } },
     };
 
@@ -140,6 +142,10 @@ export const upsertPageMeta = async (
       description,
       backgroundColor,
     };
+
+    if (pageType !== "homePage") {
+      updateData.urlSegment = urlSegment;
+    }
 
     // Check if thumbnail is provided
     if (thumbnail) {
@@ -484,6 +490,8 @@ export const publishPage = async (
 
     if (pageType !== "homePage") {
       updateData.isActive = previewPage?.isActive;
+
+      updateData.urlSegment = previewPage?.urlSegment;
 
       updateData.thumbnail = previewPage?.thumbnail?.id
         ? {

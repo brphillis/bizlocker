@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { ArticleCategory } from "@prisma/client";
 import { IoArrowForward } from "react-icons/io5";
 import { ArticleWithContent } from "~/models/Articles/types";
+import { getBucketImageSrc } from "~/integrations/_master/storage";
 
 type Props = {
   article: ArticleWithContent;
@@ -22,7 +23,7 @@ const ArticleCard = ({ article, hasDescription }: Props) => {
         {image && (
           <img
             className="h-full w-full object-cover"
-            src={image}
+            src={getBucketImageSrc(image)}
             alt={article.title + "_image"}
           />
         )}

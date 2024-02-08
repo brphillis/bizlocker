@@ -93,12 +93,30 @@ export const generateProductColor = (
 ): string | null => {
   const lowerCaseColorName = colorName?.toLowerCase();
 
+  // Check for single-word color names
   if (themeColors[`brand-${lowerCaseColorName}` as keyof typeof themeColors]) {
     return `brand-${lowerCaseColorName}`;
-  } else {
-    console.error(`Color not found for ${colorName}`);
-    return null;
   }
+
+  // Check for two-word color names
+  const colorWords = lowerCaseColorName?.split(" ");
+
+  if (colorWords && colorWords.length === 2) {
+    const [firstWord, secondWord] = colorWords;
+    const twoWordColorName = `${firstWord}-${secondWord}`;
+    if (themeColors[`brand-${twoWordColorName}` as keyof typeof themeColors]) {
+      return `brand-${twoWordColorName}`;
+    }
+  }
+
+  //check for color variant ie: slate BLUE, dark RED, army GREEN
+  if (colorWords && colorWords.length === 2) {
+    if (themeColors[`brand-${colorWords[1]}` as keyof typeof themeColors]) {
+      return `brand-${colorWords[1]}`;
+    }
+  }
+
+  return null;
 };
 
 export const getHexTransparencyCode = (percent: number): string => {

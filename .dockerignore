@@ -4,4 +4,3 @@
 .env
 /.cache
 /public/build
-/build

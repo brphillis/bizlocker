@@ -3,7 +3,7 @@ import { Brand, Image } from "@prisma/client";
 import {
   updateImage_Integration,
   uploadImage_Integration,
-} from "~/integrations/_master/storage";
+} from "~/integrations/_master/storage/index.server";
 
 import { BrandWithContent, NewBrand } from "./types";
 export const getBrands = async (): Promise<Brand[] | null> => {
@@ -18,7 +18,7 @@ export const getBrand = async (
       id: parseInt(id),
     },
     include: {
-      image: true,
+      heroImage: true,
     },
   });
 };
@@ -26,26 +26,26 @@ export const getBrand = async (
 export const upsertBrand = async (
   brandData: NewBrand,
 ): Promise<Brand | null> => {
-  const { id, name, image, isActive } = brandData;
+  const { id, name, heroImage, isActive } = brandData;
 
   let updatedBrand = null;
 
-  if (!id && image) {
-    const repoLink = await uploadImage_Integration(image);
+  if (!id && heroImage) {
+    const repoLink = await uploadImage_Integration(heroImage);
     updatedBrand = await prisma.brand.create({
       data: {
         name: name,
         isActive,
-        image: {
+        heroImage: {
           create: {
             href: repoLink,
-            altText: image.altText,
+            altText: heroImage.altText,
           },
         },
       },
     });
   }
-  if (!id && !image) {
+  if (!id && !heroImage) {
     updatedBrand = await prisma.brand.create({
       data: {
         name: name,
@@ -58,7 +58,7 @@ export const upsertBrand = async (
         id: parseInt(id),
       },
       include: {
-        image: true,
+        heroImage: true,
       },
     });
 
@@ -68,32 +68,32 @@ export const upsertBrand = async (
 
     let imageData = {};
 
-    if (image && existingBrand.image) {
+    if (heroImage && existingBrand.heroImage) {
       const repoLink = await updateImage_Integration(
-        existingBrand.image as Image,
-        image,
+        existingBrand.heroImage as Image,
+        heroImage,
       );
 
       imageData = {
         update: {
-          altText: image.altText,
+          altText: heroImage.altText,
           href: repoLink,
         },
       };
     }
 
-    if (image && !existingBrand.image) {
-      const repoLink = await uploadImage_Integration(image);
+    if (heroImage && !existingBrand.heroImage) {
+      const repoLink = await uploadImage_Integration(heroImage);
 
       imageData = {
         create: {
           url: repoLink,
-          altText: image.altText,
+          altText: heroImage.altText,
         },
       };
     }
 
-    if (!image && existingBrand.image) {
+    if (!heroImage && existingBrand.heroImage) {
       imageData = {
         delete: true,
       };
@@ -106,10 +106,10 @@ export const upsertBrand = async (
       data: {
         name: name,
         isActive,
-        image: imageData,
+        heroImage: imageData,
       },
       include: {
-        image: true,
+        heroImage: true,
       },
     });
   }

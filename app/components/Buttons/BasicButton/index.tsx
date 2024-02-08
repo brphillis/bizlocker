@@ -37,7 +37,7 @@ const BasicButton = ({
       value={value ? value : undefined}
       className={`
       inline-flex h-[3rem] min-h-[3rem] text-sm cursor-pointer items-center justify-center rounded-sm border-[1px] pl-[1rem] pr-[1rem] text-center font-semibold shadow-sm
-      ${disabled ? "btn-disabled" : ""}
+      ${disabled ? "opacity-75 btn-disabled" : ""}
        ${currentEffect} ${
          extendStyle
            ? extendStyle

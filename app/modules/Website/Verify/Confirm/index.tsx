@@ -5,7 +5,7 @@ import PageWrapper from "~/components/Layout/Wrappers/PageWrapper";
 import { verifyConfirmLoader } from "~/modules/Website/Verify/Confirm/index.server";
 
 const VerifyConfirm = () => {
-  const verified = useLoaderData<typeof verifyConfirmLoader>();
+  const { verified } = useLoaderData<typeof verifyConfirmLoader>() || {};
   const navigate = useNavigate();
 
   useEffect(() => {

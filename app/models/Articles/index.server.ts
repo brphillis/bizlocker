@@ -10,20 +10,20 @@ import { BlockWithContent } from "../Blocks/types";
 
 export const getArticle = async (
   id?: string,
-  title?: string,
+  urlSegment?: string,
 ): Promise<Page | null> => {
   let whereClause;
 
   if (id) {
     whereClause = { id: parseInt(id) };
-  } else if (title) {
-    whereClause = { title: title };
+  } else if (urlSegment) {
+    whereClause = { urlSegment: urlSegment };
   } else {
     throw new Error("Either id or name must be specified");
   }
 
   // get the article
-  const article = await prisma.article.findUnique({
+  const article = await prisma.article.findFirst({
     where: whereClause,
     include: {
       blocks: {
@@ -45,7 +45,7 @@ export const getArticle = async (
 
   if (article.blocks) {
     // get the homepage
-    const articleWithContent = (await prisma.article.findUnique({
+    const articleWithContent = (await prisma.article.findFirst({
       where: whereClause,
       include: {
         blocks: {

@@ -2,7 +2,7 @@ export const adminNavBarRoutes: NavigationRouteItem[] = [
   {
     icon: "IoHomeSharp",
     name: "Home",
-    link: "/admin/home",
+    link: "/admin",
   },
 
   {
@@ -46,11 +46,7 @@ export const adminNavBarRoutes: NavigationRouteItem[] = [
       },
       {
         name: "Article Categories",
-        link: "/admin/search/articleCategory",
-      },
-      {
-        name: "Site Settings",
-        link: "/admin/upsert/siteSettings",
+        link: "/admin/search/article-category",
       },
     ],
   },
@@ -87,11 +83,11 @@ export const adminNavBarRoutes: NavigationRouteItem[] = [
       },
       {
         name: "Categories",
-        link: "/admin/search/productCategory",
+        link: "/admin/search/product-category",
       },
       {
         name: "SubCategories",
-        link: "/admin/search/productSubCategory",
+        link: "/admin/search/product-subcategory",
       },
       {
         name: "Brands",
@@ -99,7 +95,11 @@ export const adminNavBarRoutes: NavigationRouteItem[] = [
       },
       {
         name: "Stock Transfers",
-        link: "/admin/search/stockTransfer",
+        link: "/admin/search/stock-transfer",
+      },
+      {
+        name: "Dropship",
+        link: "/admin/search/dropship",
       },
     ],
   },
@@ -138,6 +138,21 @@ export const adminNavBarRoutes: NavigationRouteItem[] = [
       {
         name: "Campaigns",
         link: "/admin/search/campaign",
+      },
+    ],
+  },
+
+  {
+    icon: "IoSettingsSharp",
+    name: "Configuration",
+    children: [
+      {
+        name: "Site Settings",
+        link: "/admin/upsert/site-settings",
+      },
+      {
+        name: "Tasks",
+        link: "/admin/upsert/task",
       },
     ],
   },

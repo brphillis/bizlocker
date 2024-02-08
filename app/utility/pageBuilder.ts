@@ -15,6 +15,7 @@ import { searchStores } from "~/models/Stores/index.server";
 import { NewBlockContent } from "~/models/Blocks/types";
 import { searchProductSubCategories } from "~/models/ProductSubCategories/index.server";
 import { searchProductCategories } from "~/models/ProductCategories/index.server";
+import { returnBlockMaxContentItemCount } from "~/helpers/contentHelpers";
 
 export type PageType = "homePage" | "webPage" | "article" | "previewPage";
 
@@ -182,6 +183,8 @@ export const getFormBlockOptions = (form: {
     titleFontWeightMobile,
     speed,
     autoplay,
+    numberColumns,
+    numberColumnsMobile,
     itemBackgroundPatternNamesSecondary,
     itemBackgroundPatternColorsSecondary,
     itemBackgroundWidthsSecondary,
@@ -216,6 +219,8 @@ export const getFormBlockOptions = (form: {
     itemShortTextFontWeights,
     itemShortTextFontWeightsMobile,
     itemGap,
+    itemTitleShadows,
+    itemShortTextShadows,
   } = form;
 
   const blockOptions = {
@@ -271,10 +276,8 @@ export const getFormBlockOptions = (form: {
     borderRadius: borderRadius ? (borderRadius as string) : undefined,
     borderSize: borderSize ? (borderSize as string) : undefined,
     buttonAlign: buttonAlign ? (buttonAlign as string) : undefined,
-    columns: columns ? parseFloat(columns as string) : undefined,
-    columnsMobile: columnsMobile
-      ? parseFloat(columnsMobile as string)
-      : undefined,
+    columns: columns ? (columns as string) : undefined,
+    columnsMobile: columnsMobile ? (columnsMobile as string) : undefined,
     count: count ? parseInt(count as string) : undefined,
     flipX: flipX ? (flipX as string) : undefined,
     height: height ? (height as string) : undefined,
@@ -344,6 +347,12 @@ export const getFormBlockOptions = (form: {
       : undefined,
     itemTitleSizesMobile: itemTitleSizesMobile
       ? JSON.parse(itemTitleSizesMobile as string)
+      : undefined,
+    itemTitleShadows: itemTitleShadows
+      ? JSON.parse(itemTitleShadows as string)
+      : undefined,
+    itemShortTextShadows: itemShortTextShadows
+      ? JSON.parse(itemShortTextShadows as string)
       : undefined,
     itemTitleColors: itemTitleColors
       ? JSON.parse(itemTitleColors as string)
@@ -523,6 +532,12 @@ export const getFormBlockOptions = (form: {
     shortTextFontWeightMobile: shortTextFontWeightMobile
       ? (shortTextFontWeightMobile as string)
       : undefined,
+    numberColumns: numberColumns
+      ? parseFloat(numberColumns as string)
+      : undefined,
+    numberColumnsMobile: numberColumnsMobile
+      ? parseInt(numberColumnsMobile as string)
+      : undefined,
     rows: rows ? parseInt(rows as string) : undefined,
     shortText: shortText ? (shortText as string) : undefined,
     shortTextColor: shortTextColor ? (shortTextColor as string) : undefined,
@@ -620,12 +635,17 @@ export const buildNewBlockData = (
         PageBuilderContentSelection as string,
       );
 
-      // creating an array of string for block content order ["image_id", "promotion_id"]
-      parsedPageBuilderContentSelection.forEach(
-        (p: PageBuilderContentSelection) => {
-          blockContentOrder.push(p.type + "_" + p.contentId);
-        },
-      );
+      if (
+        returnBlockMaxContentItemCount(blockName) &&
+        returnBlockMaxContentItemCount(blockName)! > 1
+      ) {
+        // creating an array of string for block content order ["image_id", "promotion_id"]
+        parsedPageBuilderContentSelection.forEach(
+          (p: PageBuilderContentSelection) => {
+            blockContentOrder.push(p.type + "_" + p.contentId);
+          },
+        );
+      }
 
       // we then assign the data to each key
       (
@@ -726,6 +746,10 @@ export const searchContentData = async (
       const icons = await searchIcons(Object.fromEntries(formData));
       searchResults = icons;
       return searchResults;
+    }
+
+    case "other": {
+      return [{ id: "blank", name: "blank item" }];
     }
 
     default:

@@ -1,14 +1,4 @@
-import { redirect, type MetaFunction } from "@remix-run/node";
-
-export const meta: MetaFunction<typeof accountLoader> = () => {
-  return [
-    { title: "CLUTCH | Your Account" },
-    {
-      name: "CLUTCH | Your Account",
-      content: "CLUTCH | Your Account",
-    },
-  ];
-};
+import { redirect } from "@remix-run/node";
 
 export const accountLoader = async (request: Request) => {
   const url = new URL(request.url);
@@ -16,5 +6,13 @@ export const accountLoader = async (request: Request) => {
 
   if (isAccountPage) {
     return redirect("/account/profile");
-  } else return null;
+  } else {
+    const meta = {
+      title: "CLUTCH | Account",
+      description:
+        "Discover timeless style and effortless sophistication with Clutch Clothing Australia. Elevate your wardrobe with our curated collection of premium apparel, designed for the modern Australian lifestyle. Explore our range today and experience fashion that's as versatile as you are.",
+    };
+
+    return { meta };
+  }
 };

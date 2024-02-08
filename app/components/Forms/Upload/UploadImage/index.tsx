@@ -3,6 +3,7 @@ import { useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { ConvertToBase64Image, type NewImage } from "~/helpers/fileHelpers";
 import { findFirstNotNullInputValue } from "~/helpers/formHelpers";
+import { getBucketImageSrc } from "~/integrations/_master/storage";
 
 type Props = {
   id?: string;
@@ -24,7 +25,7 @@ const UploadImage = ({ id, defaultValue, name, label, onChange }: Props) => {
         <div className="relative my-6 flex max-w-full flex-col items-center px-3">
           <div className="max-w-screen relative h-auto max-h-96 w-[240px]">
             <img
-              src={image.href}
+              src={getBucketImageSrc(image.href)}
               className="h-full w-full object-contain"
               alt={image?.altText || "image description placeholder"}
             />
@@ -47,7 +48,7 @@ const UploadImage = ({ id, defaultValue, name, label, onChange }: Props) => {
           name="imageUpload"
           type="file"
           accept="image/*"
-          className="file-input file-input-bordered w-full rounded-none bg-primary/50 text-brand-white"
+          className="file-input file-input-bordered w-full rounded-none bg-primary/50 text-brand-white max-w-[380px] block mx-auto"
           onChange={async (e) => {
             const convertedImage = await ConvertToBase64Image(e);
 

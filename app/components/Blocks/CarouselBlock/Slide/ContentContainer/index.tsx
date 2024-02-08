@@ -10,40 +10,42 @@ type Props = {
 
 const ContentContainer = ({ index, blockOptions }: Props) => {
   const {
-    columns,
+    numberColumns,
+    itemBackgroundColorsPrimary,
+    itemBackgroundDisplaysPrimary,
     itemButtonsPrimary,
+    itemGap,
+    itemGapMobile,
+    itemMarginBottom,
+    itemMarginBottomMobile,
+    itemMarginLeft,
+    itemMarginLeftMobile,
+    itemMarginRight,
+    itemMarginRightMobile,
+    itemMarginTop,
+    itemMarginTopMobile,
+    itemPaddingBottom,
+    itemPaddingBottomMobile,
+    itemPaddingLeft,
+    itemPaddingLeftMobile,
+    itemPaddingRight,
+    itemPaddingRightMobile,
+    itemPaddingTop,
+    itemPaddingTopMobile,
     itemShortText,
     itemShortTextColors,
+    itemShortTextFontWeights,
+    itemShortTextFontWeightsMobile,
+    itemShortTextShadows,
     itemShortTextSizes,
     itemShortTextSizesMobile,
     itemTitleColors,
-    itemTitles,
-    itemTitleSizes,
     itemTitleFontWeights,
     itemTitleFontWeightsMobile,
+    itemTitles,
+    itemTitleShadows,
+    itemTitleSizes,
     itemTitleSizesMobile,
-    itemBackgroundColorsPrimary,
-    itemBackgroundDisplaysPrimary,
-    itemMarginTop,
-    itemMarginRight,
-    itemMarginBottom,
-    itemMarginLeft,
-    itemMarginTopMobile,
-    itemMarginRightMobile,
-    itemMarginBottomMobile,
-    itemMarginLeftMobile,
-    itemPaddingTop,
-    itemPaddingRight,
-    itemPaddingBottom,
-    itemPaddingLeft,
-    itemPaddingTopMobile,
-    itemPaddingRightMobile,
-    itemPaddingBottomMobile,
-    itemPaddingLeftMobile,
-    itemShortTextFontWeights,
-    itemShortTextFontWeightsMobile,
-    itemGap,
-    itemGapMobile,
   } = blockOptions;
 
   const hasCardContent =
@@ -52,11 +54,13 @@ const ContentContainer = ({ index, blockOptions }: Props) => {
   return (
     <div
       className={`max-w-full ${
-        columns && columns > 1 ? "m-12 max-md:!m-0" : "mx-32 my-12 max-md:!m-0"
+        numberColumns && numberColumns > 1
+          ? "m-6 max-md:!m-0"
+          : "mx-32 my-12 max-md:!m-0"
       }`}
     >
       <div
-        className={`relative z-10 h-max w-max max-w-full select-none flex-col items-center overflow-hidden p-6 font-semibold max-md:m-0 gap-3 ${
+        className={`relative z-10 h-max w-max max-w-full max-md:w-screen select-none flex-col items-center overflow-hidden p-6 font-semibold max-md:m-0 gap-3 ${
           hasCardContent ? "flex" : "hidden"
         } ${itemMarginTop[index]} ${itemMarginRight[index]} ${
           itemMarginBottom[index]
@@ -85,9 +89,9 @@ const ContentContainer = ({ index, blockOptions }: Props) => {
         >
           {itemTitles[index] && (
             <div
-              className={`relative select-none text-center !leading-[55px] max-md:max-w-[90%]
+              className={`relative select-none text-center !leading-[55px]
           ${itemTitleColors[index]} ${itemTitleSizes[index]} ${itemTitleSizesMobile[index]} 
-          ${itemTitleFontWeights[index]} ${itemTitleFontWeightsMobile[index]}`}
+          ${itemTitleFontWeights[index]} ${itemTitleFontWeightsMobile[index]} ${itemTitleShadows[index]}`}
             >
               {itemTitles[index]}
             </div>
@@ -95,9 +99,9 @@ const ContentContainer = ({ index, blockOptions }: Props) => {
 
           {itemShortText[index] && (
             <div
-              className={`relative select-none text-center max-md:max-w-[90%] pb-3
+              className={`relative select-none text-center pb-3
            ${itemShortTextColors[index]} ${itemShortTextSizes[index]} ${itemShortTextSizesMobile[index]}
-           ${itemShortTextFontWeights[index]} ${itemShortTextFontWeightsMobile[index]}`}
+           ${itemShortTextFontWeights[index]} ${itemShortTextFontWeightsMobile[index]} ${itemShortTextShadows[index]}`}
             >
               {itemShortText[index]}
             </div>

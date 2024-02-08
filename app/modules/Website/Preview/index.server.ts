@@ -1,15 +1,6 @@
 import { getBlocks } from "~/models/Blocks/index.server";
 import { getPreviewPage } from "~/models/PreviewPage/index.server";
-import { json, redirect, type MetaFunction } from "@remix-run/node";
-export const meta: MetaFunction = () => {
-  return [
-    { title: "Page Preview" },
-    {
-      name: "Page Preview",
-      content: "Page Preview",
-    },
-  ];
-};
+import { json, redirect } from "@remix-run/node";
 
 export const previewLoader = async (request: Request) => {
   const url = new URL(request.url);
@@ -20,11 +11,16 @@ export const previewLoader = async (request: Request) => {
     let backgroundColor, blocks;
 
     if (webPage) {
-      blocks = await getBlocks(webPage, true);
+      blocks = await getBlocks(webPage);
 
       backgroundColor = webPage?.backgroundColor;
     }
 
-    return json({ blocks, backgroundColor });
-  } else return redirect("/admin/home");
+    const meta = {
+      title: "CLUTCH | Preview",
+      description: "CLUTCH Clothing Page Preview",
+    };
+
+    return json({ meta, blocks, backgroundColor });
+  } else return redirect("/admin");
 };

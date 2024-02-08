@@ -24,6 +24,8 @@ export interface BlockMaster {
   maxContentItems?: number;
 }
 
+export const blockContentAddOns = ["icon", "other"];
+
 export const blockMaster: BlockMaster[] = [
   {
     name: "banner",
@@ -84,8 +86,8 @@ export const blockMaster: BlockMaster[] = [
       backgroundPatternNamePrimary: true,
       backgroundPatternSizePrimary: true,
       backgroundWidthPrimary: true,
-      columns: true,
-      columnsMobile: true,
+      numberColumns: true,
+      numberColumnsMobile: true,
       height: true,
       heightMobile: true,
       itemAlign: true,
@@ -117,6 +119,7 @@ export const blockMaster: BlockMaster[] = [
       itemImagePositionsMobile: true,
       itemJustify: true,
       itemJustifyMobile: true,
+      itemShortTextShadows: true,
       itemShortText: true,
       itemShortTextColors: true,
       itemShortTextSizes: true,
@@ -127,6 +130,7 @@ export const blockMaster: BlockMaster[] = [
       itemTitles: true,
       itemTitleSizes: true,
       itemTitleSizesMobile: true,
+      itemTitleShadows: true,
       itemMarginBottom: true,
       itemMarginBottomMobile: true,
       itemMarginLeft: true,
@@ -211,21 +215,23 @@ export const blockMaster: BlockMaster[] = [
       itemTitleSizes: true,
       itemTitleFontWeightsMobile: true,
       itemTitleSizesMobile: true,
+      itemTitleShadows: true,
       itemShortTextColors: true,
       itemShortTextFontWeights: true,
       itemShortTextSizes: true,
       itemShortTextFontWeightsMobile: true,
       itemShortTextSizesMobile: true,
       itemShortText: true,
+      itemShortTextShadows: true,
       itemGap: true,
       itemGapMobile: true,
     },
-    addOns: ["icon"],
+    addOns: ["icon", "other"],
     content: {
       image: true,
       brand: {
         include: {
-          image: true,
+          heroImage: true,
         },
       },
       campaign: {
@@ -337,31 +343,32 @@ export const blockMaster: BlockMaster[] = [
     name: "product",
     component: ProductBlock,
     icon: "IoCart",
+    maxContentItems: 5,
     options: {
       columns: true,
-      count: true,
-      sortBy: true,
-      sortOrder: true,
+      title: true,
       titleColor: true,
       titleAlign: true,
       titleFontWeight: true,
       titleSize: true,
     },
     content: {
-      brand: true,
-      productCategory: true,
-      productSubCategory: true,
+      product: {
+        include: {
+          images: true,
+          variants: true,
+          promotion: true,
+        },
+      },
     },
   },
   {
     name: "article",
     component: ArticleBlock,
     icon: "IoNewspaper",
+    maxContentItems: 3,
     options: {
       columns: true,
-      count: true,
-      sortBy: true,
-      sortOrder: true,
     },
     content: {
       articleCategory: true,

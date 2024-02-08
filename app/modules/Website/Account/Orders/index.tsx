@@ -8,7 +8,7 @@ import BasicButton from "~/components/Buttons/BasicButton";
 import { OrderItemWithDetails, OrderWithDetails } from "~/models/Orders/types";
 
 const AccountOrders = () => {
-  const orders = useLoaderData<typeof accountOrdersLoader>();
+  const { orders } = useLoaderData<typeof accountOrdersLoader>() || {};
   const [currentOrder, setCurrentOrder] = useState<OrderWithDetails>();
 
   return (
@@ -25,7 +25,9 @@ const AccountOrders = () => {
           <div className="max-h-[650px] w-full max-w-[98vw] overflow-x-auto">
             {orders?.length === 0 && (
               <>
-                <p>You have not made an order yet.</p>
+                <p className="w-full text-center text-brand-black/50">
+                  No orders.
+                </p>
               </>
             )}
 
