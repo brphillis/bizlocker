@@ -19,6 +19,18 @@ import { webPageLoader } from "~/modules/Website/WebPage/index.server";
 import WebPage from "~/modules/Website/WebPage";
 import { Register } from "~/modules/Website/Register";
 import { Login } from "~/modules/Website/Login";
+import { MetaFunction } from "@remix-run/node";
+
+export const meta: MetaFunction = ({ data }) => {
+  const loaderMeta = (data as { meta: MetaType })?.meta;
+  return [
+    { title: loaderMeta?.title },
+    {
+      name: "description",
+      content: loaderMeta?.description,
+    },
+  ];
+};
 
 export const loader = async ({ request, params }: ActionFunctionArgs) => {
   const page = params?.pagel1;

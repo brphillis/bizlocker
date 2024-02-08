@@ -1,18 +1,6 @@
 import { getBlocks } from "~/models/Blocks/index.server";
 import { getHomePage } from "~/models/HomePage/index.server";
-import { json, type MetaFunction } from "@remix-run/node";
-
-export const meta: MetaFunction<typeof homeLoader> = ({ data }) => {
-  const loaderData = data as MetaType;
-
-  return [
-    { title: loaderData?.title },
-    {
-      name: loaderData?.title,
-      content: loaderData?.description,
-    },
-  ];
-};
+import { json } from "@remix-run/node";
 
 export const homeLoader = async () => {
   const homePage = await getHomePage();
@@ -26,7 +14,13 @@ export const homeLoader = async () => {
     backgroundColor = homePage.backgroundColor;
   }
 
+  const meta = {
+    title,
+    description,
+  };
+
   return json({
+    meta,
     blocks,
     title,
     description,

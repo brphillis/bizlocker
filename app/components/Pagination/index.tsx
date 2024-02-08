@@ -1,78 +1,96 @@
-import { useState } from "react";
+import { IoPlaySharp, IoPlaySkipForwardSharp } from "react-icons/io5";
 import { useSearchParams, useSubmit } from "react-router-dom";
 
 type Props = {
   totalPages: number;
+  pagesToShow?: number;
 };
 
-const Pagination = ({ totalPages }: Props) => {
+const Pagination = ({ totalPages, pagesToShow = 8 }: Props) => {
   const [searchParams] = useSearchParams();
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  const currentPage = Number(searchParams.get("pageNumber"));
   const submit = useSubmit();
 
-  const renderPageButton = (pageNumber: number) => {
-    return (
-      <button
-        type="button"
-        key={`pagination-${pageNumber}`}
-        className={`flex h-8 w-8 items-center justify-center rounded-sm bg-primary text-brand-white hover:bg-primary-dark ${
-          currentPage === pageNumber && "bg-primary-dark"
-        }`}
-        onClick={() => {
-          searchParams.set("pageNumber", pageNumber.toString());
-          submit(searchParams, { method: "GET" });
-          setCurrentPage(pageNumber);
-        }}
-      >
-        {pageNumber}
-      </button>
-    );
+  const goToPage = (pageNumber: number) => {
+    searchParams.set("pageNumber", pageNumber.toString());
+    submit(searchParams, { method: "GET" });
   };
+
+  const renderPageButton = (pageNumber: number) => (
+    <button
+      type="button"
+      key={`pagination-${pageNumber}`}
+      className={`flex h-8 w-8 items-center justify-center rounded-sm bg-primary text-brand-white hover:bg-primary-dark ${
+        currentPage === pageNumber && "bg-primary-dark"
+      }`}
+      onClick={() => goToPage(pageNumber)}
+    >
+      {pageNumber}
+    </button>
+  );
+
+  let startPage = 1;
+  if (currentPage > 5 && totalPages > 10) {
+    startPage = Math.min(currentPage - 4, totalPages - 9);
+  }
 
   return (
     <>
       {totalPages > 0 && (
         <div className="flex flex-row items-start justify-center gap-1 pb-3 pt-6">
-          {Array.from({ length: totalPages }).map((_, i) => {
-            const pageNumber = i + 1;
+          {/* TO START BUTTON */}
+          {totalPages > pagesToShow &&
+            currentPage > Math.ceil(totalPages / 3) && (
+              <button
+                type="button"
+                className="flex h-8 w-8 items-center justify-center rounded-sm bg-primary text-brand-white hover:bg-primary-dark -scale-x-100"
+                onClick={() => goToPage(1)}
+              >
+                <IoPlaySkipForwardSharp />
+              </button>
+            )}
 
-            // Show only up to 6 pages
-            if (currentPage <= 3 && pageNumber <= 3) {
+          {/* BACK BUTTON */}
+          {totalPages > pagesToShow && currentPage > 1 && (
+            <button
+              type="button"
+              className="flex h-8 w-8 items-center justify-center rounded-sm bg-primary text-brand-white hover:bg-primary-dark -scale-x-100"
+              onClick={() => goToPage(currentPage - 1)}
+            >
+              <IoPlaySharp />
+            </button>
+          )}
+
+          {/* PAGES */}
+          {Array.from({ length: Math.min(totalPages, pagesToShow) }).map(
+            (_, i) => {
+              const pageNumber = startPage + i;
               return renderPageButton(pageNumber);
-            } else if (currentPage > 3 && currentPage <= totalPages - 3) {
-              if (pageNumber === 1 || pageNumber === totalPages) {
-                // Show first and last pages
-                return renderPageButton(pageNumber);
-              } else if (
-                Math.abs(pageNumber - currentPage) <= 1 ||
-                pageNumber === totalPages - 1
-              ) {
-                // Show current page and neighboring pages
-                return renderPageButton(pageNumber);
-              } else if (pageNumber === totalPages - 2) {
-                // Show ellipsis before the last page
-                return (
-                  <span key={`ellipsis-end` + i} className="mx-1">
-                    ...
-                  </span>
-                );
-              }
-            } else {
-              // Show last 6 pages
-              if (pageNumber > totalPages - 3) {
-                return renderPageButton(pageNumber);
-              } else if (pageNumber === totalPages - 4) {
-                // Show ellipsis before the last 6 pages
-                return (
-                  <span key={`ellipsis-start` + i} className="mx-1">
-                    ...
-                  </span>
-                );
-              }
-            }
+            },
+          )}
 
-            return null;
-          })}
+          {/* NEXT BUTTON */}
+          {totalPages > pagesToShow && currentPage < totalPages && (
+            <button
+              type="button"
+              className="flex h-8 w-8 items-center justify-center rounded-sm bg-primary text-brand-white hover:bg-primary-dark"
+              onClick={() => goToPage(currentPage + 1)}
+            >
+              <IoPlaySharp />
+            </button>
+          )}
+
+          {/* TO END BUTTON */}
+          {totalPages > pagesToShow &&
+            currentPage < Math.ceil(totalPages / 3) && (
+              <button
+                type="button"
+                className="flex h-8 w-8 items-center justify-center rounded-sm bg-primary text-brand-white hover:bg-primary-dark"
+                onClick={() => goToPage(totalPages)}
+              >
+                <IoPlaySkipForwardSharp />
+              </button>
+            )}
         </div>
       )}
     </>

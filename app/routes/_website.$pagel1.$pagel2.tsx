@@ -35,6 +35,18 @@ import {
   passwordRecoveryResetLoader,
 } from "~/modules/Website/PasswordRecovery/Reset/index.server";
 import PaymentConfirm from "~/modules/Website/PaymentConfirm";
+import { MetaFunction } from "@remix-run/node";
+
+export const meta: MetaFunction = ({ data }) => {
+  const loaderMeta = (data as { meta: MetaType })?.meta;
+  return [
+    { title: loaderMeta?.title },
+    {
+      name: "description",
+      content: loaderMeta?.description,
+    },
+  ];
+};
 
 export const loader = async ({ request, params }: ActionFunctionArgs) => {
   const page = params?.pagel2;

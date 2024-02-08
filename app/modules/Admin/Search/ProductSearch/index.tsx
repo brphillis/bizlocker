@@ -15,7 +15,7 @@ import {
 import { productSearchLoader } from "./index.server";
 
 const ProductSearch = () => {
-  const { products, totalPages, productSubCategories, brands } =
+  const { products, totalPages, count, productSubCategories, brands } =
     useLoaderData<typeof productSearchLoader>();
 
   const navigate = useNavigate();
@@ -41,7 +41,7 @@ const ProductSearch = () => {
 
         <div className="divider w-full" />
 
-        <ProductSort />
+        <ProductSort totalCount={count} />
 
         {products && products.length > 0 && (
           <BasicTable

@@ -8,7 +8,7 @@ import BasicButton from "~/components/Buttons/BasicButton";
 import { OrderItemWithDetails, OrderWithDetails } from "~/models/Orders/types";
 
 const AccountOrders = () => {
-  const orders = useLoaderData<typeof accountOrdersLoader>();
+  const { orders } = useLoaderData<typeof accountOrdersLoader>() || {};
   const [currentOrder, setCurrentOrder] = useState<OrderWithDetails>();
 
   return (

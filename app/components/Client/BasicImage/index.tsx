@@ -12,9 +12,11 @@ type Props = {
 const BasicImage = ({ src, alt, onClick, extendStyle, hoverEffect }: Props) => {
   const [loading, setLoading] = useState<boolean>(true);
 
+  const correctBucketLink = getBucketImageSrc(src);
+
   useEffect(() => {
     const image = new Image();
-    image.src = getBucketImageSrc(src);
+    image.src = correctBucketLink;
 
     image.onload = () => {
       setLoading(false);
@@ -23,7 +25,7 @@ const BasicImage = ({ src, alt, onClick, extendStyle, hoverEffect }: Props) => {
     return () => {
       image.onload = null;
     };
-  }, [src]);
+  }, [src, correctBucketLink]);
 
   return (
     <div
@@ -39,7 +41,7 @@ const BasicImage = ({ src, alt, onClick, extendStyle, hoverEffect }: Props) => {
             ${extendStyle ? extendStyle : ""}
             ${hoverEffect ? "hover:scale-[1.025]" : ""}
             `}
-        src={getBucketImageSrc(src)}
+        src={correctBucketLink}
         alt={alt}
       />
       {loading && (

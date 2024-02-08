@@ -1,7 +1,18 @@
+import { MetaFunction } from "@remix-run/node";
 import { Outlet, useParams } from "@remix-run/react";
 import { type ActionFunctionArgs } from "@remix-run/server-runtime";
 import AdminLogin from "~/modules/Admin/Login";
 import { adminLoginAction } from "~/modules/Admin/Login/index.server";
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: "CLUTCH | Admin Portal" },
+    {
+      name: "description",
+      content: "Clutch Clothing Administration Portal",
+    },
+  ];
+};
 
 export const loader = async ({ params }: ActionFunctionArgs) => {
   const page = params?.pagel1;

@@ -1,5 +1,5 @@
 import { verifyLogin } from "~/models/_Auth/login.server";
-import { json, type MetaFunction } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import {
   ValidationErrors,
   isValidEmail,
@@ -8,14 +8,14 @@ import {
 import { requestNewVerifyEmail } from "~/models/Verification/index.server";
 import { isEmptyObject } from "~/helpers/objectHelpers";
 
-export const meta: MetaFunction = () => {
-  return [
-    { title: "CLUTCH | Verification" },
-    {
-      name: "CLUTCH | Verification",
-      content: "CLUTCH | Verification",
-    },
-  ];
+export const verifyRequestLoader = async () => {
+  const meta = {
+    title: "CLUTCH | Request Verification",
+    description:
+      "Discover timeless style and effortless sophistication with Clutch Clothing Australia. Elevate your wardrobe with our curated collection of premium apparel, designed for the modern Australian lifestyle. Explore our range today and experience fashion that's as versatile as you are.",
+  };
+
+  return json({ meta });
 };
 
 export const verifyRequestAction = async (request: Request) => {

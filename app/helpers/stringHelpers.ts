@@ -13,6 +13,14 @@ export const includesWords = (
   return bool;
 };
 
+export const removeSpecialCharacters = (str: string): string => {
+  // Define a regular expression to match special characters
+  const regex: RegExp = /[!@#$%^&*()_+=[\]{};':"|,.<>/?]+/g;
+
+  // Replace all occurrences of special characters with an empty string
+  return str.replace(regex, "");
+};
+
 export const capitalizeAndSpace = (inputString: string): string => {
   return inputString
     .replace(/([a-z])([A-Z])/g, "$1 $2")
@@ -117,5 +125,16 @@ export const filterWordsFromString = (sentence: string): string => {
   } else {
     // If no words are found, return an empty string or handle it as needed
     return "";
+  }
+};
+
+export const extractBucketName = (url: string): string | null => {
+  const bucketRegex = /\/\/([^.]+)\./;
+  const match = url.match(bucketRegex);
+
+  if (match && match.length >= 2) {
+    return match[1];
+  } else {
+    return null;
   }
 };

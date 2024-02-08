@@ -4,21 +4,9 @@ import { getBrands } from "~/models/Brands/index.server";
 import { searchProducts } from "~/models/Products/index.server";
 import { getPromotion } from "~/models/Promotions/index.server";
 import { getDepartments } from "~/models/Departments/index.server";
-import { json, type MetaFunction } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import { getProductCategories } from "~/models/ProductCategories/index.server";
 import { getProductSubCategories } from "~/models/ProductSubCategories/index.server";
-
-export const meta: MetaFunction<typeof promotionLoader> = ({ data }) => {
-  const loaderData = data as MetaType;
-
-  return [
-    { title: loaderData?.promotion.name },
-    {
-      name: loaderData?.promotion.name,
-      content: loaderData?.promotion.metaDescription,
-    },
-  ];
-};
 
 export const promotionLoader = async (
   request: Request,
@@ -49,7 +37,13 @@ export const promotionLoader = async (
   const productSubCategories = await getProductSubCategories();
   const brands = await getBrands();
 
+  const meta = {
+    title: "CLUTCH | " + promotion.name,
+    description: promotion.metaDescription,
+  };
+
   return json({
+    meta,
     promotion,
     products,
     totalPages,

@@ -25,6 +25,12 @@ export const verifyConfirmLoader = async (
       emailAddress,
       verificationCode,
     );
-    return json(verified);
+
+    const meta = {
+      title: "CLUTCH | Verify Account",
+      description: "CLUTCH Clothing Page Preview",
+    };
+
+    return json({ meta, verified });
   } else return null;
 };

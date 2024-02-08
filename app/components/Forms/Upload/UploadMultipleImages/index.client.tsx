@@ -172,7 +172,7 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
 
           {!editingTags && (
             <>
-              {images && activeSlide < images?.length - 1 && (
+              {images && activeSlide > 0 && (
                 <IconButton
                   iconName="IoShuffle"
                   size={12}
@@ -191,7 +191,7 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
                 Edit Tags
               </button>
 
-              {images && activeSlide > 0 && (
+              {images && activeSlide < images?.length - 1 && (
                 <IconButton
                   iconName="IoShuffle"
                   size={12}

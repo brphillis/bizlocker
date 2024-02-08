@@ -5,7 +5,7 @@ import PageWrapper from "~/components/Layout/Wrappers/PageWrapper";
 import { paymentConfirmLoader } from "~/modules/Website/PaymentConfirm/index.server";
 
 const PaymentConfirm = () => {
-  const order = useLoaderData<typeof paymentConfirmLoader>();
+  const { order } = useLoaderData<typeof paymentConfirmLoader>() || {};
 
   const { items } = order || {};
 

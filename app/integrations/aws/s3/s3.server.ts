@@ -2,10 +2,6 @@ import { randomUUID } from "crypto";
 import { Readable } from "node:stream";
 import { Image } from "@prisma/client";
 import {
-  bucketName_dev,
-  bucketName_prod,
-} from "~/integrations/_master/storage";
-import {
   base64toBufferedBinary,
   getImageTypeFromBase64,
 } from "~/helpers/fileHelpers";
@@ -20,9 +16,12 @@ import {
 import getStream, {
   AnyStream,
 } from "../../../../node_modules/get-stream/source";
+import { CURRENT_BUCKET } from "~/build/clientEnv";
+import { removeSpecialCharacters } from "~/helpers/stringHelpers";
 
-export const bucketName_currentEnv =
-  process.env.NODE_ENV === "production" ? bucketName_prod : bucketName_dev;
+export const bucketName_currentEnv = CURRENT_BUCKET;
+export const bucketName_prod = process.env.AWS_BUCKET;
+export const bucketName_dev = process.env.AWS_BUCKET + "-dev";
 
 export const s3Client = new S3Client({
   region: "ap-southeast-2",
@@ -61,7 +60,7 @@ export const uploadFileToS3 = async (
   fileType: string,
 ): Promise<string> => {
   try {
-    const key = randomUUID() + "-" + altText;
+    const key = randomUUID() + "-" + removeSpecialCharacters(altText);
 
     const params = {
       Bucket: bucketName_currentEnv,
@@ -214,7 +213,16 @@ export const duplicateBucket = async (
   }
 };
 
-export const copyProdBucketToDev = async () => {
-  await duplicateBucket(bucketName_prod, bucketName_dev);
-  return true;
+export const copyProdBucketToDev = async (): Promise<boolean> => {
+  if (bucketName_prod) {
+    await duplicateBucket(bucketName_prod, bucketName_dev);
+    return true;
+  } else return false;
+};
+
+export const copyDevBucketToProd = async (): Promise<boolean> => {
+  if (bucketName_prod) {
+    await duplicateBucket(bucketName_dev, bucketName_prod);
+    return true;
+  } else return false;
 };

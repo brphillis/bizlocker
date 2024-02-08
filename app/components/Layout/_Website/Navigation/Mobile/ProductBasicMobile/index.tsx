@@ -33,31 +33,35 @@ const ProductBasicMobile = ({
       ></label>
       {/* eslint-enable */}
       <ul className="z-100 menu relative !h-[100dvh] w-64 bg-brand-black p-4 text-brand-white">
-        <div className="mx-auto mb-1 block">
-          <h1 className="cursor-pointer select-none text-3xl font-bold tracking-widest text-white">
+        <div className="mx-auto block">
+          <h1 className="cursor-pointer select-none text-3xl font-bold tracking-widest text-white mt-3">
             CLUTCH.
           </h1>
           <p className="mt-1 text-center text-xs">clothing co.</p>
         </div>
 
-        <select
-          name="department"
-          className="select mx-auto my-6 w-full border-l border-r border-white/10 bg-brand-black pt-[0.125rem] tracking-wider text-brand-white"
-          defaultValue={departments?.[0].name.toUpperCase() || ""}
-          onChange={(e) => setSelectedDepartment(parseInt(e.target.value))}
-        >
-          {departments.map(
-            ({ id, name, displayInNavigation }: DepartmentWithDetails) => {
-              if (displayInNavigation) {
-                return (
-                  <option key={"department_" + id} value={id}>
-                    {name.toUpperCase()}
-                  </option>
-                );
-              } else return null;
-            },
-          )}
-        </select>
+        {departments && departments.length > 1 ? (
+          <select
+            name="department"
+            className="select mx-auto my-6 w-full border-l border-r border-white/10 bg-brand-black pt-[0.125rem] tracking-wider text-brand-white"
+            defaultValue={departments?.[0].name.toUpperCase() || ""}
+            onChange={(e) => setSelectedDepartment(parseInt(e.target.value))}
+          >
+            {departments.map(
+              ({ id, name, displayInNavigation }: DepartmentWithDetails) => {
+                if (displayInNavigation) {
+                  return (
+                    <option key={"department_" + id} value={id}>
+                      {name.toUpperCase()}
+                    </option>
+                  );
+                } else return null;
+              },
+            )}
+          </select>
+        ) : (
+          <div className="my-3"></div>
+        )}
 
         <div className="relative max-h-[67dvh] overflow-y-auto">
           {matchingProductCategories.map(

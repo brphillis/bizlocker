@@ -87,35 +87,38 @@ const SearchBar = ({ departments, productCategories, brands }: Props) => {
         </div>
 
         <div className="flex flex-row flex-wrap justify-center gap-3">
-          <select
-            name="department"
-            title="department"
-            className="select w-[215px] !rounded-sm !font-normal text-brand-black/50 max-lg:w-[95vw]"
-            onChange={(e) => {
-              if (e.target.selectedIndex === 0) {
-                setSubCategories(null);
-              } else if (
-                departments?.[e.target.selectedIndex - 1].productCategories
-              ) {
-                setCategories(
-                  departments?.[e.target.selectedIndex - 1]?.productCategories,
+          {departments && departments.length > 1 && (
+            <select
+              name="department"
+              title="department"
+              className="select w-[215px] !rounded-sm !font-normal text-brand-black/50 max-lg:w-[95vw]"
+              onChange={(e) => {
+                if (e.target.selectedIndex === 0) {
+                  setSubCategories(null);
+                } else if (
+                  departments?.[e.target.selectedIndex - 1].productCategories
+                ) {
+                  setCategories(
+                    departments?.[e.target.selectedIndex - 1]
+                      ?.productCategories,
+                  );
+                }
+                searchParams.delete("productCategory");
+                searchParams.delete("productSubCategory");
+                searchParams.delete("brand");
+                searchParams.set("department", e.target.value);
+              }}
+            >
+              <option value="">Department</option>
+              {departments?.map(({ id, name }: Department) => {
+                return (
+                  <option key={name + id} value={name}>
+                    {name}
+                  </option>
                 );
-              }
-              searchParams.delete("productCategory");
-              searchParams.delete("productSubCategory");
-              searchParams.delete("brand");
-              searchParams.set("department", e.target.value);
-            }}
-          >
-            <option value="">Department</option>
-            {departments?.map(({ id, name }: Department) => {
-              return (
-                <option key={name + id} value={name}>
-                  {name}
-                </option>
-              );
-            })}
-          </select>
+              })}
+            </select>
+          )}
 
           <select
             name="productCategory"

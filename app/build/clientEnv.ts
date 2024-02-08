@@ -1,1 +1,3 @@
-export const CLIENT_ENV: Dev_Environment = "development";
+
+export const CURRENT_BUCKET = `clutchclothing-dev`;
+

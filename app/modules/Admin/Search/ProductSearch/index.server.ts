@@ -6,13 +6,14 @@ import { searchProducts } from "~/models/Products/index.server";
 export const productSearchLoader = async (request: Request) => {
   const url = new URL(request.url);
 
-  const { products, totalPages } = await searchProducts(undefined, url);
+  const { products, totalPages, count } = await searchProducts(undefined, url);
   const brands = await getBrands();
   const productSubCategories = await getProductSubCategories();
 
   return json({
-    products,
     brands,
+    count,
+    products,
     productSubCategories,
     totalPages,
   });

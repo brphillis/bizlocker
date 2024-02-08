@@ -531,7 +531,11 @@ export const searchProducts = async (
   formData?: { [k: string]: FormDataEntryValue },
   url?: URL,
   activeOnly?: boolean,
-): Promise<{ products: Product[] | null; totalPages: number }> => {
+): Promise<{
+  products: Product[] | null;
+  totalPages: number;
+  count: number;
+}> => {
   const name =
     formData?.name || (url && url?.searchParams.get("name")?.toString()) || "";
   const department =
@@ -775,7 +779,11 @@ export const searchProducts = async (
           },
         },
         images: true,
-        variants: true,
+        variants: {
+          orderBy: {
+            price: "asc",
+          },
+        },
         promotion: {
           select: {
             name: true,
@@ -799,8 +807,8 @@ export const searchProducts = async (
   if (sortBy === "price" && sortOrder) {
     products = fetchedProducts.sort((a, b) => {
       // Assume each product has at least one variant
-      const aPrice = a.variants[0].price;
-      const bPrice = b.variants[0].price;
+      const aPrice = a.variants?.[0].price;
+      const bPrice = b.variants?.[0].price;
 
       // If the price is the same, sort by totalSold
       if (aPrice === bPrice) {
@@ -816,6 +824,7 @@ export const searchProducts = async (
   }
 
   const totalPages = Math.ceil(totalProducts / (perPage || 1)) || 0;
+  const count = totalProducts;
 
-  return { products, totalPages };
+  return { products, totalPages, count };
 };

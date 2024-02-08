@@ -81,13 +81,6 @@ type MetaType = {
   name: string;
   content: string;
   description: string;
-  product: {
-    name: string;
-  };
-  promotion: {
-    name: string;
-    metaDescription: string;
-  };
 };
 
 interface CatchError {

@@ -1,17 +1,14 @@
-import { json, type MetaFunction } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import { getOrdersCurrentUser } from "~/models/Orders/index.server";
-
-export const meta: MetaFunction<typeof accountOrdersLoader> = () => {
-  return [
-    { title: "CLUTCH | Your Orders" },
-    {
-      name: "CLUTCH | Your Orders",
-      content: "CLUTCH | Your Orders",
-    },
-  ];
-};
 
 export const accountOrdersLoader = async (request: Request) => {
   const orders = await getOrdersCurrentUser(request);
-  return json(orders);
+
+  const meta = {
+    title: "CLUTCH | Orders",
+    description:
+      "Discover timeless style and effortless sophistication with Clutch Clothing Australia. Elevate your wardrobe with our curated collection of premium apparel, designed for the modern Australian lifestyle. Explore our range today and experience fashion that's as versatile as you are.",
+  };
+
+  return json({ meta, orders });
 };

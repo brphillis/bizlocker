@@ -361,9 +361,7 @@ const Product = () => {
             {/* description */}
 
             <div className="pt-1 max-md:pb-3 leading-relaxed">
-              <h3 className="text-lg font-bold pb-6 max-md:pl-3">
-                Product Description
-              </h3>
+              <h3 className="font-bold pb-3 max-md:pl-3">Description</h3>
               <div className="pl-[1px]">
                 {description && parse(description, parseOptions)}
               </div>

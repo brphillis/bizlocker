@@ -1,19 +1,9 @@
 import { Params } from "@remix-run/react";
 import { isEmptyObject } from "~/helpers/objectHelpers";
-import { json, type MetaFunction } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import { resetUserPassword } from "~/models/_Auth/register.server";
 import { isValidPassword, ValidationErrors } from "~/utility/validate";
 import { verifyPasswordReset } from "~/models/Verification/index.server";
-
-export const meta: MetaFunction = () => {
-  return [
-    { title: "CLUTCH | Verification" },
-    {
-      name: "CLUTCH | Verification",
-      content: "CLUTCH | Verification",
-    },
-  ];
-};
 
 export const passwordRecoveryResetLoader = async (
   request: Request,
@@ -29,7 +19,14 @@ export const passwordRecoveryResetLoader = async (
       verificationCode,
       false,
     );
-    return json({ verified, email });
+
+    const meta = {
+      title: "CLUTCH | Reset Password",
+      description:
+        "Discover timeless style and effortless sophistication with Clutch Clothing Australia. Elevate your wardrobe with our curated collection of premium apparel, designed for the modern Australian lifestyle. Explore our range today and experience fashion that's as versatile as you are.",
+    };
+
+    return json({ meta, verified, email });
   } else return false;
 };
 
