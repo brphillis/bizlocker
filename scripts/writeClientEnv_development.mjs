@@ -11,7 +11,7 @@ export const CURRENT_BUCKET = \`${process.env.AWS_BUCKET + "-dev"}\`;\n
 `;
 
 // Specify the file path
-const filePath = "./app/build/clientenv.ts";
+const filePath = "./app/build/clientEnv.ts";
 
 // Ensure the directory exists
 const directory = path.dirname(filePath);

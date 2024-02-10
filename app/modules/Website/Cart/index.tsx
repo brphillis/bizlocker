@@ -249,7 +249,7 @@ const Cart = () => {
                   ).map((e) => {
                     return {
                       id: e.name + "_" + e.price,
-                      name: "AUS POST | " + e.name + " | $" + e.price,
+                      name: e.name + " | $" + e.price,
                     };
                   })}
                   validationErrors={validationErrors}

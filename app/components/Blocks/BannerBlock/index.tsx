@@ -47,7 +47,9 @@ const BannerBlock = ({ content, options: ArrayOptions }: Props) => {
       />
 
       <div className={`${backgroundColorSecondary ? "py-3" : ""}`}>
-        {getContentType(content[0]) &&
+        {getContentType(content[0]) === "richText" && options ? (
+          <TextBanner imageLink={imageLink} options={options} />
+        ) : (
           imageSrc &&
           imageName &&
           imageLink &&
@@ -58,10 +60,7 @@ const BannerBlock = ({ content, options: ArrayOptions }: Props) => {
               imageSrc={imageSrc}
               options={options}
             />
-          )}
-
-        {!getContentType(content[0]) && options && (
-          <TextBanner imageLink={imageLink} options={options} />
+          )
         )}
       </div>
     </div>

@@ -21,6 +21,7 @@ FROM base as production-deps
 WORKDIR /brockdev
 
 COPY --from=deps /brockdev/node_modules /brockdev/node_modules
+
 ADD package.json .npmrc ./
 RUN npm prune --omit=dev
 
@@ -47,8 +48,8 @@ COPY --from=production-deps /brockdev/node_modules /brockdev/node_modules
 COPY --from=build /brockdev/node_modules/.prisma /brockdev/node_modules/.prisma
 
 COPY --from=build /brockdev/build /brockdev/build
+COPY --from=build /brockdev/app/build /brockdev/app/build
+
 ADD . .
 
 CMD ["npm", "start"]
-
-

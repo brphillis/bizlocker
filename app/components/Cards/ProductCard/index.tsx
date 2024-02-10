@@ -6,6 +6,7 @@ import { Toast } from "~/components/Notifications/Toast";
 import { ProductWithDetails } from "~/models/Products/types";
 import { getVariantUnitPrice } from "~/helpers/numberHelpers";
 import { useNavigate, useNavigation, useSubmit } from "@remix-run/react";
+import { getBucketImageSrc } from "~/integrations/_master/storage";
 
 const ProductCard = (product: ProductWithDetails) => {
   const submit = useSubmit();
@@ -58,7 +59,7 @@ const ProductCard = (product: ProductWithDetails) => {
           {displayImage && (
             <BasicImage
               extendStyle="absolute right-0 top-0 h-full w-full transform object-cover"
-              src={displayImage}
+              src={getBucketImageSrc(displayImage)}
               alt={name.toLowerCase() + " product card"}
               onClick={() => navigate(`/product/${name}?id=${id}`)}
               hoverEffect="grow"

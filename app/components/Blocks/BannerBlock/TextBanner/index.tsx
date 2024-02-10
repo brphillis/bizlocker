@@ -39,7 +39,7 @@ const TextBanner = ({ options, imageLink }: Props) => {
   } = options || {};
 
   const smallStyle =
-    "h-[146px] w-[1280px] max-xl:h-[124px] max-lg:h-[100px] max-md:h-[88px]";
+    "h-[146px] w-[1280px] max-w-[1280px] max-xl:h-[124px] max-lg:h-[100px] max-md:h-[88px]";
   const mediumStyle =
     "h-[219px] w-[1280px] max-xl:h-[186px] max-lg:h-[125px] max-md:h-[132px]";
   const largeStyle =
@@ -63,11 +63,18 @@ const TextBanner = ({ options, imageLink }: Props) => {
       break;
   }
 
+  console.log("SISE", imageLink?.length);
+
   return (
-    <button
-      type="button"
+    <div
+      role="button"
+      tabIndex={0}
       onClick={() => imageLink && navigate(imageLink)}
-      className={`relative mx-auto flex max-w-full select-none items-center justify-center 
+      onKeyDown={() => imageLink && navigate(imageLink)}
+      className={`relative overflow-hidden mx-auto flex max-w-full select-none items-center justify-center 
+      ${
+        imageLink && imageLink.length > 1 ? "cursor-pointer" : "!cursor-default"
+      }
       ${currentStyle} ${borderSize} ${borderColor} ${borderRadius}`}
     >
       <PatternBackground
@@ -105,7 +112,7 @@ const TextBanner = ({ options, imageLink }: Props) => {
           {shortText}
         </h2>
       </div>
-    </button>
+    </div>
   );
 };
 
