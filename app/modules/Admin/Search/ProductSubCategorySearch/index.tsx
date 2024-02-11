@@ -41,7 +41,7 @@ export default function ProductSubCategorySearch() {
         {productSubCategories && productSubCategories.length > 0 && (
           <BasicTable
             onRowClick={(id) =>
-              navigate(`/admin/upsert/productSubCategory?contentId=${id}`)
+              navigate(`/admin/upsert/product-subcategory?contentId=${id}`)
             }
             currentPage={currentPage}
             objectArray={productSubCategories?.map((e: ProductSubCategory) => ({

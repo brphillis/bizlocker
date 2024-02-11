@@ -12,6 +12,7 @@ import {
 import { CartDimensions } from "~/helpers/cartHelpers";
 import { NewProductVariant } from "~/modules/Admin/Upsert/ProductUpsert/ProductVariantUpsert";
 import { addPercentage } from "~/helpers/numberHelpers";
+import { generateUniqueId } from "~/helpers/identificationHelpers";
 
 const findAliExpressVariantSize = (
   itemSearching: AliExpressHubProduct_ResultItem,
@@ -117,7 +118,7 @@ export const convertAliToCmsVariantData = (
     ({ sku, price, color, size, quantity }: AliExpress_ProductVariant) => {
       const convertedVariant = {
         name: (color + " " + size).toLocaleUpperCase(),
-        sku,
+        sku: sku + "_" + generateUniqueId(6),
         size,
         price: addPercentage(Math.ceil(price), markupPercentage),
         salePrice: price,

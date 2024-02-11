@@ -38,7 +38,7 @@ type PageBuilderContentSelection = {
   contentId: number | string;
 };
 
-type BackgroundPatternName = "wavy" | "isometric";
+type BackgroundPatternName = "wavy" | "isometric" | "zigzag";
 
 interface LocalImage {
   altText: string;

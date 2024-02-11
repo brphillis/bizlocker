@@ -66,6 +66,22 @@ const PatternBackground = ({
       width: screenWidth ? "100vw" : "101%",
       filter: brightness ? `brightness(${brightness})` : "unset",
     },
+    zigzag: {
+      height: "100%",
+      width: "100%",
+      backgroundImage: `linear-gradient(135deg,${patternColor} 25%,transparent 25%),linear-gradient(225deg,${patternColor} 25%,transparent 25%),linear-gradient(45deg,${patternColor} 25%,transparent 25%),linear-gradient(315deg,${patternColor} 25%,transparent 25%)`,
+      backgroundPosition: `${patternSize / 2 + "px"} 0,${
+        patternSize / 2 + "px"
+      } 0,0 0,0 0`,
+      backgroundSize: `${patternSize + "px"} ${patternSize + "px"}`,
+      backgroundRepeat: "repeat",
+      position: "absolute",
+      backgroundColor: backgroundColor,
+      left: "50%",
+      transform: "translateX(-50%)",
+      top: 0,
+      filter: brightness ? `brightness(${brightness})` : "unset",
+    },
   };
 
   const noPatternStyle: CSSProperties = {

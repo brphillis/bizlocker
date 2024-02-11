@@ -46,6 +46,8 @@ export const blockMaster: BlockMaster[] = [
       padding: true,
       shortText: true,
       shortTextColor: true,
+      shortTextSize: true,
+      shortTextSizeMobile: true,
       size: true,
       title: true,
       titleColor: true,

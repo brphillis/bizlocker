@@ -63,7 +63,7 @@ const SearchBar = ({ departments, productCategories, brands }: Props) => {
     >
       <div className="flex flex-row flex-wrap items-center justify-center gap-3">
         <button
-          type="button"
+          type="submit"
           className="btn-square btn-primary !ml-[85%] flex  h-[2.6rem] w-12 items-center justify-center !rounded-sm bg-primary hover:bg-primary-dark max-lg:hidden sm:!ml-0"
           onClick={() => {
             searchParams.delete("name");

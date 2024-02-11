@@ -1,3 +1,3 @@
 
-export const CURRENT_BUCKET = `clutchclothing-dev`;
+export const CURRENT_BUCKET = `undefined`;
 

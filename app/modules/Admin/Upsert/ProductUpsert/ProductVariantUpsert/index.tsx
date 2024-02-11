@@ -13,6 +13,7 @@ import {
   ProductVariantWithDetails,
   ProductWithDetails,
 } from "~/models/Products/types";
+import { generateUniqueId } from "~/helpers/identificationHelpers";
 
 type Props = {
   storeId: number | null;
@@ -214,7 +215,7 @@ const ProductVariantUpsert = ({ storeId, product }: Props) => {
 
     setActiveVariant({
       ...activeVariant,
-      sku: generatedSKU,
+      sku: generatedSKU + "_" + generateUniqueId(6),
     });
   };
 

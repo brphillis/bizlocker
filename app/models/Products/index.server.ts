@@ -1,7 +1,10 @@
 import { prisma } from "~/db.server";
 import { getOrderBy } from "~/helpers/sortHelpers";
 import { calculateDiscountPercentage } from "~/helpers/numberHelpers";
-import { uploadImage_Integration } from "~/integrations/_master/storage/index.server";
+import {
+  deleteImage_Integration,
+  uploadImage_Integration,
+} from "~/integrations/_master/storage/index.server";
 import { Gender, Image, Product, ProductVariant, Staff } from "@prisma/client";
 import { getUserDataFromSession, STAFF_SESSION_KEY } from "~/session.server";
 import {
@@ -14,6 +17,7 @@ import {
 } from "./types";
 import { NewProductVariant } from "~/modules/Admin/Upsert/ProductUpsert/ProductVariantUpsert";
 import { removeS3Image } from "~/integrations/aws/s3/s3.server";
+import { returnCorrectGender } from "~/helpers/stringHelpers";
 
 export const getProducts = async (
   count?: string,
@@ -477,13 +481,16 @@ export const deleteProduct = async (id: string) => {
       where: {
         id: parseInt(id),
       },
+      include: {
+        images: true,
+      },
     });
 
     if (!product) {
       throw new Error("Product not found");
     }
 
-    // Step 1: Delete the stockLevels associated with product variants
+    // delete the stockLevels associated with product variants
     const productVariants = await prisma.productVariant.findMany({
       where: {
         productId: parseInt(id),
@@ -500,21 +507,28 @@ export const deleteProduct = async (id: string) => {
       },
     });
 
-    // Step 2: Delete the product variants
+    // delete the product variants
     await prisma.productVariant.deleteMany({
       where: {
         productId: parseInt(id),
       },
     });
 
-    // Step 3: Delete the images linked to the product
+    // delete the images from the bucket
+    for (let i = 0; i < product.images.length; i++) {
+      if (product?.images[i].href) {
+        await deleteImage_Integration(product.images[i].href!);
+      }
+    }
+
+    // delete the image data from the db
     await prisma.image.deleteMany({
       where: {
         productId: parseInt(id),
       },
     });
 
-    // Step 4: Delete the product
+    // delete the product
     await prisma.product.delete({
       where: {
         id: parseInt(id),
@@ -581,15 +595,7 @@ export const searchProducts = async (
   // Construct a filter based on the search parameters provided
   const filter: { [key: string]: unknown } = {};
 
-  if (gender && gender.toString().toLocaleLowerCase() === ("mens" || "men")) {
-    gender = "MALE";
-  }
-  if (
-    gender &&
-    gender.toString().toLocaleLowerCase() === ("womans" || "woman" || "ladies")
-  ) {
-    gender = "FEMALE";
-  }
+  gender = returnCorrectGender(gender as string);
 
   if (name) {
     filter.name = {
@@ -705,8 +711,12 @@ export const searchProducts = async (
     }
   }
 
-  if (gender) {
-    filter.gender = gender as string;
+  if (gender && gender !== "UNISEX") {
+    filter.gender = {
+      in: [gender as string, "UNISEX"],
+    };
+  } else {
+    filter.isActive = gender;
   }
 
   if (isActive || activeOnly) {

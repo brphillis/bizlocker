@@ -81,6 +81,7 @@ export const returnCorrectGender = (genderName: string): string => {
   switch (normalizedGender) {
     case "male":
     case "men":
+    case "mens":
     case "man":
     case "boys":
     case "boy":
@@ -89,6 +90,7 @@ export const returnCorrectGender = (genderName: string): string => {
     case "female":
     case "women":
     case "woman":
+    case "womans":
     case "girls":
     case "girl":
       return "FEMALE";
@@ -128,13 +130,15 @@ export const filterWordsFromString = (sentence: string): string => {
   }
 };
 
-export const extractBucketName = (url: string): string | null => {
-  const bucketRegex = /\/\/([^.]+)\./;
-  const match = url.match(bucketRegex);
+export const extractBucketName = (s3Url: string): string | null => {
+  const parts = s3Url.split("/");
+  const hostPart = parts[2];
+  console.log("PARTS!!", parts);
+  console.log("HOSTPART!!", hostPart);
 
-  if (match && match.length >= 2) {
-    return match[1];
-  } else {
-    return null;
+  if (hostPart) {
+    const subParts = hostPart.split(".")[0].split("-");
+    return subParts.join("-");
   }
+  return null;
 };

@@ -1,17 +1,16 @@
 import * as fs from "fs";
 import * as path from "path";
-import dotenv from "dotenv";
-
-// Load environment variables from .env file
-dotenv.config();
 
 // Define the content to be written to the file
 const content = `
 export const CURRENT_BUCKET = \`${process.env.AWS_BUCKET}\`;\n
 `;
 
+console.log("RUNNING CLIENT ENV SCRIPT - PRODUCTION");
+console.log("WRITING CONTENT", content);
+
 // Specify the file path
-const filePath = "./app/build/clientenv.ts";
+const filePath = "./app/build/clientEnv.ts";
 
 // Ensure the directory exists
 const directory = path.dirname(filePath);
