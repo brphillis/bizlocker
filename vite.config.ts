@@ -1,15 +1,15 @@
 import { unstable_vitePlugin as remix } from "@remix-run/dev";
-import { installGlobals } from "@remix-run/node";
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
+import { cjsInterop } from "vite-plugin-cjs-interop";
 
-installGlobals();
-
-export default defineConfig(() => {
-  return {
-    ssr: {
-      noExternal: ["react-icons"],
-    },
-    plugins: [remix(), tsconfigPaths()],
-  };
+export default defineConfig({
+  plugins: [
+    cjsInterop({ dependencies: ["react-icons"] }),
+    remix(),
+    tsconfigPaths(),
+  ],
+  ssr: {
+    noExternal: ["react-icons"],
+  },
 });

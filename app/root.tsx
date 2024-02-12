@@ -1,6 +1,5 @@
 import {
   Links,
-  LiveReload,
   Meta,
   Scripts,
   ScrollRestoration,
@@ -54,7 +53,6 @@ export default function Root() {
         {firstSegment === "admin" ? <AdminRoot /> : <WebsiteRoot />}
 
         <ScrollRestoration />
-        <LiveReload />
         <Scripts />
       </body>
     </html>

@@ -37,7 +37,7 @@ const ProductBasicMobile = ({
           <h1 className="cursor-pointer select-none text-3xl font-bold tracking-widest text-white mt-3">
             CLUTCH.
           </h1>
-          <p className="mt-1 text-center text-xs">clothing co.</p>
+          <p className="mt-1 text-center text-xs">clothing inc.</p>
         </div>
 
         {departments && departments.length > 1 ? (

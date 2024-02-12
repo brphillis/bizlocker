@@ -25,7 +25,6 @@ import {
   getAvailableColors,
   getAvailableSizes,
 } from "~/helpers/productHelpers";
-import { CURRENT_BUCKET } from "~/build/clientEnv";
 
 const Product = () => {
   const { product, brand, similarProducts } =
@@ -156,10 +155,6 @@ const Product = () => {
   const [submitted, setSubmitted] = useState<boolean>(false);
 
   const navigation = useNavigation();
-
-  const currentBucket = CURRENT_BUCKET;
-
-  console.log("CURRENT BUCKET", currentBucket);
 
   useEffect(() => {
     if (location && loading) {

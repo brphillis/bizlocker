@@ -8,6 +8,7 @@ export const createSeedData = async () => {
     await createSiteSettings();
     await createHomePage();
     await createEcommerceSeedData();
+    console.log("DATABASE RUNNING");
   } catch (error) {
     console.error("Error creating products and categories:", error);
   } finally {

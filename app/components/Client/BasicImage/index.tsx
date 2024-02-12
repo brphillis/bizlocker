@@ -15,7 +15,7 @@ const BasicImage = ({ src, alt, onClick, extendStyle, hoverEffect }: Props) => {
   useEffect(() => {
     const image = new Image();
     image.src = getBucketImageSrc(src);
-    console.log("SRC", src);
+
     image.onload = () => {
       setLoading(false);
     };

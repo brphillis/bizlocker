@@ -8,7 +8,7 @@ const Footer = () => {
           <h1 className="select-none text-center text-3xl font-bold tracking-wide text-brand-white/90">
             CLUTCH.
           </h1>
-          <p className="ml-3">Clothing Co.</p>
+          <p className="ml-3">Clothing Inc.</p>
           {/* <div className="text-xs">Sign Up to our Newsletter</div>
           <div className="flex items-center gap-3">
             <input

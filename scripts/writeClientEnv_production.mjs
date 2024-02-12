@@ -6,8 +6,9 @@ const content = `
 export const CURRENT_BUCKET = \`${process.env.AWS_BUCKET}\`;\n
 `;
 
-console.log("RUNNING CLIENT ENV SCRIPT - PRODUCTION");
-console.log("WRITING CONTENT", content);
+console.log("BUILDING ... RUNNING CLIENT ENV SCRIPT - PRODUCTION");
+
+console.log("BUILDING ... CLIENT ENV VALUES", content);
 
 // Specify the file path
 const filePath = "./app/build/clientEnv.ts";
