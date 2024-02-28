@@ -18,7 +18,8 @@
     "start": "rm -rf /var/cache/apk/* && npm install --include=dev && npx prisma migrate deploy && npx prisma generate && npm run client-env-production && npm run update-theme && npm run build && node ./server.mjs && npm run prune-dev-deps",
     "start-dev": "rm -rf /var/cache/apk/* && npm install --include=dev && npx prisma migrate deploy && npx prisma generate && npm run client-env-development && npm run update-theme && npm run build && node ./server.mjs",
     "prune-dev-deps": "npm prune --omit=dev",
-    "install-dev-deps": "RUN npm install --include=dev"
+    "install-dev-deps": "RUN npm install --include=dev",
+    "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint ."
   },
   "prettier": {},
   "eslintIgnore": [
