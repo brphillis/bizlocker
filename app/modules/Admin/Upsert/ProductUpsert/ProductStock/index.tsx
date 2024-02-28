@@ -52,7 +52,7 @@ const ProductStock = () => {
                           <BasicButton
                             label="Transfer"
                             type="button"
-                            // disabled={storeId === currentStoreId}
+                            disabled={storeId === currentStoreId}
                             onClick={() =>
                               navigate(
                                 `/admin/upsert/product/product-stock-transfer?contentId=${productVariant?.productId}&variantId=${productVariant?.id}&fromStore=${store?.id}`,
