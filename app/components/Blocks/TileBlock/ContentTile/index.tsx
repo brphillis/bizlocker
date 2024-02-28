@@ -1,5 +1,5 @@
 import { BlockOptions } from "@prisma/client";
-import { useNavigate } from "@remix-run/react";
+import { Link } from "@remix-run/react";
 import PatternBackground from "~/components/Layout/Backgrounds/PatternBackground";
 import { getThemeColorValueByName } from "~/utility/colors";
 import TextContainer from "../../_ItemComponents/TextContainer";
@@ -20,8 +20,6 @@ const ContentTile = ({
   imageLink,
   imageName,
 }: Props) => {
-  const navigate = useNavigate();
-
   const {
     itemBackgroundColorsPrimary,
     itemBorderRadius,
@@ -30,20 +28,9 @@ const ContentTile = ({
   } = blockOptions;
 
   return (
-    <div
-      role="button"
-      tabIndex={0}
+    <Link
       className={`relative overflow-hidden h-full w-full ${itemBorderRadius[index]} `}
-      onClick={() =>
-        itemLinks[index]
-          ? navigate(itemLinks[index])
-          : imageLink && navigate(imageLink)
-      }
-      onKeyDown={() =>
-        itemLinks[index]
-          ? navigate(itemLinks[index])
-          : imageLink && navigate(imageLink)
-      }
+      to={itemLinks[index] ? itemLinks[index] : imageLink && imageLink}
     >
       <PatternBackground
         backgroundColor={getThemeColorValueByName(
@@ -60,7 +47,7 @@ const ContentTile = ({
       </div>
 
       <TextContainer blockOptions={blockOptions} index={index} />
-    </div>
+    </Link>
   );
 };
 

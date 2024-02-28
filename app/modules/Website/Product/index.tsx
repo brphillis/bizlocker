@@ -25,7 +25,6 @@ import {
   getAvailableColors,
   getAvailableSizes,
 } from "~/helpers/productHelpers";
-import { CURRENT_BUCKET } from "~/build/clientEnv";
 
 const Product = () => {
   const { product, brand, similarProducts } =
@@ -157,10 +156,6 @@ const Product = () => {
 
   const navigation = useNavigation();
 
-  const currentBucket = CURRENT_BUCKET;
-
-  console.log("CURRENT BUCKET", currentBucket);
-
   useEffect(() => {
     if (location && loading) {
       if (navigation.state === "submitting") {
@@ -181,20 +176,18 @@ const Product = () => {
       <div className="mx-auto cursor-auto pt-3 max-xl:pt-0">
         <div className="mx-auto flex justify-center max-xl:flex-wrap max-w-[100vw]">
           <div className="flex h-[740px] gap-3 max-xl:h-max max-xl:flex-col">
-            <div className="max-xl:w-screen max-xl:h-max w-[150px] max-xl:px-3 gap-3 scrollbar-hide flex h-full flex-col justify-start overflow-auto max-xl:order-2 max-xl:flex-row">
+            <div className="max-xl:w-screen max-xl:h-max flex-nowrap w-[150px] max-xl:px-3 gap-3 scrollbar-hide flex h-full flex-col justify-start max-md:justify-center overflow-auto max-xl:order-2 max-xl:flex-row">
               {images?.map(({ id, href, altText }: Image, i: number) => {
                 if (href) {
                   return (
-                    <div
+                    <BasicImage
                       key={"productSlider_" + id + i}
-                      className="w-full h-full cursor-pointer shadow-sm max-xl:h-max max-sm:shadow-md"
-                    >
-                      <BasicImage
-                        alt={"productImage_" + altText + "_" + i}
-                        onClick={() => setSelectedImage(images[i])}
-                        src={href}
-                      />
-                    </div>
+                      alt={"productImage_" + altText + "_" + i}
+                      onClick={() => setSelectedImage(images[i])}
+                      extendStyle="w-full h-full cursor-pointer shadow-sm max-xl:!h-max max-sm:shadow-md"
+                      skeletonStyle="max-md:h-[80px] max-md:w-[80px]"
+                      src={href}
+                    />
                   );
                 } else return null;
               })}
@@ -203,7 +196,8 @@ const Product = () => {
               {selectedImage?.href && (
                 <BasicImage
                   alt={name + "_focusedImage"}
-                  extendStyle="h-full w-auto object-cover object-center shadow-md max-xl:px-3 max-xl:shadow-none"
+                  extendStyle="h-full w-auto object-cover object-center shadow-md max-xl:px-3 max-xl:shadow-none !min-h-[390px]"
+                  skeletonStyle="min-h-[380px]"
                   src={selectedImage?.href}
                 />
               )}

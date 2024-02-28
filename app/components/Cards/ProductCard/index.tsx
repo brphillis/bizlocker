@@ -5,11 +5,10 @@ import BasicImage from "~/components/Client/BasicImage";
 import { Toast } from "~/components/Notifications/Toast";
 import { ProductWithDetails } from "~/models/Products/types";
 import { getVariantUnitPrice } from "~/helpers/numberHelpers";
-import { useNavigate, useNavigation, useSubmit } from "@remix-run/react";
+import { useNavigation, useSubmit } from "@remix-run/react";
 
 const ProductCard = (product: ProductWithDetails) => {
   const submit = useSubmit();
-  const navigate = useNavigate();
   const navigation = useNavigation();
 
   const { id, name, images, variants, brand, promotion } = product;
@@ -60,7 +59,7 @@ const ProductCard = (product: ProductWithDetails) => {
               extendStyle="absolute right-0 top-0 h-full w-full transform object-cover"
               src={displayImage}
               alt={name.toLowerCase() + " product card"}
-              onClick={() => navigate(`/product/${name}?id=${id}`)}
+              link={`/product/${name}?id=${id}`}
               hoverEffect="grow"
             />
           )}

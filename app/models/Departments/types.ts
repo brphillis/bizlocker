@@ -1,8 +1,8 @@
+import { prisma } from "~/db.server";
 import { Department, Prisma } from "@prisma/client";
 import { CampaignWithContent } from "../Campaigns/types";
-import { prisma } from "~/db.server";
-import { ProductCategoryWithDetails } from "../ProductCategories/types";
 import { PromotionWithContent } from "../Promotions/types";
+import { ProductCategoryWithDetails } from "../ProductCategories/types";
 
 export interface DepartmentWithDetails extends Department {
   campaigns?: CampaignWithContent[] | null;

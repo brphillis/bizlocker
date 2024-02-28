@@ -1,8 +1,8 @@
 import { User } from "@prisma/client";
 import { type TypedResponse, redirect } from "@remix-run/server-runtime";
-import { prisma } from "~/db.server";
-import { getUserDataFromSession } from "~/session.server";
-import { getCookies } from "~/helpers/cookieHelpers";
+import { prisma } from "../../db.server";
+import { getUserDataFromSession } from "../../session.server";
+import { getCookies } from "../../helpers/cookieHelpers";
 import { CartWithDetails } from "./types";
 
 const visitorCartCookieKey = "visitor_cart_id";

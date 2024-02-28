@@ -16,7 +16,7 @@ import {
 import getStream, {
   AnyStream,
 } from "../../../../node_modules/get-stream/source";
-import { CURRENT_BUCKET } from "~/build/clientEnv";
+import { CURRENT_BUCKET } from "../../../build/clientEnv";
 import { removeSpecialCharacters } from "~/helpers/stringHelpers";
 
 export const bucketName_currentEnv = CURRENT_BUCKET;

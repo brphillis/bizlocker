@@ -131,7 +131,7 @@ const WebsiteRoot = () => {
           )}
         <Outlet />
 
-        <Footer />
+        <Footer productCategories={productCategories} />
       </div>
 
       {/* MOBILE DRAWER */}

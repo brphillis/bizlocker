@@ -2,6 +2,7 @@ import React from "react";
 import ButtonContainer from "../../ButtonContainer";
 import { MegaMenuTypes } from "..";
 import { Cart, User } from "@prisma/client";
+import { Link } from "@remix-run/react";
 
 type Props = {
   cart: Cart | null;
@@ -24,32 +25,36 @@ const Navbar = ({
     <div className="flex flex-col w-full max-xl:hidden">
       <div className="flex items-center w-full">
         <div className="flex items-center w-full h-full gap-12 ml-12 font-bold">
-          <div
+          <Link
             className="text-brand-white cursor-pointer"
             onMouseEnter={() => {
               setActiveMenu("mens");
             }}
+            to="/products?gender=MALE"
           >
             MENS
-          </div>
-          <div
+          </Link>
+          <Link
             className="text-brand-white cursor-pointer"
             onMouseEnter={() => setActiveMenu("womans")}
+            to="/products?gender=FEMALE"
           >
             WOMANS
-          </div>
-          <div
+          </Link>
+          <Link
             className="text-brand-white cursor-pointer"
             onMouseEnter={() => setActiveMenu("kids")}
+            to="/products?gender=KIDS"
           >
             KIDS
-          </div>
-          <div
+          </Link>
+          <Link
             className="text-brand-white cursor-pointer"
             onMouseEnter={() => setActiveMenu("sale")}
+            to="/products?onSale=true"
           >
             SALE
-          </div>
+          </Link>
         </div>
 
         <ButtonContainer

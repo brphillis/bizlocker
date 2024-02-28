@@ -1,12 +1,15 @@
-import { prisma } from "~/db.server";
-import { getOrderBy } from "~/helpers/sortHelpers";
-import { calculateDiscountPercentage } from "~/helpers/numberHelpers";
+import { prisma } from "../../db.server";
+import { getOrderBy } from "../../helpers/sortHelpers";
+import { calculateDiscountPercentage } from "../../helpers/numberHelpers";
 import {
   deleteImage_Integration,
   uploadImage_Integration,
-} from "~/integrations/_master/storage/index.server";
+} from "../../integrations/_master/storage/index.server";
 import { Gender, Image, Product, ProductVariant, Staff } from "@prisma/client";
-import { getUserDataFromSession, STAFF_SESSION_KEY } from "~/session.server";
+import {
+  getUserDataFromSession,
+  STAFF_SESSION_KEY,
+} from "../../session.server";
 import {
   NewProduct,
   ProductCreateQuery,
@@ -15,9 +18,9 @@ import {
   ProductVariantWithDetails,
   ProductWithDetails,
 } from "./types";
-import { NewProductVariant } from "~/modules/Admin/Upsert/ProductUpsert/ProductVariantUpsert";
-import { removeS3Image } from "~/integrations/aws/s3/s3.server";
-import { returnCorrectGender } from "~/helpers/stringHelpers";
+import { NewProductVariant } from "../../modules/Admin/Upsert/ProductUpsert/ProductVariantUpsert";
+import { removeS3Image } from "../../integrations/aws/s3/s3.server";
+import { returnCorrectGender } from "../../helpers/stringHelpers";
 
 export const getProducts = async (
   count?: string,
@@ -715,8 +718,6 @@ export const searchProducts = async (
     filter.gender = {
       in: [gender as string, "UNISEX"],
     };
-  } else {
-    filter.isActive = gender;
   }
 
   if (isActive || activeOnly) {

@@ -63,8 +63,6 @@ const TextBanner = ({ options, imageLink }: Props) => {
       break;
   }
 
-  console.log("SISE", imageLink?.length);
-
   return (
     <div
       role="button"

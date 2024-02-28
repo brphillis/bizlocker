@@ -2,12 +2,12 @@ import { useState } from "react";
 import Opacity from "./Opacity";
 import ColorPalette from "./ColorPalette";
 import { IoClose } from "react-icons/io5";
-import { capitalizeWords } from "~/helpers/stringHelpers";
+import { capitalizeWords } from "../../../../helpers/stringHelpers";
 import {
   getThemeColorNames,
   removeColorPrefix,
   returnOtherColorPrefix,
-} from "~/utility/colors";
+} from "../../../../utility/colors";
 
 type Props = {
   closeFunction: () => void;

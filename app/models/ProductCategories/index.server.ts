@@ -1,6 +1,6 @@
-import { prisma } from "~/db.server";
+import { prisma } from "../../db.server";
 import { ProductCategory } from "@prisma/client";
-import { getOrderBy } from "~/helpers/sortHelpers";
+import { getOrderBy } from "../../helpers/sortHelpers";
 import {
   NewProductCategory,
   ProductCategoryUpsertQuery,

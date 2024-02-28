@@ -133,11 +133,10 @@ export const filterWordsFromString = (sentence: string): string => {
 export const extractBucketName = (s3Url: string): string | null => {
   const parts = s3Url.split("/");
   const hostPart = parts[2];
-  console.log("PARTS!!", parts);
-  console.log("HOSTPART!!", hostPart);
 
   if (hostPart) {
     const subParts = hostPart.split(".")[0].split("-");
+
     return subParts.join("-");
   }
   return null;

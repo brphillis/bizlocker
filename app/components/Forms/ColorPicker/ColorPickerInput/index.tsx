@@ -1,7 +1,7 @@
 import { IoWaterOutline } from "react-icons/io5";
-import ToolTip from "~/components/Indicators/ToolTip";
-import { capitalizeFirst } from "~/helpers/stringHelpers";
-import { returnOtherColorPrefix } from "~/utility/colors";
+import ToolTip from "../../../../components/Indicators/ToolTip";
+import { capitalizeFirst } from "../../../../helpers/stringHelpers";
+import { returnOtherColorPrefix } from "../../../../utility/colors";
 
 type Props = {
   label: string;

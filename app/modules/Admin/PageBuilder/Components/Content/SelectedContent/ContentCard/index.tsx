@@ -1,6 +1,6 @@
 import type { BlockContentType } from "~/utility/blockMaster/types";
-import SquareIconButton from "~/components/Buttons/SquareIconButton";
 import { capitalizeFirst } from "~/helpers/stringHelpers";
+import SquareIconButton from "~/components/Buttons/SquareIconButton";
 
 type Props = {
   type: BlockContentType;

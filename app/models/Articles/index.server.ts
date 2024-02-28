@@ -1,8 +1,8 @@
 import { type TypedResponse, redirect } from "@remix-run/server-runtime";
 import { getBlocks } from "../Blocks/index.server";
-import { prisma } from "~/db.server";
-import { buildBlocksContentQuery } from "~/utility/blockMaster/blockMaster";
-import { getOrderBy } from "~/helpers/sortHelpers";
+import { prisma } from "../../db.server";
+import { buildBlocksContentQuery } from "../../utility/blockMaster/blockMaster";
+import { getOrderBy } from "../../helpers/sortHelpers";
 import { disconnectBlock } from "../PageBuilder/index.server";
 import { ArticleWithContent } from "./types";
 import { Page } from "../PageBuilder/types";

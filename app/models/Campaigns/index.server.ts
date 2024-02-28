@@ -1,9 +1,9 @@
-import { prisma } from "~/db.server";
-import { getRandomOneOrTwo } from "~/helpers/numberHelpers";
+import { prisma } from "../../db.server";
+import { getRandomOneOrTwo } from "../../helpers/numberHelpers";
 import {
   updateImage_Integration,
   uploadImage_Integration,
-} from "~/integrations/_master/storage/index.server";
+} from "../../integrations/_master/storage/index.server";
 import {
   Brand,
   Campaign,

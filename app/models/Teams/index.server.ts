@@ -1,5 +1,5 @@
 import { Staff, Team } from "@prisma/client";
-import { prisma } from "~/db.server";
+import { prisma } from "../../db.server";
 import { NewTeam, TeamWithStaff } from "./types";
 
 export const getTeam = async (id: string): Promise<TeamWithStaff | null> => {

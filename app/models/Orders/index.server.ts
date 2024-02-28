@@ -1,21 +1,21 @@
 import { Address, Order, StockLevel, User } from "@prisma/client";
-import { prisma } from "~/db.server";
+import { prisma } from "../../db.server";
 import { type TypedResponse, redirect } from "@remix-run/server-runtime";
-import { squareClient } from "~/integrations/square/square.server";
+import { squareClient } from "../../integrations/square/square.server";
 import {
   getSession,
   getUserDataFromSession,
   sessionStorage,
   USER_SESSION_KEY,
-} from "~/session.server";
+} from "../../session.server";
 import { getCart } from "../Cart/index.server";
-import { getVariantUnitPrice } from "~/helpers/numberHelpers";
-import { sendOrderReceiptEmail } from "~/integrations/sendgrid/emails/orderReceipt";
-import { createPaymentLink_Integration } from "~/integrations/_master/payments/index.server";
+import { getVariantUnitPrice } from "../../helpers/numberHelpers";
+import { sendOrderReceiptEmail } from "../../integrations/sendgrid/emails/orderReceipt";
+import { createPaymentLink_Integration } from "../../integrations/_master/payments/index.server";
 import { fetchLatLong } from "../Location/index.server";
-import { findClosestPostcode } from "~/helpers/locationHelpers";
-import { isArrayofNumbers } from "~/helpers/arrayHelpers";
-import { SquareShippingDetails } from "~/integrations/square/types";
+import { findClosestPostcode } from "../../helpers/locationHelpers";
+import { isArrayofNumbers } from "../../helpers/arrayHelpers";
+import { SquareShippingDetails } from "../../integrations/square/types";
 import { OrderWithDetails } from "./types";
 import { CartItemWithDetails } from "../Cart/types";
 
@@ -106,7 +106,7 @@ export const createOrder = async (
   const userId = userData?.id || undefined;
 
   const { createPaymentLinkResponse, confirmCode } =
-    await createPaymentLink_Integration(cartItems);
+    await createPaymentLink_Integration(cartItems, BigInt(shippingPrice));
 
   if (createPaymentLinkResponse && createPaymentLinkResponse.paymentLink) {
     const { paymentLink } = createPaymentLinkResponse;

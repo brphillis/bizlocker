@@ -1,6 +1,6 @@
 import { Department } from "@prisma/client";
-import { prisma } from "~/db.server";
-import { getOrderBy } from "~/helpers/sortHelpers";
+import { prisma } from "../../db.server";
+import { getOrderBy } from "../../helpers/sortHelpers";
 import {
   DepartmentUpsertQuery,
   DepartmentWithDetails,

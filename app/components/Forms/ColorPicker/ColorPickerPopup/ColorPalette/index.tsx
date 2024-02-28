@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { IoArrowDownOutline, IoArrowUpOutline, IoClose } from "react-icons/io5";
-import { includesWords } from "~/helpers/stringHelpers";
+import { includesWords } from "../../../../../helpers/stringHelpers";
 
 type Props = {
   colors: string[];

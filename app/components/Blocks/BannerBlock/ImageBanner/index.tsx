@@ -1,5 +1,4 @@
 import type { BlockOptions } from "@prisma/client";
-import { useNavigate } from "@remix-run/react";
 import BasicImage from "~/components/Client/BasicImage";
 
 type Props = {
@@ -10,8 +9,6 @@ type Props = {
 };
 
 const ImageBanner = ({ options, imageSrc, imageLink, imageAlt }: Props) => {
-  const navigate = useNavigate();
-
   const { borderColor, borderRadius, borderSize, size } = options || {};
 
   const smallStyle =
@@ -45,7 +42,7 @@ const ImageBanner = ({ options, imageSrc, imageLink, imageAlt }: Props) => {
 
   return (
     <BasicImage
-      onClick={() => imageLink && navigate(imageLink)}
+      link={imageLink}
       src={imageSrc}
       alt={imageAlt}
       extendStyle={`relative mx-auto object-cover block ${currentStyle} ${borderSize} ${borderColor} ${borderRadius} 

@@ -1,9 +1,9 @@
-import { prisma } from "~/db.server";
+import { prisma } from "../../db.server";
 import { Gender, Image, Product, Promotion } from "@prisma/client";
 import {
   updateImage_Integration,
   uploadImage_Integration,
-} from "~/integrations/_master/storage/index.server";
+} from "../../integrations/_master/storage/index.server";
 import {
   NewPromotion,
   PromotionUpsertQuery,

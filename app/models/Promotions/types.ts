@@ -1,4 +1,4 @@
-import { prisma } from "~/db.server";
+import { prisma } from "../../db.server";
 import { Image, Prisma, Promotion } from "@prisma/client";
 import { ProductWithDetails } from "../Products/types";
 import { DepartmentWithDetails } from "../Departments/types";

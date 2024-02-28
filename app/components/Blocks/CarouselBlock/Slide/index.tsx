@@ -38,7 +38,6 @@ const Slide = ({ index, blockOptions, image }: Props) => {
       />
 
       <ContentContainer index={index} blockOptions={blockOptions} />
-      <div>TESTING</div>
     </div>
   );
 };

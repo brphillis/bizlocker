@@ -1,0 +1,19 @@
+# base node image
+FROM node:18-alpine as base
+
+# set for base and all layer that inherit from it
+ENV NODE_ENV development
+
+# Install openssl for Prisma
+RUN apk --no-cache add openssl procps
+
+# Build the production image with minimal footprint
+FROM base
+
+WORKDIR /brockdev
+
+ADD . .
+
+RUN rm -rf /var/cache/apk/*
+
+CMD ["npm", "run", "start-dev"]

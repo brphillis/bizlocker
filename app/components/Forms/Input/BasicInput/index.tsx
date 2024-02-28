@@ -1,5 +1,5 @@
 import type { ValidationErrors } from "~/utility/validate";
-import ToolTip from "~/components/Indicators/ToolTip";
+import ToolTip from "../../../../components/Indicators/ToolTip";
 
 type Props = {
   extendContainerStyle?: string;

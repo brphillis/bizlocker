@@ -8,12 +8,14 @@ import type {
 import { CartItemWithDetails } from "~/models/Cart/types";
 
 export const squareClient = new Client({
-  environment: Environment.Sandbox, // Use Environment.Production when you're ready to go live
+  environment:
+    process.env.NODE_ENV === "development"
+      ? Environment.Sandbox
+      : Environment.Production,
   accessToken: process.env.SQUARE_ACCESS,
 });
-
-export const squareLocationId = "LB9PSX20NJ5X8";
-
+export const squareLocationId =
+  process.env.NODE_ENV === "development" ? "LB9PSX20NJ5X8" : "LTMN9Y79GKP80";
 export const CartItemsToSquareApiLineItems = (
   cartItems: CartItemWithDetails[],
 ): OrderLineItem[] => {
@@ -37,6 +39,7 @@ export const CartItemsToSquareApiLineItems = (
 
 export const createSquarePaymentLink = async (
   cartItems: CartItemWithDetails[],
+  shippingPrice: bigint,
 ): Promise<{
   createPaymentLinkResponse: CreatePaymentLinkResponse;
   confirmCode: string;
@@ -58,6 +61,12 @@ export const createSquarePaymentLink = async (
       acceptedPaymentMethods: {
         applePay: true,
         googlePay: true,
+      },
+      shippingFee: {
+        name: "shipping fee",
+        charge: {
+          amount: shippingPrice,
+        },
       },
     },
   };

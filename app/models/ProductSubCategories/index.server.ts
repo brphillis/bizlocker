@@ -1,5 +1,5 @@
-import { prisma } from "~/db.server";
-import { getOrderBy } from "~/helpers/sortHelpers";
+import { prisma } from "../../db.server";
+import { getOrderBy } from "../../helpers/sortHelpers";
 import { ProductSubCategory } from "@prisma/client";
 import { NewProductSubCategory, ProductSubCategoryWithDetails } from "./types";
 import {

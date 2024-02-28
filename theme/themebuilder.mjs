@@ -34,6 +34,9 @@ if (!fs.existsSync(directory)) {
 }
 
 if (combinedContent) {
+  console.log("BUILDING ... UPDATING THEME");
   // Write the combined content to the file
   fs.writeFileSync(filePath, combinedContent);
+} else {
+  console.log("BUILDING ... NO THEMEBUILDER DATA FOUND");
 }

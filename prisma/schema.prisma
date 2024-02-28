@@ -8,6 +8,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model SiteMap {
+  id    Int    @unique
+  value String
+}
+
 model SiteSettings {
   id                     Int      @id @default(autoincrement())
   navigationStyleDesktop String   @default("productBasic")

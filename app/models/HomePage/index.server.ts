@@ -1,5 +1,5 @@
-import { buildBlocksContentQuery } from "~/utility/blockMaster/blockMaster";
-import { prisma } from "~/db.server";
+import { buildBlocksContentQuery } from "../../utility/blockMaster/blockMaster";
+import { prisma } from "../../db.server";
 import { Page } from "../PageBuilder/types";
 
 export const getHomePage = async (): Promise<Page | undefined> => {

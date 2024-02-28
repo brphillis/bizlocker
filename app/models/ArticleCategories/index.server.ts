@@ -1,5 +1,5 @@
 import type { ArticleCategory } from "@prisma/client";
-import { prisma } from "~/db.server";
+import { prisma } from "../../db.server";
 import { ArticleCategoryWithDetails } from "./types";
 
 export const getArticleCategories = async (): Promise<

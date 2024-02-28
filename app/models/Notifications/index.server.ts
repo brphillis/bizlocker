@@ -1,4 +1,4 @@
-import { prisma } from "~/db.server";
+import { prisma } from "../../db.server";
 import { Notification } from "@prisma/client";
 import { NotificationWithContent } from "./types";
 export type { Brand } from "@prisma/client";

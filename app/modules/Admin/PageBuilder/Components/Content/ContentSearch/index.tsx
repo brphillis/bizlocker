@@ -2,12 +2,13 @@ import type { PreviewPage } from "@prisma/client";
 import type { BlockContentType, BlockName } from "~/utility/blockMaster/types";
 import { useNavigate, useSubmit } from "@remix-run/react";
 import { useState } from "react";
-import BasicInput from "~/components/Forms/Input/BasicInput";
+
 import { capitalizeFirst } from "~/helpers/stringHelpers";
 import {
   blockMaster,
   getBlockContentTypes,
 } from "~/utility/blockMaster/blockMaster";
+import BasicInput from "~/components/Forms/Input/BasicInput";
 
 type Props = {
   selectedBlock: BlockName | undefined;

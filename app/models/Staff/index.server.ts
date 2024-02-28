@@ -1,8 +1,11 @@
 import bcrypt from "bcryptjs";
-import { prisma } from "~/db.server";
+import { prisma } from "../../db.server";
 import { Staff } from "@prisma/client";
-import { getUserDataFromSession, STAFF_SESSION_KEY } from "~/session.server";
-import { convertToISO8601Date } from "prisma/validation";
+import {
+  getUserDataFromSession,
+  STAFF_SESSION_KEY,
+} from "../../session.server";
+import { convertToISO8601Date } from "../../../prisma/validation";
 import { NewStaffDetails, StaffWithDetails } from "./types";
 
 export const getStaff = async (

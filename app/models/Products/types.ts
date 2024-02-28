@@ -1,4 +1,4 @@
-import { prisma } from "~/db.server";
+import { prisma } from "../../db.server";
 import {
   BlockContent,
   Image,
@@ -16,7 +16,7 @@ import {
   StockLevelWithDetails,
   StockTransferRequestWithDetails,
 } from "../Stock/types";
-import { NewProductVariant } from "~/modules/Admin/Upsert/ProductUpsert/ProductVariantUpsert";
+import { NewProductVariant } from "../../modules/Admin/Upsert/ProductUpsert/ProductVariantUpsert";
 
 export interface ProductWithDetails extends Product {
   promotion?: PromotionWithContent | null;

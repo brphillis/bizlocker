@@ -1,8 +1,8 @@
 import type { PreviewPage } from "@prisma/client";
-import { prisma } from "~/db.server";
+import { prisma } from "../../db.server";
 import { disconnectBlock } from "../PageBuilder/index.server";
 import type { PageType } from "~/utility/pageBuilder";
-import { buildBlocksContentQuery } from "~/utility/blockMaster/blockMaster";
+import { buildBlocksContentQuery } from "../../utility/blockMaster/blockMaster";
 import { getBlocks } from "../Blocks/index.server";
 import { Page } from "../PageBuilder/types";
 import { BlockWithContent } from "../Blocks/types";
