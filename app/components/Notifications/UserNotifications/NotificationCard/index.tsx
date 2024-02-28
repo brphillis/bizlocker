@@ -13,7 +13,7 @@ const NotificationCard = ({ notification }: Props) => {
 
   return (
     <div
-      className={`relative flex w-full cursor-pointer items-start justify-between gap-3 rounded-sm p-3 pt-1 transition-all duration-300 hover:scale-[1.02]
+      className={`relative flex w-full cursor-pointer items-center justify-between gap-3 rounded-sm p-3 pt-1 transition-all duration-300 hover:scale-[1.02]
      ${storeId ? "bg-brand-red" : "bg-primary"}`}
     >
       <div className="cursor-pointer pt-3 text-brand-white">

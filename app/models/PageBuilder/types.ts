@@ -1,4 +1,4 @@
-import { prisma } from "~/db.server";
+import { prisma } from "../../db.server";
 import { Prisma } from "@prisma/client";
 import { PreviewPageWithContent } from "../PreviewPage/types";
 

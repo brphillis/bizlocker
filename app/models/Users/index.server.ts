@@ -1,6 +1,6 @@
 import { User } from "@prisma/client";
-import { prisma } from "~/db.server";
-import { convertToISO8601Date } from "prisma/validation";
+import { prisma } from "../../db.server";
+import { convertToISO8601Date } from "../../../prisma/validation";
 import { NewUser, UserWithDetails } from "./types";
 
 export const getUser = async (id: string): Promise<UserWithDetails | null> => {

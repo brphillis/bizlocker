@@ -1,4 +1,4 @@
-import { prisma } from "~/db.server";
+import { prisma } from "../../db.server";
 import bcrypt from "bcryptjs";
 import { initiateVerifyUserAccount } from "../Verification/index.server";
 

@@ -23,9 +23,12 @@ const PromotionBanner = ({ name, bannerImage, targetGender }: Props) => {
     <>
       {bannerImage?.href && (
         <div className="max-w-full max-md:-mt-3 w-[1280px]">
-          <div className="h-[146px] w-full max-w-[100vw] object-cover max-xl:h-[124px] max-lg:h-[100px] max-md:h-[88px]">
-            <BasicImage src={bannerImage.href} alt={name + "_bannerImage"} />
-          </div>
+          <BasicImage
+            extendStyle="h-[146px] w-full max-w-[100vw] object-cover max-xl:h-[124px] max-lg:h-[100px] max-md:h-[88px]"
+            link={`/promotion/${name}`}
+            src={bannerImage.href}
+            alt={name + "_bannerImage"}
+          />
 
           {targetGender && (
             <div className="flex w-full justify-center gap-3 bg-base-200/50 py-1 text-brand-black">

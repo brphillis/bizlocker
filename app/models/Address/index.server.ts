@@ -1,5 +1,5 @@
 import type { Address } from "@prisma/client";
-import { prisma } from "~/db.server";
+import { prisma } from "../../db.server";
 import { NewAddress } from "./types";
 
 export const getUserAddress = async (id: string): Promise<Address | null> => {

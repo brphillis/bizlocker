@@ -1,6 +1,9 @@
 import { validateForm } from "~/utility/validate";
 import type { PageNotification } from "~/hooks/PageNotification";
-import { cleanBucketTask } from "~/models/Tasks/index.server";
+import {
+  cleanBucketTask,
+  updateSiteMapTask,
+} from "~/models/Tasks/index.server";
 import {
   copyDevBucketToProd,
   copyProdBucketToDev,
@@ -53,6 +56,17 @@ export const tasksUpsertAction = async (request: Request) => {
       notification = {
         type: "success",
         message: "Dev Bucket Copied To Production",
+      };
+
+      return { notification };
+    }
+
+    case "updateSiteMap": {
+      await updateSiteMapTask();
+
+      notification = {
+        type: "success",
+        message: "Update SiteMap Task Complete",
       };
 
       return { notification };

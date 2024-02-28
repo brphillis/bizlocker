@@ -1,5 +1,5 @@
 import type { SiteSettings } from "@prisma/client";
-import { prisma } from "~/db.server";
+import { prisma } from "../../db.server";
 export type { Brand } from "@prisma/client";
 
 export const getSiteSettings = async (): Promise<SiteSettings | null> => {

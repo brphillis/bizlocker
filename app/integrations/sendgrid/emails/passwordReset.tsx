@@ -4,7 +4,7 @@ sgMail.setApiKey(process.env.SENDGRID_KEY!);
 
 export const sendPasswordResetEmail = async (
   recipient: string,
-  verificationCode: string
+  verificationCode: string,
 ) => {
   const verificationLink = `${process.env.SITE_URL}/reset-password/${verificationCode}?email=${recipient}`;
 
@@ -14,7 +14,7 @@ export const sendPasswordResetEmail = async (
     "forgotPasswordSplash.png",
     "Reset Password",
     verificationLink,
-    "Please click the button below to Reset Your Password."
+    "Please click the button below to Reset Your Password.",
   );
 
   try {

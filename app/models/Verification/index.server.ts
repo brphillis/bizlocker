@@ -1,7 +1,7 @@
-import { prisma } from "~/db.server";
-import { sendEmailVerificationEmail } from "~/integrations/sendgrid/emails/emailVerification";
-import { sendPasswordResetEmail } from "~/integrations/sendgrid/emails/passwordReset";
-import { ValidationErrors } from "~/utility/validate";
+import { prisma } from "../../db.server";
+import { sendEmailVerificationEmail } from "../../integrations/sendgrid/emails/emailVerification";
+import { sendPasswordResetEmail } from "../../integrations/sendgrid/emails/passwordReset";
+import { ValidationErrors } from "../../utility/validate";
 import { VerifyTypes } from "./types";
 
 export const initiateVerifyUserAccount = async (

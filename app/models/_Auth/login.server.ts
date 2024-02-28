@@ -1,10 +1,10 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { prisma } from "~/db.server";
-import { createUserSession } from "~/session.server";
-import { ValidationErrors } from "~/utility/validate";
+import { prisma } from "../../db.server";
+import { createUserSession } from "../../session.server";
+import { ValidationErrors } from "../../utility/validate";
 import { TypedResponse } from "@remix-run/server-runtime";
-import { GoogleAuthResponse } from "~/integrations/authentication/google/types";
+import { GoogleAuthResponse } from "../../integrations/authentication/google/types";
 import { UserLoginResponse } from "./types";
 
 export const verifyLogin = async (

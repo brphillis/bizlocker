@@ -1,6 +1,6 @@
 import type { Dispatch, SetStateAction } from "react";
-import SquareIconButton from "~/components/Buttons/SquareIconButton";
-import BasicInput from "~/components/Forms/Input/BasicInput";
+import SquareIconButton from "../../../../../components/Buttons/SquareIconButton";
+import BasicInput from "../../../../../components/Forms/Input/BasicInput";
 
 type Props = {
   currentOpacity?: number;

@@ -1,5 +1,5 @@
 import { UserDetails } from "@prisma/client";
-import { prisma } from "~/db.server";
+import { prisma } from "../../db.server";
 import { NewUserDetails } from "./types";
 
 export const getUserDetails = async (

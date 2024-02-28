@@ -1,4 +1,3 @@
-import { useNavigate } from "@remix-run/react";
 import BasicImage from "~/components/Client/BasicImage";
 import { ProductSubCategoryWithDetails } from "~/models/ProductSubCategories/types";
 import { MegaMenuTypes } from "../..";
@@ -11,8 +10,6 @@ type Props = {
 };
 
 const CategoryTile = ({ activeMenu, activeCategory, imageSrc }: Props) => {
-  const navigate = useNavigate();
-
   const isSubCategory =
     (activeCategory as ProductSubCategoryWithDetails).femaleImage ||
     (activeCategory as ProductSubCategoryWithDetails).maleImage ||
@@ -36,24 +33,12 @@ const CategoryTile = ({ activeMenu, activeCategory, imageSrc }: Props) => {
   };
 
   return (
-    <div
-      role="button"
-      tabIndex={0}
-      className="h-52 w-52 relative hover:scale-[1.01] duration-300 cursor-pointer"
-      onClick={() => {
-        navigate({
-          pathname: "/products",
-          search: returnQueryString(),
-        });
-      }}
-      onKeyDown={() => {
-        navigate({
-          pathname: "/products",
-          search: returnQueryString(),
-        });
-      }}
-    >
-      <BasicImage alt="activeImage" src={imageSrc} />
+    <div className="h-52 w-52 relative hover:scale-[1.01] duration-300 cursor-pointer">
+      <BasicImage
+        alt="activeImage"
+        src={imageSrc}
+        link={"/products" + returnQueryString()}
+      />
       <div className="bg-black/75 font-bold text-brand-white bottom-0 left-[50%] translate-x-[-50%] absolute w-full px-3 py-3">
         {activeCategory.name}
       </div>

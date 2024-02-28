@@ -1,5 +1,5 @@
 import { Store } from "@prisma/client";
-import { prisma } from "~/db.server";
+import { prisma } from "../../db.server";
 import { NewStore, StoreWithDetails } from "./types";
 
 export function getStores(): Promise<Store[]> {

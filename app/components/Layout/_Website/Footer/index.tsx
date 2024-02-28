@@ -1,6 +1,12 @@
+import { ProductCategory } from "@prisma/client";
 import { Link } from "@remix-run/react";
+import { ProductCategoryWithDetails } from "~/models/ProductCategories/types";
 
-const Footer = () => {
+type Props = {
+  productCategories: ProductCategoryWithDetails[];
+};
+
+const Footer = ({ productCategories }: Props) => {
   return (
     <footer className="h-max w-screen bg-brand-black">
       <div className="footer mt-[-1px] p-10 text-base-content">
@@ -43,6 +49,26 @@ const Footer = () => {
             Privacy policy
           </Link>
         </div>
+
+        {productCategories && productCategories.length > 0 && (
+          <div className="text-brand-white">
+            <span className="footer-title">PRODUCT</span>
+
+            {productCategories.map(
+              ({ name }: ProductCategory, index: number) => {
+                return (
+                  <Link
+                    key={"FooterProductCategory_" + name + index}
+                    className="link-hover link"
+                    to={`/products?productCategory=${name}`}
+                  >
+                    {name}
+                  </Link>
+                );
+              },
+            )}
+          </div>
+        )}
       </div>
 
       <div className="divider !m-0 w-full !p-0 before:bg-brand-white/10 after:bg-brand-white/10" />

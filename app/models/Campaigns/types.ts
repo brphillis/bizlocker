@@ -1,6 +1,6 @@
 import { BlockContent, Prisma, Campaign, Image } from "@prisma/client";
 import { BrandWithContent } from "../Brands/types";
-import { prisma } from "~/db.server";
+import { prisma } from "../../db.server";
 import { DepartmentWithDetails } from "../Departments/types";
 import { ProductWithDetails } from "../Products/types";
 import { ProductSubCategoryWithDetails } from "../ProductSubCategories/types";

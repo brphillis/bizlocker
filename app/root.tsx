@@ -9,8 +9,8 @@ import {
 } from "@remix-run/react";
 
 import BasicButton from "./components/Buttons/BasicButton";
-import AuthContainer from "~/components/Layout/Containers/AuthContainer";
-import AuthPageWrapper from "~/components/Layout/Wrappers/AuthPageWrapper";
+import AuthContainer from "./components/Layout/Containers/AuthContainer";
+import AuthPageWrapper from "./components/Layout/Wrappers/AuthPageWrapper";
 
 import "./tailwind.css";
 import { LoaderFunctionArgs } from "@remix-run/server-runtime";
@@ -45,7 +45,11 @@ export default function Root() {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
-        <link rel="icon" type="image/x-icon" href="/app/assets/favicon.ico" />
+        <meta
+          name="google-site-verification"
+          content="l9ptqA2KU2asD3Vc3xI1mbNuFfjdXGAnePprJCbF-2s"
+        />
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         <Meta />
         <Links />
       </head>

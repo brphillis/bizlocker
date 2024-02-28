@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import invariant from "tiny-invariant";
-import { createISO8601DateNow } from "prisma/validation";
+import { createISO8601DateNow } from "../prisma/validation";
 import { createSeedData } from "./utility/initialize";
 
 let prisma: PrismaClient;

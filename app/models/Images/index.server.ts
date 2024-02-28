@@ -1,10 +1,10 @@
-import { prisma } from "~/db.server";
+import { prisma } from "../../db.server";
 import { Image } from "@prisma/client";
 import {
   deleteImage_Integration,
   updateImage_Integration,
   uploadImage_Integration,
-} from "~/integrations/_master/storage/index.server";
+} from "../../integrations/_master/storage/index.server";
 import { ImageWithDetails } from "./types";
 
 export const buildImageCreateQuery = async (image?: Image | null) => {

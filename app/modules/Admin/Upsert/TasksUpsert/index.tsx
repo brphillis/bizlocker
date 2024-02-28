@@ -95,6 +95,13 @@ const TasksUpsert = () => {
                 taskName="Copy Dev Bucket to Production Bucket"
                 taskRunning={taskRunning}
               />
+
+              <TaskListTask
+                handleSubmit={handleSubmit}
+                submitValue="updateSiteMap"
+                taskName="Update SiteMap"
+                taskRunning={taskRunning}
+              />
             </div>
           </WindowContainer>
         </div>

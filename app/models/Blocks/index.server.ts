@@ -1,7 +1,7 @@
 import type { Article, Product } from "@prisma/client";
 import { searchArticles } from "../Articles/index.server";
 import { searchProducts } from "../Products/index.server";
-import { sortBlocks } from "~/helpers/blockHelpers";
+import { sortBlocks } from "../../helpers/blockHelpers";
 import { BlockWithContent } from "./types";
 import { Page } from "../PageBuilder/types";
 

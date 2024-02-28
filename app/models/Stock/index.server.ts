@@ -1,7 +1,10 @@
-import { prisma } from "~/db.server";
-import { PageNotification } from "~/hooks/PageNotification";
+import { prisma } from "../../db.server";
+import { PageNotification } from "../../hooks/PageNotification";
 import { Staff, StockTransferRequest } from "@prisma/client";
-import { getUserDataFromSession, STAFF_SESSION_KEY } from "~/session.server";
+import {
+  getUserDataFromSession,
+  STAFF_SESSION_KEY,
+} from "../../session.server";
 import { createStoreNotification } from "../Notifications/index.server";
 import {
   NewStockTransferRequest,

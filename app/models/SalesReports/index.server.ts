@@ -1,8 +1,8 @@
-import { prisma } from "~/db.server";
+import { prisma } from "../../db.server";
 import {
   createNowISODate,
   createYesterdayISODate,
-} from "~/helpers/dateHelpers";
+} from "../../helpers/dateHelpers";
 
 export const getSalesToday = async (): Promise<{
   totalSalesToday?: number | null;

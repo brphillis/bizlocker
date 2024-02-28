@@ -1,5 +1,5 @@
 import { BlockContent, Prisma, ProductCategory } from "@prisma/client";
-import { prisma } from "~/db.server";
+import { prisma } from "../../db.server";
 import { ArticleCategoryWithDetails } from "../ArticleCategories/types";
 import { DepartmentWithDetails } from "../Departments/types";
 import { ProductSubCategoryWithDetails } from "../ProductSubCategories/types";
