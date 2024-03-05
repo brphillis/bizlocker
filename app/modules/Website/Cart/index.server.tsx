@@ -97,8 +97,6 @@ export const cartAction = async (request: Request) => {
       const shippingMethod = shippingOptionsSplit[0];
       const shippingPrice = shippingOptionsSplit[1];
 
-      console.log("SHIPPING", shippingPrice);
-
       const createdOrder = await createOrder(
         request,
         firstName as string,

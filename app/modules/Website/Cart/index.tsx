@@ -283,7 +283,16 @@ const Cart = () => {
               value="placeOrder"
               className="btn btn-primary relative !rounded-sm font-bold tracking-wide !text-white"
             >
-              Continue to Checkout
+              Checkout
+            </button>
+
+            <button
+              type="submit"
+              name="_action"
+              value="placeOrder"
+              className="btn btn-primary relative !rounded-sm font-bold tracking-wide !text-white"
+            >
+              Crypto Checkout
             </button>
           </div>
 

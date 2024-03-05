@@ -1,5 +1,4 @@
 import { type FormEvent, useState } from "react";
-import { validateForm } from "~/utility/validate";
 import { getFormData } from "~/helpers/formHelpers";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
@@ -25,8 +24,6 @@ import {
   navigationDesktopSelectValues,
   navigationMobileSelectValues,
 } from "./values";
-
-const validateOptions = {};
 
 const SiteSettingsUpsert = () => {
   const { siteSettings } = useLoaderData<typeof siteSettingsUpsertLoader>();
@@ -56,16 +53,12 @@ const SiteSettingsUpsert = () => {
 
     form = handleWindowedFormData(form);
 
-    const { formErrors } = validateForm(new FormData(form), validateOptions);
-    if (formErrors) {
-      setLoading(false);
-      return;
-    }
-
     submit(form, {
       method: "POST",
       action: `/admin/upsert/${contentType}`,
     });
+
+    setLoading(false);
   };
 
   return (

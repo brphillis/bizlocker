@@ -12,7 +12,6 @@ import {
   ProductSubCategory,
 } from "@prisma/client";
 import Spinner from "../Spinner";
-import SearchInput from "../Forms/Input/SearchInput";
 
 type Props = {
   departments: DepartmentWithDetails[] | null;
@@ -77,12 +76,16 @@ const SearchBar = ({ departments, productCategories, brands }: Props) => {
         </button>
 
         <div className="flex flex-row gap-3">
-          <SearchInput
+          <input
             name="name"
-            placeholder="Search"
-            auto={true}
-            action="/products"
-            extendStyle="!rounded-sm"
+            className={
+              "input input-bordered max-h-full w-[215px] text-brand-black/50 max-lg:w-[95vw]"
+            }
+            placeholder="Name"
+            type="text"
+            onChange={(e) => {
+              searchParams.set("name", e.target.value);
+            }}
           />
         </div>
 

@@ -70,3 +70,23 @@ export const sanitizeArray = <T>(arr: (T | null | undefined)[]): T[] => {
   );
   return sanitizedArray;
 };
+
+export const sortArrayAlphabetically = (
+  arrayOfObjects: Array<Record<string, unknown>>,
+  key: string,
+) => {
+  arrayOfObjects.sort((a, b) => {
+    const valueA = String(a[key]).toLowerCase();
+    const valueB = String(b[key]).toLowerCase();
+
+    if (valueA < valueB) {
+      return -1;
+    }
+    if (valueA > valueB) {
+      return 1;
+    }
+    return 0;
+  });
+
+  return arrayOfObjects;
+};

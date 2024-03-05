@@ -6,6 +6,8 @@ import type {
   OrderLineItem,
 } from "square";
 import { CartItemWithDetails } from "~/models/Cart/types";
+import { Address } from "@prisma/client";
+import { AddressToSquareAddress } from "~/helpers/addressHelpers";
 
 export const squareClient = new Client({
   environment:
@@ -40,6 +42,11 @@ export const CartItemsToSquareApiLineItems = (
 export const createSquarePaymentLink = async (
   cartItems: CartItemWithDetails[],
   shippingPrice: bigint,
+  address: Address,
+  firstName: string,
+  lastName: string,
+  email: string,
+  phoneNumber: string,
 ): Promise<{
   createPaymentLinkResponse: CreatePaymentLinkResponse;
   confirmCode: string;
@@ -57,7 +64,6 @@ export const createSquarePaymentLink = async (
     },
     checkoutOptions: {
       redirectUrl: `${process.env.SITE_URL}/payment-confirm/${confirmCode}`,
-      askForShippingAddress: false,
       acceptedPaymentMethods: {
         applePay: true,
         googlePay: true,
@@ -66,8 +72,14 @@ export const createSquarePaymentLink = async (
         name: "shipping fee",
         charge: {
           amount: shippingPrice,
+          currency: "AUD",
         },
       },
+    },
+    prePopulatedData: {
+      buyerAddress: AddressToSquareAddress(address, firstName, lastName),
+      buyerEmail: email,
+      buyerPhoneNumber: phoneNumber,
     },
   };
 

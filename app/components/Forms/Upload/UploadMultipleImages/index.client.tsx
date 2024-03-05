@@ -13,12 +13,13 @@ import { getBucketImageSrc } from "~/integrations/_master/storage";
 
 type ImageUploadSliderProps = {
   defaultImages?: Image[] | null;
-  disableRemove?: boolean;
-  disableTags?: boolean;
-  disableUpload?: boolean;
+  disableFromBucketSource?: boolean;
 };
 
-const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
+const UploadMultipleImages = ({
+  defaultImages,
+  disableFromBucketSource,
+}: ImageUploadSliderProps) => {
   const [activeSlide, setActiveSlide] = useState(0);
   const [editingTags, setEditingTags] = useState<boolean>();
   const [images, setCurrentImages] = useState<Image[] | NewImage[] | null>(
@@ -107,7 +108,9 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
                       onClick={() => handleRemoveImage(i)}
                     />
                     <img
-                      src={getBucketImageSrc(href)}
+                      src={
+                        href.includes("https") ? getBucketImageSrc(href) : href
+                      }
                       alt={altText || "image description placeholder"}
                       className="h-full w-full select-none object-cover"
                     />
@@ -219,7 +222,13 @@ const UploadMultipleImages = ({ defaultImages }: ImageUploadSliderProps) => {
                   `}
             >
               <img
-                src={(href && getBucketImageSrc(href)) || ""}
+                src={
+                  href
+                    ? disableFromBucketSource
+                      ? href
+                      : getBucketImageSrc(href)
+                    : ""
+                }
                 alt={altText || "image description placeholder"}
                 className="h-full w-full object-cover"
               />

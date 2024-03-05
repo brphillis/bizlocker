@@ -238,6 +238,7 @@ const DropshipProductUpsert = ({ offRouteModule }: Props) => {
             <ClientOnly fallback={<div id="skeleton" />}>
               {() => (
                 <UploadMultipleImages
+                  disableFromBucketSource={true}
                   defaultImages={
                     dropshipProductResult?.item.images.map(
                       (imageSrc: string, index: number) => ({

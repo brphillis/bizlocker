@@ -32,6 +32,7 @@ import TabContent from "~/components/Tabs/TabContent";
 import type { productUpsertLoader } from "./index.server";
 import { IoTrashSharp } from "react-icons/io5";
 import { ActionAlert } from "~/components/Notifications/Alerts";
+import { sortArrayAlphabetically } from "~/helpers/arrayHelpers";
 
 const validateOptions = {
   name: true,
@@ -202,7 +203,12 @@ const UpsertProduct = ({ offRouteModule }: Props) => {
                     label="Categories"
                     extendContainerStyle="w-full"
                     extendStyle="!h-[150px]"
-                    selections={productSubCategories}
+                    selections={
+                      sortArrayAlphabetically(
+                        productSubCategories,
+                        "name",
+                      ) as SelectValue[]
+                    }
                     defaultValues={product?.productSubCategories}
                     validationErrors={
                       clientValidationErrors || serverValidationErrors
@@ -255,9 +261,8 @@ const UpsertProduct = ({ offRouteModule }: Props) => {
                   clientValidationErrors={clientValidationErrors}
                   serverValidationErrors={serverValidationErrors}
                 />
-                {product.variants && product.variants.length > 0 && (
-                  <ProductVariantUpsert storeId={storeId} product={product} />
-                )}
+
+                <ProductVariantUpsert storeId={storeId} product={product} />
               </>
             </TabContent>
 

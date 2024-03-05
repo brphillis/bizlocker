@@ -3,6 +3,7 @@ import { useSubmit } from "@remix-run/react";
 import { useRef } from "react";
 import { IoClose, IoPersonOutline } from "react-icons/io5";
 import { NavLink } from "react-router-dom";
+import Divider from "~/components/Filter/ProductFilterSideBar/Divider";
 
 const AccountButton = (user: User) => {
   const submit = useSubmit();
@@ -51,20 +52,28 @@ const AccountButton = (user: User) => {
           <div>{email}</div>
         </ul>
 
+        <Divider color="black" extendStyle="mb-4 mt-3" />
+
         <NavLink
-          className="relative mx-3 mb-1 flex cursor-pointer items-center justify-center gap-3 rounded-sm border border-base-300 bg-base-200 px-3 py-3 text-brand-black"
+          className="relative mx-3 mb-1 flex cursor-pointer items-center justify-center gap-3 rounded-sm border bg-brand-black border-brand-black/25 px-3 py-3 text-brand-white"
           to="/account/profile"
         >
           Account
         </NavLink>
         <NavLink
-          className="relative mx-3 mb-1 flex cursor-pointer items-center justify-center gap-3 rounded-sm border border-base-300 bg-base-200 px-3 py-3 text-brand-black"
+          className="relative mx-3 mb-1 flex cursor-pointer items-center justify-center gap-3 rounded-sm border bg-brand-black border-brand-black/25 px-3 py-3 text-brand-white"
           to="/account/orders"
         >
           Orders
         </NavLink>
+        <NavLink
+          className="relative mx-3 mb-1 flex cursor-pointer items-center justify-center gap-3 rounded-sm border bg-brand-black border-brand-black/25 px-3 py-3 text-brand-white"
+          to="/account/wishlist"
+        >
+          Wishlist
+        </NavLink>
         <div
-          className="relative mx-3 mb-1 flex cursor-pointer items-center justify-center gap-3 rounded-sm border border-base-300 bg-base-200 px-3 py-3 text-brand-black"
+          className="relative mx-3 mb-1 flex cursor-pointer items-center justify-center gap-3 rounded-sm border bg-brand-black border-brand-black/25 px-3 py-3 text-brand-white"
           onClick={() => submit(null, { method: "post", action: "/logout" })}
         >
           Logout

@@ -48,7 +48,7 @@ const ProductCategorySearch = () => {
         {productCategories && productCategories.length > 0 && (
           <BasicTable
             onRowClick={(id) =>
-              navigate(`/admin/upsert/productCategory?contentId=${id}`)
+              navigate(`/admin/upsert/product-category?contentId=${id}`)
             }
             currentPage={currentPage}
             objectArray={productCategories?.map((e: ProductCategory) => ({

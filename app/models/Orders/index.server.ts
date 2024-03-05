@@ -106,7 +106,15 @@ export const createOrder = async (
   const userId = userData?.id || undefined;
 
   const { createPaymentLinkResponse, confirmCode } =
-    await createPaymentLink_Integration(cartItems, BigInt(shippingPrice));
+    await createPaymentLink_Integration(
+      cartItems,
+      BigInt(Math.round(parseFloat(shippingPrice) * 100)),
+      address,
+      firstName,
+      lastName,
+      email,
+      phoneNumber,
+    );
 
   if (createPaymentLinkResponse && createPaymentLinkResponse.paymentLink) {
     const { paymentLink } = createPaymentLinkResponse;

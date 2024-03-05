@@ -325,10 +325,20 @@ export const upsertProduct = async (
       },
     });
 
+    const existingImageIds = existingProduct.images.map((e) => e.id);
+    const newImageIds = images?.map((e) => e.id);
+
+    const removedImageIds = existingImageIds.filter(
+      (id) => !newImageIds?.includes(id),
+    );
+
     // remove old images from bucket
     if (existingProduct.images && existingProduct.images.length > 0) {
       for (let i = 0; i < existingProduct.images.length; i++) {
-        if (existingProduct.images[i].href) {
+        if (
+          removedImageIds.includes(existingProduct.images[i].id) &&
+          existingProduct.images[i].href
+        ) {
           await removeS3Image(existingProduct.images[i].href!);
         }
       }
