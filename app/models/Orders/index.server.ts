@@ -94,6 +94,8 @@ export const createOrder = async (
   shippingMethod: string,
   shippingPrice: string,
   rememberInformation: boolean,
+  transactionId?: string,
+  disbalePaymentLink?: boolean,
 ): Promise<TypedResponse<never>> => {
   const userData = (await getUserDataFromSession(request)) as User;
   const cart = await getCart(request);
@@ -105,19 +107,27 @@ export const createOrder = async (
   const cartItems = cart?.cartItems as unknown as CartItemWithDetails[];
   const userId = userData?.id || undefined;
 
-  const { createPaymentLinkResponse, confirmCode } =
-    await createPaymentLink_Integration(
-      cartItems,
-      BigInt(Math.round(parseFloat(shippingPrice) * 100)),
-      address,
-      firstName,
-      lastName,
-      email,
-      phoneNumber,
-    );
+  //@ts-expect-error:type ignore
+  const { createPaymentLinkResponse, confirmCode } = !disbalePaymentLink
+    ? await createPaymentLink_Integration(
+        cartItems,
+        BigInt(Math.round(parseFloat(shippingPrice) * 100)),
+        address,
+        firstName,
+        lastName,
+        email,
+        phoneNumber,
+      )
+    : {};
 
-  if (createPaymentLinkResponse && createPaymentLinkResponse.paymentLink) {
-    const { paymentLink } = createPaymentLinkResponse;
+  if (
+    (createPaymentLinkResponse && createPaymentLinkResponse?.paymentLink) ||
+    disbalePaymentLink
+  ) {
+    //@ts-expect-error:conditional type
+    const { paymentLink } = !disbalePaymentLink
+      ? createPaymentLinkResponse
+      : {};
 
     const orderItems: unknown[] = [];
     let totalPrice = 0;
@@ -183,7 +193,6 @@ export const createOrder = async (
         }
 
         // Populate and order items array
-
         orderItems.push({
           variantId,
           quantity,
@@ -197,10 +206,10 @@ export const createOrder = async (
       data: {
         status: "created",
         rememberInformation: rememberInformation,
-        paymentCode: confirmCode,
+        paymentCode: confirmCode || transactionId,
         totalPrice: totalPrice,
-        paymentUrl: paymentLink.url!,
-        paymentLinkId: paymentLink.id!,
+        paymentUrl: paymentLink || transactionId,
+        paymentLinkId: paymentLink || transactionId,
         shippingMethod: shippingMethod,
         shippingPrice: shippingPrice,
         firstName: firstName,
@@ -269,11 +278,15 @@ export const createOrder = async (
     const session = await getSession(request);
     session.set(USER_SESSION_KEY, userNoCart);
 
-    return redirect(createPaymentLinkResponse.paymentLink.longUrl!, {
-      headers: {
-        "Set-Cookie": await sessionStorage.commitSession(session),
+    return redirect(
+      createPaymentLinkResponse?.paymentLink?.longUrl ||
+        `${process.env.SITE_URL}/order-success`,
+      {
+        headers: {
+          "Set-Cookie": await sessionStorage.commitSession(session),
+        },
       },
-    });
+    );
   }
 
   throw new Error("the order could not be generated");

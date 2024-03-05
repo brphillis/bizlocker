@@ -9,10 +9,12 @@ import { NewAddress } from "~/helpers/addressHelpers";
 import { getUserAddress } from "~/models/Address/index.server";
 import { getCartDeliveryOptions } from "~/helpers/cartHelpers";
 import { getUserDetails } from "~/models/UserDetails/index.server";
+import { getSolanaPrice_AUD } from "~/integrations/coinmarketcap/index.server";
 
 export const cartLoader = async (request: Request) => {
   const cart = await getCart(request);
   const user = await getUserDataFromSession(request);
+  const solanaPriceAUD = await getSolanaPrice_AUD();
 
   let userAddress, loaderShippingOptions, userDetails;
 
@@ -41,48 +43,50 @@ export const cartLoader = async (request: Request) => {
     userAddress,
     userDetails,
     loaderShippingOptions,
+    solanaPriceAUD,
   });
 };
 
-export const cartAction = async (request: Request) => {
-  const validate = {
-    firstName: true,
-    lastName: true,
-    email: true,
-    addressLine1: true,
-    suburb: true,
-    postcode: true,
-    state: true,
-    country: true,
-    phoneNumber: true,
-    shippingOptions: true,
-  };
+export const checkoutFormValidation = {
+  firstName: true,
+  lastName: true,
+  email: true,
+  addressLine1: true,
+  suburb: true,
+  postcode: true,
+  state: true,
+  country: true,
+  phoneNumber: true,
+  shippingOptions: true,
+};
 
+export const cartAction = async (request: Request) => {
   const { formEntries, formErrors } = validateForm(
     await request.formData(),
-    validate,
+    checkoutFormValidation,
   );
 
+  const {
+    rememberInformation,
+    firstName,
+    lastName,
+    email,
+    phoneNumber,
+    addressLine1,
+    addressLine2,
+    suburb,
+    postcode,
+    state,
+    country,
+    shippingOptions,
+    transactionId,
+  } = formEntries;
+
   switch (formEntries._action) {
-    case "placeOrder": {
+    case "squareCheckout": {
       if (formErrors) {
         return json({ validationErrors: formErrors });
       }
-
-      const {
-        rememberInformation,
-        firstName,
-        lastName,
-        email,
-        phoneNumber,
-        addressLine1,
-        addressLine2,
-        suburb,
-        postcode,
-        state,
-        country,
-        shippingOptions,
-      } = formEntries;
 
       const address: NewAddress = {
         addressLine1: addressLine1 as string,
@@ -97,7 +101,7 @@ export const cartAction = async (request: Request) => {
       const shippingMethod = shippingOptionsSplit[0];
       const shippingPrice = shippingOptionsSplit[1];
 
-      const createdOrder = await createOrder(
+      return await createOrder(
         request,
         firstName as string,
         lastName as string,
@@ -108,8 +112,8 @@ export const cartAction = async (request: Request) => {
         shippingPrice as string,
         rememberInformation ? true : false,
       );
-      return createdOrder;
     }
+
     case "getShipping": {
       const cart = await getCart(request);
       const { postCode } = formEntries;
@@ -121,6 +125,35 @@ export const cartAction = async (request: Request) => {
         );
         return json({ actionShippingOptions });
       } else return null;
+    }
+
+    case "processOrder": {
+      const address: NewAddress = {
+        addressLine1: addressLine1 as string,
+        addressLine2: addressLine2 as string,
+        suburb: suburb as string,
+        postcode: postcode as string,
+        state: state as string,
+        country: country as string,
+      };
+
+      const shippingOptionsSplit = (shippingOptions as string).split("_");
+      const shippingMethod = shippingOptionsSplit[0];
+      const shippingPrice = shippingOptionsSplit[1];
+
+      return await createOrder(
+        request,
+        firstName as string,
+        lastName as string,
+        email as string,
+        phoneNumber as string,
+        address as Address,
+        shippingMethod as string,
+        shippingPrice as string,
+        rememberInformation ? true : false,
+        transactionId as string,
+        true,
+      );
     }
   }
 };

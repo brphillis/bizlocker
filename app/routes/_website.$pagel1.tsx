@@ -20,6 +20,7 @@ import WebPage from "~/modules/Website/WebPage";
 import { Register } from "~/modules/Website/Register";
 import { Login } from "~/modules/Website/Login";
 import { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
+import OrderSuccess from "~/modules/Website/OrderSuccess";
 
 export const meta: MetaFunction = ({ data }) => {
   const loaderMeta = (data as { meta: MetaType })?.meta;
@@ -44,6 +45,8 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
       return null;
     case "logout":
       return await logoutLoader();
+    case "order-success":
+      return null;
     case "password-recovery":
       return null;
     case "payment-confirm":
@@ -93,9 +96,11 @@ const PageL1 = () => {
     case "cart":
       activeModule = <Cart />;
       break;
-      break;
     case "login":
       activeModule = <Login />;
+      break;
+    case "order-success":
+      activeModule = <OrderSuccess />;
       break;
     case "password-recovery":
       activeModule = null;

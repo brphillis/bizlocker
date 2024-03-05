@@ -7,7 +7,9 @@ dotenv.config();
 
 // Define the content to be written to the file
 const content = `
+export const CLIENT_ENV = \`DEVELOPMENT\`;\n
 export const CURRENT_BUCKET = \`${process.env.AWS_BUCKET + "-dev"}\`;\n
+export const SOLANA_WALLET = \`${process.env.SOLANA_WALLET}\`;\n
 `;
 
 // Specify the file path
