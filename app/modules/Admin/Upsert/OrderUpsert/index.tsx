@@ -256,6 +256,15 @@ const OrderUpsert = () => {
                 defaultValue={order?.trackingNumber}
               />
 
+              <BasicInput
+                name="paymentLinkId"
+                label="Payment Id"
+                placeholder="Payment Id"
+                type="text"
+                extendContainerStyle="w-full"
+                defaultValue={order?.paymentCode}
+              />
+
               <input
                 readOnly
                 hidden

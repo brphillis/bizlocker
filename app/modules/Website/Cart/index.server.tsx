@@ -10,6 +10,10 @@ import { getUserAddress } from "~/models/Address/index.server";
 import { getCartDeliveryOptions } from "~/helpers/cartHelpers";
 import { getUserDetails } from "~/models/UserDetails/index.server";
 import { getSolanaPrice_AUD } from "~/integrations/coinmarketcap/index.server";
+import {
+  createSolanaTransaction,
+  sendSolanaTransaction,
+} from "~/integrations/wallets/solflare/index.server";
 
 export const cartLoader = async (request: Request) => {
   const cart = await getCart(request);
@@ -80,6 +84,9 @@ export const cartAction = async (request: Request) => {
     country,
     shippingOptions,
     transactionId,
+    lamports,
+    senderPublicKey,
+    signedTransaction,
   } = formEntries;
 
   switch (formEntries._action) {
@@ -154,6 +161,23 @@ export const cartAction = async (request: Request) => {
         transactionId as string,
         true,
       );
+    }
+
+    case "createSolanaTransaction": {
+      const solanaTransaction = await createSolanaTransaction(
+        senderPublicKey as string,
+        Number(lamports),
+      );
+
+      return { solanaTransaction };
+    }
+
+    case "sendSolanaTransaction": {
+      const transactionResponse = await sendSolanaTransaction(
+        signedTransaction as string,
+      );
+
+      return { transactionResponse };
     }
   }
 };

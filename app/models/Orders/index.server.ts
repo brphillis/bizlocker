@@ -202,14 +202,14 @@ export const createOrder = async (
       }
     }
 
-    await prisma.order.create({
+    const order = await prisma.order.create({
       data: {
         status: "created",
         rememberInformation: rememberInformation,
-        paymentCode: confirmCode || transactionId,
+        paymentCode: confirmCode ? confirmCode : transactionId,
         totalPrice: totalPrice,
-        paymentUrl: paymentLink || transactionId,
-        paymentLinkId: paymentLink || transactionId,
+        paymentUrl: paymentLink ? paymentLink : transactionId,
+        paymentLinkId: paymentLink ? paymentLink : transactionId,
         shippingMethod: shippingMethod,
         shippingPrice: shippingPrice,
         firstName: firstName,
@@ -254,6 +254,14 @@ export const createOrder = async (
           })),
         },
       },
+      include: {
+        items: {
+          include: {
+            variant: true,
+          },
+        },
+        address: true,
+      },
     });
 
     //order is successful, delete the cart
@@ -278,9 +286,14 @@ export const createOrder = async (
     const session = await getSession(request);
     session.set(USER_SESSION_KEY, userNoCart);
 
+    // if payment link is disabled, order is payed for while processed
+    if (disbalePaymentLink) {
+      await sendOrderReceiptEmail(order.email!, order as unknown as Order);
+    }
+
     return redirect(
       createPaymentLinkResponse?.paymentLink?.longUrl ||
-        `${process.env.SITE_URL}/order-success`,
+        `${process.env.SITE_URL}/order-success?id=${order.id}`,
       {
         headers: {
           "Set-Cookie": await sessionStorage.commitSession(session),

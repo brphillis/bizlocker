@@ -69,3 +69,32 @@ export const objectToNumber = (obj: object): number => {
   }, 0);
   return hash;
 };
+
+// export const stringifyObject = (obj: unknown): string => {
+//   const replacer = (key: string, value: any) => {
+//     if (value instanceof TransactionInstruction) {
+//       // Convert TransactionInstruction to serializable format
+//       return {
+//         keys: value.keys.map((keyObj: any) => keyObj.toString()),
+//         programId: value.programId.toString(),
+//         data: value.data.toString("hex"),
+//       };
+//     } else if (value instanceof PublicKey) {
+//       // Convert PublicKey to base58 representation
+//       return value.toBase58();
+//     }
+//     return value;
+//   };
+
+//   return JSON.stringify(obj, replacer);
+// };
+
+export const parseObject = (jsonString: string): unknown => {
+  return JSON.parse(jsonString, (key, value) => {
+    if (typeof value === "string" && /^function\s*\(/.test(value)) {
+      // If the string looks like a function, parse it as a function
+      return eval(`(${value})`);
+    }
+    return value;
+  });
+};

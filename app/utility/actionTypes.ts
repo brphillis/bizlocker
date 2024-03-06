@@ -24,4 +24,6 @@ export interface ActionReturnTypes {
   user: User;
   navigationPromotions: PromotionWithContent[];
   order: Order;
+  solanaTransaction?: string;
+  transactionResponse?: unknown;
 }

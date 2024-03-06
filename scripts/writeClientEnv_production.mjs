@@ -5,7 +5,6 @@ import * as path from "path";
 const content = `
 export const CLIENT_ENV = \`PRODUCTION\`;\n
 export const CURRENT_BUCKET = \`${process.env.AWS_BUCKET}\`;\n
-export const SOLANA_WALLET = \`${process.env.SOLANA_WALLET}\`;\n
 `;
 
 console.log("BUILDING ... RUNNING CLIENT ENV SCRIPT - PRODUCTION");

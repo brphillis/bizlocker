@@ -104,7 +104,8 @@ const ProductCard = (product: ProductWithDetails) => {
                 </span>
               )}
               <span className="text-sm font-bold text-gray-900">
-                ${variants && getVariantUnitPrice(variants[0], product)}&nbsp;
+                ${variants && getVariantUnitPrice(variants[0], product)}
+                &nbsp;<span className="opacity-25">AUD</span>
               </span>
             </p>
           </div>

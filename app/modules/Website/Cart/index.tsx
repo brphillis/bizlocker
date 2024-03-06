@@ -39,8 +39,12 @@ const Cart = () => {
     solanaPriceAUD,
   } = useLoaderData<typeof cartLoader>();
 
-  const { validationErrors, actionShippingOptions } =
-    (useActionData() as ActionReturnTypes) || {};
+  const {
+    validationErrors,
+    actionShippingOptions,
+    solanaTransaction,
+    transactionResponse,
+  } = (useActionData() as ActionReturnTypes) || {};
 
   const { cartItems } = cart || {};
 
@@ -303,7 +307,13 @@ const Cart = () => {
             </button>
 
             <ClientOnly>
-              {() => <WalletAdapterButton solanaPriceAUD={solanaPriceAUD} />}
+              {() => (
+                <WalletAdapterButton
+                  solanaPriceAUD={solanaPriceAUD}
+                  solanaTransaction={solanaTransaction}
+                  transactionResponse={transactionResponse}
+                />
+              )}
             </ClientOnly>
           </div>
 

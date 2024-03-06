@@ -21,6 +21,7 @@ import { Register } from "~/modules/Website/Register";
 import { Login } from "~/modules/Website/Login";
 import { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import OrderSuccess from "~/modules/Website/OrderSuccess";
+import { orderSuccessLoader } from "~/modules/Website/OrderSuccess/index.server";
 
 export const meta: MetaFunction = ({ data }) => {
   const loaderMeta = (data as { meta: MetaType })?.meta;
@@ -46,7 +47,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
     case "logout":
       return await logoutLoader();
     case "order-success":
-      return null;
+      return await orderSuccessLoader();
     case "password-recovery":
       return null;
     case "payment-confirm":

@@ -36,6 +36,7 @@ export const objectPositionMobileSelectValues = [
   { id: "max-md:object-left-top", name: "Top Left" },
 
   { id: "max-md:object-left", name: "Left" },
+  { id: "max-md:object-[45%_50%]", name: "Slight Left" },
   { id: "max-md:object-[25%_50%]", name: "Half Left" },
   { id: "max-md:object-[25%_25%]", name: "Half Top Left" },
   { id: "max-md:object-[25%_75%]", name: "Half Bottom Left" },

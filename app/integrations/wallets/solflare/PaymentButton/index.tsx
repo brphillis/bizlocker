@@ -1,18 +1,12 @@
 import { useWallet } from "@solana/wallet-adapter-react";
-import {
-  Connection,
-  PublicKey,
-  SystemProgram,
-  Transaction,
-} from "@solana/web3.js";
-import { useEffect, useState } from "react";
+import { Transaction } from "@solana/web3.js";
+import { useEffect } from "react";
 import * as buffer from "buffer";
 import { useSubmit } from "@remix-run/react";
 import { validateForm } from "~/utility/validate";
 import { Toast } from "~/components/Notifications/Toast";
 import { capitalizeAndSpace } from "~/helpers/stringHelpers";
 import { calculateOrderTotalInLamports } from "../../helpers";
-import { SOLANA_WALLET } from "~/build/clientEnv";
 
 export const checkoutFormValidation = {
   firstName: true,
@@ -29,11 +23,16 @@ export const checkoutFormValidation = {
 
 type Props = {
   solanaPriceAUD?: number;
+  solanaTransaction?: string;
+  transactionResponse?: unknown;
 };
 
-const PaymentButton = ({ solanaPriceAUD }: Props) => {
+const PaymentButton = ({
+  solanaPriceAUD,
+  solanaTransaction,
+  transactionResponse,
+}: Props) => {
   const submit = useSubmit();
-  const [transactionId, setTransactionId] = useState<string>();
 
   const { connected, publicKey, signTransaction, sendTransaction } =
     useWallet();
@@ -53,8 +52,6 @@ const PaymentButton = ({ solanaPriceAUD }: Props) => {
     const { formErrors } = validateForm(formData, checkoutFormValidation);
 
     if (formErrors) {
-      console.log("formerrors", formErrors);
-
       const keys = Object.keys(formErrors);
 
       Toast(
@@ -87,10 +84,6 @@ const PaymentButton = ({ solanaPriceAUD }: Props) => {
       return;
     }
 
-    const connection = new Connection(
-      "https://solana-mainnet.g.alchemy.com/v2/alcht_8oufyyaTqridaf8devlAysKMalHUNU",
-    );
-
     if (!connected) {
       console.error("Wallet not connected");
       return;
@@ -106,60 +99,65 @@ const PaymentButton = ({ solanaPriceAUD }: Props) => {
       return;
     }
 
-    const senderPublicKey = publicKey;
-
-    const recipientPublicKey = new PublicKey(SOLANA_WALLET!);
-
     const orderTotalInLamports = calculateOrderTotalInLamports(
       orderTotalPlusShipping,
       solanaPriceAUD,
     );
 
-    try {
-      // Construct a transaction to transfer SOL
-      const transaction = new Transaction().add(
-        SystemProgram.transfer({
-          fromPubkey: senderPublicKey,
-          toPubkey: recipientPublicKey,
-          lamports: orderTotalInLamports,
-        }),
-      );
+    const createTransactionFormData = new FormData();
 
-      const blockdetails = await connection.getLatestBlockhash();
+    createTransactionFormData.set("_action", "createSolanaTransaction");
+    createTransactionFormData.set("lamports", orderTotalInLamports.toString());
+    createTransactionFormData.set("senderPublicKey", publicKey.toString());
 
-      transaction.lastValidBlockHeight = blockdetails.lastValidBlockHeight;
-      transaction.recentBlockhash = blockdetails.blockhash;
-      transaction.feePayer = senderPublicKey;
-
-      // Popup Appears
-      const signedTransaction = await signTransaction(transaction);
-
-      // Send the signed transaction
-      const transactionResponse = await sendTransaction(
-        signedTransaction,
-        connection,
-      );
-
-      setTransactionId(transactionResponse);
-    } catch (error) {
-      console.error("Transaction failed:", error);
-    }
+    submit(createTransactionFormData, { method: "POST" });
   };
 
+  // Prompt user to sign and accept/deny
   useEffect(() => {
-    window.Buffer = buffer.Buffer;
-  }, []);
+    if (solanaTransaction && signTransaction) {
+      const initiateSignTransaction = async () => {
+        try {
+          const transactionBuffer = Buffer.from(solanaTransaction, "base64");
 
+          const deserializedTransaction = Transaction.from(transactionBuffer);
+
+          const signedTransaction = await signTransaction(
+            deserializedTransaction,
+          );
+
+          const serializedTransaction = signedTransaction.serialize({
+            verifySignatures: false,
+            requireAllSignatures: false,
+          });
+
+          const encodedTransaction = serializedTransaction.toString("base64");
+
+          const formData = new FormData();
+          formData.set("_action", "sendSolanaTransaction");
+          formData.set("signedTransaction", encodedTransaction);
+          submit(formData, { method: "POST" });
+        } catch (error) {
+          console.error("Transaction failed:", error);
+        }
+      };
+
+      initiateSignTransaction();
+    }
+  }, [solanaTransaction, sendTransaction, signTransaction, submit]);
+
+  // Create the order in the CMS
   useEffect(() => {
-    if (transactionId) {
+    if (transactionResponse) {
       const formData = new FormData();
       formData.set("_action", "processOrder");
-      formData.set("transactionId", transactionId);
+      formData.set("transactionId", transactionResponse as string);
 
       const currentForm = document.getElementById(
         "CheckoutForm",
       ) as HTMLFormElement;
 
+      // Add all user details to the form
       if (currentForm) {
         for (const [key, value] of new FormData(currentForm)) {
           formData.set(key, value);
@@ -168,7 +166,12 @@ const PaymentButton = ({ solanaPriceAUD }: Props) => {
 
       submit(formData, { method: "POST" });
     }
-  }, [submit, transactionId]);
+  }, [submit, transactionResponse]);
+
+  // Specify Client Buffer
+  useEffect(() => {
+    window.Buffer = buffer.Buffer;
+  }, []);
 
   return (
     <>

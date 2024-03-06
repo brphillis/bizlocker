@@ -18,9 +18,15 @@ import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 
 type Props = {
   solanaPriceAUD?: number;
+  solanaTransaction?: string;
+  transactionResponse?: unknown;
 };
 
-export const WalletAdapterButton = ({ solanaPriceAUD }: Props) => {
+export const WalletAdapterButton = ({
+  solanaPriceAUD,
+  solanaTransaction,
+  transactionResponse,
+}: Props) => {
   //CHANGE BACK
   const network =
     (CLIENT_ENV as unknown) === "PRODUCTION"
@@ -35,7 +41,11 @@ export const WalletAdapterButton = ({ solanaPriceAUD }: Props) => {
       <WalletProvider wallets={wallets}>
         <WalletModalProvider>
           <WalletMultiButton />
-          <PaymentButton solanaPriceAUD={solanaPriceAUD} />
+          <PaymentButton
+            solanaPriceAUD={solanaPriceAUD}
+            solanaTransaction={solanaTransaction}
+            transactionResponse={transactionResponse}
+          />
         </WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>
