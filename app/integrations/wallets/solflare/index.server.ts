@@ -10,7 +10,7 @@ const isProduction = process.env.NODE_ENV === "production";
 
 const connection = new Connection(
   isProduction
-    ? "https://solana-mainnet.g.alchemy.com/v2/alcht_LIAimR5l4cs930JqGrUhyn9fSzzu4q"
+    ? `https://solana-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY}`
     : "https://api.devnet.solana.com",
 );
 
@@ -54,6 +54,7 @@ export const createSolanaTransaction = async (
     requireAllSignatures: false,
   });
 
+  // Conv to Base64
   const solanaTransaction = serializedTransaction.toString("base64");
 
   // Returning the encoded transaction
@@ -63,9 +64,7 @@ export const createSolanaTransaction = async (
 export const sendSolanaTransaction = async (signedTransaction: string) => {
   const signature = await connection.sendEncodedTransaction(signedTransaction);
 
-  // console.log("GETTING BLOCKHASH");
   // const latestBlockHash = await connection.getLatestBlockhash();
-  // console.log("GOT BLOCKHASH", latestBlockHash);
 
   // const confirmStrategy: BlockheightBasedTransactionConfirmationStrategy = {
   //   blockhash: latestBlockHash.blockhash,
@@ -75,8 +74,6 @@ export const sendSolanaTransaction = async (signedTransaction: string) => {
 
   // const transactionResponse =
   //   await connection.confirmTransaction(confirmStrategy);
-
-  // console.log("FINAL RESPONSE", transactionResponse);
 
   return signature;
 };

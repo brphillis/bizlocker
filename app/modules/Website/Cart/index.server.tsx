@@ -3,7 +3,7 @@ import { validateForm } from "~/utility/validate";
 import { getCart } from "~/models/Cart/index.server";
 import { CartWithDetails } from "~/models/Cart/types";
 import { getUserDataFromSession } from "~/session.server";
-import { json } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
 import { createOrder } from "~/models/Orders/index.server";
 import { NewAddress } from "~/helpers/addressHelpers";
 import { getUserAddress } from "~/models/Address/index.server";
@@ -17,6 +17,11 @@ import {
 
 export const cartLoader = async (request: Request) => {
   const cart = await getCart(request);
+
+  if (!cart) {
+    return redirect("/");
+  }
+
   const user = await getUserDataFromSession(request);
   const solanaPriceAUD = await getSolanaPrice_AUD();
 

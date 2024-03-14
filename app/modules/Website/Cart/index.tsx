@@ -12,6 +12,7 @@ import {
   Form,
   useActionData,
   useLoaderData,
+  useNavigate,
   useSubmit,
 } from "@remix-run/react";
 import {
@@ -29,6 +30,7 @@ import { ClientOnly } from "~/components/Client/ClientOnly";
 
 const Cart = () => {
   const submit = useSubmit();
+  const navigate = useNavigate();
 
   const {
     cart,
@@ -88,6 +90,9 @@ const Cart = () => {
                       extendStyle="h-20 w-20 border border-base-300 object-cover md:h-[8.8rem] md:w-[8.8rem]"
                       src={images[0].href}
                       alt={name + "_cartImage"}
+                      onClick={() =>
+                        navigate(`/product/${name}?id=${variant?.productId}`)
+                      }
                     />
                   )}
                   <div className="relative w-full text-center">

@@ -20,18 +20,21 @@ type Props = {
   solanaPriceAUD?: number;
   solanaTransaction?: string;
   transactionResponse?: unknown;
+  disableValidation?: boolean;
+  checkoutButtonLabel?: string;
 };
 
 export const WalletAdapterButton = ({
   solanaPriceAUD,
   solanaTransaction,
   transactionResponse,
+  disableValidation,
+  checkoutButtonLabel,
 }: Props) => {
-  //CHANGE BACK
   const network =
     (CLIENT_ENV as unknown) === "PRODUCTION"
-      ? WalletAdapterNetwork.Devnet
-      : WalletAdapterNetwork.Mainnet;
+      ? WalletAdapterNetwork.Mainnet
+      : WalletAdapterNetwork.Devnet;
 
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
   const wallets = useMemo(() => [], []);
@@ -45,6 +48,8 @@ export const WalletAdapterButton = ({
             solanaPriceAUD={solanaPriceAUD}
             solanaTransaction={solanaTransaction}
             transactionResponse={transactionResponse}
+            disableValidation={disableValidation}
+            checkoutButtonLabel={checkoutButtonLabel}
           />
         </WalletModalProvider>
       </WalletProvider>

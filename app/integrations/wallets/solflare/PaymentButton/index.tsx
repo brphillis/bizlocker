@@ -25,12 +25,16 @@ type Props = {
   solanaPriceAUD?: number;
   solanaTransaction?: string;
   transactionResponse?: unknown;
+  disableValidation?: boolean;
+  checkoutButtonLabel?: string;
 };
 
 const PaymentButton = ({
   solanaPriceAUD,
   solanaTransaction,
   transactionResponse,
+  disableValidation,
+  checkoutButtonLabel,
 }: Props) => {
   const submit = useSubmit();
 
@@ -49,7 +53,10 @@ const PaymentButton = ({
       }
     }
 
-    const { formErrors } = validateForm(formData, checkoutFormValidation);
+    const { formErrors } = validateForm(
+      formData,
+      disableValidation ? {} : checkoutFormValidation,
+    );
 
     if (formErrors) {
       const keys = Object.keys(formErrors);
@@ -68,7 +75,13 @@ const PaymentButton = ({
 
     const orderTotal = Number(formData.get("orderTotal") as string);
 
-    if (!shippingTotal || !orderTotal || !solanaPriceAUD) {
+    // if (!shippingTotal || !orderTotal || !solanaPriceAUD) {
+    //   Toast("error", 2000, "Could not Calculate Price");
+    //   return;
+    // }
+
+    if (!solanaPriceAUD) {
+      console.log("trugg");
       Toast("error", 2000, "Could not Calculate Price");
       return;
     }
@@ -76,9 +89,10 @@ const PaymentButton = ({
     const orderTotalPlusShipping = shippingTotal + orderTotal;
 
     if (
-      isNaN(shippingTotal) ||
-      isNaN(orderTotal) ||
-      isNaN(orderTotalPlusShipping)
+      !disableValidation &&
+      (isNaN(shippingTotal) ||
+        isNaN(orderTotal) ||
+        isNaN(orderTotalPlusShipping))
     ) {
       Toast("error", 2000, "Could not Calculate Price");
       return;
@@ -182,7 +196,7 @@ const PaymentButton = ({
             onClick={() => createTransaction()}
             type="button"
           >
-            Solana Checkout
+            {checkoutButtonLabel ? checkoutButtonLabel : "Solana Checkout"}
           </button>
         </>
       )}
