@@ -8,7 +8,7 @@ import {
   sessionStorage,
   USER_SESSION_KEY,
 } from "../../session.server";
-import { getCart } from "../Cart/index.server";
+import { getSessionCart } from "../Cart/index.server";
 import { getVariantUnitPrice } from "../../helpers/numberHelpers";
 import { sendOrderReceiptEmail } from "../../integrations/sendgrid/emails/orderReceipt";
 import { createPaymentLink_Integration } from "../../integrations/_master/payments/index.server";
@@ -31,7 +31,13 @@ export const getOrder = async (
         include: {
           variant: {
             include: {
-              product: true,
+              product: {
+                include: {
+                  images: {
+                    take: 1,
+                  },
+                },
+              },
             },
           },
         },
@@ -98,7 +104,7 @@ export const createOrder = async (
   disbalePaymentLink?: boolean,
 ): Promise<TypedResponse<never>> => {
   const userData = (await getUserDataFromSession(request)) as User;
-  const cart = await getCart(request);
+  const cart = await getSessionCart(request);
 
   if (!cart) {
     throw new Error("Cart not found");

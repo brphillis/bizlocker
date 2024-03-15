@@ -62,6 +62,7 @@ function getClient() {
     query: {
       $allModels: {
         create({ args, query }) {
+          console.log("creating");
           args.data = { ...args.data, createdAt: createISO8601DateNow() };
           return query(args);
         },
@@ -72,6 +73,7 @@ function getClient() {
         },
 
         update({ args, query }) {
+          console.log("updating");
           args.data = { ...args.data, updatedAt: createISO8601DateNow() };
           return query(args);
         },

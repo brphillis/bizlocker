@@ -1,5 +1,5 @@
 import { User } from "@prisma/client";
-import { getCart } from "~/models/Cart/index.server";
+import { getSessionCart } from "~/models/Cart/index.server";
 import { json } from "@remix-run/node";
 import { getBrands } from "~/models/Brands/index.server";
 import { getUserDataFromSession } from "~/session.server";
@@ -10,7 +10,7 @@ import { getProductCategories } from "~/models/ProductCategories/index.server";
 
 export const websiteRootLoader = async (request: Request) => {
   const user = (await getUserDataFromSession(request)) as User | null;
-  const cart = await getCart(request);
+  const cart = await getSessionCart(request);
 
   const departments = await getDepartments();
   const brands = await getBrands();

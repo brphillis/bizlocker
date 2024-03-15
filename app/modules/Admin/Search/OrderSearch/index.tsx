@@ -31,15 +31,17 @@ const OrderSearch = () => {
 
         <div className="divider w-full" />
 
-        {orders && orders.length > 0 && (
+        {orders?.length > 0 && (
           <BasicTable
             onRowClick={(id) => navigate(`/admin/upsert/order?contentId=${id}`)}
             currentPage={currentPage}
-            objectArray={orders?.map((e: OrderWithDetails) => ({
-              id: e.id,
-              user: e.user?.email,
-              status: e.status,
-            }))}
+            objectArray={orders.map(
+              ({ id, email, status }: OrderWithDetails) => ({
+                id,
+                user: email,
+                status: status,
+              }),
+            )}
           />
         )}
 

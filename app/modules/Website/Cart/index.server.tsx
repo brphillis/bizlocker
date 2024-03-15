@@ -1,6 +1,6 @@
 import { Address } from "@prisma/client";
 import { validateForm } from "~/utility/validate";
-import { getCart } from "~/models/Cart/index.server";
+import { getSessionCart } from "~/models/Cart/index.server";
 import { CartWithDetails } from "~/models/Cart/types";
 import { getUserDataFromSession } from "~/session.server";
 import { json, redirect } from "@remix-run/node";
@@ -16,7 +16,7 @@ import {
 } from "~/integrations/wallets/solflare/index.server";
 
 export const cartLoader = async (request: Request) => {
-  const cart = await getCart(request);
+  const cart = await getSessionCart(request);
 
   if (!cart) {
     return redirect("/");
@@ -127,7 +127,7 @@ export const cartAction = async (request: Request) => {
     }
 
     case "getShipping": {
-      const cart = await getCart(request);
+      const cart = await getSessionCart(request);
       const { postCode } = formEntries;
 
       if (cart && !isNaN(parseInt(postCode as string))) {

@@ -1,4 +1,3 @@
-import type { Campaign } from "@prisma/client";
 import Pagination from "~/components/Pagination";
 import BasicTable from "~/components/Tables/BasicTable";
 import AdminContentSearch from "~/components/Search/AdminContentSearch";
@@ -11,11 +10,12 @@ import {
   useNavigate,
   useSearchParams,
 } from "@remix-run/react";
-import type { campaignSearchLoader } from "./index.server";
 
-const CampaignSearch = () => {
-  const { campaigns, totalPages } =
-    useLoaderData<typeof campaignSearchLoader>();
+import { cartSearchLoader } from "./index.server";
+import { CartWithDetails } from "~/models/Cart/types";
+
+const CartSearch = () => {
+  const { carts, totalPages } = useLoaderData<typeof cartSearchLoader>();
 
   const navigate = useNavigate();
 
@@ -27,29 +27,25 @@ const CampaignSearch = () => {
     <AdminPageWrapper>
       <Form method="GET" className="relative h-full w-full bg-base-200 p-6">
         <AdminPageHeader
-          title="Manage Campaign"
-          buttonLabel="Add Campaign"
-          buttonLink="/admin/upsert/campaign?contentId=add"
+          title="Manage Carts"
+          buttonLabel="Add Cart"
+          buttonLink="/admin/upsert/cart?contentId=add"
         />
 
-        <AdminContentSearch name={true} />
+        <AdminContentSearch email={true} />
 
         <div className="divider w-full" />
 
-        {campaigns?.length > 0 && (
+        {carts && carts.length > 0 && (
           <BasicTable
-            onRowClick={(id) =>
-              navigate(`/admin/upsert/campaign?contentId=${id}`)
-            }
+            onRowClick={(id) => navigate(`/admin/upsert/cart?contentId=${id}`)}
             currentPage={currentPage}
-            objectArray={campaigns.map(
-              ({ id, name, createdAt, isActive }: Campaign) => ({
-                id,
-                name,
-                created: createdAt,
-                active: isActive,
-              }),
-            )}
+            objectArray={carts.map((e: CartWithDetails) => ({
+              id: e.id,
+              email: e.user?.email || "Guest",
+              createdAt: e.createdAt,
+              lastUpdated: e.updatedAt,
+            }))}
           />
         )}
 
@@ -60,4 +56,4 @@ const CampaignSearch = () => {
   );
 };
 
-export default CampaignSearch;
+export default CartSearch;

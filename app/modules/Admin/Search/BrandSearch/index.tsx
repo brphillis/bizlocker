@@ -36,15 +36,17 @@ const BrandSearch = () => {
 
         <div className="divider w-full" />
 
-        {brands && brands.length > 0 && (
+        {brands?.length > 0 && (
           <BasicTable
             onRowClick={(id) => navigate(`/admin/upsert/brand?contentId=${id}`)}
             currentPage={currentPage}
-            objectArray={brands.map((e: BrandWithContent) => ({
-              id: e.id,
-              name: e.name,
-              isActive: e.isActive,
-            }))}
+            objectArray={brands.map(
+              ({ id, name, isActive }: BrandWithContent) => ({
+                id,
+                name,
+                isActive,
+              }),
+            )}
           />
         )}
 

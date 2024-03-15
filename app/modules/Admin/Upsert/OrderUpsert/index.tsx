@@ -19,6 +19,7 @@ import {
 import WindowContainer from "~/components/Layout/Containers/WindowContainer";
 import { orderUpsertLoader } from "./index.server";
 import { OrderItemWithDetails } from "~/models/Orders/types";
+import ProductCard_Cart from "~/components/Cards/ProductCard_Cart";
 
 const OrderUpsert = () => {
   const { order } = useLoaderData<typeof orderUpsertLoader>();
@@ -114,27 +115,15 @@ const OrderUpsert = () => {
 
             <div className="flex flex-col flex-wrap items-center justify-center gap-3">
               {items?.map(({ variant, quantity }: OrderItemWithDetails) => {
-                const { product, price, salePrice, isOnSale } = variant || {};
-
-                return (
-                  <div
-                    className="relative flex w-full max-w-full flex-row items-center rounded-lg bg-base-100 p-3"
-                    key={"cartItem-" + product?.name}
-                  >
-                    <div className="relative w-full text-center">
-                      <div>
-                        {product?.name} x {quantity}
-                      </div>
-                      <div className="text-xs opacity-50">{variant?.name}</div>
-                      <div className="!rounded-none">
-                        $
-                        {isOnSale
-                          ? salePrice?.toFixed(2)
-                          : price?.toFixed(2) + " ea"}
-                      </div>
-                    </div>
-                  </div>
-                );
+                if (variant) {
+                  return (
+                    <ProductCard_Cart
+                      key={"cartItem-" + variant?.product?.name}
+                      variant={variant}
+                      quantity={quantity}
+                    />
+                  );
+                } else return null;
               })}
 
               <div className="mt-3 text-center">

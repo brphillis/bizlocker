@@ -93,6 +93,11 @@ import {
 } from "~/modules/Admin/Upsert/TasksUpsert/index.server";
 import TasksUpsert from "~/modules/Admin/Upsert/TasksUpsert";
 import { MetaFunction } from "@remix-run/node";
+import {
+  cartUpsertAction,
+  cartUpsertLoader,
+} from "~/modules/Admin/Upsert/CartUpsert/index.server";
+import CartUpsert from "~/modules/Admin/Upsert/CartUpsert";
 
 export const meta: MetaFunction = () => {
   return [
@@ -120,6 +125,8 @@ export const loader = async ({ request, params }: ActionFunctionArgs) => {
       return await brandUpsertLoader(request);
     case "campaign":
       return await campaignUpsertLoader(request);
+    case "cart":
+      return await cartUpsertLoader(request);
     case "department":
       return await departmentUpsertLoader(request);
     case "dropship-product":
@@ -169,6 +176,8 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
       return await brandUpsertAction(request);
     case "campaign":
       return await campaignUpsertAction(request, params);
+    case "cart":
+      return await cartUpsertAction(request);
     case "department":
       return await departmentUpsertAction(request);
     case "dropship-product":
@@ -219,6 +228,7 @@ const UpsertContent = ({ offRouteModules }: Props) => {
       {contentType === "campaign" && (
         <CampaignUpsert offRouteModule={offRouteModules} />
       )}
+      {contentType === "cart" && <CartUpsert />}
       {contentType === "department" && (
         <DepartmentUpsert offRouteModule={offRouteModules} />
       )}

@@ -39,6 +39,8 @@ import { userSearchLoader } from "~/modules/Admin/Search/UserSearch/index.server
 import { dropshipSearchLoader } from "~/modules/Admin/Search/DropShipSearch/index.server";
 import DropshipSearch from "~/modules/Admin/Search/DropShipSearch";
 import { MetaFunction } from "@remix-run/node";
+import { cartSearchLoader } from "~/modules/Admin/Search/CartSearch/index.server";
+import CartSearch from "~/modules/Admin/Search/CartSearch";
 
 export const meta: MetaFunction = () => {
   return [
@@ -68,6 +70,8 @@ export const loader = async ({ request, params }: ActionFunctionArgs) => {
       return await brandSearchLoader(request);
     case "campaign":
       return await campaignSearchLoader(request);
+    case "cart":
+      return await cartSearchLoader(request);
     case "department":
       return await departmentSearchLoader(request);
     case "dropship":
@@ -115,6 +119,9 @@ const SearchContent = () => {
       break;
     case "campaign":
       searchComponent = <CampaignSearch />;
+      break;
+    case "cart":
+      searchComponent = <CartSearch />;
       break;
     case "department":
       searchComponent = <DepartmentSearch />;
