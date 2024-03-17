@@ -46,7 +46,7 @@ export const createSolanaTransaction = async (
   transaction.feePayer = _senderPublicKey;
 
   // Server signs transaction
-  transaction.sign(keypair);
+  // transaction.sign(keypair);
 
   // Serialize the transaction
   const serializedTransaction = transaction.serialize({

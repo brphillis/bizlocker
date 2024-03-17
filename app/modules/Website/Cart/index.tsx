@@ -27,6 +27,7 @@ import mastercardLogo from "../../../assets/logos/mastercard-logo.svg";
 import solanaLogo from "../../../assets/logos/solana-logo.svg";
 import { WalletAdapterButton } from "~/integrations/wallets/solflare";
 import { ClientOnly } from "~/components/Client/ClientOnly";
+import { AusPostDeliveryOption } from "~/integrations/auspost/types";
 
 const Cart = () => {
   const submit = useSubmit();
@@ -51,6 +52,9 @@ const Cart = () => {
   const { cartItems } = cart || {};
 
   const [orderTotal, setOrderTotal] = useState<number>(0);
+  const [hasFreeShipping, setHasFreeShipping] = useState<boolean>(false);
+  const [freeShippingOptions, setFreeShippingOptions] =
+    useState<AusPostDeliveryOption[]>();
 
   const handleUpdateShipping = (postCode: string) => {
     const formData = new FormData();
@@ -63,6 +67,21 @@ const Cart = () => {
     if (cartItems) {
       const total = calculateCartTotal(cartItems);
       setOrderTotal(total);
+
+      cartItems.forEach((cartItem) => {
+        if (cartItem?.variant?.sku.includes("GIFTCARD")) {
+          setHasFreeShipping(true);
+        }
+
+        setFreeShippingOptions([
+          {
+            code: "AUS_DIGITAL_POST",
+            name: "Digital Delivery",
+            price: "0.00",
+            max_extra_cover: 0,
+          },
+        ]);
+      });
     }
   }, [cartItems]);
 
@@ -216,7 +235,7 @@ const Cart = () => {
             defaultValue={userAddress?.postcode || undefined}
             validationErrors={validationErrors}
             onChange={(e) => {
-              if (e && e.toString().length >= 4) {
+              if (!hasFreeShipping && e && e.toString().length >= 4) {
                 handleUpdateShipping(e as string);
               }
             }}
@@ -261,7 +280,9 @@ const Cart = () => {
               hidden
             />
 
-            {(actionShippingOptions || loaderShippingOptions) && (
+            {(actionShippingOptions ||
+              loaderShippingOptions ||
+              freeShippingOptions) && (
               <>
                 <BasicSelect
                   name="shippingOptions"
@@ -270,7 +291,9 @@ const Cart = () => {
                   extendContainerStyle="!w-full"
                   defaultValue={undefined}
                   selections={(
-                    actionShippingOptions || loaderShippingOptions
+                    actionShippingOptions ||
+                    loaderShippingOptions ||
+                    freeShippingOptions
                   ).map((e) => {
                     return {
                       id: e.name + "_" + e.price,

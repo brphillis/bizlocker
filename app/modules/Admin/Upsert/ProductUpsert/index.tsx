@@ -144,7 +144,7 @@ const UpsertProduct = ({ offRouteModule }: Props) => {
           <Form
             method="POST"
             onSubmit={handleSubmit}
-            className="scrollbar-hide relative w-[640px] max-w-full overflow-y-auto"
+            className="scrollbar-hide relative w-[640px] max-w-full"
           >
             <TabContent tab="general" activeTab={activeTab}>
               <>
@@ -152,7 +152,7 @@ const UpsertProduct = ({ offRouteModule }: Props) => {
                   type="submit"
                   name="_action"
                   value="delete"
-                  className="absolute z-50 top-0 right-0 text-white bg-error rounded-full p-1 text-sm"
+                  className="absolute z-50 top-[-10px] max-md:top-0 right-0 text-white bg-error rounded-full p-1 text-sm"
                 >
                   <IoTrashSharp />
                 </button>

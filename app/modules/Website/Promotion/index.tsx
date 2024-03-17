@@ -1,6 +1,6 @@
 import { useLoaderData } from "@remix-run/react";
 import ProductGrid from "~/components/Grids/ProductGrid";
-import ProductSort from "~/components/Sorting/ProductSort";
+import BasicSortBar from "~/components/Sorting/BasicSortBar";
 import PromotionBanner from "~/components/Banners/PromotionBanner";
 import PageWrapper from "~/components/Layout/Wrappers/PageWrapper";
 import { promotionLoader } from "~/modules/Website/Promotion/index.server";
@@ -17,6 +17,8 @@ const Promotion = () => {
     brands,
   } = useLoaderData<typeof promotionLoader>();
 
+  console.log("products", products);
+
   return (
     <PageWrapper>
       <>
@@ -30,8 +32,12 @@ const Promotion = () => {
       </>
 
       <div className="w-[1280px] max-w-full">
-        <ProductSort
+        <BasicSortBar
           totalCount={(products && products?.length * totalPages) || 0}
+          popular={true}
+          name={true}
+          price={true}
+          createdAt={true}
         />
         <div className="my-3 w-full border-b border-brand-black/20" />
 

@@ -13,6 +13,7 @@ import {
 
 import { cartSearchLoader } from "./index.server";
 import { CartWithDetails } from "~/models/Cart/types";
+import BasicSortBar from "~/components/Sorting/BasicSortBar";
 
 const CartSearch = () => {
   const { carts, totalPages } = useLoaderData<typeof cartSearchLoader>();
@@ -35,6 +36,8 @@ const CartSearch = () => {
         <AdminContentSearch email={true} />
 
         <div className="divider w-full" />
+
+        <BasicSortBar createdAt={true} updatedAt={true} />
 
         {carts && carts.length > 0 && (
           <BasicTable

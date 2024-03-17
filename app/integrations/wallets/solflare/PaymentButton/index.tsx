@@ -75,13 +75,7 @@ const PaymentButton = ({
 
     const orderTotal = Number(formData.get("orderTotal") as string);
 
-    // if (!shippingTotal || !orderTotal || !solanaPriceAUD) {
-    //   Toast("error", 2000, "Could not Calculate Price");
-    //   return;
-    // }
-
-    if (!solanaPriceAUD) {
-      console.log("trugg");
+    if (!orderTotal || !solanaPriceAUD) {
       Toast("error", 2000, "Could not Calculate Price");
       return;
     }

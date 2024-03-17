@@ -22,7 +22,7 @@ export type AusPostDeliveryOption = {
   name: string;
   price: string;
   max_extra_cover: number;
-  options: AusPostDeliveryOptionsOption;
+  options?: AusPostDeliveryOptionsOption;
 };
 
 export type AusPostDeliveryOptionsOption = {

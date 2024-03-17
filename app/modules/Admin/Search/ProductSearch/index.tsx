@@ -1,6 +1,6 @@
 import Pagination from "~/components/Pagination";
 import BasicTable from "~/components/Tables/BasicTable";
-import ProductSort from "~/components/Sorting/ProductSort";
+import BasicSortBar from "~/components/Sorting/BasicSortBar";
 import { ProductWithDetails } from "~/models/Products/types";
 import AdminContentSearch from "~/components/Search/AdminContentSearch";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
@@ -41,7 +41,13 @@ const ProductSearch = () => {
 
         <div className="divider w-full" />
 
-        <ProductSort totalCount={count} />
+        <BasicSortBar
+          totalCount={count}
+          popular={true}
+          name={true}
+          price={true}
+          createdAt={true}
+        />
 
         {products && products.length > 0 && (
           <BasicTable

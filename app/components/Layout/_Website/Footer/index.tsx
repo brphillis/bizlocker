@@ -45,9 +45,9 @@ const Footer = ({ productCategories }: Props) => {
           <Link className="link-hover link" to="/terms-and-conditions">
             Terms and Conditions
           </Link>
-          <Link className="link-hover link" to="/privacy-policy">
+          {/* <Link className="link-hover link" to="/privacy-policy">
             Privacy policy
-          </Link>
+          </Link> */}
         </div>
 
         {productCategories && productCategories.length > 0 && (

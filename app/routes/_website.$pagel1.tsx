@@ -22,6 +22,8 @@ import { Login } from "~/modules/Website/Login";
 import { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import OrderSuccess from "~/modules/Website/OrderSuccess";
 import { orderSuccessLoader } from "~/modules/Website/OrderSuccess/index.server";
+import { previewLoader } from "~/modules/Website/Preview/index.server";
+import Preview from "~/modules/Website/Preview";
 
 export const meta: MetaFunction = ({ data }) => {
   const loaderMeta = (data as { meta: MetaType })?.meta;
@@ -52,6 +54,8 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
       return null;
     case "payment-confirm":
       return null;
+    case "preview":
+      return await previewLoader(request);
     case "product":
       return null;
     case "products":
@@ -108,6 +112,9 @@ const PageL1 = () => {
       break;
     case "payment-confirm":
       activeModule = null;
+      break;
+    case "preview":
+      activeModule = <Preview />;
       break;
     case "product":
       activeModule = null;

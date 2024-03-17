@@ -5,6 +5,7 @@ import { getUserDataFromSession } from "../../session.server";
 import { getCookies } from "../../helpers/cookieHelpers";
 import { CartWithDetails } from "./types";
 import { createISO8601DateNow } from "prisma/validation";
+import { getOrderBy } from "~/helpers/sortHelpers";
 
 const visitorCartCookieKey = "visitor_cart_id";
 
@@ -305,6 +306,30 @@ export const addToCart = async (
   }
 };
 
+export const deleteCart = async (id: string): Promise<Cart | null> => {
+  const cart = await prisma.cart.findUnique({
+    where: {
+      id: parseInt(id),
+    },
+  });
+
+  if (cart) {
+    await prisma.cartItem.deleteMany({
+      where: {
+        cartId: cart.id,
+      },
+    });
+
+    const deletedCart = await prisma.cart.delete({
+      where: {
+        id: cart.id,
+      },
+    });
+
+    return deletedCart;
+  } else return null;
+};
+
 export const searchCarts = async (
   formData?: { [k: string]: FormDataEntryValue },
   url?: URL,
@@ -319,6 +344,10 @@ export const searchCarts = async (
     (formData?.perPage && parseInt(formData.perPage as string)) ||
     (url && Number(url.searchParams.get("perPage"))) ||
     10;
+  const sortBy = formData?.sortBy || url?.searchParams.get("sortBy") || "";
+  const sortOrder =
+    formData?.sortOrder || url?.searchParams.get("sortOrder") || "";
+
   let carts;
   let totalCarts;
 
@@ -365,6 +394,7 @@ export const searchCarts = async (
         },
         skip,
         take,
+        orderBy: getOrderBy(sortBy as SortBy, sortOrder as SortOrder),
       });
 
       totalCarts = await prisma.cart.count();

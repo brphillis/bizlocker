@@ -4,11 +4,11 @@ export type CountrySelect = {
 };
 
 export const getCountryISO3166 = (
-  countryName: string | undefined
+  countryName: string | undefined,
 ): string | undefined => {
   if (countryName) {
     const foundCountry = ISO3166Countries.find(
-      (country) => country.name.toLowerCase() === countryName?.toLowerCase()
+      (country) => country.name.toLowerCase() === countryName?.toLowerCase(),
     );
 
     if (foundCountry) {
@@ -20,10 +20,10 @@ export const getCountryISO3166 = (
 };
 
 export const getCountryFromISO3166 = (
-  countryCode: string | undefined
+  countryCode: string | undefined,
 ): string | undefined => {
   const foundCountry = ISO3166Countries.find(
-    (country) => country.code === countryCode
+    (country) => country.code === countryCode,
   );
 
   if (foundCountry) {
@@ -32,6 +32,9 @@ export const getCountryFromISO3166 = (
 };
 
 export const ISO3166Countries = [
+  { code: "US", name: "United States of America", phoneCode: "1" },
+  { code: "AU", name: "Australia", phoneCode: "61" },
+
   { code: "AF", name: "Afghanistan" },
   { code: "AX", name: "Åland Islands" },
   { code: "AL", name: "Albania" },
@@ -45,7 +48,6 @@ export const ISO3166Countries = [
   { code: "AR", name: "Argentina" },
   { code: "AM", name: "Armenia" },
   { code: "AW", name: "Aruba" },
-  { code: "AU", name: "Australia", phoneCode: "61" },
   { code: "AT", name: "Austria" },
   { code: "AZ", name: "Azerbaijan" },
   { code: "BS", name: "Bahamas" },
@@ -267,7 +269,6 @@ export const ISO3166Countries = [
   { code: "UA", name: "Ukraine" },
   { code: "AE", name: "United Arab Emirates" },
   { code: "GB", name: "United Kingdom of Great Britain and Northern Ireland" },
-  { code: "US", name: "United States of America", phoneCode: "1" },
   { code: "UM", name: "United States Minor Outlying Islands" },
   { code: "UY", name: "Uruguay" },
   { code: "UZ", name: "Uzbekistan" },

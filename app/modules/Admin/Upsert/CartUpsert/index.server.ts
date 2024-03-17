@@ -1,9 +1,8 @@
 import { json } from "@remix-run/node";
 import { validateForm } from "~/utility/validate";
 import type { PageNotification } from "~/hooks/PageNotification";
-import { deleteBrand } from "~/models/Brands/index.server";
 import { CartWithDetails } from "~/models/Cart/types";
-import { getCart } from "~/models/Cart/index.server";
+import { deleteCart, getCart } from "~/models/Cart/index.server";
 
 const validateOptions = {};
 
@@ -44,14 +43,23 @@ export const cartUpsertAction = async (request: Request) => {
 
   switch (formEntries._action) {
     case "delete": {
-      await deleteBrand(id as string);
+      const result = await deleteCart(id as string);
 
-      notification = {
-        type: "warning",
-        message: "Brand Deleted",
-      };
+      if (result) {
+        notification = {
+          type: "warning",
+          message: "Cart Deleted",
+        };
 
-      return { success: true, notification };
+        return { success: true, notification };
+      } else {
+        notification = {
+          type: "error",
+          message: "Error Deleting Cart",
+        };
+
+        return { success: false, notification };
+      }
     }
   }
 };

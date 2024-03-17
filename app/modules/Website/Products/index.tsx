@@ -1,6 +1,6 @@
 import { useLoaderData } from "@remix-run/react";
 import ProductGrid from "~/components/Grids/ProductGrid";
-import ProductSort from "~/components/Sorting/ProductSort";
+import BasicSortBar from "~/components/Sorting/BasicSortBar";
 import PageWrapper from "~/components/Layout/Wrappers/PageWrapper";
 import PromotionBanner from "~/components/Banners/PromotionBanner";
 import { productsLoader } from "~/modules/Website/Products/index.server";
@@ -31,7 +31,13 @@ const Products = () => {
       </>
 
       <div className="w-[1280px] max-w-[100vw]">
-        <ProductSort totalCount={count} />
+        <BasicSortBar
+          totalCount={count}
+          popular={true}
+          name={true}
+          price={true}
+          createdAt={true}
+        />
         <div className="my-3 w-full border-b border-brand-black/20" />
 
         <div className="flex w-full flex-wrap items-start justify-center gap-6 px-0 sm:w-full xl:flex-nowrap">
