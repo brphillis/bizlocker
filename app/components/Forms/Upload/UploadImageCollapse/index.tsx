@@ -16,8 +16,6 @@ const UploadImageCollapse = ({ label, name, tooltip, defaultValue }: Props) => {
     defaultValue || undefined,
   );
 
-  console.log(image);
-
   return (
     <div className="collapse collapse-arrow mt-6 rounded-none bg-base-100">
       <input type="checkbox" />

@@ -16,9 +16,9 @@ export const parseOptions: HTMLReactParserOptions = {
 
     if (node instanceof Element && node.name === "ul") {
       return (
-        <p className="relative max-w-full px-0 pt-3 max-xl:px-3">
+        <ul className="relative max-w-full px-0 pt-3 max-xl:px-3">
           {domToReact(node.children, parseOptions)}
-        </p>
+        </ul>
       );
     }
 

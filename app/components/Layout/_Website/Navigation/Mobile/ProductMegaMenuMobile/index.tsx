@@ -8,6 +8,7 @@ import Divider from "~/components/Filter/ProductFilterSideBar/Divider";
 import TileImages from "./TileImages";
 import GenderTabs from "./GenderTabs";
 import CategoryCard from "./CategoryCard";
+import { MegaMenuTypes } from "../../Desktop/ProductMegaMenu";
 
 type Props = {
   departments: DepartmentWithDetails[];
@@ -24,7 +25,7 @@ const ProductMegaMenuMobile = ({
 }: Props) => {
   const [selectedDepartment] = useState<number>(departments?.[0].id);
 
-  const [selectedGender, setSelectedGender] = useState<string>();
+  const [selectedTab, setSelectedTab] = useState<MegaMenuTypes>();
 
   const matchingProductCategories = productCategories.filter(
     (e: ProductCategoryWithDetails) => e.departmentId === selectedDepartment,
@@ -47,8 +48,8 @@ const ProductMegaMenuMobile = ({
           <Divider color={"white"} extendStyle="mt-3 mb-1" />
 
           <GenderTabs
-            setSelectedGender={setSelectedGender}
-            selectedGender={selectedGender}
+            setSelectedTab={setSelectedTab}
+            selectedTab={selectedTab}
           />
 
           <Divider color={"white"} extendStyle="mt-1 mb-3" />
@@ -65,8 +66,8 @@ const ProductMegaMenuMobile = ({
                   if (displayInNavigation) {
                     let image;
 
-                    switch (selectedGender) {
-                      case "MENS": {
+                    switch (selectedTab) {
+                      case "Mens": {
                         image =
                           productSubCategories?.find((e) => e.maleImage)
                             ?.maleImage?.href ||
@@ -75,7 +76,7 @@ const ProductMegaMenuMobile = ({
                         break;
                       }
 
-                      case "WOMANS": {
+                      case "Womans": {
                         image =
                           productSubCategories?.find((e) => e.femaleImage)
                             ?.femaleImage?.href ||
@@ -84,7 +85,7 @@ const ProductMegaMenuMobile = ({
                         break;
                       }
 
-                      case "KIDS": {
+                      case "Kids": {
                         image =
                           productSubCategories?.find((e) => e.kidImage)
                             ?.kidImage?.href ||
@@ -105,6 +106,7 @@ const ProductMegaMenuMobile = ({
                         key={"mobileMenu_Dropdown_" + id}
                         name={name}
                         imageSrc={image}
+                        selectedTab={selectedTab}
                       />
                     );
                   } else return null;

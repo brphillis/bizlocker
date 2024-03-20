@@ -137,8 +137,8 @@ const ProductFilterSideBar = ({
           <div className="collapse-content">
             <List
               label="Gender"
-              listValues={["Male", "Womans", "Kids"]}
-              searchParam="department"
+              listValues={["Mens", "Womans", "Kids"]}
+              searchParam="gender"
             />
 
             <Divider />

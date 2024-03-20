@@ -206,14 +206,16 @@ const DropshipProductUpsert = ({ offRouteModule }: Props) => {
             <BasicTable
               size="md"
               mobileSize="xs"
-              onRowClick={(_, index) =>
-                setProductVariants((prevProductVariants) => {
-                  const updatedVariants = prevProductVariants.filter(
-                    (_, i) => i !== index,
-                  );
-                  return updatedVariants;
-                })
-              }
+              onRowClick={(_, index) => {
+                if (productVariants?.length > 1) {
+                  setProductVariants((prevProductVariants) => {
+                    const updatedVariants = prevProductVariants.filter(
+                      (_, i) => i !== index,
+                    );
+                    return updatedVariants;
+                  });
+                }
+              }}
               objectArray={productVariants?.map(
                 (e: AliExpress_ProductVariant) => ({
                   color: e.color,

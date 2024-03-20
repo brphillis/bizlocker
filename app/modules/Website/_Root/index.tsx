@@ -18,6 +18,8 @@ import ProductBasicMobile from "~/components/Layout/_Website/Navigation/Mobile/P
 import HamburgerContainer from "~/components/Layout/_Website/Navigation/Mobile/_HamburgerContainer";
 import { websiteRootLoader } from "./index.server";
 
+import ReactGA from "react-ga4";
+
 import "sweetalert2/dist/sweetalert2.css";
 
 import "../../../../node_modules/swiper/swiper.min.css";
@@ -51,6 +53,18 @@ const WebsiteRoot = () => {
   const [searchActive, setSearchActive] = useState<boolean | null>(false);
 
   useEffect(() => {
+    if (!ReactGA.isInitialized) {
+      ReactGA.initialize("G-HV741H1DL7");
+    }
+
+    if (ReactGA.isInitialized) {
+      ReactGA.send({
+        hitType: "pageview",
+        page: location.pathname + location.search,
+        title: location.pathname,
+      });
+    }
+
     setSearchActive(false);
   }, [location]);
 

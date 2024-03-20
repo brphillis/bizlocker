@@ -1,18 +1,31 @@
 import { useNavigate } from "@remix-run/react";
 import BasicImage from "~/components/Client/BasicImage";
+import { MegaMenuTypes } from "../../../Desktop/ProductMegaMenu";
 
 type Props = {
   name: string;
   imageSrc?: string | null;
+  selectedTab?: MegaMenuTypes;
 };
 
-const CategoryCard = ({ name, imageSrc }: Props) => {
+const CategoryCard = ({ name, imageSrc, selectedTab }: Props) => {
   const navigate = useNavigate();
 
   return (
     <button
       className="shadow-[0_18px_10px_-15px_rgba(0,0,0,0.5)] border-brand-white/10 border w-full min-h-[75px] overflow-hidden"
-      onClick={() => navigate(`/products?productCategory=${name}`)}
+      onClick={() => {
+        let query = `?productCategory=${name}`;
+
+        if (selectedTab) {
+          query += `&gender=${selectedTab}`;
+        }
+
+        navigate({
+          pathname: "/products",
+          search: query,
+        });
+      }}
     >
       <label
         htmlFor="mobile-navigation-state"

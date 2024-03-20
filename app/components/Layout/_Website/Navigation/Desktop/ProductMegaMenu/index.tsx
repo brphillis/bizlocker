@@ -21,7 +21,8 @@ type Props = {
   user: User | null;
 };
 
-export type MegaMenuTypes = "mens" | "womans" | "kids" | "sale";
+export const megaMenuTabs = ["Mens", "Womans", "Kids", "Sale"];
+export type MegaMenuTypes = (typeof megaMenuTabs)[number];
 
 const ProductMegaMenu = ({
   cart,
@@ -62,10 +63,10 @@ const ProductMegaMenu = ({
       <div
         className={`absolute z-50 mt-[60px] pb-6 max-xl:hidden left-[50%] translate-x-[-50%] shadow-md shadow-white/25
         bg-brand-black border-2 border-t-0 transition-all duration-500 mb-3 w-screen max-w-[100vw]
-        ${activeMenu === "womans" ? "border-brand-pink" : ""}
-        ${activeMenu === "mens" ? "border-brand-blue" : ""}
-        ${activeMenu === "kids" ? "border-violet-500" : ""}
-        ${activeMenu === "sale" ? "border-red-500" : ""}
+        ${activeMenu === "Womans" ? "border-brand-pink" : ""}
+        ${activeMenu === "Mens" ? "border-brand-blue" : ""}
+        ${activeMenu === "Kids" ? "border-violet-500" : ""}
+        ${activeMenu === "Sale" ? "border-red-500" : ""}
         ${activeMenu ? "!opacity-1 h-max visible" : "opacity-0 h-0 invisible"}`}
         onMouseLeave={() => setActiveMenu(undefined)}
       >

@@ -1,32 +1,35 @@
+import { MegaMenuTypes } from "../../../Desktop/ProductMegaMenu";
 import Tab from "./Tab";
 
 type Props = {
-  setSelectedGender: React.Dispatch<React.SetStateAction<string | undefined>>;
-  selectedGender?: string;
+  setSelectedTab: React.Dispatch<
+    React.SetStateAction<MegaMenuTypes | undefined>
+  >;
+  selectedTab?: MegaMenuTypes;
 };
 
-const GenderTabs = ({ setSelectedGender, selectedGender }: Props) => {
+const GenderTabs = ({ setSelectedTab, selectedTab }: Props) => {
   return (
     <div className="relative flex items-center gap-1 py-1 w-full justify-center">
       <Tab
-        gender="MENS"
-        setSelectedGender={setSelectedGender}
-        selectedGender={selectedGender}
+        gender="Mens"
+        setSelectedTab={setSelectedTab}
+        selectedTab={selectedTab}
       />
       <Tab
-        gender="WOMANS"
-        setSelectedGender={setSelectedGender}
-        selectedGender={selectedGender}
+        gender="Womans"
+        setSelectedTab={setSelectedTab}
+        selectedTab={selectedTab}
       />
       <Tab
-        gender="KIDS"
-        setSelectedGender={setSelectedGender}
-        selectedGender={selectedGender}
+        gender="Kids"
+        setSelectedTab={setSelectedTab}
+        selectedTab={selectedTab}
       />
       <Tab
-        gender="SALE"
-        setSelectedGender={setSelectedGender}
-        selectedGender={selectedGender}
+        gender="Sale"
+        setSelectedTab={setSelectedTab}
+        selectedTab={selectedTab}
       />
     </div>
   );

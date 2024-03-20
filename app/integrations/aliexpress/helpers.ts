@@ -18,12 +18,12 @@ const findAliExpressVariantSize = (
   itemSearching: AliExpressHubProduct_ResultItem,
   sizeCode: string,
 ): string | undefined => {
-  const sizeObjectArray = itemSearching.sku.props.find(
+  const sizeObjectArray = itemSearching?.sku?.props?.find(
     (e) => e.name.includes("Size") || e.name.includes("Length"),
   );
 
   if (sizeObjectArray) {
-    const sizeToReturn = sizeObjectArray.values.find(
+    const sizeToReturn = sizeObjectArray?.values?.find(
       (c) => c.vid.toString() == sizeCode,
     )?.name;
 
@@ -37,13 +37,13 @@ const findAliExpressVariantColor = (
   itemSearching: AliExpressHubProduct_ResultItem,
   colorCode: string,
 ): string | undefined => {
-  const colorObjectArray = itemSearching.sku.props.find((e) =>
+  const colorObjectArray = itemSearching?.sku?.props?.find((e) =>
     e.name.includes("Color"),
   );
 
   if (colorObjectArray) {
-    const colorToReturn = colorObjectArray.values
-      .find((c) => c.vid.toString() == colorCode)
+    const colorToReturn = colorObjectArray?.values
+      ?.find((c) => c.vid.toString() == colorCode)
       ?.name.toLocaleUpperCase();
 
     if (colorToReturn) {
