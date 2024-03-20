@@ -1,8 +1,9 @@
 import React from "react";
 import ButtonContainer from "../../ButtonContainer";
-import { MegaMenuTypes } from "..";
+
 import { Cart, User } from "@prisma/client";
-import { Link } from "@remix-run/react";
+import { megaMenuTabs, MegaMenuTypes } from "..";
+import MenuTab from "./MenuTab";
 
 type Props = {
   cart: Cart | null;
@@ -25,36 +26,15 @@ const Navbar = ({
     <div className="flex flex-col w-full max-xl:hidden">
       <div className="flex items-center w-full">
         <div className="flex items-center w-full h-full gap-12 ml-12 font-bold">
-          <Link
-            className="text-brand-white cursor-pointer"
-            onMouseEnter={() => {
-              setActiveMenu("mens");
-            }}
-            to="/products?gender=MALE"
-          >
-            MENS
-          </Link>
-          <Link
-            className="text-brand-white cursor-pointer"
-            onMouseEnter={() => setActiveMenu("womans")}
-            to="/products?gender=FEMALE"
-          >
-            WOMANS
-          </Link>
-          <Link
-            className="text-brand-white cursor-pointer"
-            onMouseEnter={() => setActiveMenu("kids")}
-            to="/products?gender=KIDS"
-          >
-            KIDS
-          </Link>
-          <Link
-            className="text-brand-white cursor-pointer"
-            onMouseEnter={() => setActiveMenu("sale")}
-            to="/products?onSale=true"
-          >
-            SALE
-          </Link>
+          {megaMenuTabs?.map((tabName: MegaMenuTypes) => {
+            return (
+              <MenuTab
+                key={"desktop_megaMenu_tab_" + tabName}
+                tabName={tabName}
+                setActiveMenu={setActiveMenu}
+              />
+            );
+          })}
         </div>
 
         <ButtonContainer

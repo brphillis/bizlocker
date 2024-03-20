@@ -5,7 +5,7 @@ import {
 } from "./types";
 
 const aliExpressDataHubKey =
-  "a67695b2f0mshec18119215dccd2p178b9djsnc385dca15ffe";
+  "efad72c391mshdc6cb48cdfc23ffp1afb6ejsnec2848cb122c";
 
 const aliExpressDataHubHost = "aliexpress-datahub.p.rapidapi.com";
 
@@ -37,11 +37,10 @@ export const searchAliExpressDataHub_Product = async (
 export const getAliExpressDataHub_Product = async (
   itemId: string,
 ): Promise<AliExpressHubGetProduct_Result> => {
-  const url = "https://aliexpress-datahub.p.rapidapi.com/item_detail";
+  const url = "https://aliexpress-datahub.p.rapidapi.com/item_detail_3";
 
   const queryParams = new URLSearchParams({
     itemId,
-    available: "true",
     currency: "AUD",
   });
 

@@ -47,7 +47,5 @@ export const updateSiteMapTask = async (): Promise<boolean> => {
 
   const serviceTypesJSON = await response.json();
 
-  console.log("RES", serviceTypesJSON);
-
   return serviceTypesJSON;
 };

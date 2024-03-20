@@ -76,6 +76,13 @@ const Product = () => {
     ProductVariantWithDetails | undefined
   >(variants?.[0]);
 
+  const hasSizes = availableSizes && availableSizes[0] !== null;
+
+  const hasColors =
+    availableColors &&
+    availableColors[0] !== null &&
+    availableColors.length > 0;
+
   const handleAddToCart = () => {
     const selectedProduct = returnProductFromSelections();
 
@@ -99,22 +106,35 @@ const Product = () => {
   const returnProductFromSelections = ():
     | ProductVariantWithDetails
     | undefined => {
-    return variants?.filter(
+    const foundProduct = variants?.filter(
       (e: ProductVariantWithDetails) =>
         e.size === selectedSize && e.color === selectedColor,
     )[0];
+
+    if (foundProduct) {
+      return foundProduct;
+    } else if (variants?.[0]) {
+      const onlyVariant = variants[0];
+      return onlyVariant;
+    }
   };
 
   useEffect(() => {
-    const selection = variants?.filter(
+    let selection = variants?.filter(
       (e: ProductVariantWithDetails) =>
         e.size === selectedSize && e.color === selectedColor,
     )[0];
+
+    if (!hasColors) {
+      selection = variants?.filter(
+        (e: ProductVariantWithDetails) => e.size === selectedSize,
+      )[0];
+    }
 
     if (selection) {
       setSelectedVariant(selection);
     }
-  }, [selectedColor, selectedSize, variants, images]);
+  }, [selectedColor, selectedSize, variants, images, hasColors]);
 
   useEffect(() => {
     const matchingImage = images?.find((e) =>
@@ -131,8 +151,9 @@ const Product = () => {
               selectedVariant?.color?.split(" ")?.[1] &&
               selectedVariant?.color?.split(" ")?.[1].toLowerCase() ===
                 tag.toLowerCase()
-            )
+            ) {
               return true;
+            }
           }
         }
       }),
@@ -144,9 +165,6 @@ const Product = () => {
       setSelectedImage(images?.[0]);
     }
   }, [selectedVariant, images, variants]);
-
-  const hasSizes = availableSizes && availableSizes[0] !== null;
-  const hasColors = availableColors && availableColors[0] !== null;
 
   const selectedVariantStock =
     selectedVariant && calculateVariantStock(selectedVariant);
@@ -176,28 +194,33 @@ const Product = () => {
       <div className="mx-auto cursor-auto pt-3 max-xl:pt-0">
         <div className="mx-auto flex justify-center max-xl:flex-wrap max-w-[100vw]">
           <div className="flex h-[740px] gap-3 max-xl:h-max max-xl:flex-col">
-            <div className="max-xl:w-screen max-xl:h-max flex-nowrap w-[150px] max-xl:px-3 gap-3 scrollbar-hide flex h-full flex-col justify-start max-md:justify-center overflow-auto max-xl:order-2 max-xl:flex-row">
-              {images?.map(({ id, href, altText }: Image, i: number) => {
-                if (href) {
-                  return (
-                    <BasicImage
-                      key={"productSlider_" + id + i}
-                      alt={"productImage_" + altText + "_" + i}
-                      onClick={() => setSelectedImage(images[i])}
-                      extendStyle="w-full h-full cursor-pointer shadow-sm max-xl:!h-max max-sm:shadow-md"
-                      skeletonStyle="max-md:h-[80px] max-md:w-[80px]"
-                      src={href}
-                    />
-                  );
-                } else return null;
-              })}
-            </div>
+            {images && images.length > 1 && (
+              <div className="relative max-md:w-[100vw] overflow-auto max-xl:order-2">
+                <div className="max-xl:w-max max-xl:h-max flex-nowrap w-[150px] max-xl:px-3 gap-3 scrollbar-hide flex h-full flex-col justify-start max-md:justify-center overflow-auto max-xl:flex-row">
+                  {images.map(({ id, href, altText }: Image, i: number) => {
+                    if (href) {
+                      return (
+                        <BasicImage
+                          key={"productSlider_" + id + i}
+                          alt={"productImage_" + altText + "_" + i}
+                          onClick={() => setSelectedImage(images[i])}
+                          extendStyle="w-full h-full cursor-pointer shadow-sm max-sm:shadow-md max-md:!h-[85px] max-md:!w-[85px]"
+                          skeletonStyle="max-md:h-[85px] max-md:w-[85px]"
+                          src={href}
+                        />
+                      );
+                    } else return null;
+                  })}
+                </div>
+              </div>
+            )}
+
             <div className="relative mx-auto block h-full w-[555px] max-w-[100vw] max-xl:order-1 max-xl:h-2/3">
               {selectedImage?.href && (
                 <BasicImage
                   alt={name + "_focusedImage"}
                   extendStyle="h-full w-auto object-cover object-center shadow-md max-xl:px-3 max-xl:shadow-none !min-h-[390px]"
-                  skeletonStyle="min-h-[380px]"
+                  skeletonStyle="min-h-[420px]"
                   src={selectedImage?.href}
                 />
               )}
@@ -229,7 +252,8 @@ const Product = () => {
 
                   <div className="ml-1 text-sm tracking-widest text-gray-500">
                     {selectedSize && selectedSize}
-                    {selectedColor && "/" + selectedColor}
+                    {selectedColor && selectedSize && "/" + selectedColor}
+                    {selectedColor && !selectedSize && selectedColor}
                   </div>
                 </div>
               </div>
@@ -243,7 +267,8 @@ const Product = () => {
                 $
                 {selectedVariant &&
                   product &&
-                  getVariantUnitPrice(selectedVariant, product)}
+                  getVariantUnitPrice(selectedVariant, product)}{" "}
+                AUD
                 {selectedVariant?.isPromoted &&
                   selectedVariantStock &&
                   selectedVariantStock.totalStock > 0 && (
@@ -330,7 +355,10 @@ const Product = () => {
               )}
             </div>
 
-            <div className="my-3 w-full border-b border-brand-black/20" />
+            {hasColors ||
+              (hasSizes && (
+                <div className="my-3 w-full border-b border-brand-black/20" />
+              ))}
 
             {/* cart buttons */}
             <div className="max-xl:py-3 flex justify-between max-md:flex-col max-xl:items-center w-full max-xl:justify-center max-xl:gap-3">
@@ -387,7 +415,7 @@ const Product = () => {
 
               <div className="my-3 w-full border-b border-brand-black/20" />
 
-              {hasSizes && (
+              {/* {hasSizes && (
                 <div className="leading-relaxed max-md:px-3">
                   <div>
                     <b>Size Guide</b>
@@ -399,9 +427,9 @@ const Product = () => {
                     Check out the size guide.
                   </Link>
                 </div>
-              )}
+              )} */}
 
-              <div className="my-3 w-full border-b border-brand-black/20" />
+              {/* <div className="my-3 w-full border-b border-brand-black/20" /> */}
             </div>
           </div>
         </div>

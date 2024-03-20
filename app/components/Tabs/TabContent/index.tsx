@@ -9,7 +9,7 @@ const TabContent = ({ children, activeTab, tab, extendStyle }: Props) => {
   return (
     <div
       data-tabname={tab}
-      className={`form-control relative ${
+      className={`form-control relative  ${
         activeTab !== tab && "hidden"
       } ${extendStyle}`}
     >

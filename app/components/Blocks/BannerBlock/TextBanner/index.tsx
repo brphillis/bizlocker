@@ -98,7 +98,7 @@ const TextBanner = ({ options, imageLink }: Props) => {
           ${justifyMobile} ${alignMobile}`}
       >
         <h1
-          className={`text-6xl max-md:text-4xl ${titleSize} ${titleSizeMobile}
+          className={`${titleSize} ${titleSizeMobile}
               ${titleColor} ${titleFontWeight} ${titleFontWeightMobile}`}
         >
           {title}

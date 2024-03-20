@@ -48,7 +48,7 @@ const AdminContentSearch = ({
 }: Props) => {
   return (
     <div className="mt-3 flex flex-col">
-      <div className="flex flex-row gap-3">
+      <div className="flex flex-row gap-3 flex-wrap">
         {name && (
           <BasicInput label="Name" name="name" placeholder="Name" type="text" />
         )}

@@ -1,6 +1,7 @@
-import { Suspense, useState } from "react";
+import { useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import { ClientOnly } from "~/components/Client/ClientOnly";
 import ToolTip from "~/components/Indicators/ToolTip";
 import type { ValidationErrors } from "~/utility/validate";
 
@@ -81,7 +82,7 @@ const RichTextInput = ({
   ];
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <ClientOnly fallback={<div>Loading...</div>}>
       <div className="form-control relative mt-6 mb-3 w-full self-center">
         {label && (
           <label
@@ -112,7 +113,7 @@ const RichTextInput = ({
 
         <input hidden readOnly name="description" value={value} />
       </div>
-    </Suspense>
+    </ClientOnly>
   );
 };
 

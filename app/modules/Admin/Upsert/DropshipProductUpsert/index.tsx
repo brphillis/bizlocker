@@ -6,7 +6,6 @@ import TabContent from "~/components/Tabs/TabContent";
 import useNotification from "~/hooks/PageNotification";
 import BasicTable from "~/components/Tables/BasicTable";
 import { ActionReturnTypes } from "~/utility/actionTypes";
-import { ClientOnly } from "~/components/Client/ClientOnly";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import BasicToggle from "~/components/Forms/Toggle/BasicToggle";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
@@ -34,6 +33,7 @@ import {
   getAliExpressProductVariants,
 } from "~/integrations/aliexpress/helpers";
 import { dropshipProductUpsertLoader } from "./index.server";
+import { ClientOnly } from "~/components/Client/ClientOnly";
 
 const validateOptions = {
   name: true,
@@ -177,16 +177,14 @@ const DropshipProductUpsert = ({ offRouteModule }: Props) => {
             />
 
             <ClientOnly fallback={<div id="skeleton" />}>
-              {() => (
-                <RichTextInput
-                  label="Description"
-                  labelStyle="!text-brand-black"
-                  name="description"
-                  value={richText}
-                  onChange={setRichText}
-                  extendStyle="mb-6 h-[200px] pb-3"
-                />
-              )}
+              <RichTextInput
+                label="Description"
+                labelStyle="!text-brand-black"
+                name="description"
+                value={richText}
+                onChange={setRichText}
+                extendStyle="mb-6 h-[200px] pb-3"
+              />
             </ClientOnly>
 
             <input
@@ -208,14 +206,16 @@ const DropshipProductUpsert = ({ offRouteModule }: Props) => {
             <BasicTable
               size="md"
               mobileSize="xs"
-              onRowClick={(_, index) =>
-                setProductVariants((prevProductVariants) => {
-                  const updatedVariants = prevProductVariants.filter(
-                    (_, i) => i !== index,
-                  );
-                  return updatedVariants;
-                })
-              }
+              onRowClick={(_, index) => {
+                if (productVariants?.length > 1) {
+                  setProductVariants((prevProductVariants) => {
+                    const updatedVariants = prevProductVariants.filter(
+                      (_, i) => i !== index,
+                    );
+                    return updatedVariants;
+                  });
+                }
+              }}
               objectArray={productVariants?.map(
                 (e: AliExpress_ProductVariant) => ({
                   color: e.color,
@@ -236,19 +236,18 @@ const DropshipProductUpsert = ({ offRouteModule }: Props) => {
 
           <TabContent tab="images" activeTab={activeTab} extendStyle="gap-3">
             <ClientOnly fallback={<div id="skeleton" />}>
-              {() => (
-                <UploadMultipleImages
-                  defaultImages={
-                    dropshipProductResult?.item.images.map(
-                      (imageSrc: string, index: number) => ({
-                        href: imageSrc,
-                        altText:
-                          dropshipProductResult.item.title + "_image_" + index,
-                      }),
-                    ) as Image[]
-                  }
-                />
-              )}
+              <UploadMultipleImages
+                disableFromBucketSource={true}
+                defaultImages={
+                  dropshipProductResult?.item.images.map(
+                    (imageSrc: string, index: number) => ({
+                      href: imageSrc,
+                      altText:
+                        dropshipProductResult.item.title + "_image_" + index,
+                    }),
+                  ) as Image[]
+                }
+              />
             </ClientOnly>
           </TabContent>
 

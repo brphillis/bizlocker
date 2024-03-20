@@ -21,7 +21,8 @@ type Props = {
   user: User | null;
 };
 
-export type MegaMenuTypes = "mens" | "womans" | "kids" | "sale";
+export const megaMenuTabs = ["Mens", "Womans", "Kids", "Sale"];
+export type MegaMenuTypes = (typeof megaMenuTabs)[number];
 
 const ProductMegaMenu = ({
   cart,
@@ -61,50 +62,56 @@ const ProductMegaMenu = ({
 
       <div
         className={`absolute z-50 mt-[60px] pb-6 max-xl:hidden left-[50%] translate-x-[-50%] shadow-md shadow-white/25
-        bg-brand-black border-2 border-t-0 transition-all duration-500 mb-3 w-[1340px] max-w-[100vw]
-        ${activeMenu === "womans" ? "border-brand-pink" : ""}
-        ${activeMenu === "mens" ? "border-brand-blue" : ""}
-        ${activeMenu === "kids" ? "border-violet-500" : ""}
-        ${activeMenu === "sale" ? "border-red-500" : ""}
+        bg-brand-black border-2 border-t-0 transition-all duration-500 mb-3 w-screen max-w-[100vw]
+        ${activeMenu === "Womans" ? "border-brand-pink" : ""}
+        ${activeMenu === "Mens" ? "border-brand-blue" : ""}
+        ${activeMenu === "Kids" ? "border-violet-500" : ""}
+        ${activeMenu === "Sale" ? "border-red-500" : ""}
         ${activeMenu ? "!opacity-1 h-max visible" : "opacity-0 h-0 invisible"}`}
         onMouseLeave={() => setActiveMenu(undefined)}
       >
-        {activeMenu && (
-          <div
-            className={`relative text-brand-white font-bold mb-6 py-[13px] px-12`}
-          >
-            <PatternBackground
-              name="isometric"
-              backgroundColor={getThemeColorValueByName("brand-white")}
-              patternColor={getThemeColorValueByName("brand-black")}
-              patternOpacity={0.1}
-              patternSize={32}
-              brightness={0.2}
+        <div className="max-w-[1380px] block mx-auto">
+          {activeMenu && (
+            <div
+              className={`relative text-brand-white font-bold mb-6 py-[13px] px-12`}
+            >
+              <PatternBackground
+                name="isometric"
+                backgroundColor={getThemeColorValueByName("brand-white")}
+                patternColor={getThemeColorValueByName("brand-black")}
+                patternOpacity={0.1}
+                patternSize={32}
+                brightness={0.2}
+                screenWidth={true}
+              />
+
+              <div className="relative tracking-wide">{`SHOP IN ${activeMenu?.toLocaleUpperCase()}`}</div>
+            </div>
+          )}
+
+          <div className="flex justify-between w-full gap-6 px-12 pb-6">
+            <Categories
+              activeMenu={activeMenu}
+              productCategories={productCategories}
+              setActiveCategory={setActiveCategory}
             />
 
-            <div className="relative tracking-wide">{`SHOP IN ${activeMenu?.toLocaleUpperCase()}`}</div>
+            {activeMenu && (
+              <TileImages
+                activeCategory={activeCategory}
+                activeMenu={activeMenu}
+                randomPromotions={randomPromotions}
+              />
+            )}
           </div>
-        )}
 
-        <div className="flex justify-between w-full gap-6 px-12">
-          <Categories
-            activeMenu={activeMenu}
-            productCategories={productCategories}
-            setActiveCategory={setActiveCategory}
+          <Divider
+            color="white"
+            extendStyle="absolute !w-[100vw] left-[50%] -translate-x-[50%]"
           />
 
-          {activeMenu && (
-            <TileImages
-              activeCategory={activeCategory}
-              activeMenu={activeMenu}
-              randomPromotions={randomPromotions}
-            />
-          )}
+          <Footer activeMenu={activeMenu} />
         </div>
-
-        <Divider color="white" extendStyle="my-6" />
-
-        <Footer activeMenu={activeMenu} />
       </div>
     </>
   );

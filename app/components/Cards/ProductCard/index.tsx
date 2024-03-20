@@ -56,7 +56,7 @@ const ProductCard = (product: ProductWithDetails) => {
         <div className="relative flex max-sm:h-60 max-md:h-[300px] w-full max-w-full cursor-pointer overflow-hidden shadow-sm h-72">
           {displayImage && (
             <BasicImage
-              extendStyle="absolute right-0 top-0 h-full w-full transform object-cover"
+              extendStyle="absolute right-0 top-0 h-full w-full"
               src={displayImage}
               alt={name.toLowerCase() + " product card"}
               link={`/product/${name}?id=${id}`}
@@ -104,7 +104,8 @@ const ProductCard = (product: ProductWithDetails) => {
                 </span>
               )}
               <span className="text-sm font-bold text-gray-900">
-                ${variants && getVariantUnitPrice(variants[0], product)}&nbsp;
+                ${variants && getVariantUnitPrice(variants[0], product)}
+                &nbsp;<span className="opacity-25">AUD</span>
               </span>
             </p>
           </div>

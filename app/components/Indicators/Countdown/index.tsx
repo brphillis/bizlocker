@@ -54,52 +54,50 @@ const CountDown = ({
         </div>
       }
     >
-      {() => (
-        <>
-          <div className="relative flex select-none items-center gap-1 text-center">
-            <div
-              className={`flex items-center gap-1 rounded-sm p-2 ${tickerBgColor} ${tickerTxtColor}`}
-            >
-              <span className="font-mono countdown">
-                <span style={constructTimeAttribute(timeRemaining.days)}>
-                  {timeRemaining.days}
-                </span>
+      <>
+        <div className="relative flex select-none items-center gap-1 text-center">
+          <div
+            className={`flex items-center gap-1 rounded-sm p-2 ${tickerBgColor} ${tickerTxtColor}`}
+          >
+            <span className="font-mono countdown">
+              <span style={constructTimeAttribute(timeRemaining.days)}>
+                {timeRemaining.days}
               </span>
-              <span className="text-xs">D</span>
-            </div>
-            <div
-              className={`flex items-center gap-1 rounded-sm p-2 ${tickerBgColor} ${tickerTxtColor}`}
-            >
-              <span className="font-mono countdown">
-                <span style={constructTimeAttribute(timeRemaining.hours)}>
-                  {timeRemaining.hours}
-                </span>
-              </span>
-              <span className="text-xs">H</span>
-            </div>
-            <div
-              className={`flex items-center gap-1 rounded-sm p-2 ${tickerBgColor} ${tickerTxtColor}`}
-            >
-              <span className="font-mono countdown">
-                <span style={constructTimeAttribute(timeRemaining.minutes)}>
-                  {timeRemaining.minutes}
-                </span>
-              </span>
-              <span className="text-xs">M</span>
-            </div>
-            <div
-              className={`flex items-center gap-1 rounded-sm p-2 ${tickerBgColor} ${tickerTxtColor}`}
-            >
-              <span className="font-mono countdown">
-                <span style={constructTimeAttribute(timeRemaining.seconds)}>
-                  {timeRemaining.seconds}
-                </span>
-              </span>
-              <span className="text-xs">S</span>
-            </div>
+            </span>
+            <span className="text-xs">D</span>
           </div>
-        </>
-      )}
+          <div
+            className={`flex items-center gap-1 rounded-sm p-2 ${tickerBgColor} ${tickerTxtColor}`}
+          >
+            <span className="font-mono countdown">
+              <span style={constructTimeAttribute(timeRemaining.hours)}>
+                {timeRemaining.hours}
+              </span>
+            </span>
+            <span className="text-xs">H</span>
+          </div>
+          <div
+            className={`flex items-center gap-1 rounded-sm p-2 ${tickerBgColor} ${tickerTxtColor}`}
+          >
+            <span className="font-mono countdown">
+              <span style={constructTimeAttribute(timeRemaining.minutes)}>
+                {timeRemaining.minutes}
+              </span>
+            </span>
+            <span className="text-xs">M</span>
+          </div>
+          <div
+            className={`flex items-center gap-1 rounded-sm p-2 ${tickerBgColor} ${tickerTxtColor}`}
+          >
+            <span className="font-mono countdown">
+              <span style={constructTimeAttribute(timeRemaining.seconds)}>
+                {timeRemaining.seconds}
+              </span>
+            </span>
+            <span className="text-xs">S</span>
+          </div>
+        </div>
+      </>
     </ClientOnly>
   );
 };

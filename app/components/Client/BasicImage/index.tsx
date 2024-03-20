@@ -47,7 +47,7 @@ const BasicImage = ({
         <Link
           to={link || ""}
           onClick={(e) => onClick && !link && handleClick(e)}
-          className={`relative h-full w-full`}
+          className={`${!onClick && !link ? "pointer-events-none" : ""}`}
         >
           <img
             className={`object-cover

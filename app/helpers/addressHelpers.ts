@@ -13,7 +13,7 @@ export type NewAddress = {
 };
 
 export const SquareAddressToAddress = (
-  squareAddress: SquareShippingDetails
+  squareAddress: SquareShippingDetails,
 ): NewAddress => {
   const address: NewAddress = {
     addressLine1: squareAddress?.addressLine1,
@@ -27,7 +27,9 @@ export const SquareAddressToAddress = (
 };
 
 export const AddressToSquareAddress = (
-  address: Address | NewAddress
+  address: Address | NewAddress,
+  firstName?: string,
+  lastName?: string,
 ): SquareShippingDetails => {
   const squareAddress: SquareShippingDetails = {
     addressLine1: address?.addressLine1 || undefined,
@@ -36,6 +38,8 @@ export const AddressToSquareAddress = (
     locality: address?.suburb || undefined,
     administrativeDistrictLevel1: address?.state || undefined,
     country: address?.country || undefined,
+    firstName: firstName || undefined,
+    lastName: lastName || undefined,
   };
   return squareAddress;
 };

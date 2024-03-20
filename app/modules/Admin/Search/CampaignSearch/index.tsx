@@ -36,18 +36,20 @@ const CampaignSearch = () => {
 
         <div className="divider w-full" />
 
-        {campaigns && campaigns.length > 0 && (
+        {campaigns?.length > 0 && (
           <BasicTable
             onRowClick={(id) =>
               navigate(`/admin/upsert/campaign?contentId=${id}`)
             }
             currentPage={currentPage}
-            objectArray={campaigns?.map((e: Campaign) => ({
-              id: e.id,
-              name: e.name,
-              created: e.createdAt,
-              active: e.isActive,
-            }))}
+            objectArray={campaigns.map(
+              ({ id, name, createdAt, isActive }: Campaign) => ({
+                id,
+                name,
+                created: createdAt,
+                active: isActive,
+              }),
+            )}
           />
         )}
 

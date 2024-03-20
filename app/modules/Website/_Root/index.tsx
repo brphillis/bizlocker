@@ -18,11 +18,14 @@ import ProductBasicMobile from "~/components/Layout/_Website/Navigation/Mobile/P
 import HamburgerContainer from "~/components/Layout/_Website/Navigation/Mobile/_HamburgerContainer";
 import { websiteRootLoader } from "./index.server";
 
+import ReactGA from "react-ga4";
+
 import "sweetalert2/dist/sweetalert2.css";
 
 import "../../../../node_modules/swiper/swiper.min.css";
 import "../../../../node_modules/swiper/modules/navigation.min.css";
 import "../../../../node_modules/swiper/modules/pagination.min.css";
+import ProductMegaMenuMobile from "~/components/Layout/_Website/Navigation/Mobile/ProductMegaMenuMobile";
 
 const WebsiteRoot = () => {
   const navigation = useNavigation();
@@ -38,11 +41,30 @@ const WebsiteRoot = () => {
     siteSettings,
   } = useLoaderData<typeof websiteRootLoader>();
 
-  const { navigationStyleDesktop } = siteSettings || {};
+  const {
+    announcementEndsAt,
+    announcementIsActive,
+    announcementMessage,
+    countdownIsActive,
+    navigationStyleDesktop,
+    navigationStyleMobile,
+  } = siteSettings || {};
 
   const [searchActive, setSearchActive] = useState<boolean | null>(false);
 
   useEffect(() => {
+    if (!ReactGA.isInitialized) {
+      ReactGA.initialize("G-HV741H1DL7");
+    }
+
+    if (ReactGA.isInitialized) {
+      ReactGA.send({
+        hitType: "pageview",
+        page: location.pathname + location.search,
+        title: location.pathname,
+      });
+    }
+
     setSearchActive(false);
   }, [location]);
 
@@ -108,19 +130,29 @@ const WebsiteRoot = () => {
           location.pathname.includes("/verify") ||
           location.pathname.includes("/account")
         ) && (
-          <div className="navbar relative z-0 flex !min-h-[50px] w-full select-none items-center justify-center gap-6 bg-brand-black/95 !py-0 text-sm font-bold text-brand-white shadow-md">
-            <PatternBackground
-              name="isometric"
-              backgroundColor={getThemeColorValueByName("brand-white")}
-              patternColor={getThemeColorValueByName("brand-black")}
-              patternOpacity={0.1}
-              patternSize={32}
-              brightness={0.5}
-            />
+          <>
+            {announcementIsActive && (
+              <div className="navbar relative z-0 flex !min-h-[50px] w-full select-none items-center justify-center gap-6 bg-brand-black/95 !py-0 text-sm font-bold text-brand-white shadow-md">
+                <PatternBackground
+                  name="isometric"
+                  backgroundColor={getThemeColorValueByName("brand-white")}
+                  patternColor={getThemeColorValueByName("brand-black")}
+                  patternOpacity={0.1}
+                  patternSize={32}
+                  brightness={0.5}
+                />
 
-            <div className="relative max-md:text-xs">DENIM SALE ENDS SOON!</div>
-            <CountDown targetDate={new Date("2024-03-03T00:00:00")} />
-          </div>
+                <div className="relative max-md:text-xs">
+                  {announcementMessage}
+                </div>
+                {countdownIsActive && (
+                  <CountDown
+                    targetDate={new Date(`${announcementEndsAt}T23:59:59`)}
+                  />
+                )}
+              </div>
+            )}
+          </>
         )}
 
         {navigation.state === ("loading" || "submitting") &&
@@ -135,11 +167,23 @@ const WebsiteRoot = () => {
       </div>
 
       {/* MOBILE DRAWER */}
-      <ProductBasicMobile
-        departments={departments}
-        productCategories={productCategories}
-        user={user}
-      />
+
+      {navigationStyleMobile === "productBasic" && (
+        <ProductBasicMobile
+          departments={departments}
+          productCategories={productCategories}
+          user={user}
+        />
+      )}
+
+      {navigationStyleMobile === "productMegaMenu" && (
+        <ProductMegaMenuMobile
+          departments={departments}
+          productCategories={productCategories}
+          user={user}
+          randomPromotions={navigationPromotions}
+        />
+      )}
     </div>
   );
 };

@@ -8,7 +8,7 @@ import {
   sessionStorage,
   USER_SESSION_KEY,
 } from "../../session.server";
-import { getCart } from "../Cart/index.server";
+import { getSessionCart } from "../Cart/index.server";
 import { getVariantUnitPrice } from "../../helpers/numberHelpers";
 import { sendOrderReceiptEmail } from "../../integrations/sendgrid/emails/orderReceipt";
 import { createPaymentLink_Integration } from "../../integrations/_master/payments/index.server";
@@ -31,7 +31,13 @@ export const getOrder = async (
         include: {
           variant: {
             include: {
-              product: true,
+              product: {
+                include: {
+                  images: {
+                    take: 1,
+                  },
+                },
+              },
             },
           },
         },
@@ -94,9 +100,11 @@ export const createOrder = async (
   shippingMethod: string,
   shippingPrice: string,
   rememberInformation: boolean,
+  transactionId?: string,
+  disbalePaymentLink?: boolean,
 ): Promise<TypedResponse<never>> => {
   const userData = (await getUserDataFromSession(request)) as User;
-  const cart = await getCart(request);
+  const cart = await getSessionCart(request);
 
   if (!cart) {
     throw new Error("Cart not found");
@@ -105,11 +113,27 @@ export const createOrder = async (
   const cartItems = cart?.cartItems as unknown as CartItemWithDetails[];
   const userId = userData?.id || undefined;
 
-  const { createPaymentLinkResponse, confirmCode } =
-    await createPaymentLink_Integration(cartItems, BigInt(shippingPrice));
+  //@ts-expect-error:type ignore
+  const { createPaymentLinkResponse, confirmCode } = !disbalePaymentLink
+    ? await createPaymentLink_Integration(
+        cartItems,
+        BigInt(Math.round(parseFloat(shippingPrice) * 100)),
+        address,
+        firstName,
+        lastName,
+        email,
+        phoneNumber,
+      )
+    : {};
 
-  if (createPaymentLinkResponse && createPaymentLinkResponse.paymentLink) {
-    const { paymentLink } = createPaymentLinkResponse;
+  if (
+    (createPaymentLinkResponse && createPaymentLinkResponse?.paymentLink) ||
+    disbalePaymentLink
+  ) {
+    //@ts-expect-error:conditional type
+    const { paymentLink } = !disbalePaymentLink
+      ? createPaymentLinkResponse
+      : {};
 
     const orderItems: unknown[] = [];
     let totalPrice = 0;
@@ -175,7 +199,6 @@ export const createOrder = async (
         }
 
         // Populate and order items array
-
         orderItems.push({
           variantId,
           quantity,
@@ -185,14 +208,14 @@ export const createOrder = async (
       }
     }
 
-    await prisma.order.create({
+    const order = await prisma.order.create({
       data: {
         status: "created",
         rememberInformation: rememberInformation,
-        paymentCode: confirmCode,
+        paymentCode: confirmCode ? confirmCode : transactionId,
         totalPrice: totalPrice,
-        paymentUrl: paymentLink.url!,
-        paymentLinkId: paymentLink.id!,
+        paymentUrl: paymentLink?.url ? paymentLink?.url : transactionId,
+        paymentLinkId: paymentLink?.id ? paymentLink?.id : transactionId,
         shippingMethod: shippingMethod,
         shippingPrice: shippingPrice,
         firstName: firstName,
@@ -237,6 +260,14 @@ export const createOrder = async (
           })),
         },
       },
+      include: {
+        items: {
+          include: {
+            variant: true,
+          },
+        },
+        address: true,
+      },
     });
 
     //order is successful, delete the cart
@@ -261,11 +292,20 @@ export const createOrder = async (
     const session = await getSession(request);
     session.set(USER_SESSION_KEY, userNoCart);
 
-    return redirect(createPaymentLinkResponse.paymentLink.longUrl!, {
-      headers: {
-        "Set-Cookie": await sessionStorage.commitSession(session),
+    // if payment link is disabled, order is payed for while processed
+    if (disbalePaymentLink) {
+      await sendOrderReceiptEmail(order.email!, order as unknown as Order);
+    }
+
+    return redirect(
+      createPaymentLinkResponse?.paymentLink?.longUrl ||
+        `${process.env.SITE_URL}/order-success?id=${order.id}`,
+      {
+        headers: {
+          "Set-Cookie": await sessionStorage.commitSession(session),
+        },
       },
-    });
+    );
   }
 
   throw new Error("the order could not be generated");

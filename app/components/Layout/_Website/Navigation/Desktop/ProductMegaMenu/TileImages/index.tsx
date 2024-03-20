@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 
 type Props = {
   randomPromotions: PromotionWithContent[];
-  activeMenu: MegaMenuTypes;
+  activeMenu?: MegaMenuTypes;
   activeCategory?: ProductCategoryWithDetails | ProductSubCategoryWithDetails;
 };
 
@@ -37,21 +37,26 @@ const TileImages = ({
       // we get the correct image for the product sub category
       if (isSubCategory) {
         switch (activeMenu) {
-          case "mens": {
-            return productSubCategory.maleImage?.href;
+          case "Mens": {
+            return (
+              productSubCategory.maleImage?.href ||
+              productSubCategory.tileImage?.href
+            );
           }
-          case "womans": {
-            return productSubCategory.femaleImage?.href;
+          case "Womans": {
+            return (
+              productSubCategory.femaleImage?.href ||
+              productSubCategory.tileImage?.href
+            );
           }
-          case "kids": {
-            return productSubCategory.kidImage?.href;
+          case "Kids": {
+            return (
+              productSubCategory.kidImage?.href ||
+              productSubCategory.tileImage?.href
+            );
           }
-          case "sale": {
-            if (randomNumber === 1) {
-              return productSubCategory.maleImage?.href;
-            } else {
-              return productSubCategory.femaleImage?.href;
-            }
+          default: {
+            return productSubCategory.tileImage?.href;
           }
         }
       } else {
@@ -105,7 +110,7 @@ const TileImages = ({
   }, [activeCategory, activeMenu, isSubCategory]);
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="relative flex items-center gap-3">
       {categoryTileHref && (
         <CategoryTile
           activeCategory={activeCategory!}

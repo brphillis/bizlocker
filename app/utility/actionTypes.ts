@@ -1,6 +1,6 @@
 import { AusPostDeliveryOption } from "~/integrations/auspost/types";
 import { ValidationErrors } from "./validate";
-import { User } from "@prisma/client";
+import { Order, User } from "@prisma/client";
 import { PageNotification } from "~/hooks/PageNotification";
 import { Page } from "~/models/PageBuilder/types";
 import { BlockWithContent } from "~/models/Blocks/types";
@@ -23,4 +23,7 @@ export interface ActionReturnTypes {
   actionBlocks: BlockWithContent[];
   user: User;
   navigationPromotions: PromotionWithContent[];
+  order: Order;
+  solanaTransaction?: string;
+  transactionResponse?: unknown;
 }

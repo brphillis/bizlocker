@@ -18,12 +18,12 @@ const findAliExpressVariantSize = (
   itemSearching: AliExpressHubProduct_ResultItem,
   sizeCode: string,
 ): string | undefined => {
-  const sizeObjectArray = itemSearching.sku.props.find(
+  const sizeObjectArray = itemSearching?.sku?.props?.find(
     (e) => e.name.includes("Size") || e.name.includes("Length"),
   );
 
   if (sizeObjectArray) {
-    const sizeToReturn = sizeObjectArray.values.find(
+    const sizeToReturn = sizeObjectArray?.values?.find(
       (c) => c.vid.toString() == sizeCode,
     )?.name;
 
@@ -37,13 +37,13 @@ const findAliExpressVariantColor = (
   itemSearching: AliExpressHubProduct_ResultItem,
   colorCode: string,
 ): string | undefined => {
-  const colorObjectArray = itemSearching.sku.props.find((e) =>
+  const colorObjectArray = itemSearching?.sku?.props?.find((e) =>
     e.name.includes("Color"),
   );
 
   if (colorObjectArray) {
-    const colorToReturn = colorObjectArray.values
-      .find((c) => c.vid.toString() == colorCode)
+    const colorToReturn = colorObjectArray?.values
+      ?.find((c) => c.vid.toString() == colorCode)
       ?.name.toLocaleUpperCase();
 
     if (colorToReturn) {
@@ -70,9 +70,16 @@ export const getAliExpressProductVariants = (
 ): AliExpress_ProductVariant[] => {
   return item.sku.base
     .map((variant: AliExpressHubProduct_ResultItem_Sku_Base) => {
-      const propMapParts = variant.propMap.split(";");
-      const color = propMapParts[0].split(":")[1] || "";
-      const size = propMapParts[1].split(":")[1] || "";
+      const propMapParts = variant?.propMap?.split(";");
+
+      const color =
+        propMapParts && propMapParts.length > 1
+          ? propMapParts[0].split(":")[1] || ""
+          : variant.propMap.split(":")[1];
+      const size =
+        propMapParts && propMapParts.length > 1
+          ? propMapParts[1].split(":")[1] || ""
+          : variant.propMap.split(":")[0];
 
       return {
         sku: variant.skuId,

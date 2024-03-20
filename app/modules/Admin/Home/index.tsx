@@ -5,13 +5,12 @@ import {
   IoPersonOutline,
 } from "react-icons/io5";
 import AdminPageWrapper from "~/components/Layout/Wrappers/AdminPageWrapper";
-import { useNavigate } from "@remix-run/react";
+import { Link } from "@remix-run/react";
 import PatternBackground from "~/components/Layout/Backgrounds/PatternBackground";
 import { getThemeColorValueByName } from "~/utility/colors";
+import ExternalLink from "~/components/Client/ExternalLink";
 
 const AdminHome = () => {
-  const navigate = useNavigate();
-
   return (
     <AdminPageWrapper>
       <div className="relative flex h-full w-full items-center justify-center bg-base-200 p-6">
@@ -35,43 +34,39 @@ const AdminHome = () => {
 
           <div className="flex flex-row flex-wrap items-center justify-center gap-3">
             <div className="flex flex-row gap-x-3">
-              <button
-                className="flex h-28 w-28 cursor-pointer flex-col items-center justify-center gap-3 rounded-sm bg-primary p-3"
-                onClick={() => navigate("/")}
-                type="button"
+              <ExternalLink
+                to="www.clutchclothing.com.au"
+                extendStyle="flex h-28 w-28 cursor-pointer flex-col items-center justify-center gap-3 rounded-sm bg-primary p-3"
               >
                 <IoGlobeOutline size={36} />
                 <p className="font-semibold">Website</p>
-              </button>
+              </ExternalLink>
 
-              <button
+              <Link
                 className="flex h-28 w-28 cursor-pointer flex-col items-center justify-center gap-3 rounded-sm bg-primary p-3"
-                onClick={() => navigate("/")}
-                type="button"
+                to="/"
               >
                 <IoPersonOutline size={36} />
                 <p className="font-semibold">Profile</p>
-              </button>
+              </Link>
             </div>
 
             <div className="flex flex-row gap-x-3">
-              <button
+              <Link
                 className="flex h-28 w-28 cursor-pointer flex-col items-center justify-center gap-3 rounded-sm bg-primary p-3"
-                onClick={() => navigate("/")}
-                type="button"
+                to="/"
               >
                 <IoDocumentTextOutline size={36} />
                 <p className="font-semibold">Docs</p>
-              </button>
+              </Link>
 
-              <button
+              <Link
                 className="flex h-28 w-28 cursor-pointer flex-col items-center justify-center gap-3 rounded-sm bg-primary p-3"
-                onClick={() => navigate("/")}
-                type="button"
+                to="/"
               >
                 <IoCallOutline size={36} />
                 <p className="font-semibold">Support</p>
-              </button>
+              </Link>
             </div>
           </div>
 

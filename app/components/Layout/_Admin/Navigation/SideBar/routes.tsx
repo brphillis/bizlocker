@@ -48,6 +48,10 @@ export const adminNavBarRoutes: NavigationRouteItem[] = [
         name: "Article Categories",
         link: "/admin/search/article-category",
       },
+      {
+        name: "Carts",
+        link: "/admin/search/cart",
+      },
     ],
   },
 

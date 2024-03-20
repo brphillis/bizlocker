@@ -2,7 +2,6 @@ import { type FormEvent, useState, useEffect } from "react";
 import { validateForm } from "~/utility/validate";
 import { getFormData } from "~/helpers/formHelpers";
 import AdminPageHeader from "~/components/Layout/_Admin/AdminPageHeader";
-import BackSubmitButtons from "~/components/Forms/Buttons/BackSubmitButtons";
 import AdminPageWrapper from "~/components/Layout/Wrappers/AdminPageWrapper";
 import { Outlet, useParams, useSubmit, useActionData } from "@remix-run/react";
 import WindowContainer, {
@@ -22,7 +21,6 @@ const TasksUpsert = () => {
   const { contentType } = useParams();
   useNotification(notification);
 
-  const [loading, setLoading] = useState<boolean>(false);
   const [taskRunning, setTaskRunning] = useState<string | undefined>();
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -36,7 +34,6 @@ const TasksUpsert = () => {
       validateOptions,
     );
     if (formErrors) {
-      setLoading(false);
       return;
     }
 
@@ -70,6 +67,20 @@ const TasksUpsert = () => {
 
         <div className="flex flex-col gap-3">
           <WindowContainer
+            title="SEO"
+            extendStyle="bg-base-200"
+            extendTitleBarStyle="!bg-base-500"
+            hideClose={true}
+          >
+            <TaskListTask
+              handleSubmit={handleSubmit}
+              submitValue="updateSiteMap"
+              taskName="Update SiteMap"
+              taskRunning={taskRunning}
+            />
+          </WindowContainer>
+
+          <WindowContainer
             title="Media"
             extendStyle="bg-base-200"
             extendTitleBarStyle="!bg-base-500"
@@ -95,22 +106,9 @@ const TasksUpsert = () => {
                 taskName="Copy Dev Bucket to Production Bucket"
                 taskRunning={taskRunning}
               />
-
-              <TaskListTask
-                handleSubmit={handleSubmit}
-                submitValue="updateSiteMap"
-                taskName="Update SiteMap"
-                taskRunning={taskRunning}
-              />
             </div>
           </WindowContainer>
         </div>
-
-        <BackSubmitButtons
-          loading={loading}
-          setLoading={setLoading}
-          hideBack={true}
-        />
       </div>
       <Outlet />
     </AdminPageWrapper>

@@ -325,10 +325,20 @@ export const upsertProduct = async (
       },
     });
 
+    const existingImageIds = existingProduct.images.map((e) => e.id);
+    const newImageIds = images?.map((e) => e.id);
+
+    const removedImageIds = existingImageIds.filter(
+      (id) => !newImageIds?.includes(id),
+    );
+
     // remove old images from bucket
     if (existingProduct.images && existingProduct.images.length > 0) {
       for (let i = 0; i < existingProduct.images.length; i++) {
-        if (existingProduct.images[i].href) {
+        if (
+          removedImageIds.includes(existingProduct.images[i].id) &&
+          existingProduct.images[i].href
+        ) {
           await removeS3Image(existingProduct.images[i].href!);
         }
       }
@@ -720,6 +730,10 @@ export const searchProducts = async (
     };
   }
 
+  if (gender && gender === "KIDS") {
+    filter.gender = gender;
+  }
+
   if (isActive || activeOnly) {
     filter.isActive = true;
   }
@@ -814,6 +828,8 @@ export const searchProducts = async (
 
   let products = null;
 
+  products = fetchedProducts as Product[];
+
   // If sorting by price is required, sort the products array after fetching
   if (sortBy === "price" && sortOrder) {
     products = fetchedProducts.sort((a, b) => {
@@ -830,8 +846,36 @@ export const searchProducts = async (
 
       return sortOrder === "asc" ? aPrice - bPrice : bPrice - aPrice;
     }) as Product[];
-  } else {
-    products = fetchedProducts as Product[];
+  }
+
+  if (isPromoted || promotionId) {
+    products = fetchedProducts
+      .map((product) => {
+        const promotedVariants = product.variants?.filter(
+          (variant) => variant.isPromoted,
+        );
+
+        return {
+          ...product,
+          variants: promotedVariants,
+        };
+      })
+      .filter((product) => product.variants.length > 0);
+  }
+
+  if (onSale) {
+    products = fetchedProducts
+      .map((product) => {
+        const promotedVariants = product.variants?.filter(
+          (variant) => variant.isOnSale,
+        );
+
+        return {
+          ...product,
+          variants: promotedVariants,
+        };
+      })
+      .filter((product) => product.variants.length > 0);
   }
 
   const totalPages = Math.ceil(totalProducts / (perPage || 1)) || 0;

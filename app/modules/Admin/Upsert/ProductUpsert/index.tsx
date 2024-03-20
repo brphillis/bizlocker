@@ -1,7 +1,6 @@
 import { type FormEvent, useEffect, useState } from "react";
 import { getFormData } from "~/helpers/formHelpers";
 import DarkOverlay from "~/components/Layout/Overlays/DarkOverlay";
-import { ClientOnly } from "~/components/Client/ClientOnly";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import type { ActionReturnTypes } from "~/utility/actionTypes";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
@@ -32,6 +31,8 @@ import TabContent from "~/components/Tabs/TabContent";
 import type { productUpsertLoader } from "./index.server";
 import { IoTrashSharp } from "react-icons/io5";
 import { ActionAlert } from "~/components/Notifications/Alerts";
+import { sortArrayAlphabetically } from "~/helpers/arrayHelpers";
+import { ClientOnly } from "~/components/Client/ClientOnly";
 
 const validateOptions = {
   name: true,
@@ -143,7 +144,7 @@ const UpsertProduct = ({ offRouteModule }: Props) => {
           <Form
             method="POST"
             onSubmit={handleSubmit}
-            className="scrollbar-hide relative w-[640px] max-w-full overflow-y-auto"
+            className="scrollbar-hide relative w-[640px] max-w-full"
           >
             <TabContent tab="general" activeTab={activeTab}>
               <>
@@ -151,7 +152,7 @@ const UpsertProduct = ({ offRouteModule }: Props) => {
                   type="submit"
                   name="_action"
                   value="delete"
-                  className="absolute z-50 top-0 right-0 text-white bg-error rounded-full p-1 text-sm"
+                  className="absolute z-50 top-[-10px] max-md:top-0 right-0 text-white bg-error rounded-full p-1 text-sm"
                 >
                   <IoTrashSharp />
                 </button>
@@ -202,7 +203,12 @@ const UpsertProduct = ({ offRouteModule }: Props) => {
                     label="Categories"
                     extendContainerStyle="w-full"
                     extendStyle="!h-[150px]"
-                    selections={productSubCategories}
+                    selections={
+                      sortArrayAlphabetically(
+                        productSubCategories,
+                        "name",
+                      ) as SelectValue[]
+                    }
                     defaultValues={product?.productSubCategories}
                     validationErrors={
                       clientValidationErrors || serverValidationErrors
@@ -211,19 +217,17 @@ const UpsertProduct = ({ offRouteModule }: Props) => {
                 </div>
 
                 <ClientOnly fallback={<div id="skeleton" />}>
-                  {() => (
-                    <RichTextInput
-                      label="Description"
-                      labelStyle="!text-brand-black"
-                      name="description"
-                      value={richText || product?.description}
-                      onChange={setRichText}
-                      extendStyle="mb-6 h-[200px] pb-3"
-                      validationErrors={
-                        clientValidationErrors || serverValidationErrors
-                      }
-                    />
-                  )}
+                  <RichTextInput
+                    label="Description"
+                    labelStyle="!text-brand-black"
+                    name="description"
+                    value={richText || product?.description}
+                    onChange={setRichText}
+                    extendStyle="mb-6 h-[200px] pb-3"
+                    validationErrors={
+                      clientValidationErrors || serverValidationErrors
+                    }
+                  />
                 </ClientOnly>
               </>
             </TabContent>
@@ -237,9 +241,7 @@ const UpsertProduct = ({ offRouteModule }: Props) => {
                 />
 
                 <ClientOnly fallback={<div id="skeleton" />}>
-                  {() => (
-                    <UploadMultipleImages defaultImages={product?.images} />
-                  )}
+                  <UploadMultipleImages defaultImages={product?.images} />
                 </ClientOnly>
 
                 <div className="divider w-full pt-4" />
@@ -255,9 +257,8 @@ const UpsertProduct = ({ offRouteModule }: Props) => {
                   clientValidationErrors={clientValidationErrors}
                   serverValidationErrors={serverValidationErrors}
                 />
-                {product.variants && product.variants.length > 0 && (
-                  <ProductVariantUpsert storeId={storeId} product={product} />
-                )}
+
+                <ProductVariantUpsert storeId={storeId} product={product} />
               </>
             </TabContent>
 

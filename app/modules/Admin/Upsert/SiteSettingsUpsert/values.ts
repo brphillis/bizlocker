@@ -5,4 +5,5 @@ export const navigationDesktopSelectValues = [
 
 export const navigationMobileSelectValues = [
   { id: "productBasic", name: "Product Basic" },
+  { id: "productMegaMenu", name: "Product MegaMenu" },
 ];

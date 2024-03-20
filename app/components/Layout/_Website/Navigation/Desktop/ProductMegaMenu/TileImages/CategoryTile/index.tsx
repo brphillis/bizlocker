@@ -4,7 +4,7 @@ import { MegaMenuTypes } from "../..";
 import { ProductCategoryWithDetails } from "~/models/ProductCategories/types";
 
 type Props = {
-  activeMenu: MegaMenuTypes;
+  activeMenu?: MegaMenuTypes;
   activeCategory: ProductCategoryWithDetails | ProductSubCategoryWithDetails;
   imageSrc: string;
 };
@@ -33,9 +33,10 @@ const CategoryTile = ({ activeMenu, activeCategory, imageSrc }: Props) => {
   };
 
   return (
-    <div className="h-52 w-52 relative hover:scale-[1.01] duration-300 cursor-pointer">
+    <div className="relative w-52 h-52 shadow-[0_18px_10px_-15px_rgba(0,0,0,0.5)] border-brand-white/10 border">
       <BasicImage
         alt="activeImage"
+        extendStyle="h-full w-full hover:scale-[1.01] duration-300 cursor-pointer"
         src={imageSrc}
         link={"/products" + returnQueryString()}
       />

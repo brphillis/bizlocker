@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import { BlockOptions } from "@prisma/client";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { isDecimal } from "~/helpers/numberHelpers";
@@ -123,112 +122,110 @@ const Carousel = ({ content, options }: Props) => {
         displayStyle={backgroundDisplayPrimary}
       />
 
-      <Suspense fallback={<div></div>}>
-        <div
-          className={`!relative left-[50%] !z-0 translate-x-[-50%] 
+      <div
+        className={`!relative left-[50%] !z-0 translate-x-[-50%] 
           ${height ? height : "h-[540px]"}
           ${heightMobile ? heightMobile : "max-md:h-max"}
           `}
-        >
-          <Swiper
-            modules={swiperModules}
-            className="relative h-full w-full"
-            slidesPerView={numberColumns || 1}
-            spaceBetween={20}
-            centeredSlides={true}
-            loop={true}
-            pagination={true}
-            navigation={{
-              nextEl: ".carouselNavNextButton",
-              prevEl: ".carouselNavPrevButton",
-            }}
-            onInit={hideExtraPaginationButtons}
-            onSlideChange={(e) => {
-              //handle pagination active class
-              const paginationButtons = document.querySelectorAll(
-                ".swiper-pagination-bullet",
+      >
+        <Swiper
+          modules={swiperModules}
+          className="relative h-full w-full"
+          slidesPerView={numberColumns || 1}
+          spaceBetween={20}
+          centeredSlides={true}
+          loop={true}
+          pagination={true}
+          navigation={{
+            nextEl: ".carouselNavNextButton",
+            prevEl: ".carouselNavPrevButton",
+          }}
+          onInit={hideExtraPaginationButtons}
+          onSlideChange={(e) => {
+            //handle pagination active class
+            const paginationButtons = document.querySelectorAll(
+              ".swiper-pagination-bullet",
+            );
+
+            if (
+              paginationButtons?.[e.realIndex - trueSlideLength] &&
+              e.realIndex + 1 > trueSlideLength
+            ) {
+              paginationButtons[e.realIndex - trueSlideLength].classList.add(
+                "swiper-pagination-bullet-active",
               );
-
-              if (
-                paginationButtons?.[e.realIndex - trueSlideLength] &&
-                e.realIndex + 1 > trueSlideLength
-              ) {
-                paginationButtons[e.realIndex - trueSlideLength].classList.add(
-                  "swiper-pagination-bullet-active",
-                );
+            }
+          }}
+          slideNextClass="blur-sm"
+          onSlideNextTransitionEnd={(e) => {
+            e.slides.forEach((e) => {
+              if (!e.className.includes("swiper-slide-active")) {
+                e.classList.add("blur-sm");
               }
-            }}
-            slideNextClass="blur-sm"
-            onSlideNextTransitionEnd={(e) => {
-              e.slides.forEach((e) => {
-                if (!e.className.includes("swiper-slide-active")) {
-                  e.classList.add("blur-sm");
-                }
-              });
-            }}
-            slidePrevClass="blur-sm"
-            onSlidePrevTransitionEnd={(e) => {
-              e.slides.forEach((e) => {
-                if (!e.className.includes("swiper-slide-active")) {
-                  e.classList.add("blur-sm");
-                }
-              });
-            }}
-            autoplay={{
-              delay: speed || 0,
-              pauseOnMouseEnter: true,
-            }}
-            breakpoints={{
-              769: {
-                slidesPerView: numberColumns || 1,
-              },
-              0: {
-                slidesPerView: numberColumnsMobile || 1,
-              },
-            }}
-            style={{
-              // @ts-expect-error: CSS Variables from Swiper Libary Override
-              "--swiper-pagination-color": "#FFFFFF",
-              "--swiper-pagination-bullet-border-radius": "0px",
-              "--swiper-pagination-bullet-inactive-color": "#999999",
-              "--swiper-pagination-bullet-inactive-opacity": "1",
-              "--swiper-pagination-bullet-horizontal-gap": "6px",
-              "--swiper-pagination-bullet-width": "18px",
-              "--swiper-pagination-bullet-height": "4px",
-              // --swiper-pagination-left: auto;
-              // --swiper-pagination-right: 8px;
-              // --swiper-pagination-bottom: 8px;
-              // --swiper-pagination-top: auto;
-            }}
-          >
-            <div className="carouselNavPrevButton absolute left-0 top-[50%] z-10 flex h-full translate-y-[-50%] cursor-pointer items-center justify-center bg-brand-black/50 p-6 text-brand-white transition-colors duration-300 hover:bg-brand-black/40 max-md:hidden">
-              <IoChevronBackOutline size={30} />
-            </div>
-            <div className="carouselNavNextButton absolute right-0 top-[50%] z-10 flex h-full translate-y-[-50%] cursor-pointer items-center justify-center bg-brand-black/50 p-6 text-brand-white transition-colors duration-300 hover:bg-brand-black/40 max-md:hidden">
-              <IoChevronForward size={30} />
-            </div>
+            });
+          }}
+          slidePrevClass="blur-sm"
+          onSlidePrevTransitionEnd={(e) => {
+            e.slides.forEach((e) => {
+              if (!e.className.includes("swiper-slide-active")) {
+                e.classList.add("blur-sm");
+              }
+            });
+          }}
+          autoplay={{
+            delay: speed || 0,
+            pauseOnMouseEnter: true,
+          }}
+          breakpoints={{
+            769: {
+              slidesPerView: numberColumns || 1,
+            },
+            0: {
+              slidesPerView: numberColumnsMobile || 1,
+            },
+          }}
+          style={{
+            // @ts-expect-error: CSS Variables from Swiper Libary Override
+            "--swiper-pagination-color": "#FFFFFF",
+            "--swiper-pagination-bullet-border-radius": "0px",
+            "--swiper-pagination-bullet-inactive-color": "#999999",
+            "--swiper-pagination-bullet-inactive-opacity": "1",
+            "--swiper-pagination-bullet-horizontal-gap": "6px",
+            "--swiper-pagination-bullet-width": "18px",
+            "--swiper-pagination-bullet-height": "4px",
+            // --swiper-pagination-left: auto;
+            // --swiper-pagination-right: 8px;
+            // --swiper-pagination-bottom: 8px;
+            // --swiper-pagination-top: auto;
+          }}
+        >
+          <div className="carouselNavPrevButton absolute left-0 top-[50%] z-10 flex h-full translate-y-[-50%] cursor-pointer items-center justify-center bg-brand-black/50 p-6 text-brand-white transition-colors duration-300 hover:bg-brand-black/40 max-md:hidden">
+            <IoChevronBackOutline size={30} />
+          </div>
+          <div className="carouselNavNextButton absolute right-0 top-[50%] z-10 flex h-full translate-y-[-50%] cursor-pointer items-center justify-center bg-brand-black/50 p-6 text-brand-white transition-colors duration-300 hover:bg-brand-black/40 max-md:hidden">
+            <IoChevronForward size={30} />
+          </div>
 
-            {generateSlidesForPartialViews(content)?.map(
-              (contentData: BlockContentSorted, i: number) => {
-                const index = i + 1 > trueSlideLength ? i - trueSlideLength : i;
+          {generateSlidesForPartialViews(content)?.map(
+            (contentData: BlockContentSorted, i: number) => {
+              const index = i + 1 > trueSlideLength ? i - trueSlideLength : i;
 
-                const { name, imageSrc } =
-                  buildImageFromBlockContent(contentData) || {};
+              const { name, imageSrc } =
+                buildImageFromBlockContent(contentData) || {};
 
-                return (
-                  <SwiperSlide key={i}>
-                    <Slide
-                      index={index}
-                      blockOptions={options}
-                      image={{ altText: name, src: imageSrc }}
-                    />
-                  </SwiperSlide>
-                );
-              },
-            )}
-          </Swiper>
-        </div>
-      </Suspense>
+              return (
+                <SwiperSlide key={i}>
+                  <Slide
+                    index={index}
+                    blockOptions={options}
+                    image={{ altText: name, src: imageSrc }}
+                  />
+                </SwiperSlide>
+              );
+            },
+          )}
+        </Swiper>
+      </div>
     </div>
   );
 };

@@ -42,12 +42,11 @@ const TextBlock = ({ content, options: ArrayOptions }: Props) => {
           <div
             className="absolute left-[50%] top-0 z-0 h-full w-screen translate-x-[-50%]"
             style={{
-              backgroundColor: backgroundColorPrimary
-                ? getThemeColorValueByName(backgroundColorPrimary)
-                : "",
+              backgroundColor: getThemeColorValueByName(backgroundColorPrimary),
               width: backgroundWidthPrimary ? backgroundWidthPrimary : "unset",
             }}
           ></div>
+
           {parse(richText, parseOptions)}
         </div>
       )}

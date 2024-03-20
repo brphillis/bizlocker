@@ -15,7 +15,7 @@ export const includesWords = (
 
 export const removeSpecialCharacters = (str: string): string => {
   // Define a regular expression to match special characters
-  const regex: RegExp = /[!@#$%^&*()_+=[\]{};':"|,.<>/?]+/g;
+  const regex = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>?]+/g;
 
   // Replace all occurrences of special characters with an empty string
   return str.replace(regex, "");

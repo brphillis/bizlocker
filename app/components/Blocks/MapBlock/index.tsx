@@ -3,7 +3,6 @@ import { BlockOptions } from "@prisma/client";
 import Map from "~/components/Map/index.client";
 import { BlockContentSorted } from "~/models/Blocks/types";
 import { MapFunctions } from "~/components/Map/types";
-import { ClientOnly } from "~/components/Client/ClientOnly";
 import { getCountryFromISO3166 } from "~/utility/countryList";
 import { IoCall, IoLocationSharp, IoPrint } from "react-icons/io5";
 import {
@@ -11,6 +10,7 @@ import {
   returnOtherColorPrefix,
 } from "~/utility/colors";
 import { StoreWithDetails } from "~/models/Stores/types";
+import { ClientOnly } from "~/components/Client/ClientOnly";
 
 type Props = {
   content: BlockContentSorted[];
@@ -77,13 +77,11 @@ const MapBlock = ({ content, options: optionsArray }: Props) => {
         style={{ height: blockHeight() }}
       >
         <ClientOnly fallback={<div id="skeleton" />}>
-          {() => (
-            <Map
-              ref={mapRef}
-              locations={locations}
-              markerColor={getThemeColorValueByName(colorPrimary || "BLUE")}
-            />
-          )}
+          <Map
+            ref={mapRef}
+            locations={locations}
+            markerColor={getThemeColorValueByName(colorPrimary || "BLUE")}
+          />
         </ClientOnly>
       </div>
 

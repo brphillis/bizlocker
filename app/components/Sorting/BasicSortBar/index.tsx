@@ -4,9 +4,21 @@ import { IoTrendingDown, IoTrendingUp } from "react-icons/io5";
 
 type Props = {
   totalCount?: number;
+  popular?: boolean;
+  createdAt?: boolean;
+  price?: boolean;
+  name?: boolean;
+  updatedAt?: boolean;
 };
 
-const ProductSort = ({ totalCount }: Props) => {
+const BasicSortBar = ({
+  totalCount,
+  popular,
+  createdAt,
+  price,
+  name,
+  updatedAt,
+}: Props) => {
   const [searchParams] = useSearchParams();
   const { pathname } = useLocation();
   const submit = useSubmit();
@@ -33,10 +45,11 @@ const ProductSort = ({ totalCount }: Props) => {
             });
           }}
         >
-          <option value="totalSold">Popular</option>
-          <option value="createdAt">New</option>
-          <option value="price">Price</option>
-          <option value="name">Name</option>
+          {popular && <option value="totalSold">Popular</option>}
+          {createdAt && <option value="createdAt">New</option>}
+          {updatedAt && <option value="updatedAt">Updated</option>}
+          {price && <option value="price">Price</option>}
+          {name && <option value="name">Name</option>}
         </select>
 
         {sortAsc && (
@@ -92,4 +105,4 @@ const ProductSort = ({ totalCount }: Props) => {
   );
 };
 
-export default ProductSort;
+export default BasicSortBar;

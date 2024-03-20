@@ -202,6 +202,7 @@ export const duplicateBucket = async (
           CopySource: `/${sourceBucket}/${object.Key}`,
           Key: object.Key,
         };
+
         await s3Client.send(new CopyObjectCommand(copyParams));
       }
     } else {
