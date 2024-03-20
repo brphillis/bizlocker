@@ -26,8 +26,8 @@ import googlePayLogo from "../../../assets/logos/googlePay-logo.svg";
 import mastercardLogo from "../../../assets/logos/mastercard-logo.svg";
 import solanaLogo from "../../../assets/logos/solana-logo.svg";
 import { WalletAdapterButton } from "~/integrations/wallets/solflare";
-import { ClientOnly } from "~/components/Client/ClientOnly";
 import { AusPostDeliveryOption } from "~/integrations/auspost/types";
+import { ClientOnly } from "~/components/Client/ClientOnly";
 
 const Cart = () => {
   const submit = useSubmit();
@@ -335,13 +335,11 @@ const Cart = () => {
             </button>
 
             <ClientOnly>
-              {() => (
-                <WalletAdapterButton
-                  solanaPriceAUD={solanaPriceAUD}
-                  solanaTransaction={solanaTransaction}
-                  transactionResponse={transactionResponse}
-                />
-              )}
+              <WalletAdapterButton
+                solanaPriceAUD={solanaPriceAUD}
+                solanaTransaction={solanaTransaction}
+                transactionResponse={transactionResponse}
+              />
             </ClientOnly>
           </div>
 

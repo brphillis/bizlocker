@@ -38,5 +38,7 @@ export const themeColors ={
     "brand-khaki" : "#c3b091",
     "brand-burgundy" : "#800020",
     "brand-apricot" : "#fbceb1",
+    "brand-winered" : "#7B0323",
+    "brand-navyblue" : "#000080",
     ...tailwindColors
   }

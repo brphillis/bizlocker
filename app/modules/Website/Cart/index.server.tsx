@@ -65,7 +65,6 @@ export const checkoutFormValidation = {
   postcode: true,
   state: true,
   country: true,
-  phoneNumber: true,
   shippingOptions: true,
 };
 
@@ -118,7 +117,7 @@ export const cartAction = async (request: Request) => {
         firstName as string,
         lastName as string,
         email as string,
-        phoneNumber as string,
+        (phoneNumber as string) || "11111111",
         address as Address,
         shippingMethod as string,
         shippingPrice as string,
@@ -158,7 +157,7 @@ export const cartAction = async (request: Request) => {
         firstName as string,
         lastName as string,
         email as string,
-        phoneNumber as string,
+        (phoneNumber as string) || "11111111",
         address as Address,
         shippingMethod as string,
         shippingPrice as string,

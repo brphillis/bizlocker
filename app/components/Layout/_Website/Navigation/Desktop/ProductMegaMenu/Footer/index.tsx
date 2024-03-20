@@ -29,7 +29,7 @@ const Footer = ({ activeMenu }: Props) => {
   };
 
   return (
-    <div className="flex w-full justify-between px-12 items-center">
+    <div className="flex w-full justify-between px-12 items-center pt-6">
       <div className="flex gap-3">
         <BasicButton
           label="Promo Items"

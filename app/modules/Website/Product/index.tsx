@@ -77,6 +77,7 @@ const Product = () => {
   >(variants?.[0]);
 
   const hasSizes = availableSizes && availableSizes[0] !== null;
+
   const hasColors =
     availableColors &&
     availableColors[0] !== null &&
@@ -143,8 +144,9 @@ const Product = () => {
               selectedVariant?.color?.split(" ")?.[1] &&
               selectedVariant?.color?.split(" ")?.[1].toLowerCase() ===
                 tag.toLowerCase()
-            )
+            ) {
               return true;
+            }
           }
         }
       }),
@@ -391,7 +393,7 @@ const Product = () => {
                   promotion & sale items free of charge.
                 </div>
                 <Link
-                  to="/terms-and-conditions"
+                  to="/return-policy"
                   className="max-w-full text-sm text-primary hover:underline"
                 >
                   Read more about our return policy.

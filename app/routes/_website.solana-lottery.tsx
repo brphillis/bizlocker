@@ -1,6 +1,5 @@
 import { ActionFunctionArgs, MetaFunction } from "@remix-run/node";
 import { useActionData, useLoaderData, useNavigate } from "@remix-run/react";
-import { ClientOnly } from "~/components/Client/ClientOnly";
 import CountDown from "~/components/Indicators/Countdown";
 import useNotification from "~/hooks/PageNotification";
 import { getSolanaPrice_AUD } from "~/integrations/coinmarketcap/index.server";
@@ -15,6 +14,7 @@ import { cartLoader } from "~/modules/Website/Cart/index.server";
 import { ActionReturnTypes } from "~/utility/actionTypes";
 import { validateForm } from "~/utility/validate";
 import OutlineButton from "~/components/Buttons/OutlineButton";
+import { ClientOnly } from "~/components/Client/ClientOnly";
 
 export const meta: MetaFunction = ({ data }) => {
   const loaderMeta = (data as { meta: MetaType })?.meta;
@@ -100,15 +100,13 @@ const SolanaLottery = () => {
 
                 <div className="flex flex-col items-center gap-3">
                   <ClientOnly>
-                    {() => (
-                      <WalletAdapterButton
-                        solanaPriceAUD={solanaPriceAUD}
-                        solanaTransaction={solanaTransaction}
-                        transactionResponse={transactionResponse}
-                        disableValidation={true}
-                        checkoutButtonLabel="Submit Entry"
-                      />
-                    )}
+                    <WalletAdapterButton
+                      solanaPriceAUD={solanaPriceAUD}
+                      solanaTransaction={solanaTransaction}
+                      transactionResponse={transactionResponse}
+                      disableValidation={true}
+                      checkoutButtonLabel="Submit Entry"
+                    />
                   </ClientOnly>
                   <p className="text-brand-white/75 text-sm">
                     0.5 SOL per entry.

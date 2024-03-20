@@ -9,7 +9,28 @@ type Props = {
 };
 
 const ImageBanner = ({ options, imageSrc, imageLink, imageAlt }: Props) => {
-  const { borderColor, borderRadius, borderSize, size } = options || {};
+  const {
+    borderColor,
+    borderRadius,
+    borderSize,
+    size,
+    align,
+    alignMobile,
+    justify,
+    justifyMobile,
+    shortText,
+    shortTextColor,
+    shortTextFontWeight,
+    shortTextFontWeightMobile,
+    shortTextSize,
+    shortTextSizeMobile,
+    title,
+    titleColor,
+    titleFontWeight,
+    titleFontWeightMobile,
+    titleSize,
+    titleSizeMobile,
+  } = options || {};
 
   const smallStyle =
     "h-[146px] w-full max-w-[1280px] overflow-hidden max-xl:h-[124px] max-lg:h-[100px] max-md:h-[88px]";
@@ -41,13 +62,35 @@ const ImageBanner = ({ options, imageSrc, imageLink, imageAlt }: Props) => {
   }
 
   return (
-    <BasicImage
-      link={imageLink}
-      src={imageSrc}
-      alt={imageAlt}
-      extendStyle={`relative mx-auto object-cover block ${currentStyle} ${borderSize} ${borderColor} ${borderRadius} 
-        ${imageLink ? "cursor-pointer" : ""}`}
-    />
+    <div className="relative">
+      <BasicImage
+        link={imageLink}
+        src={imageSrc}
+        alt={imageAlt}
+        extendStyle={`relative mx-auto object-cover block ${currentStyle} ${borderSize} ${borderColor} ${borderRadius} 
+            ${imageLink ? "cursor-pointer" : ""}`}
+      />
+
+      <div
+        className={`p-[2%] select-none absolute top-0 bottom-0 text-center left-1/2 translate-x-[-50%] flex w-full gap-2 max-md:gap-1
+          ${justify ? justify : "justify-center"} 
+          ${align ? align : "items-center"}
+          ${justifyMobile} ${alignMobile}`}
+      >
+        <h1
+          className={`drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,1)] ${titleSize} ${titleSizeMobile}
+              ${titleColor} ${titleFontWeight} ${titleFontWeightMobile}`}
+        >
+          {title}
+        </h1>
+        <h2
+          className={`text-3xl max-md:text-lg ${shortTextSize} ${shortTextSizeMobile}
+              ${shortTextColor} ${shortTextFontWeight} ${shortTextFontWeightMobile}`}
+        >
+          {shortText}
+        </h2>
+      </div>
+    </div>
   );
 };
 

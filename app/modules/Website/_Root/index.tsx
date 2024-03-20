@@ -23,6 +23,7 @@ import "sweetalert2/dist/sweetalert2.css";
 import "../../../../node_modules/swiper/swiper.min.css";
 import "../../../../node_modules/swiper/modules/navigation.min.css";
 import "../../../../node_modules/swiper/modules/pagination.min.css";
+import ProductMegaMenuMobile from "~/components/Layout/_Website/Navigation/Mobile/ProductMegaMenuMobile";
 
 const WebsiteRoot = () => {
   const navigation = useNavigation();
@@ -44,6 +45,7 @@ const WebsiteRoot = () => {
     announcementMessage,
     countdownIsActive,
     navigationStyleDesktop,
+    navigationStyleMobile,
   } = siteSettings || {};
 
   const [searchActive, setSearchActive] = useState<boolean | null>(false);
@@ -151,11 +153,23 @@ const WebsiteRoot = () => {
       </div>
 
       {/* MOBILE DRAWER */}
-      <ProductBasicMobile
-        departments={departments}
-        productCategories={productCategories}
-        user={user}
-      />
+
+      {navigationStyleMobile === "productBasic" && (
+        <ProductBasicMobile
+          departments={departments}
+          productCategories={productCategories}
+          user={user}
+        />
+      )}
+
+      {navigationStyleMobile === "productMegaMenu" && (
+        <ProductMegaMenuMobile
+          departments={departments}
+          productCategories={productCategories}
+          user={user}
+          randomPromotions={navigationPromotions}
+        />
+      )}
     </div>
   );
 };

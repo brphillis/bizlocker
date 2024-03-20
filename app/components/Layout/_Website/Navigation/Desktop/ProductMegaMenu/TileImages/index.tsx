@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 
 type Props = {
   randomPromotions: PromotionWithContent[];
-  activeMenu: MegaMenuTypes;
+  activeMenu?: MegaMenuTypes;
   activeCategory?: ProductCategoryWithDetails | ProductSubCategoryWithDetails;
 };
 
@@ -105,7 +105,7 @@ const TileImages = ({
   }, [activeCategory, activeMenu, isSubCategory]);
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="relative flex items-center gap-3">
       {categoryTileHref && (
         <CategoryTile
           activeCategory={activeCategory!}

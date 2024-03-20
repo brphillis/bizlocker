@@ -19,6 +19,9 @@ import WebsiteRoot from "./modules/Website/_Root";
 import { adminRootLoader } from "./modules/Admin/_Root/index.server";
 import AdminRoot from "./modules/Admin/_Root";
 
+import ReactGA from "react-ga4";
+import { useEffect } from "react";
+
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
   const path = url.pathname;
@@ -69,6 +72,16 @@ export function ErrorBoundary() {
 
   const errorCode = (response as HttpError).status;
   const message = (response as HttpError).statusText;
+
+  ReactGA.initialize("G-HV741H1DL7");
+
+  useEffect(() => {
+    ReactGA.send({
+      hitType: "pageview",
+      page: location.href,
+      title: location.pathname,
+    });
+  }, []);
 
   return (
     <html lang="en" className="h-full min-h-screen">

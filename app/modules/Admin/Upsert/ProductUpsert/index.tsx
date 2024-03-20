@@ -1,7 +1,6 @@
 import { type FormEvent, useEffect, useState } from "react";
 import { getFormData } from "~/helpers/formHelpers";
 import DarkOverlay from "~/components/Layout/Overlays/DarkOverlay";
-import { ClientOnly } from "~/components/Client/ClientOnly";
 import BasicInput from "~/components/Forms/Input/BasicInput";
 import type { ActionReturnTypes } from "~/utility/actionTypes";
 import BasicSelect from "~/components/Forms/Select/BasicSelect";
@@ -33,6 +32,7 @@ import type { productUpsertLoader } from "./index.server";
 import { IoTrashSharp } from "react-icons/io5";
 import { ActionAlert } from "~/components/Notifications/Alerts";
 import { sortArrayAlphabetically } from "~/helpers/arrayHelpers";
+import { ClientOnly } from "~/components/Client/ClientOnly";
 
 const validateOptions = {
   name: true,
@@ -217,19 +217,17 @@ const UpsertProduct = ({ offRouteModule }: Props) => {
                 </div>
 
                 <ClientOnly fallback={<div id="skeleton" />}>
-                  {() => (
-                    <RichTextInput
-                      label="Description"
-                      labelStyle="!text-brand-black"
-                      name="description"
-                      value={richText || product?.description}
-                      onChange={setRichText}
-                      extendStyle="mb-6 h-[200px] pb-3"
-                      validationErrors={
-                        clientValidationErrors || serverValidationErrors
-                      }
-                    />
-                  )}
+                  <RichTextInput
+                    label="Description"
+                    labelStyle="!text-brand-black"
+                    name="description"
+                    value={richText || product?.description}
+                    onChange={setRichText}
+                    extendStyle="mb-6 h-[200px] pb-3"
+                    validationErrors={
+                      clientValidationErrors || serverValidationErrors
+                    }
+                  />
                 </ClientOnly>
               </>
             </TabContent>
@@ -243,9 +241,7 @@ const UpsertProduct = ({ offRouteModule }: Props) => {
                 />
 
                 <ClientOnly fallback={<div id="skeleton" />}>
-                  {() => (
-                    <UploadMultipleImages defaultImages={product?.images} />
-                  )}
+                  <UploadMultipleImages defaultImages={product?.images} />
                 </ClientOnly>
 
                 <div className="divider w-full pt-4" />

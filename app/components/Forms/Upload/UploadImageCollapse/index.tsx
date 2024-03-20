@@ -16,6 +16,8 @@ const UploadImageCollapse = ({ label, name, tooltip, defaultValue }: Props) => {
     defaultValue || undefined,
   );
 
+  console.log(image);
+
   return (
     <div className="collapse collapse-arrow mt-6 rounded-none bg-base-100">
       <input type="checkbox" />
@@ -30,7 +32,11 @@ const UploadImageCollapse = ({ label, name, tooltip, defaultValue }: Props) => {
             <div className="relative mt-3 flex flex-col items-center">
               <div className="relative h-max w-max">
                 <img
-                  src={getBucketImageSrc(image.href)}
+                  src={
+                    image.href.includes("data:image")
+                      ? image.href
+                      : getBucketImageSrc(image.href)
+                  }
                   className="my-3 h-36 max-w-[280px] rounded-lg object-contain sm:max-w-[30rem]"
                   alt="brandImageEditor"
                 />

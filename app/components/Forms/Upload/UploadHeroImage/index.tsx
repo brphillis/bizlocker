@@ -28,7 +28,11 @@ const UploadHeroImage = ({ valueToChange }: Props) => {
             <div className="relative mt-3 flex flex-col items-center">
               <div className="relative h-max w-max">
                 <img
-                  src={getBucketImageSrc(heroImage.href)}
+                  src={
+                    heroImage.href.includes("data:image")
+                      ? heroImage.href
+                      : getBucketImageSrc(heroImage.href)
+                  }
                   className="my-3 h-36 max-w-[280px] rounded-lg object-contain sm:max-w-[30rem]"
                   alt="brandImageEditor"
                 />

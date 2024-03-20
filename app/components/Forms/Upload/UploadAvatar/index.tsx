@@ -20,7 +20,9 @@ const UploadAvatar = ({ avatar }: Props) => {
           <div className="w-24 rounded-full ring ring-primary ring-offset-2 ring-offset-base-100 sm:w-32">
             <img
               src={
-                (image?.href && getBucketImageSrc(image?.href)) ||
+                (image?.href?.includes("data:image")
+                  ? image.href
+                  : image?.href && getBucketImageSrc(image?.href)) ||
                 placeholderAvatar?.href ||
                 undefined
               }

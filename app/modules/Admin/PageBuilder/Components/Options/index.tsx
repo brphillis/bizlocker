@@ -16,6 +16,7 @@ import ColumnsAndRowsOptions from "./BlockOptions/ColumnsAndRows";
 import ItemOptions from "./ItemOptions";
 import ButtonOptions from "./BlockOptions/Buttons";
 import ColorOptions from "./BlockOptions/Colors";
+import AlignmentOptions from "./BlockOptions/Alignment";
 
 type Props = {
   selectedItems: PageBuilderContentSelection[];
@@ -48,6 +49,11 @@ const OptionsModule = ({
             />
 
             <TextOptions
+              defaultValues={defaultValues}
+              selectedBlockOptions={selectedBlockOptions}
+            />
+
+            <AlignmentOptions
               defaultValues={defaultValues}
               selectedBlockOptions={selectedBlockOptions}
             />

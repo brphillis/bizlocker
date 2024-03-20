@@ -56,7 +56,9 @@ export const sortBlockContent = (
     (contentOrder && contentOrder.length === 0) ||
     (organizedContent && organizedContent.length <= 1)
   ) {
-    return organizedContent;
+    return organizedContent.filter((e) =>
+      Object.values(e).some((value) => value !== null),
+    );
   }
 
   // Sort Block Content in order of BlockContentOrder

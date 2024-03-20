@@ -1,9 +1,12 @@
-import type { ReactNode } from "react";
 import { useState, useEffect } from "react";
 
 type Props = {
-  children(): JSX.Element | JSX.Element[];
-  fallback?: ReactNode;
+  children:
+    | JSX.Element
+    | JSX.Element[]
+    | (() => JSX.Element)
+    | (() => JSX.Element[]);
+  fallback?: React.ReactNode;
 };
 
 let hydrating = true;
@@ -11,10 +14,14 @@ let hydrating = true;
 export function ClientOnly({ children, fallback = null }: Props) {
   const [hydrated, setHydrated] = useState(() => !hydrating);
 
-  useEffect(function hydrate() {
+  useEffect(() => {
     hydrating = false;
     setHydrated(true);
   }, []);
 
-  return hydrated ? <>{children()}</> : <>{fallback}</>;
+  return hydrated ? (
+    <>{typeof children === "function" ? children() : children}</>
+  ) : (
+    <>{fallback}</>
+  );
 }

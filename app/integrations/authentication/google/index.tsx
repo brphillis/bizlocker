@@ -1,12 +1,12 @@
 import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import { Toast } from "../../../components/Notifications/Toast";
-import { Suspense } from "react";
 import { useSubmit } from "@remix-run/react";
+import { ClientOnly } from "~/components/Client/ClientOnly";
 
 const LoginGoogle = () => {
   const submit = useSubmit();
   return (
-    <Suspense>
+    <ClientOnly>
       <GoogleOAuthProvider clientId="686666134022-iaevmi83pshusrk7nhjs3ctoqq8g9usl.apps.googleusercontent.com">
         <div className="flex w-full justify-center [&>*:first-child]:overflow-hidden">
           <GoogleLogin
@@ -29,7 +29,7 @@ const LoginGoogle = () => {
           />
         </div>
       </GoogleOAuthProvider>
-    </Suspense>
+    </ClientOnly>
   );
 };
 

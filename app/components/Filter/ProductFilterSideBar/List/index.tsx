@@ -14,11 +14,14 @@ const List = ({ label, listValues, searchParam }: Props) => {
   return (
     <li>
       {/* eslint-disable-next-line */}
-      <details onClick={(e) => searchedValue && e.preventDefault()}>
+      <details
+        open={searchedValue ? listValues.includes(searchedValue) : false}
+        onClick={(e) => searchedValue && e.preventDefault()}
+      >
         <summary className="rounded-none font-semibold text-brand-black">
           {label}
         </summary>
-        <div className="pb-3 max-h-[300px] overflow-y-auto">
+        <div className="pb-3 max-h-[500px] overflow-y-auto scrollbar-hide">
           {listValues?.map((value: string) => {
             return (
               <button

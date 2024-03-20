@@ -17,8 +17,6 @@ const Promotion = () => {
     brands,
   } = useLoaderData<typeof promotionLoader>();
 
-  console.log("products", products);
-
   return (
     <PageWrapper>
       <>
